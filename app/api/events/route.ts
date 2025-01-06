@@ -7,6 +7,7 @@ import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getClientIp } from "@/lib/rateLimit";
 import { isServerRateLimited } from "@/lib/serverRateLimit";
 import { counterVisitsFor, isUncountableRequest } from "@/lib/readCounting";
+import { isSearchEventType, normalizeSearchQuery } from "@/lib/analyticsSearch";
 
 const VALID_EVENT_TYPES = new Set<EventType>([
   "enter", "year_select", "subject_open", "module_open",
@@ -17,6 +18,7 @@ const VALID_EVENT_TYPES = new Set<EventType>([
   "lesson_halfway", "lesson_end", "next_lesson_click", "lesson_resume",
   "quick_check_correct", "quick_check_wrong", "lesson_share", "code_run",
   "recent_lesson_click", "install_prompt_shown", "pwa_installed",
+  "search_query", "search_no_results", "search_result_click",
 ]);
 
 // Shared across all serverless instances via the check_rate_limit RPC — the
@@ -42,6 +44,54 @@ function optionalAttribution(body: Record<string, unknown>) {
   if (content !== null) extra.utm_content = content;
   if (term !== null) extra.utm_term = term;
   return extra;
+}
+
+// Generous ceilings: the catalogue has a few hundred items, so anything past
+// these is junk, not a real search.
+const MAX_RESULT_COUNT = 10_000;
+const MAX_RESULT_RANK = 1_000;
+
+function boundedInt(value: unknown, min: number, max: number): number | null {
+  return typeof value === "number" && Number.isInteger(value) && value >= min && value <= max
+    ? value
+    : null;
+}
+
+type SearchFields = {
+  search_query: string;
+  result_count: number | null;
+  result_rank: number | null;
+};
+
+/**
+ * Validates the search detail (migration 20261101000700) for the three search
+ * events. The query is re-normalized here — the client is never trusted to
+ * have lowercased, redacted or capped it. Returns an error message for a
+ * malformed search event; non-search events never reach this.
+ */
+function searchFields(
+  event_type: EventType,
+  body: Record<string, unknown>,
+  ids: { subject_id: string | null; module_id: string | null },
+): { fields: SearchFields } | { error: string } {
+  const search_query = normalizeSearchQuery(body.search_query);
+  if (search_query === null) return { error: "Invalid search_query" };
+
+  if (event_type === "search_query") {
+    const result_count = boundedInt(body.result_count, 0, MAX_RESULT_COUNT);
+    if (result_count === null) return { error: "Invalid result_count" };
+    return { fields: { search_query, result_count, result_rank: null } };
+  }
+
+  if (event_type === "search_no_results") {
+    return { fields: { search_query, result_count: 0, result_rank: null } };
+  }
+
+  // search_result_click: which result, and where it sat in the list.
+  const result_rank = boundedInt(body.result_rank, 1, MAX_RESULT_RANK);
+  if (result_rank === null) return { error: "Invalid result_rank" };
+  if (!ids.subject_id && !ids.module_id) return { error: "Missing clicked result id" };
+  return { fields: { search_query, result_count: null, result_rank } };
 }
 
 export async function POST(req: NextRequest) {
@@ -93,6 +143,21 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Search detail is validated only for search events, and only search
+    // events send the three columns — so every other event inserts exactly
+    // the columns it always did, even before the migration is applied.
+    let search: SearchFields | null = null;
+    if (isSearchEventType(event_type)) {
+      const result = searchFields(event_type, body as Record<string, unknown>, {
+        subject_id,
+        module_id,
+      });
+      if ("error" in result) {
+        return NextResponse.json({ error: result.error }, { status: 400 });
+      }
+      search = result.fields;
+    }
+
     // Fail OPEN: a limiter outage must never silently zero out the reads/
     // readers counters (record_visit below) — this is a public, non-revenue
     // endpoint, not an abuse-prone one, so losing rate-limit coverage for the
@@ -119,6 +184,7 @@ export async function POST(req: NextRequest) {
       utm_medium: sanitizeText(body.utm_medium, 120),
       utm_campaign: sanitizeText(body.utm_campaign, 120),
       ...optionalAttribution(body),
+      ...(search ?? {}),
     });
     if (insertError) {
       // Analytics must never break the app, but a rejected insert must be
