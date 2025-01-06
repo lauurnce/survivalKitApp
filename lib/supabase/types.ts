@@ -31,7 +31,11 @@ export type EventType =
   // Discovery/retention (migration 20261101000600, components/retention/**).
   | "recent_lesson_click"
   | "install_prompt_shown"
-  | "pwa_installed";
+  | "pwa_installed"
+  // Search usage (migration 20261101000700, components/SearchClient.tsx).
+  | "search_query"
+  | "search_no_results"
+  | "search_result_click";
 
 export interface Database {
   public: {
@@ -231,6 +235,10 @@ export interface Database {
           utm_campaign: string | null;
           utm_content: string | null;
           utm_term: string | null;
+          // Search events only (migration 20261101000700); null otherwise.
+          search_query: string | null;
+          result_count: number | null;
+          result_rank: number | null;
           created_at: string;
         };
         Insert: {
@@ -247,6 +255,9 @@ export interface Database {
           utm_campaign?: string | null;
           utm_content?: string | null;
           utm_term?: string | null;
+          search_query?: string | null;
+          result_count?: number | null;
+          result_rank?: number | null;
           created_at?: string;
         };
         Update: never;
