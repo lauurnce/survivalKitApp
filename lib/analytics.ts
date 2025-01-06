@@ -2,6 +2,7 @@
 
 import type { EventType } from "./supabase/types";
 import { getDeviceId } from "./device";
+import { normalizeSearchQuery } from "./analyticsSearch";
 
 const pendingSectionViews = new Map<string, ReturnType<typeof setTimeout>>();
 
@@ -106,21 +107,32 @@ export function resetPageLoadDeviceId() {
   pageLoadDeviceId = "";
 }
 
-export async function logEvent(
-  event_type: EventType,
-  meta: {
-    year_id?: string;
-    subject_id?: string;
-    module_id?: string;
-    section_id?: string;
-  } = {}
-) {
+export interface EventMeta {
+  year_id?: string;
+  subject_id?: string;
+  module_id?: string;
+  section_id?: string;
+  // Search events only (lib/analyticsSearch.ts). The query is normalized
+  // here as well as on the server, so the raw typed text never leaves the
+  // browser.
+  search_query?: string;
+  result_count?: number;
+  result_rank?: number;
+}
+
+export async function logEvent(event_type: EventType, meta: EventMeta = {}) {
   await whenViewed();
   const device_id = resolveDeviceId();
   if (!device_id) return;
   if (event_type === "enter" && !claimSessionEntry()) return;
 
   const attribution = event_type === "enter" ? getAttribution() : {};
+
+  if (meta.search_query !== undefined) {
+    const search_query = normalizeSearchQuery(meta.search_query);
+    if (search_query === null) return;
+    meta = { ...meta, search_query };
+  }
 
   try {
     await fetch("/api/events", {
