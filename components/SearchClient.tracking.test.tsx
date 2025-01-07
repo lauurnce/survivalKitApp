@@ -108,3 +108,46 @@ describe("SearchClient — settled search tracking", () => {
     expect(eventsOf("search_query")).toHaveLength(2);
   });
 });
+
+describe("SearchClient — result click tracking", () => {
+  it("logs the clicked module's id and its 1-based rank", () => {
+    render(<SearchClient items={catalogue} />);
+    type("l");
+    act(() => vi.advanceTimersByTime(SEARCH_SETTLE_MS));
+    const links = screen.getAllByRole("link").filter((a) => a.getAttribute("href") !== "/year");
+    const target = links.findIndex((a) => a.getAttribute("href") === "/ll");
+    fireEvent.click(links[target]);
+    expect(eventsOf("search_result_click")).toEqual([
+      { search_query: "l", result_rank: target + 1, module_id: "ll" },
+    ]);
+  });
+
+  it("logs a subject result under subject_id", () => {
+    render(<SearchClient items={catalogue} />);
+    type("cp1");
+    fireEvent.click(screen.getByText("Computer Programming 1"));
+    expect(eventsOf("search_result_click")).toEqual([
+      { search_query: "cp1", result_rank: 1, subject_id: "cp1" },
+    ]);
+  });
+
+  it("settles the search first when the click beats the settle delay", () => {
+    render(<SearchClient items={catalogue} />);
+    type("sql");
+    fireEvent.click(screen.getByText("SQL Joins and Subqueries"));
+    const types = logEvent.mock.calls.map(([t]) => t);
+    expect(types).toEqual(["search_query", "search_result_click"]);
+    act(() => vi.advanceTimersByTime(SEARCH_SETTLE_MS * 2));
+    expect(eventsOf("search_query")).toHaveLength(1);
+  });
+
+  it("logs Enter's jump to the top match as a rank-1 click", () => {
+    render(<SearchClient items={catalogue} />);
+    type("linked");
+    fireEvent.keyDown(screen.getByLabelText("Search subjects and modules"), { key: "Enter" });
+    expect(eventsOf("search_result_click")).toEqual([
+      { search_query: "linked", result_rank: 1, module_id: "ll" },
+    ]);
+    expect(push).toHaveBeenCalledWith("/ll");
+  });
+});
