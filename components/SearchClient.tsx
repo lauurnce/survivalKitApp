@@ -107,6 +107,21 @@ export function SearchClient({ items, suggestions = [] }: Props) {
     return () => clearTimeout(timer);
   }, [trimmed, results.length, logSettled]);
 
+  // Which result a search led to, and how far down it sat (1-based). A click
+  // that beats the settle delay settles the search first, so every click has
+  // the search_query it came from.
+  const logResultClick = useCallback(
+    (item: SearchItem, index: number) => {
+      logSettled(trimmed, results.length);
+      void logEvent("search_result_click", {
+        search_query: trimmed,
+        result_rank: index + 1,
+        ...(item.type === "subject" ? { subject_id: item.id } : { module_id: item.id }),
+      });
+    },
+    [trimmed, results.length, logSettled],
+  );
+
   return (
     <div className="flex flex-col gap-8 max-w-wide">
       {/* Search input */}
@@ -127,6 +142,7 @@ export function SearchClient({ items, suggestions = [] }: Props) {
               logSettled(trimmed, results.length);
               if (results.length > 0) {
                 e.preventDefault();
+                logResultClick(results[0], 0);
                 router.push(results[0].href);
               }
             }
@@ -186,11 +202,12 @@ export function SearchClient({ items, suggestions = [] }: Props) {
             {results.length} {results.length === 1 ? "result" : "results"}
           </p>
           <div className="flex flex-col divide-y divide-ink-faint/30 -mt-2">
-            {results.map((item) => (
+            {results.map((item, index) => (
               <Link
                 key={`${item.type}-${item.id}`}
                 href={item.href}
                 prefetch={true}
+                onClick={() => logResultClick(item, index)}
                 className="group flex items-start gap-6 py-6 hover:bg-ink/[0.02] -mx-4 px-4 transition-colors duration-150"
               >
                 <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mt-1 w-16 shrink-0">
