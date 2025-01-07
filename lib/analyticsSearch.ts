@@ -31,7 +31,6 @@ export function isSearchEventType(value: unknown): value is SearchEventType {
   return (SEARCH_EVENT_TYPES as readonly unknown[]).includes(value);
 }
 
-// eslint-disable-next-line no-control-regex
 const CONTROL_CHARS = /[\u0000-\u001f\u007f-\u009f]/g;
 const EMAIL_LIKE = /[^\s@]+@[^\s@]+/g;
 const LONG_NUMBER = /\+?\d(?:[\s\-.()]?\d){6,}/g;
