@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { searchItems } from "@/lib/searchMatch";
+import { logEvent } from "@/lib/analytics";
+import { SEARCH_SETTLE_MS, normalizeSearchQuery } from "@/lib/analyticsSearch";
 
 export interface SearchItem {
   type: "subject" | "module";
@@ -24,6 +26,9 @@ export function SearchClient({ items, suggestions = [] }: Props) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const seeded = useRef(false);
+  // A ?q= link is a finished search, not one being typed: log it without
+  // waiting for the settle delay.
+  const settleNow = useRef(false);
 
   // /search?q=… (shared links, the landing page, site-search integrations)
   // opens with that query. Read from window.location rather than
@@ -31,8 +36,11 @@ export function SearchClient({ items, suggestions = [] }: Props) {
   // boundary; the URL only exists post-mount anyway.
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("q");
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (q) setQuery(q);
+    if (q) {
+      settleNow.current = true;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setQuery(q);
+    }
   }, []);
 
   // Mirror the query back into the URL so a search can be shared or
@@ -58,6 +66,47 @@ export function SearchClient({ items, suggestions = [] }: Props) {
 
   const results = useMemo(() => searchItems(items, trimmed), [items, trimmed]);
 
+  // ── Search usage tracking ────────────────────────────────────────────────
+  // A search "settles" SEARCH_SETTLE_MS after typing stops, on Enter, or when
+  // a ?q= link opens. Each settled query is logged once as search_query (with
+  // its result count), plus search_no_results when it found nothing. Only the
+  // normalized query is sent (lib/analyticsSearch.ts) — never keystrokes.
+  const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastLogged = useRef<string | null>(null);
+
+  const logSettled = useCallback((text: string, resultCount: number) => {
+    if (settleTimer.current) {
+      clearTimeout(settleTimer.current);
+      settleTimer.current = null;
+    }
+    const normalized = normalizeSearchQuery(text);
+    // The same settled query twice in a row (a pause, then Enter) is one search.
+    if (normalized === null || normalized === lastLogged.current) return;
+    lastLogged.current = normalized;
+    void logEvent("search_query", { search_query: normalized, result_count: resultCount });
+    if (resultCount === 0) {
+      void logEvent("search_no_results", { search_query: normalized, result_count: 0 });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (trimmed === "") {
+      // Clearing the box ends the search; typing the same words again later
+      // is a new search.
+      lastLogged.current = null;
+      return;
+    }
+    const resultCount = results.length;
+    if (settleNow.current) {
+      settleNow.current = false;
+      logSettled(trimmed, resultCount);
+      return;
+    }
+    const timer = setTimeout(() => logSettled(trimmed, resultCount), SEARCH_SETTLE_MS);
+    settleTimer.current = timer;
+    return () => clearTimeout(timer);
+  }, [trimmed, results.length, logSettled]);
+
   return (
     <div className="flex flex-col gap-8 max-w-wide">
       {/* Search input */}
@@ -74,9 +123,12 @@ export function SearchClient({ items, suggestions = [] }: Props) {
           onKeyDown={(e) => {
             // Enter jumps straight to the top match — fastest path for
             // returning students who know what they're looking for.
-            if (e.key === "Enter" && results.length > 0) {
-              e.preventDefault();
-              router.push(results[0].href);
+            if (e.key === "Enter") {
+              logSettled(trimmed, results.length);
+              if (results.length > 0) {
+                e.preventDefault();
+                router.push(results[0].href);
+              }
             }
           }}
           placeholder="Search subjects and modules…"
