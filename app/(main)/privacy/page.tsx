@@ -129,6 +129,21 @@ export default function PrivacyPage() {
               </div>
 
               <div>
+                <p className="font-sans font-medium text-ink mb-1">Search queries</p>
+                <p>
+                  When you use Search, we record what you searched for, how many
+                  results it found, and which result you opened, linked to your
+                  device ID. Before it is stored, the query is lowercased, cut to 80
+                  characters, and anything that looks like an email address or a
+                  long number (such as a phone or student number) is removed. We
+                  record a search once you stop typing, not each keystroke, and we
+                  only look at searches in aggregate, to learn what students look for
+                  and which topics we are missing. Please do not type personal
+                  information into the search box.
+                </p>
+              </div>
+
+              <div>
                 <p className="font-sans font-medium text-ink mb-1">Usage data collected by Google Analytics</p>
                 <p>
                   Every page loads Google Analytics (measurement ID{" "}
