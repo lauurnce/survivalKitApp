@@ -285,3 +285,140 @@ describe("POST /api/events — distributed rate limiting", () => {
     expect(inserts).toHaveLength(1);
   });
 });
+
+describe("POST /api/events — search tracking", () => {
+  const MODULE = "11111111-2222-4333-8444-555555555555";
+  const SUBJECT = "66666666-7777-4888-9999-000000000000";
+
+  it("accepts a settled search with its normalized query and result count", async () => {
+    const res = await POST(
+      makeReq({
+        device_id: DEVICE,
+        event_type: "search_query",
+        search_query: "  SQL   Joins ",
+        result_count: 3,
+      })
+    );
+    expect(res.status).toBe(200);
+    expect(inserts[0]).toMatchObject({
+      event_type: "search_query",
+      search_query: "sql joins",
+      result_count: 3,
+      result_rank: null,
+    });
+  });
+
+  it("re-normalizes the query server side: redacted, capped at 80", async () => {
+    await POST(
+      makeReq({
+        device_id: DEVICE,
+        event_type: "search_query",
+        search_query: `me@example.com ${"x".repeat(200)}`,
+        result_count: 0,
+      })
+    );
+    const stored = inserts[0].search_query as string;
+    expect(stored.startsWith("[email] ")).toBe(true);
+    expect(stored).toHaveLength(80);
+  });
+
+  it("rejects a search event without a usable query", async () => {
+    for (const search_query of [undefined, "", "   ", 42]) {
+      const res = await POST(
+        makeReq({ device_id: DEVICE, event_type: "search_query", search_query, result_count: 1 })
+      );
+      expect(res.status).toBe(400);
+    }
+    expect(inserts).toHaveLength(0);
+  });
+
+  it("rejects a missing, negative or fractional result_count", async () => {
+    for (const result_count of [undefined, -1, 1.5, "3", 1_000_000]) {
+      const res = await POST(
+        makeReq({ device_id: DEVICE, event_type: "search_query", search_query: "sql", result_count })
+      );
+      expect(res.status).toBe(400);
+    }
+    expect(inserts).toHaveLength(0);
+  });
+
+  it("stores search_no_results with a result count of zero whatever the client sent", async () => {
+    const res = await POST(
+      makeReq({
+        device_id: DEVICE,
+        event_type: "search_no_results",
+        search_query: "kubernetes",
+        result_count: 9,
+      })
+    );
+    expect(res.status).toBe(200);
+    expect(inserts[0]).toMatchObject({ search_query: "kubernetes", result_count: 0 });
+  });
+
+  it("stores a result click with its rank and the clicked module", async () => {
+    const res = await POST(
+      makeReq({
+        device_id: DEVICE,
+        event_type: "search_result_click",
+        search_query: "linked",
+        module_id: MODULE,
+        result_rank: 2,
+      })
+    );
+    expect(res.status).toBe(200);
+    expect(inserts[0]).toMatchObject({
+      event_type: "search_result_click",
+      module_id: MODULE,
+      search_query: "linked",
+      result_rank: 2,
+      result_count: null,
+    });
+  });
+
+  it("accepts a click on a subject result", async () => {
+    const res = await POST(
+      makeReq({
+        device_id: DEVICE,
+        event_type: "search_result_click",
+        search_query: "cp1",
+        subject_id: SUBJECT,
+        result_rank: 1,
+      })
+    );
+    expect(res.status).toBe(200);
+    expect(inserts[0]).toMatchObject({ subject_id: SUBJECT, result_rank: 1 });
+  });
+
+  it("rejects a click without a valid rank or without a clicked id", async () => {
+    const bad = [
+      { module_id: MODULE, result_rank: 0 },
+      { module_id: MODULE, result_rank: 2.5 },
+      { module_id: MODULE },
+      { result_rank: 1 },
+    ];
+    for (const extra of bad) {
+      const res = await POST(
+        makeReq({ device_id: DEVICE, event_type: "search_result_click", search_query: "sql", ...extra })
+      );
+      expect(res.status).toBe(400);
+    }
+    expect(inserts).toHaveLength(0);
+  });
+
+  it("never stores search fields on a non-search event", async () => {
+    const res = await POST(
+      makeReq({
+        device_id: DEVICE,
+        event_type: "module_open",
+        module_id: MODULE,
+        search_query: "smuggled text",
+        result_count: 5,
+        result_rank: 1,
+      })
+    );
+    expect(res.status).toBe(200);
+    expect(inserts[0]).not.toHaveProperty("search_query");
+    expect(inserts[0]).not.toHaveProperty("result_count");
+    expect(inserts[0]).not.toHaveProperty("result_rank");
+  });
+});

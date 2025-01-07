@@ -51,4 +51,16 @@ describe("PrivacyPage", () => {
     expect(container.textContent).not.toMatch(/GCash payment data/);
     expect(container.textContent).toMatch(/GCash, Maya, or card/);
   });
+
+  // Search tracking (migration 20261101000700) stores typed queries, the most
+  // personal analytics the site keeps — the policy must say so, and how they
+  // are scrubbed (lib/analyticsSearch.ts).
+  it("discloses search query tracking and how queries are scrubbed", () => {
+    const { container } = render(<PrivacyPage />);
+    const text = container.textContent ?? "";
+    expect(text).toContain("Search queries");
+    expect(text).toMatch(/what you searched for, how many\s+results it found, and which result you opened/);
+    expect(text).toMatch(/80\s+characters/);
+    expect(text).toMatch(/email address or a\s+long number/);
+  });
 });

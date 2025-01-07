@@ -144,3 +144,43 @@ function resetModuleFlagOnly() {
   resetSessionEntry();
   if (flag) sessionStorage.setItem("bsit:session-entered", flag);
 }
+
+describe("logEvent search detail", () => {
+  it("sends the normalized query, never the raw typed text", async () => {
+    await logEvent("search_query", { search_query: "  SQL   Joins  ", result_count: 4 });
+
+    const body = lastFetchBody(fetchMock);
+    expect(body).toMatchObject({
+      event_type: "search_query",
+      search_query: "sql joins",
+      result_count: 4,
+    });
+  });
+
+  it("carries the clicked result's id and rank", async () => {
+    await logEvent("search_result_click", {
+      search_query: "linked list",
+      module_id: "m-1",
+      result_rank: 3,
+    });
+
+    expect(lastFetchBody(fetchMock)).toMatchObject({
+      event_type: "search_result_click",
+      search_query: "linked list",
+      module_id: "m-1",
+      result_rank: 3,
+    });
+  });
+
+  it("drops a search event whose query normalizes to nothing", async () => {
+    await logEvent("search_query", { search_query: "   ", result_count: 0 });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("does not attach attribution to search events", async () => {
+    await logEvent("search_query", { search_query: "arrays", result_count: 1 });
+    const body = lastFetchBody(fetchMock);
+    expect(body.referrer).toBeUndefined();
+    expect(body.utm_source).toBeUndefined();
+  });
+});

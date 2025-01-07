@@ -45,6 +45,7 @@ import {
   enterDefinitionNote,
   type UtmTripleRow,
 } from "../../lib/reports/growthAttribution";
+import { searchMetrics, searchTables, type SearchAgg } from "../../lib/reports/growthSearch";
 import { callRpc, createReportsClient } from "./supabaseAdmin";
 
 const REPO_ROOT = join(__dirname, "..", "..");
@@ -306,6 +307,9 @@ async function main(): Promise<void> {
   const content = await optional<ContentAgg>("growth_content_agg", windowArgs);
   const demand = await optional<DemandAgg>("growth_demand_agg", windowArgs);
   const feedback = await optional<FeedbackAgg>("growth_feedback_agg", windowArgs);
+  // Added by 20261101000700. Until it is applied this records an RPC error
+  // and the search rows and tables read "not read" — never zero.
+  const search = await optional<SearchAgg>("growth_search_agg", windowArgs);
 
   // --- Shape the funnel ---
   const steps = buildFunnel({
@@ -370,6 +374,8 @@ async function main(): Promise<void> {
     { label: "Waitlist signups this week", value: demand?.signups_window ?? null },
     { label: "Feedback rows this week", value: feedback?.rows_window ?? null },
     { label: "Avg app rating this week", value: feedback?.avg_app_rating ?? null },
+    // Search (/search). Top and no-result queries are in tables.search*.
+    ...searchMetrics(search),
     // Health of the run itself.
     { label: "Collector RPC errors", value: errors.length },
   ];
@@ -403,6 +409,8 @@ async function main(): Promise<void> {
       "AUDIENCE",
       { now: "THIS WEEK", previous: "LAST WEEK" }
     ),
+    // Aggregate counts only, top 15 each, with a "top N of M" footer.
+    ...searchTables(search),
   };
 
   const [startPhDate, endPhDate] = current.label.split(" → ");
@@ -438,6 +446,7 @@ async function main(): Promise<void> {
       content,
       demand,
       feedback,
+      search,
     },
     errors,
   };
