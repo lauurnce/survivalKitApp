@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 
 let completed = new Set<string>();
-const fetchCompletedModules = vi.fn(() => Promise.resolve(completed));
+const fetchCompletedModules = vi.fn((_ids: string[]) => Promise.resolve(completed));
 vi.mock("@/lib/progress", () => ({ fetchCompletedModules: (ids: string[]) => fetchCompletedModules(ids) }));
 
 import { StartHereCard } from "./StartHereCard";
