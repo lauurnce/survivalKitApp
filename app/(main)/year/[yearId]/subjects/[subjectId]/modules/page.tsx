@@ -18,6 +18,8 @@ import { SubjectHubSummary } from "@/components/subject-hub/SubjectHubSummary";
 import { NextAvailableLesson } from "@/components/subject-hub/NextAvailableLesson";
 import { getContentSectionCounts } from "@/lib/subjectHub/queries";
 import { summarizeSubject } from "@/lib/subjectHub/summary";
+import { subjectMetaDescription } from "@/lib/subjectHub/metaDescription";
+import { yearLabelOf } from "@/lib/seo/subjectShare";
 import { pickNextAvailableSubject } from "@/lib/subjectHub/nextAvailable";
 
 // Prerendered on first request per subject (ISR, 60s) and CDN-cached. The
@@ -38,14 +40,19 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { yearId, subjectId } = await params;
   if (!wellFormedIds(yearId, subjectId)) return {};
+  // Same cached reads as the page body, so metadata adds no round trips.
   const subject = await getSubjectWithYear(subjectId);
   const chain = subjectChain({ yearId, subjectId }, subject);
   if (!subject || chain.kind !== "ok") return {};
-  const yearEmbed = subject.years as unknown as { label: string } | { label: string }[] | null;
-  const year = (Array.isArray(yearEmbed) ? yearEmbed[0] : yearEmbed) ?? null;
+  const modules = (await getModulesBySubject(subjectId)) ?? [];
+  const activityRows = (await getActivitySectionsForModules(modules.map((m) => m.id))) ?? [];
   return {
     title: subject.title,
-    description: `Modules and reviewers for ${subject.title}${year ? ` (${year.label})` : ""}.`,
+    description: subjectMetaDescription(
+      subject.title,
+      yearLabelOf(subject.years),
+      summarizeSubject(modules, activityRows),
+    ),
     alternates: { canonical: chain.path },
   };
 }
