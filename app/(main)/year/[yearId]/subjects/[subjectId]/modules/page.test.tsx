@@ -258,3 +258,21 @@ describe("ModulesPage — subject hub", () => {
     );
   });
 });
+
+describe("ModulesPage — metadata", () => {
+  it("describes the subject by its lesson counts and free lessons", async () => {
+    subjectYears = { label: "1st Year", sort_order: 1 };
+    modules = [
+      { id: "l1", title: "Lesson 1: Programming Concepts", sort_order: 1 },
+      { id: "l2", title: "Lesson 2: Introduction to C", sort_order: 2 },
+    ];
+    activities = [{ id: "a1", module_id: "l1" }];
+    const meta = await generateMetadata({
+      params: Promise.resolve({ yearId: YEAR_ID, subjectId: SUBJECT_ID }),
+    });
+    expect(meta.title).toBe("Computer Programming 1");
+    expect(meta.description).toBe(
+      "Computer Programming 1 (1st Year): 2 lessons, 1 reviewer. Every lesson is free to read.",
+    );
+  });
+});
