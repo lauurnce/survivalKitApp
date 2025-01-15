@@ -11,8 +11,16 @@ import { sectionLabel } from "@/lib/sectionLabel";
 import { modulePath } from "@/lib/subscribeRedirect";
 import { freeSampleIsEverything } from "@/lib/freeSample";
 import { cheapestSubjectPrice } from "@/lib/pricing";
-import { getSubjectWithYear, getModulesBySubject, getModuleCounters, getActivitySectionsForModules } from "@/lib/cache/queries";
+import { getSubjectWithYear, getModulesBySubject, getModuleCounters, getActivitySectionsForModules, getSubjectsByYear, getAllModules } from "@/lib/cache/queries";
 import { enforceChain, subjectChain, wellFormedIds } from "@/lib/routes/canonicalChain";
+import { StartHereCard } from "@/components/subject-hub/StartHereCard";
+import { SubjectHubSummary } from "@/components/subject-hub/SubjectHubSummary";
+import { NextAvailableLesson } from "@/components/subject-hub/NextAvailableLesson";
+import { getContentSectionCounts } from "@/lib/subjectHub/queries";
+import { summarizeSubject } from "@/lib/subjectHub/summary";
+import { subjectMetaDescription } from "@/lib/subjectHub/metaDescription";
+import { yearLabelOf } from "@/lib/seo/subjectShare";
+import { pickNextAvailableSubject } from "@/lib/subjectHub/nextAvailable";
 
 // Prerendered on first request per subject (ISR, 60s) and CDN-cached. The
 // subscriber treatment (Pro banner, PRO marks) and the ?from=dashboard back
@@ -32,14 +40,19 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { yearId, subjectId } = await params;
   if (!wellFormedIds(yearId, subjectId)) return {};
+  // Same cached reads as the page body, so metadata adds no round trips.
   const subject = await getSubjectWithYear(subjectId);
   const chain = subjectChain({ yearId, subjectId }, subject);
   if (!subject || chain.kind !== "ok") return {};
-  const yearEmbed = subject.years as unknown as { label: string } | { label: string }[] | null;
-  const year = (Array.isArray(yearEmbed) ? yearEmbed[0] : yearEmbed) ?? null;
+  const modules = (await getModulesBySubject(subjectId)) ?? [];
+  const activityRows = (await getActivitySectionsForModules(modules.map((m) => m.id))) ?? [];
   return {
     title: subject.title,
-    description: `Modules and reviewers for ${subject.title}${year ? ` (${year.label})` : ""}.`,
+    description: subjectMetaDescription(
+      subject.title,
+      yearLabelOf(subject.years),
+      summarizeSubject(modules, activityRows),
+    ),
     alternates: { canonical: chain.path },
   };
 }
@@ -57,9 +70,10 @@ export default async function ModulesPage({ params }: Props) {
   const modules = await getModulesBySubject(subjectId);
   const moduleIds = (modules ?? []).map((m) => m.id);
   
-  const [moduleCounters, activityRows] = await Promise.all([
+  const [moduleCounters, activityRows, contentCounts] = await Promise.all([
     getModuleCounters(moduleIds),
     getActivitySectionsForModules(moduleIds),
+    getContentSectionCounts(moduleIds),
   ]);
 
   if (!subject) notFound();
@@ -83,6 +97,15 @@ export default async function ModulesPage({ params }: Props) {
     | { label: string; sort_order: number }[]
     | null;
   const year = (Array.isArray(yearEmbed) ? yearEmbed[0] : yearEmbed) ?? null;
+
+  // Lesson/reviewer counts and the named free sample for the header, and
+  // (subject with no modules only) a sibling subject's lesson to read instead
+  // of a waitlist-only dead end. 2026-11-01 second-year conversion research.
+  const summary = summarizeSubject(modules ?? [], activityRows ?? [], contentCounts ?? undefined);
+  const nextAvailable =
+    !modules || modules.length === 0
+      ? pickNextAvailableSubject(subjectId, await getSubjectsByYear(yearId), await getAllModules())
+      : null;
 
   function readCount(moduleId: string): number {
     return moduleCounters?.find((c) => c.resource_id === moduleId)?.read_count ?? 0;
@@ -114,6 +137,7 @@ export default async function ModulesPage({ params }: Props) {
               {sectionLabel(year?.sort_order)} — {subject.title}
             </p>
             <h1 className="font-serif text-display-lg text-on-inverse">Modules</h1>
+            <SubjectHubSummary summary={summary} />
           </div>
         </div>
       </div>
@@ -128,6 +152,13 @@ export default async function ModulesPage({ params }: Props) {
               unlockAll={devUnlockAll}
               subjectTitle={subject.title}
               yearLabel={year?.label}
+            />
+            {/* The first step is a free lesson, ahead of the paid offer. */}
+            <StartHereCard
+              yearId={yearId}
+              subjectId={subjectId}
+              modules={modules}
+              contentCounts={contentCounts}
             />
           </div>
         )}
@@ -184,6 +215,9 @@ export default async function ModulesPage({ params }: Props) {
             }))}
           />
 
+          {(!modules || modules.length === 0) && (
+            <NextAvailableLesson yearId={yearId} next={nextAvailable} />
+          )}
           {(!modules || modules.length === 0) && (
             <SubjectComingSoon
               subjectTitle={subject.title}

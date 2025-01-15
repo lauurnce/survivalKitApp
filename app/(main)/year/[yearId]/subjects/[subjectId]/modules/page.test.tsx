@@ -22,7 +22,7 @@ vi.mock("@/components/PageTracker", () => ({ PageTracker: () => null }));
 vi.mock("@/components/SubjectComingSoon", () => ({ SubjectComingSoon: () => null }));
 
 let subjectYears: unknown;
-let modules: { id: string; title: string }[] = [];
+let modules: { id: string; title: string; sort_order?: number }[] = [];
 let activities: { id: string; module_id: string }[] = [];
 const OTHER_YEAR_ID = "44444444-4444-4444-4444-444444444444";
 const MISSING_SUBJECT_ID = "55555555-5555-5555-5555-555555555555";
@@ -33,12 +33,21 @@ const subjectMock = vi.fn((subjectId: string) =>
       : null,
   ),
 );
+let contentCounts: Record<string, number> | null = null;
+let yearSubjects: { id: string; title: string; sort_order: number; semester: number }[] = [];
+let allModules: { id: string; title: string; sort_order: number; subject_id: string }[] = [];
 vi.mock("@/lib/cache/queries", () => ({
   getSubjectWithYear: (subjectId: string) => subjectMock(subjectId),
   getModulesBySubject: () => Promise.resolve(modules),
   getModuleCounters: () => Promise.resolve([]),
   getActivitySectionsForModules: () => Promise.resolve(activities),
+  getSubjectsByYear: () => Promise.resolve(yearSubjects),
+  getAllModules: () => Promise.resolve(allModules),
 }));
+vi.mock("@/lib/subjectHub/queries", () => ({
+  getContentSectionCounts: () => Promise.resolve(contentCounts),
+}));
+vi.mock("@/lib/progress", () => ({ fetchCompletedModules: () => Promise.resolve(new Set()) }));
 
 import ModulesPage, { generateMetadata } from "./page";
 
@@ -53,6 +62,9 @@ beforeEach(() => {
   subjectYears = undefined;
   modules = [];
   activities = [];
+  contentCounts = null;
+  yearSubjects = [];
+  allModules = [];
   subjectMock.mockClear();
 });
 
@@ -181,5 +193,86 @@ describe("generateMetadata — the module list's canonical", () => {
     expect(await at(OTHER_YEAR_ID, SUBJECT_ID)).toEqual({});
     expect(await at(YEAR_ID, MISSING_SUBJECT_ID)).toEqual({});
     expect(await at("garbage", SUBJECT_ID)).toEqual({});
+  });
+});
+
+// 2026-11-01 second-year conversion: Computer Programming 2 converted 43% of
+// subject openers to a lesson open against 80% for Computer Programming 1.
+// The page's first call to action was the paid offer, not a lesson.
+describe("ModulesPage — subject hub", () => {
+  const cp2 = () => {
+    modules = [
+      { id: "u1", title: "Unit 1: Arrays", sort_order: 1 },
+      { id: "exam", title: "Exam Prep: Prelims & Finals", sort_order: 2 },
+    ];
+    activities = [
+      { id: "a1", module_id: "u1" },
+      { id: "a2", module_id: "exam" },
+    ];
+  };
+
+  it("puts a Start here card for the first lesson ahead of the paid offer", async () => {
+    cp2();
+    await renderPage();
+    const card = screen.getByTestId("start-here-card");
+    expect(screen.getByRole("link", { name: /Start lesson/ })).toHaveAttribute(
+      "href",
+      `/year/${YEAR_ID}/subjects/${SUBJECT_ID}/modules/u1`,
+    );
+    const slot = screen.getByTestId("paywall-teaser-slot");
+    expect(card.compareDocumentPosition(slot) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("names lessons, reviewers and the free module under the heading", async () => {
+    cp2();
+    await renderPage();
+    expect(screen.getByTestId("subject-hub-summary")).toHaveTextContent("1 lesson · 2 reviewers · exam prep included");
+    expect(
+      screen.getByText("Every lesson is free to read. The 1 reviewer in Unit 1: Arrays is free too."),
+    ).toBeInTheDocument();
+  });
+
+  it("starts past a module with no content", async () => {
+    cp2();
+    modules = [{ id: "u0", title: "Unit 0: Setup", sort_order: 0 }, ...modules];
+    contentCounts = { u0: 0, u1: 7, exam: 2 };
+    await renderPage();
+    expect(screen.getByRole("link", { name: /Start lesson/ })).toHaveAttribute(
+      "href",
+      `/year/${YEAR_ID}/subjects/${SUBJECT_ID}/modules/u1`,
+    );
+  });
+
+  it("points a subject with no modules at a sibling subject's first lesson", async () => {
+    yearSubjects = [
+      { id: SUBJECT_ID, title: "Computer Programming 1", sort_order: 1, semester: 1 },
+      { id: "dsa", title: "Data Structures and Algorithms", sort_order: 2, semester: 1 },
+    ];
+    allModules = [{ id: "d1", title: "Introduction to Data Structures", sort_order: 1, subject_id: "dsa" }];
+    await renderPage();
+    expect(screen.queryByTestId("start-here-card")).toBeNull();
+    expect(screen.getByTestId("next-available-lesson")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Start lesson/ })).toHaveAttribute(
+      "href",
+      `/year/${YEAR_ID}/subjects/dsa/modules/d1`,
+    );
+  });
+});
+
+describe("ModulesPage — metadata", () => {
+  it("describes the subject by its lesson counts and free lessons", async () => {
+    subjectYears = { label: "1st Year", sort_order: 1 };
+    modules = [
+      { id: "l1", title: "Lesson 1: Programming Concepts", sort_order: 1 },
+      { id: "l2", title: "Lesson 2: Introduction to C", sort_order: 2 },
+    ];
+    activities = [{ id: "a1", module_id: "l1" }];
+    const meta = await generateMetadata({
+      params: Promise.resolve({ yearId: YEAR_ID, subjectId: SUBJECT_ID }),
+    });
+    expect(meta.title).toBe("Computer Programming 1");
+    expect(meta.description).toBe(
+      "Computer Programming 1 (1st Year): 2 lessons, 1 reviewer. Every lesson is free to read.",
+    );
   });
 });
