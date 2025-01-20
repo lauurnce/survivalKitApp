@@ -29,7 +29,8 @@ import { freeIdsInModule, pickFreeActivities } from "@/lib/freeSample";
 import { cheapestSubjectPrice } from "@/lib/pricing";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { pageMetadata } from "@/lib/seo/pageMetadata";
-import { getModuleWithSubject, getSiblingModules, getModuleContentSections, getModuleActivitySections } from "@/lib/cache/queries";
+import { getModuleWithSubject, getModuleOwner, getSiblingModules, getModuleContentSections, getModuleActivitySections } from "@/lib/cache/queries";
+import { enforceChain, moduleChain, wellFormedIds } from "@/lib/routes/canonicalChain";
 
 // Prerendered on first request per module (ISR, 60s) and CDN-cached. The HTML
 // is the locked view for every visitor — content, activity headings, and the
@@ -79,6 +80,7 @@ export async function generateMetadata(
 
 export default async function ReaderPage({ params }: Props) {
   const { yearId, subjectId, moduleId } = await params;
+  if (!wellFormedIds(yearId, subjectId, moduleId)) notFound();
   const supabase = createServerClient();
 
   // Use cached queries for static data
@@ -88,6 +90,17 @@ export default async function ReaderPage({ params }: Props) {
     getModuleContentSections(moduleId),
   ]);
 
+  // One lesson, one URL: a wrong year or subject 308s to the lesson's real
+  // address, an unknown module 404s. The rows above already carry the subject
+  // and its year; only a module missing from the named subject costs a lookup.
+  enforceChain(
+    moduleChain(
+      { yearId, subjectId, moduleId },
+      mod && subject
+        ? { moduleId: mod.id, subjectId: subject.id, yearId: subject.year_id }
+        : await getModuleOwner(moduleId),
+    ),
+  );
   if (!mod || !subject) notFound();
 
   const siblings = siblingModules ?? [];
