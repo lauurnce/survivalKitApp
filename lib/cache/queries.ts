@@ -228,3 +228,25 @@ export const getSiblingModules = unstable_cache(
   ["sibling-modules"],
   { revalidate: 60, tags: ["modules"] }
 );
+// Where a module really lives — its subject and that subject's year — looked
+// up by the module id alone. Only the lesson reader's mismatch path calls it:
+// a module requested under the wrong subject, so the page can 308 to the
+// module's real URL instead of 404ing a link that was shared before.
+export const getModuleOwner = unstable_cache(
+  async (moduleId: string) => {
+    const supabase = getSupabase();
+    const { data } = await supabase
+      .from("modules")
+      .select("id, subject_id, subjects(year_id)")
+      .eq("id", moduleId)
+      .maybeSingle();
+    if (!data) return null;
+    // subjects(...) is a many-to-one embed: an object, but accept an array too.
+    const embed = data.subjects as unknown as { year_id: string } | { year_id: string }[] | null;
+    const subject = Array.isArray(embed) ? embed[0] : embed;
+    if (!subject?.year_id) return null;
+    return { moduleId: data.id as string, subjectId: data.subject_id as string, yearId: subject.year_id };
+  },
+  ["module-owner"],
+  { revalidate: 60, tags: ["modules"] }
+);
