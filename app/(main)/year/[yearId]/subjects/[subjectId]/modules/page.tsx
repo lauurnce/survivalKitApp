@@ -13,6 +13,7 @@ import { modulePath } from "@/lib/subscribeRedirect";
 import { freeSampleIsEverything } from "@/lib/freeSample";
 import { cheapestSubjectPrice } from "@/lib/pricing";
 import { getSubjectWithYear, getModulesBySubject, getModuleCounters, getActivitySectionsForModules } from "@/lib/cache/queries";
+import { enforceChain, subjectChain, wellFormedIds } from "@/lib/routes/canonicalChain";
 
 // Prerendered on first request per subject (ISR, 60s) and CDN-cached. The
 // subscriber treatment (Pro banner, PRO marks) and the ?from=dashboard back
@@ -45,9 +46,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ModulesPage({ params }: Props) {
   const { yearId, subjectId } = await params;
+  if (!wellFormedIds(yearId, subjectId)) notFound();
 
   // Use cached queries for static data
   const subject = await getSubjectWithYear(subjectId);
+  // A subject under another year's id 308s to its real URL; unknown 404s.
+  enforceChain(subjectChain({ yearId, subjectId }, subject));
   if (!subject) notFound();
 
   const modules = await getModulesBySubject(subjectId);

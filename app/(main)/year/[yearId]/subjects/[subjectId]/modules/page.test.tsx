@@ -24,9 +24,17 @@ vi.mock("@/components/SubjectComingSoon", () => ({ SubjectComingSoon: () => null
 let subjectYears: unknown;
 let modules: { id: string; title: string }[] = [];
 let activities: { id: string; module_id: string }[] = [];
+const OTHER_YEAR_ID = "44444444-4444-4444-4444-444444444444";
+const MISSING_SUBJECT_ID = "55555555-5555-5555-5555-555555555555";
+const subjectMock = vi.fn((subjectId: string) =>
+  Promise.resolve(
+    subjectId === SUBJECT_ID
+      ? { id: SUBJECT_ID, title: "Computer Programming 1", year_id: YEAR_ID, years: subjectYears }
+      : null,
+  ),
+);
 vi.mock("@/lib/cache/queries", () => ({
-  getSubjectWithYear: () =>
-    Promise.resolve({ id: SUBJECT_ID, title: "Computer Programming 1", year_id: YEAR_ID, years: subjectYears }),
+  getSubjectWithYear: (subjectId: string) => subjectMock(subjectId),
   getModulesBySubject: () => Promise.resolve(modules),
   getModuleCounters: () => Promise.resolve([]),
   getActivitySectionsForModules: () => Promise.resolve(activities),
@@ -45,6 +53,40 @@ beforeEach(() => {
   subjectYears = undefined;
   modules = [];
   activities = [];
+  subjectMock.mockClear();
+});
+
+/** The digest Next reads off a thrown notFound()/permanentRedirect(). */
+async function failureOf(yearId: string, subjectId: string): Promise<string> {
+  try {
+    await ModulesPage({ params: Promise.resolve({ yearId, subjectId }) });
+  } catch (e) {
+    return String((e as { digest?: string }).digest);
+  }
+  throw new Error("expected the page to 404 or redirect");
+}
+
+describe("ModulesPage — one subject, one URL", () => {
+  it("renders at the subject's canonical URL", async () => {
+    await renderPage();
+    expect(screen.getByRole("heading", { level: 1, name: "Modules" })).toBeInTheDocument();
+  });
+
+  it("308s a wrong year to the subject's real URL", async () => {
+    expect(await failureOf(OTHER_YEAR_ID, SUBJECT_ID)).toBe(
+      `NEXT_REDIRECT;replace;/year/${YEAR_ID}/subjects/${SUBJECT_ID}/modules;308;`,
+    );
+  });
+
+  it("404s a subject that does not exist", async () => {
+    expect(await failureOf(YEAR_ID, MISSING_SUBJECT_ID)).toBe("NEXT_HTTP_ERROR_FALLBACK;404");
+  });
+
+  it("404s malformed ids without querying", async () => {
+    expect(await failureOf("garbage", SUBJECT_ID)).toBe("NEXT_HTTP_ERROR_FALLBACK;404");
+    expect(await failureOf(YEAR_ID, "garbage")).toBe("NEXT_HTTP_ERROR_FALLBACK;404");
+    expect(subjectMock).not.toHaveBeenCalled();
+  });
 });
 
 describe("ModulesPage — year context in the header", () => {
