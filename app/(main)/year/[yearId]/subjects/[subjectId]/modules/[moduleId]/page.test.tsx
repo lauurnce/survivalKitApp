@@ -181,6 +181,14 @@ describe("generateMetadata — the lesson's own link preview", () => {
     expect(JSON.stringify(meta)).not.toContain('"/opengraph-image"');
   });
 
+  it("describes nothing for a URL the page would redirect or 404", async () => {
+    const at = (yearId: string, subjectId: string, moduleId: string) =>
+      generateMetadata({ params: Promise.resolve({ yearId, subjectId, moduleId }) });
+    expect(await at(OTHER_YEAR_ID, SUBJECT_ID, MODULE_ID)).toEqual({});
+    expect(await at(YEAR_ID, OTHER_SUBJECT_ID, MODULE_ID)).toEqual({});
+    expect(await at("garbage", SUBJECT_ID, MODULE_ID)).toEqual({});
+  });
+
   it("emits no image of its own when the parent has none", async () => {
     const meta = await generateMetadata({ params });
     expect(meta.openGraph).not.toHaveProperty("images");

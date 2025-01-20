@@ -51,15 +51,21 @@ export async function generateMetadata(
   parent?: ResolvingMetadata,
 ): Promise<Metadata> {
   const { yearId, subjectId, moduleId } = await params;
+  if (!wellFormedIds(yearId, subjectId, moduleId)) return {};
   const { mod, subject } = await getModuleWithSubject(moduleId, subjectId);
-  if (!mod) return {};
+  // The page 308s or 404s any other chain; never describe a URL it won't serve.
+  const chain = moduleChain(
+    { yearId, subjectId, moduleId },
+    mod && subject ? { moduleId: mod.id, subjectId: subject.id, yearId: subject.year_id } : null,
+  );
+  if (!mod || !subject || chain.kind !== "ok") return {};
   // A lesson link is the most-shared URL on the site: give its preview the
   // lesson's own og:title and og:url instead of the subject layout's. Keep the
   // "Module · Subject" title shape; RecentLessonTracker parses it.
   const meta = pageMetadata({
-    title: subject ? `${mod.title} · ${subject.title}` : mod.title,
-    description: `Study notes and reviewers for ${mod.title}${subject ? ` in ${subject.title}` : ""}.`,
-    path: `/year/${yearId}/subjects/${subjectId}/modules/${moduleId}`,
+    title: `${mod.title} · ${subject.title}`,
+    description: `Study notes and reviewers for ${mod.title} in ${subject.title}.`,
+    path: chain.path,
   });
   // Keep the subject card from the segment's opengraph-image, not the default.
   // Setting openGraph here replaces the parent's wholesale, file image included,
