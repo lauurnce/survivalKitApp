@@ -10,6 +10,7 @@ import { sectionLabel } from "@/lib/sectionLabel";
 import { getYears, getSubjectsByYear, getModuleCounters, getModulesBySubject } from "@/lib/cache/queries";
 import { sumReadsBySubject } from "@/lib/cache/countersSum";
 import { pageMetadata, subjectsDescription } from "@/lib/seo/pageMetadata";
+import { subjectsPath } from "@/lib/routes/canonicalChain";
 
 export const revalidate = 60;
 
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return pageMetadata({
     title: `${year.label} BSIT Subjects`,
     description: subjectsDescription(year.label, subjects),
-    path: `/year/${yearId}/subjects`,
+    path: subjectsPath(year.id),
   });
 }
 
@@ -49,12 +50,13 @@ export async function generateStaticParams() {
 export default async function SubjectsPage({ params }: Props) {
   const { yearId } = await params;
 
-  // Use cached queries for static data
+  // The year is the root of the chain: 404 an unknown or unreleased year
+  // before its subjects are fetched, so a junk id costs no subjects query.
   const year = (await getYears()).find((y) => y.id === yearId);
-  const rawSubjects = await getSubjectsByYear(yearId);
-
   if (!year) notFound();
   if (year.coming_soon) notFound();
+
+  const rawSubjects = await getSubjectsByYear(yearId);
 
   const subjects = (rawSubjects ?? []) as Subject[];
   const sem1 = subjects.filter((s) => s.semester === 1);
