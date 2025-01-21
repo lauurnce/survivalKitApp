@@ -73,8 +73,13 @@ export function moduleChain(
 /**
  * Acts on a verdict inside a page: 404s or permanently redirects (308), and
  * otherwise returns the canonical path. Both throw, so they must run before
- * anything renders — and no loading.tsx may sit above the page, or the 200
- * shell streams first and the status is lost.
+ * anything renders.
+ *
+ * The year routes are ISR, so the whole render finishes before a byte is
+ * sent and the status survives their own loading.tsx skeletons (verified
+ * against `next start`: 308 and 404, not a 200 shell). A dynamic route has
+ * no such guarantee: there, a loading.tsx above the page streams a 200
+ * shell first and the status is lost (see app/loading.tsx's removal).
  */
 export function enforceChain(verdict: ChainVerdict): string {
   if (verdict.kind === "notFound") notFound();
