@@ -40,7 +40,7 @@ vi.mock("@/lib/cache/queries", () => ({
   getActivitySectionsForModules: () => Promise.resolve(activities),
 }));
 
-import ModulesPage from "./page";
+import ModulesPage, { generateMetadata } from "./page";
 
 async function renderPage() {
   const ui = await ModulesPage({
@@ -162,5 +162,24 @@ describe("ModulesPage — paywall teaser", () => {
     const slot = screen.getByTestId("paywall-teaser-slot");
     expect(slot).toHaveClass("order-last", "md:order-none");
     expect(slot.parentElement).toHaveClass("flex", "flex-col");
+  });
+});
+
+describe("generateMetadata — the module list's canonical", () => {
+  const at = (yearId: string, subjectId: string) =>
+    generateMetadata({ params: Promise.resolve({ yearId, subjectId }) });
+
+  it("reads the cached subject row and points the canonical at the validated path", async () => {
+    subjectYears = { label: "1st Year", sort_order: 1 };
+    const meta = await at(YEAR_ID, SUBJECT_ID);
+    expect(meta.title).toBe("Computer Programming 1");
+    expect(meta.description).toBe("Modules and reviewers for Computer Programming 1 (1st Year).");
+    expect(meta.alternates?.canonical).toBe(`/year/${YEAR_ID}/subjects/${SUBJECT_ID}/modules`);
+  });
+
+  it("describes nothing for a URL the page would redirect or 404", async () => {
+    expect(await at(OTHER_YEAR_ID, SUBJECT_ID)).toEqual({});
+    expect(await at(YEAR_ID, MISSING_SUBJECT_ID)).toEqual({});
+    expect(await at("garbage", SUBJECT_ID)).toEqual({});
   });
 });
