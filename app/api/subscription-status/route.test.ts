@@ -35,8 +35,10 @@ vi.mock("@/lib/subscriptions", () => ({
   getEntitlement: (...a: unknown[]) => isSubscribedMock(...a),
   getYearEntitlements: (...a: unknown[]) => yearEntsMock(...a),
 }));
+const subjectYearMock = vi.fn(async (id: string) => (id === SUBJECT ? { id: SUBJECT, year_id: YEAR } : null));
 vi.mock("@/lib/cache/queries", () => ({
   getModuleWithSubject: async () => moduleParent,
+  getSubjectWithYear: (id: string) => subjectYearMock(id),
   getModuleActivitySections: (id: string, unlocked: boolean) => activityMock(id, unlocked),
 }));
 
@@ -57,6 +59,7 @@ beforeEach(() => {
   yearEntsMock.mockClear();
   yearEnts = { year: null, subjects: {} };
   activityMock.mockClear();
+  subjectYearMock.mockClear();
 });
 
 describe("GET /api/subscription-status", () => {
@@ -159,6 +162,23 @@ describe("GET /api/subscription-status?moduleId=", () => {
     moduleParent = { mod: null, subject: { id: SUBJECT, year_id: YEAR } };
     expect(await (await GET(withModule())).json()).toEqual({ subscribed: false });
     expect(activityMock).not.toHaveBeenCalled();
+  });
+
+  it("answers a subject in its own year (the print gate's and paid-status bar's question)", async () => {
+    const res = await GET(req({ yearId: YEAR, subjectId: SUBJECT }));
+    expect(await res.json()).toEqual({ subscribed: true, plan: { scope: "subject", until: UNTIL } });
+    expect(subjectYearMock).toHaveBeenCalledWith(SUBJECT);
+  });
+
+  it("reports a subject named under another year as locked, without checking entitlement", async () => {
+    expect(await (await GET(req({ yearId: OTHER_YEAR, subjectId: SUBJECT }))).json()).toEqual({ subscribed: false });
+    expect(isSubscribedMock).not.toHaveBeenCalled();
+  });
+
+  it("reports an unknown subject as locked, without checking entitlement", async () => {
+    const ghost = "55555555-5555-5555-5555-555555555555";
+    expect(await (await GET(req({ yearId: YEAR, subjectId: ghost }))).json()).toEqual({ subscribed: false });
+    expect(isSubscribedMock).not.toHaveBeenCalled();
   });
 
   it("rejects a subject that doesn't belong to the named year (entitlement is per year/subject)", async () => {

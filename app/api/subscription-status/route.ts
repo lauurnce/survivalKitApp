@@ -4,7 +4,7 @@ import { getEntitlement, getYearEntitlements, type Entitlement } from "@/lib/sub
 import { isUuid } from "@/lib/validation";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
-import { getModuleActivitySections, getModuleWithSubject } from "@/lib/cache/queries";
+import { getModuleActivitySections, getModuleWithSubject, getSubjectWithYear } from "@/lib/cache/queries";
 
 export const runtime = "nodejs";
 
@@ -74,6 +74,11 @@ export async function GET(req: NextRequest) {
     // name it here and read another subject's module.
     const { mod, subject } = await getModuleWithSubject(moduleId, subjectId);
     if (!mod || !subject || subject.year_id !== yearId) return locked();
+  } else if (subjectId !== null) {
+    // Same for the subject alone (the print gate and paid-status bar ask
+    // this): a year pass must not report another year's subject as open.
+    const subject = await getSubjectWithYear(subjectId);
+    if (!subject || subject.year_id !== yearId) return locked();
   }
 
   const ent = await getEntitlement(deviceId, yearId, subjectId ?? undefined, userId ?? undefined);
