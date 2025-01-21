@@ -8,6 +8,10 @@ describe("pageMetadata", () => {
     expect(meta.openGraph).toMatchObject({ url: "/search", type: "website", siteName: "BSIT Survival Kit" });
   });
 
+  it("sets the canonical to the same path as og:url", () => {
+    expect(meta.alternates?.canonical).toBe("/search");
+  });
+
   it("gives link previews the page's own title, with the site suffix", () => {
     expect(meta.title).toBe("Search");
     expect(meta.openGraph?.title).toBe("Search — BSIT Survival Kit");

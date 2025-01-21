@@ -7,7 +7,8 @@ import type { Metadata } from "next";
 // page inherited the root layout's: og:title "BSIT Survival Kit" and og:url
 // https://tryi2i.com. Facebook treats og:url as the page's canonical address,
 // so a shared page was previewed (and counted) as the home page. The
-// canonical <link> comes from the root layout's `alternates: "./"`.
+// canonical <link> is set from the same path (the root layout's
+// `alternates: "./"` covers pages that don't use this helper).
 //
 // Next.js replaces a parent's `openGraph` object wholesale when a child sets
 // one, including the root opengraph-image, so this returns the complete set,
@@ -27,7 +28,11 @@ export interface PageMetadataInput {
   /** Page title without the site suffix; the root template adds it. */
   title: string;
   description: string;
-  /** Root-relative path for og:url, e.g. "/year". metadataBase makes it absolute. */
+  /**
+   * Root-relative path for og:url and the canonical <link>, e.g. "/year".
+   * metadataBase makes it absolute. Pass the validated path built from the
+   * page's rows, never raw params, so both always name the page's one URL.
+   */
   path: string;
   /** Use `title` verbatim, skipping the "— BSIT Survival Kit" template. */
   absoluteTitle?: boolean;
@@ -43,6 +48,9 @@ export function pageMetadata({ title, description, path, absoluteTitle = false }
   return {
     title: absoluteTitle ? { absolute: title } : title,
     description,
+    // The root layout's `canonical: "./"` echoes whatever URL was requested;
+    // pin it to the same path as og:url so the two can never disagree.
+    alternates: { canonical: path },
     openGraph: {
       type: "website",
       siteName: SITE_NAME,

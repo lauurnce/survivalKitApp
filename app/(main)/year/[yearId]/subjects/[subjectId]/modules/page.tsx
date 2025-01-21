@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { createServerClient } from "@/lib/supabase/server";
 import { ReferrerBackLink } from "@/components/ReferrerAware";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTracker } from "@/components/PageTracker";
@@ -13,6 +12,7 @@ import { modulePath } from "@/lib/subscribeRedirect";
 import { freeSampleIsEverything } from "@/lib/freeSample";
 import { cheapestSubjectPrice } from "@/lib/pricing";
 import { getSubjectWithYear, getModulesBySubject, getModuleCounters, getActivitySectionsForModules } from "@/lib/cache/queries";
+import { enforceChain, subjectChain, wellFormedIds } from "@/lib/routes/canonicalChain";
 
 // Prerendered on first request per subject (ISR, 60s) and CDN-cached. The
 // subscriber treatment (Pro banner, PRO marks) and the ?from=dashboard back
@@ -27,27 +27,31 @@ interface Props {
   params: Promise<{ yearId: string; subjectId: string }>;
 }
 
+// Same cached row as the page, and the same chain check: a URL the page
+// 308s or 404s gets no description, and the canonical is the validated path.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { subjectId } = await params;
-  const supabase = createServerClient();
-  const { data: subject } = await supabase
-    .from("subjects")
-    .select("title, years(label)")
-    .eq("id", subjectId)
-    .single();
-  if (!subject) return {};
-  const year = subject.years as unknown as { label: string } | null;
+  const { yearId, subjectId } = await params;
+  if (!wellFormedIds(yearId, subjectId)) return {};
+  const subject = await getSubjectWithYear(subjectId);
+  const chain = subjectChain({ yearId, subjectId }, subject);
+  if (!subject || chain.kind !== "ok") return {};
+  const yearEmbed = subject.years as unknown as { label: string } | { label: string }[] | null;
+  const year = (Array.isArray(yearEmbed) ? yearEmbed[0] : yearEmbed) ?? null;
   return {
     title: subject.title,
     description: `Modules and reviewers for ${subject.title}${year ? ` (${year.label})` : ""}.`,
+    alternates: { canonical: chain.path },
   };
 }
 
 export default async function ModulesPage({ params }: Props) {
   const { yearId, subjectId } = await params;
+  if (!wellFormedIds(yearId, subjectId)) notFound();
 
   // Use cached queries for static data
   const subject = await getSubjectWithYear(subjectId);
+  // A subject under another year's id 308s to its real URL; unknown 404s.
+  enforceChain(subjectChain({ yearId, subjectId }, subject));
   if (!subject) notFound();
 
   const modules = await getModulesBySubject(subjectId);
