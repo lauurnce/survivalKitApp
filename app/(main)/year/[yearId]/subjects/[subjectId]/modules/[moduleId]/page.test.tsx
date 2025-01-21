@@ -166,6 +166,7 @@ describe("generateMetadata — the lesson's own link preview", () => {
     expect(meta.title).toBe("Variables · Computer Programming 1");
     expect(meta.openGraph?.title).toBe("Variables · Computer Programming 1 — BSIT Survival Kit");
     expect(meta.openGraph?.url).toBe(`/year/${YEAR_ID}/subjects/${SUBJECT_ID}/modules/${MODULE_ID}`);
+    expect(meta.alternates?.canonical).toBe(meta.openGraph?.url);
     expect(meta.twitter?.title).toBe("Variables · Computer Programming 1 — BSIT Survival Kit");
   });
 
