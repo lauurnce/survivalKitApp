@@ -366,62 +366,90 @@ Output:
 `i` walks through every grade, while `k` counts how many were kept. At the end, `k` is also the number of valid elements in `passing`, so print only up to `k`.
 $md$, 4, NULL, NULL);
 
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-000000000001','content','Storing Values in an Array',$md$
-Declaring an array only reserves memory, it does not put any values in. There are three ways to get values into an array.
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('954aac16-2cbf-4c3c-b5f2-1e8162ba9bdc','a3000001-0001-0002-0001-000000000001','content','Two-Dimensional Arrays',$md$
+A one-dimensional array is a single row of values. A **two-dimensional (2-D) array** is a table: it has rows and columns, like a class record where each row is a student and each column is a quiz.
 
-### 1. Initialization at Declaration
+### Declaring and initializing
 
-You can supply initial values in curly braces at the point of declaration:
-
-```c
-/* General form */
-data_type array_name[size] = {value1, value2, ..., valueN};
+```
+data_type name[ROWS][COLUMNS];
 ```
 
-**Rules:**
-- You cannot supply more values than there are elements, that is a compile error.
-- If you supply fewer values than the declared size, the remaining elements are automatically set to zero.
-- If you initialize all elements, you can omit the size and the compiler will count them for you.
-
-**Examples:**
+The first size is the number of rows and the second is the number of columns. Use nested braces so each row is easy to see:
 
 ```c
-int a[5] = {5, 3, 2, 7, 9};       /* all 5 elements initialized         */
-int b[]  = {11, 21, 75, 24, 5};   /* size inferred as 5                 */
-int c[15] = {3, 7, 4, 6, 1};      /* first 5 set; elements 5–14 = 0     */
+int score[3][4] = {
+    {18, 15, 20, 17},   /* row 0 */
+    {12, 19, 16, 14},   /* row 1 */
+    {20, 20, 18, 19}    /* row 2 */
+};
 ```
 
-### 2. Reading Values from the Keyboard
+- `score[1][2]` is row 1, column 2, which holds `16`. Both indexes start at 0.
+- Missing values become 0, just like 1-D arrays: `int t[2][3] = { {1}, {4, 5} };` gives rows `1 0 0` and `4 5 0`.
+- You may leave out the number of rows, but **never the number of columns**: `int t[][3] = { {1, 2, 3}, {4, 5, 6} };` makes 2 rows.
+- A flat list such as `int t[2][3] = {1, 2, 3, 4, 5, 6};` also works and fills the array row by row, but most compilers warn about the missing inner braces. Use the nested form in your own code, and be ready to read the flat form on an exam.
 
-Use a loop combined with `scanf()` to fill an array at runtime:
+### Nested loops: row totals and column totals
+
+The outer loop picks a row, and the inner loop walks across its columns. Swap the loops to work column by column.
 
 ```c
-int scores[10];
-int i;
+#include <stdio.h>
+#define STUDENTS 3
+#define QUIZZES 4
 
-for (i = 0; i < 10; i++) {
-    scanf("%d", &scores[i]);
+int main(void) {
+    int score[STUDENTS][QUIZZES] = {
+        {18, 15, 20, 17},
+        {12, 19, 16, 14},
+        {20, 20, 18, 19}
+    };
+    int r, c, total;
+
+    for (r = 0; r < STUDENTS; r++) {          /* one student at a time */
+        total = 0;
+        for (c = 0; c < QUIZZES; c++)
+            total += score[r][c];
+        printf("Student %d total: %d\n", r + 1, total);
+    }
+
+    for (c = 0; c < QUIZZES; c++) {           /* one quiz at a time */
+        total = 0;
+        for (r = 0; r < STUDENTS; r++)
+            total += score[r][c];
+        printf("Quiz %d total: %d\n", c + 1, total);
+    }
+    return 0;
 }
 ```
 
-Note that `&scores[i]` uses the address-of operator, required by `scanf()` just as it is for ordinary variables.
-
-### 3. Assigning Values Individually
-
-You can assign a value to any single element using the assignment operator:
-
-```c
-scores[4] = 23;
+Output:
+```
+Student 1 total: 70
+Student 2 total: 61
+Student 3 total: 77
+Quiz 1 total: 50
+Quiz 2 total: 54
+Quiz 3 total: 54
+Quiz 4 total: 50
 ```
 
-You cannot assign one array directly to another (e.g., `second = first;` is illegal). To copy an array you must loop through it element by element:
+Notice that `total = 0;` sits **inside** the outer loop. Each student (or quiz) starts from zero. Put it before the outer loop and every total after the first would include the ones before it.
 
-```c
-for (i = 0; i < 25; i++)
-    second[i] = first[i];
+### How a 2-D array sits in memory
+
+Memory is one long line, so C stores a 2-D array **row by row** (this is called row-major order): all of row 0, then all of row 1, and so on. In the array above, `score[1][0]` comes right after `score[0][3]`.
+
+That gives a formula for where any element sits, counting from the start of the array:
+
 ```
-$md$, 5);
+position of t[r][c] = r × COLUMNS + c
+```
+
+For `score[2][1]`: 2 × 4 + 1 = 9, so it is the 10th value in memory (position 9, counting from 0). This is also why C needs the number of columns: without it, it cannot work out where each row starts.
+$md$, 5, NULL, NULL);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','content','Character Arrays and Strings',$md$

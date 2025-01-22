@@ -359,3 +359,90 @@ Output:
 `i` walks through every grade, while `k` counts how many were kept. At the end, `k` is also the number of valid elements in `passing`, so print only up to `k`.
 
 ---
+
+<!-- kind: content -->
+## Two-Dimensional Arrays
+
+A one-dimensional array is a single row of values. A **two-dimensional (2-D) array** is a table: it has rows and columns, like a class record where each row is a student and each column is a quiz.
+
+### Declaring and initializing
+
+```
+data_type name[ROWS][COLUMNS];
+```
+
+The first size is the number of rows and the second is the number of columns. Use nested braces so each row is easy to see:
+
+```c
+int score[3][4] = {
+    {18, 15, 20, 17},   /* row 0 */
+    {12, 19, 16, 14},   /* row 1 */
+    {20, 20, 18, 19}    /* row 2 */
+};
+```
+
+- `score[1][2]` is row 1, column 2, which holds `16`. Both indexes start at 0.
+- Missing values become 0, just like 1-D arrays: `int t[2][3] = { {1}, {4, 5} };` gives rows `1 0 0` and `4 5 0`.
+- You may leave out the number of rows, but **never the number of columns**: `int t[][3] = { {1, 2, 3}, {4, 5, 6} };` makes 2 rows.
+- A flat list such as `int t[2][3] = {1, 2, 3, 4, 5, 6};` also works and fills the array row by row, but most compilers warn about the missing inner braces. Use the nested form in your own code, and be ready to read the flat form on an exam.
+
+### Nested loops: row totals and column totals
+
+The outer loop picks a row, and the inner loop walks across its columns. Swap the loops to work column by column.
+
+```c
+#include <stdio.h>
+#define STUDENTS 3
+#define QUIZZES 4
+
+int main(void) {
+    int score[STUDENTS][QUIZZES] = {
+        {18, 15, 20, 17},
+        {12, 19, 16, 14},
+        {20, 20, 18, 19}
+    };
+    int r, c, total;
+
+    for (r = 0; r < STUDENTS; r++) {          /* one student at a time */
+        total = 0;
+        for (c = 0; c < QUIZZES; c++)
+            total += score[r][c];
+        printf("Student %d total: %d\n", r + 1, total);
+    }
+
+    for (c = 0; c < QUIZZES; c++) {           /* one quiz at a time */
+        total = 0;
+        for (r = 0; r < STUDENTS; r++)
+            total += score[r][c];
+        printf("Quiz %d total: %d\n", c + 1, total);
+    }
+    return 0;
+}
+```
+
+Output:
+```
+Student 1 total: 70
+Student 2 total: 61
+Student 3 total: 77
+Quiz 1 total: 50
+Quiz 2 total: 54
+Quiz 3 total: 54
+Quiz 4 total: 50
+```
+
+Notice that `total = 0;` sits **inside** the outer loop. Each student (or quiz) starts from zero. Put it before the outer loop and every total after the first would include the ones before it.
+
+### How a 2-D array sits in memory
+
+Memory is one long line, so C stores a 2-D array **row by row** (this is called row-major order): all of row 0, then all of row 1, and so on. In the array above, `score[1][0]` comes right after `score[0][3]`.
+
+That gives a formula for where any element sits, counting from the start of the array:
+
+```
+position of t[r][c] = r × COLUMNS + c
+```
+
+For `score[2][1]`: 2 × 4 + 1 = 9, so it is the 10th value in memory (position 9, counting from 0). This is also why C needs the number of columns: without it, it cannot work out where each row starts.
+
+---
