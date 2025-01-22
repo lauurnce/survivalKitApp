@@ -2,6 +2,14 @@
 -- Computer Programming 2, Modules & Sections
 -- Subject ID: 10000000-0001-0002-0001-000000000001
 -- Run after migration 002 and 1st_year_subjects.sql
+--
+-- Lesson 1 rows carry fixed ids: the production ids of the original
+-- Unit 1 rows (rewritten in place, so every id is kept) plus one new
+-- Key Takeaways row. Migration 20261101001000_cp2_units_1_3 applies the
+-- same rows to production; the two must stay identical.
+--
+-- Lessons 2 and 3 live in cp2_units_2_3.sql. This file deletes every CP2
+-- module, so run cp2_exam_prep_module.sql and cp2_units_2_3.sql after it.
 -- ============================================================
 
 DELETE FROM modules WHERE subject_id = '10000000-0001-0002-0001-000000000001';
@@ -13,13 +21,80 @@ INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
 -- UNIT 1: Arrays
 -- ============================================================
 
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('9138ee20-21db-47bc-8f0f-aa5e7d5ad6ba','a3000001-0001-0002-0001-000000000001','content','Arrays Recap: What Carries Over from CP1',$md$
+This lesson picks up where CP1 Lesson 5 stopped. Here is the short version of what you already know, so we can spend this lesson on the CP2 material: passing arrays to functions, searching, the classic array algorithms, and two-dimensional arrays.
+
+**What you already know:**
+- An array is a fixed-size group of values of the **same type**, stored side by side in memory under one name.
+- Indexes start at **0**, so `int quiz[5]` has `quiz[0]` to `quiz[4]`.
+- A partial initializer fills the rest with zeros: `int a[10] = {0};` gives ten zeros.
+- You read, print, and copy an array with a loop. `b = a;` does not copy an array.
+
+### One program that uses all of it
+
+```c
+#include <stdio.h>
+#define SIZE 5
+
+int main(void) {
+    int quiz[SIZE] = {18, 15, 20, 12, 17};
+    int i, total = 0;
+
+    for (i = 0; i < SIZE; i++)
+        total += quiz[i];
+
+    printf("Total: %d\n", total);
+    printf("Average: %.2f\n", (double)total / SIZE);
+    return 0;
+}
+```
+
+Output:
+```
+Total: 82
+Average: 16.40
+```
+
+Two habits in this program are worth copying for the rest of CP2:
+
+1. **Name the size once with `#define`.** If your professor changes the class size from 5 to 40, you edit one line instead of hunting for every `5` in the program.
+2. **Cast before dividing.** `total / SIZE` is integer division and gives `16`. `(double)total / SIZE` gives `16.40`.
+
+### Counting elements with `sizeof`
+
+`sizeof quiz` is the size of the whole array in bytes, and `sizeof quiz[0]` is the size of one element. Dividing them gives the number of elements:
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    int quiz[] = {18, 15, 20, 12, 17};
+    int count = (int)(sizeof quiz / sizeof quiz[0]);
+
+    printf("%d elements\n", count);
+    return 0;
+}
+```
+
+Output:
+```
+5 elements
+```
+
+This trick only works in the function where the array is declared. Once you pass the array to another function, `sizeof` no longer sees the whole array (the next section explains why), so you pass the count yourself.
+
+### C does not check your indexes
+
+Valid indexes run from `0` to `SIZE - 1`. C will happily compile `quiz[5]` or `quiz[-1]`, but reading or writing there is **undefined behavior**: the program might print garbage, crash, or seem to work today and fail during your lab exam. The usual cause is a loop written with `<=`:
+
+```c
+for (i = 0; i <= SIZE; i++)   /* WRONG: the last pass uses quiz[5] */
+for (i = 0; i < SIZE; i++)    /* right: stops after quiz[4] */
+```
+$md$, 1, NULL, NULL);
+
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-000000000001','content','What is an Array and Why Do We Need One?',$md$
-Suppose your program needs to work with 20 integers, reading them, processing them, and printing them. One approach is to declare 20 separate variables, each with its own name. That works for a small number, but it quickly becomes unmanageable. Imagine doing the same thing for 200, 2000, or 20,000 values. You'd need a separate variable declaration and a separate line of code for every single one of them.
-
-Arrays solve this problem. Instead of giving each value its own name, an array groups many values of the same data type under a single name, and lets you refer to individual values by their position (called an **index** or **subscript**).
-$md$, 1),
-
 ('a3000001-0001-0002-0001-000000000001','content','Characteristics of an Array',$md$
 An array has three defining properties:
 
@@ -30,8 +105,9 @@ An array has three defining properties:
 Because elements are stored in sequence, you can refer to them by position: the first element, the second element, and so on. In C, positions are counted starting from zero. So for an array named `num` with 20 elements, the valid positions are `num[0]` through `num[19]`.
 
 The notation `num[i]`, a name followed by an integer expression in square brackets, is called **index notation**. The value inside the brackets is the **index** (or subscript), and it tells the compiler which element you want. Using a variable like `i` as the index is what makes it possible to process entire arrays with loops.
-$md$, 2),
+$md$, 2);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','content','Declaring an Array in C',$md$
 Before an array can be used it must be declared. The declaration tells the compiler three things: the name of the array, the data type of its elements, and how many elements it holds.
 
@@ -55,8 +131,9 @@ double values[12];   /* 12-element double array          */
 ```
 
 The storage class is optional and can be placed before the data type. If omitted, the default depends on where the array is declared (automatic inside a function, external outside).
-$md$, 3),
+$md$, 3);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','content','How C Finds an Element in Memory',$md$
 The array name itself is a symbolic reference to the address of the first element in memory. To locate any specific element, C uses this formula:
 
@@ -71,8 +148,9 @@ For example, if an integer array starts at memory address 10,000 and each intege
 ```
 
 This is why array indexing is fast, calculating an address from a base and an offset is a single arithmetic operation.
-$md$, 4),
+$md$, 4);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','content','Storing Values in an Array',$md$
 Declaring an array only reserves memory, it does not put any values in. There are three ways to get values into an array.
 
@@ -127,8 +205,9 @@ You cannot assign one array directly to another (e.g., `second = first;` is ille
 for (i = 0; i < 25; i++)
     second[i] = first[i];
 ```
-$md$, 5),
+$md$, 5);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','content','Character Arrays and Strings',$md$
 A string in C is stored as a character array. The key difference from other arrays is the **null terminator**: every string ends with the special character `'\0'`, which the compiler adds automatically when you initialize with a string literal.
 
@@ -143,8 +222,9 @@ char city[] = "HELLO";   /* compiler sets size to 6 automatically */
 ```
 
 If you declare the array without an initial value and enter the size yourself, make sure to add one extra slot for the null terminator.
-$md$, 6),
+$md$, 6);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','content','Multidimensional Arrays',$md$
 C supports arrays with more than one dimension. A **two-dimensional array** is the most common and can be thought of as a table with rows and columns.
 
@@ -184,8 +264,9 @@ int mat[3][3] = { {1,2,3}, {4,5,6}, {7,8,9} };
 ```
 
 If a row's inner brace contains fewer values than the column count, the remaining elements in that row are set to zero. However, you cannot put *more* values in a row's inner brace than the declared column count, that is a compile error.
-$md$, 7),
+$md$, 7);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','activity','Sample Program 1, Sorting an Array',$md$
 This program sorts a small integer array using a basic comparison-and-swap approach.
 
@@ -220,8 +301,9 @@ void main() {
 5
 7
 ```
-$md$, 8),
+$md$, 8);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','activity','Sample Program 2, Counting Positives and Negatives',$md$
 This program reads `n` integers into an array, then counts how many are negative and how many are non-negative.
 
@@ -253,8 +335,9 @@ void main() {
     getch();
 }
 ```
-$md$, 9),
+$md$, 9);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','activity','Sample Program 3, Adding Two Matrices',$md$
 This program reads two matrices of equal dimensions from the user, adds them element by element, and stores the result in a third matrix.
 
@@ -292,8 +375,9 @@ void main() {
     getch();
 }
 ```
-$md$, 10),
+$md$, 10);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','activity','Practice Exercises',$md$
 ### Exercise 1, Array Definitions
 
