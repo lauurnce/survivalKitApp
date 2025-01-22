@@ -81,3 +81,92 @@ for (i = 0; i < SIZE; i++)    /* right: stops after quiz[4] */
 ```
 
 ---
+
+<!-- kind: content -->
+## Passing Arrays to Functions
+
+In CP1 you passed plain variables to functions, and each function got a **copy**. Arrays work differently: when you pass an array, C passes the **address of its first element**. The function works on the caller's actual array, not on a copy.
+
+### The pattern
+
+```c
+#include <stdio.h>
+
+void print_array(const int a[], int n) {
+    int i;
+    for (i = 0; i < n; i++)
+        printf("%d ", a[i]);
+    printf("\n");
+}
+
+void add_bonus(int a[], int n, int bonus) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] += bonus;
+}
+
+int main(void) {
+    int scores[4] = {70, 82, 65, 90};
+
+    print_array(scores, 4);
+    add_bonus(scores, 4, 5);
+    print_array(scores, 4);
+    return 0;
+}
+```
+
+Output:
+```
+70 82 65 90
+75 87 70 95
+```
+
+Read it line by line:
+
+- **The parameter is written `int a[]`.** You can put a number inside the brackets, but the compiler ignores it, so most programmers leave it empty.
+- **The size travels as a separate parameter (`int n`).** The function has no other way to know how many elements there are.
+- **The call uses the array name alone:** `add_bonus(scores, 4, 5)`. No brackets and no `&`.
+- **`add_bonus` changed `scores` in `main`.** There is no copy, so the change sticks. That is why the second line printed 5 points higher.
+- **`const int a[]` is a promise.** It tells the reader and the compiler that `print_array` only reads the array. If you write `a[i] = 0;` inside it, the program will not compile.
+
+### Why `sizeof` does not work inside the function
+
+Inside `print_array`, `a` is really a pointer to the first element (Lesson 3 explains pointers). So `sizeof a` gives the size of an address, usually 8 bytes on a 64-bit computer, not the size of the array. Modern compilers even warn you about it. The fix is the one above: pass the count.
+
+### You cannot return an array
+
+A function cannot return a whole array. Instead, the caller creates the array and the function fills it:
+
+```c
+#include <stdio.h>
+
+void fill_squares(int out[], int n) {
+    int i;
+    for (i = 0; i < n; i++)
+        out[i] = (i + 1) * (i + 1);
+}
+
+int main(void) {
+    int sq[5];
+    int i;
+
+    fill_squares(sq, 5);
+    for (i = 0; i < 5; i++)
+        printf("%d ", sq[i]);
+    printf("\n");
+    return 0;
+}
+```
+
+Output:
+```
+1 4 9 16 25
+```
+
+### Common mistakes
+
+- `print_array(scores[4], 4);` passes one element (and `scores[4]` does not even exist). The compiler stops with an error or a warning about converting an `int` to a pointer. Pass `scores`.
+- `print_array(scores[], 4);` is a syntax error. Brackets belong in the parameter list, not in the call.
+- Forgetting that the function can change the caller's array. If a function should only read, mark the parameter `const`.
+
+---
