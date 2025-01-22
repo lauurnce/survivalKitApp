@@ -181,31 +181,98 @@ Output:
 - Forgetting that the function can change the caller's array. If a function should only read, mark the parameter `const`.
 $md$, 2, NULL, NULL);
 
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-000000000001','content','Declaring an Array in C',$md$
-Before an array can be used it must be declared. The declaration tells the compiler three things: the name of the array, the data type of its elements, and how many elements it holds.
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('826655d5-2deb-44cd-b24c-55a97aea9601','a3000001-0001-0002-0001-000000000001','content','Linear Search',$md$
+**Searching** means finding where a value is stored in an array, or learning that it is not there. The simplest method is **linear search** (also called sequential search): look at the elements one by one, from the first to the last, and stop as soon as you find a match.
 
-**General form for a one-dimensional array:**
-
-```c
-data_type array_name[size];
-```
-
-- `data_type`, the type of each element (`int`, `float`, `char`, `double`, etc.)
-- `array_name`, any valid C identifier
-- `size`, a positive integer constant specifying the number of elements
-
-**Examples:**
+### The standard linear search function
 
 ```c
-int    scores[20];   /* 20-element integer array        */
-char   labels[30];   /* 30-element character array       */
-float  data[20];     /* 20-element floating-point array  */
-double values[12];   /* 12-element double array          */
+#include <stdio.h>
+
+int linear_search(const int a[], int n, int key) {
+    int i;
+    for (i = 0; i < n; i++) {
+        if (a[i] == key)
+            return i;      /* found: stop right away */
+    }
+    return -1;             /* checked everything, not found */
+}
+
+int main(void) {
+    int ids[6] = {1042, 2210, 1873, 3301, 2210, 1500};
+
+    printf("%d\n", linear_search(ids, 6, 3301));
+    printf("%d\n", linear_search(ids, 6, 2210));
+    printf("%d\n", linear_search(ids, 6, 9999));
+    return 0;
+}
 ```
 
-The storage class is optional and can be placed before the data type. If omitted, the default depends on where the array is declared (automatic inside a function, external outside).
-$md$, 3);
+Output:
+```
+3
+1
+-1
+```
+
+### Tracing a search
+
+Searching for `3301`:
+
+| i | a[i] | a[i] == 3301? |
+|---|---|---|
+| 0 | 1042 | no |
+| 1 | 2210 | no |
+| 2 | 1873 | no |
+| 3 | 3301 | **yes, return 3** |
+
+Things to notice:
+
+- **It returns the index, not the value.** The caller already knows the value (it is the key). What it needs is the position.
+- **`-1` means "not found"** because a real index is never negative. Always check for it before using the result as an index.
+- **It returns the first match.** `2210` appears at index 1 and index 4, and the function returns 1 because it stops there.
+- **How many comparisons?** Best case 1 (the key is first). Worst case `n` (the key is last, or not in the array at all). On average about `n / 2` when the key is present.
+- **The array does not need to be sorted.** That is the main advantage of linear search. Lesson 7 covers binary search, which is much faster but only works on a sorted array.
+
+### Two variations you will be asked to write
+
+**Count every match** instead of stopping at the first:
+
+```c
+int count_matches(const int a[], int n, int key) {
+    int i, count = 0;
+    for (i = 0; i < n; i++)
+        if (a[i] == key)
+            count++;
+    return count;
+}
+```
+
+**Search with a found flag**, the style some professors prefer because the loop has one exit:
+
+```c
+int i, found = 0;
+for (i = 0; i < n && !found; i++)
+    if (a[i] == key)
+        found = 1;
+```
+
+Careful with this one: when the loop ends, `i` has already been moved one step past the match, so the match is at `i - 1`.
+
+### The classic bug: giving up too early
+
+```c
+for (i = 0; i < n; i++) {
+    if (a[i] == key)
+        return i;
+    else
+        return -1;   /* WRONG: quits after checking only a[0] */
+}
+```
+
+The `else` returns on the very first pass, so this "search" only ever checks `a[0]`. The `return -1` belongs **after** the loop, once every element has been checked.
+$md$, 3, NULL, NULL);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','content','How C Finds an Element in Memory',$md$
