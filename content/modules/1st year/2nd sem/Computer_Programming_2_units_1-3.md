@@ -265,3 +265,97 @@ for (i = 0; i < n; i++) {
 The `else` returns on the very first pass, so this "search" only ever checks `a[0]`. The `return -1` belongs **after** the loop, once every element has been checked.
 
 ---
+
+<!-- kind: content -->
+## Common Array Algorithms
+
+Most array questions on a CP2 exam are built from a handful of patterns. Learn these well and you can combine them to solve almost anything.
+
+```c
+#include <stdio.h>
+#define N 7
+
+int main(void) {
+    int grades[N] = {88, 74, 91, 65, 79, 91, 70};
+    int i, max_pos = 0, passed = 0, temp;
+
+    /* 1. Largest value and its position */
+    for (i = 1; i < N; i++)
+        if (grades[i] > grades[max_pos])
+            max_pos = i;
+    printf("Highest: %d at index %d\n", grades[max_pos], max_pos);
+
+    /* 2. Count the grades that pass (75 and up) */
+    for (i = 0; i < N; i++)
+        if (grades[i] >= 75)
+            passed++;
+    printf("Passed: %d of %d\n", passed, N);
+
+    /* 3. Reverse in place: swap the ends, move inward */
+    for (i = 0; i < N / 2; i++) {
+        temp = grades[i];
+        grades[i] = grades[N - 1 - i];
+        grades[N - 1 - i] = temp;
+    }
+    for (i = 0; i < N; i++)
+        printf("%d ", grades[i]);
+    printf("\n");
+    return 0;
+}
+```
+
+Output:
+```
+Highest: 91 at index 2
+Passed: 4 of 7
+70 91 79 65 91 74 88
+```
+
+### 1. Largest (or smallest) value and its position
+
+- **Remember the position, not just the value.** Keeping `max_pos` gives you both: the value is `grades[max_pos]`.
+- **Start from the first element**, not from `0`. If every value were negative, a starting maximum of `0` would be wrong.
+- **`>` keeps the first maximum, `>=` keeps the last.** Here `91` appears at index 2 and index 5. With `>` the answer is 2. Change it to `>=` and the answer becomes 5. Exams love this detail.
+- For the smallest value, flip the comparison to `<`.
+
+### 2. Counting (and summing) with a condition
+
+Start a counter at 0, and add 1 every time the condition is true. The same shape gives you "sum of the passing grades" (`sum += grades[i]` instead of `passed++`) or "how many students are absent".
+
+### 3. Reversing in place
+
+Swap the first and last elements, then the second and second-to-last, and keep moving inward. The partner of index `i` is `N - 1 - i`.
+
+The loop runs only `N / 2` times. With 7 elements that is 3 swaps, and the middle element (index 3) stays where it is. If you loop all `N` times, every pair gets swapped twice and the array ends up back in its original order.
+
+### 4. Copying the elements that pass a test
+
+To keep only some elements, use a second index that moves only when you store something:
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    int grades[7] = {88, 74, 91, 65, 79, 91, 70};
+    int passing[7];
+    int i, k = 0;
+
+    for (i = 0; i < 7; i++)
+        if (grades[i] >= 75)
+            passing[k++] = grades[i];   /* store, then move k */
+
+    for (i = 0; i < k; i++)
+        printf("%d ", passing[i]);
+    printf("(%d kept)\n", k);
+    return 0;
+}
+```
+
+Output:
+```
+88 91 79 91 (4 kept)
+```
+
+`i` walks through every grade, while `k` counts how many were kept. At the end, `k` is also the number of valid elements in `passing`, so print only up to `k`.
+
+---
