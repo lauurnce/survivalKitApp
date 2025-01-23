@@ -15,10 +15,10 @@
 DELETE FROM modules WHERE subject_id = '10000000-0001-0002-0001-000000000001';
 
 INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
-  ('a3000001-0001-0002-0001-000000000001','10000000-0001-0002-0001-000000000001','Unit 1: Arrays','unit-1-arrays',1);
+  ('a3000001-0001-0002-0001-000000000001','10000000-0001-0002-0001-000000000001','Lesson 1: Arrays in Depth','lesson-1-arrays-in-depth',1);
 
 -- ============================================================
--- UNIT 1: Arrays
+-- LESSON 1: Arrays in Depth
 -- ============================================================
 
 INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
