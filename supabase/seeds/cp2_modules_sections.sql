@@ -560,48 +560,6 @@ Main: 15, Other: 15
 - Leaving out the column size in a function parameter.
 $md$, 6, NULL, NULL);
 
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-000000000001','content','Multidimensional Arrays',$md$
-C supports arrays with more than one dimension. A **two-dimensional array** is the most common and can be thought of as a table with rows and columns.
-
-**Declaration:**
-
-```c
-data_type array_name[rows][columns];
-```
-
-**Examples:**
-
-```c
-float grid[5][3];   /* 5 rows, 3 columns of floats  */
-int   table[3][3];  /* 3×3 integer table             */
-```
-
-### Initialization of 2D Arrays
-
-Values are assigned row by row (the last subscript increases fastest):
-
-```c
-int mat[3][3] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-```
-
-This produces:
-
-| | Col 0 | Col 1 | Col 2 |
-|---|---|---|---|
-| Row 0 | 1 | 2 | 3 |
-| Row 1 | 4 | 5 | 6 |
-| Row 2 | 7 | 8 | 9 |
-
-You can also use nested braces to make the row grouping explicit:
-
-```c
-int mat[3][3] = { {1,2,3}, {4,5,6}, {7,8,9} };
-```
-
-If a row's inner brace contains fewer values than the column count, the remaining elements in that row are set to zero. However, you cannot put *more* values in a row's inner brace than the declared column count, that is a compile error.
-$md$, 7);
-
 INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('a3000002-0001-0002-0001-000000000001','a3000001-0001-0002-0001-000000000001','content','Key Takeaways',$md$
 - Passing an array to a function passes the address of its first element, not a copy, so the function can change the caller's array. Call it with the name alone, `f(scores, n)`, and mark read-only parameters `const`.
@@ -610,6 +568,47 @@ INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_lan
 - For the largest value, keep its position and start from the first element. `>` keeps the first maximum and `>=` keeps the last; reversing in place swaps `a[i]` with `a[n - 1 - i]` for only `n / 2` passes.
 - A 2-D array `t[ROWS][COLS]` is stored row by row, so `t[r][c]` sits at position `r × COLS + c`. A function parameter may leave out the rows but must state the columns: `int m[][COLS]`.
 $md$, 7, NULL, NULL);
+
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('01addedc-aa4b-4409-b99b-c00f5cbb7a8e','a3000001-0001-0002-0001-000000000001','content','Try It: Arrays in Depth',$md$
+Change the key to search for, or edit a student's quiz scores, and predict the output before you press Run.
+$md$, 8, 'c', $code$#include <stdio.h>
+#define STUDENTS 3
+#define QUIZZES 4
+
+int linear_search(const int a[], int n, int key) {
+    int i;
+    for (i = 0; i < n; i++)
+        if (a[i] == key)
+            return i;
+    return -1;
+}
+
+int main(void) {
+    int id[STUDENTS] = {2301, 2417, 2388};
+    int score[STUDENTS][QUIZZES] = {
+        {18, 15, 20, 17},
+        {12, 19, 16, 14},
+        {20, 20, 18, 19}
+    };
+    int key = 2417;
+    int pos = linear_search(id, STUDENTS, key);
+    int c, total = 0;
+
+    if (pos == -1) {
+        printf("Student %d not found\n", key);
+        return 0;
+    }
+
+    printf("Student %d is at index %d\n", key, pos);
+    printf("Scores: ");
+    for (c = 0; c < QUIZZES; c++) {
+        printf("%d ", score[pos][c]);
+        total += score[pos][c];
+    }
+    printf("\nTotal: %d, Average: %.2f\n", total, (double)total / QUIZZES);
+    return 0;
+}$code$);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','activity','Sample Program 1, Sorting an Array',$md$

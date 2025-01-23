@@ -568,3 +568,52 @@ Main: 15, Other: 15
 - A 2-D array `t[ROWS][COLS]` is stored row by row, so `t[r][c]` sits at position `r × COLS + c`. A function parameter may leave out the rows but must state the columns: `int m[][COLS]`.
 
 ---
+
+<!-- kind: content -->
+## Try It: Arrays in Depth
+
+Change the key to search for, or edit a student's quiz scores, and predict the output before you press Run.
+
+Starter code:
+
+```c
+#include <stdio.h>
+#define STUDENTS 3
+#define QUIZZES 4
+
+int linear_search(const int a[], int n, int key) {
+    int i;
+    for (i = 0; i < n; i++)
+        if (a[i] == key)
+            return i;
+    return -1;
+}
+
+int main(void) {
+    int id[STUDENTS] = {2301, 2417, 2388};
+    int score[STUDENTS][QUIZZES] = {
+        {18, 15, 20, 17},
+        {12, 19, 16, 14},
+        {20, 20, 18, 19}
+    };
+    int key = 2417;
+    int pos = linear_search(id, STUDENTS, key);
+    int c, total = 0;
+
+    if (pos == -1) {
+        printf("Student %d not found\n", key);
+        return 0;
+    }
+
+    printf("Student %d is at index %d\n", key, pos);
+    printf("Scores: ");
+    for (c = 0; c < QUIZZES; c++) {
+        printf("%d ", score[pos][c]);
+        total += score[pos][c];
+    }
+    printf("\nTotal: %d, Average: %.2f\n", total, (double)total / QUIZZES);
+    return 0;
+}
+```
+
+---
