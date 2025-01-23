@@ -557,3 +557,14 @@ Main: 15, Other: 15
 - Leaving out the column size in a function parameter.
 
 ---
+
+<!-- kind: content -->
+## Key Takeaways
+
+- Passing an array to a function passes the address of its first element, not a copy, so the function can change the caller's array. Call it with the name alone, `f(scores, n)`, and mark read-only parameters `const`.
+- Always pass the number of elements as its own parameter: inside the function, `sizeof` sees an address, not the whole array.
+- Linear search checks each element from first to last and returns the index of the first match, or `-1` when the key is missing. It needs up to `n` comparisons and works on unsorted arrays.
+- For the largest value, keep its position and start from the first element. `>` keeps the first maximum and `>=` keeps the last; reversing in place swaps `a[i]` with `a[n - 1 - i]` for only `n / 2` passes.
+- A 2-D array `t[ROWS][COLS]` is stored row by row, so `t[r][c]` sits at position `r × COLS + c`. A function parameter may leave out the rows but must state the columns: `int m[][COLS]`.
+
+---

@@ -602,6 +602,15 @@ int mat[3][3] = { {1,2,3}, {4,5,6}, {7,8,9} };
 If a row's inner brace contains fewer values than the column count, the remaining elements in that row are set to zero. However, you cannot put *more* values in a row's inner brace than the declared column count, that is a compile error.
 $md$, 7);
 
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a3000002-0001-0002-0001-000000000001','a3000001-0001-0002-0001-000000000001','content','Key Takeaways',$md$
+- Passing an array to a function passes the address of its first element, not a copy, so the function can change the caller's array. Call it with the name alone, `f(scores, n)`, and mark read-only parameters `const`.
+- Always pass the number of elements as its own parameter: inside the function, `sizeof` sees an address, not the whole array.
+- Linear search checks each element from first to last and returns the index of the first match, or `-1` when the key is missing. It needs up to `n` comparisons and works on unsorted arrays.
+- For the largest value, keep its position and start from the first element. `>` keeps the first maximum and `>=` keeps the last; reversing in place swaps `a[i]` with `a[n - 1 - i]` for only `n / 2` passes.
+- A 2-D array `t[ROWS][COLS]` is stored row by row, so `t[r][c]` sits at position `r × COLS + c`. A function parameter may leave out the rows but must state the columns: `int m[][COLS]`.
+$md$, 7, NULL, NULL);
+
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','activity','Sample Program 1, Sorting an Array',$md$
 This program sorts a small integer array using a basic comparison-and-swap approach.
