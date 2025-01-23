@@ -451,22 +451,114 @@ position of t[r][c] = r × COLUMNS + c
 For `score[2][1]`: 2 × 4 + 1 = 9, so it is the 10th value in memory (position 9, counting from 0). This is also why C needs the number of columns: without it, it cannot work out where each row starts.
 $md$, 5, NULL, NULL);
 
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-000000000001','content','Character Arrays and Strings',$md$
-A string in C is stored as a character array. The key difference from other arrays is the **null terminator**: every string ends with the special character `'\0'`, which the compiler adds automatically when you initialize with a string literal.
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('6594930a-f6ff-400f-a6a4-c7628f8c4d91','a3000001-0001-0002-0001-000000000001','content','2-D Arrays and Functions: Matrix Operations',$md$
+A 2-D array is passed to a function the same way as a 1-D array: by name, with no copy made. The one new rule is that the parameter **must state the number of columns**.
 
 ```c
-char city[6] = "HELLO";
+void print_matrix(int m[][COLS], int rows);   /* right */
+void print_matrix(int m[][], int rows);       /* compile error */
 ```
 
-This creates a 6-element array: `'H'`, `'E'`, `'L'`, `'L'`, `'O'`, `'\0'`. You can also let the compiler determine the size:
+The row count can be left empty and passed as a separate parameter, just like the size of a 1-D array. The column count cannot, because C needs it to find where each row starts (the `r × COLUMNS + c` formula from the previous section).
+
+### Matrix addition and transpose
 
 ```c
-char city[] = "HELLO";   /* compiler sets size to 6 automatically */
+#include <stdio.h>
+#define ROWS 2
+#define COLS 3
+
+void add_matrix(int a[][COLS], int b[][COLS], int sum[][COLS], int rows) {
+    int r, c;
+    for (r = 0; r < rows; r++)
+        for (c = 0; c < COLS; c++)
+            sum[r][c] = a[r][c] + b[r][c];
+}
+
+void print_matrix(int m[][COLS], int rows) {
+    int r, c;
+    for (r = 0; r < rows; r++) {
+        for (c = 0; c < COLS; c++)
+            printf("%4d", m[r][c]);
+        printf("\n");
+    }
+}
+
+int main(void) {
+    int a[ROWS][COLS] = { {1, 2, 3}, {4, 5, 6} };
+    int b[ROWS][COLS] = { {10, 20, 30}, {40, 50, 60} };
+    int sum[ROWS][COLS];
+    int t[COLS][ROWS];
+    int r, c;
+
+    add_matrix(a, b, sum, ROWS);
+    print_matrix(sum, ROWS);
+
+    /* Transpose: row r of a becomes column r of t */
+    for (r = 0; r < ROWS; r++)
+        for (c = 0; c < COLS; c++)
+            t[c][r] = a[r][c];
+
+    printf("Transpose of a:\n");
+    for (r = 0; r < COLS; r++) {
+        for (c = 0; c < ROWS; c++)
+            printf("%4d", t[r][c]);
+        printf("\n");
+    }
+    return 0;
+}
 ```
 
-If you declare the array without an initial value and enter the size yourself, make sure to add one extra slot for the null terminator.
-$md$, 6);
+Output:
+```
+  11  22  33
+  44  55  66
+Transpose of a:
+   1   4
+   2   5
+   3   6
+```
+
+- **Addition** only works when both matrices have the same number of rows and columns. Each result cell is the sum of the two cells in the same position.
+- **`%4d`** prints each number in a 4-character column, so the rows line up like a table.
+- **The transpose swaps rows and columns.** A 2 × 3 matrix becomes 3 × 2, so `t` is declared `[COLS][ROWS]`, the other way around. The whole operation is the single line `t[c][r] = a[r][c];`.
+- `sum` is filled by `add_matrix` and read back in `main`. As with 1-D arrays, the function writes straight into the caller's array.
+
+### Diagonals of a square matrix
+
+In a square matrix (same number of rows and columns), the **main diagonal** is every cell where the row equals the column, and the **other diagonal** is every cell where `c == N - 1 - r`. One loop is enough for each:
+
+```c
+#include <stdio.h>
+#define N 3
+
+int main(void) {
+    int m[N][N] = { {2, 7, 6}, {9, 5, 1}, {4, 3, 8} };
+    int i, main_diag = 0, other_diag = 0;
+
+    for (i = 0; i < N; i++) {
+        main_diag += m[i][i];
+        other_diag += m[i][N - 1 - i];
+    }
+    printf("Main: %d, Other: %d\n", main_diag, other_diag);
+    return 0;
+}
+```
+
+Output:
+```
+Main: 15, Other: 15
+```
+
+(That matrix is a magic square: every row, column and diagonal adds up to 15.)
+
+### Common mistakes
+
+- Swapping the indexes: `score[c][r]` when you meant `score[r][c]`. If the array is not square, this reads outside the array.
+- Declaring the transpose with the same shape as the original.
+- Leaving out the column size in a function parameter.
+$md$, 6, NULL, NULL);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','content','Multidimensional Arrays',$md$
