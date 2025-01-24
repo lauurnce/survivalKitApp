@@ -663,3 +663,92 @@ printf("%d %d %d", x[0], x[1], x[2]);
 4. A jeepney terminal records the passengers of 5 trips a day for 3 days in a 3 × 5 array. Print each day's total, then the trip number (column) with the most passengers over all 3 days.
 
 ---
+
+<!-- kind: activity -->
+## Worked Exam Solutions + How-to-Pass Tips, Lesson 1
+
+**Answer Key, Review Questions**
+
+1. `int sales[4][7] = {0};`, the single `0` sets the first element and the partial initializer zero-fills the other 27.
+2. 3 × 5 = **15 elements**. Right after `m[0][4]` (the end of row 0) comes **`m[1][0]`** (the start of row 1). `m[2][3]` is at position 2 × 5 + 3 = **13**.
+3. Inside the function the array parameter is only the address of the first element, so `sizeof` cannot tell the function how many elements there are. Without the count, the loop has no safe place to stop.
+4. **(d)** `int m[][]`. A 2-D parameter must state the number of columns. (b) compiles, the `10` is simply ignored.
+5. **50 comparisons**, when the key is the last element or is not in the array at all.
+
+**Answer Key, Traces**
+
+- (a) **`9 3`**. `9` appears at index 1 and index 3. Because the test is `>=`, the tie at index 3 also replaces `pos`. With `>` the answer would be `9 1`.
+- (b) **`15`**. `m[i][2 - i]` visits `m[0][2]`, `m[1][1]`, `m[2][0]`, which hold 3, 5 and 7: the other diagonal.
+- (c) **`4 2 3`**. `halve` changes the caller's array (no copy is made), and `/` on ints drops the fraction: 9/2 = 4, 4/2 = 2, 7/2 = 3.
+
+**Worked Exam-Style Problem, Off by One in a Search**
+
+*Problem:* A student wrote this search. Find the two bugs.
+
+```c
+int search(int a[], int n, int key) {
+    int i;
+    for (i = 1; i <= n; i++)
+        if (a[i] == key)
+            return i;
+    return -1;
+}
+```
+
+*Bug 1:* the loop starts at `i = 1`, so `a[0]` is never checked. *Bug 2:* `i <= n` reads `a[n]`, one past the end. The correct loop is `for (i = 0; i < n; i++)`. Whenever a loop walks an array, check both ends: the first index used must be 0 and the last must be `n - 1`.
+
+**Worked Programming Exercise (#4, Jeepney Terminal)**
+
+```c
+#include <stdio.h>
+#define DAYS 3
+#define TRIPS 5
+
+int main(void) {
+    int p[DAYS][TRIPS] = {
+        {12, 18, 22, 15, 9},
+        {14, 20, 19, 17, 11},
+        {10, 16, 25, 13, 8}
+    };
+    int d, t, total, best = 0, best_total = -1;
+
+    for (d = 0; d < DAYS; d++) {               /* row totals */
+        total = 0;
+        for (t = 0; t < TRIPS; t++)
+            total += p[d][t];
+        printf("Day %d: %d passengers\n", d + 1, total);
+    }
+
+    for (t = 0; t < TRIPS; t++) {              /* column totals */
+        total = 0;
+        for (d = 0; d < DAYS; d++)
+            total += p[d][t];
+        if (total > best_total) {
+            best_total = total;
+            best = t;
+        }
+    }
+    printf("Busiest: trip %d (%d passengers)\n", best + 1, best_total);
+    return 0;
+}
+```
+
+Output:
+```
+Day 1: 76 passengers
+Day 2: 81 passengers
+Day 3: 72 passengers
+Busiest: trip 3 (66 passengers)
+```
+
+The two halves are the row-total and column-total patterns from the notes. The second half also uses the "largest value and its position" pattern, applied to the column totals instead of to array elements. Printing `best + 1` turns the 0-based index into the trip number a person would use.
+
+**How to Pass Tips**
+
+- Every array loop: first index 0, last index `n - 1`, condition `i < n`. Check both ends before you move on.
+- In a 2-D trace, write the array as a table on your scratch paper first. Reading `m[i][2 - i]` off a table is easy, reading it off a flat list of 9 numbers is where mistakes happen.
+- `>` versus `>=` in a "find the largest" loop decides which tie wins. Look for repeated values in the data, the examiner put them there on purpose.
+- If the question says "write a function", the function must not use `scanf` or `printf` unless asked. Take the array and its size as parameters and return the answer.
+- `return -1;` goes after the search loop, never in an `else` inside it.
+
+---
