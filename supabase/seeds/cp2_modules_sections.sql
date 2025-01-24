@@ -610,40 +610,6 @@ int main(void) {
     return 0;
 }$code$);
 
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-000000000001','activity','Sample Program 2, Counting Positives and Negatives',$md$
-This program reads `n` integers into an array, then counts how many are negative and how many are non-negative.
-
-```c
-#include <stdio.h>
-#include <conio.h>
-
-void main() {
-    int a[50], n, count_neg = 0, count_pos = 0, i;
-    clrscr();
-
-    printf("Enter the size of the array: ");
-    scanf("%d", &n);
-
-    printf("Enter the elements of the array: ");
-    for (i = 0; i < n; i++)
-        scanf("%d", &a[i]);
-
-    for (i = 0; i < n; i++) {
-        if (a[i] < 0)
-            count_neg++;
-        else
-            count_pos++;
-    }
-
-    printf("Negative numbers: %d\n", count_neg);
-    printf("Non-negative numbers: %d\n", count_pos);
-
-    getch();
-}
-```
-$md$, 9);
-
 INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('2c4624c1-ee88-4f58-a442-106626c76ac8','a3000001-0001-0002-0001-000000000001','activity','Practice Exercises, Lesson 1',$md$
 **Review questions:**
@@ -814,3 +780,37 @@ void main() {
 }
 ```
 $md$, 10);
+
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('036925f9-aa99-4af0-88a4-50ece0c44f5a','a3000001-0001-0002-0001-000000000001','activity','Code Lab, Lesson 1: Seat Plan Search',$md$
+**Coding Drill:** Your adviser keeps the class seat plan in a 2-D array of student numbers. Complete the search so the program reports where student `2333` sits. Press Run to compile real C right here, then change `key` to a number that is not in the plan and check that the "not in the seat plan" message appears.
+
+Expected output:
+```
+2333 sits in row 2, seat 3
+```
+$md$, 11, 'c', $code$#include <stdio.h>
+#define ROWS 3
+#define SEATS 4
+
+int main(void) {
+    int seat[ROWS][SEATS] = {
+        {2301, 2417, 2388, 2295},
+        {2410, 2356, 2333, 2402},
+        {2299, 2378, 2364, 2321}
+    };
+    int key = 2333;
+    int r, c, found_row = -1, found_col = -1;
+
+    for (r = 0; r < ROWS; r++) {
+        for (c = 0; c < SEATS; c++) {
+            /* TODO: if seat[r][c] equals key, save r in found_row and c in found_col */
+        }
+    }
+
+    if (found_row == -1)
+        printf("%d is not in the seat plan\n", key);
+    else
+        printf("%d sits in row %d, seat %d\n", key, found_row + 1, found_col + 1);
+    return 0;
+}$code$);

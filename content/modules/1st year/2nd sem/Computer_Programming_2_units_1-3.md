@@ -752,3 +752,45 @@ The two halves are the row-total and column-total patterns from the notes. The s
 - `return -1;` goes after the search loop, never in an `else` inside it.
 
 ---
+
+<!-- kind: activity -->
+## Code Lab, Lesson 1: Seat Plan Search
+
+**Coding Drill:** Your adviser keeps the class seat plan in a 2-D array of student numbers. Complete the search so the program reports where student `2333` sits. Press Run to compile real C right here, then change `key` to a number that is not in the plan and check that the "not in the seat plan" message appears.
+
+Expected output:
+```
+2333 sits in row 2, seat 3
+```
+
+Starter code:
+
+```c
+#include <stdio.h>
+#define ROWS 3
+#define SEATS 4
+
+int main(void) {
+    int seat[ROWS][SEATS] = {
+        {2301, 2417, 2388, 2295},
+        {2410, 2356, 2333, 2402},
+        {2299, 2378, 2364, 2321}
+    };
+    int key = 2333;
+    int r, c, found_row = -1, found_col = -1;
+
+    for (r = 0; r < ROWS; r++) {
+        for (c = 0; c < SEATS; c++) {
+            /* TODO: if seat[r][c] equals key, save r in found_row and c in found_col */
+        }
+    }
+
+    if (found_row == -1)
+        printf("%d is not in the seat plan\n", key);
+    else
+        printf("%d sits in row %d, seat %d\n", key, found_row + 1, found_col + 1);
+    return 0;
+}
+```
+
+---
