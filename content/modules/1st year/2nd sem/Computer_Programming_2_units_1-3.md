@@ -445,6 +445,10 @@ position of t[r][c] = r × COLUMNS + c
 
 For `score[2][1]`: 2 × 4 + 1 = 9, so it is the 10th value in memory (position 9, counting from 0). This is also why C needs the number of columns: without it, it cannot work out where each row starts.
 
+The same array, as a table and as it sits in memory:
+
+![int score[3][4] as a table of 3 rows and 4 columns, and the same 12 values in memory in one line: row 0, then row 1, then row 2, at positions 0 to 11. score[2][1], the 20 in row 2, column 1, is at position 2 × 4 + 1 = 9.](/diagrams/cp2/lesson-1-2d-array-row-major.svg)
+
 ---
 
 <!-- kind: content -->

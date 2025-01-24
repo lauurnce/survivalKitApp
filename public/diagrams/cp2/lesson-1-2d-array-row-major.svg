@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364" height="384" viewBox="-2 -2 364 384" role="img" aria-labelledby="title desc">
+  <title id="title">A 2-D array as a table and as it sits in memory</title>
+  <desc id="desc">int score[3][4] drawn as a table of 3 rows and 4 columns. Row 0 holds 18, 15, 20, 17. Row 1 holds 12, 19, 16, 14. Row 2 holds 20, 20, 18, 19. In memory the same 12 values are stored in one line, row 0 first, then row 1, then row 2, at positions 0 to 11. score[2][1], the value 20 in row 2, column 1, is at position 2 × 4 + 1 = 9: two full rows of 4 come before it, plus 1.</desc>
+  <style>
+    .c { font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .a { font: 600 12px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .big { font: 700 20px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .n { font: 500 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .box { fill: #2f4858; stroke: #7d838a; stroke-width: 1.5; }
+    .alt { fill: #4a5560; stroke: #7d838a; stroke-width: 1.5; }
+    .ok { fill: #3d6b5a; stroke: #7d838a; stroke-width: 1.5; }
+    .bad { fill: #b83820; stroke: #7d838a; stroke-width: 1.5; stroke-dasharray: 5 4; }
+    .note { fill: #5b6168; stroke: #7d838a; stroke-width: 1; }
+  </style>
+  <g text-anchor="middle" dominant-baseline="central">
+    <rect class="note" x="0" y="0" width="360" height="40" rx="6"/>
+    <text class="c" x="180" y="20">int score[3][4]: 3 rows, 4 columns</text>
+
+    <!-- column headers -->
+    <rect class="note" x="66" y="50" width="63" height="24" rx="12"/>
+    <text class="n" x="97.5" y="62">col 0</text>
+    <rect class="note" x="141" y="50" width="63" height="24" rx="12"/>
+    <text class="n" x="172.5" y="62">col 1</text>
+    <rect class="note" x="216" y="50" width="63" height="24" rx="12"/>
+    <text class="n" x="247.5" y="62">col 2</text>
+    <rect class="note" x="291" y="50" width="63" height="24" rx="12"/>
+    <text class="n" x="322.5" y="62">col 3</text>
+
+    <!-- grid -->
+    <rect class="note" x="0" y="78" width="56" height="36" rx="4"/>
+    <text class="n" x="28" y="96">row 0</text>
+    <rect class="box" x="60" y="78" width="75" height="36"/>
+    <text class="c" x="97.5" y="96">18</text>
+    <rect class="box" x="135" y="78" width="75" height="36"/>
+    <text class="c" x="172.5" y="96">15</text>
+    <rect class="box" x="210" y="78" width="75" height="36"/>
+    <text class="c" x="247.5" y="96">20</text>
+    <rect class="box" x="285" y="78" width="75" height="36"/>
+    <text class="c" x="322.5" y="96">17</text>
+    <rect class="note" x="0" y="114" width="56" height="36" rx="4"/>
+    <text class="n" x="28" y="132">row 1</text>
+    <rect class="box" x="60" y="114" width="75" height="36"/>
+    <text class="c" x="97.5" y="132">12</text>
+    <rect class="box" x="135" y="114" width="75" height="36"/>
+    <text class="c" x="172.5" y="132">19</text>
+    <rect class="box" x="210" y="114" width="75" height="36"/>
+    <text class="c" x="247.5" y="132">16</text>
+    <rect class="box" x="285" y="114" width="75" height="36"/>
+    <text class="c" x="322.5" y="132">14</text>
+    <rect class="note" x="0" y="150" width="56" height="36" rx="4"/>
+    <text class="n" x="28" y="168">row 2</text>
+    <rect class="box" x="60" y="150" width="75" height="36"/>
+    <text class="c" x="97.5" y="168">20</text>
+    <rect class="ok" x="135" y="150" width="75" height="36"/>
+    <text class="c" x="172.5" y="168">20</text>
+    <rect class="box" x="210" y="150" width="75" height="36"/>
+    <text class="c" x="247.5" y="168">18</text>
+    <rect class="box" x="285" y="150" width="75" height="36"/>
+    <text class="c" x="322.5" y="168">19</text>
+
+    <rect class="note" x="20" y="196" width="320" height="24" rx="12"/>
+    <text class="n" x="180" y="208">in memory: row 0, then row 1, then row 2</text>
+
+    <!-- flattened strip -->
+    <rect class="box" x="0" y="224" width="30" height="34"/>
+    <text class="a" x="15" y="241">18</text>
+    <rect class="box" x="30" y="224" width="30" height="34"/>
+    <text class="a" x="45" y="241">15</text>
+    <rect class="box" x="60" y="224" width="30" height="34"/>
+    <text class="a" x="75" y="241">20</text>
+    <rect class="box" x="90" y="224" width="30" height="34"/>
+    <text class="a" x="105" y="241">17</text>
+    <rect class="alt" x="120" y="224" width="30" height="34"/>
+    <text class="a" x="135" y="241">12</text>
+    <rect class="alt" x="150" y="224" width="30" height="34"/>
+    <text class="a" x="165" y="241">19</text>
+    <rect class="alt" x="180" y="224" width="30" height="34"/>
+    <text class="a" x="195" y="241">16</text>
+    <rect class="alt" x="210" y="224" width="30" height="34"/>
+    <text class="a" x="225" y="241">14</text>
+    <rect class="box" x="240" y="224" width="30" height="34"/>
+    <text class="a" x="255" y="241">20</text>
+    <rect class="ok" x="270" y="224" width="30" height="34"/>
+    <text class="a" x="285" y="241">20</text>
+    <rect class="box" x="300" y="224" width="30" height="34"/>
+    <text class="a" x="315" y="241">18</text>
+    <rect class="box" x="330" y="224" width="30" height="34"/>
+    <text class="a" x="345" y="241">19</text>
+    <rect class="note" x="0" y="258" width="30" height="22"/>
+    <text class="a" x="15" y="269">0</text>
+    <rect class="note" x="30" y="258" width="30" height="22"/>
+    <text class="a" x="45" y="269">1</text>
+    <rect class="note" x="60" y="258" width="30" height="22"/>
+    <text class="a" x="75" y="269">2</text>
+    <rect class="note" x="90" y="258" width="30" height="22"/>
+    <text class="a" x="105" y="269">3</text>
+    <rect class="note" x="120" y="258" width="30" height="22"/>
+    <text class="a" x="135" y="269">4</text>
+    <rect class="note" x="150" y="258" width="30" height="22"/>
+    <text class="a" x="165" y="269">5</text>
+    <rect class="note" x="180" y="258" width="30" height="22"/>
+    <text class="a" x="195" y="269">6</text>
+    <rect class="note" x="210" y="258" width="30" height="22"/>
+    <text class="a" x="225" y="269">7</text>
+    <rect class="note" x="240" y="258" width="30" height="22"/>
+    <text class="a" x="255" y="269">8</text>
+    <rect class="note" x="270" y="258" width="30" height="22"/>
+    <text class="a" x="285" y="269">9</text>
+    <rect class="note" x="300" y="258" width="30" height="22"/>
+    <text class="a" x="315" y="269">10</text>
+    <rect class="note" x="330" y="258" width="30" height="22"/>
+    <text class="a" x="345" y="269">11</text>
+
+    <!-- row groups -->
+    <path d="M3,282 V290 H117 V282" stroke="#7d838a" stroke-width="2" fill="none"/>
+    <rect class="note" x="25" y="296" width="70" height="24" rx="12"/>
+    <text class="n" x="60" y="308">row 0</text>
+    <path d="M123,282 V290 H237 V282" stroke="#7d838a" stroke-width="2" fill="none"/>
+    <rect class="note" x="145" y="296" width="70" height="24" rx="12"/>
+    <text class="n" x="180" y="308">row 1</text>
+    <path d="M243,282 V290 H357 V282" stroke="#7d838a" stroke-width="2" fill="none"/>
+    <rect class="note" x="265" y="296" width="70" height="24" rx="12"/>
+    <text class="n" x="300" y="308">row 2</text>
+
+    <rect class="ok" x="0" y="334" width="360" height="46" rx="6"/>
+    <text class="n" x="180" y="349">score[2][1] sits at position</text>
+    <text class="c" x="180" y="368">2 × 4 + 1 = 9</text>
+  </g>
+</svg>
