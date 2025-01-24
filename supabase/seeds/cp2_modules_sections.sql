@@ -741,46 +741,6 @@ The two halves are the row-total and column-total patterns from the notes. The s
 - `return -1;` goes after the search loop, never in an `else` inside it.
 $md$, 10, NULL, NULL);
 
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-000000000001','activity','Sample Program 3, Adding Two Matrices',$md$
-This program reads two matrices of equal dimensions from the user, adds them element by element, and stores the result in a third matrix.
-
-```c
-#include <stdio.h>
-#include <conio.h>
-
-void main() {
-    int a[10][10], b[10][10], c[10][10];
-    int i, j, m, n;
-    clrscr();
-
-    printf("Enter the number of rows and columns: ");
-    scanf("%d %d", &m, &n);
-
-    printf("Enter elements of matrix A:\n");
-    for (i = 0; i < m; i++)
-        for (j = 0; j < n; j++)
-            scanf("%d", &a[i][j]);
-
-    printf("Enter elements of matrix B:\n");
-    for (i = 0; i < m; i++)
-        for (j = 0; j < n; j++)
-            scanf("%d", &b[i][j]);
-
-    printf("Sum of A and B:\n");
-    for (i = 0; i < m; i++) {
-        for (j = 0; j < n; j++) {
-            c[i][j] = a[i][j] + b[i][j];
-            printf("%d\t", c[i][j]);
-        }
-        printf("\n");
-    }
-
-    getch();
-}
-```
-$md$, 10);
-
 INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('036925f9-aa99-4af0-88a4-50ece0c44f5a','a3000001-0001-0002-0001-000000000001','activity','Code Lab, Lesson 1: Seat Plan Search',$md$
 **Coding Drill:** Your adviser keeps the class seat plan in a 2-D array of student numbers. Complete the search so the program reports where student `2333` sits. Press Run to compile real C right here, then change `key` to a number that is not in the plan and check that the "not in the seat plan" message appears.
@@ -814,3 +774,75 @@ int main(void) {
         printf("%d sits in row %d, seat %d\n", key, found_row + 1, found_col + 1);
     return 0;
 }$code$);
+
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('39acd3e1-e416-4201-98d8-0853b81398af','a3000001-0001-0002-0001-000000000001','activity','Output Tracing Drills, Lesson 1',$md$
+Trace questions are where most CP2 exam points are lost, because one wrong step changes the final answer. Work each one on paper before you look at the answers at the bottom. Write the array contents after every pass of the loop.
+
+**Drill 1, Shift Left**
+```c
+int a[5] = {3, 8, 1, 6, 4};
+int i, first = a[0];
+for (i = 0; i < 4; i++)
+    a[i] = a[i + 1];
+a[4] = first;
+for (i = 0; i < 5; i++)
+    printf("%d ", a[i]);
+```
+
+**Drill 2, Running Totals**
+```c
+int a[5] = {2, 4, 6, 8, 10};
+int i;
+for (i = 1; i < 5; i++)
+    a[i] = a[i] + a[i - 1];
+printf("%d %d", a[2], a[4]);
+```
+
+**Drill 3, Row Maximums**
+```c
+int t[3][3] = { {4, 9, 2}, {3, 5, 7}, {8, 1, 6} };
+int r, c, big;
+for (r = 0; r < 3; r++) {
+    big = t[r][0];
+    for (c = 1; c < 3; c++)
+        if (t[r][c] > big) big = t[r][c];
+    printf("%d ", big);
+}
+```
+
+**Drill 4, The Function Changes the Array**
+```c
+void mark(int a[], int n, int limit) {
+    int i;
+    for (i = 0; i < n; i++)
+        if (a[i] < limit) a[i] = 0;
+}
+/* in main: */
+int g[6] = {80, 70, 95, 60, 75, 88};
+int i, count = 0;
+mark(g, 6, 75);
+for (i = 0; i < 6; i++)
+    if (g[i] == 0) count++;
+printf("%d %d", count, g[4]);
+```
+
+**Drill 5, Search Then Use the Result**
+```c
+int a[5] = {5, 10, 15, 10, 5};
+int i, pos = -1;
+for (i = 0; i < 5; i++)
+    if (a[i] == 10) pos = i;
+printf("%d %d", pos, a[pos - 1]);
+```
+
+---
+
+**Answers**
+
+1. **`8 1 6 4 3`**. Every element moves one place to the left, and the saved first element goes to the end. Saving `a[0]` before the loop matters: the loop overwrites it on the first pass.
+2. **`12 30`**. After the loop the array is `2 6 12 20 30`. Each element becomes the sum of itself and the new value before it, so `a[i]` uses the already updated `a[i - 1]`.
+3. **`9 7 8`**. Each row starts its own `big` from its first element, then keeps the largest.
+4. **`2 75`**. Only 70 and 60 are below 75, so two zeros. `g[4]` is 75, which is not less than 75, so it stays. The function changed `g` in `main` directly.
+5. **`3 15`**. There is no `return` or `break`, so the loop keeps going and `pos` ends at the **last** match, index 3. Then `a[pos - 1]` is `a[2]`, which is 15. Compare this with the linear search function in the notes, which returns the first match.
+$md$, 12, NULL, NULL);
