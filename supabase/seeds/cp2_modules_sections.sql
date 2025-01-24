@@ -681,6 +681,50 @@ void main() {
 ```
 $md$, 9);
 
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('2c4624c1-ee88-4f58-a442-106626c76ac8','a3000001-0001-0002-0001-000000000001','activity','Practice Exercises, Lesson 1',$md$
+**Review questions:**
+1. Declare a 2-D integer array `sales` for 4 branches and 7 days, with every element set to zero.
+2. Given `int m[3][5];`: how many elements does it have, which element is stored right after `m[0][4]`, and at what position (counting from 0) is `m[2][3]` stored?
+3. Why must you pass the number of elements to a function that receives an array?
+4. Which of these parameter declarations will not compile: (a) `int a[]` (b) `int a[10]` (c) `int m[][4]` (d) `int m[][]`?
+5. A linear search runs on an array of 50 elements. What is the largest number of comparisons it can make, and when does that happen?
+
+**Trace and predict the output:**
+```c
+// (a)
+int a[6] = {4, 9, 2, 9, 7, 1};
+int i, pos = 0;
+for (i = 1; i < 6; i++)
+    if (a[i] >= a[pos]) pos = i;
+printf("%d %d", a[pos], pos);
+
+// (b)
+int m[3][3] = { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
+int i, s = 0;
+for (i = 0; i < 3; i++)
+    s += m[i][2 - i];
+printf("%d", s);
+
+// (c)
+void halve(int a[], int n) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] /= 2;
+}
+/* in main: */
+int x[3] = {9, 4, 7};
+halve(x, 3);
+printf("%d %d %d", x[0], x[1], x[2]);
+```
+
+**Programming exercises:**
+1. Write `int count_value(const int a[], int n, int key)` that returns how many times `key` appears in the array.
+2. Write `int index_of_min(const int a[], int n)` that returns the position of the smallest element.
+3. Read a 3 × 3 matrix from the keyboard. Print the sum of its main diagonal, and print whether the matrix is symmetric (`m[r][c] == m[c][r]` for every cell).
+4. A jeepney terminal records the passengers of 5 trips a day for 3 days in a 3 × 5 array. Print each day's total, then the trip number (column) with the most passengers over all 3 days.
+$md$, 9, NULL, NULL);
+
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','activity','Sample Program 3, Adding Two Matrices',$md$
 This program reads two matrices of equal dimensions from the user, adds them element by element, and stores the result in a third matrix.
@@ -720,92 +764,3 @@ void main() {
 }
 ```
 $md$, 10);
-
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-000000000001','activity','Practice Exercises',$md$
-### Exercise 1, Array Definitions
-
-Write appropriate array declarations for each of the following:
-
-a. A 12-element integer array. Assign it the values 1, 4, 7, 10, … 34 (arithmetic sequence with step 3).
-
-b. A character array to hold the string `"NORTH"`, including the null terminator.
-
-c. A 4-element character array holding the compass characters `'N'`, `'S'`, `'E'`, and `'W'`.
-
----
-
-### Exercise 2, Trace the Output
-
-Determine what each program prints without running it. Write your answer in the box provided.
-
-**Program A:**
-
-```c
-#include <stdio.h>
-#include <conio.h>
-
-main() {
-    int a, b = 0;
-    static int c[10] = {1,2,3,4,5,6,7,8,9,10};
-    clrscr();
-    for (a = 0; a < 10; a++)
-        if ((c[a] % 2) == 0)
-            b += c[a];
-    printf("%d", b);
-    getch();
-    return 1;
-}
-```
-
-> **Output:** `[ ]`
-
----
-
-**Program B:**
-
-```c
-#include <stdio.h>
-#include <conio.h>
-
-void main() {
-    int a, b = 0;
-    static int c[10] = {1,2,3,4,5,6,7,8,9,10};
-    clrscr();
-    for (a = 0; a < 10; a++)
-        if ((a % 2) == 0)
-            b += c[a];
-    printf("%d", b);
-    getch();
-}
-```
-
-> **Output:** `[ ]`
-
----
-
-**Program C:**
-
-```c
-#include <stdio.h>
-#include <conio.h>
-#define R 3
-#define C 4
-
-int z[R][C] = {1,2,3,4,5,6,7,8,9,10,11,12};
-
-main() {
-    int a, b, smallest = 999;
-    clrscr();
-    for (a = 0; a < R; ++a)
-        for (b = 0; b < C; ++b)
-            if (z[a][b] < smallest)
-                smallest = z[a][b];
-    printf("%d", smallest);
-    getch();
-    return 1;
-}
-```
-
-> **Output:** `[ ]`
-$md$, 11);
