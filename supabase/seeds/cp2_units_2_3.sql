@@ -209,7 +209,105 @@ Age: 19
 Name: Ana Reyes
 Ana Reyes is 19 years old
 ```
-$md$, 2, null, null)
+$md$, 2, null, null),
+  ('a3000002-0001-0002-0002-000000000003', 'a3000001-0001-0002-0001-000000000002', 'content', 'The <string.h> Toolkit', $md$
+Because a string is an array, you cannot copy, join or compare strings with `=`, `+` or `==`. The standard header `<string.h>` gives you functions for these jobs.
+
+| Function | What it does | Watch out for |
+|---|---|---|
+| `strlen(s)` | Number of characters before the `'\0'` | Does not count the `'\0'` |
+| `strcpy(dest, src)` | Copies `src` into `dest`, `'\0'` included | `dest` must be big enough |
+| `strcat(dest, src)` | Adds `src` to the end of `dest` | `dest` needs room for both strings plus `'\0'` |
+| `strcmp(a, b)` | Compares alphabetically: negative, `0`, or positive | `0` means **equal** |
+| `strncpy(dest, src, n)` | Copies at most `n` characters | May leave `dest` without a `'\0'` |
+| `strncat(dest, src, n)` | Adds at most `n` characters, then a `'\0'` | `n` counts only the added characters |
+| `strchr(s, c)` | Finds the first `c` in `s` | Returns a pointer, or `NULL` if not found |
+
+### Copy, join, compare
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+    char first[20] = "Jose";
+    char last[] = "Rizal";
+    char full[40];
+
+    strcpy(full, first);        /* full = "Jose"       */
+    strcat(full, " ");          /* full = "Jose "      */
+    strcat(full, last);         /* full = "Jose Rizal" */
+    printf("%s (%d)\n", full, (int)strlen(full));
+
+    printf("%d\n", strcmp("apple", "apple"));
+    printf("%d\n", strcmp("apple", "banana") < 0);
+    printf("%d\n", strcmp("Zebra", "apple") < 0);
+    return 0;
+}
+```
+
+Output:
+```
+Jose Rizal (10)
+0
+1
+1
+```
+
+### How `strcmp` decides
+
+`strcmp` compares the two strings character by character, using their character codes, until it finds a difference or reaches the end:
+
+- It returns **0** when the strings are equal. So the test for "same text" is `strcmp(a, b) == 0`, not `if (strcmp(a, b))`, which is true when they are *different*.
+- It returns a **negative** number when the first string comes first, and a **positive** number when it comes second. Only the sign is guaranteed: one compiler may return `-1` and another `-15`, so always compare the result with 0.
+- Case matters. In ASCII every uppercase letter (65 to 90) comes before every lowercase letter (97 to 122), so `"Zebra"` comes before `"apple"`.
+
+### The `strncpy` trap
+
+`strncpy(dest, src, n)` copies at most `n` characters. If `src` is longer than that, it does **not** add the `'\0'`. Add it yourself:
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+    char code[4];
+
+    strncpy(code, "BSIT-1A", sizeof code - 1);
+    code[sizeof code - 1] = '\0';   /* strncpy did not add it */
+    printf("%s\n", code);
+    return 0;
+}
+```
+
+Output:
+```
+BSI
+```
+
+### A safer way to join: `snprintf`
+
+`snprintf` works like `printf`, but writes into an array and never writes more than the size you give it, terminator included:
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    char full[12];
+
+    snprintf(full, sizeof full, "%s %s", "Andres", "Bonifacio");
+    printf("%s\n", full);
+    return 0;
+}
+```
+
+Output:
+```
+Andres Boni
+```
+
+The full name needs 16 characters plus `'\0'`, but `full` has only 12 slots, so `snprintf` stored the first 11 characters and the `'\0'`. The text was cut short, but nothing outside the array was touched. With `strcpy` and `strcat`, the same mistake would overwrite memory that is not yours.
+$md$, 3, null, null)
 on conflict (id) do update set
   module_id    = excluded.module_id,
   kind         = excluded.kind,
