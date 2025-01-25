@@ -955,3 +955,106 @@ BSIT-1B
 ```
 
 ---
+
+<!-- kind: content -->
+## Reading and Printing Strings
+
+### Printing
+
+- `printf("%s", name)` prints the characters up to the `'\0'`.
+- `puts(name)` does the same and adds a newline at the end.
+- Field widths work too: `%-10s` prints the text left-aligned in a 10-character column, which is handy for tables.
+
+### Reading one word with `scanf`
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    char first[20];
+
+    printf("First name: ");
+    scanf("%19s", first);          /* no & : first is already an address */
+    printf("Hi, %s!\n", first);
+    return 0;
+}
+```
+
+Sample run (you type `Juan dela Cruz`):
+```
+First name: Juan dela Cruz
+Hi, Juan!
+```
+
+Three things to notice:
+
+1. **No `&` before the array name.** An array name already gives the address of its first element, which is exactly what `scanf` needs.
+2. **`%s` stops at the first space.** Only `Juan` was stored. The rest of the line stays waiting in the input.
+3. **`%19s` is a limit.** It reads at most 19 characters, leaving room for the `'\0'` in a 20-slot array. A plain `%s` keeps writing past the end of the array if the user types a long word.
+
+### Reading a whole line with `fgets`
+
+To read text with spaces, such as a full name or an address, use `fgets`:
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+    char full[40];
+
+    printf("Full name: ");
+    if (fgets(full, sizeof full, stdin) != NULL) {
+        full[strcspn(full, "\n")] = '\0';   /* remove the Enter key */
+        printf("Hello, %s! (%d characters)\n", full, (int)strlen(full));
+    }
+    return 0;
+}
+```
+
+Sample run (you type `Juan dela Cruz`):
+```
+Full name: Juan dela Cruz
+Hello, Juan dela Cruz! (14 characters)
+```
+
+- `fgets(full, sizeof full, stdin)` reads one line, spaces included, but never more than `sizeof full - 1` characters, so it cannot overflow the array.
+- It **keeps the newline** from the Enter key when there is room for it. `strcspn(full, "\n")` finds the position of that newline (or of the `'\0'` if there is none), and storing `'\0'` there removes it. Without this step the newline would end up in the middle of your output.
+- It returns `NULL` when there is nothing left to read, which is why the call sits inside an `if`.
+
+**Never use `gets`.** It has no size limit at all, so any long input overflows the array. It was removed from the C language in 2011, and modern compilers warn when you use it.
+
+### The leftover newline problem
+
+If you read a number with `scanf("%d", ...)` and then a line with `fgets`, the `fgets` seems to be skipped. `scanf` leaves the Enter key's newline in the input, and `fgets` reads that empty line immediately. Clear the rest of the line before calling `fgets`:
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+    int age, ch;
+    char name[40];
+
+    printf("Age: ");
+    scanf("%d", &age);
+    while ((ch = getchar()) != '\n' && ch != EOF)
+        ;                                /* throw away the rest of the line */
+
+    printf("Name: ");
+    if (fgets(name, sizeof name, stdin) != NULL) {
+        name[strcspn(name, "\n")] = '\0';
+        printf("%s is %d years old\n", name, age);
+    }
+    return 0;
+}
+```
+
+Sample run (you type `19`, then `Ana Reyes`):
+```
+Age: 19
+Name: Ana Reyes
+Ana Reyes is 19 years old
+```
+
+---
