@@ -8,12 +8,13 @@
 -- Idempotent: deletes only this module (sections cascade),
 --             then re-inserts everything. Safe to re-run.
 -- Run after cp2_modules_sections.sql.
+-- sort_order 99 keeps Exam Prep last, after every numbered lesson.
 -- ============================================================
 
 DELETE FROM modules WHERE id = 'a3000001-0001-0002-0001-0000000000e1';
 
 INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
-  ('a3000001-0001-0002-0001-0000000000e1','10000000-0001-0002-0001-000000000001','Exam Prep: Prelims & Finals','exam-prep-prelims-finals',2);
+  ('a3000001-0001-0002-0001-0000000000e1','10000000-0001-0002-0001-000000000001','Exam Prep: Prelims & Finals','exam-prep-prelims-finals',99);
 
 -- ============================================================
 -- FREE SECTIONS (content)
