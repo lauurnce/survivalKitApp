@@ -472,7 +472,99 @@ Reversed: yahubaM
 ### `const` on string parameters
 
 `my_strlen` and `count_words` only read their string, so their parameter is `const char s[]`. That lets you pass string literals like `"Mabuhay"` safely, and the compiler stops you if the function tries to change the text. `my_strcpy` writes to `dest`, so only `src` is `const`.
-$md$, 5, null, null)
+$md$, 5, null, null),
+  ('a3000002-0001-0002-0002-000000000006', 'a3000001-0001-0002-0001-000000000002', 'content', 'Common String Bugs and How to Avoid Them', $md$
+Almost every string bug comes down to one of these. Some are caught by the compiler. The dangerous ones compile fine and fail at run time, or only on someone else's computer.
+
+### 1. No room for the `'\0'`
+
+```c
+char code[4] = "BSIT";    /* compiles, but there is no '\0' */
+char ok[5] = "BSIT";      /* right: 4 letters + '\0' */
+```
+
+C allows the first line: when the letters exactly fill the array, the terminator is simply left out. Newer compilers warn about it, but older ones say nothing. `code` is then not a string, and `printf("%s", code)` or `strlen(code)` keeps reading past the end of the array. That is undefined behavior: you may see garbage after `BSIT`, or nothing wrong at all until it matters. The easy fix is to let the compiler count: `char code[] = "BSIT";`.
+
+### 2. Assigning with `=`
+
+```c
+char name[20];
+name = "Ana";             /* compile error: an array cannot be assigned */
+strcpy(name, "Ana");      /* right */
+```
+
+`=` with a string literal only works in the **declaration** (`char name[20] = "Ana";`). After that, use `strcpy`, or `snprintf` when the size might not fit.
+
+### 3. Comparing with `==`
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+    char pass[20] = "admin123";
+    char typed[20] = "admin123";
+
+    printf("== says %d\n", pass == typed);
+    printf("strcmp says %d\n", strcmp(pass, typed) == 0);
+    return 0;
+}
+```
+
+Output:
+```
+== says 0
+strcmp says 1
+```
+
+`pass == typed` compares the two arrays' **addresses**, and two different arrays never share an address, so it is always false even when the text matches. Compilers usually warn about it. Compare text with `strcmp(a, b) == 0`.
+
+### 4. Writing past the end
+
+`strcpy`, `strcat`, and `scanf("%s")` copy until the source ends, no matter how small the destination is. Before you copy, ask: does the destination have room for every character **plus** the `'\0'`?
+
+- Read words with a width: `scanf("%19s", name)` for `char name[20]`.
+- Read lines with `fgets(name, sizeof name, stdin)`.
+- Build strings with `snprintf(dest, sizeof dest, ...)`.
+
+### 5. Forgetting the `'\0'` when you build a string yourself
+
+When you fill a `char` array one character at a time, the loop never writes a terminator unless you do:
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    char digits[11];
+    int i;
+
+    for (i = 0; i < 10; i++)
+        digits[i] = '0' + i;
+    digits[10] = '\0';           /* without this, digits is not a string */
+    printf("%s\n", digits);
+    return 0;
+}
+```
+
+Output:
+```
+0123456789
+```
+
+### 6. Changing a string literal through a pointer
+
+```c
+char *p = "hello";        /* p points to a literal, which is read-only */
+char s[] = "hello";       /* s is your own copy, which you may change */
+s[0] = 'H';               /* fine */
+```
+
+Writing `p[0] = 'H';` compiles, but changing a string literal is undefined behavior, and on most computers the program crashes. If you need to change the text, declare a `char` array. (Lesson 3 explains the difference between `char *p` and `char s[]`.)
+
+### 7. `scanf("%d")` followed by `fgets`
+
+`fgets` returns an empty line because `scanf` left the Enter key in the input. Clear the rest of the line first, as shown in the Reading and Printing Strings section.
+$md$, 6, null, null)
 on conflict (id) do update set
   module_id    = excluded.module_id,
   kind         = excluded.kind,
