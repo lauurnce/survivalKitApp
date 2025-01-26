@@ -1160,3 +1160,94 @@ Andres Boni
 The full name needs 16 characters plus `'\0'`, but `full` has only 12 slots, so `snprintf` stored the first 11 characters and the `'\0'`. The text was cut short, but nothing outside the array was touched. With `strcpy` and `strcat`, the same mistake would overwrite memory that is not yours.
 
 ---
+
+<!-- kind: content -->
+## Character Handling with <ctype.h>
+
+A `char` is a small integer: the code of a character. In ASCII, `'A'` is 65, `'a'` is 97, and the digit `'0'` is 48. That means you can do arithmetic with characters:
+
+- **Letters are in order.** `'A' + 2` is `'C'`, and lowercase is always 32 more than uppercase (`'a' - 'A'` is 32).
+- **Digit characters are in order too.** `'7' - '0'` is the number `7`. This is how you turn a typed digit into a value.
+
+### The `<ctype.h>` functions
+
+Instead of memorizing codes, use the standard character functions. The tests return non-zero (true) or 0 (false). They do not promise exactly `1`, so use them in an `if`, never compare them with `1`.
+
+| Function | True when the character is... |
+|---|---|
+| `isalpha(c)` | a letter, `A` to `Z` or `a` to `z` |
+| `isdigit(c)` | a digit, `0` to `9` |
+| `isalnum(c)` | a letter or a digit |
+| `isspace(c)` | a space, tab, or newline |
+| `isupper(c)` / `islower(c)` | an uppercase / lowercase letter |
+| `ispunct(c)` | punctuation, such as `,` `-` `!` |
+
+`toupper(c)` and `tolower(c)` return the converted character. Anything that is not a letter comes back unchanged, so `toupper('5')` is still `'5'`.
+
+### Counting kinds of characters
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+int main(void) {
+    char s[] = "BSIT 1-A, Room 204";
+    int i, letters = 0, digits = 0, spaces = 0, others = 0;
+
+    for (i = 0; s[i] != '\0'; i++) {
+        if (isalpha(s[i]))
+            letters++;
+        else if (isdigit(s[i]))
+            digits++;
+        else if (isspace(s[i]))
+            spaces++;
+        else
+            others++;
+    }
+    printf("letters %d, digits %d, spaces %d, others %d\n",
+           letters, digits, spaces, others);
+
+    for (i = 0; s[i] != '\0'; i++)
+        s[i] = toupper(s[i]);           /* change the string in place */
+    printf("%s\n", s);
+    return 0;
+}
+```
+
+Output:
+```
+letters 9, digits 4, spaces 3, others 2
+BSIT 1-A, ROOM 204
+```
+
+The `else if` chain puts every character in exactly one group, so the four counts add up to `strlen(s)`, which is 18.
+
+### Turning digit characters into a number
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+int main(void) {
+    char text[] = "2025";
+    int i, value = 0;
+
+    for (i = 0; text[i] != '\0'; i++)
+        if (isdigit(text[i]))
+            value = value * 10 + (text[i] - '0');
+
+    printf("%d\n", value + 1);
+    return 0;
+}
+```
+
+Output:
+```
+2026
+```
+
+Each step shifts the number one place left (`* 10`) and adds the new digit: 2, then 20, 202, 2025. Subtracting `'0'` is what turns the character `'5'` into the number 5. Forget it and you add 53 instead (the code of `'5'`).
+
+The standard library can do this for you: `atoi("2025")` from `<stdlib.h>` returns `2025`. Professors still ask for the loop, because it shows you understand character codes.
+
+---
