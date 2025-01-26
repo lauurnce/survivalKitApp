@@ -1440,3 +1440,46 @@ Writing `p[0] = 'H';` compiles, but changing a string literal is undefined behav
 - Characters are small integers: `<ctype.h>` tests them (`isalpha`, `isdigit`, `isspace`) and converts them (`toupper`, `tolower`), and `c - '0'` turns a digit character into its value.
 
 ---
+
+<!-- kind: content -->
+## Try It: Strings
+
+Put your own name in `first` and `last`, then predict the length, the uppercase version and the reversed name before you press Run.
+
+Starter code:
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main(void) {
+    char first[20] = "Juan";
+    char last[20] = "dela Cruz";
+    char full[40];
+    char upper[40];
+    int i, n;
+
+    snprintf(full, sizeof full, "%s %s", first, last);
+    n = (int)strlen(full);
+    printf("Full name: %s (%d characters)\n", full, n);
+
+    for (i = 0; full[i] != '\0'; i++)
+        upper[i] = toupper(full[i]);
+    upper[i] = '\0';
+    printf("Uppercase: %s\n", upper);
+
+    printf("Reversed:  ");
+    for (i = n - 1; i >= 0; i--)
+        printf("%c", full[i]);
+    printf("\n");
+
+    if (strcmp(first, last) < 0)
+        printf("\"%s\" comes before \"%s\"\n", first, last);
+    else
+        printf("\"%s\" comes after \"%s\"\n", first, last);
+    return 0;
+}
+```
+
+---

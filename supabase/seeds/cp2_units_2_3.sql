@@ -571,7 +571,40 @@ $md$, 6, null, null),
 - `scanf("%19s", name)` reads one word with no `&`; `fgets(name, sizeof name, stdin)` reads a whole line and keeps the newline, which `name[strcspn(name, "\n")] = '\0';` removes. Never use `gets`.
 - Copy with `strcpy`, join with `strcat` (or `snprintf`), and compare with `strcmp(a, b) == 0`. Never `=` or `==`, and always check that the destination has room for the text plus `'\0'`.
 - Characters are small integers: `<ctype.h>` tests them (`isalpha`, `isdigit`, `isspace`) and converts them (`toupper`, `tolower`), and `c - '0'` turns a digit character into its value.
-$md$, 7, null, null)
+$md$, 7, null, null),
+  ('a3000002-0001-0002-0002-000000000008', 'a3000001-0001-0002-0001-000000000002', 'content', 'Try It: Strings', $md$
+Put your own name in `first` and `last`, then predict the length, the uppercase version and the reversed name before you press Run.
+$md$, 8, 'c', $code$#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main(void) {
+    char first[20] = "Juan";
+    char last[20] = "dela Cruz";
+    char full[40];
+    char upper[40];
+    int i, n;
+
+    snprintf(full, sizeof full, "%s %s", first, last);
+    n = (int)strlen(full);
+    printf("Full name: %s (%d characters)\n", full, n);
+
+    for (i = 0; full[i] != '\0'; i++)
+        upper[i] = toupper(full[i]);
+    upper[i] = '\0';
+    printf("Uppercase: %s\n", upper);
+
+    printf("Reversed:  ");
+    for (i = n - 1; i >= 0; i--)
+        printf("%c", full[i]);
+    printf("\n");
+
+    if (strcmp(first, last) < 0)
+        printf("\"%s\" comes before \"%s\"\n", first, last);
+    else
+        printf("\"%s\" comes after \"%s\"\n", first, last);
+    return 0;
+}$code$)
 on conflict (id) do update set
   module_id    = excluded.module_id,
   kind         = excluded.kind,
