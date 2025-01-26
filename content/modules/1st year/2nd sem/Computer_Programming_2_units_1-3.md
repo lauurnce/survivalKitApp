@@ -1251,3 +1251,85 @@ Each step shifts the number one place left (`* 10`) and adds the new digit: 2, t
 The standard library can do this for you: `atoi("2025")` from `<stdlib.h>` returns `2025`. Professors still ask for the loop, because it shows you understand character codes.
 
 ---
+
+<!-- kind: content -->
+## Writing Your Own String Functions
+
+Exams often say "without using `<string.h>`". That is a test of whether you understand the `'\0'`. Every function below follows the same plan: walk the string with an index until you reach `'\0'`.
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+int my_strlen(const char s[]) {
+    int n = 0;
+    while (s[n] != '\0')
+        n++;
+    return n;
+}
+
+void my_strcpy(char dest[], const char src[]) {
+    int i = 0;
+    while (src[i] != '\0') {
+        dest[i] = src[i];
+        i++;
+    }
+    dest[i] = '\0';                /* copy the terminator too */
+}
+
+void reverse(char s[]) {
+    int i = 0, j = my_strlen(s) - 1;
+    char temp;
+    while (i < j) {                /* swap the ends, move inward */
+        temp = s[i];
+        s[i] = s[j];
+        s[j] = temp;
+        i++;
+        j--;
+    }
+}
+
+int count_words(const char s[]) {
+    int i, words = 0, in_word = 0;
+    for (i = 0; s[i] != '\0'; i++) {
+        if (isspace(s[i])) {
+            in_word = 0;           /* a space ends the current word */
+        } else if (!in_word) {
+            in_word = 1;           /* first letter of a new word */
+            words++;
+        }
+    }
+    return words;
+}
+
+int main(void) {
+    char word[20];
+
+    my_strcpy(word, "Mabuhay");
+    printf("%s has %d letters\n", word, my_strlen(word));
+    reverse(word);
+    printf("Reversed: %s\n", word);
+    printf("%d words\n", count_words("  Tara na,  kain tayo "));
+    return 0;
+}
+```
+
+Output:
+```
+Mabuhay has 7 letters
+Reversed: yahubaM
+4 words
+```
+
+### How each one works
+
+- **`my_strlen`** counts until it sees `'\0'`. The count is also the index where the `'\0'` sits.
+- **`my_strcpy`** copies character by character, then adds the terminator. The loop stops *at* the `'\0'` without copying it, so the last line is required. Leave it out and `dest` is not a string, and printing it runs on into whatever memory comes next.
+- **`reverse`** is the reverse-in-place pattern from Lesson 1, applied to characters. The right end starts at `my_strlen(s) - 1`, the last real character, **not** at the `'\0'`. If you swapped the `'\0'` to the front, the string would become empty.
+- **`count_words`** cannot just count spaces: there can be several spaces in a row, and spaces at the start and the end. Instead it counts the moments a word **starts**, which is a non-space character that comes right after a space (or at the very beginning). The `in_word` flag remembers whether we are inside a word.
+
+### `const` on string parameters
+
+`my_strlen` and `count_words` only read their string, so their parameter is `const char s[]`. That lets you pass string literals like `"Mabuhay"` safely, and the compiler stops you if the function tries to change the text. `my_strcpy` writes to `dest`, so only `src` is `const`.
+
+---
