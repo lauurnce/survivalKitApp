@@ -604,7 +604,47 @@ int main(void) {
     else
         printf("\"%s\" comes after \"%s\"\n", first, last);
     return 0;
-}$code$)
+}$code$),
+  ('a3000002-0001-0002-0002-000000000009', 'a3000001-0001-0002-0001-000000000002', 'activity', 'Practice Exercises, Lesson 2', $md$
+**Review questions:**
+1. Declare a `char` array named `prov` that holds `"Pangasinan"` with no wasted slots. How many slots does it have?
+2. Explain the difference between `'B'` and `"B"`.
+3. Given `char s[15] = "Hi BSIT";`, what are `strlen(s)` and `sizeof s`?
+4. Why is `if (pass == "admin123")` wrong? Rewrite it correctly.
+5. A student reads a full name with `scanf("%s", name);` and types `Maria Clara`. What is stored in `name`, and which function should they use instead?
+
+**Trace and predict the output:**
+```c
+// (a)
+char w[] = "Laguna";
+int i, n = 0;
+for (i = 0; w[i] != '\0'; i++)
+    if (w[i] == 'a') n++;
+printf("%d %d", n, (int)strlen(w));
+
+// (b)  uses <string.h> and <ctype.h>
+char a[20] = "Iloilo";
+strcat(a, " City");
+a[0] = tolower(a[0]);
+printf("%s %d", a, (int)strlen(a));
+
+// (c)
+char s[] = "2B-C4";
+int i, sum = 0;
+for (i = 0; s[i] != '\0'; i++)
+    if (isdigit(s[i])) sum += s[i] - '0';
+printf("%d", sum);
+
+// (d)
+printf("%d %d", strcmp("CAT", "Cat") < 0, strcmp("dog", "dog"));
+```
+
+**Programming exercises:**
+1. Read a line with `fgets` and count its vowels and consonants (letters that are not vowels). Ignore spaces, digits and punctuation.
+2. Write `int is_strong(const char pw[])` that returns 1 when the password has at least 8 characters, at least one digit, and at least one uppercase letter, and 0 otherwise.
+3. Write `void to_title_case(char s[])` that capitalizes the first letter of every word and makes the other letters lowercase: `"bAtAnGaS cITY"` becomes `"Batangas City"`.
+4. Without using `<string.h>`, write `int my_strcmp(const char a[], const char b[])` that returns 0 when the strings are equal, a negative number when `a` comes first, and a positive number otherwise.
+$md$, 9, null, null)
 on conflict (id) do update set
   module_id    = excluded.module_id,
   kind         = excluded.kind,
