@@ -1527,3 +1527,81 @@ printf("%d %d", strcmp("CAT", "Cat") < 0, strcmp("dog", "dog"));
 4. Without using `<string.h>`, write `int my_strcmp(const char a[], const char b[])` that returns 0 when the strings are equal, a negative number when `a` comes first, and a positive number otherwise.
 
 ---
+
+<!-- kind: activity -->
+## Worked Exam Solutions + How-to-Pass Tips, Lesson 2
+
+**Answer Key, Review Questions**
+
+1. `char prov[] = "Pangasinan";` (or `char prov[11]`). 10 letters + `'\0'` = **11 slots**.
+2. `'B'` is a single `char`, the number 66. `"B"` is a string: an array of two characters, `'B'` and `'\0'`.
+3. `strlen(s)` is **7** (`H`, `i`, space, `B`, `S`, `I`, `T`). `sizeof s` is **15**, the declared size, no matter how much of it is used.
+4. `==` compares addresses, not text, so it is false even when the user typed the right password. Correct: `if (strcmp(pass, "admin123") == 0)`.
+5. Only **`"Maria"`**: `%s` stops at the space. Use `fgets(name, sizeof name, stdin)` and remove the newline.
+
+**Answer Key, Traces**
+
+- (a) **`2 6`**. `Laguna` has two lowercase `a`s (positions 1 and 5) and 6 characters.
+- (b) **`iloilo City 11`**. After `strcat` the text is `"Iloilo City"` (6 + 5 = 11 characters), then only the first letter is lowercased.
+- (c) **`6`**. The digit characters are `'2'` and `'4'`, and subtracting `'0'` turns them into 2 and 4. Without `- '0'` the answer would be 50 + 52 = 102.
+- (d) **`1 0`**. The first difference is at position 1: `'A'` (65) against `'a'` (97), and 65 is smaller, so `strcmp` is negative and `< 0` prints 1. Identical strings give exactly 0.
+
+**Worked Exam-Style Problem, The Missing Terminator**
+
+*Problem:* What is wrong with this function, and how do you fix it?
+
+```c
+void copy_upper(char dest[], const char src[]) {
+    int i;
+    for (i = 0; src[i] != '\0'; i++)
+        dest[i] = toupper(src[i]);
+}
+```
+
+*Answer:* the loop stops when it reaches `src`'s `'\0'` and never copies it, so `dest` has no terminator. Printing `dest` runs past the copied letters into leftover memory. Add `dest[i] = '\0';` after the loop. At that point `i` is exactly the index where the terminator belongs, because the loop ended there. This "forgot the `'\0'`" bug is the most common deduction on hand-written string code.
+
+**Worked Programming Exercise (#2, Strong Password Check)**
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+int is_strong(const char pw[]) {
+    int i, has_digit = 0, has_upper = 0;
+
+    for (i = 0; pw[i] != '\0'; i++) {
+        if (isdigit(pw[i]))
+            has_digit = 1;
+        if (isupper(pw[i]))
+            has_upper = 1;
+    }
+    /* here i is the length of pw */
+    return i >= 8 && has_digit && has_upper;
+}
+
+int main(void) {
+    printf("%d\n", is_strong("Mabuhay2025"));   /* 1 */
+    printf("%d\n", is_strong("mabuhay2025"));   /* 0: no uppercase */
+    printf("%d\n", is_strong("Bsit1"));         /* 0: too short */
+    return 0;
+}
+```
+
+Output:
+```
+1
+0
+0
+```
+
+One loop collects all three facts. Each flag starts at 0 and becomes 1 the moment a matching character appears, which is the "found" flag idea from linear search. After the loop, `i` already holds the length, so the function does not need `strlen`. The return line combines the three conditions with `&&`, and a true comparison in C gives exactly 1.
+
+**How to Pass Tips**
+
+- For every string array you declare, count the `'\0'`. "n characters needs n + 1" is worth points on every exam.
+- `strlen` versus `sizeof` is a favorite trace question. `strlen` counts text, `sizeof` measures the array.
+- `strcmp` returns 0 for **equal**. Writing `if (strcmp(a, b))` to mean "equal" gets it exactly backwards.
+- In traces with `isdigit` and digit characters, watch for `- '0'`. With it you get the digit's value, without it you get its character code.
+- When you write a string function by hand, finish with `dest[i] = '\0';` and say why in a comment. Checkers look for that line.
+
+---
