@@ -718,7 +718,32 @@ One loop collects all three facts. Each flag starts at 0 and becomes 1 the momen
 - `strcmp` returns 0 for **equal**. Writing `if (strcmp(a, b))` to mean "equal" gets it exactly backwards.
 - In traces with `isdigit` and digit characters, watch for `- '0'`. With it you get the digit's value, without it you get its character code.
 - When you write a string function by hand, finish with `dest[i] = '\0';` and say why in a comment. Checkers look for that line.
-$md$, 10, null, null)
+$md$, 10, null, null),
+  ('a3000002-0001-0002-0002-000000000011', 'a3000001-0001-0002-0001-000000000002', 'activity', 'Code Lab, Lesson 2: Make the Initials', $md$
+**Coding Drill:** Complete the loop so the program builds the initials of a full name: the first letter of every word, in uppercase, each followed by a period. Press Run to compile real C right here, then try other names such as `"maria clara de los santos"` and check that the result is still correct.
+
+Expected output:
+```
+Initials of Juan dela Cruz: J.D.C.
+```
+$md$, 11, 'c', $code$#include <stdio.h>
+#include <ctype.h>
+
+int main(void) {
+    char name[] = "Juan dela Cruz";
+    char initials[20];
+    int i, k = 0;
+
+    for (i = 0; name[i] != '\0'; i++) {
+        /* TODO: if name[i] is a letter AND it is the first character
+           (i == 0) or comes right after a space, store toupper(name[i])
+           and then '.' in initials, using k as the next free slot */
+    }
+    initials[k] = '\0';    /* always end the string you built */
+
+    printf("Initials of %s: %s\n", name, initials);
+    return 0;
+}$code$)
 on conflict (id) do update set
   module_id    = excluded.module_id,
   kind         = excluded.kind,
