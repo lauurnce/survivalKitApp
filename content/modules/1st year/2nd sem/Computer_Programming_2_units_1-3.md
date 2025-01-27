@@ -890,6 +890,10 @@ char city[20] = "Cebu";   /* 4 letters, '\0', then 15 more '\0' */
 
 When you write a string literal in double quotes, the compiler adds the `'\0'` for you. Your job is to leave room for it: **a string of n characters needs an array of at least n + 1**.
 
+How `"Maria"` sits in a 6-slot array:
+
+![char name[6] = "Maria" in memory: M, a, r, i, a at indexes 0 to 4 and the null character at index 5. strlen(name) counts the 5 letters, sizeof name is the whole array, 6. char bad[5] = "Maria" has no room for the null character, so it is not a string.](/diagrams/cp2/lesson-2-string-null-terminator.svg)
+
 ### `'A'` is not `"A"`
 
 - `'A'` (single quotes) is **one character**, a small integer (65 in ASCII).
