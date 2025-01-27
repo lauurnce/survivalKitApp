@@ -1644,3 +1644,55 @@ int main(void) {
 ```
 
 ---
+
+# Lesson 3: Pointers
+
+<!-- kind: content -->
+## Memory Addresses and the & Operator
+
+Think of memory as a long row of numbered boxes, one byte each. Every variable you declare is given some of those boxes, and the number of its first box is its **address**. An `int` usually takes 4 boxes, a `double` 8, a `char` 1.
+
+The **address-of operator `&`** gives you a variable's address. You have used it since CP1 without thinking about it: `scanf("%d", &num)` hands `scanf` the address of `num` so it knows where to store what you type.
+
+### Printing addresses
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    int units = 21;
+    double gwa = 1.75;
+
+    printf("units = %d, stored at %p\n", units, (void *)&units);
+    printf("gwa = %.2f, stored at %p\n", gwa, (void *)&gwa);
+    printf("an int uses %d bytes, a double uses %d bytes\n",
+           (int)sizeof units, (int)sizeof gwa);
+    return 0;
+}
+```
+
+Sample output (your addresses will be different):
+```
+units = 21, stored at 0x7ffd5e8a3b4c
+gwa = 1.75, stored at 0x7ffd5e8a3b40
+an int uses 4 bytes, a double uses 8 bytes
+```
+
+- **`%p`** is the conversion for addresses. C expects a `void *` there, hence the `(void *)` cast.
+- **Addresses change** from run to run and from computer to computer. Never write a specific address as the answer to a trace question. What stays the same is the *relationship*: for example, `a[1]` is always `sizeof a[0]` bytes after `a[0]`.
+- The sizes 4 and 8 are what almost every current computer uses. The C standard only sets minimums, so always use `sizeof` in code instead of writing 4.
+
+### What `&` can be used on
+
+`&` needs something that has a place in memory:
+
+- a variable: `&units`
+- an array element: `&scores[2]`
+
+It cannot be used on a constant or the result of a calculation. `&5` and `&(x + 1)` are compile errors, because those values are not stored in a box of their own.
+
+### Why addresses matter
+
+So far, a function could only receive **copies** of your variables (call by value). An address lets a function reach the original variable and change it. That is what `scanf` does, and it is what the rest of this lesson builds on: you will store addresses in variables (pointers), follow them with `*`, and move them through arrays.
+
+---
