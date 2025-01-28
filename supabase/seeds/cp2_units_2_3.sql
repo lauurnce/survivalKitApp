@@ -1074,7 +1074,87 @@ Output:
 - `(*p)++` increases the value and leaves the pointer where it is.
 
 When in doubt, add parentheses. Nobody loses points for `*(p + 1)`.
-$md$, 4, null, null)
+$md$, 4, null, null),
+  ('a3000002-0001-0002-0003-000000000005', 'a3000001-0001-0002-0001-000000000003', 'content', 'Pointers and Arrays', $md$
+Pointers and arrays are closely linked in C. Once you see how, a lot of earlier rules suddenly make sense: why `scanf("%s", name)` needs no `&`, and why a function can change the array you pass it.
+
+### The array name is the address of the first element
+
+In almost every expression, an array name turns into a pointer to its first element. So for `int a[5];`:
+
+- `a` is the same address as `&a[0]`.
+- `a + i` is the address of `a[i]`.
+- **`a[i]` is exactly `*(a + i)`.** The bracket notation is just a convenient way to write pointer arithmetic.
+
+```c
+#include <stdio.h>
+
+int sum(const int *a, int n) {
+    const int *p;
+    int total = 0;
+    for (p = a; p < a + n; p++)    /* walk from first to last */
+        total += *p;
+    return total;
+}
+
+int length(const char *s) {
+    const char *start = s;
+    while (*s != '\0')
+        s++;
+    return (int)(s - start);       /* how far s moved */
+}
+
+int main(void) {
+    int nums[4] = {3, 6, 9, 12};
+    char course[] = "BSIT";
+
+    printf("%d %d\n", nums[2], *(nums + 2));
+    printf("sum = %d\n", sum(nums, 4));
+    printf("length = %d\n", length(course));
+    printf("sizeof nums = %d\n", (int)sizeof nums);
+    return 0;
+}
+```
+
+Output (on a system with 4-byte ints, which is almost every one today):
+```
+9 9
+sum = 30
+length = 4
+sizeof nums = 16
+```
+
+### Array parameters are pointers
+
+In a parameter list, `int a[]` and `int *a` mean exactly the same thing. That is why:
+
+- `sum(nums, 4)` passes only an address, and the function cannot tell how long the array is. You pass `n`.
+- a function can change the caller's array: it has the address of the original elements.
+- `sizeof` inside the function gives the size of a pointer, while `sizeof nums` in `main` gives the whole array, 16 bytes.
+
+Inside the function you may use either notation. `a[i]` and `*(a + i)` compile to the same thing, so use whichever is clearer.
+
+### Where arrays and pointers differ
+
+A pointer is a variable; an array name is not. So:
+
+```c
+int nums[4] = {3, 6, 9, 12};
+int *p = nums;    /* fine: p now points at nums[0] */
+p++;              /* fine: p moves to nums[1] */
+```
+
+But `nums++` and `nums = p` do not compile. The array always stays where it was created.
+
+### `char *` versus `char []` for strings
+
+```c
+char s[] = "BSIT";      /* an array: your own 5-byte copy of the text */
+const char *t = "BSIT"; /* a pointer to the literal, which is read-only */
+```
+
+You may change `s[0]`, but not `t[0]`: changing a string literal is undefined behavior and usually crashes. Marking `t` as `const char *` makes the compiler catch the mistake for you. The `length` function above takes `const char *s`, so it accepts both kinds.
+$md$, 5, null, null)
 on conflict (id) do update set
   module_id    = excluded.module_id,
   kind         = excluded.kind,
