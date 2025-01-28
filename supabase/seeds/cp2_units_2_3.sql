@@ -991,7 +991,90 @@ lowest 27, highest 34
 - In the **prototype**, the parameter type has a star: `void swap(int *a, int *b)`.
 - In the **call**, pass addresses with `&`: `swap(&x, &y)`. (An array name is already an address, so `min_max(temps, ...)` needs no `&`.)
 - In the **body**, use `*a` for the value. Writing `a = b;` would only change which address the local pointer holds, and the caller would see nothing.
-$md$, 3, null, null)
+$md$, 3, null, null),
+  ('a3000002-0001-0002-0003-000000000004', 'a3000001-0001-0002-0001-000000000003', 'content', 'Pointer Arithmetic', $md$
+When a pointer points into an array, you can move it with `+` and `-`. C does the size calculation for you: **adding 1 to a pointer moves it to the next element**, not the next byte. For an `int *`, `p + 1` is `sizeof(int)` bytes (usually 4) further along. For a `double *`, it is 8 bytes.
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    int a[5] = {10, 20, 30, 40, 50};
+    int *p = &a[0];
+    int *q = &a[3];
+
+    printf("%d\n", *p);            /* a[0] */
+    printf("%d\n", *(p + 2));      /* two elements later: a[2] */
+    p++;                           /* p now points at a[1] */
+    printf("%d\n", *p);
+    printf("%d\n", (int)(q - p));  /* elements between them */
+    printf("%d\n", *q - *p);       /* difference of the values */
+    printf("%d\n", p < q);         /* p comes before q */
+    return 0;
+}
+```
+
+Output:
+```
+10
+30
+20
+2
+20
+1
+```
+
+### The four operations
+
+| Operation | Meaning | Example (`p` at `a[1]`, `q` at `a[3]`) |
+|---|---|---|
+| `p + n`, `p - n` | the address `n` elements later or earlier | `p + 2` points at `a[3]` |
+| `p++`, `p--` | move `p` itself one element | `p++` moves it to `a[2]` |
+| `q - p` | how many elements apart (both in the same array) | `q - p` is 2 |
+| `p < q`, `p == q` | which comes first, or the same place | `p < q` is 1 |
+
+Adding two pointers, or multiplying them, has no meaning and does not compile.
+
+### Stay inside the array
+
+Pointer arithmetic is only defined inside one array, plus the single position just past its last element (which you may compare against but never dereference). `p + 10` on a 5-element array is undefined behavior even if you never read it. The array bounds rules from Lesson 1 apply to pointers too.
+
+### Watch the parentheses
+
+`*` and `++` are easy to misread. Compare these, all starting from `p` at `a[0]`:
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    int a[3] = {5, 10, 15};
+    int *p = a;
+
+    printf("%d\n", *p + 1);    /* value at p, plus one: 6 */
+    printf("%d\n", *(p + 1));  /* the next element: 10 */
+    printf("%d\n", *p++);      /* use *p, then move p: 5 */
+    printf("%d\n", *p);        /* p moved to a[1]: 10 */
+    (*p)++;                    /* add 1 to the value at p */
+    printf("%d\n", a[1]);      /* 11 */
+    return 0;
+}
+```
+
+Output:
+```
+6
+10
+5
+10
+11
+```
+
+- `*p + 1` adds to the **value**. `*(p + 1)` moves the **pointer**.
+- `*p++` reads the value first, then moves the pointer (the `++` applies to `p`, not to `*p`).
+- `(*p)++` increases the value and leaves the pointer where it is.
+
+When in doubt, add parentheses. Nobody loses points for `*(p + 1)`.
+$md$, 4, null, null)
 on conflict (id) do update set
   module_id    = excluded.module_id,
   kind         = excluded.kind,
