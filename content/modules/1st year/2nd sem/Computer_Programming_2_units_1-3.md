@@ -1775,3 +1775,106 @@ int *r, *s;    /* both are pointers */
 The `*` belongs to the name next to it, not to the type. Writing it as `int* p, q;` does not change this, and only makes it easier to misread.
 
 ---
+
+<!-- kind: content -->
+## Pointers as Function Parameters
+
+In CP1 Lesson 6 you met **call by reference**: pass `&x`, receive it as a pointer, and change the caller's variable with `*`. Now that you know what a pointer is, here is exactly why it works, and the two jobs it is used for.
+
+### Why a plain swap fails
+
+```c
+#include <stdio.h>
+
+void swap_copy(int a, int b) {    /* gets copies of x and y */
+    int temp = a;
+    a = b;
+    b = temp;                     /* only the copies are swapped */
+}
+
+int main(void) {
+    int x = 3, y = 8;
+
+    swap_copy(x, y);
+    printf("x = %d, y = %d\n", x, y);
+    return 0;
+}
+```
+
+Output:
+```
+x = 3, y = 8
+```
+
+`a` and `b` are new variables that start as copies. Swapping them does nothing to `x` and `y`, and the copies disappear when the function returns.
+
+### Job 1: changing the caller's variables
+
+Pass the **addresses**, and swap the values they point to:
+
+```c
+#include <stdio.h>
+
+void swap(int *a, int *b) {
+    int temp = *a;     /* value at a's address (x) */
+    *a = *b;           /* x gets y's value */
+    *b = temp;         /* y gets x's old value */
+}
+
+int main(void) {
+    int x = 3, y = 8;
+
+    swap(&x, &y);
+    printf("x = %d, y = %d\n", x, y);
+    return 0;
+}
+```
+
+Output:
+```
+x = 8, y = 3
+```
+
+Inside `swap`, `a` holds the address of `x`, so `*a` **is** `x`. Every change through `*a` and `*b` lands directly on `main`'s variables.
+
+### Job 2: returning more than one result
+
+`return` gives back only one value. When a function must produce two or more results, the caller passes the addresses where they should go:
+
+```c
+#include <stdio.h>
+
+void min_max(const int arr[], int n, int *min, int *max) {
+    int i;
+    *min = arr[0];
+    *max = arr[0];
+    for (i = 1; i < n; i++) {
+        if (arr[i] < *min) *min = arr[i];
+        if (arr[i] > *max) *max = arr[i];
+    }
+}
+
+int main(void) {
+    int temps[5] = {31, 28, 34, 30, 27};
+    int lo, hi;
+
+    min_max(temps, 5, &lo, &hi);
+    printf("lowest %d, highest %d\n", lo, hi);
+    return 0;
+}
+```
+
+Output:
+```
+lowest 27, highest 34
+```
+
+`lo` and `hi` have no values before the call. The function fills them through the pointers. This is exactly what `scanf("%d %d", &a, &b)` does: it "returns" two numbers by writing them to the addresses you gave it.
+
+### Checklist for pointer parameters
+
+- In the **prototype**, the parameter type has a star: `void swap(int *a, int *b)`.
+- In the **call**, pass addresses with `&`: `swap(&x, &y)`. (An array name is already an address, so `min_max(temps, ...)` needs no `&`.)
+- In the **body**, use `*a` for the value. Writing `a = b;` would only change which address the local pointer holds, and the caller would see nothing.
+
+---
