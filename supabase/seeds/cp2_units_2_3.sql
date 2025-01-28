@@ -817,7 +817,82 @@ It cannot be used on a constant or the result of a calculation. `&5` and `&(x + 
 ### Why addresses matter
 
 So far, a function could only receive **copies** of your variables (call by value). An address lets a function reach the original variable and change it. That is what `scanf` does, and it is what the rest of this lesson builds on: you will store addresses in variables (pointers), follow them with `*`, and move them through arrays.
-$md$, 1, null, null)
+$md$, 1, null, null),
+  ('a3000002-0001-0002-0003-000000000002', 'a3000001-0001-0002-0001-000000000003', 'content', 'Pointer Variables and the * Operator', $md$
+A **pointer** is a variable that holds an address. You declare one by putting `*` before its name:
+
+```c
+int *p;        /* p can hold the address of an int */
+double *q;     /* q can hold the address of a double */
+char *c;       /* c can hold the address of a char */
+```
+
+Read `int *p` as "p is a pointer to int". The type matters: an `int *` should only point at `int`s, because the type tells C how many bytes to read when it follows the pointer.
+
+### Pointing and following
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    int x = 10;
+    int *p = &x;      /* p holds the address of x */
+
+    printf("x = %d\n", x);
+    printf("*p = %d\n", *p);    /* read x through p */
+
+    *p = 25;                    /* write x through p */
+    printf("x = %d\n", x);
+
+    printf("p == &x is %d\n", p == &x);
+    return 0;
+}
+```
+
+Output:
+```
+x = 10
+*p = 10
+x = 25
+p == &x is 1
+```
+
+- **`p = &x`** makes `p` point to `x`. Now `p` holds `x`'s address.
+- **`*p`** follows the pointer to the variable it points to. This is called **dereferencing**. `*p` reads `x`, and `*p = 25` changes `x`, even though the statement never mentions `x`.
+- `p` itself never changed. It still holds the same address, as the last line shows.
+
+### Two meanings of `*`
+
+The same symbol does two different jobs, and mixing them up is the most common source of confusion:
+
+| Where it appears | Meaning | Example |
+|---|---|---|
+| In a declaration | "this variable is a pointer" | `int *p;` |
+| In an expression | "the value at this address" | `*p = 25;` |
+
+So `int *p = &x;` means "declare a pointer `p` and store `&x` in it". It does **not** store anything in `*p`.
+
+### `NULL`: pointing nowhere
+
+A pointer that does not point to anything yet should hold `NULL` (defined in `<stdio.h>` and other standard headers):
+
+```c
+int *p = NULL;
+if (p != NULL)
+    printf("%d\n", *p);    /* only follow p when it points somewhere */
+```
+
+Following a `NULL` pointer crashes the program on most systems. A pointer that was **never initialized** is worse: it holds a leftover garbage address, and writing through it can silently damage other data. Give every pointer a value when you declare it, either a real address or `NULL`.
+
+### One star per pointer
+
+```c
+int *p, q;     /* p is a pointer, q is a plain int */
+int *r, *s;    /* both are pointers */
+```
+
+The `*` belongs to the name next to it, not to the type. Writing it as `int* p, q;` does not change this, and only makes it easier to misread.
+$md$, 2, null, null)
 on conflict (id) do update set
   module_id    = excluded.module_id,
   kind         = excluded.kind,
