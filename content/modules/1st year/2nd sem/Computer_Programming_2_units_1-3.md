@@ -2190,3 +2190,58 @@ int main(void) {
 ```
 
 ---
+
+<!-- kind: activity -->
+## Practice Exercises, Lesson 3
+
+**Review questions:**
+1. Given `int x = 7; int *p = &x;`, what are the values of `x` and `*p`, and what does `p` hold?
+2. Explain the two meanings of `*` in `int *p = &x;` and `*p = 10;`.
+3. Given `double d[4];` and `double *p = d;`, if `p` holds the address 1000, what address does `p + 3` hold? (A `double` is 8 bytes.)
+4. Which of these mean the same as `a[2]`: (a) `*(a + 2)` (b) `*a + 2` (c) `&a[2]` (d) `*(&a[2])`?
+5. A function must give back both the quotient and the remainder of two integers. Why can it not do this with `return` alone, and what should its parameters be?
+
+**Trace and predict the output:**
+```c
+// (a)
+int a = 5, b = 10;
+int *p = &a, *q = &b;
+*p = *p + *q;
+q = p;
+*q = *q * 2;
+printf("%d %d", a, b);
+
+// (b)
+int arr[5] = {2, 4, 6, 8, 10};
+int *p = arr + 1;
+printf("%d ", *p);
+p += 2;
+printf("%d ", *p);
+printf("%d", *(p - 3));
+
+// (c)
+void f(int *x, int y) {
+    *x = *x + y;
+    y = y * 2;
+}
+/* in main: */
+int m = 3, n = 4;
+f(&m, n);
+printf("%d %d", m, n);
+
+// (d)
+char s[] = "PUP";
+char *p = s;
+while (*p != '\0') {
+    printf("%c", *p + 1);
+    p++;
+}
+```
+
+**Programming exercises:**
+1. Write `void divide(int a, int b, int *q, int *r)` that stores the quotient and the remainder of `a / b`. Call it from `main` and print both.
+2. Write `int sum(const int *a, int n)` using only pointer notation: no square brackets anywhere in the function.
+3. Write `void reverse(int *a, int n)` that reverses an array in place using two pointers, one starting at each end.
+4. Write `int count_char(const char *s, char c)` that walks the string with a pointer (no index variable) and returns how many times `c` appears.
+
+---
