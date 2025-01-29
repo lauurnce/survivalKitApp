@@ -2049,3 +2049,97 @@ const char *t = "BSIT"; /* a pointer to the literal, which is read-only */
 You may change `s[0]`, but not `t[0]`: changing a string literal is undefined behavior and usually crashes. Marking `t` as `const char *` makes the compiler catch the mistake for you. The `length` function above takes `const char *s`, so it accepts both kinds.
 
 ---
+
+<!-- kind: content -->
+## Common Pointer Mistakes
+
+Pointer bugs are hard to find because many of them compile, and some only fail sometimes. Learn to spot these on sight.
+
+### 1. Using a pointer before it points anywhere
+
+```c
+int *p;
+*p = 5;          /* WRONG: p holds a garbage address */
+
+int x;
+int *q = &x;
+*q = 5;          /* right: q points at x first */
+```
+
+An uninitialized pointer holds whatever bits were left in memory. Writing through it may crash, or may overwrite some other variable and cause a strange bug much later. Compilers can warn about it (`-Wall` turns this on), which is one more reason to compile with warnings and read them.
+
+### 2. Following a `NULL` pointer
+
+`NULL` means "points nowhere", so `*p` on a `NULL` pointer crashes on most systems. When a function may return `NULL`, such as `strchr` when the character is not found, check before you use the result:
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+    char email[] = "juan@school.edu.ph";
+    char *at = strchr(email, '@');
+
+    if (at != NULL)
+        printf("domain: %s\n", at + 1);
+    else
+        printf("no @ found\n");
+    return 0;
+}
+```
+
+Output:
+```
+domain: school.edu.ph
+```
+
+`strchr` returns a pointer to the `@` inside `email`, so `at + 1` is a pointer to the rest of the string, and `%s` prints from there to the `'\0'`.
+
+### 3. Mixing up `p` and `*p`
+
+```c
+int x = 7;
+int *p = &x;
+
+if (*p == 7)     /* compares the VALUE: right */
+if (p == 7)      /* compares the ADDRESS with 7: wrong */
+p = 9;           /* tries to store 9 as an address: wrong */
+*p = 9;          /* stores 9 in x: right */
+```
+
+When the left side is a pointer and the right side is a plain number (or the other way around), something is missing: a `*` or a `&`. Compilers warn about these, and newer ones refuse to compile `p = 9;`.
+
+### 4. One star, one pointer
+
+```c
+int *p, q;       /* q is an int, not a pointer */
+```
+
+Writing `q = &x;` then mixes an address and an int, which is mistake 3 again. Declare each pointer with its own star: `int *p, *q;`.
+
+### 5. Forgetting `&` in a call
+
+```c
+int n;
+scanf("%d", n);      /* WRONG: passes n's garbage value as an address */
+scanf("%d", &n);     /* right */
+```
+
+`scanf` writes to whatever address you give it. Passing the value of `n` makes it write to a random place. Compilers warn: "format specifies type `int *` but the argument has type `int`".
+
+### 6. Returning the address of a local variable
+
+```c
+int *bad(void) {
+    int result = 42;
+    return &result;      /* WRONG: result disappears when bad() returns */
+}
+```
+
+Local variables live only while their function runs. The pointer you get back points at memory that is about to be reused, so reading it gives garbage or crashes. Return the value itself (`int good(void) { return 42; }`), or let the caller pass a pointer to its own variable, as `min_max` did.
+
+### 7. Going past the end of the array
+
+`*(a + 5)` on a 5-element array is the same bug as `a[5]`: outside the array, undefined behavior. When you walk an array with a pointer, the loop test is `p < a + n`, never `p <= a + n`.
+
+---
