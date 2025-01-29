@@ -2143,3 +2143,14 @@ Local variables live only while their function runs. The pointer you get back po
 `*(a + 5)` on a 5-element array is the same bug as `a[5]`: outside the array, undefined behavior. When you walk an array with a pointer, the loop test is `p < a + n`, never `p <= a + n`.
 
 ---
+
+<!-- kind: content -->
+## Key Takeaways
+
+- `&x` gives the address of `x`. A pointer is a variable that holds an address: `int *p = &x;` makes `p` point to `x`, and `%p` with a `(void *)` cast prints it.
+- In a declaration `*` means "is a pointer"; in an expression `*p` means "the value at that address". `*p = 25;` changes `x` without naming it. Initialize every pointer to a real address or `NULL`, and never follow a `NULL` or uninitialized pointer.
+- To let a function change the caller's variables, or give back more than one result, pass addresses (`swap(&x, &y)`) and work through `*` inside the function.
+- Adding 1 to a pointer moves it one element, not one byte. `q - p` counts the elements between them, and pointer arithmetic is only valid inside one array.
+- An array name is the address of its first element, so `a[i]` is `*(a + i)` and an array parameter is really a pointer. But an array name cannot be moved or reassigned, and `sizeof` only sees the whole array where it is declared.
+
+---
