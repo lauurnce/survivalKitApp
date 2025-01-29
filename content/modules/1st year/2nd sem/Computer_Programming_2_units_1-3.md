@@ -2245,3 +2245,83 @@ while (*p != '\0') {
 4. Write `int count_char(const char *s, char c)` that walks the string with a pointer (no index variable) and returns how many times `c` appears.
 
 ---
+
+<!-- kind: activity -->
+## Worked Exam Solutions + How-to-Pass Tips, Lesson 3
+
+**Answer Key, Review Questions**
+
+1. `x` is **7** and `*p` is **7** (the same variable, reached through `p`). `p` holds **the address of `x`**. Never write a number for an address: it changes from run to run.
+2. In the declaration, `*` says "`p` is a pointer to int", and `= &x` stores the address in `p`. In `*p = 10;`, `*` means "the variable `p` points to", so 10 is stored in `x`.
+3. **1024**. `p + 3` moves 3 elements, and each `double` is 8 bytes: 1000 + 3 × 8.
+4. **(a) and (d)**. (b) is `a[0] + 2`, the first value plus two. (c) is the address of `a[2]`, not its value.
+5. `return` gives back one value. Pass pointers for the results: `void divide(int a, int b, int *q, int *r)`, called as `divide(17, 5, &q, &r);`.
+
+**Answer Key, Traces**
+
+- (a) **`30 10`**. `*p = *p + *q` makes `a` 15. Then `q = p` points `q` at `a` as well (it no longer points at `b`), so `*q = *q * 2` doubles `a` to 30. `b` is never changed.
+- (b) **`4 8 2`**. `arr + 1` points at `arr[1]` (4). `p += 2` moves it to `arr[3]` (8). `p - 3` is `arr[0]` (2).
+- (c) **`7 4`**. `m` was passed by address, so `*x = *x + y` changes it to 7. `n` was passed by value: doubling the copy `y` has no effect on `n`.
+- (d) **`QVQ`**. `*p + 1` adds 1 to each character code: `P` becomes `Q`, `U` becomes `V`. The string itself is not changed, only what is printed.
+
+**Worked Exam-Style Problem, Spot the Broken Swap**
+
+*Problem:* This swap compiles but does not work. Why?
+
+```c
+void swap(int *a, int *b) {
+    int *temp = a;
+    a = b;
+    b = temp;
+}
+```
+
+*Answer:* it swaps the **pointers**, not the values. `a` and `b` are local copies of the two addresses, so exchanging them changes nothing in the caller, exactly like the plain `int` swap that fails. The fix works on the values they point to: `int temp = *a; *a = *b; *b = temp;`. Rule of thumb: if a function's job is to change the caller's data, there must be a `*` on the left side of an assignment somewhere.
+
+**Worked Programming Exercise (#3, Reverse with Two Pointers)**
+
+```c
+#include <stdio.h>
+
+void reverse(int *a, int n) {
+    int *left = a;            /* first element */
+    int *right = a + n - 1;   /* last element */
+    int temp;
+
+    while (left < right) {
+        temp = *left;
+        *left = *right;
+        *right = temp;
+        left++;               /* move inward from both ends */
+        right--;
+    }
+}
+
+int main(void) {
+    int nums[6] = {1, 2, 3, 4, 5, 6};
+    int *p;
+
+    reverse(nums, 6);
+    for (p = nums; p < nums + 6; p++)
+        printf("%d ", *p);
+    printf("\n");
+    return 0;
+}
+```
+
+Output:
+```
+6 5 4 3 2 1
+```
+
+This is the reverse-in-place pattern from Lesson 1, written with pointers. `a + n - 1` is the last element (not `a + n`, which is one past the end). The loop runs while `left < right`: comparing two pointers into the same array is allowed, and it stops exactly when they meet or cross, so an odd-length array leaves its middle element alone.
+
+**How to Pass Tips**
+
+- Trace pointer questions with boxes and arrows. Draw each variable as a box, and each pointer as an arrow to a box. When a line says `q = p`, move the arrow. When it says `*q = ...`, change the box the arrow points to.
+- Separate "which address" from "which value" in every line. `p = ...` changes where `p` points; `*p = ...` changes the variable it points to.
+- For "what is printed" with pointer arithmetic, rewrite each pointer as `arr + k` and each `*(arr + k)` as `arr[k]`. Then it is an ordinary array trace.
+- `*p++` reads first and then moves `p`. `(*p)++` changes the value. Exams use both on the same page.
+- Never give a specific number as an address unless the question gives you one to start from.
+
+---
