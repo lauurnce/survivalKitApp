@@ -2154,3 +2154,39 @@ Local variables live only while their function runs. The pointer you get back po
 - An array name is the address of its first element, so `a[i]` is `*(a + i)` and an array parameter is really a pointer. But an array name cannot be moved or reassigned, and `sizeof` only sees the whole array where it is declared.
 
 ---
+
+<!-- kind: content -->
+## Try It: Pointers
+
+Change where `p` points (try `&a[1]` or `a + 3`), then predict every line before you press Run.
+
+Starter code:
+
+```c
+#include <stdio.h>
+
+void swap(int *x, int *y) {
+    int temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+int main(void) {
+    int a[5] = {10, 20, 30, 40, 50};
+    int *p = &a[2];
+
+    printf("*p = %d, it is element %d\n", *p, (int)(p - a));
+    printf("*(p - 1) = %d, *(p + 1) = %d\n", *(p - 1), *(p + 1));
+
+    *p = 99;                      /* change a[2] through p */
+    swap(&a[0], &a[4]);           /* swap the first and last */
+
+    printf("Array now:");
+    for (p = a; p < a + 5; p++)   /* walk the array with p */
+        printf(" %d", *p);
+    printf("\n");
+    return 0;
+}
+```
+
+---
