@@ -2325,3 +2325,43 @@ This is the reverse-in-place pattern from Lesson 1, written with pointers. `a + 
 - Never give a specific number as an address unless the question gives you one to start from.
 
 ---
+
+<!-- kind: activity -->
+## Code Lab, Lesson 3: Sort Three Numbers
+
+**Coding Drill:** `sort3` should rearrange three variables in `main` so they end up in ascending order. It receives their addresses, and `swap` is already written for you. Complete `sort3` with three compare-and-swap steps, then press Run to compile real C right here. Try other starting values, including ties such as `5, 5, 1`, to make sure your steps always work.
+
+Expected output:
+```
+Before: 17 4 9
+Sorted: 4 9 17
+```
+
+Starter code:
+
+```c
+#include <stdio.h>
+
+void swap(int *x, int *y) {
+    int temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+void sort3(int *a, int *b, int *c) {
+    /* TODO 1: if the value at a is greater than the value at b, swap them */
+    /* TODO 2: if the value at b is greater than the value at c, swap them */
+    /* TODO 3: if the value at a is greater than the value at b, swap them again */
+}
+
+int main(void) {
+    int p = 17, q = 4, r = 9;
+
+    printf("Before: %d %d %d\n", p, q, r);
+    sort3(&p, &q, &r);
+    printf("Sorted: %d %d %d\n", p, q, r);
+    return 0;
+}
+```
+
+---
