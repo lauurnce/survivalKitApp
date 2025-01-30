@@ -1742,6 +1742,10 @@ p == &x is 1
 - **`*p`** follows the pointer to the variable it points to. This is called **dereferencing**. `*p` reads `x`, and `*p = 25` changes `x`, even though the statement never mentions `x`.
 - `p` itself never changed. It still holds the same address, as the last line shows.
 
+The same program as boxes and an arrow (the addresses are examples):
+
+![int x = 10; int *p = &x; *p = 25; as boxes. p, at address 2040, holds 1000, the address of x, drawn as an arrow to x. x, at address 1000, now holds 25. p is 1000, *p is 25, &x is 1000, and &p is 2040. *p = 25 changed x without naming it.](/diagrams/cp2/lesson-3-pointer-to-variable.svg)
+
 ### Two meanings of `*`
 
 The same symbol does two different jobs, and mixing them up is the most common source of confusion:
