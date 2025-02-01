@@ -203,3 +203,67 @@ $md$, 3)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0004-000000000004', 'a3000001-0001-0002-0001-000000000004', 'content', 'typedef and Nested Structures', $md$
+### `typedef`: A Shorter Name
+
+Typing `struct student` every time gets tiring. `typedef` gives an existing type a second name:
+
+```c
+typedef struct {
+    char  name[30];
+    int   year;
+    float gwa;
+} Student;           /* Student is now a type name */
+
+Student s;           /* no "struct" needed */
+Student cls[40];
+```
+
+`typedef` does **not** create a new kind of data. It only adds a name. You can also name a tagged structure: `typedef struct student Student;` makes `Student` and `struct student` mean the same type.
+
+A common convention is to start typedef names with a capital letter (`Student`, `Date`) so they stand out from variables.
+
+### Nested Structures
+
+A member can itself be a structure. A student has a birthday, and a birthday is a month, a day, and a year:
+
+```c
+#include <stdio.h>
+
+typedef struct {
+    int month, day, year;
+} Date;
+
+typedef struct {
+    char name[30];
+    Date birthday;          /* a structure inside a structure */
+} Student;
+
+int main(void) {
+    Student s = {"Ana Reyes", {3, 14, 2006}};
+
+    s.birthday.year = 2007;     /* outer member, then inner member */
+    printf("%s was born on %d/%d/%d\n", s.name,
+           s.birthday.month, s.birthday.day, s.birthday.year);
+    return 0;
+}
+```
+
+Output:
+```
+Ana Reyes was born on 3/14/2007
+```
+
+To reach a member of the inner structure, use one dot per level: `s.birthday.year` means "the `year` of the `birthday` of `s`". The initializer uses inner braces for the inner structure: `{3, 14, 2006}` fills `birthday`.
+
+### Common Mistakes
+
+- Writing `s.year` when `year` belongs to the inner structure. Every level needs its own dot.
+- Defining `Date` **after** `Student`. The compiler reads from top to bottom, so the inner type must already exist when the outer one uses it.
+- Forgetting the type name after the closing brace of a `typedef struct { ... }`, which leaves you with no name to use.
+$md$, 4)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
