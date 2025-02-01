@@ -134,3 +134,72 @@ $md$, 2)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0004-000000000003', 'a3000001-0001-0002-0001-000000000004', 'content', 'Arrays of Structures', $md$
+A single structure variable holds one record. To hold a whole class, declare an **array of structures**:
+
+```c
+struct student cls[40];    /* 40 records, cls[0] to cls[39] */
+```
+
+Read `cls[i].gwa` from left to right: take element `i` of the array, then its `gwa` member. Writing `cls.gwa[i]` is wrong, because `cls` is the array, not a structure, and `gwa` is not an array.
+
+The program below prints a class list, the class average, and the top student. In most Philippine colleges **1.00 is the highest grade**, so the best GWA is the **smallest** number, and the comparison uses `<`.
+
+```c
+#include <stdio.h>
+
+struct student {
+    char  name[30];
+    int   year;
+    float gwa;
+};
+
+int main(void) {
+    struct student cls[4] = {
+        {"Ana Reyes",    1, 1.75f},
+        {"Ben Cruz",     1, 2.25f},
+        {"Carla Santos", 1, 1.50f},
+        {"Dan Lim",      1, 2.50f}
+    };
+    int i, best = 0;
+    float total = 0;
+
+    for (i = 0; i < 4; i++) {
+        printf("%-13s %.2f\n", cls[i].name, cls[i].gwa);
+        total += cls[i].gwa;
+        if (cls[i].gwa < cls[best].gwa)
+            best = i;
+    }
+    printf("Class average: %.2f\n", total / 4);
+    printf("Top student:   %s\n", cls[best].name);
+    return 0;
+}
+```
+
+Output:
+```
+Ana Reyes     1.75
+Ben Cruz      2.25
+Carla Santos  1.50
+Dan Lim       2.50
+Class average: 2.00
+Top student:   Carla Santos
+```
+
+Notice that `best` stores an **index**, not a GWA. Once you know the index, `cls[best]` gives you the whole record, name and all.
+
+### Why This Beats Parallel Arrays
+
+When you sort an array of structures, you swap whole records (`temp = cls[i]; cls[i] = cls[i + 1]; cls[i + 1] = temp;`). The name, year, and GWA always move together, so they can never get out of step.
+
+### Common Mistakes
+
+- `cls.gwa[i]` instead of `cls[i].gwa`.
+- Running the loop to `i <= 4` for a 4-element array. Indexes still stop at size − 1, exactly as in Lesson 1 (Arrays).
+- Initializing `total` or `best` inside the loop, which resets them on every pass.
+$md$, 3)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
