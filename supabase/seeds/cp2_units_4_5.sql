@@ -267,3 +267,71 @@ $md$, 4)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0004-000000000005', 'a3000001-0001-0002-0001-000000000004', 'content', 'Structures and Functions', $md$
+You can pass a structure to a function and return one from a function, just like an `int`.
+
+### Passing by Value Copies the Whole Structure
+
+When you pass a structure the normal way, the function gets a **copy** of every member. This is call by value from CP1 Lesson 6, applied to a structure. Changing the copy does nothing to the caller's variable. If you want the change, **return** the changed structure and assign it.
+
+```c
+#include <stdio.h>
+
+typedef struct {
+    int x, y;
+} Point;
+
+void move_copy(Point p) {
+    p.x = p.x + 10;          /* changes the copy only */
+}
+
+Point moved(Point p, int dx) {
+    p.x = p.x + dx;
+    return p;                /* send the changed copy back */
+}
+
+int main(void) {
+    Point a = {1, 2};
+
+    move_copy(a);
+    printf("after move_copy: (%d, %d)\n", a.x, a.y);
+
+    a = moved(a, 10);
+    printf("after moved:     (%d, %d)\n", a.x, a.y);
+    return 0;
+}
+```
+
+Output:
+```
+after move_copy: (1, 2)
+after moved:     (11, 2)
+```
+
+`move_copy` changed its own copy and threw it away. `moved` returned its copy, and `a = moved(a, 10);` stored it back.
+
+### Arrays of Structures Are Not Copied
+
+An array parameter is really a pointer to the first element (Lesson 3, Pointers). So when you pass an array of structures, the function works on the caller's records directly:
+
+```c
+void curve(Student list[], int n) {
+    int i;
+    for (i = 0; i < n; i++)
+        list[i].gwa -= 0.25f;     /* changes the caller's array */
+}
+```
+
+If a function should only read the array, write the parameter as `const Student list[]`. The compiler will then refuse any line that tries to change a record.
+
+### Common Mistakes
+
+- Expecting a function to change a structure that was passed by value. It changed a copy.
+- Returning a structure but forgetting to assign the result: `moved(a, 10);` alone throws the answer away.
+- Passing a large structure by value inside a loop. Every call copies all of it. The next section shows the better way: pass its address.
+$md$, 5)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
