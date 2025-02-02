@@ -335,3 +335,74 @@ $md$, 5)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0004-000000000006', 'a3000001-0001-0002-0001-000000000004', 'content', 'Pointers to Structures: The Arrow Operator', $md$
+A pointer can hold the address of a structure, the same way it holds the address of an `int` (Lesson 3, Pointers):
+
+```c
+Student s;
+Student *p = &s;     /* p holds the address of the whole structure */
+```
+
+### Two Ways to Reach a Member Through a Pointer
+
+- `(*p).gwa` follows the pointer to the structure, then picks the member. The parentheses are required: the dot runs **before** `*`, so `*p.gwa` would mean `*(p.gwa)`, which does not compile because `p` is not a structure.
+- `p->gwa` means exactly the same thing and is easier to type and read. The arrow (a hyphen followed by `>`) is what C programmers use.
+
+The rule is simple: **if you have the structure itself, use the dot. If you have a pointer to it, use the arrow.**
+
+### Passing a Structure by Pointer
+
+Pass `&s` when a function must **change** the caller's structure. It is also faster for big structures, because only one address is copied instead of every member.
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char  name[30];
+    float balance;
+} Account;
+
+void deposit(Account *acc, float amount) {
+    acc->balance += amount;      /* same as (*acc).balance += amount */
+}
+
+int main(void) {
+    Account a;
+    Account *p = &a;
+
+    strcpy(a.name, "Ana Reyes");
+    a.balance = 500.00f;
+
+    deposit(&a, 250.50f);
+    printf("%s: PHP %.2f\n", a.name, a.balance);
+    printf("%s: PHP %.2f\n", p->name, (*p).balance);
+    return 0;
+}
+```
+
+Output:
+```
+Ana Reyes: PHP 750.50
+Ana Reyes: PHP 750.50
+```
+
+Inside `deposit`, `acc` is a pointer, so it uses `acc->balance`. In `main`, `a` is the structure itself, so it uses `a.balance`. Both lines at the end print the same balance because `p` points at `a`.
+
+![The structure a, of type Account, at example address 3000 holds name Ana Reyes and balance 750.50. The pointer p, set with p = &a, holds 3000 and points at the whole structure. With the variable, use the dot: a.balance. With the pointer, use the arrow: p->balance. Putting a star in front of p.balance without parentheses is an error, because the dot runs first.](/diagrams/cp2/lesson-4-struct-pointer.svg)
+
+### Pointers and Arrays of Structures
+
+If `p` points at `cls[0]`, then `p[i].gwa` and `(p + i)->gwa` both reach record `i`. Pointer arithmetic moves by one **whole record** at a time, not one byte.
+
+### Common Mistakes
+
+- Using the arrow on a structure variable (`a->balance`) or the dot on a pointer (`p.balance`). Both are compile errors.
+- Writing `*p.balance` without parentheses.
+- Using a pointer before it points anywhere. `Student *p;` alone holds a garbage address. Give it one with `p = &s;` first.
+$md$, 6)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
