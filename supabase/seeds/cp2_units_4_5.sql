@@ -406,3 +406,50 @@ $md$, 6)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0004-000000000007', 'a3000001-0001-0002-0001-000000000004', 'content', 'Key Takeaways', $md$
+- A **structure** groups related variables, which may have different types, under one name. Each variable inside it is a **member**.
+- A `struct` definition is only a template and must end with `;`. Memory is set aside only when you declare a variable of that type.
+- Use the dot with a structure variable (`s.gwa`) and the arrow with a pointer to one (`p->gwa`, which means `(*p).gwa`). Nested members take one dot per level: `s.birthday.year`.
+- You can copy a whole structure with `=`, but you cannot compare two with `==`, and a string member needs `strcpy`, not `=`.
+- Passing a structure to a function passes a copy. Pass its address (`&s`) when the function must change it, and use `typedef` to give the type a shorter name.
+$md$, 7)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('a3000002-0001-0002-0004-000000000008', 'a3000001-0001-0002-0001-000000000004', 'content', 'Try It: Structures', $md$
+Run the code below. Add a fourth student to the array (update `COUNT` too), then give the bonus to a different student and predict the output before you press Run.
+$md$, 8, 'c', $code$#include <stdio.h>
+
+#define COUNT 3
+
+typedef struct {
+    char name[20];
+    int  score;
+} Student;
+
+void give_bonus(Student *s, int points) {
+    s->score += points;
+}
+
+int main(void) {
+    Student cls[COUNT] = {
+        {"Ana", 82},
+        {"Ben", 74},
+        {"Carla", 91}
+    };
+    int i;
+
+    give_bonus(&cls[1], 5);
+
+    for (i = 0; i < COUNT; i++)
+        printf("%-6s %d\n", cls[i].name, cls[i].score);
+    return 0;
+}$code$)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order,
+  ide_language = excluded.ide_language, starter_code = excluded.starter_code;
