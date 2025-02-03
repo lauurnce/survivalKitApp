@@ -647,3 +647,55 @@ $md$, 10)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('a3000002-0001-0002-0004-000000000011', 'a3000001-0001-0002-0001-000000000004', 'activity', 'Code Lab, Lesson 4: Class Record', $md$
+**Coding Drill:** Complete `average` and `find_top` so the program reports the class average and the top student. Remember that the best GWA is the **lowest** number. Press Run to compile real C right here, then add a fifth student and predict the new output before running again.
+
+Expected output:
+```
+Average GWA: 2.00
+Top student: Carla (1.50)
+```
+$md$, 11, 'c', $code$#include <stdio.h>
+
+typedef struct {
+    char  name[20];
+    float gwa;
+} Student;
+
+/* Returns the average GWA of the first n students. */
+float average(Student list[], int n) {
+    float total = 0;
+    int i;
+
+    for (i = 0; i < n; i++) {
+        /* TODO: add list[i].gwa to total */
+    }
+    return total / n;
+}
+
+/* Returns the index of the student with the best (lowest) GWA. */
+int find_top(Student list[], int n) {
+    int best = 0, i;
+
+    for (i = 1; i < n; i++) {
+        /* TODO: if list[i].gwa is lower than list[best].gwa, set best = i */
+    }
+    return best;
+}
+
+int main(void) {
+    Student cls[4] = {
+        {"Ana", 1.75f}, {"Ben", 2.25f}, {"Carla", 1.50f}, {"Dan", 2.50f}
+    };
+    int top = find_top(cls, 4);
+
+    printf("Average GWA: %.2f\n", average(cls, 4));
+    printf("Top student: %s (%.2f)\n", cls[top].name, cls[top].gwa);
+    return 0;
+}$code$)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order,
+  ide_language = excluded.ide_language, starter_code = excluded.starter_code;
