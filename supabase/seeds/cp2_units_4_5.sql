@@ -453,3 +453,64 @@ on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order,
   ide_language = excluded.ide_language, starter_code = excluded.starter_code;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0004-000000000009', 'a3000001-0001-0002-0001-000000000004', 'activity', 'Practice Exercises, Lesson 4', $md$
+**Conceptual questions:**
+1. What is a structure, and how is it different from an array?
+2. What is a member? How do you reach a member of a structure variable, and of a pointer to a structure?
+3. Does defining `struct student { ... };` set aside memory? When is memory set aside?
+4. What does `typedef` do? Does it create a new kind of data?
+5. A structure is passed to a function by value and the function changes one member. What happens to the caller's variable? How do you make the change stick?
+
+**Find the errors (three of them):**
+```c
+#include <stdio.h>
+
+struct item {
+    char  name[20];
+    float price;
+}
+
+int main(void) {
+    struct item a, b;
+
+    a.name = "Pancit Canton";
+    a.price = 15.50;
+    b = a;
+    if (a == b)
+        printf("same\n");
+    return 0;
+}
+```
+
+**Trace the output:**
+```c
+#include <stdio.h>
+
+typedef struct { int x, y; } Point;
+
+void f(Point p)  { p.x = 100; }
+void g(Point *p) { p->y = 200; }
+
+int main(void) {
+    Point a = {1, 2}, b;
+
+    b = a;
+    b.x = 5;
+    f(a);
+    g(&a);
+    printf("%d %d %d %d\n", a.x, a.y, b.x, b.y);
+    return 0;
+}
+```
+
+**Programming exercises:**
+1. Define a `Book` structure with a title, an author, a year, and a price. Read 3 books from the keyboard and print the title of the most expensive one.
+2. Using a nested `Date` structure, store the names and birthdays of 5 students. Ask for a month number and print everyone born in that month.
+3. Write `void raise_salary(Employee *e, float percent)` that raises an employee's salary by the given percent. Test it from `main`.
+4. Sort an array of 5 `Student` records by GWA, best (lowest) first, by swapping whole structures. Print the ranked list.
+$md$, 9)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
