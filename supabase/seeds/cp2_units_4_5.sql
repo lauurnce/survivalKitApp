@@ -699,3 +699,60 @@ on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order,
   ide_language = excluded.ide_language, starter_code = excluded.starter_code;
+
+-- ============================================================
+-- LESSON 5: FILE HANDLING
+-- ============================================================
+
+insert into public.modules (id, subject_id, title, slug, sort_order)
+values
+  ('a3000001-0001-0002-0001-000000000005', '10000000-0001-0002-0001-000000000001', 'Lesson 5: File Handling', 'lesson-5-file-handling', 5)
+on conflict (id) do update set
+  subject_id = excluded.subject_id,
+  title      = excluded.title,
+  slug       = excluded.slug,
+  sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0005-000000000001', 'a3000001-0001-0002-0001-000000000005', 'content', 'Why Files? Streams and the FILE Pointer', $md$
+Every variable you have used so far lives in memory (RAM). When the program ends, it is gone. Type in 40 student records, close the program, and they are lost. A **file** stored on disk keeps data after the program ends, so the next run can read it back.
+
+### Text Files and Binary Files
+
+- A **text file** stores characters, line by line. You can open it in Notepad and read it. This lesson uses text files.
+- A **binary file** stores raw bytes, the same way the data sits in memory. It is compact but not readable in a text editor.
+
+### Streams and the `FILE` Pointer
+
+C does not read the disk directly. It talks to a file through a **stream**: an object that remembers which file is open, where you are in it, and a buffer of data waiting to be read or written. The stream is a structure of type `FILE`, defined in `<stdio.h>`.
+
+You never touch the members of a `FILE`. You only keep a **pointer** to it, which ties together Lesson 3 (Pointers) and Lesson 4 (Structures):
+
+```c
+FILE *fp;     /* fp will point at an open file's stream */
+```
+
+### Three Streams Are Already Open
+
+Every C program starts with three streams open for you:
+
+| Stream | Connected to | You have used it through |
+|---|---|---|
+| `stdin` | the keyboard | `scanf`, `getchar` |
+| `stdout` | the screen | `printf`, `putchar` |
+| `stderr` | the screen, for error messages | (new) |
+
+So `fprintf(stdout, "Hi\n");` does the same thing as `printf("Hi\n");`. File functions take a `FILE *`, and `stdout` is one.
+
+### The Four Steps
+
+Every file program follows the same pattern:
+
+1. Declare a `FILE *` variable.
+2. Open the file with `fopen`, and check that it worked.
+3. Read or write with the file functions.
+4. Close the file with `fclose`.
+$md$, 1)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
