@@ -756,3 +756,85 @@ $md$, 1)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0005-000000000002', 'a3000001-0001-0002-0001-000000000005', 'content', 'Opening and Closing Files', $md$
+### `fopen`
+
+```c
+FILE *fp = fopen("grades.txt", "w");
+```
+
+`fopen` takes two **strings**: the file name and the **mode**. It returns a `FILE *` you use from then on, or `NULL` if the file could not be opened.
+
+| Mode | Meaning | If the file exists | If it does not exist |
+|---|---|---|---|
+| `"r"` | read | read from the start | `fopen` returns `NULL` |
+| `"w"` | write | old contents are **erased** | a new file is created |
+| `"a"` | append | writing goes to the end | a new file is created |
+| `"r+"` | read and write | kept, start at the beginning | `fopen` returns `NULL` |
+| `"w+"` | read and write | old contents are **erased** | a new file is created |
+| `"a+"` | read and append | kept, writing goes to the end | a new file is created |
+
+Add a `b` for a binary file, as in `"rb"` or `"wb"`.
+
+![Before, log.txt holds one line, A. With mode r the file is only read and still holds A. With mode w the old contents are erased, so after writing B it holds only B. With mode a writing goes to the end, so after writing B it holds A then B. If the file is missing, mode r makes fopen return NULL, while w and a create a new file. Always check if fp == NULL.](/diagrams/cp2/lesson-5-fopen-modes.svg)
+
+### Always Check for `NULL`
+
+`fopen` fails more often than you might think: the file is missing (with `"r"`), the name or folder is wrong, or you have no permission to write there. Using a `NULL` pointer with any file function usually crashes the program, so check every time:
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp = fopen("hello.txt", "w");
+
+    if (fp == NULL) {
+        printf("Could not open hello.txt\n");
+        return 1;
+    }
+    fprintf(fp, "Mabuhay, BSIT!\n");
+    fclose(fp);
+    printf("Saved.\n");
+    return 0;
+}
+```
+
+Output on the screen: `Saved.`. The file hello.txt now holds one line, `Mabuhay, BSIT!`.
+
+If the file cannot be opened, the program says so and stops. Here is the same check catching a missing file opened with `"r"`:
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp = fopen("no_such_file.txt", "r");
+
+    if (fp == NULL) {
+        printf("Could not open no_such_file.txt\n");
+        return 1;
+    }
+    fclose(fp);
+    return 0;
+}
+```
+
+Output: `Could not open no_such_file.txt`
+
+`return 1;` from `main` tells the system the program did not finish normally. You can also call `perror("hello.txt");`, which prints your text followed by the system's reason, such as "No such file or directory".
+
+### `fclose`
+
+`fclose(fp);` finishes the job: it writes out anything still waiting in the buffer and releases the file. If you forget it, the last lines you wrote may never reach the disk. Close every file you opened, and never call `fclose` on a `NULL` pointer.
+
+### Common Mistakes
+
+- Opening with `"w"` when you meant `"a"`. `"w"` erases yesterday's records the moment the file opens, before you write anything.
+- Writing the mode as a character, `'r'`, instead of a string, `"r"`.
+- Skipping the `NULL` check.
+- Windows paths in a string need doubled backslashes: `"C:\\data\\grades.txt"`. A single `\` starts an escape sequence.
+$md$, 2)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
