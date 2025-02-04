@@ -838,3 +838,90 @@ $md$, 2)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0005-000000000003', 'a3000001-0001-0002-0001-000000000005', 'content', 'Formatted File I/O: fprintf() and fscanf()', $md$
+You already know `printf` and `scanf`. Their file versions take a `FILE *` as the **first** argument and otherwise work the same way.
+
+```c
+fprintf(fp, "%s %d\n", name, score);     /* write to the file   */
+fscanf(fp, "%29s %d", name, &score);     /* read from the file  */
+```
+
+### What `fscanf` Returns
+
+`fscanf` returns the number of items it successfully read. When it reaches the end of the file before reading anything, it returns `EOF` (a negative constant from `<stdio.h>`). That return value is how you know when to stop:
+
+```c
+while (fscanf(fp, "%29s %d", name, &score) == 2) {
+    /* got a full record: use it */
+}
+```
+
+The loop stops at the end of the file **and** at a badly formatted line, because either way the count is not 2.
+
+### Write, Then Read Back
+
+The program below writes three records, closes the file, opens it again for reading, and computes the average.
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp;
+    char name[30];
+    int score, total = 0, count = 0;
+
+    fp = fopen("scores.txt", "w");
+    if (fp == NULL) {
+        printf("Cannot create scores.txt\n");
+        return 1;
+    }
+    fprintf(fp, "%s %d\n", "Ana", 88);
+    fprintf(fp, "%s %d\n", "Ben", 75);
+    fprintf(fp, "%s %d\n", "Carla", 93);
+    fclose(fp);
+
+    fp = fopen("scores.txt", "r");
+    if (fp == NULL) {
+        printf("Cannot open scores.txt\n");
+        return 1;
+    }
+    while (fscanf(fp, "%29s %d", name, &score) == 2) {
+        printf("%-6s %d\n", name, score);
+        total += score;
+        count++;
+    }
+    fclose(fp);
+
+    printf("Average: %.2f\n", (float)total / count);
+    return 0;
+}
+```
+
+The file scores.txt now holds:
+```
+Ana 88
+Ben 75
+Carla 93
+```
+
+Output on the screen:
+```
+Ana    88
+Ben    75
+Carla  93
+Average: 85.33
+```
+
+Opening the same file a second time with `"r"` starts reading from the beginning. That is why the program closes it after writing and opens it again.
+
+### Common Mistakes
+
+- Forgetting `&` before a number in `fscanf`, exactly as with `scanf`. A string (char array) still takes no `&`.
+- `%s` stops at a space, so a line like `Ana Reyes 88` reads `Ana` as the name and then fails on `Reyes`. Use one-word fields, or read whole lines with `fgets` (two sections from now).
+- Looping with `while (!feof(fp))`. `feof` only becomes true **after** a read has already failed, so the last record is usually processed twice. Test the value `fscanf` returns instead.
+$md$, 3)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
