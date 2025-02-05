@@ -999,3 +999,83 @@ $md$, 4)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0005-000000000005', 'a3000001-0001-0002-0001-000000000005', 'content', 'Line I/O: fgets() and fputs()', $md$
+Most text files are made of lines, so the most useful reading function reads one line at a time.
+
+### `fgets`
+
+```c
+char line[80];
+fgets(line, sizeof line, fp);
+```
+
+`fgets` reads characters into `line` until it has read a `'\n'` **or** has filled `size − 1` characters, then adds `'\0'`. Three things to remember:
+
+- It **keeps** the `'\n'` at the end of the line (if there was room for it).
+- It never writes past the buffer, which is why it is safe.
+- It returns `NULL` when there is nothing left to read, so `while (fgets(...) != NULL)` reads a whole file.
+
+To remove the newline, use `strcspn` from `<string.h>`, which returns the position of the first `'\n'` (or the string's length if there is none): `line[strcspn(line, "\n")] = '\0';`.
+
+### `fputs`
+
+`fputs(str, fp)` writes a string to the file and does **not** add a newline. (`puts` adds one when it prints to the screen; `fputs` does not.) Write the `'\n'` yourself.
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+    FILE *fp;
+    char line[80];
+    int n = 0;
+
+    fp = fopen("names.txt", "w");
+    if (fp == NULL) {
+        printf("Cannot create names.txt\n");
+        return 1;
+    }
+    fputs("Ana Reyes\n", fp);       /* fputs adds no newline, so we */
+    fputs("Ben Dela Cruz\n", fp);   /* write each \n ourselves      */
+    fputs("Carla Santos\n", fp);
+    fclose(fp);
+
+    fp = fopen("names.txt", "r");
+    if (fp == NULL) {
+        printf("Cannot open names.txt\n");
+        return 1;
+    }
+    while (fgets(line, sizeof line, fp) != NULL) {
+        line[strcspn(line, "\n")] = '\0';    /* cut off the newline */
+        n++;
+        printf("%d. %s (%d characters)\n", n, line, (int)strlen(line));
+    }
+    fclose(fp);
+    return 0;
+}
+```
+
+Output:
+```
+1. Ana Reyes (9 characters)
+2. Ben Dela Cruz (13 characters)
+3. Carla Santos (12 characters)
+```
+
+`fscanf(fp, "%s", ...)` would have read "Ben Dela Cruz" as three separate words. `fgets` reads the full line, spaces and all. If a line is longer than the buffer, `fgets` returns it in pieces, so give the buffer room.
+
+### Reading a Line from the Keyboard
+
+The keyboard is the stream `stdin`, so `fgets(name, sizeof name, stdin);` reads a full name with spaces. Never use `gets`: it has no size limit and was removed from the C language in C11.
+
+### Common Mistakes
+
+- Forgetting that the `'\n'` is still in the string, then wondering why a comparison with `strcmp` fails.
+- Passing the wrong size. `sizeof line` works only when `line` is an actual array, not a pointer parameter.
+- Expecting `fputs` to start a new line.
+$md$, 5)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
