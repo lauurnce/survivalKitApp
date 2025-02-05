@@ -1079,3 +1079,101 @@ $md$, 5)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0005-000000000006', 'a3000001-0001-0002-0001-000000000005', 'content', 'Putting It Together: A Small Records Program', $md$
+Here is everything from this lesson and Lesson 4 (Structures) in one program. Each student is a `Student` structure. `save_student` **appends** one record to records.txt, and `list_students` reads every record back and reports the average.
+
+```c
+#include <stdio.h>
+
+#define FILENAME "records.txt"
+
+typedef struct {
+    int   id;
+    char  name[30];
+    float gwa;
+} Student;
+
+/* Add one record to the end of the file. Returns 1 if it worked. */
+int save_student(const Student *s) {
+    FILE *fp = fopen(FILENAME, "a");
+
+    if (fp == NULL)
+        return 0;
+    fprintf(fp, "%d %s %.2f\n", s->id, s->name, s->gwa);
+    fclose(fp);
+    return 1;
+}
+
+/* Print every record in the file and return how many there were. */
+int list_students(void) {
+    FILE *fp = fopen(FILENAME, "r");
+    Student s;
+    int count = 0;
+    float total = 0;
+
+    if (fp == NULL) {
+        printf("No records yet.\n");
+        return 0;
+    }
+    printf("%-6s %-8s %s\n", "ID", "Name", "GWA");
+    while (fscanf(fp, "%d %29s %f", &s.id, s.name, &s.gwa) == 3) {
+        printf("%-6d %-8s %.2f\n", s.id, s.name, s.gwa);
+        total += s.gwa;
+        count++;
+    }
+    fclose(fp);
+    if (count > 0)
+        printf("%d records, average GWA %.2f\n", count, total / count);
+    return count;
+}
+
+int main(void) {
+    Student batch[3] = {
+        {1001, "Reyes", 1.75f},
+        {1002, "Cruz", 2.25f},
+        {1003, "Santos", 1.50f}
+    };
+    int i;
+
+    remove(FILENAME);            /* start fresh for this demo */
+    for (i = 0; i < 3; i++)
+        if (!save_student(&batch[i]))
+            printf("Could not save %s\n", batch[i].name);
+
+    list_students();
+    return 0;
+}
+```
+
+The file records.txt holds:
+```
+1001 Reyes 1.75
+1002 Cruz 2.25
+1003 Santos 1.50
+```
+
+Output:
+```
+ID     Name     GWA
+1001   Reyes    1.75
+1002   Cruz     2.25
+1003   Santos   1.50
+3 records, average GWA 1.83
+```
+
+### How It Fits Together
+
+- **One record per line, fields separated by spaces.** `fprintf` writes the line and `fscanf(... "%d %29s %f" ...) == 3` reads it back. The format used to write must match the format used to read.
+- **`"a"` for adding, `"r"` for listing.** Because `save_student` uses `"a"`, every run adds to the file. `main` calls `remove(FILENAME)` (from `<stdio.h>`, it deletes a file) only so this demo starts the same way each time. Delete that line and run the program twice: you will see six records.
+- **The functions take a pointer.** `save_student(const Student *s)` reads the record through `s->id`, without copying the whole structure. `const` promises it will not change it.
+- **Every `fopen` has its own `NULL` check and its own `fclose`.** `list_students` treats a missing file as "no records yet", which is exactly what happens on the very first run.
+
+### Limits of This Format
+
+Names must be a single word, because `%s` stops at spaces. Real programs handle full names by reading lines with `fgets` and splitting them, or by using a separator character such as a comma. Try that in the exercises once this version makes sense.
+$md$, 6)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
