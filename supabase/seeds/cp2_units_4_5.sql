@@ -925,3 +925,77 @@ $md$, 3)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0005-000000000004', 'a3000001-0001-0002-0001-000000000005', 'content', 'Character I/O: fgetc(), fputc(), and EOF', $md$
+Sometimes you want a file one character at a time, for example to count letters or lines.
+
+- `fgetc(fp)` returns the next character from the file, or `EOF` when there are no more.
+- `fputc(c, fp)` writes one character to the file.
+
+### Store `fgetc`'s Result in an `int`
+
+`fgetc` returns an `int`, not a `char`. It has to: it must be able to return every possible character **plus** one extra value, `EOF`, that is different from all of them. Squeeze the result into a `char` and either a real character can look like `EOF` or `EOF` is never seen, depending on the system. Always declare `int c;`.
+
+### The Classic Reading Loop
+
+```c
+while ((c = fgetc(fp)) != EOF) {
+    /* use c */
+}
+```
+
+Read it from the inside out: call `fgetc`, store the result in `c`, then compare `c` with `EOF`. The extra parentheses matter. Without them, `c = fgetc(fp) != EOF` compares first (`!=` runs before `=`), so `c` gets 1 or 0 instead of the character.
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+int main(void) {
+    FILE *fp;
+    int c, chars = 0, lines = 0;    /* c is an int, not a char */
+
+    fp = fopen("motto.txt", "w");
+    if (fp == NULL) {
+        printf("Cannot create motto.txt\n");
+        return 1;
+    }
+    fprintf(fp, "Code daily.\nTest often.\n");
+    fclose(fp);
+
+    fp = fopen("motto.txt", "r");
+    if (fp == NULL) {
+        printf("Cannot open motto.txt\n");
+        return 1;
+    }
+    while ((c = fgetc(fp)) != EOF) {
+        fputc(toupper(c), stdout);   /* stdout is a FILE * too */
+        chars++;
+        if (c == '\n')
+            lines++;
+    }
+    fclose(fp);
+
+    printf("%d characters, %d lines\n", chars, lines);
+    return 0;
+}
+```
+
+Output:
+```
+CODE DAILY.
+TEST OFTEN.
+24 characters, 2 lines
+```
+
+Each line has 11 visible characters plus its `'\n'`, so 12 + 12 = 24 characters. Counting the `'\n'` characters counts the lines. Note `fputc(toupper(c), stdout)`: `stdout` is a `FILE *` too, so `fputc` can write to the screen.
+
+### Common Mistakes
+
+- `char c;` instead of `int c;`.
+- Missing the parentheses around `c = fgetc(fp)`.
+- Forgetting that `'\n'` is a character too. It counts toward the total.
+$md$, 4)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
