@@ -1177,3 +1177,51 @@ $md$, 6)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0005-000000000007', 'a3000001-0001-0002-0001-000000000005', 'content', 'Key Takeaways', $md$
+- Data in variables disappears when the program ends; a file keeps it. C reaches a file through a stream, held in a `FILE *` pointer.
+- `fopen(name, mode)` opens a file: `"r"` reads, `"w"` creates or **erases**, `"a"` adds to the end. Always check the pointer for `NULL`, and `fclose` every file you open.
+- `fprintf` and `fscanf` work like `printf` and `scanf` with a `FILE *` first. `fscanf` returns how many items it read, so loop with `while (fscanf(...) == 2)`, not `while (!feof(fp))`.
+- `fgetc` returns an `int`, so store it in an `int` and compare it with `EOF`; `fputc` writes one character.
+- `fgets(buf, size, fp)` reads one line, keeps the `'\n'`, and returns `NULL` at the end of the file. `fputs` writes a string without adding a newline.
+$md$, 7)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('a3000002-0001-0002-0005-000000000008', 'a3000001-0001-0002-0001-000000000005', 'content', 'Try It: File Handling', $md$
+**About files in the playground:** each run happens in a fresh, empty sandbox on a server. Nothing your program writes is kept or shown to you, and there is no way to give it a file to read. So this exercise writes to `stdout`, the screen, which is already a `FILE *`. Every `fprintf(out, ...)` below works exactly the way it would on a real file.
+
+Run it, then add a fourth student. On your own computer (Code::Blocks, Dev-C++, or `gcc`), replace `stdout` with an `fopen` call as the comment shows, check the pointer for `NULL`, add `fclose(out);` before `return 0;`, and open report.txt afterwards to see the same report saved.
+$md$, 8, 'c', $code$#include <stdio.h>
+
+/* Works with ANY stream: a file from fopen, or stdout. */
+void write_report(FILE *out, const char *names[], const int scores[], int n) {
+    int i;
+
+    fprintf(out, "%-6s %s\n", "Name", "Score");
+    for (i = 0; i < n; i++)
+        fprintf(out, "%-6s %d\n", names[i], scores[i]);
+}
+
+int main(void) {
+    const char *names[] = {"Ana", "Ben", "Carla"};
+    int scores[] = {88, 75, 93};
+
+    /* The playground keeps no files, so this writes to the screen.
+       On your own computer, try instead:
+       FILE *out = fopen("report.txt", "w");
+       check it for NULL, and call fclose(out) at the end. */
+    FILE *out = stdout;
+
+    write_report(out, names, scores, 3);
+    fputs("End of report", out);    /* fputs adds no newline... */
+    fputc('\n', out);                /* ...so add one with fputc */
+    return 0;
+}$code$)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order,
+  ide_language = excluded.ide_language, starter_code = excluded.starter_code;
