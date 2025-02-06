@@ -1225,3 +1225,86 @@ on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order,
   ide_language = excluded.ide_language, starter_code = excluded.starter_code;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0005-000000000009', 'a3000001-0001-0002-0001-000000000005', 'activity', 'Practice Exercises, Lesson 5', $md$
+**Conceptual questions:**
+1. Why do programs need files when they already have variables?
+2. What is the difference between the modes `"w"` and `"a"`? Between `"r"` and `"r+"`?
+3. Give two situations in which `fopen` returns `NULL`. What should the program do then?
+4. Why must the variable that stores the result of `fgetc` be an `int` and not a `char`?
+5. A line in a file reads `Ben Dela Cruz`. What does `fscanf(fp, "%s", name)` store in `name`? What does `fgets(name, 30, fp)` store?
+
+**Find the errors (seven in all: some stop it compiling, the rest are bugs):**
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE fp;
+    char c;
+
+    fp = fopen("data.txt", 'r');
+    while (c = fgetc(fp) != EOF)
+        putchar(c);
+    return 0;
+}
+```
+
+**Trace the output:**
+
+(a) What does this print? Look closely at what the file holds.
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp;
+    int n, sum = 0, count = 0;
+
+    fp = fopen("nums.txt", "w");
+    if (fp == NULL) return 1;
+    fprintf(fp, "4 7 x 9\n");
+    fclose(fp);
+
+    fp = fopen("nums.txt", "r");
+    if (fp == NULL) return 1;
+    while (fscanf(fp, "%d", &n) == 1) {
+        sum += n;
+        count++;
+    }
+    fclose(fp);
+    printf("count=%d sum=%d\n", count, sum);
+    return 0;
+}
+```
+
+(b) What does this print?
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp;
+    char line[20];
+
+    fp = fopen("log.txt", "w");  fputs("A\n", fp);  fclose(fp);
+    fp = fopen("log.txt", "a");  fputs("B\n", fp);  fclose(fp);
+    fp = fopen("log.txt", "a");  fputs("C\n", fp);  fclose(fp);
+    fp = fopen("log.txt", "w");  fputs("D\n", fp);  fclose(fp);
+    fp = fopen("log.txt", "a");  fputs("E\n", fp);  fclose(fp);
+
+    fp = fopen("log.txt", "r");
+    while (fgets(line, sizeof line, fp) != NULL)
+        printf("%s", line);
+    fclose(fp);
+    return 0;
+}
+```
+
+**Programming exercises:**
+1. Ask the user for 5 integers and save them to numbers.txt, one per line. Close the file, open it again, and print the largest number.
+2. Count the vowels (upper and lower case) in a text file using `fgetc`.
+3. Copy in.txt to out.txt line by line, putting the line number and a colon in front of each line.
+4. Extend the records program from the notes: add a function that prints only the students with a GWA of 2.00 or better (2.00 or lower), and one that returns how many records the file holds.
+$md$, 9)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
