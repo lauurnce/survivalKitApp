@@ -1308,3 +1308,120 @@ $md$, 9)
 on conflict (id) do update set
   module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
   body_md = excluded.body_md, sort_order = excluded.sort_order;
+
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order)
+values ('a3000002-0001-0002-0005-000000000010', 'a3000001-0001-0002-0001-000000000005', 'activity', 'Worked Exam Solutions + How-to-Pass Tips, Lesson 5', $md$
+**Answer Key, Conceptual Questions**
+
+1. Variables live in memory and disappear when the program ends. A file stays on disk, so data can be saved in one run and read back in the next.
+2. `"w"` erases an existing file before writing; `"a"` keeps it and writes at the end. `"r"` only reads; `"r+"` reads **and** writes. Both fail with `NULL` if the file does not exist.
+3. Any two of: the file does not exist and the mode is `"r"` or `"r+"`; the name or folder is wrong; there is no permission to create or write the file. The program should print a message and stop (or take another path), and it must not use the pointer.
+4. `fgetc` returns every possible character plus `EOF`, which needs a value no character uses. A `char` cannot hold all of them, so either a real character is mistaken for `EOF` or `EOF` is never detected.
+5. `fscanf` with `%s` stops at the first space and stores only `Ben`. `fgets` stores the whole line, `Ben Dela Cruz`, followed by `'\n'`.
+
+**Worked Exam-Style Problem, Find the Errors**
+
+*Solution:* A compiler rejects the first three:
+1. `FILE fp;` declares a `FILE` object, not a pointer. `fopen` returns a `FILE *`, so declare `FILE *fp;`.
+2. `'r'` is a character. The mode must be a string, `"r"`. (Some older compilers only warn here, but it is still wrong.)
+3. Because `fp` is not a pointer, `fgetc(fp)` gets the wrong type too. Fixing error 1 fixes this line as well.
+
+The other four compile but are bugs:
+
+4. No `NULL` check after `fopen`.
+5. `char c;` should be `int c;` so it can hold `EOF`.
+6. `c = fgetc(fp) != EOF` compares before it assigns, so `c` becomes 1 or 0. Add parentheses: `(c = fgetc(fp)) != EOF`.
+7. The file is never closed with `fclose`.
+
+The corrected program:
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp;                          /* a pointer to FILE */
+    int c;                             /* int, so EOF fits */
+
+    fp = fopen("data.txt", "r");       /* mode is a string */
+    if (fp == NULL) {                  /* check before use */
+        printf("Cannot open data.txt\n");
+        return 1;
+    }
+    while ((c = fgetc(fp)) != EOF)     /* parentheses around the assignment */
+        putchar(c);
+    fclose(fp);                        /* close the file */
+    return 0;
+}
+```
+
+**Worked Exam-Style Problem, The Traces**
+
+*(a) Solution:* The file holds `4 7 x 9`. `fscanf` reads 4 (returns 1), then 7 (returns 1). At `x` it cannot read a number, so it returns 0 and the loop stops. The 9 is never reached. Output: `count=2 sum=11`. The trap is assuming the loop reads "all the numbers".
+
+*(b) Solution:* Follow the file after each open. `"w"` writes A: file is A. `"a"` adds B: A B. `"a"` adds C: A B C. `"w"` **erases** and writes D: file is just D. `"a"` adds E: D E. Output:
+```
+D
+E
+```
+Each `"w"` wipes everything before it. Find the **last** `"w"` and start reading the history from there.
+
+**Worked Programming Exercise (#3, Number the Lines)**
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *in, *out;
+    char line[100];
+    int n = 0;
+
+    in = fopen("in.txt", "r");
+    if (in == NULL) {
+        printf("Cannot open in.txt\n");
+        return 1;
+    }
+    out = fopen("out.txt", "w");
+    if (out == NULL) {
+        printf("Cannot create out.txt\n");
+        fclose(in);                  /* close what you already opened */
+        return 1;
+    }
+
+    while (fgets(line, sizeof line, in) != NULL) {
+        n++;
+        fprintf(out, "%d: ", n);
+        fputs(line, out);            /* line still ends in '\n' */
+    }
+
+    fclose(in);
+    fclose(out);
+    printf("Copied %d lines.\n", n);
+    return 0;
+}
+```
+
+If in.txt holds:
+```
+Bayan Ko
+Lupang Hinirang
+Pilipinas Kong Mahal
+```
+the screen shows `Copied 3 lines.` and out.txt holds:
+```
+1: Bayan Ko
+2: Lupang Hinirang
+3: Pilipinas Kong Mahal
+```
+Two details earn the marks. First, when the second `fopen` fails, the program closes the file it already opened before stopping. Second, it uses `fputs(line, out)` with no extra `'\n'`, because `fgets` kept the newline in `line`. Adding another would double-space the copy.
+
+**How to Pass Tips**
+
+- Write the four steps on every file answer: declare `FILE *`, `fopen` and check `NULL`, read or write, `fclose`. Checkers look for the `NULL` check and the `fclose` even when the question does not mention them.
+- Know the mode table by heart, especially that `"w"` erases and `"r"` fails on a missing file.
+- Loop on what the read function returns: `fscanf(...) == count`, `fgetc(...) != EOF`, `fgets(...) != NULL`. Never `while (!feof(fp))`.
+- `int c` for `fgetc`, with parentheses around the assignment. This pair shows up in nearly every "find the error" item on files.
+- Remember who keeps the newline: `fgets` keeps it, `fputs` does not add one.
+$md$, 10)
+on conflict (id) do update set
+  module_id = excluded.module_id, kind = excluded.kind, heading = excluded.heading,
+  body_md = excluded.body_md, sort_order = excluded.sort_order;
