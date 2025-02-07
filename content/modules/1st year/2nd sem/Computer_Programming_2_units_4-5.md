@@ -447,3 +447,559 @@ int main(void) {
 ---
 
 ---
+
+# Lesson 5: File Handling
+
+<!-- kind: content -->
+## Why Files? Streams and the FILE Pointer
+
+Every variable you have used so far lives in memory (RAM). When the program ends, it is gone. Type in 40 student records, close the program, and they are lost. A **file** stored on disk keeps data after the program ends, so the next run can read it back.
+
+### Text Files and Binary Files
+
+- A **text file** stores characters, line by line. You can open it in Notepad and read it. This lesson uses text files.
+- A **binary file** stores raw bytes, the same way the data sits in memory. It is compact but not readable in a text editor.
+
+### Streams and the `FILE` Pointer
+
+C does not read the disk directly. It talks to a file through a **stream**: an object that remembers which file is open, where you are in it, and a buffer of data waiting to be read or written. The stream is a structure of type `FILE`, defined in `<stdio.h>`.
+
+You never touch the members of a `FILE`. You only keep a **pointer** to it, which ties together Lesson 3 (Pointers) and Lesson 4 (Structures):
+
+```c
+FILE *fp;     /* fp will point at an open file's stream */
+```
+
+### Three Streams Are Already Open
+
+Every C program starts with three streams open for you:
+
+| Stream | Connected to | You have used it through |
+|---|---|---|
+| `stdin` | the keyboard | `scanf`, `getchar` |
+| `stdout` | the screen | `printf`, `putchar` |
+| `stderr` | the screen, for error messages | (new) |
+
+So `fprintf(stdout, "Hi\n");` does the same thing as `printf("Hi\n");`. File functions take a `FILE *`, and `stdout` is one.
+
+### The Four Steps
+
+Every file program follows the same pattern:
+
+1. Declare a `FILE *` variable.
+2. Open the file with `fopen`, and check that it worked.
+3. Read or write with the file functions.
+4. Close the file with `fclose`.
+
+---
+
+<!-- kind: content -->
+## Opening and Closing Files
+
+### `fopen`
+
+```c
+FILE *fp = fopen("grades.txt", "w");
+```
+
+`fopen` takes two **strings**: the file name and the **mode**. It returns a `FILE *` you use from then on, or `NULL` if the file could not be opened.
+
+| Mode | Meaning | If the file exists | If it does not exist |
+|---|---|---|---|
+| `"r"` | read | read from the start | `fopen` returns `NULL` |
+| `"w"` | write | old contents are **erased** | a new file is created |
+| `"a"` | append | writing goes to the end | a new file is created |
+| `"r+"` | read and write | kept, start at the beginning | `fopen` returns `NULL` |
+| `"w+"` | read and write | old contents are **erased** | a new file is created |
+| `"a+"` | read and append | kept, writing goes to the end | a new file is created |
+
+Add a `b` for a binary file, as in `"rb"` or `"wb"`.
+
+![Before, log.txt holds one line, A. With mode r the file is only read and still holds A. With mode w the old contents are erased, so after writing B it holds only B. With mode a writing goes to the end, so after writing B it holds A then B. If the file is missing, mode r makes fopen return NULL, while w and a create a new file. Always check if fp == NULL.](/diagrams/cp2/lesson-5-fopen-modes.svg)
+
+### Always Check for `NULL`
+
+`fopen` fails more often than you might think: the file is missing (with `"r"`), the name or folder is wrong, or you have no permission to write there. Using a `NULL` pointer with any file function usually crashes the program, so check every time:
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp = fopen("hello.txt", "w");
+
+    if (fp == NULL) {
+        printf("Could not open hello.txt\n");
+        return 1;
+    }
+    fprintf(fp, "Mabuhay, BSIT!\n");
+    fclose(fp);
+    printf("Saved.\n");
+    return 0;
+}
+```
+
+Output on the screen: `Saved.`. The file hello.txt now holds one line, `Mabuhay, BSIT!`.
+
+If the file cannot be opened, the program says so and stops. Here is the same check catching a missing file opened with `"r"`:
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp = fopen("no_such_file.txt", "r");
+
+    if (fp == NULL) {
+        printf("Could not open no_such_file.txt\n");
+        return 1;
+    }
+    fclose(fp);
+    return 0;
+}
+```
+
+Output: `Could not open no_such_file.txt`
+
+`return 1;` from `main` tells the system the program did not finish normally. You can also call `perror("hello.txt");`, which prints your text followed by the system's reason, such as "No such file or directory".
+
+### `fclose`
+
+`fclose(fp);` finishes the job: it writes out anything still waiting in the buffer and releases the file. If you forget it, the last lines you wrote may never reach the disk. Close every file you opened, and never call `fclose` on a `NULL` pointer.
+
+### Common Mistakes
+
+- Opening with `"w"` when you meant `"a"`. `"w"` erases yesterday's records the moment the file opens, before you write anything.
+- Writing the mode as a character, `'r'`, instead of a string, `"r"`.
+- Skipping the `NULL` check.
+- Windows paths in a string need doubled backslashes: `"C:\\data\\grades.txt"`. A single `\` starts an escape sequence.
+
+---
+
+<!-- kind: content -->
+## Formatted File I/O: fprintf() and fscanf()
+
+You already know `printf` and `scanf`. Their file versions take a `FILE *` as the **first** argument and otherwise work the same way.
+
+```c
+fprintf(fp, "%s %d\n", name, score);     /* write to the file   */
+fscanf(fp, "%29s %d", name, &score);     /* read from the file  */
+```
+
+### What `fscanf` Returns
+
+`fscanf` returns the number of items it successfully read. When it reaches the end of the file before reading anything, it returns `EOF` (a negative constant from `<stdio.h>`). That return value is how you know when to stop:
+
+```c
+while (fscanf(fp, "%29s %d", name, &score) == 2) {
+    /* got a full record: use it */
+}
+```
+
+The loop stops at the end of the file **and** at a badly formatted line, because either way the count is not 2.
+
+### Write, Then Read Back
+
+The program below writes three records, closes the file, opens it again for reading, and computes the average.
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp;
+    char name[30];
+    int score, total = 0, count = 0;
+
+    fp = fopen("scores.txt", "w");
+    if (fp == NULL) {
+        printf("Cannot create scores.txt\n");
+        return 1;
+    }
+    fprintf(fp, "%s %d\n", "Ana", 88);
+    fprintf(fp, "%s %d\n", "Ben", 75);
+    fprintf(fp, "%s %d\n", "Carla", 93);
+    fclose(fp);
+
+    fp = fopen("scores.txt", "r");
+    if (fp == NULL) {
+        printf("Cannot open scores.txt\n");
+        return 1;
+    }
+    while (fscanf(fp, "%29s %d", name, &score) == 2) {
+        printf("%-6s %d\n", name, score);
+        total += score;
+        count++;
+    }
+    fclose(fp);
+
+    printf("Average: %.2f\n", (float)total / count);
+    return 0;
+}
+```
+
+The file scores.txt now holds:
+```
+Ana 88
+Ben 75
+Carla 93
+```
+
+Output on the screen:
+```
+Ana    88
+Ben    75
+Carla  93
+Average: 85.33
+```
+
+Opening the same file a second time with `"r"` starts reading from the beginning. That is why the program closes it after writing and opens it again.
+
+### Common Mistakes
+
+- Forgetting `&` before a number in `fscanf`, exactly as with `scanf`. A string (char array) still takes no `&`.
+- `%s` stops at a space, so a line like `Ana Reyes 88` reads `Ana` as the name and then fails on `Reyes`. Use one-word fields, or read whole lines with `fgets` (two sections from now).
+- Looping with `while (!feof(fp))`. `feof` only becomes true **after** a read has already failed, so the last record is usually processed twice. Test the value `fscanf` returns instead.
+
+---
+
+<!-- kind: content -->
+## Character I/O: fgetc(), fputc(), and EOF
+
+Sometimes you want a file one character at a time, for example to count letters or lines.
+
+- `fgetc(fp)` returns the next character from the file, or `EOF` when there are no more.
+- `fputc(c, fp)` writes one character to the file.
+
+### Store `fgetc`'s Result in an `int`
+
+`fgetc` returns an `int`, not a `char`. It has to: it must be able to return every possible character **plus** one extra value, `EOF`, that is different from all of them. Squeeze the result into a `char` and either a real character can look like `EOF` or `EOF` is never seen, depending on the system. Always declare `int c;`.
+
+### The Classic Reading Loop
+
+```c
+while ((c = fgetc(fp)) != EOF) {
+    /* use c */
+}
+```
+
+Read it from the inside out: call `fgetc`, store the result in `c`, then compare `c` with `EOF`. The extra parentheses matter. Without them, `c = fgetc(fp) != EOF` compares first (`!=` runs before `=`), so `c` gets 1 or 0 instead of the character.
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+int main(void) {
+    FILE *fp;
+    int c, chars = 0, lines = 0;    /* c is an int, not a char */
+
+    fp = fopen("motto.txt", "w");
+    if (fp == NULL) {
+        printf("Cannot create motto.txt\n");
+        return 1;
+    }
+    fprintf(fp, "Code daily.\nTest often.\n");
+    fclose(fp);
+
+    fp = fopen("motto.txt", "r");
+    if (fp == NULL) {
+        printf("Cannot open motto.txt\n");
+        return 1;
+    }
+    while ((c = fgetc(fp)) != EOF) {
+        fputc(toupper(c), stdout);   /* stdout is a FILE * too */
+        chars++;
+        if (c == '\n')
+            lines++;
+    }
+    fclose(fp);
+
+    printf("%d characters, %d lines\n", chars, lines);
+    return 0;
+}
+```
+
+Output:
+```
+CODE DAILY.
+TEST OFTEN.
+24 characters, 2 lines
+```
+
+Each line has 11 visible characters plus its `'\n'`, so 12 + 12 = 24 characters. Counting the `'\n'` characters counts the lines. Note `fputc(toupper(c), stdout)`: `stdout` is a `FILE *` too, so `fputc` can write to the screen.
+
+### Common Mistakes
+
+- `char c;` instead of `int c;`.
+- Missing the parentheses around `c = fgetc(fp)`.
+- Forgetting that `'\n'` is a character too. It counts toward the total.
+
+---
+
+<!-- kind: content -->
+## Line I/O: fgets() and fputs()
+
+Most text files are made of lines, so the most useful reading function reads one line at a time.
+
+### `fgets`
+
+```c
+char line[80];
+fgets(line, sizeof line, fp);
+```
+
+`fgets` reads characters into `line` until it has read a `'\n'` **or** has filled `size − 1` characters, then adds `'\0'`. Three things to remember:
+
+- It **keeps** the `'\n'` at the end of the line (if there was room for it).
+- It never writes past the buffer, which is why it is safe.
+- It returns `NULL` when there is nothing left to read, so `while (fgets(...) != NULL)` reads a whole file.
+
+To remove the newline, use `strcspn` from `<string.h>`, which returns the position of the first `'\n'` (or the string's length if there is none): `line[strcspn(line, "\n")] = '\0';`.
+
+### `fputs`
+
+`fputs(str, fp)` writes a string to the file and does **not** add a newline. (`puts` adds one when it prints to the screen; `fputs` does not.) Write the `'\n'` yourself.
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+    FILE *fp;
+    char line[80];
+    int n = 0;
+
+    fp = fopen("names.txt", "w");
+    if (fp == NULL) {
+        printf("Cannot create names.txt\n");
+        return 1;
+    }
+    fputs("Ana Reyes\n", fp);       /* fputs adds no newline, so we */
+    fputs("Ben Dela Cruz\n", fp);   /* write each \n ourselves      */
+    fputs("Carla Santos\n", fp);
+    fclose(fp);
+
+    fp = fopen("names.txt", "r");
+    if (fp == NULL) {
+        printf("Cannot open names.txt\n");
+        return 1;
+    }
+    while (fgets(line, sizeof line, fp) != NULL) {
+        line[strcspn(line, "\n")] = '\0';    /* cut off the newline */
+        n++;
+        printf("%d. %s (%d characters)\n", n, line, (int)strlen(line));
+    }
+    fclose(fp);
+    return 0;
+}
+```
+
+Output:
+```
+1. Ana Reyes (9 characters)
+2. Ben Dela Cruz (13 characters)
+3. Carla Santos (12 characters)
+```
+
+`fscanf(fp, "%s", ...)` would have read "Ben Dela Cruz" as three separate words. `fgets` reads the full line, spaces and all. If a line is longer than the buffer, `fgets` returns it in pieces, so give the buffer room.
+
+### Reading a Line from the Keyboard
+
+The keyboard is the stream `stdin`, so `fgets(name, sizeof name, stdin);` reads a full name with spaces. Never use `gets`: it has no size limit and was removed from the C language in C11.
+
+### Common Mistakes
+
+- Forgetting that the `'\n'` is still in the string, then wondering why a comparison with `strcmp` fails.
+- Passing the wrong size. `sizeof line` works only when `line` is an actual array, not a pointer parameter.
+- Expecting `fputs` to start a new line.
+
+---
+
+<!-- kind: content -->
+## Putting It Together: A Small Records Program
+
+Here is everything from this lesson and Lesson 4 (Structures) in one program. Each student is a `Student` structure. `save_student` **appends** one record to records.txt, and `list_students` reads every record back and reports the average.
+
+```c
+#include <stdio.h>
+
+#define FILENAME "records.txt"
+
+typedef struct {
+    int   id;
+    char  name[30];
+    float gwa;
+} Student;
+
+/* Add one record to the end of the file. Returns 1 if it worked. */
+int save_student(const Student *s) {
+    FILE *fp = fopen(FILENAME, "a");
+
+    if (fp == NULL)
+        return 0;
+    fprintf(fp, "%d %s %.2f\n", s->id, s->name, s->gwa);
+    fclose(fp);
+    return 1;
+}
+
+/* Print every record in the file and return how many there were. */
+int list_students(void) {
+    FILE *fp = fopen(FILENAME, "r");
+    Student s;
+    int count = 0;
+    float total = 0;
+
+    if (fp == NULL) {
+        printf("No records yet.\n");
+        return 0;
+    }
+    printf("%-6s %-8s %s\n", "ID", "Name", "GWA");
+    while (fscanf(fp, "%d %29s %f", &s.id, s.name, &s.gwa) == 3) {
+        printf("%-6d %-8s %.2f\n", s.id, s.name, s.gwa);
+        total += s.gwa;
+        count++;
+    }
+    fclose(fp);
+    if (count > 0)
+        printf("%d records, average GWA %.2f\n", count, total / count);
+    return count;
+}
+
+int main(void) {
+    Student batch[3] = {
+        {1001, "Reyes", 1.75f},
+        {1002, "Cruz", 2.25f},
+        {1003, "Santos", 1.50f}
+    };
+    int i;
+
+    remove(FILENAME);            /* start fresh for this demo */
+    for (i = 0; i < 3; i++)
+        if (!save_student(&batch[i]))
+            printf("Could not save %s\n", batch[i].name);
+
+    list_students();
+    return 0;
+}
+```
+
+The file records.txt holds:
+```
+1001 Reyes 1.75
+1002 Cruz 2.25
+1003 Santos 1.50
+```
+
+Output:
+```
+ID     Name     GWA
+1001   Reyes    1.75
+1002   Cruz     2.25
+1003   Santos   1.50
+3 records, average GWA 1.83
+```
+
+### How It Fits Together
+
+- **One record per line, fields separated by spaces.** `fprintf` writes the line and `fscanf(... "%d %29s %f" ...) == 3` reads it back. The format used to write must match the format used to read.
+- **`"a"` for adding, `"r"` for listing.** Because `save_student` uses `"a"`, every run adds to the file. `main` calls `remove(FILENAME)` (from `<stdio.h>`, it deletes a file) only so this demo starts the same way each time. Delete that line and run the program twice: you will see six records.
+- **The functions take a pointer.** `save_student(const Student *s)` reads the record through `s->id`, without copying the whole structure. `const` promises it will not change it.
+- **Every `fopen` has its own `NULL` check and its own `fclose`.** `list_students` treats a missing file as "no records yet", which is exactly what happens on the very first run.
+
+### Limits of This Format
+
+Names must be a single word, because `%s` stops at spaces. Real programs handle full names by reading lines with `fgets` and splitting them, or by using a separator character such as a comma. Try that in the exercises once this version makes sense.
+
+---
+
+<!-- kind: content -->
+## Key Takeaways
+
+- Data in variables disappears when the program ends; a file keeps it. C reaches a file through a stream, held in a `FILE *` pointer.
+- `fopen(name, mode)` opens a file: `"r"` reads, `"w"` creates or **erases**, `"a"` adds to the end. Always check the pointer for `NULL`, and `fclose` every file you open.
+- `fprintf` and `fscanf` work like `printf` and `scanf` with a `FILE *` first. `fscanf` returns how many items it read, so loop with `while (fscanf(...) == 2)`, not `while (!feof(fp))`.
+- `fgetc` returns an `int`, so store it in an `int` and compare it with `EOF`; `fputc` writes one character.
+- `fgets(buf, size, fp)` reads one line, keeps the `'\n'`, and returns `NULL` at the end of the file. `fputs` writes a string without adding a newline.
+
+---
+
+<!-- kind: activity -->
+## Practice Exercises, Lesson 5
+
+**Conceptual questions:**
+1. Why do programs need files when they already have variables?
+2. What is the difference between the modes `"w"` and `"a"`? Between `"r"` and `"r+"`?
+3. Give two situations in which `fopen` returns `NULL`. What should the program do then?
+4. Why must the variable that stores the result of `fgetc` be an `int` and not a `char`?
+5. A line in a file reads `Ben Dela Cruz`. What does `fscanf(fp, "%s", name)` store in `name`? What does `fgets(name, 30, fp)` store?
+
+**Find the errors (seven in all: some stop it compiling, the rest are bugs):**
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE fp;
+    char c;
+
+    fp = fopen("data.txt", 'r');
+    while (c = fgetc(fp) != EOF)
+        putchar(c);
+    return 0;
+}
+```
+
+**Trace the output:**
+
+(a) What does this print? Look closely at what the file holds.
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp;
+    int n, sum = 0, count = 0;
+
+    fp = fopen("nums.txt", "w");
+    if (fp == NULL) return 1;
+    fprintf(fp, "4 7 x 9\n");
+    fclose(fp);
+
+    fp = fopen("nums.txt", "r");
+    if (fp == NULL) return 1;
+    while (fscanf(fp, "%d", &n) == 1) {
+        sum += n;
+        count++;
+    }
+    fclose(fp);
+    printf("count=%d sum=%d\n", count, sum);
+    return 0;
+}
+```
+
+(b) What does this print?
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp;
+    char line[20];
+
+    fp = fopen("log.txt", "w");  fputs("A\n", fp);  fclose(fp);
+    fp = fopen("log.txt", "a");  fputs("B\n", fp);  fclose(fp);
+    fp = fopen("log.txt", "a");  fputs("C\n", fp);  fclose(fp);
+    fp = fopen("log.txt", "w");  fputs("D\n", fp);  fclose(fp);
+    fp = fopen("log.txt", "a");  fputs("E\n", fp);  fclose(fp);
+
+    fp = fopen("log.txt", "r");
+    while (fgets(line, sizeof line, fp) != NULL)
+        printf("%s", line);
+    fclose(fp);
+    return 0;
+}
+```
+
+**Programming exercises:**
+1. Ask the user for 5 integers and save them to numbers.txt, one per line. Close the file, open it again, and print the largest number.
+2. Count the vowels (upper and lower case) in a text file using `fgetc`.
+3. Copy in.txt to out.txt line by line, putting the line number and a colon in front of each line.
+4. Extend the records program from the notes: add a function that prints only the students with a GWA of 2.00 or better (2.00 or lower), and one that returns how many records the file holds.
+
+---
+
+---
