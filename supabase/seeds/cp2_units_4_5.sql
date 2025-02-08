@@ -12,7 +12,8 @@
 --
 -- Every row has a fixed id and is upserted, so this file is safe to
 -- re-run and deletes nothing. Run after cp2_modules_sections.sql (which
--- clears the subject's modules).
+-- clears the subject's modules). Migration
+-- 20261101001100_cp2_units_4_5.sql carries the same rows to production.
 --
 -- Every C program shown here was compiled with cc -std=c99 -Wall -Wextra
 -- and run, and its output checked against the text.
