@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 // CP2 Lesson 4 (Structures) and Lesson 5 (File Handling): the seed rows (the
 // repo source of truth) checked for the CP1 lesson shape, every body rendered
-// through the reader's own markdown component and the content linter, and the
-// migration cross-checked row by row.
+// through the reader's own markdown component and the content linter, the
+// diagrams checked like CP1's, and the migration cross-checked row by row.
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it, expect } from "vitest";
@@ -170,5 +170,64 @@ describe("CP2 Lessons 4-5 migration", () => {
   it("carries exactly the seed's modules and sections", () => {
     expect(modules(MIGRATION)).toEqual(modules(SEED));
     expect(migrationRows.map((r) => r.id).sort()).toEqual(rows.map((r) => r.id).sort());
+  });
+});
+
+// The diagrams are static SVGs shown as <img>, like CP1's: no page CSS or
+// theme reaches inside, so the same rules keep them usable for every reader.
+describe.each(["lesson-4-struct-pointer.svg", "lesson-5-fopen-modes.svg"])("diagram %s", (file) => {
+  const source = readFileSync(join(ROOT, "public", "diagrams", "cp2", file), "utf8");
+  const svg = new DOMParser().parseFromString(source, "image/svg+xml")
+    .documentElement as unknown as SVGSVGElement;
+
+  it("parses and has a title and description as its accessible name", () => {
+    expect(svg.getElementsByTagName("parsererror")).toHaveLength(0);
+    expect(svg.getAttribute("role")).toBe("img");
+    expect(svg.getAttribute("aria-labelledby")).toBe("title desc");
+    expect(svg.querySelector("title")?.textContent?.trim().length).toBeGreaterThan(10);
+    expect(svg.querySelector("desc")?.textContent?.trim().length).toBeGreaterThan(80);
+  });
+
+  it("is drawn for a phone column, with every font at 12px or more", () => {
+    const [, , w, h] = (svg.getAttribute("viewBox") ?? "").split(/[\s,]+/).map(Number);
+    expect(w).toBeLessThanOrEqual(400);
+    expect(Number(svg.getAttribute("width"))).toBe(w);
+    expect(Number(svg.getAttribute("height"))).toBe(h);
+    const sizes = [...source.matchAll(/(\d+(?:\.\d+)?)px/g)].map((m) => Number(m[1]));
+    expect(sizes.length).toBeGreaterThan(0);
+    for (const size of sizes) expect(size).toBeGreaterThanOrEqual(12);
+  });
+
+  it("puts every label on a filled shape, never on the page background", () => {
+    // White text on a transparent canvas vanishes in the light theme. Every
+    // <text> must sit inside some <rect>.
+    const rects = Array.from(svg.querySelectorAll("rect")).map((r) => ({
+      x: Number(r.getAttribute("x")),
+      y: Number(r.getAttribute("y")),
+      w: Number(r.getAttribute("width")),
+      h: Number(r.getAttribute("height")),
+    }));
+    for (const t of Array.from(svg.querySelectorAll("text"))) {
+      const x = Number(t.getAttribute("x"));
+      const y = Number(t.getAttribute("y"));
+      const inside = rects.some((r) => x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h);
+      expect(inside, t.textContent ?? "").toBe(true);
+    }
+  });
+
+  it("has no full-canvas backdrop, no currentColor, and nothing executable", () => {
+    const [, , w, h] = (svg.getAttribute("viewBox") ?? "").split(/[\s,]+/).map(Number);
+    for (const r of Array.from(svg.querySelectorAll("rect"))) {
+      const covers = Number(r.getAttribute("width")) >= w - 4 && Number(r.getAttribute("height")) >= h - 4;
+      expect(covers).toBe(false);
+    }
+    expect(source).not.toMatch(/currentColor/i);
+    expect(svg.querySelectorAll("script, foreignObject, image, a")).toHaveLength(0);
+    for (const el of Array.from(svg.querySelectorAll("*"))) {
+      for (const attr of Array.from(el.attributes)) {
+        expect(attr.name.startsWith("on")).toBe(false);
+        expect(attr.value).not.toMatch(/^(https?:|javascript:|data:)/i);
+      }
+    }
   });
 });
