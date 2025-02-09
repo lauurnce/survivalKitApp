@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364" height="344" viewBox="-2 -2 364 344" role="img" aria-labelledby="title desc">
+  <title id="title">What the fopen modes r, w and a do to a file</title>
+  <desc id="desc">Before: the file log.txt holds one line, A. Opened with "r", the file is only read, from the start, and still holds A. Opened with "w", the old contents are erased first, so after writing B the file holds only B. Opened with "a", writing goes to the end, so after writing B the file holds A then B. If the file does not exist, "r" makes fopen return NULL, while "w" and "a" create a new empty file. Always check if (fp == NULL) before using the pointer.</desc>
+  <style>
+    .c { font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .a { font: 600 12px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .big { font: 700 22px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .n { font: 500 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .h { font: 700 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; letter-spacing: 0.08em; }
+    .ln { stroke: #7d838a; stroke-width: 2; fill: none; }
+    .frame { fill: #2f4858; stroke: #7d838a; stroke-width: 1; }
+    .cell { fill: #3d6b5a; stroke: #7d838a; stroke-width: 1; }
+    .ptr { fill: #b83820; stroke: #7d838a; stroke-width: 1; }
+    .pill { fill: #5b6168; stroke: #7d838a; stroke-width: 1; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7d838a"/>
+    </marker>
+  </defs>
+  <g text-anchor="middle" dominant-baseline="central">
+    <rect class="pill" x="0" y="0" width="150" height="26" rx="13"/>
+    <text class="h" x="75" y="13">fopen MODES</text>
+
+    <rect class="cell" x="0" y="36" width="360" height="28" rx="6"/>
+    <text class="n" x="180" y="50">log.txt holds A. Then w and a each write B.</text>
+
+    <rect class="frame" x="0" y="76" width="112" height="150"/>
+    <text class="big" x="56" y="96">"r"</text>
+    <text class="a" x="56" y="120">read</text>
+    <rect class="cell" x="12" y="136" width="88" height="56"/>
+    <text class="c" x="56" y="156">A</text>
+    <text class="a" x="56" y="210">unchanged</text>
+
+    <rect class="frame" x="124" y="76" width="112" height="150"/>
+    <text class="big" x="180" y="96">"w"</text>
+    <text class="a" x="180" y="120">write</text>
+    <rect class="cell" x="136" y="136" width="88" height="56"/>
+    <text class="c" x="180" y="156">B</text>
+    <text class="a" x="180" y="210">A was erased</text>
+
+    <rect class="frame" x="248" y="76" width="112" height="150"/>
+    <text class="big" x="304" y="96">"a"</text>
+    <text class="a" x="304" y="120">append</text>
+    <rect class="cell" x="260" y="136" width="88" height="56"/>
+    <text class="c" x="304" y="156">A</text>
+    <text class="c" x="304" y="176">B</text>
+    <text class="a" x="304" y="210">B added</text>
+
+    <rect class="pill" x="0" y="236" width="200" height="26" rx="13"/>
+    <text class="h" x="100" y="249">IF THE FILE IS MISSING</text>
+
+    <rect class="ptr" x="0" y="272" width="112" height="28" rx="6"/>
+    <text class="a" x="56" y="286">r: NULL</text>
+    <rect class="cell" x="124" y="272" width="112" height="28" rx="6"/>
+    <text class="a" x="180" y="286">w: created</text>
+    <rect class="cell" x="248" y="272" width="112" height="28" rx="6"/>
+    <text class="a" x="304" y="286">a: created</text>
+
+    <rect class="frame" x="0" y="312" width="360" height="28" rx="6"/>
+    <text class="c" x="180" y="326">always check: if (fp == NULL)</text>
+  </g>
+</svg>

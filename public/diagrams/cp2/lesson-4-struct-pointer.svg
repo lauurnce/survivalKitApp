@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364" height="372" viewBox="-2 -2 364 372" role="img" aria-labelledby="title desc">
+  <title id="title">A pointer to a structure and the arrow operator</title>
+  <desc id="desc">The structure variable a, of type Account, sits at an example address 3000 and has two members: name holds Ana Reyes and balance holds 750.50. The pointer p was set with p = &amp;a, so it holds 3000 and points at the whole structure. With the variable itself, use the dot: a.balance. With the pointer, use the arrow: p-&gt;balance, which means the same as (*p).balance. Writing *p.balance is an error, because the dot runs first and it reads as *(p.balance).</desc>
+  <style>
+    .c { font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .a { font: 600 12px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .big { font: 700 22px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .n { font: 500 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .h { font: 700 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; letter-spacing: 0.08em; }
+    .ln { stroke: #7d838a; stroke-width: 2; fill: none; }
+    .frame { fill: #2f4858; stroke: #7d838a; stroke-width: 1; }
+    .cell { fill: #3d6b5a; stroke: #7d838a; stroke-width: 1; }
+    .ptr { fill: #b83820; stroke: #7d838a; stroke-width: 1; }
+    .pill { fill: #5b6168; stroke: #7d838a; stroke-width: 1; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7d838a"/>
+    </marker>
+  </defs>
+  <g text-anchor="middle" dominant-baseline="central">
+    <rect class="pill" x="0" y="0" width="230" height="26" rx="13"/>
+    <text class="h" x="115" y="13">POINTER TO A STRUCTURE</text>
+
+    <rect class="ptr" x="0" y="56" width="100" height="78"/>
+    <text class="a" x="50" y="70">p</text>
+    <text class="c" x="50" y="94">3000</text>
+    <text class="a" x="50" y="118">p = &amp;a</text>
+
+    <path class="ln" d="M100,94 H146" marker-end="url(#arrow)"/>
+
+    <rect class="frame" x="150" y="36" width="210" height="150"/>
+    <text class="a" x="255" y="52">Account a</text>
+    <rect class="cell" x="166" y="66" width="178" height="40"/>
+    <text class="a" x="255" y="77">name</text>
+    <text class="c" x="255" y="95">Ana Reyes</text>
+    <rect class="cell" x="166" y="112" width="178" height="40"/>
+    <text class="a" x="255" y="123">balance</text>
+    <text class="c" x="255" y="141">750.50</text>
+    <text class="a" x="255" y="170">at address 3000</text>
+
+    <rect class="pill" x="0" y="196" width="170" height="26" rx="13"/>
+    <text class="h" x="85" y="209">WHICH OPERATOR?</text>
+
+    <rect class="cell" x="0" y="232" width="360" height="28" rx="6"/>
+    <text class="c" x="12" y="246" text-anchor="start">a.balance</text>
+    <text class="n" x="348" y="246" text-anchor="end">variable: use the dot</text>
+
+    <rect class="cell" x="0" y="268" width="360" height="28" rx="6"/>
+    <text class="c" x="12" y="282" text-anchor="start">p-&gt;balance</text>
+    <text class="n" x="348" y="282" text-anchor="end">pointer: use the arrow</text>
+
+    <rect class="cell" x="0" y="304" width="360" height="28" rx="6"/>
+    <text class="c" x="12" y="318" text-anchor="start">(*p).balance</text>
+    <text class="n" x="348" y="318" text-anchor="end">same as p-&gt;balance</text>
+
+    <rect class="ptr" x="0" y="340" width="360" height="28" rx="6"/>
+    <text class="c" x="12" y="354" text-anchor="start">*p.balance</text>
+    <text class="n" x="348" y="354" text-anchor="end">error: reads as *(p.balance)</text>
+  </g>
+</svg>
