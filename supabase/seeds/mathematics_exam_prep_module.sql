@@ -155,7 +155,9 @@ Work through these under exam conditions first, 25 minutes, no notes, then check
 
 **11.** (a) $n(A) = 4$. (b) **True**, every element of $\{1,2\}$ is in $A$.
 
-**12.** | $p$ | $\neg p$ | $p \vee \neg p$ |
+**12.**
+
+| $p$ | $\neg p$ | $p \vee \neg p$ |
 |---|---|---|
 | 1 | 0 | 1 |
 | 0 | 1 | 1 |
@@ -396,7 +398,9 @@ $$F_5 = \frac{11.0902 - (-0.0902)}{\sqrt{5}} = \frac{11.1804}{2.2361} \approx 5.
 
 So $F_5 = \mathbf{5}$, matching the sequence $1, 1, 2, 3, 5$.
 
-**22.** | $p$ | $q$ | $p \wedge q$ | $(p \wedge q) \longrightarrow p$ |
+**22.**
+
+| $p$ | $q$ | $p \wedge q$ | $(p \wedge q) \longrightarrow p$ |
 |---|---|---|---|
 | 1 | 1 | 1 | 1 |
 | 1 | 0 | 0 | 1 |
@@ -405,7 +409,9 @@ So $F_5 = \mathbf{5}$, matching the sequence $1, 1, 2, 3, 5$.
 
 True in every row: **tautology**. (Rows 2–4 have a false premise, so the conditional defaults to true.)
 
-**23.** | $p$ | $q$ | $p \vee q$ | $\neg p$ | $(p \vee q) \wedge \neg p$ |
+**23.**
+
+| $p$ | $q$ | $p \vee q$ | $\neg p$ | $(p \vee q) \wedge \neg p$ |
 |---|---|---|---|---|
 | 1 | 1 | 1 | 0 | 0 |
 | 1 | 0 | 1 | 0 | 0 |
@@ -489,7 +495,9 @@ $$F_6 = \frac{17.9443 - 0.0557}{2.2361} = \frac{17.8886}{2.2361} \approx 8.0000$
 
 So $F_6 = \mathbf{8}$. ✓
 
-**22.** | $p$ | $q$ | $p \longrightarrow q$ | $q \longrightarrow p$ | $(p \to q) \wedge (q \to p)$ | $p \longleftrightarrow q$ |
+**22.**
+
+| $p$ | $q$ | $p \longrightarrow q$ | $q \longrightarrow p$ | $(p \to q) \wedge (q \to p)$ | $p \longleftrightarrow q$ |
 |---|---|---|---|---|---|
 | 1 | 1 | 1 | 1 | 1 | 1 |
 | 1 | 0 | 0 | 1 | 0 | 0 |
@@ -498,7 +506,9 @@ So $F_6 = \mathbf{8}$. ✓
 
 The last two columns are identical in every row, so the two propositions are logically equivalent, a biconditional is exactly a two-way conditional.
 
-**23.** | $p$ | $q$ | $r$ | $p \wedge q$ | $\neg r$ | $(p \wedge q) \vee \neg r$ |
+**23.**
+
+| $p$ | $q$ | $r$ | $p \wedge q$ | $\neg r$ | $(p \wedge q) \vee \neg r$ |
 |---|---|---|---|---|---|
 | 1 | 1 | 1 | 1 | 0 | 1 |
 | 1 | 1 | 0 | 1 | 1 | 1 |
@@ -831,7 +841,9 @@ Full working for every item of both final mocks. Where a computation appears, re
 
 **1.** $F_{13} = F_{12} + F_{11} = 144 + 89 = \mathbf{233}$; then $F_{14} = F_{13} + F_{12} = 233 + 144 = \mathbf{377}$.
 
-**2.** | $p$ | $q$ | $p \wedge q$ | $(p \wedge q) \longrightarrow q$ |
+**2.**
+
+| $p$ | $q$ | $p \wedge q$ | $(p \wedge q) \longrightarrow q$ |
 |---|---|---|---|
 | 1 | 1 | 1 | 1 |
 | 1 | 0 | 0 | 1 |
@@ -935,7 +947,9 @@ MST edges: $\{a\text{-}c, \; c\text{-}e, \; a\text{-}b, \; d\text{-}e\}$, total 
 
 **1.** From $F_{19} = F_{18} + F_{17}$: $F_{18} = 4{,}181 - 1{,}597 = \mathbf{2{,}584}$. Then $F_{20} = F_{19} + F_{18} = 4{,}181 + 2{,}584 = \mathbf{6{,}765}$.
 
-**2.** | $p$ | $q$ | $p \vee q$ | $q \vee p$ | $(p \vee q) \longleftrightarrow (q \vee p)$ |
+**2.**
+
+| $p$ | $q$ | $p \vee q$ | $q \vee p$ | $(p \vee q) \longleftrightarrow (q \vee p)$ |
 |---|---|---|---|---|
 | 1 | 1 | 1 | 1 | 1 |
 | 1 | 0 | 1 | 1 | 1 |
