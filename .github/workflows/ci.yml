@@ -52,5 +52,11 @@ jobs:
       - name: Test
         run: npm test
 
+      # Renders every section body in content/ and the supabase/seeds $md$
+      # bodies through the reader's markdown/KaTeX pipeline (QA CT-01/CT-02).
+      # Offline: the database copy is linted with `npm run content:lint`.
+      - name: Content lint
+        run: npm run content:lint -- --files content supabase/seeds
+
       - name: Build
         run: npm run build
