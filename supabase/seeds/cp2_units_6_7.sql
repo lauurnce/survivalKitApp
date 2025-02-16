@@ -131,7 +131,69 @@ long factorial(int n) {
 This version is correct for 0 and every positive n. But a negative argument skips right past 0 and keeps going down, so it never stops. Writing the base case as a range (`n <= 1`) instead of one exact value (`n == 0`) closes that gap.
 
 One more limit to know: factorials grow very fast. On many compilers, including the common ones on Windows, `long` is only 32 bits, so 12! (479001600) is the largest factorial it can hold. 13! overflows and prints a wrong number.
-$md$, 2, null, null)
+$md$, 2, null, null),
+
+('a3000002-0001-0002-0006-000000000003','a3000001-0001-0002-0001-000000000006','content','Tracing the Call Stack',$md$
+To read recursive code you need to know what the computer does on every call.
+
+Each time a function is called, C sets aside a small block of memory for that call, called a **stack frame**. The frame holds the call's own copy of its parameters, its local variables, and the spot to return to when it finishes. Frames are piled on top of each other in an area called the **call stack**. The newest call is always on top, and only the top call is running. When it returns, its frame is removed and the call below it continues from where it stopped.
+
+This is why recursion works at all: `factorial(4)` and `factorial(3)` each have their **own** `n`. They do not overwrite each other.
+
+### Tracing factorial(4)
+
+A recursive call runs in two phases. First it **winds down**: each call is waiting for the answer to a smaller call. Then it **unwinds**: the answers come back up and each waiting call finishes its multiplication.
+
+```
+factorial(4) = 4 * factorial(3)          waits
+  factorial(3) = 3 * factorial(2)        waits
+    factorial(2) = 2 * factorial(1)      waits
+      factorial(1) = 1                   base case, returns 1
+    factorial(2) returns 2 * 1 = 2
+  factorial(3) returns 3 * 2 = 6
+factorial(4) returns 4 * 6 = 24
+```
+
+The same trace as a table, in the order things happen:
+
+| Step | Call | n | What happens |
+|---|---|---|---|
+| 1 | factorial(4) | 4 | needs factorial(3), waits |
+| 2 | factorial(3) | 3 | needs factorial(2), waits |
+| 3 | factorial(2) | 2 | needs factorial(1), waits |
+| 4 | factorial(1) | 1 | base case, returns 1 |
+| 5 | factorial(2) | 2 | returns 2 × 1 = 2 |
+| 6 | factorial(3) | 3 | returns 3 × 2 = 6 |
+| 7 | factorial(4) | 4 | returns 4 × 6 = 24 |
+
+At step 4 the stack is at its deepest: four `factorial` frames on top of the frame for `main()`. The last call made (factorial(1)) is the first one to finish. That "last in, first out" order is exactly how a stack of plates works.
+
+![The call stack for factorial(4). Calls wind down from factorial(4) to factorial(3), factorial(2) and factorial(1), each waiting on the next. factorial(1) is the base case and returns 1. The answers unwind back up: factorial(2) returns 2, factorial(3) returns 6, and factorial(4) returns 24.](/diagrams/cp2/lesson-6-call-stack.svg)
+
+### Before the call or after the call?
+
+Where you put the `printf()` relative to the recursive call changes the output completely. This is a favorite exam question.
+
+```c
+void down(int n) {
+    if (n == 0) return;
+    printf("%d ", n);      /* print BEFORE the call */
+    down(n - 1);
+}
+
+void up(int n) {
+    if (n == 0) return;
+    up(n - 1);
+    printf("%d ", n);      /* print AFTER the call */
+}
+```
+
+`down(3)` prints `3 2 1`: each call prints first, then goes deeper.
+
+`up(3)` prints `1 2 3`: each call goes deeper first, and only prints while the stack unwinds. `up(3)` calls `up(2)`, which calls `up(1)`, which calls `up(0)` and returns at once. Then `up(1)` prints 1, returns to `up(2)`, which prints 2, then `up(3)` prints 3.
+
+**Rule of thumb:** work done before the recursive call happens on the way down, in calling order. Work done after it happens on the way back up, in reverse order.
+$md$, 3, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
