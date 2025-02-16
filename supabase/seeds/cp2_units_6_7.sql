@@ -193,7 +193,91 @@ void up(int n) {
 `up(3)` prints `1 2 3`: each call goes deeper first, and only prints while the stack unwinds. `up(3)` calls `up(2)`, which calls `up(1)`, which calls `up(0)` and returns at once. Then `up(1)` prints 1, returns to `up(2)`, which prints 2, then `up(3)` prints 3.
 
 **Rule of thumb:** work done before the recursive call happens on the way down, in calling order. Work done after it happens on the way back up, in reverse order.
-$md$, 3, null, null)
+$md$, 3, null, null),
+
+('a3000002-0001-0002-0006-000000000004','a3000001-0001-0002-0001-000000000006','content','Classic Recursive Functions',$md$
+These come up again and again in quizzes and lab exams. For each one, find the base case and the smaller problem first, and the code almost writes itself.
+
+```c
+#include <stdio.h>
+
+int sumDigits(int n) {
+    if (n < 10)                          /* one digit left */
+        return n;
+    return n % 10 + sumDigits(n / 10);   /* last digit + the rest */
+}
+
+long power(int base, int exp) {
+    if (exp == 0)                        /* anything to the 0 is 1 */
+        return 1;
+    return base * power(base, exp - 1);
+}
+
+int fib(int n) {
+    if (n <= 1)                          /* fib(0) = 0, fib(1) = 1 */
+        return n;
+    return fib(n - 1) + fib(n - 2);
+}
+
+int main(void) {
+    int i;
+    printf("sumDigits(4096) = %d\n", sumDigits(4096));
+    printf("power(2, 5) = %ld\n", power(2, 5));
+    for (i = 0; i <= 9; i++)
+        printf("%d ", fib(i));
+    printf("\n");
+    return 0;
+}
+```
+
+Output:
+
+```
+sumDigits(4096) = 19
+power(2, 5) = 32
+0 1 1 2 3 5 8 13 21 34
+```
+
+### Sum of digits
+
+`n % 10` is the last digit and `n / 10` is everything except the last digit (integer division drops the remainder). A one-digit number is its own sum, so that is the base case.
+
+```
+sumDigits(4096) = 6 + sumDigits(409)
+                = 6 + 9 + sumDigits(40)
+                = 6 + 9 + 0 + sumDigits(4)
+                = 6 + 9 + 0 + 4
+                = 19
+```
+
+### Power
+
+Raising `base` to `exp` means multiplying `base` by itself `exp` times. So 2 to the 5th is 2 × (2 to the 4th), and anything to the 0th is 1.
+
+```
+power(2, 5) = 2 * power(2, 4)
+            = 2 * 2 * power(2, 3)
+            = 2 * 2 * 2 * power(2, 2)
+            = 2 * 2 * 2 * 2 * power(2, 1)
+            = 2 * 2 * 2 * 2 * 2 * power(2, 0)
+            = 2 * 2 * 2 * 2 * 2 * 1 = 32
+```
+
+### Fibonacci
+
+Each Fibonacci number is the sum of the two before it: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, and so on. This function has **two** recursive calls, so it needs two starting values: `fib(0) = 0` and `fib(1) = 1`. The test `n <= 1` returning `n` covers both.
+
+Two calls per level means the work branches like a tree. `fib(5)` calls `fib(4)` and `fib(3)`, but `fib(4)` also calls `fib(3)`, so the same values get recomputed again and again:
+
+| Call | Result | Total calls made |
+|---|---|---|
+| fib(5) | 5 | 15 |
+| fib(10) | 55 | 177 |
+| fib(20) | 6765 | 21,891 |
+| fib(30) | 832040 | 2,692,537 |
+
+Going from `fib(20)` to `fib(30)` multiplies the work by more than 100. A simple loop that keeps the last two numbers needs only about 30 steps for `fib(30)`. Keep this example in mind: recursion is elegant, but it is not automatically efficient.
+$md$, 4, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
