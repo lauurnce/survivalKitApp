@@ -398,7 +398,45 @@ int main(void) {
         printf("%d ", fib(i));
     printf("\n");
     return 0;
-}$code$)
+}$code$),
+
+('a3000002-0001-0002-0006-000000000008','a3000001-0001-0002-0001-000000000006','activity','Practice Exercises, Lesson 6',$md$
+**Conceptual questions:**
+1. What is a recursive function?
+2. Name the two parts every recursive function needs, and say what each one does.
+3. What happens when a recursive function has no base case, or its calls never get closer to it?
+4. What is the call stack, and what does each stack frame hold?
+5. Give one advantage and one disadvantage of recursion compared with a loop.
+
+**Trace the output:**
+
+a. What does `mystery(6)` return? What happens if you call `mystery(5)` instead?
+```c
+int mystery(int n) {
+    if (n == 0)
+        return 0;
+    return n + mystery(n - 2);
+}
+```
+
+b. What does `show(3)` print?
+```c
+void show(int n) {
+    if (n > 0) {
+        show(n - 1);
+        printf("%d ", n);
+        show(n - 1);
+    }
+}
+```
+
+**Programming exercises (solve each one recursively, no loops):**
+1. Write `int sumTo(int n)` that returns 1 + 2 + … + n, and 0 when n is 0.
+2. Write `int countDigits(int n)` that returns how many digits a non-negative integer has. `countDigits(0)` is 1 and `countDigits(90210)` is 5.
+3. Write `void printReverse(int n)` that prints the digits of a non-negative integer backwards. `printReverse(1234)` prints `4321`.
+4. Write `int gcd(int a, int b)` using Euclid's rule: gcd(a, 0) = a, and gcd(a, b) = gcd(b, a % b). Check that `gcd(48, 18)` is 6.
+5. Write `int arraySum(int a[], int n)` that returns the sum of the first n elements of an array.
+$md$, 8, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
