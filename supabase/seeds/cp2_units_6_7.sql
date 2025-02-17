@@ -350,7 +350,55 @@ Prefer a loop when:
 - Recursing on the same input (`f(n)` inside `f(n)`) or a bigger one (`f(n + 1)`) instead of a smaller one.
 - Forgetting `return` in front of the recursive call in a function that returns a value. `factorial(n - 1);` alone throws the answer away.
 - Assuming the base case runs first. It runs **last** on the way down, and its result is the first one returned.
-$md$, 5, null, null)
+$md$, 5, null, null),
+
+('a3000002-0001-0002-0006-000000000006','a3000001-0001-0002-0001-000000000006','content','Key Takeaways',$md$
+- A **recursive** function calls itself. It needs a **base case** that answers without recursing, and a **recursive case** that calls itself on a smaller input.
+- Every recursive call must move toward the base case. If it can skip past it or never reach it, the calls never end.
+- Each call gets its own **stack frame** with its own copy of the parameters. Calls wind down until the base case, then the answers unwind back up in reverse order.
+- Code before the recursive call runs on the way down (`down(3)` prints `3 2 1`); code after it runs on the way back up (`up(3)` prints `1 2 3`).
+- Too many calls at once cause a **stack overflow**. Use recursion when the problem shrinks naturally or splits in half; use a loop when a loop is simpler or the depth could be large.
+$md$, 6, null, null),
+
+('a3000002-0001-0002-0006-000000000007','a3000001-0001-0002-0001-000000000006','content','Try It: Recursion',$md$
+Run it and read the indented trace: each level of indent is one more frame on the call stack. Then try `factorial(6, 0)`, or change the Fibonacci loop to stop at 20 instead of 10.
+$md$, 7, 'c', $code$#include <stdio.h>
+
+void indent(int depth) {
+    int i;
+    for (i = 0; i < depth; i++)
+        printf("  ");
+}
+
+long factorial(int n, int depth) {
+    long result;
+    indent(depth);
+    printf("factorial(%d) called\n", n);
+    if (n <= 1)
+        result = 1;                                 /* base case */
+    else
+        result = n * factorial(n - 1, depth + 1);   /* recursive case */
+    indent(depth);
+    printf("factorial(%d) returns %ld\n", n, result);
+    return result;
+}
+
+int fib(int n) {
+    if (n <= 1)
+        return n;
+    return fib(n - 1) + fib(n - 2);
+}
+
+int main(void) {
+    int i;
+    printf("Answer: %ld\n\n", factorial(4, 0));
+
+    printf("Fibonacci: ");
+    for (i = 0; i <= 10; i++)
+        printf("%d ", fib(i));
+    printf("\n");
+    return 0;
+}$code$)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
