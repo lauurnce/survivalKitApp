@@ -277,7 +277,80 @@ Two calls per level means the work branches like a tree. `fib(5)` calls `fib(4)`
 | fib(30) | 832040 | 2,692,537 |
 
 Going from `fib(20)` to `fib(30)` multiplies the work by more than 100. A simple loop that keeps the last two numbers needs only about 30 steps for `fib(30)`. Keep this example in mind: recursion is elegant, but it is not automatically efficient.
-$md$, 4, null, null)
+$md$, 4, null, null),
+
+('a3000002-0001-0002-0006-000000000005','a3000001-0001-0002-0001-000000000006','content','Recursion vs. Iteration',$md$
+Anything you can do with recursion you can also do with a loop (iteration), and the other way around. Here is factorial both ways:
+
+```c
+long factorialLoop(int n) {
+    long result = 1;
+    int i;
+    for (i = 2; i <= n; i++)
+        result = result * i;
+    return result;
+}
+```
+
+Same answer, no stack of waiting calls: one frame, one loop.
+
+| | Recursion | Iteration (loop) |
+|---|---|---|
+| How it repeats | the function calls itself | `for`, `while`, `do-while` |
+| How it stops | reaching the base case | the loop condition becomes false |
+| Memory | one stack frame per active call | one frame, reused |
+| Speed | slower: every call has overhead | usually faster |
+| Code | short and close to the math definition | sometimes longer |
+| If it never stops | stack overflow, the program crashes | infinite loop, the program hangs |
+
+### Stack overflow
+
+The call stack is small (often around 1 MB on Windows and 8 MB on Linux or macOS). Every active call takes a frame from it. If recursion goes too deep, the stack runs out of room and the program crashes. This is called a **stack overflow**. On Linux or macOS you usually see `Segmentation fault`; on Windows the program just stops, often with a non-zero exit code.
+
+It happens in two ways:
+
+1. **Infinite recursion**: no base case, or a recursive call that never gets closer to it, like `factorial(-1)` with an `n == 0` base case.
+2. **Recursion that is correct but too deep:**
+
+```c
+#include <stdio.h>
+
+long sumTo(long n) {
+    if (n == 0)
+        return 0;
+    return n + sumTo(n - 1);
+}
+
+int main(void) {
+    printf("%ld\n", sumTo(100));
+    printf("%ld\n", sumTo(1000000));   /* far too deep: likely crashes */
+    return 0;
+}
+```
+
+The first call is fine and prints 5050. The second needs a million frames waiting at the same time, so the program crashes before printing anything else. (Built with heavy optimization, some compilers rewrite this function into a loop and it survives. Do not count on it.)
+
+### When should you use recursion?
+
+Use it when:
+
+- The problem is naturally defined in terms of a smaller version of itself: factorial, power, sum of digits, greatest common divisor.
+- The problem **splits in half** each step, like binary search in Lesson 7 (Searching and Sorting). The depth stays tiny: about 20 calls for a million items.
+- The data has a branching shape, like folders inside folders, which you will meet in later data structures courses.
+
+Prefer a loop when:
+
+- A simple loop does the same job clearly, like summing 1 to n.
+- The input can be large, so the depth could be large.
+- The recursion repeats work, like the naive `fib()`.
+
+### Common mistakes
+
+- Forgetting the base case, or writing one the input can skip over.
+- Recursing on the same input (`f(n)` inside `f(n)`) or a bigger one (`f(n + 1)`) instead of a smaller one.
+- Forgetting `return` in front of the recursive call in a function that returns a value. `factorial(n - 1);` alone throws the answer away.
+- Assuming the base case runs first. It runs **last** on the way down, and its result is the first one returned.
+$md$, 5, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
