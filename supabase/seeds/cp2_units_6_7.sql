@@ -436,7 +436,115 @@ void show(int n) {
 3. Write `void printReverse(int n)` that prints the digits of a non-negative integer backwards. `printReverse(1234)` prints `4321`.
 4. Write `int gcd(int a, int b)` using Euclid's rule: gcd(a, 0) = a, and gcd(a, b) = gcd(b, a % b). Check that `gcd(48, 18)` is 6.
 5. Write `int arraySum(int a[], int n)` that returns the sum of the first n elements of an array.
-$md$, 8, null, null)
+$md$, 8, null, null),
+
+('a3000002-0001-0002-0006-000000000009','a3000001-0001-0002-0001-000000000006','activity','Worked Exam Solutions + How-to-Pass Tips, Lesson 6',$md$
+**Answer Key, Conceptual Questions**
+
+1. A recursive function is a function that calls itself, solving a problem by reducing it to a smaller copy of the same problem.
+2. The **base case** is the smallest input, answered directly with no further call; it is what stops the recursion. The **recursive case** calls the function on a smaller input and builds the answer from that result.
+3. The calls never end. Each one takes another stack frame until the call stack runs out of memory and the program crashes with a **stack overflow**.
+4. The call stack is the area of memory where C keeps one **stack frame** for every function call that has started but not yet returned. A frame holds that call's parameters, its local variables, and where to return when it finishes. The newest frame is on top and is the only one running.
+5. Advantage: the code is short and mirrors the problem's definition (factorial, gcd, binary search). Disadvantage: every call costs time and stack memory, so it is usually slower than a loop and can overflow when it goes deep.
+
+**Worked Exam-Style Problem, Trace (a)**
+
+*Solution:* Each call adds `n` and recurses on `n - 2`:
+```
+mystery(6) = 6 + mystery(4)
+           = 6 + 4 + mystery(2)
+           = 6 + 4 + 2 + mystery(0)
+           = 6 + 4 + 2 + 0 = 12
+```
+So `mystery(6)` returns **12**. With 5 the calls go 5, 3, 1, -1, -3, and so on. They jump straight over 0, the base case never matches, and the program crashes with a stack overflow. The fix is a base case that cannot be skipped, such as `if (n <= 0) return 0;`.
+
+**Worked Exam-Style Problem, Trace (b)**
+
+*Solution:* `show(n)` does three things in order: `show(n - 1)`, print `n`, `show(n - 1)` again. `show(0)` does nothing.
+
+- `show(1)`: `show(0)`, print 1, `show(0)`. Prints `1`.
+- `show(2)`: `show(1)`, print 2, `show(1)`. Prints `1 2 1`.
+- `show(3)`: `show(2)`, print 3, `show(2)`. Prints `1 2 1`, then `3`, then `1 2 1`.
+
+Output:
+```
+1 2 1 3 1 2 1
+```
+Build the answer from the smallest case up. Tracing `show(3)` top-down in your head is where students lose track.
+
+**Worked Programming Exercises**
+
+```c
+#include <stdio.h>
+
+int sumTo(int n) {
+    if (n <= 0)
+        return 0;
+    return n + sumTo(n - 1);
+}
+
+int countDigits(int n) {
+    if (n < 10)                 /* 0 to 9: one digit */
+        return 1;
+    return 1 + countDigits(n / 10);
+}
+
+void printReverse(int n) {
+    printf("%d", n % 10);       /* last digit first */
+    if (n >= 10)
+        printReverse(n / 10);   /* then the rest */
+}
+
+int gcd(int a, int b) {
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
+}
+
+int arraySum(int a[], int n) {
+    if (n == 0)                 /* empty array */
+        return 0;
+    return a[n - 1] + arraySum(a, n - 1);
+}
+
+int main(void) {
+    int a[] = {4, 8, 15, 16, 23, 42};
+    printf("sumTo(10) = %d\n", sumTo(10));
+    printf("countDigits(0) = %d\n", countDigits(0));
+    printf("countDigits(90210) = %d\n", countDigits(90210));
+    printReverse(1234);
+    printf("\n");
+    printf("gcd(48, 18) = %d\n", gcd(48, 18));
+    printf("arraySum = %d\n", arraySum(a, 6));
+    return 0;
+}
+```
+
+Output:
+```
+sumTo(10) = 55
+countDigits(0) = 1
+countDigits(90210) = 5
+4321
+gcd(48, 18) = 6
+arraySum = 108
+```
+
+Notes on the trickier ones:
+
+- **countDigits:** the base case is `n < 10`, not `n == 0`. With `n == 0` as the base case, `countDigits(0)` would wrongly return 0.
+- **printReverse:** the digit is printed **before** the recursive call, so the last digit comes out first. Move the `printf()` after the call and it prints the number forwards.
+- **gcd:** the trace for `gcd(48, 18)` is `gcd(18, 12)`, then `gcd(12, 6)`, then `gcd(6, 0)`, which returns 6. Each step the second number shrinks, so it must reach 0. If you call `gcd(18, 48)`, the first step just swaps them into `gcd(48, 18)`.
+- **arraySum:** "the sum of n elements is the last element plus the sum of the first n - 1". The array never gets copied, only `n` shrinks.
+
+**How to Pass Tips**
+
+- For any recursive trace question, write one line per call, indented, exactly like the factorial trace in the notes. Fill in the return values on the way back **up**. Never try to hold the whole chain in your head.
+- Check the base case first. If the input can skip over it (odd numbers stepping by 2, negatives into `n == 0`), the answer is "infinite recursion / stack overflow", and that is often the whole point of the question.
+- Ask "is the `printf()` before or after the recursive call?" Before means calling order; after means reverse order.
+- When you write a recursive function on paper, state the base case in a comment. Professors award partial credit for a correct base case and recursive case even if the syntax is off.
+- If the question says "without loops", a `for` or `while` anywhere in your answer usually scores zero, even if the output is right.
+$md$, 9, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
