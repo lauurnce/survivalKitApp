@@ -544,7 +544,39 @@ Notes on the trickier ones:
 - Ask "is the `printf()` before or after the recursive call?" Before means calling order; after means reverse order.
 - When you write a recursive function on paper, state the base case in a comment. Professors award partial credit for a correct base case and recursive case even if the syntax is off.
 - If the question says "without loops", a `for` or `while` anywhere in your answer usually scores zero, even if the output is right.
-$md$, 9, null, null)
+$md$, 9, null, null),
+
+('a3000002-0001-0002-0006-000000000010','a3000001-0001-0002-0001-000000000006','activity','Code Lab, Lesson 6: Finish the Recursion',$md$
+**Coding Drill:** Finish `sumDigits` and `power` using recursion only, no loops. Each one needs a base case and a recursive case; the comments tell you both. If a call never returns, check that the recursive call uses a smaller input.
+
+Expected output:
+```
+sumDigits(4096) = 19
+sumDigits(7) = 7
+power(2, 10) = 1024
+power(5, 0) = 1
+```
+$md$, 10, 'c', $code$#include <stdio.h>
+
+int sumDigits(int n) {
+    /* TODO: base case, one digit left (n < 10): return n.
+       Recursive case: last digit (n % 10) + sumDigits of the rest (n / 10). */
+    return 0;
+}
+
+long power(int base, int exp) {
+    /* TODO: base case, exp == 0: return 1.
+       Recursive case: base * power(base, exp - 1). */
+    return 0;
+}
+
+int main(void) {
+    printf("sumDigits(4096) = %d\n", sumDigits(4096));
+    printf("sumDigits(7) = %d\n", sumDigits(7));
+    printf("power(2, 10) = %ld\n", power(2, 10));
+    printf("power(5, 0) = %ld\n", power(5, 0));
+    return 0;
+}$code$)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
