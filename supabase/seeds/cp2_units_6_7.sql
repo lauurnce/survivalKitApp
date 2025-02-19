@@ -759,7 +759,84 @@ Calling `binarySearchRec(a, 0, 9, 61)` on the same array returns 8.
 - Using binary search on an **unsorted** array.
 - Writing `while (low < high)`, which stops one step early and misses the key when it is the last element left.
 - Writing `low = mid` or `high = mid` instead of `mid + 1` and `mid - 1`. The range can stop shrinking and the loop never ends.
-$md$, 2, null, null)
+$md$, 2, null, null),
+
+('a3000002-0001-0002-0007-000000000003','a3000001-0001-0002-0001-000000000007','content','Bubble Sort',$md$
+Bubble sort walks through the array comparing each pair of **neighbors**, and swaps them when they are out of order. After one full pass the largest value has "bubbled up" to the last position. Repeat, and the next largest settles just before it, and so on.
+
+```c
+#include <stdio.h>
+
+void bubbleSort(int a[], int n) {
+    int i, j, temp, swapped;
+    for (i = 0; i < n - 1; i++) {          /* one pass per i */
+        swapped = 0;
+        for (j = 0; j < n - 1 - i; j++) {  /* the last i are already in place */
+            if (a[j] > a[j + 1]) {         /* neighbors out of order: swap */
+                temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+                swapped = 1;
+            }
+        }
+        if (!swapped)                      /* a pass with no swaps: done */
+            break;
+    }
+}
+
+int main(void) {
+    int a[] = {29, 10, 14, 37, 13};
+    int i;
+    bubbleSort(a, 5);
+    for (i = 0; i < 5; i++)
+        printf("%d ", a[i]);
+    printf("\n");
+    return 0;
+}
+```
+
+Output:
+
+```
+10 13 14 29 37
+```
+
+### Pass 1, comparison by comparison
+
+Start: `29 10 14 37 13`
+
+| Compare | Out of order? | Array after |
+|---|---|---|
+| 29 and 10 | yes, swap | 10 29 14 37 13 |
+| 29 and 14 | yes, swap | 10 14 29 37 13 |
+| 29 and 37 | no | 10 14 29 37 13 |
+| 37 and 13 | yes, swap | 10 14 29 13 **37** |
+
+37, the largest, is now in its final place.
+
+### Every pass
+
+| Pass | Comparisons | Array after the pass |
+|---|---|---|
+| 1 | 4 | 10 14 29 13 **37** |
+| 2 | 3 | 10 14 13 **29 37** |
+| 3 | 2 | 10 13 **14 29 37** |
+| 4 | 1 | **10 13 14 29 37** |
+
+Bold marks the sorted end of the array: each pass locks one more value into place there, and the last pass locks in the first two together. Each pass compares one pair fewer, because the inner loop stops at `n - 1 - i`: the end of the array is already sorted. In total: 10 comparisons and 5 swaps.
+
+![Bubble sort on 29, 10, 14, 37, 13. Pass 1 makes three swaps and moves 37 to the end. Pass 2 moves 29 into place, pass 3 moves 14, and pass 4 compares 10 and 13 and swaps nothing. Sorted result: 10, 13, 14, 29, 37, after 10 comparisons and 5 swaps.](/diagrams/cp2/lesson-7-bubble-sort-passes.svg)
+
+### The swapped flag
+
+If a whole pass makes **no swaps**, every neighbor is already in order, so the array is sorted and the loop can stop early. On an already sorted array like `1 2 3 4 5` the flag ends bubble sort after one pass of 4 comparisons. Without the flag, it would still run all 4 passes.
+
+### Common mistakes
+
+- Running the inner loop to `j < n` instead of `j < n - 1 - i`. Then `a[j + 1]` reads past the end of the array.
+- Swapping without a temporary variable: `a[j] = a[j + 1]; a[j + 1] = a[j];` copies the same value into both places.
+- Resetting `swapped = 0` outside the outer loop instead of at the start of every pass.
+$md$, 3, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
