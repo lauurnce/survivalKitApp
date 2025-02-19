@@ -10,7 +10,8 @@
 -- ============================================================
 
 INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
-  ('a3000001-0001-0002-0001-000000000006','10000000-0001-0002-0001-000000000001','Lesson 6: Recursion','lesson-6-recursion',6)
+  ('a3000001-0001-0002-0001-000000000006','10000000-0001-0002-0001-000000000001','Lesson 6: Recursion','lesson-6-recursion',6),
+  ('a3000001-0001-0002-0001-000000000007','10000000-0001-0002-0001-000000000001','Lesson 7: Searching and Sorting','lesson-7-searching-and-sorting',7)
 ON CONFLICT (id) DO UPDATE SET
   subject_id = excluded.subject_id,
   title      = excluded.title,
@@ -577,6 +578,84 @@ int main(void) {
     printf("power(5, 0) = %ld\n", power(5, 0));
     return 0;
 }$code$)
+ON CONFLICT (id) DO UPDATE SET
+  module_id     = excluded.module_id,
+  kind          = excluded.kind,
+  heading       = excluded.heading,
+  body_md       = excluded.body_md,
+  sort_order    = excluded.sort_order,
+  ide_language  = excluded.ide_language,
+  starter_code  = excluded.starter_code;
+
+-- ============================================================
+-- LESSON 7: SEARCHING AND SORTING
+-- ============================================================
+
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a3000002-0001-0002-0007-000000000001','a3000001-0001-0002-0001-000000000007','content','Linear Search',$md$
+**Searching** means finding where a value (the **key**) sits in an array, or finding out that it is not there. **Sorting** means putting the elements in order. They go together: a sorted array can be searched much faster, as the next section shows.
+
+### The idea
+
+Linear search (also called sequential search) is what you do when you look for your name on a class list that is not in alphabetical order: start at the top and check each entry, one by one, until you find it or run out of list.
+
+```c
+#include <stdio.h>
+
+int linearSearch(int a[], int n, int key) {
+    int i;
+    for (i = 0; i < n; i++) {
+        if (a[i] == key)
+            return i;          /* found: give back its index */
+    }
+    return -1;                 /* checked everything: not there */
+}
+
+int main(void) {
+    int a[] = {29, 10, 14, 37, 13};
+    printf("%d\n", linearSearch(a, 5, 37));
+    printf("%d\n", linearSearch(a, 5, 50));
+    return 0;
+}
+```
+
+Output:
+
+```
+3
+-1
+```
+
+The function returns the **index** where the key was found. It returns `-1` when the key is missing, because -1 can never be a real index. The caller must check for -1 before using the result as an index.
+
+### Trace: searching for 37 in {29, 10, 14, 37, 13}
+
+| i | a[i] | a[i] == 37? |
+|---|---|---|
+| 0 | 29 | no |
+| 1 | 10 | no |
+| 2 | 14 | no |
+| 3 | 37 | **yes**, return 3 |
+
+Four comparisons. Searching for 50 checks all five elements, finds nothing, and returns -1 after five comparisons.
+
+### How fast is it?
+
+- **Best case:** the key is the first element. 1 comparison.
+- **Worst case:** the key is last, or missing. n comparisons for n elements.
+
+So the work grows in step with the size of the array: twice the elements, twice the comparisons in the worst case.
+
+### When to use it
+
+- The array is **not sorted**. Linear search is the only choice that works on any order.
+- The array is small, or you search it only once.
+
+### Common mistakes
+
+- Putting `return -1;` **inside** the loop (in an `else`). Then the function gives up after checking only `a[0]`.
+- Looping with `i <= n`, which reads `a[n]`, one past the end of the array.
+$md$, 1, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
