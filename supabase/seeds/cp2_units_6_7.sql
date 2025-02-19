@@ -655,7 +655,111 @@ So the work grows in step with the size of the array: twice the elements, twice 
 
 - Putting `return -1;` **inside** the loop (in an `else`). Then the function gives up after checking only `a[0]`.
 - Looping with `i <= n`, which reads `a[n]`, one past the end of the array.
-$md$, 1, null, null)
+$md$, 1, null, null),
+
+('a3000002-0001-0002-0007-000000000002','a3000001-0001-0002-0001-000000000007','content','Binary Search',$md$
+Binary search is how you look up a word in a dictionary. You do not start at page 1. You open near the middle, see whether your word comes before or after that page, and throw away the half that cannot contain it. Then you repeat with the half that is left.
+
+That trick only works because a dictionary is **in order**. Binary search has the same rule: **the array must be sorted first.** On an unsorted array it can miss values that are there.
+
+```c
+#include <stdio.h>
+
+int binarySearch(int a[], int n, int key) {
+    int low = 0, high = n - 1, mid;
+    while (low <= high) {
+        mid = low + (high - low) / 2;
+        if (a[mid] == key)
+            return mid;            /* found */
+        else if (a[mid] < key)
+            low = mid + 1;         /* key is in the right half */
+        else
+            high = mid - 1;        /* key is in the left half */
+    }
+    return -1;                     /* low passed high: not there */
+}
+
+int main(void) {
+    int a[] = {3, 8, 15, 21, 27, 34, 42, 56, 61, 70};
+    printf("%d\n", binarySearch(a, 10, 15));
+    printf("%d\n", binarySearch(a, 10, 40));
+    return 0;
+}
+```
+
+Output:
+
+```
+2
+-1
+```
+
+`low` and `high` mark the part of the array that could still hold the key. Each pass looks at the middle element, `mid`, and either finds the key or moves `low` or `high` past `mid`, cutting the range in half. When `low` passes `high`, the range is empty and the key is not there.
+
+`mid = low + (high - low) / 2` gives the same answer as `(low + high) / 2` for normal sizes. Integer division drops the .5, so the middle of 0 and 9 is 4. The longer form just avoids overflow when `low + high` is bigger than an `int` can hold.
+
+### Trace: searching for 15
+
+The array, with its indexes:
+
+| index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| value | 3 | 8 | 15 | 21 | 27 | 34 | 42 | 56 | 61 | 70 |
+
+| Step | low | high | mid | a[mid] | Decision |
+|---|---|---|---|---|---|
+| 1 | 0 | 9 | 4 | 27 | 27 > 15, so high = 3 |
+| 2 | 0 | 3 | 1 | 8 | 8 < 15, so low = 2 |
+| 3 | 2 | 3 | 2 | 15 | found, return 2 |
+
+### Trace: searching for 40 (not in the array)
+
+| Step | low | high | mid | a[mid] | Decision |
+|---|---|---|---|---|---|
+| 1 | 0 | 9 | 4 | 27 | 27 < 40, so low = 5 |
+| 2 | 5 | 9 | 7 | 56 | 56 > 40, so high = 6 |
+| 3 | 5 | 6 | 5 | 34 | 34 < 40, so low = 6 |
+| 4 | 6 | 6 | 6 | 42 | 42 > 40, so high = 5 |
+| | 6 | 5 | | | low > high, return -1 |
+
+Four comparisons to prove 40 is missing. Linear search would have needed all ten.
+
+### How fast is it?
+
+Every step halves what is left, so the number of steps is how many times you can halve n before reaching 1:
+
+| Elements | Linear search, worst | Binary search, worst |
+|---|---|---|
+| 10 | 10 | 4 |
+| 1,000 | 1,000 | 10 |
+| 1,000,000 | 1,000,000 | 20 |
+
+### Binary search with recursion
+
+Binary search is the "split in half" kind of problem from Lesson 6 (Recursion). The range shrinks every call, and there are two base cases: the range is empty, or the middle is the key.
+
+```c
+int binarySearchRec(int a[], int low, int high, int key) {
+    int mid;
+    if (low > high)                  /* base case 1: empty range */
+        return -1;
+    mid = low + (high - low) / 2;
+    if (a[mid] == key)               /* base case 2: found */
+        return mid;
+    if (a[mid] < key)
+        return binarySearchRec(a, mid + 1, high, key);
+    return binarySearchRec(a, low, mid - 1, key);
+}
+```
+
+Calling `binarySearchRec(a, 0, 9, 61)` on the same array returns 8.
+
+### Common mistakes
+
+- Using binary search on an **unsorted** array.
+- Writing `while (low < high)`, which stops one step early and misses the key when it is the last element left.
+- Writing `low = mid` or `high = mid` instead of `mid + 1` and `mid - 1`. The range can stop shrinking and the loop never ends.
+$md$, 2, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
