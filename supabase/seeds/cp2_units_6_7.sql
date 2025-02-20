@@ -917,7 +917,114 @@ A trace question often shows the array after each pass and asks which sort produ
 - Selection sort: swapping inside the inner loop every time a smaller value turns up. That is extra swaps, and no longer selection sort.
 - Insertion sort: writing `a[j] > a[i]` in the `while`. `a[i]` gets overwritten by the first shift, which is why the key is saved in `key` first.
 - Insertion sort: checking `a[j] > key` before `j >= 0`. The order matters: `j >= 0 && a[j] > key` stops before reading `a[-1]`.
-$md$, 4, null, null)
+$md$, 4, null, null),
+
+('a3000002-0001-0002-0007-000000000005','a3000001-0001-0002-0001-000000000007','content','Sorting an Array of Structs by a Field',$md$
+In real programs you rarely sort bare numbers. You sort **records**: students by GWA, products by price, names A to Z. With the structures from Lesson 4 (Structures), the sorting algorithm stays exactly the same. Only two lines change:
+
+1. **Compare one field**, such as `s[j].gwa < s[min].gwa`.
+2. **Swap the whole struct**, using a temporary variable of the struct type.
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+struct Student {
+    char name[20];
+    float gwa;
+};
+
+/* Selection sort by GWA, lowest (best) first */
+void sortByGwa(struct Student s[], int n) {
+    int i, j, min;
+    struct Student temp;
+    for (i = 0; i < n - 1; i++) {
+        min = i;
+        for (j = i + 1; j < n; j++) {
+            if (s[j].gwa < s[min].gwa)      /* compare ONE field... */
+                min = j;
+        }
+        if (min != i) {
+            temp = s[i];                     /* ...but swap the WHOLE struct */
+            s[i] = s[min];
+            s[min] = temp;
+        }
+    }
+}
+
+/* Bubble sort by name, A to Z */
+void sortByName(struct Student s[], int n) {
+    int i, j;
+    struct Student temp;
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - 1 - i; j++) {
+            if (strcmp(s[j].name, s[j + 1].name) > 0) {
+                temp = s[j];
+                s[j] = s[j + 1];
+                s[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void printAll(struct Student s[], int n) {
+    int i;
+    for (i = 0; i < n; i++)
+        printf("%-10s %.2f\n", s[i].name, s[i].gwa);
+}
+
+int main(void) {
+    struct Student s[4] = {
+        {"Santos", 1.75f}, {"Reyes", 1.25f},
+        {"Cruz", 2.00f},   {"Bautista", 1.50f}
+    };
+
+    sortByGwa(s, 4);
+    printf("By GWA:\n");
+    printAll(s, 4);
+
+    sortByName(s, 4);
+    printf("By name:\n");
+    printAll(s, 4);
+    return 0;
+}
+```
+
+Output:
+
+```
+By GWA:
+Reyes      1.25
+Bautista   1.50
+Santos     1.75
+Cruz       2.00
+By name:
+Bautista   1.50
+Cruz       2.00
+Reyes      1.25
+Santos     1.75
+```
+
+A few things to notice:
+
+- In the Philippine grading system a **lower** GWA is better, so sorting from lowest to highest lists the best student first. To sort the other way, flip `<` to `>`.
+- `temp = s[i];` copies a whole struct in one assignment, name and GWA together. C allows `=` between structs of the same type, even though it does not allow it between arrays.
+- Strings cannot be compared with `<` or `>`. Use `strcmp()` from `<string.h>` (Lesson 2, Strings): it returns a positive number when the first string comes **after** the second alphabetically, which is exactly when the pair is out of order.
+
+### Common mistake: swapping only the field
+
+```c
+temp_gwa = s[i].gwa;        /* WRONG */
+s[i].gwa = s[min].gwa;
+s[min].gwa = temp_gwa;
+```
+
+The GWAs end up sorted, but the names stay where they were, so every grade is now attached to the wrong student. Always move the whole record.
+
+### Ties
+
+When two records have the same key (two students with a 1.50 GWA), bubble sort and insertion sort keep them in their original order, because they only move a record past a strictly bigger one. Sorts that do this are called **stable**. Selection sort as written here is not: its long-distance swap can jump one record over an equal one.
+$md$, 5, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
