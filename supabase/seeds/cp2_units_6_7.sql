@@ -836,7 +836,88 @@ If a whole pass makes **no swaps**, every neighbor is already in order, so the a
 - Running the inner loop to `j < n` instead of `j < n - 1 - i`. Then `a[j + 1]` reads past the end of the array.
 - Swapping without a temporary variable: `a[j] = a[j + 1]; a[j + 1] = a[j];` copies the same value into both places.
 - Resetting `swapped = 0` outside the outer loop instead of at the start of every pass.
-$md$, 3, null, null)
+$md$, 3, null, null),
+
+('a3000002-0001-0002-0007-000000000004','a3000001-0001-0002-0001-000000000007','content','Selection Sort and Insertion Sort',$md$
+### Selection sort: find the smallest, put it in front
+
+Selection sort splits the array into a sorted part (on the left, empty at first) and an unsorted part. Each pass **scans the unsorted part for its smallest value** and swaps it into the first unsorted position.
+
+```c
+void selectionSort(int a[], int n) {
+    int i, j, min, temp;
+    for (i = 0; i < n - 1; i++) {
+        min = i;                           /* assume a[i] is the smallest */
+        for (j = i + 1; j < n; j++) {      /* scan the unsorted part */
+            if (a[j] < a[min])
+                min = j;                   /* remember where the smallest is */
+        }
+        if (min != i) {                    /* one swap per pass, at most */
+            temp = a[i];
+            a[i] = a[min];
+            a[min] = temp;
+        }
+    }
+}
+```
+
+Same starting array, `29 10 14 37 13`:
+
+| Pass | Smallest in the unsorted part | Swap | Array after |
+|---|---|---|---|
+| 1 | 10 (index 1) | a[0] with a[1] | **10** 29 14 37 13 |
+| 2 | 13 (index 4) | a[1] with a[4] | **10 13** 14 37 29 |
+| 3 | 14 (index 2) | none, already there | **10 13 14** 37 29 |
+| 4 | 29 (index 4) | a[3] with a[4] | **10 13 14 29 37** |
+
+10 comparisons and only 3 swaps. Selection sort always makes the same number of comparisons whatever the order, but **at most one swap per pass**. That makes it a good choice when swapping is expensive, such as large records.
+
+### Insertion sort: like arranging cards in your hand
+
+Insertion sort also keeps a sorted part on the left. Each pass picks up the next value (the **key**), shifts every bigger value in the sorted part one place to the right, and drops the key into the gap. It is how most people sort a hand of playing cards.
+
+```c
+void insertionSort(int a[], int n) {
+    int i, j, key;
+    for (i = 1; i < n; i++) {
+        key = a[i];                        /* the card being inserted */
+        j = i - 1;
+        while (j >= 0 && a[j] > key) {     /* shift bigger values right */
+            a[j + 1] = a[j];
+            j--;
+        }
+        a[j + 1] = key;                    /* drop key into the gap */
+    }
+}
+```
+
+Same starting array:
+
+| Pass | Key | Shifted right | Array after |
+|---|---|---|---|
+| 1 | 10 | 29 | **10 29** 14 37 13 |
+| 2 | 14 | 29 | **10 14 29** 37 13 |
+| 3 | 37 | nothing | **10 14 29 37** 13 |
+| 4 | 13 | 37, 29, 14 | **10 13 14 29 37** |
+
+Bold is the sorted part. In pass 3, 37 is already bigger than everything before it, so one comparison is enough and nothing moves. In total: 8 comparisons and 5 shifts.
+
+Insertion sort is fast when the array is **almost sorted**: each key only moves a step or two. On `1 2 3 4 5` it makes just 4 comparisons and moves nothing.
+
+### Telling the three apart in an exam
+
+A trace question often shows the array after each pass and asks which sort produced it. Look at pass 1:
+
+- **Bubble:** the **largest** value is now at the **end**.
+- **Selection:** the **smallest** value is now at the **front**, swapped with whatever was there.
+- **Insertion:** only the **first two** elements are in order; the rest has not been touched.
+
+### Common mistakes
+
+- Selection sort: swapping inside the inner loop every time a smaller value turns up. That is extra swaps, and no longer selection sort.
+- Insertion sort: writing `a[j] > a[i]` in the `while`. `a[i]` gets overwritten by the first shift, which is why the key is saved in `key` first.
+- Insertion sort: checking `a[j] > key` before `j >= 0`. The order matters: `j >= 0 && a[j] > key` stops before reading `a[-1]`.
+$md$, 4, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
