@@ -1077,7 +1077,71 @@ Real counts from the traces in this lesson, all on 5 elements:
 - **Small or nearly sorted arrays:** insertion sort.
 - **Swaps are expensive (big structs):** selection sort.
 - **Large arrays:** none of these three. Faster sorts such as merge sort and quick sort run in O(n log n) and come up in Data Structures and Algorithms. The C library also has `qsort()` in `<stdlib.h>`.
-$md$, 6, null, null)
+$md$, 6, null, null),
+
+('a3000002-0001-0002-0007-000000000007','a3000001-0001-0002-0001-000000000007','content','Key Takeaways',$md$
+- **Linear search** checks elements one by one and works on any array: up to n comparisons. **Binary search** halves the range each step, so it needs only about 20 comparisons for a million elements, but the array **must be sorted**.
+- **Bubble sort** swaps neighbors that are out of order; each pass moves the largest remaining value to the end, and a `swapped` flag lets it stop early on sorted data.
+- **Selection sort** finds the smallest value in the unsorted part and swaps it to the front: at most one swap per pass. **Insertion sort** shifts bigger values right and drops each key into place, which makes it fast on nearly sorted data.
+- To sort structs, compare **one field** (use `strcmp()` for strings) but swap the **whole struct** with a temporary struct variable.
+- Big-O describes how work grows with n: O(log n) barely grows, O(n) doubles when n doubles, and O(n²), the class of all three sorts here, quadruples.
+$md$, 7, null, null),
+
+('a3000002-0001-0002-0007-000000000008','a3000001-0001-0002-0001-000000000007','content','Try It: Searching & Sorting',$md$
+Run it to watch bubble sort pass by pass, then binary search narrowing `low` and `high`. Change the array (keep `n` equal to its size), or change `key` to a value that is not there and see what the search returns.
+$md$, 8, 'c', $code$#include <stdio.h>
+
+void printArray(int a[], int n) {
+    int i;
+    for (i = 0; i < n; i++)
+        printf("%d ", a[i]);
+    printf("\n");
+}
+
+void bubbleSort(int a[], int n) {
+    int i, j, temp, swapped;
+    for (i = 0; i < n - 1; i++) {
+        swapped = 0;
+        for (j = 0; j < n - 1 - i; j++) {
+            if (a[j] > a[j + 1]) {
+                temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+                swapped = 1;
+            }
+        }
+        printf("After pass %d: ", i + 1);
+        printArray(a, n);
+        if (!swapped)
+            break;
+    }
+}
+
+int binarySearch(int a[], int n, int key) {
+    int low = 0, high = n - 1, mid;
+    while (low <= high) {
+        mid = low + (high - low) / 2;
+        printf("  low=%d high=%d mid=%d a[mid]=%d\n", low, high, mid, a[mid]);
+        if (a[mid] == key)
+            return mid;
+        else if (a[mid] < key)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return -1;
+}
+
+int main(void) {
+    int a[] = {29, 10, 14, 37, 13};
+    int n = 5, key = 29;
+
+    bubbleSort(a, n);
+
+    printf("\nSearching for %d:\n", key);
+    printf("Found at index %d\n", binarySearch(a, n, key));
+    return 0;
+}$code$)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
