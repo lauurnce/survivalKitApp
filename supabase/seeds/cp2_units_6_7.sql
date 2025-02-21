@@ -1024,7 +1024,60 @@ The GWAs end up sorted, but the names stay where they were, so every grade is no
 ### Ties
 
 When two records have the same key (two students with a 1.50 GWA), bubble sort and insertion sort keep them in their original order, because they only move a record past a strictly bigger one. Sorts that do this are called **stable**. Selection sort as written here is not: its long-distance swap can jump one record over an equal one.
-$md$, 5, null, null)
+$md$, 5, null, null),
+
+('a3000002-0001-0002-0007-000000000006','a3000001-0001-0002-0001-000000000007','content','Comparing the Algorithms: Big-O in Plain Words',$md$
+Saying "bubble sort took 0.2 seconds" is not very useful: the same code runs at a different speed on every computer. Instead, programmers describe **how the work grows as the input grows**. That is what **Big-O notation** says.
+
+You read O(n) as "order n". In plain words:
+
+| Big-O | Plain words | Example |
+|---|---|---|
+| O(1) | the same work no matter how big n is | reading `a[5]` |
+| O(log n) | the work goes up by one step each time n **doubles** | binary search |
+| O(n) | double n, double the work | linear search |
+| O(n²) | double n, **four times** the work | bubble, selection, insertion sort |
+
+Rough step counts as n grows:
+
+| n | O(log n) | O(n) | O(n²) |
+|---|---|---|---|
+| 10 | about 3 | 10 | 100 |
+| 1,000 | about 10 | 1,000 | 1,000,000 |
+| 1,000,000 | about 20 | 1,000,000 | 1,000,000,000,000 |
+
+Big-O ignores small details, such as whether a sort makes n² or n²/2 comparisons. It only cares about the shape of the growth, because for large n the shape is what decides whether a program finishes in a blink or in hours.
+
+### Where does n² come from?
+
+All three sorts have a loop inside a loop. For 5 elements, bubble and selection sort make 4 + 3 + 2 + 1 = 10 comparisons. For n elements, that is n(n - 1) / 2, about half of n². Half of n² still grows like n², so the class is O(n²).
+
+### The lesson's algorithms side by side
+
+| Algorithm | Best case | Worst case | Good to know |
+|---|---|---|---|
+| Linear search | O(1) | O(n) | works on unsorted data |
+| Binary search | O(1) | O(log n) | the array must be sorted |
+| Bubble sort (with flag) | O(n) | O(n²) | many swaps; best case only with the flag |
+| Selection sort | O(n²) | O(n²) | at most n - 1 swaps |
+| Insertion sort | O(n) | O(n²) | fastest of the three on nearly sorted data |
+
+Real counts from the traces in this lesson, all on 5 elements:
+
+| Input | Bubble | Selection | Insertion |
+|---|---|---|---|
+| 29 10 14 37 13 | 10 comparisons, 5 swaps | 10 comparisons, 3 swaps | 8 comparisons, 5 shifts |
+| 1 2 3 4 5 (sorted) | 4 comparisons, 0 swaps | 10 comparisons, 0 swaps | 4 comparisons, 0 shifts |
+| 5 4 3 2 1 (reversed) | 10 comparisons, 10 swaps | 10 comparisons, 2 swaps | 10 comparisons, 10 shifts |
+
+### Which one should you use?
+
+- **Searching once in unsorted data:** linear search. Sorting first just to search once costs more than it saves.
+- **Searching many times:** sort once, then use binary search every time.
+- **Small or nearly sorted arrays:** insertion sort.
+- **Swaps are expensive (big structs):** selection sort.
+- **Large arrays:** none of these three. Faster sorts such as merge sort and quick sort run in O(n log n) and come up in Data Structures and Algorithms. The C library also has `qsort()` in `<stdlib.h>`.
+$md$, 6, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
