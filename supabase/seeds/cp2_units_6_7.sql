@@ -1141,7 +1141,28 @@ int main(void) {
     printf("\nSearching for %d:\n", key);
     printf("Found at index %d\n", binarySearch(a, n, key));
     return 0;
-}$code$)
+}$code$),
+
+('a3000002-0001-0002-0007-000000000009','a3000001-0001-0002-0001-000000000007','activity','Practice Exercises, Lesson 7',$md$
+**Conceptual questions:**
+1. What must be true about an array before you can use binary search on it? Why?
+2. An array has 500 elements. What is the most comparisons linear search can need? Binary search?
+3. In one sentence each, describe what one pass of bubble sort, selection sort, and insertion sort does.
+4. Why does bubble sort with a `swapped` flag finish after a single pass on an array that is already sorted?
+5. What does O(n²) mean in plain words? If n doubles, roughly how much more work does an O(n²) sort do?
+
+**Trace the output:**
+
+a. Use the iterative `binarySearch()` from the notes on `{4, 9, 13, 18, 25, 31, 40}`. Show `low`, `high` and `mid` at every step when searching for 31, then for 10. What does each search return?
+
+b. Show the array after every pass when `{7, 3, 9, 1, 5}` is sorted by (i) bubble sort with the `swapped` flag, (ii) selection sort, (iii) insertion sort.
+
+**Programming exercises:**
+1. Write `int countOccurrences(int a[], int n, int key)` that returns how many times `key` appears in an unsorted array.
+2. Change selection sort so it sorts in **descending** order (largest first).
+3. Given `struct Product { char name[20]; float price; };`, write a function that sorts an array of products from cheapest to most expensive with insertion sort, and print the result.
+4. Write a recursive binary search (see Lesson 6, Recursion) and test it on a sorted array for one key that is present and one that is not.
+$md$, 9, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
