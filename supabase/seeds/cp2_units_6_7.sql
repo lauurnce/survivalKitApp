@@ -1162,7 +1162,149 @@ b. Show the array after every pass when `{7, 3, 9, 1, 5}` is sorted by (i) bubbl
 2. Change selection sort so it sorts in **descending** order (largest first).
 3. Given `struct Product { char name[20]; float price; };`, write a function that sorts an array of products from cheapest to most expensive with insertion sort, and print the result.
 4. Write a recursive binary search (see Lesson 6, Recursion) and test it on a sorted array for one key that is present and one that is not.
-$md$, 9, null, null)
+$md$, 9, null, null),
+
+('a3000002-0001-0002-0007-000000000010','a3000001-0001-0002-0001-000000000007','activity','Worked Exam Solutions + How-to-Pass Tips, Lesson 7',$md$
+**Answer Key, Conceptual Questions**
+
+1. The array must be **sorted**. Binary search throws away half of the range after each comparison, assuming everything left of `mid` is smaller and everything right of it is bigger. In an unsorted array that assumption is false, so it can throw away the half that holds the key.
+2. Linear search: **500** (the key is last or missing). Binary search: **9**, because halving 500 down to 1 takes 9 steps (2 to the 9th is 512).
+3. **Bubble:** compares neighbors left to right and swaps any pair out of order, carrying the largest remaining value to the end. **Selection:** finds the smallest value in the unsorted part and swaps it into the first unsorted position. **Insertion:** takes the next value and shifts bigger sorted values right until it can drop the value into its place.
+4. In a sorted array no neighbors are out of order, so the first pass makes no swaps, `swapped` stays 0, and the `break` ends the sort after n - 1 comparisons.
+5. The work grows with the **square** of the input size. Double n and the work is about **four times** as much (2 × 2); ten times n is about a hundred times the work.
+
+**Worked Exam-Style Problem, Trace (a)**
+
+Array with indexes: 4 (0), 9 (1), 13 (2), 18 (3), 25 (4), 31 (5), 40 (6).
+
+*Searching for 31:*
+
+| Step | low | high | mid | a[mid] | Decision |
+|---|---|---|---|---|---|
+| 1 | 0 | 6 | 3 | 18 | 18 < 31, so low = 4 |
+| 2 | 4 | 6 | 5 | 31 | found, return **5** |
+
+*Searching for 10:*
+
+| Step | low | high | mid | a[mid] | Decision |
+|---|---|---|---|---|---|
+| 1 | 0 | 6 | 3 | 18 | 18 > 10, so high = 2 |
+| 2 | 0 | 2 | 1 | 9 | 9 < 10, so low = 2 |
+| 3 | 2 | 2 | 2 | 13 | 13 > 10, so high = 1 |
+| | 2 | 1 | | | low > high, return **-1** |
+
+**Worked Exam-Style Problem, Trace (b)**
+
+Start: `7 3 9 1 5`
+
+| Pass | (i) Bubble | (ii) Selection | (iii) Insertion |
+|---|---|---|---|
+| 1 | 3 7 1 5 9 | 1 3 9 7 5 | 3 7 9 1 5 |
+| 2 | 3 1 5 7 9 | 1 3 9 7 5 | 3 7 9 1 5 |
+| 3 | 1 3 5 7 9 | 1 3 5 7 9 | 1 3 7 9 5 |
+| 4 | 1 3 5 7 9 | 1 3 5 7 9 | 1 3 5 7 9 |
+
+How to get each column:
+
+- **Bubble:** in pass 1, 7 and 3 swap, 7 and 9 stay, 9 and 1 swap, 9 and 5 swap, so 9 ends up last. Pass 3 still made a swap, so pass 4 runs: it compares 1 and 3 and swaps nothing. Total: 10 comparisons, 6 swaps.
+- **Selection:** pass 1 finds 1 (index 3) and swaps it with 7. In pass 2 the smallest of `3 9 7 5` is 3, already in place, so nothing moves. Pass 3 swaps 5 with 9. In pass 4 the smallest of `7 9` is 7, already in place. Only 2 swaps.
+- **Insertion:** pass 1 inserts 3 before 7. Pass 2 inserts 9, which is already bigger than 7, so nothing changes. Pass 3 shifts 9, 7 and 3 right and puts 1 at the front. Pass 4 shifts 9 and 7 and puts 5 after 3.
+
+Notice that rows 1 and 2 look identical for selection and for insertion. That is correct, and it is a common trap: "the array did not change" is a valid answer for a pass.
+
+**Worked Programming Exercises (#1 to #3)**
+
+```c
+#include <stdio.h>
+
+struct Product {
+    char name[20];
+    float price;
+};
+
+int countOccurrences(int a[], int n, int key) {
+    int i, count = 0;
+    for (i = 0; i < n; i++) {
+        if (a[i] == key)
+            count++;            /* do not return early: keep counting */
+    }
+    return count;
+}
+
+void selectionSortDesc(int a[], int n) {
+    int i, j, max, temp;
+    for (i = 0; i < n - 1; i++) {
+        max = i;
+        for (j = i + 1; j < n; j++) {
+            if (a[j] > a[max])  /* look for the LARGEST instead */
+                max = j;
+        }
+        temp = a[i];
+        a[i] = a[max];
+        a[max] = temp;
+    }
+}
+
+void sortByPrice(struct Product p[], int n) {
+    int i, j;
+    struct Product key;
+    for (i = 1; i < n; i++) {
+        key = p[i];                         /* the whole record */
+        j = i - 1;
+        while (j >= 0 && p[j].price > key.price) {
+            p[j + 1] = p[j];                /* shift the bigger record right */
+            j--;
+        }
+        p[j + 1] = key;
+    }
+}
+
+int main(void) {
+    int a[] = {5, 2, 5, 9, 5, 1};
+    int b[] = {7, 3, 9, 1, 5};
+    struct Product p[4] = {
+        {"Notebook", 45.00f}, {"Ballpen", 12.50f},
+        {"Folder", 8.75f},    {"Calculator", 499.00f}
+    };
+    int i;
+
+    printf("5 appears %d times\n", countOccurrences(a, 6, 5));
+
+    selectionSortDesc(b, 5);
+    for (i = 0; i < 5; i++)
+        printf("%d ", b[i]);
+    printf("\n");
+
+    sortByPrice(p, 4);
+    for (i = 0; i < 4; i++)
+        printf("%-10s %7.2f\n", p[i].name, p[i].price);
+    return 0;
+}
+```
+
+Output:
+```
+5 appears 3 times
+9 7 5 3 1
+Folder        8.75
+Ballpen      12.50
+Notebook     45.00
+Calculator  499.00
+```
+
+- **#1:** unlike `linearSearch()`, the loop must not `return` when it finds a match, or it counts at most one.
+- **#2:** the only real change is `>` instead of `<`. Renaming `min` to `max` keeps the code honest for whoever reads it next.
+- **#3:** `key` is a whole `struct Product`, the comparison reads `.price`, and the shift `p[j + 1] = p[j]` moves the whole record. The name and price always travel together.
+- **#4** is the `binarySearchRec()` function from the Binary Search notes: base cases `low > high` (return -1) and `a[mid] == key` (return `mid`).
+
+**How to Pass Tips**
+
+- Draw the array with its **indexes** above it before any binary search trace. Most wrong answers come from mixing up an index with the value stored there.
+- For a sort trace, write the whole array again after **every** pass, even when nothing changed. Examiners often include a pass with no change to see who skips it.
+- Know the pass-1 fingerprints: largest at the end means bubble, smallest at the front means selection, only the first two in order means insertion.
+- Memorize the inner-loop bounds, because they are what you lose marks on: bubble `j < n - 1 - i`, selection `j = i + 1; j < n`, insertion `while (j >= 0 && a[j] > key)`.
+- For "which algorithm is better" questions, always mention the condition: binary search needs sorted data, insertion sort shines on nearly sorted data, selection sort makes the fewest swaps.
+$md$, 10, null, null)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
