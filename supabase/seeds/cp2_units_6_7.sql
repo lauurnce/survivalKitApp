@@ -1304,7 +1304,56 @@ Calculator  499.00
 - Know the pass-1 fingerprints: largest at the end means bubble, smallest at the front means selection, only the first two in order means insertion.
 - Memorize the inner-loop bounds, because they are what you lose marks on: bubble `j < n - 1 - i`, selection `j = i + 1; j < n`, insertion `while (j >= 0 && a[j] > key)`.
 - For "which algorithm is better" questions, always mention the condition: binary search needs sorted data, insertion sort shines on nearly sorted data, selection sort makes the fewest swaps.
-$md$, 10, null, null)
+$md$, 10, null, null),
+
+('a3000002-0001-0002-0007-000000000011','a3000001-0001-0002-0001-000000000007','activity','Code Lab, Lesson 7: Sort, Then Search',$md$
+**Coding Drill:** Finish `insertionSort()` and `binarySearch()`. The program sorts the array, then searches it twice: once for a value that is there and once for one that is not. Binary search only works because the sort runs first, so get the sort right before you test the search.
+
+Expected output:
+```
+before: 42 7 19 88 3 56 21
+after : 3 7 19 21 42 56 88
+search 56: index 5
+search 20: not found
+```
+$md$, 11, 'c', $code$#include <stdio.h>
+
+void insertionSort(int a[], int n) {
+    /* TODO: for i = 1 to n-1, save key = a[i], shift every bigger
+       element one place right, then drop key into the gap. */
+}
+
+int binarySearch(int a[], int n, int key) {
+    /* TODO: keep low and high, check the middle, throw away the half
+       that cannot hold key. Return the index, or -1 if not found. */
+    return -1;
+}
+
+void printArray(const char *label, int a[], int n) {
+    int i;
+    printf("%s", label);
+    for (i = 0; i < n; i++)
+        printf(" %d", a[i]);
+    printf("\n");
+}
+
+int main(void) {
+    int a[] = {42, 7, 19, 88, 3, 56, 21};
+    int n = 7, pos;
+
+    printArray("before:", a, n);
+    insertionSort(a, n);
+    printArray("after :", a, n);
+
+    pos = binarySearch(a, n, 56);
+    if (pos != -1) printf("search 56: index %d\n", pos);
+    else           printf("search 56: not found\n");
+
+    pos = binarySearch(a, n, 20);
+    if (pos != -1) printf("search 20: index %d\n", pos);
+    else           printf("search 20: not found\n");
+    return 0;
+}$code$)
 ON CONFLICT (id) DO UPDATE SET
   module_id     = excluded.module_id,
   kind          = excluded.kind,
