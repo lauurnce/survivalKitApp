@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364" height="494" viewBox="-2 -2 364 494" role="img" aria-labelledby="title desc">
+  <title id="title">Bubble sort on 29, 10, 14, 37, 13, pass by pass</title>
+  <desc id="desc">The rule: if a[j] &gt; a[j + 1], swap the two neighbors. Pass 1 step by step: compare 29 and 10, swap. Compare 29 and 14, swap. Compare 29 and 37, keep. Compare 37 and 13, swap. 37 is now last. After each pass: pass 1 gives 10 14 29 13 37 with 3 swaps, pass 2 gives 10 14 13 29 37 with 1 swap, pass 3 gives 10 13 14 29 37 with 1 swap, and pass 4 compares 10 and 13 and makes 0 swaps. Green cells are locked in at the end of the array. Sorted after 10 comparisons and 5 swaps.</desc>
+  <style>
+    .t { font: 600 15px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .c { font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .n { font: 500 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .s { font: 700 12px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; letter-spacing: 0.06em; }
+    .ln { stroke: #7d838a; stroke-width: 2; fill: none; }
+    .box { fill: #2f4858; stroke: #7d838a; stroke-width: 1; }
+    .ok { fill: #3d6b5a; stroke: #7d838a; stroke-width: 1; }
+    .ask { fill: #b83820; stroke: #7d838a; stroke-width: 1; }
+    .note { fill: #5b6168; stroke: #7d838a; stroke-width: 1; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7d838a"/>
+    </marker>
+  </defs>
+  <g text-anchor="middle" dominant-baseline="central">
+    <!-- the rule -->
+    <rect class="note" x="0" y="0" width="360" height="44" rx="6"/>
+    <text class="c" x="180" y="13">if (a[j] &gt; a[j + 1])</text>
+    <text class="c" x="180" y="31">swap the two neighbors</text>
+    <rect class="note" x="80" y="54" width="200" height="22" rx="11"/>
+    <text class="s" x="180" y="65">PASS 1, STEP BY STEP</text>
+    <!-- compare 1 -->
+    <rect class="note" x="0" y="86" width="70" height="34"/>
+    <text class="s" x="35" y="103">CMP 1</text>
+    <rect class="ask" x="76" y="86" width="40" height="34"/>
+    <text class="c" x="96" y="103">29</text>
+    <rect class="ask" x="116" y="86" width="40" height="34"/>
+    <text class="c" x="136" y="103">10</text>
+    <rect class="box" x="156" y="86" width="40" height="34"/>
+    <text class="c" x="176" y="103">14</text>
+    <rect class="box" x="196" y="86" width="40" height="34"/>
+    <text class="c" x="216" y="103">37</text>
+    <rect class="box" x="236" y="86" width="40" height="34"/>
+    <text class="c" x="256" y="103">13</text>
+    <rect class="note" x="284" y="92" width="76" height="22" rx="11"/>
+    <text class="s" x="322" y="103">SWAP</text>
+    <!-- compare 2 -->
+    <rect class="note" x="0" y="128" width="70" height="34"/>
+    <text class="s" x="35" y="145">CMP 2</text>
+    <rect class="box" x="76" y="128" width="40" height="34"/>
+    <text class="c" x="96" y="145">10</text>
+    <rect class="ask" x="116" y="128" width="40" height="34"/>
+    <text class="c" x="136" y="145">29</text>
+    <rect class="ask" x="156" y="128" width="40" height="34"/>
+    <text class="c" x="176" y="145">14</text>
+    <rect class="box" x="196" y="128" width="40" height="34"/>
+    <text class="c" x="216" y="145">37</text>
+    <rect class="box" x="236" y="128" width="40" height="34"/>
+    <text class="c" x="256" y="145">13</text>
+    <rect class="note" x="284" y="134" width="76" height="22" rx="11"/>
+    <text class="s" x="322" y="145">SWAP</text>
+    <!-- compare 3 -->
+    <rect class="note" x="0" y="170" width="70" height="34"/>
+    <text class="s" x="35" y="187">CMP 3</text>
+    <rect class="box" x="76" y="170" width="40" height="34"/>
+    <text class="c" x="96" y="187">10</text>
+    <rect class="box" x="116" y="170" width="40" height="34"/>
+    <text class="c" x="136" y="187">14</text>
+    <rect class="ask" x="156" y="170" width="40" height="34"/>
+    <text class="c" x="176" y="187">29</text>
+    <rect class="ask" x="196" y="170" width="40" height="34"/>
+    <text class="c" x="216" y="187">37</text>
+    <rect class="box" x="236" y="170" width="40" height="34"/>
+    <text class="c" x="256" y="187">13</text>
+    <rect class="ok" x="284" y="176" width="76" height="22" rx="11"/>
+    <text class="s" x="322" y="187">KEEP</text>
+    <!-- compare 4 -->
+    <rect class="note" x="0" y="212" width="70" height="34"/>
+    <text class="s" x="35" y="229">CMP 4</text>
+    <rect class="box" x="76" y="212" width="40" height="34"/>
+    <text class="c" x="96" y="229">10</text>
+    <rect class="box" x="116" y="212" width="40" height="34"/>
+    <text class="c" x="136" y="229">14</text>
+    <rect class="box" x="156" y="212" width="40" height="34"/>
+    <text class="c" x="176" y="229">29</text>
+    <rect class="ask" x="196" y="212" width="40" height="34"/>
+    <text class="c" x="216" y="229">37</text>
+    <rect class="ask" x="236" y="212" width="40" height="34"/>
+    <text class="c" x="256" y="229">13</text>
+    <rect class="note" x="284" y="218" width="76" height="22" rx="11"/>
+    <text class="s" x="322" y="229">SWAP</text>
+    <rect class="note" x="80" y="258" width="200" height="22" rx="11"/>
+    <text class="s" x="180" y="269">AFTER EACH PASS</text>
+    <!-- pass 1 -->
+    <rect class="note" x="0" y="290" width="70" height="34"/>
+    <text class="s" x="35" y="307">PASS 1</text>
+    <rect class="box" x="76" y="290" width="40" height="34"/>
+    <text class="c" x="96" y="307">10</text>
+    <rect class="box" x="116" y="290" width="40" height="34"/>
+    <text class="c" x="136" y="307">14</text>
+    <rect class="box" x="156" y="290" width="40" height="34"/>
+    <text class="c" x="176" y="307">29</text>
+    <rect class="box" x="196" y="290" width="40" height="34"/>
+    <text class="c" x="216" y="307">13</text>
+    <rect class="ok" x="236" y="290" width="40" height="34"/>
+    <text class="c" x="256" y="307">37</text>
+    <rect class="note" x="284" y="296" width="76" height="22" rx="11"/>
+    <text class="s" x="322" y="307">3 SWAPS</text>
+    <!-- pass 2 -->
+    <rect class="note" x="0" y="332" width="70" height="34"/>
+    <text class="s" x="35" y="349">PASS 2</text>
+    <rect class="box" x="76" y="332" width="40" height="34"/>
+    <text class="c" x="96" y="349">10</text>
+    <rect class="box" x="116" y="332" width="40" height="34"/>
+    <text class="c" x="136" y="349">14</text>
+    <rect class="box" x="156" y="332" width="40" height="34"/>
+    <text class="c" x="176" y="349">13</text>
+    <rect class="ok" x="196" y="332" width="40" height="34"/>
+    <text class="c" x="216" y="349">29</text>
+    <rect class="ok" x="236" y="332" width="40" height="34"/>
+    <text class="c" x="256" y="349">37</text>
+    <rect class="note" x="284" y="338" width="76" height="22" rx="11"/>
+    <text class="s" x="322" y="349">1 SWAP</text>
+    <!-- pass 3 -->
+    <rect class="note" x="0" y="374" width="70" height="34"/>
+    <text class="s" x="35" y="391">PASS 3</text>
+    <rect class="box" x="76" y="374" width="40" height="34"/>
+    <text class="c" x="96" y="391">10</text>
+    <rect class="box" x="116" y="374" width="40" height="34"/>
+    <text class="c" x="136" y="391">13</text>
+    <rect class="ok" x="156" y="374" width="40" height="34"/>
+    <text class="c" x="176" y="391">14</text>
+    <rect class="ok" x="196" y="374" width="40" height="34"/>
+    <text class="c" x="216" y="391">29</text>
+    <rect class="ok" x="236" y="374" width="40" height="34"/>
+    <text class="c" x="256" y="391">37</text>
+    <rect class="note" x="284" y="380" width="76" height="22" rx="11"/>
+    <text class="s" x="322" y="391">1 SWAP</text>
+    <!-- pass 4 -->
+    <rect class="note" x="0" y="416" width="70" height="34"/>
+    <text class="s" x="35" y="433">PASS 4</text>
+    <rect class="ok" x="76" y="416" width="40" height="34"/>
+    <text class="c" x="96" y="433">10</text>
+    <rect class="ok" x="116" y="416" width="40" height="34"/>
+    <text class="c" x="136" y="433">13</text>
+    <rect class="ok" x="156" y="416" width="40" height="34"/>
+    <text class="c" x="176" y="433">14</text>
+    <rect class="ok" x="196" y="416" width="40" height="34"/>
+    <text class="c" x="216" y="433">29</text>
+    <rect class="ok" x="236" y="416" width="40" height="34"/>
+    <text class="c" x="256" y="433">37</text>
+    <rect class="note" x="284" y="422" width="76" height="22" rx="11"/>
+    <text class="s" x="322" y="433">0 SWAPS</text>
+    <!-- result -->
+    <rect class="ok" x="0" y="462" width="360" height="28"/>
+    <text class="n" x="180" y="476">Sorted: 10 comparisons, 5 swaps in all</text>
+  </g>
+</svg>

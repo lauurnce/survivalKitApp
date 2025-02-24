@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364" height="418" viewBox="-2 -2 364 418" role="img" aria-labelledby="title desc">
+  <title id="title">The call stack while factorial(4) runs</title>
+  <desc id="desc">The function: if n &lt;= 1 return 1, otherwise return n * factorial(n - 1). Calls wind down, one stack frame each: factorial(4) needs 4 * factorial(3) and waits, factorial(3) needs 3 * factorial(2) and waits, factorial(2) needs 2 * factorial(1) and waits. factorial(1) is the base case and returns 1 without calling again. The answers then come back up in reverse order: factorial(2) returns 2, factorial(3) returns 6, factorial(4) returns 24. Result: factorial(4) = 4 × 3 × 2 × 1 = 24.</desc>
+  <style>
+    .t { font: 600 15px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .c { font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .n { font: 500 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .s { font: 700 12px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; letter-spacing: 0.06em; }
+    .ln { stroke: #7d838a; stroke-width: 2; fill: none; }
+    .box { fill: #2f4858; stroke: #7d838a; stroke-width: 1; }
+    .ok { fill: #3d6b5a; stroke: #7d838a; stroke-width: 1; }
+    .ask { fill: #b83820; stroke: #7d838a; stroke-width: 1; }
+    .note { fill: #5b6168; stroke: #7d838a; stroke-width: 1; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7d838a"/>
+    </marker>
+  </defs>
+  <g text-anchor="middle" dominant-baseline="central">
+    <!-- the code -->
+    <rect class="note" x="0" y="0" width="360" height="52" rx="6"/>
+    <text class="c" x="180" y="17">if (n &lt;= 1) return 1;</text>
+    <text class="c" x="180" y="37">return n * factorial(n - 1);</text>
+    <!-- column headers -->
+    <rect class="note" x="0" y="62" width="230" height="22" rx="11"/>
+    <text class="s" x="115" y="73">CALLS WIND DOWN</text>
+    <rect class="note" x="252" y="62" width="108" height="22" rx="11"/>
+    <text class="s" x="306" y="73">ANSWERS</text>
+    <!-- factorial(4) -->
+    <rect class="box" x="0" y="94" width="230" height="50" rx="6"/>
+    <text class="t" x="115" y="110">factorial(4)</text>
+    <text class="c" x="115" y="129">4 * factorial(3)</text>
+    <path class="ln" d="M230,119 H248" marker-end="url(#arrow)"/>
+    <rect class="ok" x="252" y="102" width="108" height="34" rx="17"/>
+    <text class="n" x="306" y="119">returns 24</text>
+    <path class="ln" d="M60,144 V166" marker-end="url(#arrow)"/>
+    <rect class="note" x="74" y="147" width="54" height="20" rx="10"/>
+    <text class="s" x="101" y="157">CALL</text>
+    <path class="ln" d="M306,178 V140" marker-end="url(#arrow)"/>
+    <!-- factorial(3) -->
+    <rect class="box" x="0" y="170" width="230" height="50" rx="6"/>
+    <text class="t" x="115" y="186">factorial(3)</text>
+    <text class="c" x="115" y="205">3 * factorial(2)</text>
+    <path class="ln" d="M230,195 H248" marker-end="url(#arrow)"/>
+    <rect class="ok" x="252" y="178" width="108" height="34" rx="17"/>
+    <text class="n" x="306" y="195">returns 6</text>
+    <path class="ln" d="M60,220 V242" marker-end="url(#arrow)"/>
+    <rect class="note" x="74" y="223" width="54" height="20" rx="10"/>
+    <text class="s" x="101" y="233">CALL</text>
+    <path class="ln" d="M306,254 V216" marker-end="url(#arrow)"/>
+    <!-- factorial(2) -->
+    <rect class="box" x="0" y="246" width="230" height="50" rx="6"/>
+    <text class="t" x="115" y="262">factorial(2)</text>
+    <text class="c" x="115" y="281">2 * factorial(1)</text>
+    <path class="ln" d="M230,271 H248" marker-end="url(#arrow)"/>
+    <rect class="ok" x="252" y="254" width="108" height="34" rx="17"/>
+    <text class="n" x="306" y="271">returns 2</text>
+    <path class="ln" d="M60,296 V318" marker-end="url(#arrow)"/>
+    <rect class="note" x="74" y="299" width="54" height="20" rx="10"/>
+    <text class="s" x="101" y="309">CALL</text>
+    <path class="ln" d="M306,330 V292" marker-end="url(#arrow)"/>
+    <!-- factorial(1) -->
+    <rect class="ask" x="0" y="322" width="230" height="50" rx="6"/>
+    <text class="t" x="115" y="338">factorial(1)</text>
+    <text class="c" x="115" y="357">base case</text>
+    <path class="ln" d="M230,347 H248" marker-end="url(#arrow)"/>
+    <rect class="ok" x="252" y="330" width="108" height="34" rx="17"/>
+    <text class="n" x="306" y="347">returns 1</text>
+    <!-- result -->
+    <rect class="ok" x="0" y="386" width="360" height="28"/>
+    <text class="n" x="180" y="400">factorial(4) = 4 × 3 × 2 × 1 = 24</text>
+  </g>
+</svg>
