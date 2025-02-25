@@ -157,3 +157,26 @@ The same summaries that close each lesson, in one place for review the night bef
 - To sort structs, compare **one field** (use `strcmp()` for strings) but swap the **whole struct** with a temporary struct variable.
 - Big-O describes how work grows with n: O(log n) barely grows, O(n) doubles when n doubles, and O(n²), the class of all three sorts here, quadruples.
 
+---
+
+# Preparing for Exams
+
+| Exam | Lessons covered | Focus |
+|---|---|---|
+| Prelim | 1 to 3 | Arrays and functions, 2-D arrays, strings and `<string.h>`, pointers and pointer arithmetic |
+| Final | 4 to 7, plus review of 1 to 3 | Structures, files, recursion, searching and sorting, and the earlier lessons as they are used there |
+
+Both exams lean on the same four skills, so practice each one for every lesson:
+
+1. **Rules and syntax.** Declarations, what compiles and what does not, which function does what.
+2. **Output tracing.** Running loops, pointer moves, recursive calls and sort passes by hand, one line at a time.
+3. **Finding errors.** Missing `'\0'`, `==` on strings, uninitialized pointers, a missing `;` after a `struct`, a skippable base case.
+4. **Short programs.** Small functions that take an array or a structure and return an answer.
+
+A study order that works:
+
+1. Read a lesson's notes and its Key Takeaways.
+2. Run its Try It program and change it until the output stops surprising you.
+3. Answer its Practice Exercises on paper, then check them against the Worked Exam Solutions.
+4. Finish its Code Lab without looking at the solution.
+5. A week before the exam, take the mock exams in the Exam Prep module under time pressure and review every item you missed.
