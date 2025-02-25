@@ -141,3 +141,19 @@ The same summaries that close each lesson, in one place for review the night bef
 - `fgetc` returns an `int`, so store it in an `int` and compare it with `EOF`; `fputc` writes one character.
 - `fgets(buf, size, fp)` reads one line, keeps the `'\n'`, and returns `NULL` at the end of the file. `fputs` writes a string without adding a newline.
 
+## Lesson 6: Recursion
+
+- A **recursive** function calls itself. It needs a **base case** that answers without recursing, and a **recursive case** that calls itself on a smaller input.
+- Every recursive call must move toward the base case. If it can skip past it or never reach it, the calls never end.
+- Each call gets its own **stack frame** with its own copy of the parameters. Calls wind down until the base case, then the answers unwind back up in reverse order.
+- Code before the recursive call runs on the way down (`down(3)` prints `3 2 1`); code after it runs on the way back up (`up(3)` prints `1 2 3`).
+- Too many calls at once cause a **stack overflow**. Use recursion when the problem shrinks naturally or splits in half; use a loop when a loop is simpler or the depth could be large.
+
+## Lesson 7: Searching and Sorting
+
+- **Linear search** checks elements one by one and works on any array: up to n comparisons. **Binary search** halves the range each step, so it needs only about 20 comparisons for a million elements, but the array **must be sorted**.
+- **Bubble sort** swaps neighbors that are out of order; each pass moves the largest remaining value to the end, and a `swapped` flag lets it stop early on sorted data.
+- **Selection sort** finds the smallest value in the unsorted part and swaps it to the front: at most one swap per pass. **Insertion sort** shifts bigger values right and drops each key into place, which makes it fast on nearly sorted data.
+- To sort structs, compare **one field** (use `strcmp()` for strings) but swap the **whole struct** with a temporary struct variable.
+- Big-O describes how work grows with n: O(log n) barely grows, O(n) doubles when n doubles, and O(n²), the class of all three sorts here, quadruples.
+
