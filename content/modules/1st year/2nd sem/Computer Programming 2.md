@@ -29,3 +29,69 @@ The exam prep module (`supabase/seeds/cp2_exam_prep_module.sql`) covers all seve
 
 Take them in order. Each lesson assumes the ones before it: strings are character arrays, pointers explain why arrays and strings behave the way they do, structures and files use all three, and Lesson 7 sorts arrays of structures and searches recursively.
 
+## Where Each Topic Lives
+
+Every lesson follows the same shape: the notes, then Key Takeaways, then Try It (a program you can run), Practice Exercises, Worked Exam Solutions + How-to-Pass Tips, and a Code Lab.
+
+**Lesson 1: Arrays in Depth** (`Computer_Programming_2_units_1-3.md`)
+
+- Arrays Recap: What Carries Over from CP1
+- Passing Arrays to Functions
+- Linear Search
+- Common Array Algorithms
+- Two-Dimensional Arrays
+- 2-D Arrays and Functions: Matrix Operations
+
+**Lesson 2: Strings and Character Arrays** (`Computer_Programming_2_units_1-3.md`)
+
+- Strings in C: Character Arrays with a Null Terminator
+- Reading and Printing Strings
+- The <string.h> Toolkit
+- Character Handling with <ctype.h>
+- Writing Your Own String Functions
+- Common String Bugs and How to Avoid Them
+
+**Lesson 3: Pointers** (`Computer_Programming_2_units_1-3.md`)
+
+- Memory Addresses and the & Operator
+- Pointer Variables and the * Operator
+- Pointers as Function Parameters
+- Pointer Arithmetic
+- Pointers and Arrays
+- Common Pointer Mistakes
+
+**Lesson 4: Structures** (`Computer_Programming_2_units_4-5.md`)
+
+- What Is a Structure?
+- Declaring Structures and Accessing Members
+- Arrays of Structures
+- typedef and Nested Structures
+- Structures and Functions
+- Pointers to Structures: The Arrow Operator
+
+**Lesson 5: File Handling** (`Computer_Programming_2_units_4-5.md`)
+
+- Why Files? Streams and the FILE Pointer
+- Opening and Closing Files
+- Formatted File I/O: fprintf() and fscanf()
+- Character I/O: fgetc(), fputc(), and EOF
+- Line I/O: fgets() and fputs()
+- Putting It Together: A Small Records Program
+
+**Lesson 6: Recursion** (`Computer_Programming_2_units_6-7.md`)
+
+- What Is Recursion?
+- Base Case and Recursive Case: Factorial
+- Tracing the Call Stack
+- Classic Recursive Functions
+- Recursion vs. Iteration
+
+**Lesson 7: Searching and Sorting** (`Computer_Programming_2_units_6-7.md`)
+
+- Linear Search
+- Binary Search
+- Bubble Sort
+- Selection Sort and Insertion Sort
+- Sorting an Array of Structs by a Field
+- Comparing the Algorithms: Big-O in Plain Words
+
