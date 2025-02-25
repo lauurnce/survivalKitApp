@@ -125,3 +125,19 @@ The same summaries that close each lesson, in one place for review the night bef
 - Adding 1 to a pointer moves it one element, not one byte. `q - p` counts the elements between them, and pointer arithmetic is only valid inside one array.
 - An array name is the address of its first element, so `a[i]` is `*(a + i)` and an array parameter is really a pointer. But an array name cannot be moved or reassigned, and `sizeof` only sees the whole array where it is declared.
 
+## Lesson 4: Structures
+
+- A **structure** groups related variables, which may have different types, under one name. Each variable inside it is a **member**.
+- A `struct` definition is only a template and must end with `;`. Memory is set aside only when you declare a variable of that type.
+- Use the dot with a structure variable (`s.gwa`) and the arrow with a pointer to one (`p->gwa`, which means `(*p).gwa`). Nested members take one dot per level: `s.birthday.year`.
+- You can copy a whole structure with `=`, but you cannot compare two with `==`, and a string member needs `strcpy`, not `=`.
+- Passing a structure to a function passes a copy. Pass its address (`&s`) when the function must change it, and use `typedef` to give the type a shorter name.
+
+## Lesson 5: File Handling
+
+- Data in variables disappears when the program ends; a file keeps it. C reaches a file through a stream, held in a `FILE *` pointer.
+- `fopen(name, mode)` opens a file: `"r"` reads, `"w"` creates or **erases**, `"a"` adds to the end. Always check the pointer for `NULL`, and `fclose` every file you open.
+- `fprintf` and `fscanf` work like `printf` and `scanf` with a `FILE *` first. `fscanf` returns how many items it read, so loop with `while (fscanf(...) == 2)`, not `while (!feof(fp))`.
+- `fgetc` returns an `int`, so store it in an `int` and compare it with `EOF`; `fputc` writes one character.
+- `fgets(buf, size, fp)` reads one line, keeps the `'\n'`, and returns `NULL` at the end of the file. `fputs` writes a string without adding a newline.
+
