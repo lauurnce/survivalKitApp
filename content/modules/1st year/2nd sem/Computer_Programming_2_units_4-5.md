@@ -386,6 +386,45 @@ If `p` points at `cls[0]`, then `p[i].gwa` and `(p + i)->gwa` both reach record 
 
 ---
 
+<!-- kind: content -->
+## Try It: Structures
+
+Run the code below. Add a fourth student to the array (update `COUNT` too), then give the bonus to a different student and predict the output before you press Run.
+
+Starter code:
+
+```c
+#include <stdio.h>
+
+#define COUNT 3
+
+typedef struct {
+    char name[20];
+    int  score;
+} Student;
+
+void give_bonus(Student *s, int points) {
+    s->score += points;
+}
+
+int main(void) {
+    Student cls[COUNT] = {
+        {"Ana", 82},
+        {"Ben", 74},
+        {"Carla", 91}
+    };
+    int i;
+
+    give_bonus(&cls[1], 5);
+
+    for (i = 0; i < COUNT; i++)
+        printf("%-6s %d\n", cls[i].name, cls[i].score);
+    return 0;
+}
+```
+
+---
+
 <!-- kind: activity -->
 ## Practice Exercises, Lesson 4
 
