@@ -617,6 +617,62 @@ The function takes a pointer, so it uses `e->salary`, and `main` passes `&e`. Te
 
 ---
 
+<!-- kind: activity -->
+## Code Lab, Lesson 4: Class Record
+
+**Coding Drill:** Complete `average` and `find_top` so the program reports the class average and the top student. Remember that the best GWA is the **lowest** number. Press Run to compile real C right here, then add a fifth student and predict the new output before running again.
+
+Expected output:
+```
+Average GWA: 2.00
+Top student: Carla (1.50)
+```
+
+Starter code:
+
+```c
+#include <stdio.h>
+
+typedef struct {
+    char  name[20];
+    float gwa;
+} Student;
+
+/* Returns the average GWA of the first n students. */
+float average(Student list[], int n) {
+    float total = 0;
+    int i;
+
+    for (i = 0; i < n; i++) {
+        /* TODO: add list[i].gwa to total */
+    }
+    return total / n;
+}
+
+/* Returns the index of the student with the best (lowest) GWA. */
+int find_top(Student list[], int n) {
+    int best = 0, i;
+
+    for (i = 1; i < n; i++) {
+        /* TODO: if list[i].gwa is lower than list[best].gwa, set best = i */
+    }
+    return best;
+}
+
+int main(void) {
+    Student cls[4] = {
+        {"Ana", 1.75f}, {"Ben", 2.25f}, {"Carla", 1.50f}, {"Dan", 2.50f}
+    };
+    int top = find_top(cls, 4);
+
+    printf("Average GWA: %.2f\n", average(cls, 4));
+    printf("Top student: %s (%.2f)\n", cls[top].name, cls[top].gwa);
+    return 0;
+}
+```
+
+---
+
 ---
 
 # Lesson 5: File Handling
