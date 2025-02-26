@@ -1385,4 +1385,53 @@ Two details earn the marks. First, when the second `fopen` fails, the program cl
 
 ---
 
+<!-- kind: activity -->
+## Code Lab, Lesson 5: Report to Any Stream
+
+**Coding Drill:** Complete `write_record` so it writes a record as `name,score` on its own line to **any** stream, then count how many students passed (75 or higher). Press Run to compile real C right here.
+
+The playground keeps no files, so `main` passes `stdout` and the records appear on the screen. Because `write_record` takes a `FILE *`, the same function would write to a real file if you passed it the pointer from `fopen("results.txt", "w")` on your own computer (with a `NULL` check and an `fclose`).
+
+Expected output:
+```
+Ana,88
+Ben,72
+Carla,93
+Dan,75
+Passed: 3 of 4
+```
+
+Starter code:
+
+```c
+#include <stdio.h>
+
+typedef struct {
+    char name[20];
+    int  score;
+} Record;
+
+/* Write one record as name,score and a newline to ANY stream. */
+void write_record(FILE *out, const Record *r) {
+    /* TODO: fprintf r->name and r->score to out, as name,score */
+}
+
+int main(void) {
+    Record cls[4] = {
+        {"Ana", 88}, {"Ben", 72}, {"Carla", 93}, {"Dan", 75}
+    };
+    FILE *out = stdout;     /* on your own computer: fopen("results.txt", "w") */
+    int i, passed = 0;
+
+    for (i = 0; i < 4; i++) {
+        write_record(out, &cls[i]);
+        /* TODO: add 1 to passed if cls[i].score is 75 or higher */
+    }
+    fprintf(out, "Passed: %d of 4\n", passed);
+    return 0;
+}
+```
+
+---
+
 ---
