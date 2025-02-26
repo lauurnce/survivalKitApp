@@ -485,6 +485,138 @@ int main(void) {
 
 ---
 
+<!-- kind: activity -->
+## Worked Exam Solutions + How-to-Pass Tips, Lesson 4
+
+**Answer Key, Conceptual Questions**
+
+1. A structure groups related variables of **possibly different types** under one name. An array holds items of **one** type reached by index; a structure holds members reached by name.
+2. A member is one variable inside a structure. With a structure variable use the dot (`s.gwa`); with a pointer use the arrow (`p->gwa`, the same as `(*p).gwa`).
+3. No. The definition only describes the shape of the type. Memory is set aside when you declare a variable of that type, such as `struct student a;`.
+4. `typedef` gives an existing type another name, so `Student s;` can replace `struct student s;`. It does not create a new kind of data.
+5. Nothing happens to the caller's variable, because the function changed a copy. Either return the changed structure and assign it (`a = moved(a);`) or pass its address (`&a`) and change it through `->`.
+
+**Worked Exam-Style Problem, Find the Errors**
+
+*Solution:* There are three compile errors.
+1. The definition has no `;` after the closing brace.
+2. `a.name = "Pancit Canton";` tries to assign to an array. Use `strcpy(a.name, "Pancit Canton");`.
+3. `a == b` is not allowed on whole structures. Compare the members instead.
+
+`b = a;` is **not** an error: copying a whole structure with `=` is allowed. Examiners plant that line to catch students who "fix" too much. The corrected program:
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+struct item {
+    char  name[20];
+    float price;
+};                                   /* 1. semicolon added */
+
+int main(void) {
+    struct item a, b;
+
+    strcpy(a.name, "Pancit Canton");   /* 2. strcpy, not = */
+    a.price = 15.50;
+    b = a;                             /* copying a whole struct is fine */
+    if (strcmp(a.name, b.name) == 0 && a.price == b.price)   /* 3. member by member */
+        printf("same\n");
+    return 0;
+}
+```
+
+Output: `same`
+
+**Worked Exam-Style Problem, The Trace**
+
+*Solution:* Step 1: `b = a;` copies, so `b` is `{1, 2}`. Step 2: `b.x = 5;` changes only `b`, now `{5, 2}`. Step 3: `f(a)` gets a **copy** of `a` and sets the copy's `x` to 100, so `a` is still `{1, 2}`. Step 4: `g(&a)` gets the **address** of `a`, so `p->y = 200` changes `a` itself, now `{1, 200}`. Output:
+```
+1 200 5 2
+```
+If you can say why `f` changed nothing and `g` did ("copy versus address"), you can answer every trace in this lesson.
+
+**Worked Programming Exercise (#4, Sort by GWA)**
+
+```c
+#include <stdio.h>
+
+#define N 5
+
+typedef struct {
+    char  name[20];
+    float gwa;
+} Student;
+
+int main(void) {
+    Student cls[N] = {
+        {"Ana", 1.75f}, {"Ben", 2.25f}, {"Carla", 1.25f},
+        {"Dan", 2.50f}, {"Ella", 1.50f}
+    };
+    Student temp;
+    int pass, i;
+
+    for (pass = 0; pass < N - 1; pass++)
+        for (i = 0; i < N - 1 - pass; i++)
+            if (cls[i].gwa > cls[i + 1].gwa) {
+                temp = cls[i];           /* swap the WHOLE record */
+                cls[i] = cls[i + 1];
+                cls[i + 1] = temp;
+            }
+
+    for (i = 0; i < N; i++)
+        printf("%d. %-6s %.2f\n", i + 1, cls[i].name, cls[i].gwa);
+    return 0;
+}
+```
+
+Output:
+```
+1. Carla  1.25
+2. Ella   1.50
+3. Ana    1.75
+4. Ben    2.25
+5. Dan    2.50
+```
+This is bubble sort from Lesson 1 (Arrays) with one change: the comparison looks at `cls[i].gwa`, but the swap moves the **whole** record through a `Student temp`. If you swap only the GWAs, the names stay put and every student gets someone else's grade.
+
+**Worked Programming Exercise (#3, raise_salary)**
+
+```c
+#include <stdio.h>
+
+typedef struct {
+    char  name[30];
+    float salary;
+} Employee;
+
+void raise_salary(Employee *e, float percent) {
+    e->salary = e->salary + e->salary * percent / 100;
+}
+
+int main(void) {
+    Employee e = {"Liza Gomez", 20000.00f};
+
+    raise_salary(&e, 10);
+    printf("%s now earns PHP %.2f\n", e.name, e.salary);
+    return 0;
+}
+```
+
+Output: `Liza Gomez now earns PHP 22000.00`
+
+The function takes a pointer, so it uses `e->salary`, and `main` passes `&e`. Ten percent of 20000.00 is 2000.00.
+
+**How to Pass Tips**
+
+- Count the semicolons: the one after a structure's closing brace is the most common syntax question about structures.
+- For every member access, ask "do I have the structure or a pointer to it?" Structure: dot. Pointer: arrow.
+- `=` copies a whole structure; `==` does not work on one. Strings inside still need `strcpy` and `strcmp`.
+- In a trace, mark each call as **copy** or **address** before you follow it. Only the address calls can change `main`'s variables.
+- When sorting records, swap whole structures, never just the field you compared.
+
+---
+
 ---
 
 # Lesson 5: File Handling
