@@ -1147,6 +1147,46 @@ Names must be a single word, because `%s` stops at spaces. Real programs handle 
 
 ---
 
+<!-- kind: content -->
+## Try It: File Handling
+
+**About files in the playground:** each run happens in a fresh, empty sandbox on a server. Nothing your program writes is kept or shown to you, and there is no way to give it a file to read. So this exercise writes to `stdout`, the screen, which is already a `FILE *`. Every `fprintf(out, ...)` below works exactly the way it would on a real file.
+
+Run it, then add a fourth student. On your own computer (Code::Blocks, Dev-C++, or `gcc`), replace `stdout` with an `fopen` call as the comment shows, check the pointer for `NULL`, add `fclose(out);` before `return 0;`, and open report.txt afterwards to see the same report saved.
+
+Starter code:
+
+```c
+#include <stdio.h>
+
+/* Works with ANY stream: a file from fopen, or stdout. */
+void write_report(FILE *out, const char *names[], const int scores[], int n) {
+    int i;
+
+    fprintf(out, "%-6s %s\n", "Name", "Score");
+    for (i = 0; i < n; i++)
+        fprintf(out, "%-6s %d\n", names[i], scores[i]);
+}
+
+int main(void) {
+    const char *names[] = {"Ana", "Ben", "Carla"};
+    int scores[] = {88, 75, 93};
+
+    /* The playground keeps no files, so this writes to the screen.
+       On your own computer, try instead:
+       FILE *out = fopen("report.txt", "w");
+       check it for NULL, and call fclose(out) at the end. */
+    FILE *out = stdout;
+
+    write_report(out, names, scores, 3);
+    fputs("End of report", out);    /* fputs adds no newline... */
+    fputc('\n', out);                /* ...so add one with fputc */
+    return 0;
+}
+```
+
+---
+
 <!-- kind: activity -->
 ## Practice Exercises, Lesson 5
 
