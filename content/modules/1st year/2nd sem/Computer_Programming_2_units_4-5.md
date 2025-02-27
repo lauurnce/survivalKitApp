@@ -673,8 +673,6 @@ int main(void) {
 
 ---
 
----
-
 # Lesson 5: File Handling
 
 <!-- kind: content -->
@@ -1432,6 +1430,3 @@ int main(void) {
 }
 ```
 
----
-
----
