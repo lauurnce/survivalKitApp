@@ -1,7 +1,7 @@
 # Computer Programming 2, Lessons 1 to 3
 <!-- subject: Computer Programming 2 | year: 1st -->
 
-Source of truth for the rows is `supabase/seeds/cp2_modules_sections.sql` (Lesson 1) and `supabase/seeds/cp2_units_2_3.sql` (Lessons 2 and 3). This file is the same content as one readable study guide.
+Source of truth for the rows is `supabase/seeds/cp2_modules_sections.sql` (Lesson 1) and `supabase/seeds/cp2_units_2_3.sql` (Lessons 2 and 3). This file is the same content as one readable study guide. `Computer Programming 2.md` is the map of all seven lessons.
 
 ---
 
