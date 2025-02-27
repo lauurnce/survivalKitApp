@@ -1,6 +1,8 @@
 # Computer Programming 2, Lessons 4-5 Study Guide
 <!-- subject: Computer Programming 2 | year: 1st -->
 
+Continues `Computer_Programming_2_units_1-3.md`; `Computer Programming 2.md` is the map of all seven lessons. Mirrors supabase/seeds/cp2_units_4_5.sql.
+
 ---
 
 # Lesson 4: Structures
