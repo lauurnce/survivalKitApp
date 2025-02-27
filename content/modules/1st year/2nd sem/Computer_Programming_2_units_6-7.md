@@ -1,7 +1,7 @@
 # Computer Programming 2, Lessons 6-7 Study Guide
 <!-- subject: Computer Programming 2 | year: 1st -->
 
-Continues `Computer Programming 2.md`. Mirrors supabase/seeds/cp2_units_6_7.sql.
+Continues `Computer_Programming_2_units_4-5.md`; `Computer Programming 2.md` is the map of all seven lessons. Mirrors supabase/seeds/cp2_units_6_7.sql.
 
 ---
 
