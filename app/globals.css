@@ -15,6 +15,11 @@
   --color-accent-dark: 184 56 32;
   --color-navy: 26 26 26;
   --color-taupe: 189 185 178;
+  /* Inverse surface: a dark panel in BOTH themes (code, the playground,
+     toasts, header bands). ink and navy flip with the theme, so a panel
+     built from them turned into a near-white slab in dark mode (QA DS-05). */
+  --color-inverse: 26 26 26;
+  --color-on-inverse: 247 245 243;
 }
 
 .dark {
@@ -28,6 +33,10 @@
   --color-accent-dark: 184 56 32;
   --color-navy: 240 237 233;
   --color-taupe: 74 71 64;
+  /* Raised one step above the dark page so the panel still reads as one.
+     on-inverse is 13.3:1 on it. */
+  --color-inverse: 36 42 47;
+  --color-on-inverse: 247 245 243;
 }
 
 html {
@@ -152,6 +161,8 @@ a, button, input, select, textarea {
     --color-ink-faint-rule: 130 130 130;
     --color-navy: 255 255 255;
     --color-taupe: 90 90 90;
+    --color-inverse: 255 255 255;
+    --color-on-inverse: 0 0 0;
   }
 
   html,
@@ -162,12 +173,14 @@ a, button, input, select, textarea {
   }
 
   /* Header bands are navy-on-screen; on paper they are just the title. */
-  .bg-navy {
+  .bg-navy,
+  .bg-inverse {
     background: transparent !important;
     padding-top: 0 !important;
     padding-bottom: 8pt !important;
   }
-  .text-paper {
+  .text-paper,
+  .text-on-inverse {
     color: #000 !important;
   }
 

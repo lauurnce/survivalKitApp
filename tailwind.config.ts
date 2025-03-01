@@ -17,6 +17,9 @@ const config: Config = {
         "accent-dark": "rgb(var(--color-accent-dark) / <alpha-value>)",
         navy: "rgb(var(--color-navy) / <alpha-value>)",
         taupe: "rgb(var(--color-taupe) / <alpha-value>)",
+        // Dark in both themes; on-inverse is the text on it (globals.css).
+        inverse: "rgb(var(--color-inverse) / <alpha-value>)",
+        "on-inverse": "rgb(var(--color-on-inverse) / <alpha-value>)",
       },
       // ink-faint is a text colour tuned for contrast; rules, tracks and fills
       // keep the lighter grey they were designed with (globals.css).

@@ -79,21 +79,21 @@ export function SignupNudgeToast({ signupHref }: Props) {
     >
       <div
         role="status"
-        className="flex flex-wrap items-center gap-3 bg-navy text-paper px-5 py-3 shadow-lg max-w-[calc(100%-2rem)]"
+        className="flex flex-wrap items-center gap-3 bg-inverse text-on-inverse px-5 py-3 shadow-lg max-w-[calc(100%-2rem)]"
       >
         <span className="font-sans text-sm">
           Save your progress across devices — create a free account.
         </span>
         <a
           href={signupHref}
-          className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent hover:text-paper transition-colors duration-150"
+          className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent hover:text-on-inverse transition-colors duration-150"
         >
           Sign up →
         </a>
         <button
           type="button"
           onClick={dismiss}
-          className="font-mono text-label-sm uppercase tracking-[0.12em] text-taupe hover:text-paper transition-colors duration-150"
+          className="font-mono text-label-sm uppercase tracking-[0.12em] text-on-inverse/70 hover:text-on-inverse transition-colors duration-150"
         >
           Continue reading
         </button>
