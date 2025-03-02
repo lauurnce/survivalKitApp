@@ -67,7 +67,7 @@ export function Playground({ languageId, initialCode, moduleId }: Props) {
             type="button"
             onClick={handleRun}
             disabled={running}
-            className="bg-accent text-navy font-sans text-xs uppercase tracking-widest px-4 py-1 disabled:opacity-50"
+            className="bg-accent-strong text-white font-sans text-xs uppercase tracking-widest px-4 py-1 disabled:opacity-50"
           >
             {running ? (phase === "loading" ? "Loading…" : "Running…") : "Run"}
           </button>

@@ -86,7 +86,9 @@ export function SignupNudgeToast({ signupHref }: Props) {
         </span>
         <a
           href={signupHref}
-          className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent hover:text-on-inverse transition-colors duration-150"
+          // The bright accent is under 4.5:1 on the inverse panel at this size,
+          // so the link is on-inverse text with an accent underline.
+          className="font-mono text-label-sm uppercase tracking-[0.12em] text-on-inverse underline decoration-accent decoration-2 underline-offset-4 hover:decoration-on-inverse transition-colors duration-150"
         >
           Sign up →
         </a>

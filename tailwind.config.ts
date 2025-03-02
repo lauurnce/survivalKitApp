@@ -15,6 +15,8 @@ const config: Config = {
         "ink-faint": "rgb(var(--color-ink-faint) / <alpha-value>)",
         accent: "rgb(var(--color-accent) / <alpha-value>)",
         "accent-dark": "rgb(var(--color-accent-dark) / <alpha-value>)",
+        // AA fill for small-text CTAs (white text, 5.79:1); see globals.css.
+        "accent-strong": "rgb(var(--color-accent-strong) / <alpha-value>)",
         navy: "rgb(var(--color-navy) / <alpha-value>)",
         taupe: "rgb(var(--color-taupe) / <alpha-value>)",
         // Dark in both themes; on-inverse is the text on it (globals.css).

@@ -13,6 +13,11 @@
   --color-ink-faint-rule: 168 173 181;
   --color-accent: 224 73 43;
   --color-accent-dark: 184 56 32;
+  /* Fill for small-text CTAs. White on it is 5.79:1 (paper 5.33:1); white on
+     the bright accent is only 4.07:1 and paper 3.74:1 (QA DS-06). Keep
+     accent for large display text, icons and decoration. Same in both
+     themes, because the text on it is always white. */
+  --color-accent-strong: 184 56 32;
   --color-navy: 26 26 26;
   --color-taupe: 189 185 178;
   /* Inverse surface: a dark panel in BOTH themes (code, the playground,
@@ -31,6 +36,7 @@
   --color-ink-faint-rule: 107 111 117;
   --color-accent: 224 73 43;
   --color-accent-dark: 184 56 32;
+  --color-accent-strong: 184 56 32;
   --color-navy: 240 237 233;
   --color-taupe: 74 71 64;
   /* Raised one step above the dark page so the panel still reads as one.
