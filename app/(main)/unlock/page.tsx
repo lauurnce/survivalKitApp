@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ButtonLink } from "@/components/ui/Button";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
@@ -187,12 +188,9 @@ export default async function UnlockPage({ searchParams }: Props) {
                 You already have access to every reviewer in {subject.title}. Nothing
                 more to buy.
               </p>
-              <Link
-                href={backHref}
-                className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
-              >
+              <ButtonLink href={backHref}>
                 Back to {returnModule?.title ?? subject.title} →
-              </Link>
+              </ButtonLink>
             </div>
           ) : (
             <>
@@ -213,12 +211,9 @@ export default async function UnlockPage({ searchParams }: Props) {
                   {/* The copy asks for a new account, so the primary action
                       creates one; returning students get the smaller link.
                       Both carry next= back to these plans (QA FL-11). */}
-                  <Link
-                    href={`/signup?next=${encodeURIComponent(returnHref)}`}
-                    className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
-                  >
+                  <ButtonLink href={`/signup?next=${encodeURIComponent(returnHref)}`}>
                     Create free account to unlock →
-                  </Link>
+                  </ButtonLink>
                   <p className="font-sans text-sm text-ink-muted mt-3">
                     Already have an account?{" "}
                     <Link
