@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { BackLink } from "@/components/BackLink";
+import { Button } from "@/components/ui/Button";
 import { PaymentSuccessBanner } from "@/components/PaymentSuccessBanner";
 import { getDeviceId } from "@/lib/device";
 import { computePrice, INCLUDED_SEATS, MIN_SEATS, MAX_SEATS, PER_SEAT } from "./pricing";
@@ -199,13 +200,9 @@ export function ForBlocksCheckout({ years }: Props) {
           </p>
         )}
 
-        <button
-          onClick={handlePay}
-          disabled={!canPay}
-          className="w-full rounded-xl bg-accent px-4 py-4 font-sans font-semibold text-paper transition-opacity disabled:opacity-50 hover:opacity-90"
-        >
+        <Button size="lg" onClick={handlePay} disabled={!canPay} className="w-full">
           {loading ? "Redirecting…" : "Pay with GCash / Card →"}
-        </button>
+        </Button>
         <p className="font-sans text-xs text-ink-faint text-center mt-3">
           You&apos;ll get a shareable join link right after payment.
         </p>

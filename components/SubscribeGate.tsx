@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/Button";
 import { getDeviceId } from "@/lib/device";
 import { semesterUntilLabel } from "@/lib/terms";
 import { logEvent } from "@/lib/analytics";
@@ -120,13 +121,12 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
             <span className="font-serif text-3xl text-ink">{prices.subject_month}</span>
             <span className="font-sans text-sm text-ink-muted">/ month</span>
           </div>
-          <button
+          <Button
             onClick={() => handleSubscribe("subject_month")}
             disabled={loading !== null}
-            className="bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading === "subject_month" ? "Redirecting…" : `Unlock — ${prices.subject_month}`}
-          </button>
+          </Button>
         </div>
 
         {/* Subject, whole semester (anchor) */}
@@ -149,13 +149,12 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
             <span className="font-serif text-3xl text-ink">{prices.subject_sem}</span>
             <span className="font-sans text-sm text-ink-muted">/ semester</span>
           </div>
-          <button
+          <Button
             onClick={() => handleSubscribe("subject_sem")}
             disabled={loading !== null}
-            className="bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading === "subject_sem" ? "Redirecting…" : `Unlock — ${prices.subject_sem}`}
-          </button>
+          </Button>
         </div>
 
         {/* All subjects, whole semester */}
@@ -177,13 +176,12 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
             <span className="font-serif text-3xl text-ink">{prices.year_sem}</span>
             <span className="font-sans text-sm text-ink-muted">/ semester</span>
           </div>
-          <button
+          <Button variant="secondary"
             onClick={() => handleSubscribe("year_sem")}
             disabled={loading !== null}
-            className="bg-ink text-paper font-sans text-sm px-4 py-3 hover:bg-accent transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading === "year_sem" ? "Redirecting…" : `Unlock everything — ${prices.year_sem}`}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
