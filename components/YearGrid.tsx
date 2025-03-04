@@ -24,7 +24,7 @@ export function YearGrid({ cards, fromDashboard = false }: Props) {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {cards.map((year, i) => {
           if (year.coming_soon) {
             return (

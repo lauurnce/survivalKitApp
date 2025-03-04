@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { DashboardNavRail, SessionLogoutButton } from "@/components/dashboard/SessionShell";
+import { DashboardNavRail, SessionLogoutButton, SignedInOnly } from "@/components/dashboard/SessionShell";
 import { PageTracker } from "@/components/PageTracker";
 import { type YearCardData } from "@/components/YearGrid";
 import { ReferrerYearGrid } from "@/components/ReferrerAware";
@@ -58,9 +58,13 @@ export default async function YearPage() {
         <SubjectsTour />
       </DashboardNavRail>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
-          <SessionLogoutButton />
-        </div>
+        {/* Signed-out visitors have nothing to put here; the empty bordered
+            wrapper showed as a 24px strip above the header band (QA DS-10). */}
+        <SignedInOnly>
+          <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
+            <SessionLogoutButton />
+          </div>
+        </SignedInOnly>
 
         <main className="min-h-screen bg-paper flex flex-col">
           <PageTracker event="year_select" />
