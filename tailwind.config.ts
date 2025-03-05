@@ -40,8 +40,10 @@ const config: Config = {
         "display-xl": ["clamp(3rem, 8vw, 7rem)", { lineHeight: "0.95", letterSpacing: "-0.03em" }],
         "display-lg": ["clamp(2rem, 5vw, 4rem)", { lineHeight: "1.0", letterSpacing: "-0.025em" }],
         "display-md": ["clamp(1.5rem, 3.5vw, 2.5rem)", { lineHeight: "1.05", letterSpacing: "-0.02em" }],
-        "label-sm": ["0.6875rem", { lineHeight: "1", letterSpacing: "0.12em" }],
-        "label-md": ["0.75rem", { lineHeight: "1", letterSpacing: "0.1em" }],
+        // 1.5, not 1: a label that wraps (an eyebrow on a phone) had no
+        // leading at all (QA DS-19).
+        "label-sm": ["0.6875rem", { lineHeight: "1.5", letterSpacing: "0.12em" }],
+        "label-md": ["0.75rem", { lineHeight: "1.5", letterSpacing: "0.1em" }],
       },
       maxWidth: {
         prose: "68ch",
