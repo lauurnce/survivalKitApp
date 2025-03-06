@@ -74,7 +74,7 @@ export function SignupNudgeToast({ signupHref }: Props) {
     // toast covered on phones. print:hidden keeps it off the PDF: the portal
     // lands in <body>, outside the reader's print gate.
     <div
-      className="fixed bottom-24 inset-x-0 z-40 flex justify-center px-4 print:hidden"
+      className="fixed bottom-[calc(6rem+env(safe-area-inset-bottom))] inset-x-0 z-40 flex justify-center pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] print:hidden"
       onClick={(e) => e.stopPropagation()}
     >
       <div

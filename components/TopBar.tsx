@@ -10,7 +10,7 @@ import { useSession } from "@/hooks/useSession";
 export function TopBar() {
   const { signedIn } = useSession();
   return (
-    <div className="fixed top-4 right-4 z-50 flex items-center gap-2 print:hidden">
+    <div className="fixed top-[calc(1rem+env(safe-area-inset-top))] right-[calc(1rem+env(safe-area-inset-right))] z-50 flex items-center gap-2 print:hidden">
       <button
         type="button"
         onClick={toggleTheme}

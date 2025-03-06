@@ -99,7 +99,9 @@ describe("SignupNudgeToast", () => {
     render(<SignupNudgeToast signupHref={SIGNUP_HREF} />);
     const status = await screen.findByRole("status");
     const classes = status.parentElement?.className.split(/\s+/) ?? [];
-    expect(classes).toContain("bottom-24");
+    // 6rem (bottom-24) plus the home-indicator inset under viewport-fit=cover
+    // (QA FL-12).
+    expect(classes).toContain("bottom-[calc(6rem+env(safe-area-inset-bottom))]");
     expect(classes).not.toContain("bottom-6");
     expect(classes.some((c) => /^top-/.test(c))).toBe(false);
   });

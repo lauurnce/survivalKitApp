@@ -90,7 +90,7 @@ export default function RootLayout({
         <SessionEntryTracker />
         <a
           href="#content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-inverse focus:text-on-inverse focus:px-4 focus:py-2 font-sans text-sm"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-[calc(1rem+env(safe-area-inset-top))] focus:left-[calc(1rem+env(safe-area-inset-left))] focus:z-[60] focus:bg-inverse focus:text-on-inverse focus:px-4 focus:py-2 font-sans text-sm"
         >
           Skip to content
         </a>
