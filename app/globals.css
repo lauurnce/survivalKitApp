@@ -72,6 +72,12 @@ a, button, input, select, textarea {
   transition-duration: 150ms;
 }
 
+/* The skip link (components/ui/SkipLink.tsx) focuses <main> so the next Tab
+   lands in the page; the landing spot itself needs no ring. */
+main[tabindex="-1"]:focus {
+  outline: none;
+}
+
 /* Selection color */
 ::selection {
   background-color: rgb(var(--color-accent));

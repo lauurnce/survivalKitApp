@@ -4,6 +4,7 @@ import { viewportConfig } from "@/lib/viewport";
 import { Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { SessionEntryTracker } from "@/components/SessionEntryTracker";
+import { SkipLink } from "@/components/ui/SkipLink";
 import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/csp";
 import "./globals.css";
 
@@ -88,13 +89,8 @@ export default function RootLayout({
       <body className="font-sans min-h-screen flex flex-col">
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         <SessionEntryTracker />
-        <a
-          href="#content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-[calc(1rem+env(safe-area-inset-top))] focus:left-[calc(1rem+env(safe-area-inset-left))] focus:z-[60] focus:bg-inverse focus:text-on-inverse focus:px-4 focus:py-2 font-sans text-sm"
-        >
-          Skip to content
-        </a>
-        <div id="content" className="flex-1">{children}</div>
+        <SkipLink />
+        <div id="content" tabIndex={-1} className="flex-1 focus:outline-none">{children}</div>
         <footer className="border-t border-ink-faint/20 px-6 py-4 md:px-16">
           <div className="max-w-wide mx-auto flex flex-wrap items-center justify-between gap-2">
             <p className="font-sans text-[11px] text-ink-faint leading-relaxed">
