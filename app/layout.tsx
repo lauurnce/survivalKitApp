@@ -12,8 +12,21 @@ const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
   display: "swap",
-  style: ["normal", "italic"],
+  style: ["normal"],
   weight: ["300", "400", "500", "600", "700"],
+});
+
+// Serif italic appears only on two signed-in screens (dashboard NavRail,
+// ProfileCard), so its 45 KB file is not preloaded on every public page
+// (QA PF-06). The @font-face is still declared, and the browser fetches it
+// the first time a .font-serif.italic element renders (globals.css).
+const frauncesItalic = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces-italic",
+  display: "swap",
+  style: ["italic"],
+  weight: ["300", "400", "500", "600", "700"],
+  preload: false,
 });
 
 const interTight = Inter_Tight({
@@ -76,7 +89,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+      className={`${fraunces.variable} ${frauncesItalic.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         {/* No nonce: allowed by its sha256 under the nonce policy and by

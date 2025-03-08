@@ -78,6 +78,12 @@ main[tabindex="-1"]:focus {
   outline: none;
 }
 
+/* Serif italic comes from its own, non-preloaded Fraunces instance
+   (app/layout.tsx), so point italic serif text at it. */
+.font-serif.italic {
+  font-family: var(--font-fraunces-italic), Georgia, serif;
+}
+
 /* Selection color */
 ::selection {
   background-color: rgb(var(--color-accent));

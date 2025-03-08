@@ -11,8 +11,16 @@ vi.mock("next/headers", () => ({
   },
 }));
 
+const { frauncesCalls, isItalic } = vi.hoisted(() => ({
+  frauncesCalls: [] as Record<string, unknown>[],
+  isItalic: (o: Record<string, unknown>) => ([] as unknown[]).concat(o.style).includes("italic"),
+}));
+
 vi.mock("next/font/google", () => ({
-  Fraunces: () => ({ variable: "font-fraunces" }),
+  Fraunces: (opts: Record<string, unknown>) => {
+    frauncesCalls.push(opts);
+    return { variable: isItalic(opts) ? "font-fraunces-italic" : "font-fraunces" };
+  },
   Inter_Tight: () => ({ variable: "font-inter-tight" }),
   JetBrains_Mono: () => ({ variable: "font-jetbrains-mono" }),
 }));
@@ -37,6 +45,18 @@ function findAllByType(
   }
   return found;
 }
+
+// QA PF-06: the 45 KB Fraunces italic was preloaded on every public page,
+// though only two signed-in screens set serif italic.
+describe("RootLayout fonts", () => {
+  it("preloads only the upright Fraunces; the italic face loads on use", () => {
+    const upright = frauncesCalls.find((o) => !isItalic(o));
+    const italic = frauncesCalls.find(isItalic);
+    expect(upright?.style).toEqual(["normal"]);
+    expect(upright?.preload).not.toBe(false);
+    expect(italic).toMatchObject({ preload: false, variable: "--font-fraunces-italic" });
+  });
+});
 
 describe("RootLayout", () => {
   it("renders the theme bootstrap without a nonce, hash-pinned in lib/csp", async () => {
