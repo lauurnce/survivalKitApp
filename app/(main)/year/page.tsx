@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { DashboardNavRail, SessionLogoutButton } from "@/components/dashboard/SessionShell";
+import { DashboardNavRail, SessionLogoutButton, SignedInOnly } from "@/components/dashboard/SessionShell";
 import { PageTracker } from "@/components/PageTracker";
 import { type YearCardData } from "@/components/YearGrid";
 import { ReferrerYearGrid } from "@/components/ReferrerAware";
@@ -58,32 +58,36 @@ export default async function YearPage() {
         <SubjectsTour />
       </DashboardNavRail>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
-          <SessionLogoutButton />
-        </div>
+        {/* Signed-out visitors have nothing to put here; the empty bordered
+            wrapper showed as a 24px strip above the header band (QA DS-10). */}
+        <SignedInOnly>
+          <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
+            <SessionLogoutButton />
+          </div>
+        </SignedInOnly>
 
         <main className="min-h-screen bg-paper flex flex-col">
           <PageTracker event="year_select" />
 
-          {/* Page header — dark navy */}
-          <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
+          {/* Page header — inverse band, dark in both themes */}
+          <div className="bg-inverse px-6 py-12 md:px-16 md:py-16">
             <div className="max-w-wide mx-auto">
               <div className="flex items-center justify-end gap-4">
                 <Link
                   href="/search"
                   prefetch={true}
                   data-tour="subjects-search"
-                  className="inline-flex items-center gap-2 font-sans text-sm text-taupe hover:text-paper transition-colors duration-150"
+                  className="inline-flex items-center gap-2 font-sans text-sm text-on-inverse/70 hover:text-on-inverse transition-colors duration-150"
                 >
                   <span className="text-accent">⌕</span>
                   <span>Search</span>
                 </Link>
               </div>
               <div className="mt-10">
-                <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
+                <p className="font-mono text-label-md uppercase tracking-[0.1em] text-on-inverse/70 mb-4">
                   § 01 — Select Year
                 </p>
-                <h1 className="font-serif text-display-lg text-paper">
+                <h1 className="font-serif text-display-lg text-on-inverse">
                   Which year are you in?
                 </h1>
               </div>

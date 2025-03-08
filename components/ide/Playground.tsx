@@ -51,15 +51,15 @@ export function Playground({ languageId, initialCode, moduleId }: Props) {
 
   return (
     <div className="border border-ink-faint/30">
-      <div className="flex items-center justify-between bg-navy px-4 py-2">
-        <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-taupe">
+      <div className="flex items-center justify-between bg-inverse px-4 py-2">
+        <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-on-inverse/70">
           {lang.label}
         </span>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={handleReset}
-            className="border border-paper/20 text-paper/70 font-sans text-xs uppercase tracking-widest px-3 py-1 hover:text-paper transition-colors duration-150"
+            className="border border-on-inverse/20 text-on-inverse/70 font-sans text-xs uppercase tracking-widest px-3 py-1 hover:text-on-inverse transition-colors duration-150"
           >
             Reset
           </button>
@@ -67,7 +67,7 @@ export function Playground({ languageId, initialCode, moduleId }: Props) {
             type="button"
             onClick={handleRun}
             disabled={running}
-            className="bg-accent text-navy font-sans text-xs uppercase tracking-widest px-4 py-1 disabled:opacity-50"
+            className="bg-accent-strong text-white font-sans text-xs uppercase tracking-widest px-4 py-1 disabled:opacity-50"
           >
             {running ? (phase === "loading" ? "Loading…" : "Running…") : "Run"}
           </button>

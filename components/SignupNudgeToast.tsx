@@ -74,26 +74,28 @@ export function SignupNudgeToast({ signupHref }: Props) {
     // toast covered on phones. print:hidden keeps it off the PDF: the portal
     // lands in <body>, outside the reader's print gate.
     <div
-      className="fixed bottom-24 inset-x-0 z-40 flex justify-center px-4 print:hidden"
+      className="fixed bottom-[calc(6rem+env(safe-area-inset-bottom))] inset-x-0 z-40 flex justify-center pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] print:hidden"
       onClick={(e) => e.stopPropagation()}
     >
       <div
         role="status"
-        className="flex flex-wrap items-center gap-3 bg-navy text-paper px-5 py-3 shadow-lg max-w-[calc(100%-2rem)]"
+        className="flex flex-wrap items-center gap-3 bg-inverse text-on-inverse px-5 py-3 shadow-lg max-w-[calc(100%-2rem)]"
       >
         <span className="font-sans text-sm">
           Save your progress across devices — create a free account.
         </span>
         <a
           href={signupHref}
-          className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent hover:text-paper transition-colors duration-150"
+          // The bright accent is under 4.5:1 on the inverse panel at this size,
+          // so the link is on-inverse text with an accent underline.
+          className="font-mono text-label-sm uppercase tracking-[0.12em] text-on-inverse underline decoration-accent decoration-2 underline-offset-4 hover:decoration-on-inverse transition-colors duration-150"
         >
           Sign up →
         </a>
         <button
           type="button"
           onClick={dismiss}
-          className="font-mono text-label-sm uppercase tracking-[0.12em] text-taupe hover:text-paper transition-colors duration-150"
+          className="font-mono text-label-sm uppercase tracking-[0.12em] text-on-inverse/70 hover:text-on-inverse transition-colors duration-150"
         >
           Continue reading
         </button>

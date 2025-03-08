@@ -50,4 +50,14 @@ describe("TopBar", () => {
     render(<TopBar />);
     expect(screen.getByRole("link", { name: /log in/i })).toHaveAttribute("href", "/login");
   });
+
+  // QA FL-12: viewport-fit=cover lets the page run under the notch, so the
+  // fixed bar has to add the safe-area insets to its offsets.
+  it("offsets the fixed bar by the safe-area insets", () => {
+    stubSession(false);
+    const { container } = render(<TopBar />);
+    const bar = container.firstElementChild as HTMLElement;
+    expect(bar.className).toContain("top-[calc(1rem+env(safe-area-inset-top))]");
+    expect(bar.className).toContain("right-[calc(1rem+env(safe-area-inset-right))]");
+  });
 });

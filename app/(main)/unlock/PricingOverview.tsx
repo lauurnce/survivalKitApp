@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ButtonLink } from "@/components/ui/Button";
 import type { GatePrices } from "@/components/SubscribeGate";
 
 interface YearLink {
@@ -94,12 +95,7 @@ export function PricingOverview({ prices, semesterUntil, years }: Props) {
               ))}
             </ul>
           ) : (
-            <Link
-              href="/year"
-              className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
-            >
-              Browse subjects →
-            </Link>
+            <ButtonLink href="/year">Browse subjects →</ButtonLink>
           )}
 
           <p className="font-sans text-xs text-ink-faint mt-8">

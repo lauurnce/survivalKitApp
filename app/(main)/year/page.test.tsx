@@ -128,6 +128,22 @@ describe("YearPage — static shell", () => {
     await renderPage();
     expect(await screen.findByRole("button", { name: /log out/i })).toBeInTheDocument();
   });
+
+  // QA DS-10: the log-out bar's bordered wrapper rendered for everyone, so
+  // signed-out visitors saw an empty 24px strip above the header band.
+  it("renders nothing above <main> for a signed-out visitor", async () => {
+    const { container } = await renderPage();
+    await waitForSession();
+    expect(container.querySelector("main")?.previousElementSibling).toBeNull();
+  });
+
+  // QA DS-20: the grid was capped at max-w-2xl inside the max-w-wide column,
+  // so its right edge stopped short of the header's.
+  it("lets the year grid fill the header's column", async () => {
+    await renderPage();
+    const grid = screen.getByRole("link", { name: /1st Year/ }).parentElement!;
+    expect(grid.className).not.toMatch(/max-w-/);
+  });
 });
 
 describe("YearPage — metadata", () => {
