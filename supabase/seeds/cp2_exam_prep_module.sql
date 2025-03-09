@@ -19,58 +19,68 @@ where public.modules.subject_id = excluded.subject_id;
 
 insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
 values ('015f9fa3-189a-4ea2-b241-d3a0df8914ea', 'a3000001-0001-0002-0001-0000000000e1', 'content', 'Prelim Exam Blueprint & Study Plan', $md$
-This module preps you for exams on everything in the currently published **Unit 1: Arrays**. Coverage will expand as new units are published.
+This module preps you for both CP2 major exams. The **prelim** covers Lessons 1 to 3: **Arrays in Depth**, **Strings and Character Arrays**, and **Pointers**. The **final** covers Lessons 4 to 7 (Structures, File Handling, Recursion, Searching and Sorting) plus some cumulative review. This section and the two prelim mock exams below focus on Lessons 1 to 3.
 
-### How a CP2 Prelim on Arrays Is Usually Structured
+### How a CP2 Prelim on Lessons 1 to 3 Is Usually Structured
 
-Different professors shuffle the weights, but almost every CP2 prelim on arrays is built from the same four parts:
+Different professors shuffle the weights, but almost every CP2 prelim on arrays, strings, and pointers is built from the same four parts:
 
 | Part | Format | Typical Weight | What It Really Tests |
 |---|---|---|---|
-| I | Multiple choice / identification | 25–35% | Rules: declaration syntax, indexing, initialization behavior |
-| II | Output tracing | 25–35% | Can you run a loop over an array in your head, line by line |
-| III | Debugging / spot-the-error | 10–20% | Off-by-one loops, missing `&` in `scanf()`, illegal array assignment |
-| IV | Fill-in-the-blank / write-the-code | 20–30% | Producing the standard array idioms from memory |
+| I | Multiple choice / identification | 25-30% | Rules: array parameters, `strlen` vs `sizeof`, what `strcmp` returns, the two meanings of `*` |
+| II | Output tracing | 30-35% | Running loops over 1-D and 2-D arrays, string loops, and pointer arithmetic in your head |
+| III | Find the error | 15-20% | Strings compared with `==`, a missing `'\0'`, an uninitialized pointer, `int m[][]` in a parameter |
+| IV | Short programming | 20-25% | Writing a small function from memory: a search, a string function, a function with pointer parameters |
 
-Tracing plus write-the-code is usually more than half the exam. You cannot pass by memorizing definitions alone, you have to practice running code on paper.
+Tracing plus programming is usually more than half the exam. You cannot pass by memorizing definitions alone: you have to practice running code on paper and writing small functions without notes.
 
 ### Your Exact Memorize List
 
 If you can do all ten of these cold, you are ready:
 
-1. **Declaration syntax**, `data_type array_name[size];` for 1D and `data_type array_name[rows][columns];` for 2D.
-2. **The three initialization rules**, more values than elements is a compile error; fewer values means the rest become zero; if you initialize everything you may omit the size.
-3. **Indexing starts at zero**, for `int num[20]`, valid positions are `num[0]` through `num[19]`. There is no `num[20]`.
-4. **The address formula**, element address = base address + (size of one element × index). Expect one arithmetic item on this.
-5. **The loop-over-array idiom**, `for (i = 0; i < n; i++)`, and `scanf("%d", &a[i]);` with the address-of operator.
-6. **No whole-array assignment**, `second = first;` is illegal; copy element by element with a loop.
-7. **Strings end with `'\0'`**, a string literal of `n` letters needs `n + 1` array slots.
-8. **2D traversal**, nested loops, rows outside, columns inside; a flat initializer list fills row by row (the last subscript increases fastest).
-9. **Swapping needs a temp variable**, three assignments: `temp = a; a = b; b = temp;`.
-10. **The compare-and-swap sorting logic** from Sample Program 1, if the left neighbor is bigger, swap the pair.
+1. **Passing an array passes its address.** Call with the name alone, `f(scores, n)`, and the function can change the caller's array. Mark read-only parameters `const`.
+2. **Always pass the size.** Inside the function, `sizeof a` gives the size of an address, not the array. `sizeof a / sizeof a[0]` only works where the array is declared.
+3. **Linear search** returns the index of the first match, or `-1`. The `return -1` goes **after** the loop. Up to `n` comparisons, and the array does not need to be sorted.
+4. **Max/min patterns:** keep the position, start from the first element. `>` keeps the first maximum, `>=` keeps the last. Reverse in place swaps `a[i]` with `a[n - 1 - i]` for only `n / 2` passes.
+5. **2-D arrays are stored row by row:** `t[r][c]` sits at position `r × COLS + c`. A parameter may leave out the rows but must state the columns: `int m[][COLS]`.
+6. **A string is a `char` array ending in `'\0'`.** n characters need n + 1 slots. `strlen` counts the characters before `'\0'`; `sizeof` gives the whole array.
+7. **Never `=` or `==` on strings.** Copy with `strcpy`, join with `strcat`, compare with `strcmp(a, b) == 0`. `strcmp` returns 0 for equal, negative if the first comes first, positive if it comes second.
+8. **`'7' - '0'` is the number 7**, and `value = value * 10 + (c - '0')` builds a number from digit characters. `<ctype.h>` tests (`isdigit`, `isalpha`, `isupper`...) return non-zero for true.
+9. **Pointers:** `&x` is the address of `x`, `int *p = &x;` makes `p` point to `x`, and `*p = 25;` changes `x`. Pass addresses (`swap(&x, &y)`) to let a function change the caller's variables or return more than one result.
+10. **Pointer arithmetic and arrays:** `p + 1` moves one element, not one byte. `a[i]` is exactly `*(a + i)`, and `q - p` counts the elements between two pointers. An array name cannot be moved (`a++` does not compile).
 
 ### Top Mistakes That Cost Points
 
-- Writing `a[size]` as if it were the last element, the last element is `a[size - 1]`.
-- Using `<=` where `<` belongs in a loop condition, reading one slot past the end.
-- Forgetting `&` in `scanf("%d", &a[i]);`.
-- Filling a 2D initializer column-first instead of row-first when tracing.
-- Assuming a declared-but-uninitialized array holds zeros (only *partially initialized* arrays zero-fill the remainder).
-- "Swapping" with two assignments and no temp, one value gets destroyed.
+- Writing `return -1;` in an `else` inside the search loop, so only `a[0]` is ever checked.
+- Calling `print_array(scores[], n)` or `print_array(scores[4], n)` instead of `print_array(scores, n)`.
+- Resetting a row or column total **outside** the outer loop, so every total includes the ones before it.
+- Forgetting the `'\0'` when you copy or build a string one character at a time.
+- Testing `if (strcmp(a, b))` for "same text". That is true when the strings are **different**.
+- Mixing up `*p + 1` (the value plus one) with `*(p + 1)` (the next element), and `*p++` (read, then move `p`) with `(*p)++` (add one to the value).
+- Writing through a pointer that was never given an address, or returning the address of a local variable.
 
 ### Realistic 7-Day Study Plan
 
-Each day is keyed to section titles in Unit 1. Around 45–60 minutes a day is enough.
+Each day names the exact lesson sections to read. Around 45 to 60 minutes a day is enough.
 
 | Day | Study These Sections | What To Actually Do |
 |---|---|---|
-| 1 | "What is an Array and Why Do We Need One?" + "Characteristics of an Array" | Read both, then write the three defining properties from memory. Explain index notation out loud in one sentence. |
-| 2 | "Declaring an Array in C" + "How C Finds an Element in Memory" | Write 10 declarations of your own (mix `int`, `float`, `char`, `double`). Compute 5 element addresses by hand with the formula. |
-| 3 | "Storing Values in an Array" | Memorize the three ways to store values and the three initialization rules. Write the array-copy loop from memory twice. |
-| 4 | "Character Arrays and Strings" + "Multidimensional Arrays" | Draw the memory picture of a string including `'\0'`. Fill a 3×3 table from a flat initializer list by hand. |
-| 5 | "Sample Program 1, Sorting an Array" + "Sample Program 2, Counting Positives and Negatives" | Trace both programs on paper with your own input values before checking the expected output. |
-| 6 | "Sample Program 3, Adding Two Matrices" + "Practice Exercises" | Do all three trace exercises (Programs A, B, C) with a timer, 5 minutes each. |
-| 7 | The **Free Practice Set** below | Simulate exam conditions: 30 minutes, no notes. Review every miss against the Unit 1 section it came from. |
+| 1 | Lesson 1: Arrays in Depth → Arrays Recap: What Carries Over from CP1, Passing Arrays to Functions | Write `print_array` and `add_bonus` from memory. Explain in one sentence why `sizeof` fails inside a function. |
+| 2 | Lesson 1: Arrays in Depth → Linear Search, Common Array Algorithms | Write `linear_search` and `count_matches` from memory. Trace the max-position loop once with `>` and once with `>=` on an array with a repeated maximum. |
+| 3 | Lesson 1: Arrays in Depth → Two-Dimensional Arrays, 2-D Arrays and Functions: Matrix Operations | Compute row totals, column totals, both diagonals, and a transpose by hand. Work out `r × COLS + c` for five cells. |
+| 4 | Lesson 2: Strings and Character Arrays → Strings in C: Character Arrays with a Null Terminator, Reading and Printing Strings, The `<string.h>` Toolkit | Draw the memory picture of three strings including `'\0'`. Predict `strlen`, `sizeof`, and three `strcmp` signs before running them. |
+| 5 | Lesson 2: Strings and Character Arrays → Character Handling with `<ctype.h>`, Writing Your Own String Functions, Common String Bugs and How to Avoid Them | Write `my_strlen`, `my_strcpy`, and `reverse` without looking. Find all seven string bugs in the bugs section without reading the fixes first. |
+| 6 | Lesson 3: Pointers → Memory Addresses and the & Operator, Pointer Variables and the * Operator, Pointers as Function Parameters | Draw boxes and arrows for `x`, `p`, and `*p`. Write `swap` and `min_max` from memory and explain why `swap_copy` fails. |
+| 7 | Lesson 3: Pointers → Pointer Arithmetic, Pointers and Arrays, Common Pointer Mistakes | Trace the `*p + 1`, `*(p + 1)`, `*p++`, `(*p)++` program by hand. Then take the **Free Practice Set** below: 30 minutes, no notes. |
+
+After Day 7, take **Prelim Mock Exam A** under exam conditions, check it with the answer key, re-read the sections behind every miss, then take **Prelim Mock Exam B** a day or two later.
+
+### How to Use This Module
+
+- **Free Practice Set (next section):** 15 items sampling all seven lessons. Use it as a diagnostic: the answer key tells you which lesson each item came from.
+- **Prelim Mock Exams A and B:** 25 items each, Lessons 1 to 3 only, in the same four parts as the table above. Do them on paper, timed, before opening the key.
+- **Answer Key with Explanations:** every answer with a one-line reason, a trace table for the tricky tracing items, and a complete, tested program for every programming item. When you miss an item, find the exact line where your trace went wrong.
+- **Traps and final exam sections:** after the prelim mocks, the rest of the module covers the common traps and the final exam on Lessons 4 to 7.
 $md$, 1, null, null)
 on conflict (id) do update set
   kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
