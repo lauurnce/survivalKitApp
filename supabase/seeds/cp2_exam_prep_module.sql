@@ -89,151 +89,157 @@ where public.sections.module_id = excluded.module_id;
 
 insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
 values ('09ee8ff2-b245-49fc-a26d-7376818d2000', 'a3000001-0001-0002-0001-0000000000e1', 'content', 'Free Practice Set, 15 Items with Answer Key', $md$
-Fifteen genuine exam-style items on one-dimensional arrays. Do all fifteen before looking at the key, treat it like the real thing: 30 minutes, no notes.
+Fifteen genuine exam-style items sampling all seven lessons, about two per lesson. Do all fifteen before looking at the key, and treat it like the real thing: 30 minutes, no notes. The key tells you which lesson each item came from, so every miss points you to the lesson to review.
 
-### Part I, Multiple Choice (Items 1–5)
+### Part I, Multiple Choice (Items 1-4)
 
-**1.** Given `int num[20];`, which positions are valid?
+**1.** Given `int scores[10];` and the function `void show(const int a[], int n);`, which call is correct?
 
-- A. `num[1]` through `num[20]`
-- B. `num[0]` through `num[19]`
-- C. `num[0]` through `num[20]`
-- D. `num[1]` through `num[19]`
+- A. `show(scores[10], 10);`
+- B. `show(scores[], 10);`
+- C. `show(scores, 10);`
+- D. `show(&scores[], 10);`
 
-**2.** Which declaration correctly creates a 20-element integer array?
+**2.** Given `int x = 5;` and `int *p = &x;`, which statement changes `x` to 9?
 
-- A. `int scores(20);`
-- B. `array int scores[20];`
-- C. `int scores[20];`
-- D. `int[20] scores;`
+- A. `p = 9;`
+- B. `*p = 9;`
+- C. `&x = 9;`
+- D. `p* = 9;`
 
-**3.** After `int c[15] = {3, 7, 4, 6, 1};`, what is the value of `c[9]`?
+**3.** Given the declarations below, which statement correctly sets the GWA **through `ps`**?
 
-- A. 0
-- B. 1
-- C. Garbage (unpredictable)
-- D. Compile error
+```c
+typedef struct {
+    char name[30];
+    double gwa;
+} Student;
 
-**4.** How many elements does `int b[] = {11, 21, 75, 24, 5};` have?
+Student s;
+Student *ps = &s;
+```
 
-- A. Unknown until runtime
-- B. 4
-- C. 5
-- D. Compile error, size is required
+- A. `ps.gwa = 1.25;`
+- B. `ps->gwa = 1.25;`
+- C. `*ps.gwa = 1.25;`
+- D. `ps->gwa == 1.25;`
 
-**5.** An integer array starts at memory address 5,000 and each integer occupies 4 bytes. What is the address of the element at index 6?
+**4.** Which `fopen` mode **erases** the file if it already exists?
 
-- A. 5,006
-- B. 5,020
-- C. 5,024
-- D. 5,028
+- A. `"r"`
+- B. `"a"`
+- C. `"w"`
+- D. All three
 
-### Part II, Output Tracing (Items 6–9)
+### Part II, Output Tracing (Items 5-9)
 
 Write exactly what each fragment prints.
 
+**5.**
+```c
+int a[6] = {4, 9, 2, 9, 5, 1};
+int i, pos = 0;
+for (i = 1; i < 6; i++)
+    if (a[i] >= a[pos])
+        pos = i;
+printf("%d %d", a[pos], pos);
+```
+
 **6.**
 ```c
-int a[6] = {4, 9, 2, 7, 6, 3};
-int i, s = 0;
-for (i = 0; i < 6; i++)
-    if (a[i] % 2 == 0)
-        s += a[i];
-printf("%d", s);
+char s[20] = "Davao";
+printf("%d %d", (int)strlen(s), (int)sizeof s);
 ```
 
 **7.**
 ```c
-int c[5] = {2, 4, 6, 8, 10};
-int a, b = 0;
-for (a = 0; a < 5; a++)
-    if ((a % 2) == 0)
-        b += c[a];
-printf("%d", b);
+int a[4] = {2, 4, 6, 8};
+int *p = a;
+p += 2;
+*p = *p * 3;
+printf("%d %d", *p, *(p - 1));
 ```
 
 **8.**
 ```c
-int a[5] = {12, 5, 19, 8, 15};
-int i, big = a[0];
-for (i = 1; i < 5; i++)
-    if (a[i] > big)
-        big = a[i];
-printf("%d", big);
+int f(int n) {
+    if (n <= 1)
+        return 1;
+    return n + f(n - 2);
+}
+
+/* in main: */
+printf("%d", f(7));
 ```
 
-**9.**
-```c
-int a[4] = {3, 1, 4, 1};
-int i;
-for (i = 3; i >= 0; i--)
-    printf("%d", a[i]);
-```
+**9.** Bubble sort, ascending. One pass compares `a[0]` with `a[1]`, then `a[1]` with `a[2]`, and so on to the last pair, swapping whenever the left value is bigger. The array is `{7, 3, 9, 2, 5}`. Write the array **after pass 1** and the number of swaps made.
 
-### Part III, Spot the Error (Items 10–12)
+### Part III, Find the Error (Items 10-13)
 
-**10.** `int a[10];` is declared. What is wrong here, and what is the fix?
+For each one, say what is wrong and write the fix.
+
+**10.** The user's name really is `"Ana"`, but the program prints `Who are you?`.
 
 ```c
-for (i = 0; i <= 10; i++)
-    scanf("%d", &a[i]);
+char name[20] = "Ana";
+if (name == "Ana")
+    printf("Welcome, Ana!\n");
+else
+    printf("Who are you?\n");
 ```
 
-**11.** What is wrong here, and what is the fix?
+**11.** Using the `Student` type from Item 3:
 
 ```c
-for (i = 0; i < 10; i++)
-    scanf("%d", a[i]);
+Student s;
+s.name = "Liza";
 ```
 
-**12.** Is this declaration legal? Why or why not?
+**12.** This function is supposed to return 1 + 2 + ... + n.
 
 ```c
-int a[5] = {1, 2, 3, 4, 5, 6};
+int sumTo(int n) {
+    return n + sumTo(n - 1);
+}
 ```
 
-### Part IV, Fill in the Blank (Items 13–15)
-
-**13.** `char city[] = "CEBU";`, how many elements does `city` have?
-
-**14.** Complete the loop so that every element of `first` is copied into `second` (both are 25-element `int` arrays):
+**13.** This loop is supposed to print a text file one character at a time. `fp` was opened correctly.
 
 ```c
-for (i = 0; i < 25; i++)
-    ____;
+char ch;
+while ((ch = fgetc(fp)) != EOF)
+    putchar(ch);
 ```
 
-**15.** Complete the statement so the program counts the negative values in `a` (size `n`):
+### Part IV, Identification (Items 14-15)
 
-```c
-for (i = 0; i < n; i++)
-    if (____)
-        count_neg++;
-```
+**14.** Binary search for the key `31` in the sorted array `{4, 9, 13, 18, 25, 31, 40}`, using `low = 0`, `high = 6` and `mid = low + (high - low) / 2`. List every index that becomes `mid`, in order, and give the value the search returns.
+
+**15.** Given `int t[4][5];`, counting from 0, at what position in memory is `t[2][3]` stored?
 
 ---
 
 ### Answer Key
 
-| # | Answer | One-Line Why |
-|---|---|---|
-| 1 | B | Indexing starts at 0, so 20 elements occupy positions 0 through 19. |
-| 2 | C | `data_type array_name[size];`, square brackets after the name. |
-| 3 | A | Only 5 of 15 elements are initialized; the remaining elements (indices 5–14) are automatically set to zero. |
-| 4 | C | When all elements are initialized, the compiler counts them, 5 values means size 5. |
-| 5 | C | 5,000 + (4 × 6) = 5,024, straight from the address formula. |
-| 6 | `12` | The even values are 4, 2, and 6; 4 + 2 + 6 = 12. |
-| 7 | `18` | The condition tests the *index*, not the value: indices 0, 2, 4 give 2 + 6 + 10 = 18. |
-| 8 | `19` | Classic find-the-largest: 19 beats 12; 5, 8, 15 never do. |
-| 9 | `1413` | Printed in reverse index order: a[3], a[2], a[1], a[0] = 1, 4, 1, 3. |
-| 10 | Change `<=` to `<` | `i <= 10` reads into `a[10]`, one slot past the last element `a[9]`. |
-| 11 | Add `&`: `&a[i]` | `scanf()` needs the address-of operator, just as with ordinary variables. |
-| 12 | Illegal, compile error | Six initializers for five elements; you cannot supply more values than there are elements. |
-| 13 | 5 | Four letters plus the automatic null terminator `'\0'`. |
-| 14 | `second[i] = first[i]` | Arrays cannot be assigned whole; copy element by element. |
-| 15 | `a[i] < 0` | Test each element against zero, exactly as in Sample Program 2. |
+| # | Answer | Lesson | One-Line Why |
+|---|---|---|---|
+| 1 | C | 1 | Pass an array by its name alone: no brackets and no `&` in the call. |
+| 2 | B | 3 | `*p` follows the pointer to `x`, so `*p = 9` stores 9 in `x`. `p = 9` would try to store 9 as an address. |
+| 3 | B | 4 | Use the arrow with a pointer to a structure. `*ps.gwa` fails because `.` binds tighter than `*`; the long form is `(*ps).gwa`. |
+| 4 | C | 5 | `"w"` creates the file or erases an existing one. `"r"` only reads and `"a"` adds to the end. |
+| 5 | `9 3` | 1 | `>=` keeps the **last** maximum: 9 appears at index 1 and index 3, so `pos` ends at 3. With `>` the answer would be `9 1`. |
+| 6 | `5 20` | 2 | `strlen` counts the 5 letters before `'\0'`; `sizeof` is the whole 20-slot array. |
+| 7 | `18 4` | 3 | `p += 2` moves `p` to `a[2]` (6), which becomes 6 × 3 = 18. `*(p - 1)` is `a[1]`, which is 4. |
+| 8 | `16` | 6 | f(7) = 7 + f(5) = 7 + 5 + f(3) = 7 + 5 + 3 + f(1) = 7 + 5 + 3 + 1 = 16. |
+| 9 | `3 7 2 5 9`, 3 swaps | 7 | Swap 7 and 3; 7 and 9 stay; swap 9 and 2; swap 9 and 5. The largest value, 9, ends up last. |
+| 10 | Use `strcmp(name, "Ana") == 0` | 2 | `==` compares two addresses, which are never equal, so it is always false even when the text matches. |
+| 11 | Use `strcpy(s.name, "Liza");` | 4 | `name` is a `char` array, and an array cannot be assigned with `=` (compile error). |
+| 12 | Add a base case: `if (n == 0) return 0;` | 6 | With no base case the calls never stop, and the program crashes with a stack overflow. |
+| 13 | Declare `int ch;` | 5 | `fgetc` returns an `int` so `EOF` can be told apart from every real character. In a `char`, the loop can stop early on a real character or never stop at all, depending on the compiler. |
+| 14 | `mid` = 3, then 5; returns `5` | 7 | Step 1: `a[3]` is 18 < 31, so `low = 4`. Step 2: mid = 4 + (6 - 4) / 2 = 5, and `a[5]` is 31: found. |
+| 15 | 13 | 1 | Row-major order: position = r × COLS + c = 2 × 5 + 3 = 13. |
 
-Scored 12 or better? You are on track. Below that, go back to the Day-by-day plan above and re-trace the sample programs. The four full mock exams below, 100 fresh items with complete answer keys and worked traces, come with the subject unlock.
+Scored 12 or better? You are on track. Below that, note which lessons your misses came from and re-read those lessons first. The full mock exams below (two for the prelim, two for the final, each with a complete answer key, trace tables and tested solutions) come with the subject unlock.
 $md$, 2, null, null)
 on conflict (id) do update set
   kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
