@@ -2,26 +2,23 @@
 -- Computer Programming 2, Exam Prep: Prelims & Finals
 -- Subject ID: 10000000-0001-0002-0001-000000000001
 -- Module ID:  a3000001-0001-0002-0001-0000000000e1
--- Purpose: exam-prep module (blueprints, free practice set,
---          prelim + final mock exams with full answer keys)
---          covering the currently published Unit 1: Arrays.
--- Idempotent: deletes only this module (sections cascade),
---             then re-inserts everything. Safe to re-run.
--- Run after cp2_modules_sections.sql.
--- sort_order 99 keeps Exam Prep last, after every numbered lesson.
+-- Purpose: exam-prep module for Lessons 1-7: prelim (Lessons 1-3) and
+--          final (Lessons 4-7 plus review) blueprints, a free practice
+--          set, two mock exams per term with full answer keys, and the
+--          common traps with a runnable program.
+-- Idempotent: every row is upserted by its fixed id (the production
+--             ids), so a re-run changes nothing and deletes nothing.
+-- Run after the lesson seeds. sort_order 99 keeps Exam Prep last.
 -- ============================================================
 
-DELETE FROM modules WHERE id = 'a3000001-0001-0002-0001-0000000000e1';
+insert into public.modules (id, subject_id, title, slug, sort_order)
+values ('a3000001-0001-0002-0001-0000000000e1', '10000000-0001-0002-0001-000000000001', 'Exam Prep: Prelims & Finals', 'exam-prep-prelims-finals', 99)
+on conflict (id) do update set
+  title = excluded.title, slug = excluded.slug, sort_order = excluded.sort_order
+where public.modules.subject_id = excluded.subject_id;
 
-INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
-  ('a3000001-0001-0002-0001-0000000000e1','10000000-0001-0002-0001-000000000001','Exam Prep: Prelims & Finals','exam-prep-prelims-finals',99);
-
--- ============================================================
--- FREE SECTIONS (content)
--- ============================================================
-
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-0000000000e1','content','Prelim Exam Blueprint & Study Plan',$md$
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('015f9fa3-189a-4ea2-b241-d3a0df8914ea', 'a3000001-0001-0002-0001-0000000000e1', 'content', 'Prelim Exam Blueprint & Study Plan', $md$
 This module preps you for exams on everything in the currently published **Unit 1: Arrays**. Coverage will expand as new units are published.
 
 ### How a CP2 Prelim on Arrays Is Usually Structured
@@ -74,9 +71,14 @@ Each day is keyed to section titles in Unit 1. Around 45–60 minutes a day is e
 | 5 | "Sample Program 1, Sorting an Array" + "Sample Program 2, Counting Positives and Negatives" | Trace both programs on paper with your own input values before checking the expected output. |
 | 6 | "Sample Program 3, Adding Two Matrices" + "Practice Exercises" | Do all three trace exercises (Programs A, B, C) with a timer, 5 minutes each. |
 | 7 | The **Free Practice Set** below | Simulate exam conditions: 30 minutes, no notes. Review every miss against the Unit 1 section it came from. |
-$md$, 1),
+$md$, 1, null, null)
+on conflict (id) do update set
+  kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
+  sort_order = excluded.sort_order, ide_language = excluded.ide_language, starter_code = excluded.starter_code
+where public.sections.module_id = excluded.module_id;
 
-('a3000001-0001-0002-0001-0000000000e1','content','Free Practice Set, 15 Items with Answer Key',$md$
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('09ee8ff2-b245-49fc-a26d-7376818d2000', 'a3000001-0001-0002-0001-0000000000e1', 'content', 'Free Practice Set, 15 Items with Answer Key', $md$
 Fifteen genuine exam-style items on one-dimensional arrays. Do all fifteen before looking at the key, treat it like the real thing: 30 minutes, no notes.
 
 ### Part I, Multiple Choice (Items 1–5)
@@ -222,14 +224,14 @@ for (i = 0; i < n; i++)
 | 15 | `a[i] < 0` | Test each element against zero, exactly as in Sample Program 2. |
 
 Scored 12 or better? You are on track. Below that, go back to the Day-by-day plan above and re-trace the sample programs. The four full mock exams below, 100 fresh items with complete answer keys and worked traces, come with the subject unlock.
-$md$, 2);
+$md$, 2, null, null)
+on conflict (id) do update set
+  kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
+  sort_order = excluded.sort_order, ide_language = excluded.ide_language, starter_code = excluded.starter_code
+where public.sections.module_id = excluded.module_id;
 
--- ============================================================
--- PRELIM MOCK EXAMS (activities)
--- ============================================================
-
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exam A, 25 Items',$md$
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('14cc02a9-0d4a-47ab-857e-b1ba37c54faa', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Prelim Mock Exam A, 25 Items', $md$
 Simulate the real thing: 60 minutes, no notes, answers on paper. The full answer key with worked traces is two sections down, do not open it until you finish.
 
 ### Part I, Multiple Choice (Items 1–8)
@@ -430,9 +432,14 @@ for (i = 0; i < n; i++) {
 ```
 
 **25.** Write a declaration for a 12-element array of `float` values named `rates`.
-$md$, 3),
+$md$, 3, null, null)
+on conflict (id) do update set
+  kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
+  sort_order = excluded.sort_order, ide_language = excluded.ide_language, starter_code = excluded.starter_code
+where public.sections.module_id = excluded.module_id;
 
-('a3000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exam B, 25 Items',$md$
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('c56ae624-54a4-47cc-927d-249557e659c9', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Prelim Mock Exam B, 25 Items', $md$
 All-new items, a step harder than Exam A, this one includes sorting traces, the kind professors love for the last page of a prelim. Same rules: 60 minutes, no notes.
 
 For the sorting items, **one pass** means: compare `a[0]` with `a[1]`, then `a[1]` with `a[2]`, and so on up to the last pair, swapping whenever the left value is greater than the right value (ascending order), the same compare-and-swap logic as Sample Program 1.
@@ -632,9 +639,14 @@ for (i = 0; i < n; i++)
 ```c
 scanf("%d", ____);
 ```
-$md$, 4),
+$md$, 4, null, null)
+on conflict (id) do update set
+  kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
+  sort_order = excluded.sort_order, ide_language = excluded.ide_language, starter_code = excluded.starter_code
+where public.sections.module_id = excluded.module_id;
 
-('a3000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exams, Answer Key with Explanations',$md$
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('3383e72a-94ef-4e41-9978-64384b13d586', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Prelim Mock Exams, Answer Key with Explanations', $md$
 Check your work item by item. For tracing items, follow the trace table row by row and find the exact line where your trace went wrong, that tells you which Unit 1 section to re-read.
 
 ## Exam A
@@ -816,14 +828,14 @@ a[1] = temp;
 **25.** `&b[i][j]`, 2D elements need the address-of operator in `scanf()` too, exactly as in Sample Program 3.
 
 **Passing bar:** 17/25 on Exam B (it is harder). If both A and B are at or above the bar, you are prelim-ready.
-$md$, 5);
+$md$, 5, null, null)
+on conflict (id) do update set
+  kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
+  sort_order = excluded.sort_order, ide_language = excluded.ide_language, starter_code = excluded.starter_code
+where public.sections.module_id = excluded.module_id;
 
--- ============================================================
--- COMMON TRAPS (activity, with runnable C playground)
--- ============================================================
-
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('a3000001-0001-0002-0001-0000000000e1','activity','Common Array Traps & How to Avoid Them',$md$
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('a0cfbf26-9576-49ea-873e-93a5d4a1ae8b', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Common Array Traps & How to Avoid Them', $md$
 Six traps account for most of the points lost on array exams. Each one comes with a mini-drill, do the drill *before* reading its answer.
 
 ### Trap 1, Index Out of Bounds
@@ -904,14 +916,14 @@ int main(void) {
     printf("\n");
 
     return 0;
-}$code$);
+}$code$)
+on conflict (id) do update set
+  kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
+  sort_order = excluded.sort_order, ide_language = excluded.ide_language, starter_code = excluded.starter_code
+where public.sections.module_id = excluded.module_id;
 
--- ============================================================
--- FINAL EXAM SECTIONS (activities)
--- ============================================================
-
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-0000000000e1','activity','Final Exam Blueprint & Rapid Review Sheet',$md$
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('187b08ad-d1a2-4794-8473-77a7ff09242b', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Final Exam Blueprint & Rapid Review Sheet', $md$
 The final is cumulative over the currently published **Unit 1: Arrays**, with extra weight on the material closest to the exam: 2D arrays, matrices, and sorting. Coverage of this module will expand as new units are published.
 
 ### Typical Final Exam Blueprint
@@ -1013,10 +1025,14 @@ for (i = 0; i < m; i++)
 3. Partial initialization zero-fills; no initialization means garbage.
 4. Flat 2D initializers fill row by row.
 5. `scanf()` needs `&`, for 1D and 2D elements alike.
-$md$, 7);
+$md$, 7, null, null)
+on conflict (id) do update set
+  kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
+  sort_order = excluded.sort_order, ide_language = excluded.ide_language, starter_code = excluded.starter_code
+where public.sections.module_id = excluded.module_id;
 
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-0000000000e1','activity','Final Mock Exam A, 25 Items',$md$
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('92de4076-fa42-4e4c-bd33-2e9912bf056b', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Final Mock Exam A, 25 Items', $md$
 Cumulative over Unit 1, weighted toward 2D arrays, matrices, and sorting, like the real final. 90 minutes, no notes. Items 23–25 are write-the-program items; write complete programs, not fragments.
 
 For sorting items, **one pass** means comparing each adjacent pair left to right, swapping when the left value is greater (ascending).
@@ -1222,10 +1238,14 @@ Write each as a complete C program. Rubric per item (10 points): correct declara
 **24.** Read a 3×3 integer matrix, then print the **sum of all nine elements**.
 
 **25.** Read 5 integers into an array, sort them in **ascending** order using compare-and-swap passes, then print the sorted array on one line.
-$md$, 8);
+$md$, 8, null, null)
+on conflict (id) do update set
+  kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
+  sort_order = excluded.sort_order, ide_language = excluded.ide_language, starter_code = excluded.starter_code
+where public.sections.module_id = excluded.module_id;
 
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-0000000000e1','activity','Final Mock Exam B, 25 Items',$md$
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('8ff0bff1-d150-4a44-bd44-e59fda1ca286', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Final Mock Exam B, 25 Items', $md$
 All-new items, same blueprint as Final Mock Exam A. 90 minutes, no notes. The same one-pass definition applies to the sorting items, and the same 10-point rubric (declarations 2, input 2, logic 4, output 2) applies to items 23–25.
 
 ### Part I, Multiple Choice (Items 1–6)
@@ -1420,10 +1440,14 @@ for (i = 0; i < m; i++) {
 **24.** Read two 2×2 integer matrices A and B, then print their **sum matrix**, one row per line.
 
 **25.** Read 5 integers into an array, sort them in **descending** order using compare-and-swap passes, then print the sorted array on one line.
-$md$, 9);
+$md$, 9, null, null)
+on conflict (id) do update set
+  kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
+  sort_order = excluded.sort_order, ide_language = excluded.ide_language, starter_code = excluded.starter_code
+where public.sections.module_id = excluded.module_id;
 
-INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-0000000000e1','activity','Final Mock Exams, Answer Key with Explanations',$md$
+insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
+values ('a1311800-32de-44bb-bcc2-8c7965d526e1', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Final Mock Exams, Answer Key with Explanations', $md$
 Full key for both final mocks, including complete model programs for the write-the-program items. Model solutions follow the same style as the Unit 1 sample programs (`conio.h`, `void main()`, `clrscr()`, `getch()`); if your compiler is not Turbo C, remove those three and use `int main(void)` with `return 0;`, the array logic is identical either way.
 
 ## Final Mock Exam A
@@ -1772,4 +1796,8 @@ Rubric notes: identical to the ascending sort except the comparison flips to `<`
 ---
 
 Scored 20+ on both finals? You are walking into that exam room ready. Anything you missed, chase it back to the exact Unit 1 section named in the Rapid Review Sheet and re-trace it by hand, that is how the points come back.
-$md$, 10);
+$md$, 10, null, null)
+on conflict (id) do update set
+  kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
+  sort_order = excluded.sort_order, ide_language = excluded.ide_language, starter_code = excluded.starter_code
+where public.sections.module_id = excluded.module_id;
