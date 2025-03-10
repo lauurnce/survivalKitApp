@@ -248,206 +248,234 @@ where public.sections.module_id = excluded.module_id;
 
 insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
 values ('14cc02a9-0d4a-47ab-857e-b1ba37c54faa', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Prelim Mock Exam A, 25 Items', $md$
-Simulate the real thing: 60 minutes, no notes, answers on paper. The full answer key with worked traces is two sections down, do not open it until you finish.
+Simulate the real thing: 60 minutes, no notes, answers on paper. This exam covers Lessons 1 to 3 (Arrays in Depth, Strings and Character Arrays, Pointers). The full answer key with trace tables and worked solutions is two sections down: do not open it until you finish.
 
-### Part I, Multiple Choice (Items 1–8)
+Assume every fragment sits inside `main()` with `<stdio.h>`, `<string.h>` and `<ctype.h>` included, and that an `int` is 4 bytes.
 
-**1.** Every element of an array must be:
+### Part I, Multiple Choice (Items 1-8)
 
-- A. Initialized at declaration
-- B. Of the same data type
-- C. An integer
-- D. Smaller than the array size
+**1.** In `void add_bonus(int a[], int n, int bonus)`, what does the function actually receive for `a` when you call `add_bonus(scores, 4, 5)`?
 
-**2.** The index of the *first* element of any C array is:
+- A. A copy of the whole array
+- B. The address of the first element of `scores`
+- C. The value of `scores[0]`
+- D. The number of elements in `scores`
+
+**2.** Inside a function whose parameter is `int a[]`, the expression `sizeof a` gives:
+
+- A. The size of the whole array in bytes
+- B. The number of elements
+- C. The size of an address (a pointer)
+- D. Zero
+
+**3.** A linear search runs on a 50-element array, and the key is **not** in the array. How many comparisons with the key does it make?
 
 - A. 1
-- B. 0
-- C. −1
-- D. Chosen by the programmer
+- B. 25
+- C. 49
+- D. 50
 
-**3.** How many elements does `float grid[5][3];` hold in total?
+**4.** Which is a valid prototype for a function that receives a 2-D `int` array with 4 columns?
 
-- A. 8
-- B. 5
-- C. 15
-- D. 53
+- A. `void f(int m[][], int rows);`
+- B. `void f(int m[][4], int rows);`
+- C. `void f(int m[4][], int rows);`
+- D. `void f(int m, int rows);`
 
-**4.** Given `int first[25], second[25];` which statement is **illegal** in C?
+**5.** How many elements does `char code[] = "IT-101";` have?
 
-- A. `second[0] = first[0];`
-- B. `second[24] = first[24];`
-- C. `second = first;`
-- D. `second[3] = first[7];`
+- A. 5
+- B. 6
+- C. 7
+- D. It depends on the compiler
 
-**5.** After `int c[8] = {2, 4, 6};`, the value of `c[5]` is:
+**6.** The result of `strcmp("Cruz", "cruz")` is:
 
-- A. 6
-- B. Garbage (unpredictable)
-- C. 0
-- D. Compile error
+- A. 0
+- B. A negative number
+- C. A positive number
+- D. A compile error
 
-**6.** An integer array starts at address 6,000 and each element occupies 4 bytes. The element at index 7 is at address:
+**7.** Given `int x = 4;` and `int *p = &x;`, which expression has the value 4?
 
-- A. 6,007
-- B. 6,024
-- C. 6,028
-- D. 6,032
+- A. `p`
+- B. `&p`
+- C. `*p`
+- D. `&x`
 
-**7.** Given `char word[7] = "MANILA";`, the value of `word[6]` is:
+**8.** For `int a[5];`, which expression means exactly the same as `a[3]`?
 
-- A. `'A'`
-- B. `'\0'`
-- C. Garbage (unpredictable)
-- D. `'6'`
+- A. `*a + 3`
+- B. `*(a + 3)`
+- C. `&a + 3`
+- D. `a + 3`
 
-**8.** Given `int mat[2][3] = {1, 2, 3, 4, 5, 6};`, the value of `mat[1][0]` is:
-
-- A. 2
-- B. 3
-- C. 4
-- D. 5
-
-### Part II, Output Tracing (Items 9–18)
+### Part II, Output Tracing (Items 9-17)
 
 Write exactly what each fragment prints.
 
 **9.**
 ```c
-int a[5] = {3, 8, 1, 6, 2};
-int i, s = 0;
+void double_odd(int a[], int n) {
+    int i;
+    for (i = 0; i < n; i++)
+        if (a[i] % 2 != 0)
+            a[i] *= 2;
+}
+
+/* in main: */
+int v[5] = {3, 4, 7, 10, 1};
+int i;
+double_odd(v, 5);
 for (i = 0; i < 5; i++)
-    s += a[i];
-printf("%d", s);
+    printf("%d ", v[i]);
 ```
 
 **10.**
 ```c
-int a[5] = {3, 8, 1, 6, 2};
-printf("%d", a[1] + a[3]);
+#define N 5
+int a[N] = {10, 20, 30, 40, 50};
+int i, temp;
+for (i = 0; i < N / 2; i++) {
+    temp = a[i];
+    a[i] = a[N - 1 - i];
+    a[N - 1 - i] = temp;
+}
+printf("%d %d %d", a[0], a[1], a[2]);
 ```
 
 **11.**
 ```c
-int a[6] = {5, 2, 9, 4, 7, 1};
-int i, count = 0;
-for (i = 0; i < 6; i++)
-    if (a[i] > 4)
-        count++;
-printf("%d", count);
+int t[3][3] = { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
+int r, c, total;
+for (c = 0; c < 3; c += 2) {
+    total = 0;
+    for (r = 0; r < 3; r++)
+        total += t[r][c];
+    printf("%d ", total);
+}
 ```
 
 **12.**
 ```c
-int a[4] = {10, 20, 30, 40};
-int i;
-for (i = 0; i < 4; i++)
-    a[i] = a[i] + i;
-printf("%d %d", a[0], a[3]);
+int m[3][3] = { {4, 1, 7}, {2, 6, 3}, {8, 5, 9} };
+int i, main_diag = 0, other_diag = 0;
+for (i = 0; i < 3; i++) {
+    main_diag += m[i][i];
+    other_diag += m[i][3 - 1 - i];
+}
+printf("%d %d", main_diag, other_diag);
 ```
 
 **13.**
 ```c
-int a[5] = {1, 2, 3, 4, 5};
-int i;
-for (i = 1; i < 5; i++)
-    a[i] = a[i - 1] + a[i];
-printf("%d", a[4]);
+char s[] = "Bulacan";
+int i, count = 0;
+for (i = 0; s[i] != '\0'; i++)
+    if (s[i] == 'a' || s[i] == 'A')
+        count++;
+printf("%d %d", count, i);
 ```
 
 **14.**
 ```c
-char word[] = "ARRAY";
-printf("%c%c", word[0], word[4]);
+char full[30];
+strcpy(full, "Lapu");
+strcat(full, "-");
+strcat(full, "Lapu");
+printf("%s %d", full, (int)strlen(full));
 ```
 
 **15.**
 ```c
-int m[2][3] = { {2, 4, 6}, {1, 3, 5} };
-int i, j, s = 0;
-for (i = 0; i < 2; i++)
-    for (j = 0; j < 3; j++)
-        if (i == j)
-            s += m[i][j];
-printf("%d", s);
+char t[] = "A1b2C3";
+int i, sum = 0;
+for (i = 0; t[i] != '\0'; i++) {
+    if (isdigit(t[i]))
+        sum += t[i] - '0';
+    else
+        t[i] = tolower(t[i]);
+}
+printf("%s %d", t, sum);
 ```
 
 **16.**
 ```c
-int z[3][2] = {7, 8, 9, 10, 11, 12};
-printf("%d", z[2][0]);
+int a[5] = {5, 10, 15, 20, 25};
+int *p = a + 1;
+int *q = &a[4];
+printf("%d %d %d", *p, (int)(q - p), *(q - 2));
 ```
 
 **17.**
 ```c
-int a[2] = {5, 9};
-int temp;
-temp = a[0];
-a[0] = a[1];
-a[1] = temp;
-printf("%d %d", a[0], a[1]);
+void update(int *p, int n) {
+    *p = *p * 2;
+    n = n * 2;
+}
+
+/* in main: */
+int a = 5, b = 5;
+update(&a, b);
+printf("%d %d", a, b);
 ```
 
-**18.**
-```c
-int m[3][3] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-int i, s = 0;
-for (i = 0; i < 3; i++)
-    s += m[i][1];
-printf("%d", s);
-```
+### Part III, Find the Error (Items 18-21)
 
-### Part III, Fill in the Blank (Items 19–25)
+For each one, explain what goes wrong and write the fix.
 
-Write the exact code that belongs in each blank.
-
-**19.** Read `n` integers into array `a`:
+**18.** This search is supposed to return the index of `key`, or `-1` if it is missing. Searching `{1042, 2210, 1873, 3301, 1500}` for `3301` returns `-1`.
 
 ```c
-for (i = 0; i < n; i++)
-    scanf("%d", ____);
-```
-
-**20.** Print the `n` elements of array `a` in reverse order, complete the entire loop header:
-
-```c
-for (____)
-    printf("%d\n", a[i]);
-```
-
-**21.** Find the smallest value in a 2D array `z` with `R` rows and `C` columns:
-
-```c
-for (a = 0; a < R; ++a)
-    for (b = 0; b < C; ++b)
-        if (____)
-            smallest = z[a][b];
-```
-
-**22.** Add two matrices `a` and `b` element by element into `c` (inside the nested loops over `i` and `j`):
-
-```c
-____ = a[i][j] + b[i][j];
-```
-
-**23.** Copy the 25-element array `first` into `second` (inside the loop over `i`):
-
-```c
-____ = first[i];
-```
-
-**24.** Count the negative values in array `a` of size `n`:
-
-```c
-for (i = 0; i < n; i++) {
-    if (____)
-        count_neg++;
-    else
-        count_pos++;
+int find(const int a[], int n, int key) {
+    int i;
+    for (i = 0; i < n; i++) {
+        if (a[i] == key)
+            return i;
+        else
+            return -1;
+    }
+    return -1;
 }
 ```
 
-**25.** Write a declaration for a 12-element array of `float` values named `rates`.
+**19.**
+```c
+char section[10];
+section = "BSIT-1A";
+printf("%s\n", section);
+```
+
+**20.** This function is supposed to work like `strcpy`.
+
+```c
+void copy(char dest[], const char src[]) {
+    int i = 0;
+    while (src[i] != '\0') {
+        dest[i] = src[i];
+        i++;
+    }
+}
+```
+
+**21.**
+```c
+int *p;
+*p = 50;
+printf("%d\n", *p);
+```
+
+### Part IV, Short Programming (Items 22-25)
+
+Write each function. You do not need to write `main()` unless the item asks for it.
+
+**22.** Write `int count_above(const int a[], int n, int limit)` that returns how many elements of `a` are **greater than** `limit`.
+
+**23.** Without using `<string.h>`, write `int count_vowels(const char s[])` that returns how many vowels (`a`, `e`, `i`, `o`, `u`, in uppercase or lowercase) are in `s`. You may use `<ctype.h>`.
+
+**24.** Write `void sum_avg(const int a[], int n, int *sum, double *avg)` that gives back both the sum and the average of the `n` elements through the two pointer parameters. Then show the call in `main()` for `int allowance[5] = {150, 200, 120, 180, 100};`.
+
+**25.** With `#define QUIZZES 4`, write `void row_totals(int m[][QUIZZES], int rows, int totals[])` that stores the total of each row of `m` in `totals`, so `totals[0]` is the total of row 0, and so on.
 $md$, 3, null, null)
 on conflict (id) do update set
   kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
