@@ -484,205 +484,234 @@ where public.sections.module_id = excluded.module_id;
 
 insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
 values ('c56ae624-54a4-47cc-927d-249557e659c9', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Prelim Mock Exam B, 25 Items', $md$
-All-new items, a step harder than Exam A, this one includes sorting traces, the kind professors love for the last page of a prelim. Same rules: 60 minutes, no notes.
+All-new items, a step harder than Exam A, with more of the details professors love for the last page of a prelim: the found-flag off-by-one, `snprintf` cutting text short, and `*p++` next to `(*p)++`. Same rules: 60 minutes, no notes, Lessons 1 to 3 only.
 
-For the sorting items, **one pass** means: compare `a[0]` with `a[1]`, then `a[1]` with `a[2]`, and so on up to the last pair, swapping whenever the left value is greater than the right value (ascending order), the same compare-and-swap logic as Sample Program 1.
+Assume every fragment sits inside `main()` with `<stdio.h>`, `<string.h>` and `<ctype.h>` included, and that an `int` is 4 bytes.
 
-### Part I, Multiple Choice (Items 1–7)
+### Part I, Multiple Choice (Items 1-7)
 
-**1.** If an `int` occupies 4 bytes, how many bytes does `int a[10];` reserve?
+**1.** Inside `main()`, after `int quiz[] = {18, 15, 20, 12, 17, 19, 16};`, the value of `sizeof quiz / sizeof quiz[0]` is:
 
-- A. 10
-- B. 14
-- C. 40
-- D. 44
+- A. 4
+- B. 7
+- C. 8
+- D. 28
 
-**2.** After `int c[15] = {3, 7, 4, 6, 1};`, how many elements of `c` are equal to zero?
+**2.** A function parameter is written `const int a[]`. This means:
 
-- A. 0
-- B. 5
-- C. 10
-- D. 15
+- A. The array cannot be passed to the function
+- B. The function may only read the elements; writing `a[i] = 0;` inside it will not compile
+- C. The function receives its own copy of the array
+- D. The array must be exactly 10 elements long
 
-**3.** Which declaration is a **compile error**?
+**3.** After `int t[][3] = { {1, 2, 3}, {4, 5, 6}, {7} };`, the value of `t[2][1]` is:
 
-- A. `int r[2][2] = { {1, 2}, {3, 4} };`
-- B. `int r[2][2] = {1, 2, 3, 4};`
-- C. `int r[2][2] = { {1}, {3, 4} };`
-- D. `int r[2][2] = { {1, 2, 3}, {4} };`
-
-**4.** A `double` array starts at address 8,000 and each `double` occupies 8 bytes. The element at index 5 is at address:
-
-- A. 8,005
-- B. 8,040
-- C. 8,048
-- D. 8,058
-
-**5.** Given `char s[] = "BAGUIO";`, the value of `s[3]` is:
-
-- A. `'G'`
-- B. `'U'`
-- C. `'I'`
-- D. `'\0'`
-
-**6.** The *last* valid element of `int t[4][5];` is:
-
-- A. `t[4][5]`
-- B. `t[3][4]`
-- C. `t[4][4]`
-- D. `t[3][5]`
-
-**7.** After `int a[5] = {9};`, the value of `a[0] + a[4]` is:
-
-- A. 9
-- B. 18
+- A. 7
+- B. 0
 - C. Garbage (unpredictable)
-- D. 0
+- D. Compile error, the number of rows is missing
 
-### Part II, Output Tracing (Items 8–17)
+**4.** Given `int t[5][4];`, counting from 0, at what position in memory is `t[3][2]` stored?
+
+- A. 11
+- B. 14
+- C. 17
+- D. 20
+
+**5.** After `char s[25] = "Tagum City";`, what are `strlen(s)` and `sizeof s`?
+
+- A. 10 and 25
+- B. 11 and 25
+- C. 10 and 11
+- D. 25 and 25
+
+**6.** Given `char name[20];`, which statement about `scanf("%19s", name);` is TRUE?
+
+- A. It needs `&name` to work
+- B. It reads a whole line, spaces included
+- C. It stops at the first space and stores at most 19 characters
+- D. It keeps the newline from the Enter key
+
+**7.** Given `int a[4] = {1, 2, 3, 4};` and `int *p = a;`, which statement does **not** compile?
+
+- A. `p++;`
+- B. `a++;`
+- C. `p = a + 2;`
+- D. `*(a + 1) = 5;`
+
+### Part II, Output Tracing (Items 8-17)
 
 Write exactly what each fragment prints.
 
 **8.**
 ```c
-int a[6] = {1, 4, 2, 8, 5, 7};
-int i, s = 0;
-for (i = 0; i < 6; i += 2)
-    s += a[i];
-printf("%d", s);
+int g[8] = {72, 85, 90, 64, 78, 99, 70, 81};
+int keep[8];
+int i, k = 0;
+for (i = 0; i < 8; i++)
+    if (g[i] >= 80)
+        keep[k++] = g[i];
+printf("%d %d %d", k, keep[0], keep[k - 1]);
 ```
 
 **9.**
 ```c
-int a[5] = {2, 3, 5, 7, 11};
-int i, p = 0;
-for (i = 4; i >= 0; i--)
-    if (a[i] % 2 != 0)
-        p = a[i];
-printf("%d", p);
+int a[6] = {14, 7, 22, 7, 30, 5};
+int i, found = 0, key = 7;
+for (i = 0; i < 6 && !found; i++)
+    if (a[i] == key)
+        found = 1;
+printf("%d %d", found, i);
 ```
 
 **10.**
 ```c
-int a[5] = {6, 1, 9, 4, 3};
-int i, pos = 0;
-for (i = 1; i < 5; i++)
-    if (a[i] > a[pos])
-        pos = i;
-printf("%d", pos);
+int a[2][3] = { {1, 2, 3}, {4, 5, 6} };
+int t[3][2];
+int r, c;
+for (r = 0; r < 2; r++)
+    for (c = 0; c < 3; c++)
+        t[c][r] = a[r][c];
+printf("%d %d %d", t[0][1], t[2][0], t[1][1]);
 ```
 
 **11.**
 ```c
-int a[4] = {1, 2, 3, 4};
-int i;
-for (i = 0; i < 3; i++)
-    a[i + 1] = a[i] * 2;
-printf("%d %d %d %d", a[0], a[1], a[2], a[3]);
+int max_pos(const int a[], int n) {
+    int i, pos = 0;
+    for (i = 1; i < n; i++)
+        if (a[i] > a[pos])
+            pos = i;
+    return pos;
+}
+
+/* in main: */
+int v[6] = {3, 12, 5, 12, 8, 1};
+int p = max_pos(v, 6);
+v[p] = 0;
+printf("%d %d", p, max_pos(v, 6));
 ```
 
 **12.**
 ```c
-char s[] = "PROGRAMMING";
-int i = 0, count = 0;
-while (s[i] != '\0') {
-    if (s[i] == 'M')
-        count++;
-    i++;
-}
-printf("%d %d", count, i);
+char a[] = "Santos", b[] = "Santiago";
+int r = strcmp(a, b);
+if (r == 0)
+    printf("same");
+else if (r < 0)
+    printf("%s first", a);
+else
+    printf("%s first", b);
 ```
 
 **13.**
 ```c
-int m[2][2] = { {1, 2}, {3, 4} };
-int t = m[0][1];
-m[0][1] = m[1][0];
-m[1][0] = t;
-printf("%d%d%d%d", m[0][0], m[0][1], m[1][0], m[1][1]);
+char code[] = "CCS-2026";
+int i, value = 0;
+for (i = 0; code[i] != '\0'; i++)
+    if (isdigit(code[i]))
+        value = value * 10 + (code[i] - '0');
+printf("%d", value / 2);
 ```
 
 **14.**
 ```c
-int m[2][3] = {5, 1, 4, 2, 6, 3};
-int j, r0 = 0, r1 = 0;
-for (j = 0; j < 3; j++) {
-    r0 += m[0][j];
-    r1 += m[1][j];
-}
-printf("%d %d", r0, r1);
+char tag[8];
+snprintf(tag, sizeof tag, "%s-%d", "BSIT", 2026);
+printf("%s %d", tag, (int)strlen(tag));
 ```
 
 **15.**
 ```c
-int a[5] = {10, 20, 30, 40, 50};
-int i = 2;
-printf("%d", a[a[i] / 10]);
+int a[4] = {3, 6, 9, 12};
+int *p = a;
+int x, y;
+x = *p++;
+(*p)++;
+y = *(p + 1) + 1;
+printf("%d %d %d %d", x, *p, y, a[1]);
 ```
 
 **16.**
 ```c
-int a[7] = {3, 3, 1, 3, 2, 3, 1};
-int i, c = 0;
-for (i = 0; i < 7; i++)
-    if (a[i] == 3)
-        c++;
-printf("%d", c);
+char s[] = "PALAWAN";
+char *p = strchr(s, 'W');
+printf("%s %d", p, (int)(p - s));
 ```
 
 **17.**
 ```c
-int z[3][3] = {2, 5, 8, 1, 4, 7, 6, 9, 3};
-int i, j, s = 0;
-for (i = 0; i < 3; i++)
-    for (j = 0; j < 3; j++)
-        if (z[i][j] % 3 == 0)
-            s += z[i][j];
-printf("%d", s);
+void split(int total, int *hundreds, int *rest) {
+    *hundreds = total / 100;
+    *rest = total % 100;
+}
+
+/* in main: */
+int h, r;
+split(1275, &h, &r);
+printf("%d %d", h, r);
 ```
 
-### Part III, Sorting Traces (Items 18–21)
+### Part III, Find the Error (Items 18-21)
 
-Use the one-pass definition given at the top of this exam. Sort is **ascending**.
+For each one, explain what goes wrong and write the fix.
 
-**18.** The array is `{9, 4, 7, 2, 6}`. Write the state of the array **after pass 1**.
+**18.**
+```c
+void show(int m[][], int rows) {
+    int r, c;
+    for (r = 0; r < rows; r++) {
+        for (c = 0; c < 3; c++)
+            printf("%d ", m[r][c]);
+        printf("\n");
+    }
+}
+```
 
-**19.** Continuing from your answer to Item 18, write the state of the array **after pass 2**.
-
-**20.** For the same starting array `{9, 4, 7, 2, 6}`, how many **swaps** happened during pass 1?
-
-**21.** A different array is `{5, 1, 8, 3}`. Write the state of the array **after pass 1**.
-
-### Part IV, Debugging & Fill in the Blank (Items 22–25)
-
-**22.** `int a[5];` is declared. This input loop has **two** problems. Name both and write the corrected loop header.
+**19.** This loop is supposed to reverse `int a[6] = {1, 2, 3, 4, 5, 6};` in place, but the array prints as `1 2 3 4 5 6`, unchanged.
 
 ```c
-for (i = 1; i <= 5; i++)
-    scanf("%d", &a[i]);
+for (i = 0; i < N; i++) {      /* N is 6 */
+    temp = a[i];
+    a[i] = a[N - 1 - i];
+    a[N - 1 - i] = temp;
+}
 ```
 
-**23.** This code is supposed to swap `a[0]` and `a[1]`, but it does not work. Explain what actually happens, then write a correct version using a variable `temp`.
+**20.** The user types `19`, presses Enter, and the program never waits for the name. It prints `Name: ` and then ` is 19 years old` with an empty name.
 
 ```c
-a[0] = a[1];
-a[1] = a[0];
+int age;
+char name[40];
+
+printf("Age: ");
+scanf("%d", &age);
+printf("Name: ");
+if (fgets(name, sizeof name, stdin) != NULL) {
+    name[strcspn(name, "\n")] = '\0';
+    printf("%s is %d years old\n", name, age);
+}
 ```
 
-**24.** Complete the linear search so that `found` is set when the value `key` is in array `a` of size `n`:
-
+**21.**
 ```c
-int found = 0;
-for (i = 0; i < n; i++)
-    if (____)
-        found = 1;
+int *make_total(int a, int b) {
+    int total = a + b;
+    return &total;
+}
 ```
 
-**25.** Complete the statement that reads one element of a 2D integer array `b` inside nested loops over `i` and `j`:
+### Part IV, Short Programming (Items 22-25)
 
-```c
-scanf("%d", ____);
-```
+Write each function. You do not need to write `main()`.
+
+**22.** Write `int last_index_of(const int a[], int n, int key)` that returns the index of the **last** element equal to `key`, or `-1` if there is none. For `{1042, 2210, 1873, 3301, 2210, 1500}` and key `2210`, it returns 4.
+
+**23.** Write `int is_palindrome(const char s[])` that returns 1 if `s` reads the same forwards and backwards, ignoring uppercase and lowercase, and 0 otherwise. `"Racecar"` and `"Anna"` give 1; `"Maria"` gives 0.
+
+**24.** Write `void count_case(const char *s, int *upper, int *lower)` that walks the string **with the pointer `s`** (no index variable) and gives back the number of uppercase and lowercase letters through `upper` and `lower`.
+
+**25.** With `#define COLS 4`, write `void col_max(int m[][COLS], int rows, int out[])` that stores the largest value of each column of `m` in `out`, so `out[0]` is the largest value in column 0, and so on.
 $md$, 4, null, null)
 on conflict (id) do update set
   kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
