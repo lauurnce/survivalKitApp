@@ -720,7 +720,7 @@ where public.sections.module_id = excluded.module_id;
 
 insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
 values ('3383e72a-94ef-4e41-9978-64384b13d586', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Prelim Mock Exams, Answer Key with Explanations', $md$
-Check your work item by item. For tracing items, follow the trace table row by row and find the exact line where your trace went wrong, that tells you which Unit 1 section to re-read.
+Check your work item by item. For tracing items, follow the trace table row by row and find the exact line where your trace went wrong: that tells you which lesson section to re-read. Every programming solution below is a complete program that was compiled and run, and its output is shown underneath. Your function does not have to match line for line; it has to give the same results.
 
 ## Exam A
 
@@ -728,81 +728,235 @@ Check your work item by item. For tracing items, follow the trace table row by r
 
 | # | Answer | Why |
 |---|---|---|
-| 1 | B | Same data type is one of the three defining properties of an array. |
-| 2 | B | C counts positions starting from zero. |
-| 3 | C | 5 rows × 3 columns = 15 elements. |
-| 4 | C | Whole-array assignment is illegal; copy element by element with a loop. |
-| 5 | C | Partial initialization sets the remaining elements (indices 3–7) to zero. |
-| 6 | C | 6,000 + (4 × 7) = 6,028 by the address formula. |
-| 7 | B | A string literal is stored with an automatic null terminator in the last slot. |
-| 8 | C | A flat list fills row by row: row 0 = {1, 2, 3}, row 1 = {4, 5, 6}, so `mat[1][0]` is 4. |
+| 1 | B | Passing an array passes the address of its first element. No copy is made, which is why `add_bonus` can change `scores`. |
+| 2 | C | An array parameter is really a pointer, so `sizeof a` is the size of an address (usually 8 bytes), not of the array. Pass the count instead. |
+| 3 | D | When the key is missing, linear search must check every element: 50 comparisons, the worst case. |
+| 4 | B | The rows may be left empty, but the columns must be stated: `int m[][4]`. C needs the column count to find where each row starts. |
+| 5 | C | 6 characters (`I`, `T`, `-`, `1`, `0`, `1`) plus the `'\0'` the compiler adds: 7. |
+| 6 | B | The first characters differ: `'C'` is 67 and `'c'` is 99. Every uppercase letter comes before every lowercase letter, so the result is negative. |
+| 7 | C | `*p` follows the pointer to `x`, which holds 4. `p` and `&x` are addresses, and `&p` is the address of the pointer itself. |
+| 8 | B | `a[i]` is exactly `*(a + i)`. Choice A is `a[0] + 3`, the value plus three. |
 
 ### Part II, Output Tracing
 
-**9. Answer: `20`**, sum of all elements.
+**9. Answer: `6 4 14 10 2`**, the function changes `main`'s array directly, because it received the array's address.
 
-| i | a[i] | s after |
+| i | v[i] before | odd? | v[i] after |
+|---|---|---|---|
+| 0 | 3 | yes | 6 |
+| 1 | 4 | no | 4 |
+| 2 | 7 | yes | 14 |
+| 3 | 10 | no | 10 |
+| 4 | 1 | yes | 2 |
+
+**10. Answer: `50 40 30`**, reverse in place. `N / 2` is 2, so only two swaps happen and the middle element stays put.
+
+| i | swaps | array after |
 |---|---|---|
-| 0 | 3 | 3 |
-| 1 | 8 | 11 |
-| 2 | 1 | 12 |
-| 3 | 6 | 18 |
-| 4 | 2 | 20 |
+| 0 | a[0] and a[4] | 50 20 30 40 10 |
+| 1 | a[1] and a[3] | 50 40 30 20 10 |
 
-**10. Answer: `14`**, `a[1]` is 8 and `a[3]` is 6; 8 + 6 = 14. No loop, just indexing.
+**11. Answer: `12 18`**, column totals, but `c += 2` visits only columns 0 and 2. Column 0: 1 + 4 + 7 = 12. Column 2: 3 + 6 + 9 = 18. `total = 0;` is inside the outer loop, so each column starts fresh.
 
-**11. Answer: `3`**, the values greater than 4 are 5, 9, and 7.
+**12. Answer: `19 21`**
 
-| i | a[i] | a[i] > 4? | count after |
-|---|---|---|---|
-| 0 | 5 | yes | 1 |
-| 1 | 2 | no | 1 |
-| 2 | 9 | yes | 2 |
-| 3 | 4 | no | 2 |
-| 4 | 7 | yes | 3 |
-| 5 | 1 | no | 3 |
-
-**12. Answer: `10 43`**, each element gets its own index added: a[0] = 10 + 0 = 10 and a[3] = 40 + 3 = 43.
-
-**13. Answer: `15`**, a running sum builds along the array, because each step uses the *already updated* `a[i - 1]`.
-
-| i | a[i - 1] | a[i] before | a[i] after |
-|---|---|---|---|
-| 1 | 1 | 2 | 3 |
-| 2 | 3 | 3 | 6 |
-| 3 | 6 | 4 | 10 |
-| 4 | 10 | 5 | 15 |
-
-**14. Answer: `AY`**, A-R-R-A-Y occupies indices 0–4 (with `'\0'` at index 5), so `word[0]` is `'A'` and `word[4]` is `'Y'`.
-
-**15. Answer: `5`**, `i == j` only holds at m[0][0] = 2 and m[1][1] = 3 (there is no row 2), so s = 2 + 3 = 5.
-
-**16. Answer: `11`**, the flat list fills row by row: row 0 = {7, 8}, row 1 = {9, 10}, row 2 = {11, 12}; `z[2][0]` is 11.
-
-**17. Answer: `9 5`**, the standard three-step swap with `temp`; the two values exchange places.
-
-| Step | temp | a[0] | a[1] |
-|---|---|---|---|
-| start | — | 5 | 9 |
-| temp = a[0] | 5 | 5 | 9 |
-| a[0] = a[1] | 5 | 9 | 9 |
-| a[1] = temp | 5 | 9 | 5 |
-
-**18. Answer: `15`**, the loop sums column 1: m[0][1] + m[1][1] + m[2][1] = 2 + 5 + 8 = 15.
-
-### Part III, Fill in the Blank
-
-| # | Answer | Why |
+| i | m[i][i] | m[i][2 - i] |
 |---|---|---|
-| 19 | `&a[i]` | `scanf()` requires the address-of operator. |
-| 20 | `i = n - 1; i >= 0; i--` | Start at the last index, stop after index 0, count down. |
-| 21 | `z[a][b] < smallest` | Update `smallest` only when the current element is smaller, same logic as Practice Exercises Program C. |
-| 22 | `c[i][j]` | The sum of each element pair lands in the same position of the result matrix. |
-| 23 | `second[i]` | Element-by-element copy; whole-array assignment is illegal. |
-| 24 | `a[i] < 0` | Negative test first; everything else falls into the `else`, as in Sample Program 2. |
-| 25 | `float rates[12];` | Straight from the general form `data_type array_name[size];`. |
+| 0 | 4 | 7 |
+| 1 | 6 | 6 |
+| 2 | 9 | 8 |
+| sum | 19 | 21 |
 
-**Passing bar:** 18/25. Below 15? Redo Days 3–5 of the study plan before attempting Exam B.
+**13. Answer: `2 7`**, B-u-l-a-c-a-n has two lowercase `'a'` characters (no uppercase `'A'`). The loop stops when `s[7]` is `'\0'`, so `i` ends at 7, the length of the string.
+
+**14. Answer: `Lapu-Lapu 9`**, `strcpy` gives `"Lapu"`, the first `strcat` gives `"Lapu-"`, the second gives `"Lapu-Lapu"`. 4 + 1 + 4 = 9 characters; `strlen` does not count the `'\0'`.
+
+**15. Answer: `a1b2c3 6`**
+
+| i | t[i] | digit? | action | sum after |
+|---|---|---|---|---|
+| 0 | `A` | no | becomes `a` | 0 |
+| 1 | `1` | yes | add 1 | 1 |
+| 2 | `b` | no | stays `b` | 1 |
+| 3 | `2` | yes | add 2 | 3 |
+| 4 | `C` | no | becomes `c` | 3 |
+| 5 | `3` | yes | add 3 | 6 |
+
+`t[i] - '0'` turns the character `'3'` into the number 3. Without the `- '0'` you would add the character codes (49, 50, 51) instead.
+
+**16. Answer: `10 3 15`**, `p` points at `a[1]` (10) and `q` at `a[4]`. `q - p` counts elements, not bytes: 4 - 1 = 3. `q - 2` points at `a[2]`, which holds 15.
+
+**17. Answer: `10 5`**, `a` was passed by address, so `*p = *p * 2` doubles the real `a`. `b` was passed by value: `n` is only a copy, and doubling it does nothing to `b`.
+
+### Part III, Find the Error
+
+**18.** The `else` returns `-1` on the very first pass, so the function only ever checks `a[0]`. It finds `1042` (index 0) but nothing else. The `return -1` belongs **after** the loop, once every element has been checked:
+
+```c
+int find(const int a[], int n, int key) {
+    int i;
+    for (i = 0; i < n; i++)
+        if (a[i] == key)
+            return i;
+    return -1;
+}
+```
+
+**19.** Compile error: an array cannot be assigned with `=`. A string literal can only be given with `=` in the declaration. Fix: `strcpy(section, "BSIT-1A");` (7 characters plus `'\0'` fit in 10 slots), or declare it as `char section[10] = "BSIT-1A";`.
+
+**20.** The loop stops **at** the `'\0'` without copying it, so `dest` is never terminated. Printing it runs past the copied letters into whatever is left in the array (garbage). Add the terminator after the loop:
+
+```c
+    dest[i] = '\0';     /* i is now the index where src had its '\0' */
+```
+
+**21.** `p` was never given an address, so it holds a garbage address, and `*p = 50` writes to a random place in memory: a crash, or silent damage to other data. (`-Wall` warns that `p` is uninitialized.) Make it point at a real variable first:
+
+```c
+int x;
+int *p = &x;
+*p = 50;
+printf("%d\n", *p);
+```
+
+### Part IV, Short Programming
+
+**22.** Counting with a condition, from Common Array Algorithms.
+
+```c
+#include <stdio.h>
+
+int count_above(const int a[], int n, int limit) {
+    int i, count = 0;
+    for (i = 0; i < n; i++)
+        if (a[i] > limit)
+            count++;
+    return count;
+}
+
+int main(void) {
+    int scores[8] = {78, 92, 85, 60, 75, 99, 88, 74};
+
+    printf("Above 80: %d\n", count_above(scores, 8, 80));
+    printf("Above 75: %d\n", count_above(scores, 8, 75));
+    return 0;
+}
+```
+
+Output:
+```
+Above 80: 4
+Above 75: 5
+```
+
+Grading points: the counter starts at 0, the test is `>` (not `>=`, because the item says "greater than"), the loop is `i < n`, and the parameter is `const` because the function only reads. Note that 75 is **not** counted for "above 75".
+
+**23.** Walk the string until `'\0'`, and lower the case of each character once so you only test five letters.
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+int count_vowels(const char s[]) {
+    int i, count = 0;
+    char c;
+    for (i = 0; s[i] != '\0'; i++) {
+        c = tolower(s[i]);
+        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u')
+            count++;
+    }
+    return count;
+}
+
+int main(void) {
+    printf("%d\n", count_vowels("Ateneo de Manila"));
+    printf("%d\n", count_vowels("BSIT"));
+    return 0;
+}
+```
+
+Output:
+```
+8
+1
+```
+
+Grading points: the loop condition is `s[i] != '\0'` (no `strlen` needed), the comparisons use single quotes (`'a'`, not `"a"`), and uppercase vowels are counted too (the `A` in `"Ateneo"` and the `I` in `"BSIT"`).
+
+**24.** Two results, so both come back through pointers, like `min_max` in Pointers as Function Parameters.
+
+```c
+#include <stdio.h>
+
+void sum_avg(const int a[], int n, int *sum, double *avg) {
+    int i;
+    *sum = 0;
+    for (i = 0; i < n; i++)
+        *sum += a[i];
+    *avg = (double)*sum / n;
+}
+
+int main(void) {
+    int allowance[5] = {150, 200, 120, 180, 100};
+    int total;
+    double average;
+
+    sum_avg(allowance, 5, &total, &average);
+    printf("Total: PHP %d\n", total);
+    printf("Average: PHP %.2f\n", average);
+    return 0;
+}
+```
+
+Output:
+```
+Total: PHP 750
+Average: PHP 150.00
+```
+
+Grading points: `*sum = 0;` before the loop (the caller's `total` starts as garbage), every use of the results goes through `*`, the `(double)` cast avoids integer division, and the call passes `&total` and `&average` but the array name alone.
+
+**25.** Nested loops: the outer loop picks a row, the inner loop walks across its columns. Reset the total for each row.
+
+```c
+#include <stdio.h>
+#define QUIZZES 4
+
+void row_totals(int m[][QUIZZES], int rows, int totals[]) {
+    int r, c;
+    for (r = 0; r < rows; r++) {
+        totals[r] = 0;
+        for (c = 0; c < QUIZZES; c++)
+            totals[r] += m[r][c];
+    }
+}
+
+int main(void) {
+    int score[3][QUIZZES] = {
+        {18, 15, 20, 17},
+        {12, 19, 16, 14},
+        {20, 20, 18, 19}
+    };
+    int totals[3];
+    int r;
+
+    row_totals(score, 3, totals);
+    for (r = 0; r < 3; r++)
+        printf("Student %d: %d\n", r + 1, totals[r]);
+    return 0;
+}
+```
+
+Output:
+```
+Student 1: 70
+Student 2: 61
+Student 3: 77
+```
+
+Grading points: the parameter states the column count (`int m[][QUIZZES]`), `totals[r] = 0;` sits inside the outer loop, and the function writes straight into the caller's `totals` array (a function cannot return an array).
+
+**Passing bar:** 18/25. Below 15? Redo Days 1 to 6 of the study plan before attempting Exam B.
 
 ## Exam B
 
@@ -810,95 +964,255 @@ Check your work item by item. For tracing items, follow the trace table row by r
 
 | # | Answer | Why |
 |---|---|---|
-| 1 | C | 10 elements × 4 bytes = 40 bytes of contiguous storage. |
-| 2 | C | Indices 5–14 are automatically set to zero: 10 elements. |
-| 3 | D | An inner brace may hold *fewer* values than the column count, never more, `{1, 2, 3}` has 3 values for 2 columns. |
-| 4 | B | 8,000 + (8 × 5) = 8,040. |
-| 5 | B | B-A-G-U at indices 0, 1, 2, 3, so `s[3]` is `'U'`. |
-| 6 | B | Rows run 0–3 and columns 0–4, so the last element is `t[3][4]`. |
-| 7 | A | `a[0]` is 9 and `a[4]` is auto-zeroed, so the sum is 9. |
+| 1 | B | `sizeof quiz` is 28 bytes and `sizeof quiz[0]` is 4, so 28 / 4 = 7 elements. This works because it is in the function where the array is declared. |
+| 2 | B | `const` is a promise that the function only reads the array. The array is still passed by address, not copied. |
+| 3 | B | Leaving out the rows is fine (the compiler counts 3). Row 2 has only `{7}`, so its missing values become 0: row 2 is `7 0 0`. |
+| 4 | B | Row-major order: 3 × 4 + 2 = 14. |
+| 5 | A | `strlen` counts the 10 characters (the space counts); `sizeof` is the whole 25-slot array. |
+| 6 | C | `%s` stops at the first space, and the width 19 leaves room for the `'\0'` in a 20-slot array. No `&`: the array name is already an address. |
+| 7 | B | An array name is not a variable and can never be moved. `p++` is fine because `p` is a pointer variable, and `*(a + 1) = 5` just sets `a[1]`. |
 
 ### Part II, Output Tracing
 
-**8. Answer: `8`**, `i += 2` visits only indices 0, 2, 4: 1 + 2 + 5 = 8. Check the step size before you trace.
+**8. Answer: `4 85 81`**, `k` moves only when a grade is stored.
 
-**9. Answer: `3`**, the loop runs *downward*, so `p` keeps getting overwritten; the odd value at the smallest index wins.
+| i | g[i] | g[i] >= 80? | stored | k after |
+|---|---|---|---|---|
+| 0 | 72 | no | | 0 |
+| 1 | 85 | yes | keep[0] = 85 | 1 |
+| 2 | 90 | yes | keep[1] = 90 | 2 |
+| 3 | 64 | no | | 2 |
+| 4 | 78 | no | | 2 |
+| 5 | 99 | yes | keep[2] = 99 | 3 |
+| 6 | 70 | no | | 3 |
+| 7 | 81 | yes | keep[3] = 81 | 4 |
 
-| i | a[i] | odd? | p after |
-|---|---|---|---|
-| 4 | 11 | yes | 11 |
-| 3 | 7 | yes | 7 |
-| 2 | 5 | yes | 5 |
-| 1 | 3 | yes | 3 |
-| 0 | 2 | no | 3 |
+`keep[k - 1]` is `keep[3]`, the last grade stored.
 
-**10. Answer: `2`**, this prints the *index* of the largest value (9 sits at index 2), not the value itself. Read the `printf` carefully.
+**9. Answer: `1 2`**, the found-flag trap. The match is at index 1, but after setting `found = 1` the loop still runs `i++` before it tests the condition again, so `i` ends at 2. The match is at `i - 1`.
 
-**11. Answer: `1 2 4 8`**, each new element is double the *already updated* previous one.
+| i | a[i] | a[i] == 7? | found after | next test |
+|---|---|---|---|---|
+| 0 | 14 | no | 0 | i becomes 1, keep going |
+| 1 | 7 | yes | 1 | i becomes 2, `!found` is false: stop |
 
-| i | a[i] (source) | a[i + 1] becomes |
+**10. Answer: `4 3 5`**, the transpose rule `t[c][r] = a[r][c]` means `t[x][y]` is `a[y][x]`. So `t[0][1]` is `a[1][0]` = 4, `t[2][0]` is `a[0][2]` = 3, and `t[1][1]` is `a[1][1]` = 5.
+
+**11. Answer: `1 3`**, `>` keeps the **first** maximum: 12 appears at index 1 and index 3, and the first call returns 1. Then `v[1] = 0` changes the array to `{3, 0, 5, 12, 8, 1}`, and the second call finds the remaining 12 at index 3.
+
+**12. Answer: `Santiago first`**, `strcmp` compares character by character. `S`, `a`, `n`, `t` match; then `'o'` (111) meets `'i'` (105). `'o'` is bigger, so the result is positive: `"Santos"` comes **after** `"Santiago"`, and the `else` branch prints `b`.
+
+**13. Answer: `1013`**, only the digits build the number, so `C`, `C` and `-` are skipped.
+
+| character | value after |
+|---|---|
+| `2` | 0 × 10 + 2 = 2 |
+| `0` | 2 × 10 + 0 = 20 |
+| `2` | 20 × 10 + 2 = 202 |
+| `6` | 202 × 10 + 6 = 2026 |
+
+Then 2026 / 2 = 1013.
+
+**14. Answer: `BSIT-20 7`**, the full text `"BSIT-2026"` needs 9 characters plus `'\0'`, but `tag` has only 8 slots. `snprintf` stores the first 7 characters and the `'\0'`, and touches nothing outside the array.
+
+**15. Answer: `3 7 10 7`**
+
+| Statement | p points at | Effect |
 |---|---|---|
-| 0 | 1 | 2 |
-| 1 | 2 | 4 |
-| 2 | 4 | 8 |
+| `int *p = a;` | a[0] | |
+| `x = *p++;` | a[1] | reads a[0] (3) into x, **then** moves p |
+| `(*p)++;` | a[1] | adds 1 to the value: a[1] becomes 7 |
+| `y = *(p + 1) + 1;` | a[1] | a[2] is 9, plus 1: y is 10 (p does not move) |
 
-**12. Answer: `2 11`**, P-R-O-G-R-A-M-M-I-N-G has two `'M'` characters, and `i` stops at 11, the number of letters before `'\0'`.
+So `x` is 3, `*p` is `a[1]` = 7, `y` is 10, and `a[1]` is 7.
 
-**13. Answer: `1324`**, the two off-diagonal elements m[0][1] and m[1][0] exchange their values 2 and 3; the diagonal stays put.
+**16. Answer: `WAN 4`**, P-A-L-A-W-A-N has `'W'` at index 4. `strchr` returns a pointer to that `'W'` inside `s`, so `%s` prints from there to the `'\0'`, and `p - s` is the number of elements between them: 4.
 
-**14. Answer: `10 11`**, row sums: row 0 = {5, 1, 4} gives 10; row 1 = {2, 6, 3} gives 11 (flat list fills row by row).
+**17. Answer: `12 75`**, PHP 1275 is twelve 100-peso bills (1275 / 100 = 12) with PHP 75 left over (1275 % 100 = 75). The function "returns" two results by writing to the addresses of `h` and `r`.
 
-**15. Answer: `40`**, work inside out: `a[2]` is 30, then 30 / 10 = 3, then `a[3]` is 40. An index can be any integer expression.
+### Part III, Find the Error
 
-**16. Answer: `4`**, the value 3 appears at indices 0, 1, 3, and 5.
-
-**17. Answer: `18`**, the multiples of 3 in the table are 6, 9, and 3: 6 + 9 + 3 = 18.
-
-### Part III, Sorting Traces
-
-**18. Answer: `4 7 2 6 9`**, the largest value bubbles to the end.
-
-| Compare | Swap? | Array after |
-|---|---|---|
-| 9, 4 | yes | 4 9 7 2 6 |
-| 9, 7 | yes | 4 7 9 2 6 |
-| 9, 2 | yes | 4 7 2 9 6 |
-| 9, 6 | yes | 4 7 2 6 9 |
-
-**19. Answer: `4 2 6 7 9`**
-
-| Compare | Swap? | Array after |
-|---|---|---|
-| 4, 7 | no | 4 7 2 6 9 |
-| 7, 2 | yes | 4 2 7 6 9 |
-| 7, 6 | yes | 4 2 6 7 9 |
-| 7, 9 | no | 4 2 6 7 9 |
-
-**20. Answer: `4`**, every comparison in pass 1 caused a swap (see the Item 18 table).
-
-**21. Answer: `1 5 3 8`**
-
-| Compare | Swap? | Array after |
-|---|---|---|
-| 5, 1 | yes | 1 5 8 3 |
-| 5, 8 | no | 1 5 8 3 |
-| 8, 3 | yes | 1 5 3 8 |
-
-### Part IV, Debugging & Fill in the Blank
-
-**22.** Problem 1: starting at `i = 1` skips `a[0]`, so the first slot never receives a value. Problem 2: `i <= 5` writes into `a[5]`, one slot past the last element `a[4]`. Corrected header: `for (i = 0; i < 5; i++)`.
-
-**23.** The first line destroys the original `a[0]` before anything saves it, after both lines, `a[0]` and `a[1]` hold the *same* value (the old `a[1]`). Correct version:
+**18.** `int m[][]` does not compile: a 2-D array parameter may leave out the number of rows but must state the number of columns, because C needs it to find where each row starts. Fix the header:
 
 ```c
-temp = a[0];
-a[0] = a[1];
-a[1] = temp;
+void show(int m[][3], int rows) {
 ```
 
-**24.** `a[i] == key`, compare with `==`, not `=`. A single `=` would *assign* `key` into the array instead of comparing.
+**19.** The loop runs `N` times, so every pair is swapped **twice**: once on the way to the middle and again on the way back, which puts every element back where it started. Swap only up to the middle:
 
-**25.** `&b[i][j]`, 2D elements need the address-of operator in `scanf()` too, exactly as in Sample Program 3.
+```c
+for (i = 0; i < N / 2; i++) {
+```
+
+**20.** `scanf("%d")` reads the `19` but leaves the Enter key's newline in the input. `fgets` reads that empty line immediately, so the name is an empty string. Throw away the rest of the line before calling `fgets`:
+
+```c
+int age, ch;
+char name[40];
+
+printf("Age: ");
+scanf("%d", &age);
+while ((ch = getchar()) != '\n' && ch != EOF)
+    ;                         /* throw away the rest of the line */
+printf("Name: ");
+if (fgets(name, sizeof name, stdin) != NULL) {
+    name[strcspn(name, "\n")] = '\0';
+    printf("%s is %d years old\n", name, age);
+}
+```
+
+**21.** It returns the address of a local variable. `total` disappears when `make_total` returns, so the caller gets a pointer to memory that is about to be reused: reading it gives garbage or crashes. (The compiler warns about this.) Return the value itself:
+
+```c
+int make_total(int a, int b) {
+    return a + b;
+}
+```
+
+### Part IV, Short Programming
+
+**22.** Search from the right end. The first match found going backwards is the last match in the array.
+
+```c
+#include <stdio.h>
+
+int last_index_of(const int a[], int n, int key) {
+    int i;
+    for (i = n - 1; i >= 0; i--)
+        if (a[i] == key)
+            return i;      /* first match from the right is the last one */
+    return -1;
+}
+
+int main(void) {
+    int ids[6] = {1042, 2210, 1873, 3301, 2210, 1500};
+
+    printf("%d\n", last_index_of(ids, 6, 2210));
+    printf("%d\n", last_index_of(ids, 6, 1042));
+    printf("%d\n", last_index_of(ids, 6, 9999));
+    return 0;
+}
+```
+
+Output:
+```
+4
+0
+-1
+```
+
+Grading points: the loop starts at `n - 1` (not `n`) and runs while `i >= 0` so index 0 is checked, and `return -1` comes after the loop. A forward loop that keeps updating a `pos` variable (starting at `-1`) is also correct.
+
+**23.** Two indexes moving inward, the same shape as `reverse` in Writing Your Own String Functions, but comparing instead of swapping.
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int is_palindrome(const char s[]) {
+    int i = 0, j = (int)strlen(s) - 1;
+    while (i < j) {
+        if (tolower(s[i]) != tolower(s[j]))
+            return 0;      /* one mismatch is enough */
+        i++;
+        j--;
+    }
+    return 1;
+}
+
+int main(void) {
+    printf("%d\n", is_palindrome("Racecar"));
+    printf("%d\n", is_palindrome("Anna"));
+    printf("%d\n", is_palindrome("Maria"));
+    return 0;
+}
+```
+
+Output:
+```
+1
+1
+0
+```
+
+Grading points: `j` starts at the last real character (`strlen(s) - 1`), not at the `'\0'`; both sides go through `tolower` so `R` matches `r`; and `return 1` comes only after the loop has checked every pair.
+
+**24.** Walk with the pointer itself: `*s` is the current character and `s++` moves to the next one, as in the `length` function from Pointers and Arrays.
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+void count_case(const char *s, int *upper, int *lower) {
+    *upper = 0;
+    *lower = 0;
+    while (*s != '\0') {
+        if (isupper(*s))
+            (*upper)++;
+        else if (islower(*s))
+            (*lower)++;
+        s++;
+    }
+}
+
+int main(void) {
+    int up, low;
+
+    count_case("Bayang Magiliw, BSIT 1-A", &up, &low);
+    printf("upper %d, lower %d\n", up, low);
+    return 0;
+}
+```
+
+Output:
+```
+upper 7, lower 11
+```
+
+Grading points: `(*upper)++` needs the parentheses (`*upper++` would move the pointer instead of adding to the count), both counts start at 0 through the pointers, and spaces, digits and punctuation are counted in neither group.
+
+**25.** Work column by column: the outer loop picks a column, the inner loop walks down its rows. Start each maximum from the first row, never from 0.
+
+```c
+#include <stdio.h>
+#define COLS 4
+
+void col_max(int m[][COLS], int rows, int out[]) {
+    int r, c;
+    for (c = 0; c < COLS; c++) {
+        out[c] = m[0][c];              /* start from the first row */
+        for (r = 1; r < rows; r++)
+            if (m[r][c] > out[c])
+                out[c] = m[r][c];
+    }
+}
+
+int main(void) {
+    int score[3][COLS] = {
+        {18, 15, 20, 17},
+        {12, 19, 16, 14},
+        {20, 11, 18, 19}
+    };
+    int best[COLS];
+    int c;
+
+    col_max(score, 3, best);
+    for (c = 0; c < COLS; c++)
+        printf("Quiz %d best: %d\n", c + 1, best[c]);
+    return 0;
+}
+```
+
+Output:
+```
+Quiz 1 best: 20
+Quiz 2 best: 19
+Quiz 3 best: 20
+Quiz 4 best: 19
+```
+
+Grading points: the column loop is outside and the row loop inside, the index order stays `m[r][c]` even though the loops are swapped, `out[c]` starts at `m[0][c]` (so it also works when every value is negative), and the parameter states the column count.
 
 **Passing bar:** 17/25 on Exam B (it is harder). If both A and B are at or above the bar, you are prelim-ready.
 $md$, 5, null, null)
