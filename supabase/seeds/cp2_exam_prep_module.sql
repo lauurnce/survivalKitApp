@@ -1222,85 +1222,311 @@ on conflict (id) do update set
 where public.sections.module_id = excluded.module_id;
 
 insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
-values ('a0cfbf26-9576-49ea-873e-93a5d4a1ae8b', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Common Array Traps & How to Avoid Them', $md$
-Six traps account for most of the points lost on array exams. Each one comes with a mini-drill, do the drill *before* reading its answer.
+values ('a0cfbf26-9576-49ea-873e-93a5d4a1ae8b', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Common CP2 Traps & How to Avoid Them', $md$
+Most points lost on CP2 exams come from a short list of mistakes. Some stop the compiler. The dangerous ones compile fine and then print the wrong thing, or crash. Here they are, lesson by lesson, each with the wrong line, the right line, and the reason. Lessons 1 to 3 are prelim topics, but they come back on the final inside structures, files, and sorts, so do not skip them.
 
-### Trap 1, Index Out of Bounds
+### Lesson 1, Arrays in Depth
 
-For `int a[10];` the valid positions are `a[0]` through `a[9]`. There is no `a[10]`, the size is the *count* of elements, not the last index. C will not stop you from writing `a[10]`; it will silently read or overwrite memory that does not belong to the array.
+| Trap | Wrong | Right | Why |
+|---|---|---|---|
+| Off-by-one loop | `for (i = 0; i <= n; i++)` | `for (i = 0; i < n; i++)` | Indexes run 0 to n - 1. `a[n]` is outside the array, and C will not stop you. |
+| `sizeof` on an array parameter | `n = sizeof a / sizeof a[0];` inside the function | pass `n` as its own parameter | Inside the function `a` is really a pointer, so `sizeof a` is the size of an address. |
+| Giving up too early in a search | `else return -1;` inside the loop | `return -1;` after the loop | The `else` quits after checking only `a[0]`. |
+| Swap without a temp | `a[i] = a[j]; a[j] = a[i];` | `t = a[i]; a[i] = a[j]; a[j] = t;` | The first assignment destroys `a[i]` before anything saves it. |
 
-**Drill:** Given `int a[10];`, which of these are invalid? `a[10]`, `a[0]`, `a[9]`, `a[-1]`
+### Lesson 2, Strings and Character Arrays
 
-**Answer:** `a[10]` and `a[-1]`. The valid range is 0 through 9, nothing below zero, nothing at or above the size.
+| Trap | Wrong | Right | Why |
+|---|---|---|---|
+| No room for `'\0'` | `char code[4] = "BSIT";` | `char code[] = "BSIT";` | 4 letters need 5 slots. Without the `'\0'`, `printf("%s")` keeps reading past the end. |
+| Assigning with `=` | `name = "Ana";` | `strcpy(name, "Ana");` | An array cannot be assigned after its declaration. |
+| Comparing with `==` | `if (pass == typed)` | `if (strcmp(pass, typed) == 0)` | `==` compares the two addresses, so it is false even when the text matches. |
+| Reading `strcmp` backwards | `if (strcmp(a, b))` to mean "same" | `if (strcmp(a, b) == 0)` | `strcmp` returns **0** when the strings match, and 0 is false. |
+| Using `gets` | `gets(name);` | `fgets(name, sizeof name, stdin);` | `gets` has no size limit and was removed from C in C11. Never use it. |
+| Building a string with no terminator | a loop fills `digits[0]` to `digits[9]` and stops | add `digits[10] = '\0';` | A loop never writes the `'\0'` unless you do. |
 
-### Trap 2, Off-by-One in Loops
+### Lesson 3, Pointers
 
-The loop condition `i <= size` visits one slot too many. The safe idiom is always `i < size`.
+| Trap | Wrong | Right | Why |
+|---|---|---|---|
+| Uninitialized pointer | `int *p; *p = 5;` | `int *p = &x; *p = 5;` | `p` holds a garbage address until you give it a real one. |
+| `p` versus `*p` | `p = 9;` | `*p = 9;` | `p` is the address; `*p` is the value stored there. |
+| One star, one pointer | `int *p, q;` | `int *p, *q;` | In the wrong line `q` is a plain `int`. |
+| Forgetting `&` in a call | `swap(x, y);` | `swap(&x, &y);` | A function can only change the caller's variables through their addresses. |
+| Returning a local's address | `return &result;` | `return result;` | Locals disappear when the function returns. |
 
-**Drill:** With `int a[5];`, how many elements does `for (i = 0; i <= 5; i++)` visit, and which access is illegal?
+### Lesson 4, Structures
 
-**Answer:** Six visits (i = 0, 1, 2, 3, 4, 5); the last one touches `a[5]`, which is out of bounds. Fix: `i < 5`.
+| Trap | Wrong | Right | Why |
+|---|---|---|---|
+| Missing `;` after the definition | `struct student { ... }` | `struct student { ... };` | The semicolon after the closing brace is required. |
+| Dropping the word `struct` | `student a;` | `struct student a;` (or use `typedef`) | Without `typedef`, `struct` is part of the type name. |
+| Assigning a string member | `a.name = "Ana";` | `strcpy(a.name, "Ana");` | `name` is still a `char` array (Lesson 2). |
+| Comparing whole structures | `if (a == b)` | compare member by member, `strcmp` for strings | C has no `==` for structures. It does have `=` (copy). |
+| Dot on a pointer, arrow on a variable | `p.gwa`, `a->gwa` | `p->gwa`, `a.gwa` | Structure itself: dot. Pointer to it: arrow. |
+| Star without parentheses | `*p.gwa` | `(*p).gwa` or `p->gwa` | The dot runs before `*`, so `*p.gwa` means `*(p.gwa)`. |
+| Index in the wrong place | `cls.gwa[i]` | `cls[i].gwa` | Pick the element first, then its member. |
+| Expecting a by-value function to change the caller | `void improve(Student s)` | `void improve(Student *s)`, called with `improve(&s)` | Passing a structure normally passes a copy. |
 
-### Trap 3, Confusing Elements with Bytes
+### Lesson 5, File Handling
 
-The address formula multiplies the index by the *size of one element in bytes*. Mixing up "number of elements" with "number of bytes" wrecks address items, and if you use `sizeof`, remember that `sizeof(a)` gives the total **bytes**, not the element count.
+| Trap | Wrong | Right | Why |
+|---|---|---|---|
+| No `NULL` check | `fp = fopen("grades.txt", "r");` then read at once | `if (fp == NULL) { printf("Cannot open grades.txt\n"); return 1; }` | A missing file makes `fopen` return `NULL`, and using `NULL` usually crashes. |
+| `"w"` when you meant `"a"` | `fopen("log.txt", "w")` to add a line | `fopen("log.txt", "a")` | `"w"` erases the old contents the moment the file opens. |
+| Mode as a character | `fopen("a.txt", 'r')` | `fopen("a.txt", "r")` | The mode is a string. |
+| `char` for `fgetc` | `char c;` | `int c;` | `fgetc` returns an `int` so that `EOF` can differ from every real character. |
+| Missing parentheses in the read loop | `while (c = fgetc(fp) != EOF)` | `while ((c = fgetc(fp)) != EOF)` | `!=` runs before `=`, so `c` gets 1 or 0 instead of the character. |
+| Looping on `feof` | `while (!feof(fp))` | `while (fscanf(fp, "%d", &x) == 1)` | `feof` turns true only after a read fails, so the last value is usually counted twice. |
+| Forgetting the newline from `fgets` | `strcmp(line, "Ana") == 0` straight after `fgets` | `line[strcspn(line, "\n")] = '\0';` first | `fgets` keeps the `'\n'`. |
+| Expecting `fputs` to end the line | `fputs("Ana", fp);` | `fputs("Ana\n", fp);` | `fputs` adds no newline. |
+| Forgetting `fclose` | (nothing at the end) | `fclose(fp);` | The last lines may never reach the disk. |
+| Single backslashes in a path | `"C:\data\grades.txt"` | `"C:\\data\\grades.txt"` | A single `\` starts an escape sequence. |
 
-**Drill:** `int a[10];` and an `int` occupies 4 bytes. What is `sizeof(a)`? How do you get the element count from `sizeof`?
+### Lesson 6, Recursion
 
-**Answer:** `sizeof(a)` is 40 (10 elements × 4 bytes). Element count = `sizeof(a) / sizeof(a[0])` = 40 / 4 = 10.
+| Trap | Wrong | Right | Why |
+|---|---|---|---|
+| No base case | `return n * fact(n - 1);` with no `if` | `if (n <= 1) return 1;` first | The calls never stop, and the program crashes with a stack overflow. |
+| A base case you can step over | `if (n == 0)` while the calls go `n - 2` or start negative | `if (n <= 1)` or `if (n <= 0)` | A range catches every value; one exact value can be jumped over. |
+| Not getting smaller | `f(n)` or `f(n + 1)` inside `f` | `f(n - 1)`, `f(n / 10)` | Every call must move toward the base case. |
+| Missing `return` on the recursive call | `n * fact(n - 1);` | `return n * fact(n - 1);` | Without `return`, the answer is thrown away and the function returns garbage. |
+| Printing in the wrong place | `printf` after the call when you wanted `3 2 1` | `printf` before the call | Before the call runs on the way down; after it runs on the way back up, in reverse. |
+| Recursing too deep | `sumTo(1000000)` | a loop | A million waiting frames overflow the stack even when the code is correct. |
 
-### Trap 4, Row vs Column Confusion in 2D
+### Lesson 7, Searching and Sorting
 
-In `m[rows][columns]`, the **first** subscript is the row. And a flat initializer list fills **row by row**, the last subscript increases fastest. Filling column-first is the single most common 2D tracing mistake.
+| Trap | Wrong | Right | Why |
+|---|---|---|---|
+| Binary search on unsorted data | searching `{9, 2, 7, 4, 5}` directly | sort first, then binary search | Throwing away "the wrong half" only works when the array is in order. |
+| Loop stops one step early | `while (low < high)` | `while (low <= high)` | When one element is left, `low == high`, and it still has to be checked. |
+| Range never shrinks | `low = mid;` or `high = mid;` | `low = mid + 1;`, `high = mid - 1;` | `mid` was already checked; keeping it can loop forever. |
+| Bubble inner loop too long | `for (j = 0; j < n; j++)` | `for (j = 0; j < n - 1 - i; j++)` | `a[j + 1]` reads past the end when `j` is `n - 1`. |
+| Flag reset in the wrong place | `swapped = 0;` before the outer loop | `swapped = 0;` at the start of every pass | The flag must describe one pass. |
+| Swapping inside selection's inner loop | swap each time a smaller value appears | remember `min`, swap once after the inner loop | Extra swaps; it is no longer selection sort. |
+| Losing insertion sort's key | `while (j >= 0 && a[j] > a[i])` | save `key = a[i];` and test `a[j] > key` | The first shift overwrites `a[i]`. |
+| Swapping only the field | `tmp = s[i].gwa; s[i].gwa = s[min].gwa; ...` | `temp = s[i]; s[i] = s[min]; s[min] = temp;` with `Student temp;` | Moving only the GWAs attaches grades to the wrong names. |
+| Comparing names with `>` | `if (s[j].name > s[j + 1].name)` | `if (strcmp(s[j].name, s[j + 1].name) > 0)` | `>` on arrays compares addresses, not alphabetical order. |
 
-**Drill:** For `int m[3][4];`, is `m[3][2]` valid? And given `int m[2][3] = {1, 2, 3, 4, 5, 6};`, what is `m[1][0]`?
+---
 
-**Answer:** `m[3][2]` is invalid, rows run 0 through 2 only. `m[1][0]` is 4: row 0 = {1, 2, 3}, row 1 = {4, 5, 6}.
+### Five-Second Drills
 
-### Trap 5, Uninitialized Elements
+Answer each before you read the answer.
 
-Two different situations that students constantly mix up:
+**Drill 1 (Lesson 3).** What does this print?
 
-- **Partial initialization**, `int a[5] = {1, 2};`, the remaining elements are automatically set to **zero**.
-- **No initialization at all**, `int b[5];` inside a function, the elements hold **garbage** (whatever was in that memory before).
+```c
+int x = 5;
+int *p = &x;
 
-**Drill:** After `int a[5] = {1, 2};` what is `a[4]`? After `int b[5];` (declared inside a function, no initializer) what is `b[4]`?
+*p = *p + 3;
+printf("%d %d", x, *p);
+```
 
-**Answer:** `a[4]` is 0 (partial initialization zero-fills). `b[4]` is garbage, unpredictable. Never assume zeros unless at least one initializer is present.
+**Answer:** `8 8`. `p` points at `x`, so changing `*p` changes `x`. There is only one value, reached two ways.
 
-### Trap 6, Swapping Without a Temp
+**Drill 2 (Lesson 5).** The file nums.txt holds `10` and `20` on two lines. What does this print?
 
-Two plain assignments cannot exchange two values, the first assignment destroys one of them. A correct swap is always three steps through a temporary variable.
+```c
+FILE *fp;
+int x, sum = 0;
 
-**Drill:** `int a[2] = {4, 9};` then `a[0] = a[1]; a[1] = a[0];`, what does `printf("%d %d", a[0], a[1]);` print?
+fp = fopen("nums.txt", "r");
+while (!feof(fp)) {
+    fscanf(fp, "%d", &x);
+    sum += x;
+}
+fclose(fp);
+printf("%d", sum);
+```
 
-**Answer:** `9 9`. The first line overwrote the 4 before anything saved it. Correct: `temp = a[0]; a[0] = a[1]; a[1] = temp;`
+**Answer:** `50`, not 30. After reading 20, `feof` is still false, so the loop runs once more. That `fscanf` fails and leaves `x` at 20, which gets added a second time. Fix: `while (fscanf(fp, "%d", &x) == 1) sum += x;` prints `30`.
+
+**Drill 3 (Lesson 6).** What happens with `f(4)`? With `f(5)`?
+
+```c
+int f(int n) {
+    if (n == 0)
+        return 0;
+    return n + f(n - 2);
+}
+```
+
+**Answer:** `f(4)` returns 4 + 2 + 0 = 6. `f(5)` goes 5, 3, 1, -1, -3, ... and never lands on 0, so it keeps calling until the stack overflows and the program crashes. Fix the base case to `if (n <= 0)`.
+
+**Drill 4 (Lesson 7).** `binarySearch` is the standard version from Lesson 7. What does `binarySearch(a, 5, 9)` return for `int a[5] = {9, 2, 7, 4, 5};`?
+
+**Answer:** `-1`, even though 9 is at index 0. The first `mid` is index 2 (value 7). Since 7 < 9, the search throws away the left half, which is exactly where 9 sits. Binary search needs a sorted array.
+
+**Drill 5 (Lesson 2).** Is `strcmp("Cruz", "Bautista")` positive, negative, or zero?
+
+**Answer:** Positive. "Cruz" comes **after** "Bautista" alphabetically ('C' is after 'B'). In a sort by name, a positive result means the pair is out of order and must be swapped.
 
 ---
 
 ### Now Fix Them Yourself
 
-The playground below contains Trap 2 and Trap 6 as live bugs. Run it once and watch what happens: the print loop walks past the end of the array (you will likely see a garbage sixth value), and the "swap" produces a duplicate. Fix the loop condition, complete the swap with `temp`, and run again, the final line should read `5 3 9 1 7`.
+The playground below compiles without errors, yet it has five live bugs: one each from Lessons 2, 4 and 6, and two from Lesson 7. Each is marked with a `BUG` comment and a `TODO`. It writes only to the screen, so it runs fine in the playground.
+
+Run it once before changing anything. You should see:
+
+```
+Trap 1: improve Carla's GWA by 0.50
+Carla's GWA is now 1.75
+
+Trap 2: rank by GWA, best first
+1. Ana    1.50
+2. Ben    1.75
+3. Carla  2.25
+
+Trap 3: look for student ID 2015
+ID 2015 not found
+
+Trap 4: countdown from 3
+1 2 3 
+
+Trap 5: check the PIN
+Wrong PIN
+```
+
+Every block is wrong. Carla's GWA did not change (a copy was changed). Ana did not earn a 1.50 (only the GWAs moved, the names stayed put). ID 2015 is in the array. The countdown runs up. And the PIN matches but is rejected.
+
+Fix all five TODOs and run again. The output should be:
+
+```
+Trap 1: improve Carla's GWA by 0.50
+Carla's GWA is now 1.25
+
+Trap 2: rank by GWA, best first
+1. Carla  1.25
+2. Ben    1.50
+3. Ana    2.25
+
+Trap 3: look for student ID 2015
+ID 2015 found at index 1
+
+Trap 4: countdown from 3
+3 2 1 
+
+Trap 5: check the PIN
+Access granted
+```
+
+Fix one bug at a time and run after each fix. Notice that fixing Trap 1 also changes Trap 2's ranking, because the ranking uses Carla's new GWA.
 $md$, 6, 'c', $code$#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char  name[20];
+    float gwa;
+} Student;
+
+/* BUG 1 (Lesson 4): s is a COPY of the caller's student, so the
+   change is thrown away when the function returns.
+   TODO: take a pointer (Student *s), use s->gwa, and call it
+   with &cls[2] in main. */
+void improve(Student s, float points) {
+    s.gwa -= points;
+}
+
+/* BUG 2 (Lesson 7): this sort moves the GWAs but leaves the names
+   where they were, so grades end up on the wrong students.
+   TODO: swap the WHOLE struct through a Student temp variable. */
+void sortByGwa(Student s[], int n) {
+    int i, j, min;
+    float temp;
+    for (i = 0; i < n - 1; i++) {
+        min = i;
+        for (j = i + 1; j < n; j++)
+            if (s[j].gwa < s[min].gwa)
+                min = j;
+        if (min != i) {
+            temp = s[i].gwa;
+            s[i].gwa = s[min].gwa;
+            s[min].gwa = temp;
+        }
+    }
+}
+
+/* This one is correct: bubble sort, ascending. */
+void sortInts(int a[], int n) {
+    int i, j, temp;
+    for (i = 0; i < n - 1; i++)
+        for (j = 0; j < n - 1 - i; j++)
+            if (a[j] > a[j + 1]) {
+                temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+            }
+}
+
+/* This one is correct too, but only on a SORTED array. */
+int binarySearch(int a[], int n, int key) {
+    int low = 0, high = n - 1, mid;
+    while (low <= high) {
+        mid = low + (high - low) / 2;
+        if (a[mid] == key)
+            return mid;
+        else if (a[mid] < key)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return -1;
+}
+
+/* BUG 4 (Lesson 6): this should print 3 2 1 but prints 1 2 3.
+   TODO: move the printf so it runs BEFORE the recursive call. */
+void countdown(int n) {
+    if (n == 0)
+        return;
+    countdown(n - 1);
+    printf("%d ", n);
+}
 
 int main(void) {
-    int a[5] = {7, 3, 9, 1, 5};
-    int i, temp;
+    Student cls[3] = {
+        {"Ana",   2.25f},
+        {"Ben",   1.50f},
+        {"Carla", 1.75f}
+    };
+    int ids[5] = {2041, 2007, 2033, 2015, 2050};
+    char pin[] = "1234";
+    char typed[] = "1234";
+    int i, pos;
 
-    /* BUG 1 (Trap 2): this loop walks one slot past the end.
-       Run it once to see the garbage, then fix the condition. */
-    for (i = 0; i <= 5; i++)
-        printf("a[%d] = %d\n", i, a[i]);
+    printf("Trap 1: improve Carla's GWA by 0.50\n");
+    improve(cls[2], 0.50f);
+    printf("Carla's GWA is now %.2f\n\n", cls[2].gwa);
 
-    /* BUG 2 (Trap 6): this "swap" of a[0] and a[4] loses a value.
-       Rewrite it as a three-step swap using temp. */
-    a[0] = a[4];
-    a[4] = a[0];
-
-    printf("After swap: ");
-    for (i = 0; i < 5; i++)
-        printf("%d ", a[i]);
+    printf("Trap 2: rank by GWA, best first\n");
+    sortByGwa(cls, 3);
+    for (i = 0; i < 3; i++)
+        printf("%d. %-6s %.2f\n", i + 1, cls[i].name, cls[i].gwa);
     printf("\n");
+
+    /* BUG 3 (Lesson 7): binary search on an UNSORTED array.
+       TODO: call sortInts(ids, 5); on the line below this comment. */
+    printf("Trap 3: look for student ID 2015\n");
+    pos = binarySearch(ids, 5, 2015);
+    if (pos == -1)
+        printf("ID 2015 not found\n\n");
+    else
+        printf("ID 2015 found at index %d\n\n", pos);
+
+    printf("Trap 4: countdown from 3\n");
+    countdown(3);
+    printf("\n\n");
+
+    /* BUG 5 (Lesson 2): strcmp returns 0 when the strings MATCH,
+       so this test is backwards.
+       TODO: change the condition to strcmp(typed, pin) == 0 */
+    printf("Trap 5: check the PIN\n");
+    if (strcmp(typed, pin))
+        printf("Access granted\n");
+    else
+        printf("Wrong PIN\n");
 
     return 0;
 }$code$)
