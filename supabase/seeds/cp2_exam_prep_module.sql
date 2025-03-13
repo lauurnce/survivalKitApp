@@ -1537,107 +1537,295 @@ where public.sections.module_id = excluded.module_id;
 
 insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
 values ('187b08ad-d1a2-4794-8473-77a7ff09242b', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Final Exam Blueprint & Rapid Review Sheet', $md$
-The final is cumulative over the currently published **Unit 1: Arrays**, with extra weight on the material closest to the exam: 2D arrays, matrices, and sorting. Coverage of this module will expand as new units are published.
+The final covers **Lesson 4 (Structures), Lesson 5 (File Handling), Lesson 6 (Recursion), and Lesson 7 (Searching and Sorting)**. About a fifth of it reaches back to Lessons 1 to 3, but not as separate topics: you will meet arrays, strings, and pointers again **inside** the new material, like `cls[i].gwa`, `strcpy(s.name, ...)`, `p->gwa`, and sorting an array of records.
 
 ### Typical Final Exam Blueprint
 
-| Part | Format | Typical Weight | Focus |
+Professors shuffle the weights, but a CP2 final on these lessons is usually built from the same five parts. Both Final Mock Exams in this module follow this layout item for item.
+
+| Part | Format | Items in the mocks | Typical Weight | Focus |
+|---|---|---|---|---|
+| I | Multiple choice / identification | 1 to 6 | 20% | Struct syntax, dot vs arrow, `fopen` modes, `EOF`, what a sort or search needs |
+| II | Output tracing | 7 to 14 | 30% | Struct copies, by-value vs by-pointer, nested members, file write-then-read, recursion traces |
+| III | Search and sort traces | 15 to 18 | 15% | Array after pass k, swap counts, binary search steps |
+| IV | Find the error | 19 to 22 | 15% | The mistakes in Common CP2 Traps, found and fixed |
+| V | Write the program | 23 to 25 | 20% | One structures program, one file program, one recursion or sort-and-search program |
+
+Rough coverage by lesson:
+
+| Lesson | Share of the final | Where it shows up most |
+|---|---|---|
+| 4, Structures | about 25% | Parts I, II, IV, V |
+| 5, File Handling | about 20% | Parts I, II, IV, V |
+| 6, Recursion | about 15% | Parts II, IV, V |
+| 7, Searching and Sorting | about 20% | Parts I, III, IV, V |
+| 1 to 3, cumulative | about 20% | mixed into every part |
+
+Tracing plus programming is half the exam. Reading the review sheet is not enough: trace each mock on paper with a pencil, then check yourself against the key.
+
+---
+
+## Rapid Review Sheet
+
+### Lesson 4, Structures
+
+**Syntax on one screen** (from Declaring Structures and Accessing Members, typedef and Nested Structures, and Pointers to Structures: The Arrow Operator):
+
+```c
+struct student {              /* definition: a template, no memory yet */
+    char  name[30];
+    int   year;
+    float gwa;
+};                            /* the ; is required */
+
+typedef struct {              /* typedef: Date is now a type name */
+    int month, day, year;
+} Date;
+
+struct student a = {"Ana Reyes", 1, 1.75f};   /* values in member order */
+struct student cls[40];                       /* array of structures */
+struct student *p = &a;                       /* pointer to a structure */
+
+a.year = 2;                   /* structure variable: dot */
+p->gwa = 1.50f;               /* pointer: arrow, same as (*p).gwa */
+cls[3].gwa = 2.00f;           /* element first, then member */
+strcpy(a.name, "Ana");        /* string member: strcpy, never = */
+scanf("%d", &a.year);         /* & goes in front of the whole a.year */
+```
+
+**Rules to know cold:**
+
+- A definition sets aside no memory. Declaring a variable does. Members left out of an initializer become 0.
+- `b = a;` copies every member, even a `char` array. `a == b` does **not** compile; compare member by member.
+- Nested members take one dot per level: `s.birthday.year`. Define the inner type (`Date`) before the outer one.
+- Passing a structure to a function passes a **copy**. To keep a change, either return the changed copy and assign it (`a = moved(a, 10);`) or pass the address (`deposit(&a, 250.50f)`) and use `->` inside.
+- An **array** of structures passed to a function is not copied: the function works on the caller's records. Mark it `const Student list[]` if it should only read.
+- If `p` points at `cls[0]`, then `p[i].gwa` and `(p + i)->gwa` both reach record `i`. `p++` moves one whole record.
+- In Philippine grading, 1.00 is the best GWA, so "best student" means **smallest** GWA: use `<`.
+
+### Lesson 5, File Handling
+
+**The four steps:** declare `FILE *fp;`, open with `fopen` and check for `NULL`, read or write, `fclose(fp);`.
+
+| Mode | Meaning | File exists | File missing |
 |---|---|---|---|
-| I | Multiple choice | 20–25% | 2D declarations, initialization rules, address formula |
-| II | Output tracing | 30–35% | Nested loops over matrices, in-place array updates |
-| III | Sorting traces | 10–15% | Array state after k passes, swap counts |
-| IV | Fill-in-the-blank | 10–15% | The idioms below, verbatim |
-| V | Write the program | 20–25% | Complete programs graded by rubric |
+| `"r"` | read | read from the start | `fopen` returns `NULL` |
+| `"w"` | write | contents **erased** | created |
+| `"a"` | append | writing goes to the end | created |
+| `"r+"` | read and write | kept, start at the beginning | `NULL` |
+| `"w+"` | read and write | contents **erased** | created |
+| `"a+"` | read and append | kept, writing goes to the end | created |
 
-### Rapid Review, Every Idiom on One Sheet
-
-Everything below comes straight from Unit 1. If you can write these from memory, Part IV and Part V are free points.
-
-**Declarations:**
+**The three reading loops** (from Formatted File I/O, Character I/O, and Line I/O):
 
 ```c
-int    a[20];             /* 1D: 20 integers               */
-float  g[3][5];           /* 2D: 3 rows, 5 columns          */
-char   name[5] = "CEBU";  /* 4 letters + '\0'               */
-int    b[] = {1, 2, 3};   /* size inferred as 3             */
-int    c[10] = {1, 2};    /* c[2]..c[9] auto-zeroed         */
+FILE *fp = fopen("scores.txt", "r");
+if (fp == NULL) {
+    printf("Cannot open scores.txt\n");
+    return 1;
+}
+
+/* 1. records: fscanf returns how many items it read */
+while (fscanf(fp, "%29s %d", name, &score) == 2)
+    total += score;
+
+/* 2. characters: c must be an int */
+while ((c = fgetc(fp)) != EOF)
+    chars++;
+
+/* 3. lines: fgets keeps the '\n' and returns NULL at the end */
+while (fgets(line, sizeof line, fp) != NULL)
+    line[strcspn(line, "\n")] = '\0';
+
+fclose(fp);
 ```
 
-**Find the maximum (for the minimum, flip the comparison to `<`):**
+(These are three separate patterns. In a real program you pick one per pass through the file.)
+
+**Writing:** `fprintf(fp, "%s %d\n", name, score);` (like `printf`, file first), `fputc(c, fp);` (one character), `fputs(str, fp);` (a string, **no** newline added).
+
+**Rules to know cold:**
+
+- `stdin`, `stdout`, and `stderr` are already-open `FILE *` streams. `fprintf(stdout, ...)` is the same as `printf(...)`, and `fgets(name, sizeof name, stdin)` reads a full name with spaces.
+- Write and read with matching formats: if you wrote `"%d %s %.2f\n"`, read with `"%d %29s %f"` and test for `== 3`.
+- `%s` stops at a space, so "Ana Reyes" is two words to `fscanf`. Use one-word fields or `fgets`.
+- To read back what you just wrote, `fclose` the file and `fopen` it again with `"r"`.
+- Never `while (!feof(fp))`. Never `fclose(NULL)`. Never `gets`.
+
+### Lesson 6, Recursion
+
+**The checklist** (from Base Case and Recursive Case: Factorial):
+
+1. There is a base case that returns without calling again.
+2. Every recursive call uses a smaller input.
+3. The smaller inputs reach the base case for every valid input (use a range like `n <= 1`, not one exact value, when you can).
+
+**The classic functions** (from Classic Recursive Functions):
 
 ```c
-big = a[0];
-for (i = 1; i < n; i++)
-    if (a[i] > big)
-        big = a[i];
-```
+long factorial(int n) {
+    if (n <= 1)
+        return 1;
+    return n * factorial(n - 1);
+}
 
-**Sum and average:**
+int sumDigits(int n) {
+    if (n < 10)
+        return n;
+    return n % 10 + sumDigits(n / 10);
+}
 
-```c
-sum = 0;
-for (i = 0; i < n; i++)
-    sum += a[i];
-avg = sum / (float) n;
-```
+long power(int base, int exp) {
+    if (exp == 0)
+        return 1;
+    return base * power(base, exp - 1);
+}
 
-**Count matching values:**
-
-```c
-count = 0;
-for (i = 0; i < n; i++)
-    if (a[i] == key)
-        count++;
-```
-
-**Linear search:**
-
-```c
-found = 0;
-for (i = 0; i < n; i++)
-    if (a[i] == key)
-        found = 1;
-```
-
-**Bubble-sort skeleton (ascending, one full sort):**
-
-```c
-for (i = 0; i < n - 1; i++)
-    for (j = 0; j < n - 1 - i; j++)
-        if (a[j] > a[j + 1]) {
-            temp     = a[j];
-            a[j]     = a[j + 1];
-            a[j + 1] = temp;
-        }
-```
-
-For **descending** order, change the condition to `a[j] < a[j + 1]`. For a **single pass** (the tracing favorite), keep only the inner loop with `j` running from 0 to n − 2.
-
-**Matrix traversal (read, process, or print, same shape every time):**
-
-```c
-for (i = 0; i < rows; i++) {
-    for (j = 0; j < cols; j++)
-        printf("%d\t", m[i][j]);
-    printf("\n");   /* new line after each row */
+int fib(int n) {
+    if (n <= 1)
+        return n;
+    return fib(n - 1) + fib(n - 2);
 }
 ```
 
-**Matrix addition (from Sample Program 3):**
+**Tracing** (from Tracing the Call Stack):
+
+- Each call gets its own stack frame with its own copy of the parameters.
+- Calls **wind down** to the base case, then **unwind**: the last call made is the first to finish.
+- Work **before** the recursive call happens on the way down (`down(3)` prints `3 2 1`). Work **after** it happens on the way back up (`up(3)` prints `1 2 3`).
+- For a value-returning function, write the chain out: `factorial(4) = 4 * factorial(3) = 4 * 3 * factorial(2) = ...`, then multiply back up.
+
+**Recursion vs. iteration:** recursion stops at the base case and costs one frame per waiting call; a loop stops when its condition is false and reuses one frame. Too many waiting calls cause a **stack overflow** (a crash). Naive `fib` repeats work: `fib(30)` makes about 2.7 million calls.
+
+### Lesson 7, Searching and Sorting
+
+**Searches:**
 
 ```c
-for (i = 0; i < m; i++)
-    for (j = 0; j < n; j++)
-        c[i][j] = a[i][j] + b[i][j];
+int linearSearch(int a[], int n, int key) {
+    int i;
+    for (i = 0; i < n; i++)
+        if (a[i] == key)
+            return i;
+    return -1;                       /* after the loop, not inside it */
+}
+
+int binarySearch(int a[], int n, int key) {   /* a must be sorted */
+    int low = 0, high = n - 1, mid;
+    while (low <= high) {
+        mid = low + (high - low) / 2;
+        if (a[mid] == key)
+            return mid;
+        else if (a[mid] < key)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return -1;
+}
 ```
 
-### The Five Facts You Must Not Blank On
+**Sorts (ascending):**
 
-1. Indices run 0 to size − 1. Always.
-2. Element address = base + (element size × index).
-3. Partial initialization zero-fills; no initialization means garbage.
-4. Flat 2D initializers fill row by row.
-5. `scanf()` needs `&`, for 1D and 2D elements alike.
+```c
+/* Bubble: swap neighbors; the largest bubbles to the end */
+for (i = 0; i < n - 1; i++) {
+    swapped = 0;
+    for (j = 0; j < n - 1 - i; j++)
+        if (a[j] > a[j + 1]) {
+            temp = a[j];
+            a[j] = a[j + 1];
+            a[j + 1] = temp;
+            swapped = 1;
+        }
+    if (!swapped)
+        break;
+}
+
+/* Selection: find the smallest, swap it to the front */
+for (i = 0; i < n - 1; i++) {
+    min = i;
+    for (j = i + 1; j < n; j++)
+        if (a[j] < a[min])
+            min = j;
+    if (min != i) {
+        temp = a[i];
+        a[i] = a[min];
+        a[min] = temp;
+    }
+}
+
+/* Insertion: shift bigger values right, drop the key in the gap */
+for (i = 1; i < n; i++) {
+    key = a[i];
+    j = i - 1;
+    while (j >= 0 && a[j] > key) {
+        a[j + 1] = a[j];
+        j--;
+    }
+    a[j + 1] = key;
+}
+```
+
+For **descending** order, flip the comparison that decides the move: `a[j] < a[j + 1]` (bubble), `a[j] > a[min]` (selection), `a[j] < key` (insertion).
+
+**Which sort made this pass?** (from Selection Sort and Insertion Sort, Telling the three apart in an exam). Look at the array after pass 1:
+
+| Sort | After pass 1 |
+|---|---|
+| Bubble | the **largest** value is at the **end** |
+| Selection | the **smallest** value is at the **front**, swapped with whatever was there |
+| Insertion | only the **first two** elements are in order; the rest is untouched |
+
+**Sorting structs** (from Sorting an Array of Structs by a Field): compare **one field**, swap the **whole struct**.
+
+```c
+struct Student temp;                    /* temp has the struct type */
+
+if (s[j].gwa < s[min].gwa)              /* compare ONE field */
+    min = j;
+
+temp = s[i];                            /* swap the WHOLE record */
+s[i] = s[min];
+s[min] = temp;
+```
+
+For names the comparison becomes `strcmp(s[j].name, s[j + 1].name) > 0`. Using `>` on two `char` arrays compares their addresses, not alphabetical order.
+
+**Complexities** (from Comparing the Algorithms: Big-O in Plain Words):
+
+| Algorithm | Best case | Worst case | Good to know |
+|---|---|---|---|
+| Linear search | O(1) | O(n) | works on unsorted data |
+| Binary search | O(1) | O(log n) | array must be sorted; about 20 steps for 1,000,000 |
+| Bubble sort (with flag) | O(n) | O(n²) | many swaps; O(n) best case only with the flag |
+| Selection sort | O(n²) | O(n²) | at most n - 1 swaps; not stable |
+| Insertion sort | O(n) | O(n²) | fastest of the three on nearly sorted data; stable |
+
+Comparisons for selection sort, or for bubble sort with no early stop, on n elements: n(n - 1) / 2, so 10 for 5 elements and 45 for 10.
+
+| Big-O | Double n and the work... |
+|---|---|
+| O(1) | stays the same |
+| O(log n) | goes up by one step |
+| O(n) | doubles |
+| O(n²) | quadruples |
+
+### Cumulative Review, Lessons 1 to 3 as They Appear on the Final
+
+- **Arrays (Lesson 1):** indexes run 0 to n - 1; array parameters are not copied, so pass `n` separately; `return -1` goes after the search loop.
+- **Strings (Lesson 2):** `strcpy` to assign, `strcmp(a, b) == 0` to compare, `strcat` to join, `strlen` stops before `'\0'`; a string of n letters needs n + 1 slots.
+- **Pointers (Lesson 3):** `&` gives an address, `*p` follows it; pass `&x` when a function must change `x`; `a[i]` is `*(a + i)`, and pointer arithmetic moves one element (or one whole struct) at a time.
+
+### The Seven Facts You Must Not Blank On
+
+1. A `struct` definition ends with `};`.
+2. Structure variable: dot. Pointer to a structure: arrow. `p->gwa` is `(*p).gwa`.
+3. A structure passed by value is a copy; pass `&s` to change it.
+4. Check every `fopen` for `NULL`; `"w"` erases, `"a"` adds.
+5. `int c` for `fgetc`, and loop on what the read function returns, not on `feof`.
+6. Every recursive function needs a base case that every input eventually reaches.
+7. Binary search needs sorted data; when sorting records, swap the whole struct.
 $md$, 7, null, null)
 on conflict (id) do update set
   kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
