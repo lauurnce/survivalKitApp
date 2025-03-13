@@ -1834,211 +1834,293 @@ where public.sections.module_id = excluded.module_id;
 
 insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
 values ('92de4076-fa42-4e4c-bd33-2e9912bf056b', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Final Mock Exam A, 25 Items', $md$
-Cumulative over Unit 1, weighted toward 2D arrays, matrices, and sorting, like the real final. 90 minutes, no notes. Items 23–25 are write-the-program items; write complete programs, not fragments.
+Covers Lessons 4 to 7 with about 20% cumulative review from Lessons 1 to 3, laid out exactly like the blueprint in the Final Exam Blueprint & Rapid Review Sheet. 90 minutes, no notes. Items 23 to 25 are write-the-program items; write complete programs, not fragments.
 
-For sorting items, **one pass** means comparing each adjacent pair left to right, swapping when the left value is greater (ascending).
+Ground rules for the whole exam:
 
-### Part I, Multiple Choice (Items 1–6)
+- Every fragment is inside `main()` of a complete program with `#include <stdio.h>` and `#include <string.h>`. Type definitions and functions shown above a fragment sit above `main()`.
+- In file items, `fopen` always succeeds. The `NULL` checks are left out only to save space; in your own programs, always include them.
+- For sorting items, **one pass** means one run of the outer loop of the standard Lesson 7 code (bubble, selection, or insertion, as named), sorting **ascending**.
 
-**1.** How many elements does `int t[4][6];` hold?
+### Part I, Multiple Choice (Items 1 to 6)
 
-- A. 10
-- B. 24
-- C. 46
-- D. 20
+**1.** Which structure definition compiles?
 
-**2.** Which declaration creates a table of `float` values with 3 rows and 5 columns?
+- A. `struct book { char title[40]; float price; }`
+- B. `struct book { char title[40]; float price; };`
+- C. `struct { char title[40], float price };`
+- D. `book struct { char title[40]; float price; };`
 
-- A. `float g[5][3];`
-- B. `float g[3][5];`
-- C. `float g[3, 5];`
-- D. `g float[3][5];`
+**2.** Given `Student s;` and `Student *p = &s;`, which expression reaches the `gwa` member **through the pointer** `p`?
 
-**3.** Given `int m[2][4] = {1, 2, 3, 4, 5, 6, 7, 8};`, the value of `m[1][2]` is:
+- A. `p.gwa`
+- B. `*p.gwa`
+- C. `p->gwa`
+- D. `&p.gwa`
 
-- A. 3
-- B. 6
-- C. 7
-- D. 8
+**3.** Given `struct student cls[40];`, which expression is the GWA of the **third** student in the list?
 
-**4.** Given `int m[3][3] = { {1, 2}, {4, 5, 6}, {7} };`, the value of `m[0][2]` is:
+- A. `cls.gwa[3]`
+- B. `cls[3].gwa`
+- C. `cls[2].gwa`
+- D. `cls.gwa[2]`
 
-- A. 3
-- B. 0
-- C. 6
-- D. Garbage (unpredictable)
+**4.** Which `fopen` mode erases a file's old contents the moment the file is opened?
 
-**5.** To store the string `"DAVAO"`, a character array needs at least how many elements?
+- A. `"r"`
+- B. `"a"`
+- C. `"w"`
+- D. `"r+"`
 
-- A. 5
-- B. 6
-- C. 7
-- D. 4
+**5.** In the loop `while ((c = fgetc(fp)) != EOF)`, the variable `c` should be declared as:
 
-**6.** In an ascending bubble sort, a pair of adjacent elements is swapped when:
+- A. `char c;`
+- B. `int c;`
+- C. `float c;`
+- D. `FILE *c;`
 
-- A. The left value is less than the right value
-- B. The left value is greater than the right value
-- C. The two values are equal
-- D. On every comparison
+**6.** Binary search on a **sorted** array of 1,000,000 elements needs, in the worst case, about how many comparisons?
 
-### Part II, Output Tracing (Items 7–16)
+- A. 20
+- B. 1,000
+- C. 500,000
+- D. 1,000,000
+
+### Part II, Output Tracing (Items 7 to 14)
 
 Write exactly what each fragment prints.
 
 **7.**
 ```c
-int a[2][2] = {1, 2, 3, 4};
-int b[2][2] = {5, 6, 7, 8};
-int c[2][2];
-int i, j;
-for (i = 0; i < 2; i++)
-    for (j = 0; j < 2; j++)
-        c[i][j] = a[i][j] + b[i][j];
-printf("%d %d", c[0][1], c[1][0]);
+struct student {
+    char name[20];
+    int  year;
+};
+
+/* inside main() */
+struct student a = {"Ana", 1};
+struct student b;
+
+b = a;
+b.year = 2;
+strcpy(b.name, "Ben");
+printf("%s %d %s %d", a.name, a.year, b.name, b.year);
 ```
 
 **8.**
 ```c
-int m[3][3] = {4, 1, 2, 3, 5, 6, 7, 8, 9};
-int i, s = 0;
-for (i = 0; i < 3; i++)
-    s += m[i][i];
-printf("%d", s);
+typedef struct {
+    int x, y;
+} Point;
+
+void shiftCopy(Point p) {
+    p.x += 5;
+}
+
+void shiftPtr(Point *p) {
+    p->y += 5;
+}
+
+int main(void) {
+    Point a = {1, 2};
+
+    shiftCopy(a);
+    shiftPtr(&a);
+    printf("(%d, %d)", a.x, a.y);
+    return 0;
+}
 ```
 
 **9.**
 ```c
-int m[2][3] = {1, 2, 3, 4, 5, 6};
-int i, j;
-for (i = 0; i < 2; i++) {
-    for (j = 0; j < 3; j++)
-        printf("%d", m[i][j]);
-    printf("\n");
-}
+typedef struct {
+    int month, day, year;
+} Date;
+
+typedef struct {
+    char name[20];
+    Date due;
+} Task;
+
+/* inside main() */
+Task t = {"Lab 5", {10, 31, 2026}};
+
+t.due.day = t.due.day - 10;
+t.due.month++;
+printf("%s: %d/%d/%d", t.name, t.due.month, t.due.day, t.due.year);
 ```
 
 **10.**
 ```c
-int z[2][4] = {9, 4, 8, 2, 7, 3, 6, 5};
-int a, b, smallest = 999;
-for (a = 0; a < 2; ++a)
-    for (b = 0; b < 4; ++b)
-        if (z[a][b] < smallest)
-            smallest = z[a][b];
-printf("%d", smallest);
+typedef struct {
+    char name[20];
+    int  price;
+} Item;
+
+/* inside main() */
+Item menu[3] = {{"Pancit", 45}, {"Lumpia", 30}, {"Turon", 15}};
+Item *p = menu;
+
+p++;
+printf("%s %d %d", p->name, (p + 1)->price, menu[0].price + p->price);
 ```
 
 **11.**
 ```c
-int m[3][2] = {4, 7, 2, 9, 6, 1};
-int i, j, c = 0;
-for (i = 0; i < 3; i++)
-    for (j = 0; j < 2; j++)
-        if (m[i][j] > 5)
-            c++;
-printf("%d", c);
+void show(int n) {
+    if (n == 0)
+        return;
+    printf("%d ", n);
+    show(n - 1);
+    printf("%d ", n);
+}
+
+/* inside main() */
+show(3);
 ```
 
 **12.**
 ```c
-int m[3][2] = {3, 8, 5, 2, 4, 6};
-int i, big = m[0][1];
-for (i = 1; i < 3; i++)
-    if (m[i][1] > big)
-        big = m[i][1];
-printf("%d", big);
+int g(int a, int b) {
+    if (b == 0)
+        return 0;
+    return a + g(a, b - 1);
+}
+
+/* inside main() */
+printf("%d %d", g(4, 3), g(7, 0));
 ```
 
 **13.**
 ```c
-int a[5] = {2, 5, 1, 4, 3};
-int i, temp;
-for (i = 0; i < 4; i++)
-    if (a[i] > a[i + 1]) {
-        temp = a[i];
-        a[i] = a[i + 1];
-        a[i + 1] = temp;
-    }
-printf("%d %d %d %d %d", a[0], a[1], a[2], a[3], a[4]);
+FILE *fp;
+int x, sum = 0, count = 0;
+
+fp = fopen("pts.txt", "w");
+fprintf(fp, "%d %d\n", 4, 9);
+fprintf(fp, "%d\n", 7);
+fclose(fp);
+
+fp = fopen("pts.txt", "r");
+while (fscanf(fp, "%d", &x) == 1) {
+    sum += x;
+    count++;
+}
+fclose(fp);
+printf("%d %d", count, sum);
 ```
 
 **14.**
 ```c
-char s[] = "MATRIX";
-int i = 0;
-while (s[i] != '\0')
-    i++;
-printf("%d", i);
+FILE *fp;
+int c, chars = 0, lines = 0;
+
+fp = fopen("note.txt", "w");
+fputs("Hi\nBSIT\n", fp);
+fclose(fp);
+
+fp = fopen("note.txt", "r");
+while ((c = fgetc(fp)) != EOF) {
+    chars++;
+    if (c == '\n')
+        lines++;
+}
+fclose(fp);
+printf("%d %d", chars, lines);
 ```
 
-**15.**
-```c
-int m[2][2] = {1, 2, 3, 4};
-int i, j;
-for (i = 0; i < 2; i++)
-    for (j = 0; j < 2; j++)
-        m[i][j] = m[i][j] * (i + j);
-printf("%d %d %d %d", m[0][0], m[0][1], m[1][0], m[1][1]);
-```
+### Part III, Search and Sort Traces (Items 15 to 18)
 
-**16.**
-```c
-int m[2][3] = {1, 2, 3, 4, 5, 6};
-int j, s = 0;
-for (j = 0; j < 3; j++)
-    s += m[1][j] - m[0][j];
-printf("%d", s);
-```
+Items 15 to 17 each start from the **original** array `{41, 17, 30, 8, 25}`.
 
-### Part III, Sorting Traces (Items 17–19)
+**15.** Bubble sort: write the array **after pass 1**, and say how many swaps pass 1 made.
 
-The array is `{6, 3, 8, 1, 4}`, sorted **ascending**.
+**16.** Selection sort: write the array **after pass 1** and **after pass 2**.
 
-**17.** Write the state of the array **after pass 1**.
+**17.** Insertion sort: write the array **after pass 2**.
 
-**18.** Write the state of the array **after pass 2**.
+**18.** Binary search (the iterative Lesson 7 version) looks for `61` in this sorted array:
 
-**19.** Write the state of the array **after pass 3**.
+| index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---|---|---|---|---|---|---|---|---|
+| value | 5 | 12 | 19 | 26 | 33 | 40 | 47 | 54 | 61 |
 
-### Part IV, Fill in the Blank (Items 20–22)
+List the values of `a[mid]` in the order they are checked, and give the value the function returns.
 
-**20.** Read every element of an `m`-row, `n`-column matrix `a`:
+### Part IV, Find the Error (Items 19 to 22)
 
-```c
-for (i = 0; i < m; i++)
-    for (j = 0; j < n; j++)
-        scanf("%d", ____);
-```
+For each item, name every error and write the corrected line(s).
 
-**21.** Complete the loop body so `avg` becomes the average of the five elements:
+**19.** This program should print `Kape 35.00`. It does not compile. Find **two** errors.
 
 ```c
-int a[5] = {4, 8, 6, 2, 10};
-int i, sum = 0;
-float avg;
-for (i = 0; i < 5; i++)
-    ____
-avg = sum / 5.0;
+#include <stdio.h>
+
+struct item {
+    char  name[20];
+    float price;
+}
+
+int main(void) {
+    struct item a;
+
+    a.name = "Kape";
+    a.price = 35.00f;
+    printf("%s %.2f\n", a.name, a.price);
+    return 0;
+}
 ```
 
-**22.** Complete the linear search condition:
+**20.** `addLog` should **add** one line to the end of log.txt without erasing earlier lines, and must not crash if the file cannot be opened. Calling it twice, with `"Login: Ana"` then `"Login: Ben"`, leaves only `Login: Ben` in the file. Find **two** errors.
 
 ```c
-for (i = 0; i < n; i++)
-    if (____)
-        found = 1;
+void addLog(const char *msg) {
+    FILE *fp = fopen("log.txt", "w");
+
+    fprintf(fp, "%s\n", msg);
+    fclose(fp);
+}
 ```
 
-### Part V, Write the Program (Items 23–25)
+**21.** `power(2, 5)` correctly returns 32, but `power(7, 0)` crashes the program. Explain why and fix the function.
 
-Write each as a complete C program. Rubric per item (10 points): correct declarations (2), correct input loop with `&` (2), correct core logic (4), correct output (2).
+```c
+long power(int base, int exp) {
+    if (exp == 1)
+        return base;
+    return base * power(base, exp - 1);
+}
+```
 
-**23.** Read 10 integers into an array, then print the **largest** and the **smallest** value.
+**22.** This should sort the menu by price, cheapest first. It prints `Pancit 15`, `Lumpia 30`, `Turon 45`: the prices are in order, but Pancit does not cost 15. Find the error and rewrite the lines that need to change.
 
-**24.** Read a 3×3 integer matrix, then print the **sum of all nine elements**.
+```c
+typedef struct {
+    char name[20];
+    int  price;
+} Item;
 
-**25.** Read 5 integers into an array, sort them in **ascending** order using compare-and-swap passes, then print the sorted array on one line.
+void sortByPrice(Item s[], int n) {
+    int i, j, temp;
+    for (i = 0; i < n - 1; i++)
+        for (j = 0; j < n - 1 - i; j++)
+            if (s[j].price > s[j + 1].price) {
+                temp = s[j].price;
+                s[j].price = s[j + 1].price;
+                s[j + 1].price = temp;
+            }
+}
+```
+
+### Part V, Write the Program (Items 23 to 25)
+
+Write each as a complete C program. Rubric per item (10 points): correct declarations and types (2), correct input or file opening with checks (2), correct core logic (4), correct output (2).
+
+**23.** Define a structure `Product` with a name (one word), a price (`float`), and a quantity (`int`). Read 3 products, then print each product's name, price, quantity, and line total (price × quantity), followed by the grand total in pesos.
+
+**24.** Ask for the name (one word) and score of 3 students and write them to scores.txt, one student per line. Close the file, open it again for reading, read every record back with `fscanf`, and print the name and score of the top scorer. Check every `fopen` for `NULL`.
+
+**25.** Read 6 integers into an array. Sort them in ascending order with **insertion sort** (in its own function), print the sorted array, then read a key and use **binary search** (in its own function) to print either the index where the key was found or that it was not found.
 $md$, 8, null, null)
 on conflict (id) do update set
   kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
