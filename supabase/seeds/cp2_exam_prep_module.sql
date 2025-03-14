@@ -2129,200 +2129,307 @@ where public.sections.module_id = excluded.module_id;
 
 insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
 values ('8ff0bff1-d150-4a44-bd44-e59fda1ca286', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Final Mock Exam B, 25 Items', $md$
-All-new items, same blueprint as Final Mock Exam A. 90 minutes, no notes. The same one-pass definition applies to the sorting items, and the same 10-point rubric (declarations 2, input 2, logic 4, output 2) applies to items 23–25.
+All-new items, same blueprint and coverage as Final Mock Exam A. 90 minutes, no notes. The same ground rules apply: fragments sit inside `main()` with `<stdio.h>` and `<string.h>` included, `fopen` always succeeds in the file items, one pass means one run of the outer loop of the named Lesson 7 sort (ascending), and items 23 to 25 use the same 10-point rubric (declarations 2, input or file checks 2, logic 4, output 2).
 
-### Part I, Multiple Choice (Items 1–6)
+### Part I, Multiple Choice (Items 1 to 6)
 
-**1.** If an `int` occupies 4 bytes, how many bytes does `int g[6][2];` reserve?
+**1.** If `p` is a pointer to a structure, `p->gwa` means exactly the same as:
 
-- A. 12
-- B. 24
-- C. 48
-- D. 8
+- A. `(*p).gwa`
+- B. `*p.gwa`
+- C. `&p.gwa`
+- D. `p.gwa`
 
-**2.** In the expression `m[i][j]`, the subscript `i` selects the:
+**2.** Given these types, which statement sets the student's birth year?
 
-- A. Row
-- B. Column
-- C. Address
-- D. Data type
+```c
+typedef struct {
+    int month, day, year;
+} Date;
 
-**3.** The *last* valid element of `int m[3][4];` is:
+typedef struct {
+    char name[30];
+    Date birthday;
+} Student;
 
-- A. `m[3][4]`
-- B. `m[2][3]`
-- C. `m[3][3]`
-- D. `m[2][4]`
+Student s;
+```
 
-**4.** Given `int r[2][3] = { {9}, {8, 7} };`, the value of `r[0][1]` is:
+- A. `s.year = 2007;`
+- B. `s.birthday.year = 2007;`
+- C. `s->birthday->year = 2007;`
+- D. `birthday.s.year = 2007;`
 
-- A. 9
-- B. 8
-- C. 0
-- D. Garbage (unpredictable)
+**3.** Which `fopen` mode keeps a file's old contents, writes new data at the end, and creates the file if it does not exist?
 
-**5.** A `float` array starts at address 4,000 and each `float` occupies 4 bytes. The element at index 9 is at address:
+- A. `"r"`
+- B. `"w"`
+- C. `"a"`
+- D. `"r+"`
 
-- A. 4,009
-- B. 4,036
-- C. 4,040
-- D. 4,032
+**4.** A file's first line is `Ana Reyes`, and `line` is a `char[80]`. After `fgets(line, sizeof line, fp);`, the array `line` holds:
 
-**6.** How many elements does `char q[] = "ILOILO";` have?
+- A. `"Ana"` only
+- B. `"Ana Reyes"` with no newline
+- C. `"Ana Reyes\n"`, newline included
+- D. Nothing, because `fgets` returned `EOF`
 
-- A. 6
-- B. 7
-- C. 8
-- D. Unknown until runtime
+**5.** A recursive function has no base case. When it is called, the program will most likely:
 
-### Part II, Output Tracing (Items 7–16)
+- A. Return 0
+- B. Stop by itself after 100 calls
+- C. Keep calling itself until the call stack runs out, then crash
+- D. Be rejected by the compiler
+
+**6.** The array `{35, 12, 48, 7, 20}` becomes `{7, 12, 48, 35, 20}` after pass 1 of a sort. Which sort was it?
+
+- A. Bubble sort
+- B. Selection sort
+- C. Insertion sort
+- D. Binary search
+
+### Part II, Output Tracing (Items 7 to 14)
 
 Write exactly what each fragment prints.
 
 **7.**
 ```c
-int a[6] = {2, 7, 4, 9, 1, 6};
-int i, s = 0;
-for (i = 1; i < 6; i += 2)
-    s += a[i];
-printf("%d", s);
+typedef struct {
+    int x, y;
+} Point;
+
+/* inside main() */
+Point a = {3, 4}, b;
+Point *p = &a;
+
+b = a;
+p->x = 10;
+printf("%d %d %d", a.x, b.x, (*p).y);
 ```
 
 **8.**
 ```c
-int a[5] = {5, 3, 8, 6, 2};
-int i, c = 0;
-for (i = 0; i < 4; i++)
-    if (a[i] > a[i + 1])
-        c++;
-printf("%d", c);
+typedef struct {
+    char  name[20];
+    float gwa;
+} Student;
+
+/* inside main() */
+Student cls[5] = {{"Ana", 1.75f}, {"Ben", 2.50f}, {"Carla", 1.25f},
+                  {"Dan", 1.75f}, {"Ella", 3.00f}};
+int i, count = 0;
+
+for (i = 0; i < 5; i++)
+    if (cls[i].gwa <= 1.75f) {
+        printf("%c", cls[i].name[0]);
+        count++;
+    }
+printf(" %d", count);
 ```
 
 **9.**
 ```c
-int m[2][3] = { {3, 1, 4}, {1, 5, 9} };
-printf("%d", m[0][2] + m[1][1]);
+typedef struct {
+    char  name[20];
+    float balance;
+} Account;
+
+Account add(Account a, float amt) {
+    a.balance += amt;
+    return a;
+}
+
+int main(void) {
+    Account x = {"Ana", 100.00f};
+
+    add(x, 50.00f);
+    printf("%.2f ", x.balance);
+    x = add(x, 25.00f);
+    printf("%.2f", x.balance);
+    return 0;
+}
 ```
 
 **10.**
 ```c
-int m[2][2] = {6, 2, 8, 4};
-int j, t;
-for (j = 0; j < 2; j++) {
-    t = m[0][j];
-    m[0][j] = m[1][j];
-    m[1][j] = t;
-}
-printf("%d %d %d %d", m[0][0], m[0][1], m[1][0], m[1][1]);
+struct city {
+    char name[20];
+    int  len;
+};
+
+/* inside main() */
+struct city c;
+
+strcpy(c.name, "Cebu");
+strcat(c.name, " City");
+c.len = (int)strlen(c.name);
+printf("%s %d %c", c.name, c.len, c.name[c.len - 1]);
 ```
 
 **11.**
 ```c
-int a[5] = {1, 2, 3, 4, 5};
-int i, s = 0;
-for (i = 0; i < 5; i++)
-    s += a[i] * a[i];
-printf("%d", s);
+int f(int n) {
+    if (n <= 1)
+        return 1;
+    return n + f(n - 2);
+}
+
+/* inside main() */
+printf("%d %d", f(7), f(6));
 ```
 
 **12.**
 ```c
-char s[] = "CODING";
-int i;
-for (i = 0; s[i] != '\0'; i++)
-    if (s[i] == 'I')
-        printf("%d", i);
+void r(int n) {
+    if (n > 0) {
+        r(n / 2);
+        printf("%d", n % 2);
+    }
+}
+
+/* inside main() */
+r(13);
 ```
 
 **13.**
 ```c
-int m[3][3] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-int i, j, s = 0;
-for (i = 0; i < 3; i++)
-    for (j = 0; j < 3; j++)
-        if (i + j == 2)
-            s += m[i][j];
-printf("%d", s);
+FILE *fp;
+char line[50];
+
+fp = fopen("rec.txt", "w");
+fputs("Juan Dela Cruz 95\n", fp);
+fclose(fp);
+
+fp = fopen("rec.txt", "r");
+fgets(line, sizeof line, fp);
+printf("%d ", (int)strlen(line));
+line[strcspn(line, "\n")] = '\0';
+printf("%d", (int)strlen(line));
+fclose(fp);
 ```
 
 **14.**
 ```c
-int a[4] = {8, 3, 5, 1};
-int i, pos = 0;
-for (i = 1; i < 4; i++)
-    if (a[i] < a[pos])
-        pos = i;
-printf("%d %d", pos, a[pos]);
+FILE *fp;
+char line[20];
+
+fp = fopen("log.txt", "w");
+fputs("A\n", fp);
+fclose(fp);
+fp = fopen("log.txt", "a");
+fputs("B\n", fp);
+fclose(fp);
+fp = fopen("log.txt", "w");
+fputs("C\n", fp);
+fclose(fp);
+fp = fopen("log.txt", "a");
+fputs("D\n", fp);
+fclose(fp);
+
+fp = fopen("log.txt", "r");
+while (fgets(line, sizeof line, fp) != NULL) {
+    line[strcspn(line, "\n")] = '\0';
+    printf("%s", line);
+}
+fclose(fp);
 ```
 
-**15.**
-```c
-int a[5] = {1, 3, 5, 7, 9};
-int i;
-for (i = 4; i > 0; i--)
-    a[i] = a[i] - a[i - 1];
-printf("%d %d %d %d %d", a[0], a[1], a[2], a[3], a[4]);
-```
+### Part III, Search and Sort Traces (Items 15 to 18)
 
-**16.**
-```c
-int a[2][2] = {2, 4, 6, 8};
-int b[2][2] = {1, 3, 5, 7};
-int i, j, s = 0;
-for (i = 0; i < 2; i++)
-    for (j = 0; j < 2; j++)
-        s += a[i][j] + b[i][j];
-printf("%d", s);
-```
+Items 15 to 17 each start from the **original** array `{16, 42, 9, 30, 21}`.
 
-### Part III, Sorting Traces (Items 17–19)
+**15.** Insertion sort: write the array **after pass 1** and **after pass 2**.
 
-The array is `{7, 2, 9, 5, 3}`, sorted **ascending**.
+**16.** Bubble sort **with the swapped flag**: write the array **after pass 2**, then say how many passes run in total before the flag stops the sort.
 
-**17.** Write the state of the array **after pass 1**.
+**17.** Selection sort: write the array **after pass 1**, and give the **total number of swaps** for the complete sort.
 
-**18.** Write the state of the array **after pass 2**.
+**18.** Binary search (the iterative Lesson 7 version) looks for `14` in this sorted array:
 
-**19.** How many **swaps** happened in total across pass 1 and pass 2 combined?
+| index | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|---|
+| value | 2 | 6 | 11 | 17 | 23 | 30 | 38 |
 
-### Part IV, Fill in the Blank (Items 20–22)
+Copy and complete the table, one row per pass of the loop, then give the value the function returns.
 
-**20.** Complete the condition so one pass moves values toward **descending** order (largest first):
+| Step | low | high | mid | a[mid] | Decision |
+|---|---|---|---|---|---|
+| 1 | | | | | |
+
+### Part IV, Find the Error (Items 19 to 22)
+
+For each item, name every error and write the corrected line(s).
+
+**19.** This program should give Rosa a 10% raise and print `Rosa: PHP 22000.00`. It does not compile. Find **two** errors (one in the function, one in the call).
 
 ```c
-for (i = 0; i < n - 1; i++)
-    if (____) {
-        temp = a[i];
-        a[i] = a[i + 1];
-        a[i + 1] = temp;
-    }
-```
+typedef struct {
+    char  name[30];
+    float salary;
+} Employee;
 
-**21.** Complete the statement so the program counts how many elements equal `key`:
+void giveRaise(Employee *e) {
+    e.salary = e.salary * 1.10f;
+}
 
-```c
-for (i = 0; i < n; i++)
-    if (a[i] == key)
-        ____;
-```
+int main(void) {
+    Employee emp = {"Rosa", 20000.00f};
 
-**22.** Complete the statement so each row of the matrix prints on its own line:
-
-```c
-for (i = 0; i < m; i++) {
-    for (j = 0; j < n; j++)
-        printf("%d\t", x[i][j]);
-    ____;
+    giveRaise(emp);
+    printf("%s: PHP %.2f\n", emp.name, emp.salary);
+    return 0;
 }
 ```
 
-### Part V, Write the Program (Items 23–25)
+**20.** This should print the contents of motto.txt (which holds `Code daily.`) to the screen. It compiles with a warning, then prints strange invisible characters instead of the text. Find **two** errors.
 
-**23.** Read 8 integers into an array, then print their **sum** and their **average** (the average must show decimal places).
+```c
+FILE *fp;
+char c;
 
-**24.** Read two 2×2 integer matrices A and B, then print their **sum matrix**, one row per line.
+fp = fopen("motto.txt", "r");
+if (fp == NULL)
+    return 1;
+while (c = fgetc(fp) != EOF)
+    putchar(c);
+fclose(fp);
+```
 
-**25.** Read 5 integers into an array, sort them in **descending** order using compare-and-swap passes, then print the sorted array on one line.
+**21.** With `int a[5] = {1, 3, 5, 7, 9};`, `binarySearch(a, 5, 5)` returns 2, but `binarySearch(a, 5, 9)` returns -1. Find the error.
+
+```c
+int binarySearch(int a[], int n, int key) {
+    int low = 0, high = n - 1, mid;
+    while (low < high) {
+        mid = low + (high - low) / 2;
+        if (a[mid] == key)
+            return mid;
+        else if (a[mid] < key)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return -1;
+}
+```
+
+**22.** `sumDigits(4096)` should return 19. The compiler warns that the function "does not return a value in all control paths", and the program prints a wrong number. Find the error.
+
+```c
+int sumDigits(int n) {
+    if (n < 10)
+        return n;
+    n % 10 + sumDigits(n / 10);
+}
+```
+
+### Part V, Write the Program (Items 23 to 25)
+
+**23.** Using `typedef`, define a `Student` structure with a name (one word) and a GWA. Read 4 students, sort them **best GWA first** (remember: 1.00 is the best grade) with bubble sort in its own function, and print the ranking as `1. Name GWA`, one student per line.
+
+**24.** Ask for one expense (a one-word description and an amount in pesos) and **append** it to expenses.txt without erasing earlier expenses. Then read the whole file back and print every expense, followed by how many there are and their total. Check every `fopen` for `NULL`. Run the program twice to make sure the first expense is still there.
+
+**25.** Write a **recursive** function `int countOccur(int a[], int n, int key)` that returns how many times `key` appears among the first `n` elements of `a`. No loops inside the function. In `main()`, read 8 integers and a key, then print the count.
 $md$, 9, null, null)
 on conflict (id) do update set
   kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
