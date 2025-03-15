@@ -2438,7 +2438,9 @@ where public.sections.module_id = excluded.module_id;
 
 insert into public.sections (id, module_id, kind, heading, body_md, sort_order, ide_language, starter_code)
 values ('a1311800-32de-44bb-bcc2-8c7965d526e1', 'a3000001-0001-0002-0001-0000000000e1', 'activity', 'Final Mock Exams, Answer Key with Explanations', $md$
-Full key for both final mocks, including complete model programs for the write-the-program items. Model solutions follow the same style as the Unit 1 sample programs (`conio.h`, `void main()`, `clrscr()`, `getch()`); if your compiler is not Turbo C, remove those three and use `int main(void)` with `return 0;`, the array logic is identical either way.
+Full key for both final mocks, with the reasoning for every item and complete model programs for the write-the-program items. Every model program is standard C (`int main(void)` and `return 0;`) and was compiled and run exactly as printed. The file programs (items 24) need a real computer (Code::Blocks, Dev-C++, or `gcc`), because the playground keeps no files between runs.
+
+When you miss an item, the **Review** pointer names the lesson section to re-read.
 
 ## Final Mock Exam A
 
@@ -2446,168 +2448,344 @@ Full key for both final mocks, including complete model programs for the write-t
 
 | # | Answer | Why |
 |---|---|---|
-| 1 | B | 4 rows × 6 columns = 24 elements. |
-| 2 | B | Rows first, columns second: `float g[3][5];`. |
-| 3 | C | Row 1 = {5, 6, 7, 8}; index 2 within that row is 7. |
-| 4 | B | Row 0's inner brace has only {1, 2}; the rest of that row is zero-filled. |
-| 5 | B | Five letters plus `'\0'` needs 6 slots. |
-| 6 | B | Ascending: swap when the left neighbor is bigger. |
+| 1 | B | A definition ends with `};`. A forgets the `;`, C separates members with a comma, D puts the tag before `struct`. |
+| 2 | C | `p` is a pointer, so use the arrow. `p.gwa` is a dot on a pointer, and `*p.gwa` means `*(p.gwa)` because the dot runs first. |
+| 3 | C | The third student is index 2 (indexes start at 0). Pick the element first, then the member: `cls[2].gwa`. |
+| 4 | C | `"w"` erases the old contents as soon as the file opens. `"a"` keeps them, `"r"` and `"r+"` keep them and start at the beginning. |
+| 5 | B | `fgetc` returns an `int` so that `EOF` can be different from every real character. |
+| 6 | A | Each comparison halves what is left; 1,000,000 halves down to 1 in about 20 steps. |
+
+**Review:** items 1 to 3, Lesson 4, Declaring Structures and Accessing Members and Pointers to Structures: The Arrow Operator. Items 4 and 5, Lesson 5, Opening and Closing Files and Character I/O. Item 6, Lesson 7, Binary Search.
 
 ### Part II, Output Tracing
 
-**7. Answer: `8 10`**, c becomes {6, 8; 10, 12}; the program prints `c[0][1]` then `c[1][0]`.
+**7. Answer: `Ana 1 Ben 2`**. `b = a;` copies every member, including the `name` array, into `b`. After that, `b` is a separate copy: changing `b.year` and `b.name` leaves `a` alone.
 
-**8. Answer: `18`**, main diagonal of {4, 1, 2; 3, 5, 6; 7, 8, 9}: 4 + 5 + 9 = 18.
+**8. Answer: `(1, 7)`**. `shiftCopy` receives a copy of `a`, adds 5 to the copy's `x`, and throws the copy away. `shiftPtr` receives the address of `a`, so `p->y += 5` changes the real `a.y` from 2 to 7.
 
-**9. Answer:**
+**9. Answer: `Lab 5: 11/21/2026`**. One dot per level: `t.due.day` goes from 31 to 21, and `t.due.month` from 10 to 11. The year is untouched.
+
+**10. Answer: `Lumpia 15 75`**. `p` starts at `menu[0]`. `p++` moves it one **whole record**, to `menu[1]` (Lumpia, 30). `(p + 1)` is `menu[2]`, whose price is 15. The last value is `menu[0].price + p->price` = 45 + 30 = 75.
+
+**11. Answer: `3 2 1 1 2 3`** (each number followed by a space). The first `printf` runs on the way down, the second on the way back up.
+
+| Order | What happens | Printed so far |
+|---|---|---|
+| 1 | show(3) prints 3, calls show(2) | 3 |
+| 2 | show(2) prints 2, calls show(1) | 3 2 |
+| 3 | show(1) prints 1, calls show(0) | 3 2 1 |
+| 4 | show(0) hits the base case and returns | 3 2 1 |
+| 5 | show(1) resumes, prints 1 | 3 2 1 1 |
+| 6 | show(2) resumes, prints 2 | 3 2 1 1 2 |
+| 7 | show(3) resumes, prints 3 | 3 2 1 1 2 3 |
+
+**12. Answer: `12 0`**. `g` multiplies by repeated addition: g(4, 3) = 4 + g(4, 2) = 4 + 4 + g(4, 1) = 4 + 4 + 4 + g(4, 0) = 4 + 4 + 4 + 0 = 12. `g(7, 0)` hits the base case at once and returns 0.
+
+**13. Answer: `3 20`**. The file holds `4 9` on the first line and `7` on the second. `%d` skips spaces and newlines, so `fscanf` reads 4, then 9, then 7, returning 1 each time. The fourth call reaches the end of the file and returns `EOF`, which is not 1, so the loop stops: 3 numbers, sum 4 + 9 + 7 = 20.
+
+**14. Answer: `8 2`**. `"Hi\n"` is 3 characters and `"BSIT\n"` is 5, so 8 in total; the `'\n'` characters count too. Two of them are newlines, so 2 lines.
+
+**Review:** items 7 to 10, Lesson 4, Declaring Structures and Accessing Members, typedef and Nested Structures, Structures and Functions, and Pointers to Structures: The Arrow Operator. Items 11 and 12, Lesson 6, Tracing the Call Stack. Items 13 and 14, Lesson 5, Formatted File I/O and Character I/O.
+
+### Part III, Search and Sort Traces
+
+Start: `{41, 17, 30, 8, 25}`.
+
+**15. Answer: `17 30 8 25 41`, 4 swaps.** 41 is the largest, so it bubbles all the way to the end.
+
+| Compare | Swap? | Array after |
+|---|---|---|
+| 41, 17 | yes | 17 41 30 8 25 |
+| 41, 30 | yes | 17 30 41 8 25 |
+| 41, 8 | yes | 17 30 8 41 25 |
+| 41, 25 | yes | 17 30 8 25 41 |
+
+**16. Answer: after pass 1, `8 17 30 41 25`; after pass 2, `8 17 30 41 25` (unchanged).**
+
+| Pass | Smallest in the unsorted part | Swap | Array after |
+|---|---|---|---|
+| 1 | 8 (index 3) | a[0] with a[3] | 8 17 30 41 25 |
+| 2 | 17 (index 1) | none, already in place | 8 17 30 41 25 |
+
+The trap is expecting every pass to change something. Selection sort makes **at most** one swap per pass, and here pass 2 makes none.
+
+**17. Answer: `17 30 41 8 25`.**
+
+| Pass | Key | Shifted right | Array after |
+|---|---|---|---|
+| 1 | 17 | 41 | 17 41 30 8 25 |
+| 2 | 30 | 41 | 17 30 41 8 25 |
+
+**18. Answer: `33, 47, 54, 61`; returns 8.**
+
+| Step | low | high | mid | a[mid] | Decision |
+|---|---|---|---|---|---|
+| 1 | 0 | 8 | 4 | 33 | 33 < 61, so low = 5 |
+| 2 | 5 | 8 | 6 | 47 | 47 < 61, so low = 7 |
+| 3 | 7 | 8 | 7 | 54 | 54 < 61, so low = 8 |
+| 4 | 8 | 8 | 8 | 61 | found, return 8 |
+
+Step 3: `mid = 7 + (8 - 7) / 2 = 7 + 0 = 7`, because integer division drops the .5. Step 4 is why the loop test is `low <= high`: when `low == high` there is still one element to check.
+
+**Review:** Lesson 7, Bubble Sort, Selection Sort and Insertion Sort, and Binary Search.
+
+### Part IV, Find the Error
+
+**19.** Error 1: no `;` after the closing brace of the structure definition; write `};`. Error 2: `a.name = "Kape";` assigns to a `char` array, which C does not allow after the declaration; write `strcpy(a.name, "Kape");` and add `#include <string.h>`. Corrected program:
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+struct item {
+    char  name[20];
+    float price;
+};
+
+int main(void) {
+    struct item a;
+
+    strcpy(a.name, "Kape");
+    a.price = 35.00f;
+    printf("%s %.2f\n", a.name, a.price);
+    return 0;
+}
 ```
-123
-456
+
+Output: `Kape 35.00`
+
+**20.** Error 1: mode `"w"` erases the file every time `addLog` opens it, which is why only the last line survives; use `"a"`. Error 2: no `NULL` check, so a failed `fopen` leads to `fprintf(NULL, ...)` and a crash. Corrected function:
+
+```c
+void addLog(const char *msg) {
+    FILE *fp = fopen("log.txt", "a");
+
+    if (fp == NULL) {
+        printf("Could not open log.txt\n");
+        return;
+    }
+    fprintf(fp, "%s\n", msg);
+    fclose(fp);
+}
 ```
-Row-by-row printing with a newline after each inner loop.
 
-**10. Answer: `2`**, the smallest of {9, 4, 8, 2, 7, 3, 6, 5}, found exactly as in Practice Exercises Program C.
+Calling it with `"Login: Ana"` then `"Login: Ben"` now leaves both lines in log.txt.
 
-**11. Answer: `3`**, the values greater than 5 are 7, 9, and 6.
+**21.** The base case `exp == 1` can be stepped over. `power(7, 0)` calls `power(7, -1)`, then `-2`, `-3`, and so on: `exp` never equals 1, so the calls never stop and the stack overflows. Any number to the 0th power is 1, so make 0 the base case:
 
-**12. Answer: `8`**, column 1 holds 8, 2, 6; `big` starts at 8 and nothing beats it.
+```c
+long power(int base, int exp) {
+    if (exp == 0)
+        return 1;
+    return base * power(base, exp - 1);
+}
+```
 
-**13. Answer: `2 1 4 3 5`**, this is one sorting pass.
+Now `power(2, 5)` is still 32 and `power(7, 0)` returns 1.
 
-| Compare | Swap? | Array after |
-|---|---|---|
-| 2, 5 | no | 2 5 1 4 3 |
-| 5, 1 | yes | 2 1 5 4 3 |
-| 5, 4 | yes | 2 1 4 5 3 |
-| 5, 3 | yes | 2 1 4 3 5 |
+**22.** The sort swaps only the `price` field. The prices move, but every name stays where it was, so each price ends up on the wrong item. Swap the whole structure through a temporary of type `Item`:
 
-**14. Answer: `6`**, the loop counts characters until `'\0'`; MATRIX has 6 letters.
+```c
+void sortByPrice(Item s[], int n) {
+    int i, j;
+    Item temp;
+    for (i = 0; i < n - 1; i++)
+        for (j = 0; j < n - 1 - i; j++)
+            if (s[j].price > s[j + 1].price) {
+                temp = s[j];
+                s[j] = s[j + 1];
+                s[j + 1] = temp;
+            }
+}
+```
 
-**15. Answer: `0 2 3 8`**, each element is multiplied by (row + column): 1 × 0 = 0, 2 × 1 = 2, 3 × 1 = 3, 4 × 2 = 8.
+The menu now prints `Turon 15`, `Lumpia 30`, `Pancit 45`.
 
-**16. Answer: `9`**, (4 − 1) + (5 − 2) + (6 − 3) = 3 + 3 + 3 = 9.
-
-### Part III, Sorting Traces
-
-Start: `{6, 3, 8, 1, 4}`.
-
-**17. Answer: `3 6 1 4 8`**
-
-| Compare | Swap? | Array after |
-|---|---|---|
-| 6, 3 | yes | 3 6 8 1 4 |
-| 6, 8 | no | 3 6 8 1 4 |
-| 8, 1 | yes | 3 6 1 8 4 |
-| 8, 4 | yes | 3 6 1 4 8 |
-
-**18. Answer: `3 1 4 6 8`**
-
-| Compare | Swap? | Array after |
-|---|---|---|
-| 3, 6 | no | 3 6 1 4 8 |
-| 6, 1 | yes | 3 1 6 4 8 |
-| 6, 4 | yes | 3 1 4 6 8 |
-| 6, 8 | no | 3 1 4 6 8 |
-
-**19. Answer: `1 3 4 6 8`**, pass 3 only swaps the first pair (3, 1); the array is now fully sorted.
-
-### Part IV, Fill in the Blank
-
-| # | Answer | Why |
-|---|---|---|
-| 20 | `&a[i][j]` | Address-of operator, 2D version, as in Sample Program 3. |
-| 21 | `sum += a[i];` | Accumulate inside the loop; the average is computed after. (Check: sum = 30, avg = 6.0.) |
-| 22 | `a[i] == key` | Comparison uses `==`; a single `=` assigns instead. |
+**Review:** item 19, Lesson 4, Declaring Structures and Accessing Members. Item 20, Lesson 5, Opening and Closing Files. Item 21, Lesson 6, Base Case and Recursive Case: Factorial. Item 22, Lesson 7, Sorting an Array of Structs by a Field.
 
 ### Part V, Model Solutions
 
-**23. Largest and smallest of 10 integers.**
+**23. Products and totals.**
 
 ```c
 #include <stdio.h>
-#include <conio.h>
 
-void main() {
-    int a[10], i, big, small;
-    clrscr();
+typedef struct {
+    char  name[20];
+    float price;
+    int   qty;
+} Product;
 
-    printf("Enter 10 integers: ");
-    for (i = 0; i < 10; i++)
-        scanf("%d", &a[i]);
+int main(void) {
+    Product p[3];
+    float line, grand = 0;
+    int i;
 
-    big   = a[0];
-    small = a[0];
-    for (i = 1; i < 10; i++) {
-        if (a[i] > big)
-            big = a[i];
-        if (a[i] < small)
-            small = a[i];
+    for (i = 0; i < 3; i++) {
+        printf("Product %d (name price qty): ", i + 1);
+        scanf("%19s %f %d", p[i].name, &p[i].price, &p[i].qty);
     }
 
-    printf("Largest: %d\n", big);
-    printf("Smallest: %d\n", small);
-    getch();
+    printf("\n%-10s %8s %4s %10s\n", "Item", "Price", "Qty", "Total");
+    for (i = 0; i < 3; i++) {
+        line = p[i].price * p[i].qty;
+        grand += line;
+        printf("%-10s %8.2f %4d %10.2f\n", p[i].name, p[i].price, p[i].qty, line);
+    }
+    printf("Grand total: PHP %.2f\n", grand);
+    return 0;
 }
 ```
 
-Rubric notes: both `big` and `small` must start from `a[0]`, starting `big` at 0 is a graded classic that fails when every input is negative.
+Sample run (what you type follows each prompt):
 
-**24. Sum of a 3×3 matrix.**
+```
+Product 1 (name price qty): Kape 35 2
+Product 2 (name price qty): Pandesal 5 10
+Product 3 (name price qty): Banana 12.50 4
+
+Item          Price  Qty      Total
+Kape          35.00    2      70.00
+Pandesal       5.00   10      50.00
+Banana        12.50    4      50.00
+Grand total: PHP 170.00
+```
+
+Rubric notes: `scanf` needs `&` before `p[i].price` and `p[i].qty` but **not** before `p[i].name`, which is a `char` array. `grand` must start at 0 **before** the loop, and the line total uses the element first, then the member: `p[i].price * p[i].qty`.
+
+**24. Top scorer from a file.**
 
 ```c
 #include <stdio.h>
-#include <conio.h>
+#include <string.h>
 
-void main() {
-    int m[3][3], i, j, sum = 0;
-    clrscr();
+int main(void) {
+    FILE *fp;
+    char name[30], bestName[30];
+    int score, best = -1, i;
 
-    printf("Enter the 9 elements of the matrix:\n");
-    for (i = 0; i < 3; i++)
-        for (j = 0; j < 3; j++)
-            scanf("%d", &m[i][j]);
+    fp = fopen("scores.txt", "w");
+    if (fp == NULL) {
+        printf("Cannot create scores.txt\n");
+        return 1;
+    }
+    for (i = 0; i < 3; i++) {
+        printf("Name and score of student %d: ", i + 1);
+        scanf("%29s %d", name, &score);
+        fprintf(fp, "%s %d\n", name, score);
+    }
+    fclose(fp);
 
-    for (i = 0; i < 3; i++)
-        for (j = 0; j < 3; j++)
-            sum += m[i][j];
+    fp = fopen("scores.txt", "r");
+    if (fp == NULL) {
+        printf("Cannot open scores.txt\n");
+        return 1;
+    }
+    while (fscanf(fp, "%29s %d", name, &score) == 2) {
+        if (score > best) {
+            best = score;
+            strcpy(bestName, name);
+        }
+    }
+    fclose(fp);
 
-    printf("Sum of all elements: %d\n", sum);
-    getch();
+    printf("Top scorer: %s with %d\n", bestName, best);
+    return 0;
 }
 ```
 
-Rubric notes: nested loops for input *and* for the sum; `&m[i][j]` in `scanf()`.
+Sample run:
 
-**25. Sort 5 integers ascending.**
+```
+Name and score of student 1: Ana 88
+Name and score of student 2: Ben 95
+Name and score of student 3: Carla 91
+Top scorer: Ben with 95
+```
+
+scores.txt now holds:
+
+```
+Ana 88
+Ben 95
+Carla 91
+```
+
+Rubric notes: two `fopen` calls, two `NULL` checks, two `fclose` calls. Closing after writing and opening again with `"r"` is what lets the program read from the start. Loop on `fscanf(...) == 2`, never `!feof(fp)`, and copy the name with `strcpy`, not `=`.
+
+**25. Insertion sort, then binary search.**
 
 ```c
 #include <stdio.h>
-#include <conio.h>
 
-void main() {
-    int a[5], i, j, temp;
-    clrscr();
+void insertionSort(int a[], int n) {
+    int i, j, key;
+    for (i = 1; i < n; i++) {
+        key = a[i];
+        j = i - 1;
+        while (j >= 0 && a[j] > key) {
+            a[j + 1] = a[j];
+            j--;
+        }
+        a[j + 1] = key;
+    }
+}
 
-    printf("Enter 5 integers: ");
-    for (i = 0; i < 5; i++)
+int binarySearch(int a[], int n, int key) {
+    int low = 0, high = n - 1, mid;
+    while (low <= high) {
+        mid = low + (high - low) / 2;
+        if (a[mid] == key)
+            return mid;
+        else if (a[mid] < key)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return -1;
+}
+
+int main(void) {
+    int a[6], i, key, pos;
+
+    printf("Enter 6 integers: ");
+    for (i = 0; i < 6; i++)
         scanf("%d", &a[i]);
 
-    for (i = 0; i < 4; i++)
-        for (j = 0; j < 4 - i; j++)
-            if (a[j] > a[j + 1]) {
-                temp     = a[j];
-                a[j]     = a[j + 1];
-                a[j + 1] = temp;
-            }
-
+    insertionSort(a, 6);
     printf("Sorted: ");
-    for (i = 0; i < 5; i++)
+    for (i = 0; i < 6; i++)
         printf("%d ", a[i]);
-    getch();
+    printf("\n");
+
+    printf("Search for: ");
+    scanf("%d", &key);
+    pos = binarySearch(a, 6, key);
+    if (pos == -1)
+        printf("%d not found\n", key);
+    else
+        printf("%d found at index %d\n", key, pos);
+    return 0;
 }
 ```
 
-Rubric notes: the swap must go through `temp` (three assignments); the outer loop repeats the pass, the inner loop does the compare-and-swap.
+Two sample runs:
+
+```
+Enter 6 integers: 42 7 19 3 88 25
+Sorted: 3 7 19 25 42 88 
+Search for: 19
+19 found at index 2
+```
+
+```
+Enter 6 integers: 42 7 19 3 88 25
+Sorted: 3 7 19 25 42 88 
+Search for: 20
+20 not found
+```
+
+Rubric notes: binary search is only correct because the array is sorted first. Check for -1 before you print an index. Insertion sort must save `a[i]` in `key` before shifting, and test `j >= 0` before `a[j] > key`.
 
 ## Final Mock Exam B
 
@@ -2615,177 +2793,312 @@ Rubric notes: the swap must go through `temp` (three assignments); the outer loo
 
 | # | Answer | Why |
 |---|---|---|
-| 1 | C | 6 × 2 = 12 elements × 4 bytes = 48 bytes. |
-| 2 | A | First subscript selects the row, second the column. |
-| 3 | B | Rows run 0–2, columns 0–3: last element is `m[2][3]`. |
-| 4 | C | Row 0's inner brace has only {9}; the rest of row 0 is zero-filled. |
-| 5 | B | 4,000 + (4 × 9) = 4,036. |
-| 6 | B | I-L-O-I-L-O is 6 letters, plus the automatic `'\0'` = 7 elements. |
+| 1 | A | The arrow is shorthand for "follow the pointer, then pick the member". `*p.gwa` without parentheses means `*(p.gwa)`. |
+| 2 | B | `year` belongs to the inner `Date`, so it takes one dot per level: `s.birthday.year`. `s` is a variable, not a pointer, so no arrows. |
+| 3 | C | `"a"` appends and creates a missing file. `"w"` erases, `"r"` and `"r+"` fail on a missing file. |
+| 4 | C | `fgets` reads the whole line, spaces included, and **keeps** the `'\n'`. Remove it with `line[strcspn(line, "\n")] = '\0';`. |
+| 5 | C | The calls pile up stack frames until the stack runs out: a stack overflow. The compiler does not catch it. |
+| 6 | B | The smallest value (7) jumped to the front, swapped with what was there (35). Bubble's pass 1 would give `12 35 7 20 48`; insertion's would give `12 35 48 7 20`. |
+
+**Review:** items 1 and 2, Lesson 4, Pointers to Structures: The Arrow Operator and typedef and Nested Structures. Items 3 and 4, Lesson 5, Opening and Closing Files and Line I/O. Item 5, Lesson 6, Recursion vs. Iteration. Item 6, Lesson 7, Selection Sort and Insertion Sort.
 
 ### Part II, Output Tracing
 
-**7. Answer: `22`**, `i += 2` starting at 1 visits indices 1, 3, 5: 7 + 9 + 6 = 22.
+**7. Answer: `10 3 4`**. `b = a;` copies `a` while `a.x` is still 3. Then `p->x = 10` changes `a.x` through the pointer. `b` is a separate copy, so `b.x` stays 3. `(*p).y` is `a.y`, which is 4.
 
-**8. Answer: `3`**, adjacent pairs where left > right: (5, 3), (8, 6), (6, 2). The pair (3, 8) does not count.
+**8. Answer: `ACD 3`**. GWAs of 1.75 or better (smaller is better): Ana 1.75, Carla 1.25, Dan 1.75. For each one, `cls[i].name[0]` is the first letter of the name, then the count prints after a space.
 
-**9. Answer: `9`**, `m[0][2]` is 4 and `m[1][1]` is 5.
+**9. Answer: `100.00 125.00`**. The first call's returned copy is never assigned, so it is thrown away and `x.balance` stays 100.00. The second call's result is stored back with `x = add(x, 25.00f);`.
 
-**10. Answer: `8 4 6 2`**, the loop swaps row 0 with row 1, column by column.
+**10. Answer: `Cebu City 9 y`**. `strcat` joins `" City"` onto `"Cebu"`. The result has 9 characters (the space counts), and the last one, `c.name[8]`, is `y`.
 
-| j | Matrix after |
-|---|---|
-| 0 | {8, 2; 6, 4} |
-| 1 | {8, 4; 6, 2} |
+**11. Answer: `16 13`**. f(7) = 7 + f(5) = 7 + 5 + f(3) = 7 + 5 + 3 + f(1) = 7 + 5 + 3 + 1 = 16. f(6) = 6 + 4 + 2 + f(0), and f(0) is caught by `n <= 1` and returns 1, so 6 + 4 + 2 + 1 = 13. With `n == 1` as the base case, f(6) would never stop.
 
-**11. Answer: `55`**, sum of squares: 1 + 4 + 9 + 16 + 25 = 55.
+**12. Answer: `1101`**. The `printf` comes **after** the recursive call, so nothing prints until the calls hit `n == 0`. Then the digits print on the way back up:
 
-**12. Answer: `3`**, C-O-D-I-N-G: the only `'I'` sits at index 3, so the loop prints 3 once.
+| Call | n / 2 passed down | Prints on the way up |
+|---|---|---|
+| r(13) | 6 | 13 % 2 = 1 (printed last) |
+| r(6) | 3 | 6 % 2 = 0 |
+| r(3) | 1 | 3 % 2 = 1 |
+| r(1) | 0 | 1 % 2 = 1 (printed first) |
+| r(0) | | nothing, `n > 0` is false |
 
-**13. Answer: `15`**, `i + j == 2` picks the anti-diagonal: m[0][2] + m[1][1] + m[2][0] = 3 + 5 + 7 = 15.
+Reading the last column from bottom to top gives 1, 1, 0, 1. (That is 13 written in binary.)
 
-**14. Answer: `3 1`**, find-the-minimum by index: the smallest value 1 sits at index 3; the program prints the index, then the value.
+**13. Answer: `18 17`**. `"Juan Dela Cruz 95"` is 17 characters, spaces included. `fgets` keeps the `'\n'`, so the first `strlen` is 18. After `strcspn` cuts the newline, it is 17.
 
-**15. Answer: `1 2 2 2 2`**, the loop runs *backwards*, so each subtraction uses the still-original left neighbor.
+**14. Answer: `CD`**. Open `"w"` writes A. Open `"a"` adds B (file: A, B). Open `"w"` **erases everything** and writes C. Open `"a"` adds D (file: C, D). Each line prints without its newline, so the output is `CD`.
 
-| i | a[i] before | a[i - 1] | a[i] after |
+**Review:** items 7 to 10, Lesson 4, Structures and Functions and Pointers to Structures: The Arrow Operator, plus Lesson 2, The `<string.h>` Toolkit. Items 11 and 12, Lesson 6, Tracing the Call Stack. Items 13 and 14, Lesson 5, Line I/O and Opening and Closing Files.
+
+### Part III, Search and Sort Traces
+
+Start: `{16, 42, 9, 30, 21}`.
+
+**15. Answer: after pass 1, `16 42 9 30 21`; after pass 2, `9 16 42 30 21`.**
+
+| Pass | Key | Shifted right | Array after |
 |---|---|---|---|
-| 4 | 9 | 7 | 2 |
-| 3 | 7 | 5 | 2 |
-| 2 | 5 | 3 | 2 |
-| 1 | 3 | 1 | 2 |
+| 1 | 42 | nothing (16 is smaller) | 16 42 9 30 21 |
+| 2 | 9 | 42, 16 | 9 16 42 30 21 |
 
-**16. Answer: `36`**, sum of everything in both matrices: (2 + 4 + 6 + 8) + (1 + 3 + 5 + 7) = 20 + 16 = 36.
+**16. Answer: after pass 2, `9 16 21 30 42`; 3 passes in total.**
 
-### Part III, Sorting Traces
-
-Start: `{7, 2, 9, 5, 3}`.
-
-**17. Answer: `2 7 5 3 9`**
+Pass 1 (3 swaps):
 
 | Compare | Swap? | Array after |
 |---|---|---|
-| 7, 2 | yes | 2 7 9 5 3 |
-| 7, 9 | no | 2 7 9 5 3 |
-| 9, 5 | yes | 2 7 5 9 3 |
-| 9, 3 | yes | 2 7 5 3 9 |
+| 16, 42 | no | 16 42 9 30 21 |
+| 42, 9 | yes | 16 9 42 30 21 |
+| 42, 30 | yes | 16 9 30 42 21 |
+| 42, 21 | yes | 16 9 30 21 42 |
 
-**18. Answer: `2 5 3 7 9`**
+Pass 2 (2 swaps):
 
 | Compare | Swap? | Array after |
 |---|---|---|
-| 2, 7 | no | 2 7 5 3 9 |
-| 7, 5 | yes | 2 5 7 3 9 |
-| 7, 3 | yes | 2 5 3 7 9 |
-| 7, 9 | no | 2 5 3 7 9 |
+| 16, 9 | yes | 9 16 30 21 42 |
+| 16, 30 | no | 9 16 30 21 42 |
+| 30, 21 | yes | 9 16 21 30 42 |
 
-**19. Answer: `5`**, pass 1 had 3 swaps, pass 2 had 2 swaps.
+The array is already sorted, but the program does not know that yet. Pass 3 compares (9, 16) and (16, 21), swaps nothing, and the flag ends the sort. So 3 passes run, not 4.
 
-### Part IV, Fill in the Blank
+**17. Answer: after pass 1, `9 42 16 30 21`; 3 swaps in total.**
 
-| # | Answer | Why |
-|---|---|---|
-| 20 | `a[i] < a[i + 1]` | Descending: swap when the left value is *smaller*, so bigger values move left. |
-| 21 | `count++` | One increment per match. |
-| 22 | `printf("\n")` | The newline goes after the inner loop, once per row, not once per element. |
+| Pass | Smallest in the unsorted part | Swap | Array after |
+|---|---|---|---|
+| 1 | 9 (index 2) | a[0] with a[2] | 9 42 16 30 21 |
+| 2 | 16 (index 2) | a[1] with a[2] | 9 16 42 30 21 |
+| 3 | 21 (index 4) | a[2] with a[4] | 9 16 21 30 42 |
+| 4 | 30 (index 3) | none, already in place | 9 16 21 30 42 |
+
+**18. Answer: returns -1** (14 is not in the array).
+
+| Step | low | high | mid | a[mid] | Decision |
+|---|---|---|---|---|---|
+| 1 | 0 | 6 | 3 | 17 | 17 > 14, so high = 2 |
+| 2 | 0 | 2 | 1 | 6 | 6 < 14, so low = 2 |
+| 3 | 2 | 2 | 2 | 11 | 11 < 14, so low = 3 |
+| | 3 | 2 | | | low > high, return -1 |
+
+Three comparisons prove 14 is missing; linear search would have needed all seven.
+
+**Review:** Lesson 7, Bubble Sort (The swapped flag), Selection Sort and Insertion Sort, and Binary Search.
+
+### Part IV, Find the Error
+
+**19.** Error 1: inside `giveRaise`, `e` is a pointer, so `e.salary` must be `e->salary` (on both sides). Error 2: `giveRaise(emp)` passes the structure itself, but the function wants its address: `giveRaise(&emp)`. Corrected lines:
+
+```c
+void giveRaise(Employee *e) {
+    e->salary = e->salary * 1.10f;
+}
+```
+
+```c
+giveRaise(&emp);
+```
+
+Output: `Rosa: PHP 22000.00`
+
+**20.** Error 1: `char c;` should be `int c;`, because `fgetc` returns an `int` and `EOF` must be told apart from every real character. Error 2: the loop needs parentheses around the assignment. Without them `!=` runs first, so `c` gets the result of the comparison (1) instead of the character, and `putchar(c)` prints character code 1 over and over, which is invisible. Corrected lines:
+
+```c
+int c;
+```
+
+```c
+while ((c = fgetc(fp)) != EOF)
+    putchar(c);
+```
+
+Output: `Code daily.`
+
+**21.** `while (low < high)` stops one step early. Searching for 9: low = 0, high = 4, mid = 2 (5 < 9, low = 3); mid = 3 (7 < 9, low = 4). Now `low == high == 4`: one element is left, but `4 < 4` is false, so the loop ends without checking `a[4]`. Fix: `while (low <= high)`. Now `binarySearch(a, 5, 9)` returns 4.
+
+**22.** The recursive case computes `n % 10 + sumDigits(n / 10)` and then throws it away, because there is no `return`. The function falls off its end and the caller gets garbage. Fix:
+
+```c
+int sumDigits(int n) {
+    if (n < 10)
+        return n;
+    return n % 10 + sumDigits(n / 10);
+}
+```
+
+Now `sumDigits(4096)` returns 6 + 9 + 0 + 4 = 19.
+
+**Review:** item 19, Lesson 4, Pointers to Structures: The Arrow Operator, plus Lesson 3, Pointers as Function Parameters. Item 20, Lesson 5, Character I/O. Item 21, Lesson 7, Binary Search. Item 22, Lesson 6, Recursion vs. Iteration (Common mistakes).
 
 ### Part V, Model Solutions
 
-**23. Sum and average of 8 integers.**
+**23. GWA ranking.**
 
 ```c
 #include <stdio.h>
-#include <conio.h>
 
-void main() {
-    int a[8], i, sum = 0;
-    float avg;
-    clrscr();
+typedef struct {
+    char  name[20];
+    float gwa;
+} Student;
+
+void sortByGwa(Student s[], int n) {
+    int i, j;
+    Student temp;
+    for (i = 0; i < n - 1; i++)
+        for (j = 0; j < n - 1 - i; j++)
+            if (s[j].gwa > s[j + 1].gwa) {
+                temp = s[j];
+                s[j] = s[j + 1];
+                s[j + 1] = temp;
+            }
+}
+
+int main(void) {
+    Student cls[4];
+    int i;
+
+    for (i = 0; i < 4; i++) {
+        printf("Name and GWA of student %d: ", i + 1);
+        scanf("%19s %f", cls[i].name, &cls[i].gwa);
+    }
+
+    sortByGwa(cls, 4);
+
+    printf("\nRanking (best first):\n");
+    for (i = 0; i < 4; i++)
+        printf("%d. %-10s %.2f\n", i + 1, cls[i].name, cls[i].gwa);
+    return 0;
+}
+```
+
+Sample run:
+
+```
+Name and GWA of student 1: Santos 1.75
+Name and GWA of student 2: Reyes 1.25
+Name and GWA of student 3: Cruz 2.00
+Name and GWA of student 4: Bautista 1.50
+
+Ranking (best first):
+1. Reyes      1.25
+2. Bautista   1.50
+3. Santos     1.75
+4. Cruz       2.00
+```
+
+Rubric notes: the comparison is `>` because a **larger** GWA is worse and must move toward the end, leaving the best (smallest) GWA first. `temp` must be a `Student`, and the swap moves the whole record. Swapping only `gwa` loses the logic points. Selection or insertion sort is also accepted if the rest is right, but the item asked for bubble sort.
+
+**24. Expense log with append.**
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp;
+    char item[30];
+    float amount, total = 0;
+    int count = 0;
+
+    printf("Expense (one word) and amount: ");
+    scanf("%29s %f", item, &amount);
+
+    fp = fopen("expenses.txt", "a");
+    if (fp == NULL) {
+        printf("Cannot open expenses.txt\n");
+        return 1;
+    }
+    fprintf(fp, "%s %.2f\n", item, amount);
+    fclose(fp);
+
+    fp = fopen("expenses.txt", "r");
+    if (fp == NULL) {
+        printf("Cannot open expenses.txt\n");
+        return 1;
+    }
+    printf("\nAll expenses:\n");
+    while (fscanf(fp, "%29s %f", item, &amount) == 2) {
+        printf("%-12s PHP %8.2f\n", item, amount);
+        total += amount;
+        count++;
+    }
+    fclose(fp);
+
+    printf("%d expense(s), total PHP %.2f\n", count, total);
+    return 0;
+}
+```
+
+First run:
+
+```
+Expense (one word) and amount: Jeepney 26
+
+All expenses:
+Jeepney      PHP    26.00
+1 expense(s), total PHP 26.00
+```
+
+Second run (the first expense is still there because of `"a"`):
+
+```
+Expense (one word) and amount: Lunch 85.50
+
+All expenses:
+Jeepney      PHP    26.00
+Lunch        PHP    85.50
+2 expense(s), total PHP 111.50
+```
+
+Rubric notes: `"a"` is the whole point; `"w"` would erase every earlier expense. Close the file after appending and open it again with `"r"` to read from the beginning. Loop on `fscanf(...) == 2`. Both `fopen` calls need a `NULL` check.
+
+**25. Recursive count.**
+
+```c
+#include <stdio.h>
+
+int countOccur(int a[], int n, int key) {
+    if (n == 0)                                  /* base case: no elements */
+        return 0;
+    if (a[n - 1] == key)                         /* check the last one... */
+        return 1 + countOccur(a, n - 1, key);    /* ...then the rest */
+    return countOccur(a, n - 1, key);
+}
+
+int main(void) {
+    int a[8], i, key;
 
     printf("Enter 8 integers: ");
     for (i = 0; i < 8; i++)
         scanf("%d", &a[i]);
+    printf("Value to count: ");
+    scanf("%d", &key);
 
-    for (i = 0; i < 8; i++)
-        sum += a[i];
-    avg = sum / 8.0;
-
-    printf("Sum: %d\n", sum);
-    printf("Average: %.2f\n", avg);
-    getch();
+    printf("%d appears %d time(s)\n", key, countOccur(a, 8, key));
+    return 0;
 }
 ```
 
-Rubric notes: dividing by `8.0` (not `8`) keeps the decimal part; `avg` must be a `float` printed with `%f` or `%.2f`.
+Two sample runs:
 
-**24. Sum of two 2×2 matrices.**
-
-```c
-#include <stdio.h>
-#include <conio.h>
-
-void main() {
-    int a[2][2], b[2][2], c[2][2];
-    int i, j;
-    clrscr();
-
-    printf("Enter elements of matrix A:\n");
-    for (i = 0; i < 2; i++)
-        for (j = 0; j < 2; j++)
-            scanf("%d", &a[i][j]);
-
-    printf("Enter elements of matrix B:\n");
-    for (i = 0; i < 2; i++)
-        for (j = 0; j < 2; j++)
-            scanf("%d", &b[i][j]);
-
-    printf("Sum of A and B:\n");
-    for (i = 0; i < 2; i++) {
-        for (j = 0; j < 2; j++) {
-            c[i][j] = a[i][j] + b[i][j];
-            printf("%d\t", c[i][j]);
-        }
-        printf("\n");
-    }
-    getch();
-}
+```
+Enter 8 integers: 4 7 4 1 9 4 2 7
+Value to count: 4
+4 appears 3 time(s)
 ```
 
-Rubric notes: this is Sample Program 3 with fixed 2×2 dimensions, the `printf("\n")` after the inner loop earns the "one row per line" output points.
-
-**25. Sort 5 integers descending.**
-
-```c
-#include <stdio.h>
-#include <conio.h>
-
-void main() {
-    int a[5], i, j, temp;
-    clrscr();
-
-    printf("Enter 5 integers: ");
-    for (i = 0; i < 5; i++)
-        scanf("%d", &a[i]);
-
-    for (i = 0; i < 4; i++)
-        for (j = 0; j < 4 - i; j++)
-            if (a[j] < a[j + 1]) {
-                temp     = a[j];
-                a[j]     = a[j + 1];
-                a[j + 1] = temp;
-            }
-
-    printf("Sorted (descending): ");
-    for (i = 0; i < 5; i++)
-        printf("%d ", a[i]);
-    getch();
-}
+```
+Enter 8 integers: 4 7 4 1 9 4 2 7
+Value to count: 5
+5 appears 0 time(s)
 ```
 
-Rubric notes: identical to the ascending sort except the comparison flips to `<`. Writing the ascending version by mistake loses the logic points but keeps declaration, input, and output points.
+Rubric notes: the base case `n == 0` (no elements left) returns 0. Each call checks one element, `a[n - 1]`, and recurses on the first `n - 1`, so the input always gets smaller. `return` must appear in front of **both** recursive calls. A `for` loop inside `countOccur` earns no logic points, because the item asks for recursion.
 
 ---
 
-Scored 20+ on both finals? You are walking into that exam room ready. Anything you missed, chase it back to the exact Unit 1 section named in the Rapid Review Sheet and re-trace it by hand, that is how the points come back.
+Scored 20 or more on both finals? You are ready. For every item you missed, follow its **Review** pointer back to the exact lesson section, re-read it, and re-trace the item by hand until you get the answer without looking. Then go back to Common CP2 Traps & How to Avoid Them and run the starter program one more time.
 $md$, 10, null, null)
 on conflict (id) do update set
   kind = excluded.kind, heading = excluded.heading, body_md = excluded.body_md,
