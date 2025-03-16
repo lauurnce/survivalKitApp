@@ -101,7 +101,7 @@ describe("CP2 modules", () => {
   });
 
   it("keeps Exam Prep last at sort_order 99", () => {
-    expect(EXAM_SEED).toContain("'Exam Prep: Prelims & Finals','exam-prep-prelims-finals',99);");
+    expect(EXAM_SEED).toContain("'Exam Prep: Prelims & Finals', 'exam-prep-prelims-finals', 99)");
     expect(MIGRATION).toMatch(new RegExp(`set sort_order = 99\\s+where id = '${EXAM_ID}'`));
   });
 

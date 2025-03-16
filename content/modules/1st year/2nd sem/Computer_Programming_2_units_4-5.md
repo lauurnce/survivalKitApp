@@ -1,6 +1,8 @@
 # Computer Programming 2, Lessons 4-5 Study Guide
 <!-- subject: Computer Programming 2 | year: 1st -->
 
+Continues `Computer_Programming_2_units_1-3.md`; `Computer Programming 2.md` is the map of all seven lessons. Mirrors supabase/seeds/cp2_units_4_5.sql.
+
 ---
 
 # Lesson 4: Structures
@@ -386,6 +388,45 @@ If `p` points at `cls[0]`, then `p[i].gwa` and `(p + i)->gwa` both reach record 
 
 ---
 
+<!-- kind: content -->
+## Try It: Structures
+
+Run the code below. Add a fourth student to the array (update `COUNT` too), then give the bonus to a different student and predict the output before you press Run.
+
+Starter code:
+
+```c
+#include <stdio.h>
+
+#define COUNT 3
+
+typedef struct {
+    char name[20];
+    int  score;
+} Student;
+
+void give_bonus(Student *s, int points) {
+    s->score += points;
+}
+
+int main(void) {
+    Student cls[COUNT] = {
+        {"Ana", 82},
+        {"Ben", 74},
+        {"Carla", 91}
+    };
+    int i;
+
+    give_bonus(&cls[1], 5);
+
+    for (i = 0; i < COUNT; i++)
+        printf("%-6s %d\n", cls[i].name, cls[i].score);
+    return 0;
+}
+```
+
+---
+
 <!-- kind: activity -->
 ## Practice Exercises, Lesson 4
 
@@ -445,6 +486,192 @@ int main(void) {
 4. Sort an array of 5 `Student` records by GWA, best (lowest) first, by swapping whole structures. Print the ranked list.
 
 ---
+
+<!-- kind: activity -->
+## Worked Exam Solutions + How-to-Pass Tips, Lesson 4
+
+**Answer Key, Conceptual Questions**
+
+1. A structure groups related variables of **possibly different types** under one name. An array holds items of **one** type reached by index; a structure holds members reached by name.
+2. A member is one variable inside a structure. With a structure variable use the dot (`s.gwa`); with a pointer use the arrow (`p->gwa`, the same as `(*p).gwa`).
+3. No. The definition only describes the shape of the type. Memory is set aside when you declare a variable of that type, such as `struct student a;`.
+4. `typedef` gives an existing type another name, so `Student s;` can replace `struct student s;`. It does not create a new kind of data.
+5. Nothing happens to the caller's variable, because the function changed a copy. Either return the changed structure and assign it (`a = moved(a);`) or pass its address (`&a`) and change it through `->`.
+
+**Worked Exam-Style Problem, Find the Errors**
+
+*Solution:* There are three compile errors.
+1. The definition has no `;` after the closing brace.
+2. `a.name = "Pancit Canton";` tries to assign to an array. Use `strcpy(a.name, "Pancit Canton");`.
+3. `a == b` is not allowed on whole structures. Compare the members instead.
+
+`b = a;` is **not** an error: copying a whole structure with `=` is allowed. Examiners plant that line to catch students who "fix" too much. The corrected program:
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+struct item {
+    char  name[20];
+    float price;
+};                                   /* 1. semicolon added */
+
+int main(void) {
+    struct item a, b;
+
+    strcpy(a.name, "Pancit Canton");   /* 2. strcpy, not = */
+    a.price = 15.50;
+    b = a;                             /* copying a whole struct is fine */
+    if (strcmp(a.name, b.name) == 0 && a.price == b.price)   /* 3. member by member */
+        printf("same\n");
+    return 0;
+}
+```
+
+Output: `same`
+
+**Worked Exam-Style Problem, The Trace**
+
+*Solution:* Step 1: `b = a;` copies, so `b` is `{1, 2}`. Step 2: `b.x = 5;` changes only `b`, now `{5, 2}`. Step 3: `f(a)` gets a **copy** of `a` and sets the copy's `x` to 100, so `a` is still `{1, 2}`. Step 4: `g(&a)` gets the **address** of `a`, so `p->y = 200` changes `a` itself, now `{1, 200}`. Output:
+```
+1 200 5 2
+```
+If you can say why `f` changed nothing and `g` did ("copy versus address"), you can answer every trace in this lesson.
+
+**Worked Programming Exercise (#4, Sort by GWA)**
+
+```c
+#include <stdio.h>
+
+#define N 5
+
+typedef struct {
+    char  name[20];
+    float gwa;
+} Student;
+
+int main(void) {
+    Student cls[N] = {
+        {"Ana", 1.75f}, {"Ben", 2.25f}, {"Carla", 1.25f},
+        {"Dan", 2.50f}, {"Ella", 1.50f}
+    };
+    Student temp;
+    int pass, i;
+
+    for (pass = 0; pass < N - 1; pass++)
+        for (i = 0; i < N - 1 - pass; i++)
+            if (cls[i].gwa > cls[i + 1].gwa) {
+                temp = cls[i];           /* swap the WHOLE record */
+                cls[i] = cls[i + 1];
+                cls[i + 1] = temp;
+            }
+
+    for (i = 0; i < N; i++)
+        printf("%d. %-6s %.2f\n", i + 1, cls[i].name, cls[i].gwa);
+    return 0;
+}
+```
+
+Output:
+```
+1. Carla  1.25
+2. Ella   1.50
+3. Ana    1.75
+4. Ben    2.25
+5. Dan    2.50
+```
+This is bubble sort from Lesson 1 (Arrays) with one change: the comparison looks at `cls[i].gwa`, but the swap moves the **whole** record through a `Student temp`. If you swap only the GWAs, the names stay put and every student gets someone else's grade.
+
+**Worked Programming Exercise (#3, raise_salary)**
+
+```c
+#include <stdio.h>
+
+typedef struct {
+    char  name[30];
+    float salary;
+} Employee;
+
+void raise_salary(Employee *e, float percent) {
+    e->salary = e->salary + e->salary * percent / 100;
+}
+
+int main(void) {
+    Employee e = {"Liza Gomez", 20000.00f};
+
+    raise_salary(&e, 10);
+    printf("%s now earns PHP %.2f\n", e.name, e.salary);
+    return 0;
+}
+```
+
+Output: `Liza Gomez now earns PHP 22000.00`
+
+The function takes a pointer, so it uses `e->salary`, and `main` passes `&e`. Ten percent of 20000.00 is 2000.00.
+
+**How to Pass Tips**
+
+- Count the semicolons: the one after a structure's closing brace is the most common syntax question about structures.
+- For every member access, ask "do I have the structure or a pointer to it?" Structure: dot. Pointer: arrow.
+- `=` copies a whole structure; `==` does not work on one. Strings inside still need `strcpy` and `strcmp`.
+- In a trace, mark each call as **copy** or **address** before you follow it. Only the address calls can change `main`'s variables.
+- When sorting records, swap whole structures, never just the field you compared.
+
+---
+
+<!-- kind: activity -->
+## Code Lab, Lesson 4: Class Record
+
+**Coding Drill:** Complete `average` and `find_top` so the program reports the class average and the top student. Remember that the best GWA is the **lowest** number. Press Run to compile real C right here, then add a fifth student and predict the new output before running again.
+
+Expected output:
+```
+Average GWA: 2.00
+Top student: Carla (1.50)
+```
+
+Starter code:
+
+```c
+#include <stdio.h>
+
+typedef struct {
+    char  name[20];
+    float gwa;
+} Student;
+
+/* Returns the average GWA of the first n students. */
+float average(Student list[], int n) {
+    float total = 0;
+    int i;
+
+    for (i = 0; i < n; i++) {
+        /* TODO: add list[i].gwa to total */
+    }
+    return total / n;
+}
+
+/* Returns the index of the student with the best (lowest) GWA. */
+int find_top(Student list[], int n) {
+    int best = 0, i;
+
+    for (i = 1; i < n; i++) {
+        /* TODO: if list[i].gwa is lower than list[best].gwa, set best = i */
+    }
+    return best;
+}
+
+int main(void) {
+    Student cls[4] = {
+        {"Ana", 1.75f}, {"Ben", 2.25f}, {"Carla", 1.50f}, {"Dan", 2.50f}
+    };
+    int top = find_top(cls, 4);
+
+    printf("Average GWA: %.2f\n", average(cls, 4));
+    printf("Top student: %s (%.2f)\n", cls[top].name, cls[top].gwa);
+    return 0;
+}
+```
 
 ---
 
@@ -920,6 +1147,46 @@ Names must be a single word, because `%s` stops at spaces. Real programs handle 
 
 ---
 
+<!-- kind: content -->
+## Try It: File Handling
+
+**About files in the playground:** each run happens in a fresh, empty sandbox on a server. Nothing your program writes is kept or shown to you, and there is no way to give it a file to read. So this exercise writes to `stdout`, the screen, which is already a `FILE *`. Every `fprintf(out, ...)` below works exactly the way it would on a real file.
+
+Run it, then add a fourth student. On your own computer (Code::Blocks, Dev-C++, or `gcc`), replace `stdout` with an `fopen` call as the comment shows, check the pointer for `NULL`, add `fclose(out);` before `return 0;`, and open report.txt afterwards to see the same report saved.
+
+Starter code:
+
+```c
+#include <stdio.h>
+
+/* Works with ANY stream: a file from fopen, or stdout. */
+void write_report(FILE *out, const char *names[], const int scores[], int n) {
+    int i;
+
+    fprintf(out, "%-6s %s\n", "Name", "Score");
+    for (i = 0; i < n; i++)
+        fprintf(out, "%-6s %d\n", names[i], scores[i]);
+}
+
+int main(void) {
+    const char *names[] = {"Ana", "Ben", "Carla"};
+    int scores[] = {88, 75, 93};
+
+    /* The playground keeps no files, so this writes to the screen.
+       On your own computer, try instead:
+       FILE *out = fopen("report.txt", "w");
+       check it for NULL, and call fclose(out) at the end. */
+    FILE *out = stdout;
+
+    write_report(out, names, scores, 3);
+    fputs("End of report", out);    /* fputs adds no newline... */
+    fputc('\n', out);                /* ...so add one with fputc */
+    return 0;
+}
+```
+
+---
+
 <!-- kind: activity -->
 ## Practice Exercises, Lesson 5
 
@@ -1002,4 +1269,166 @@ int main(void) {
 
 ---
 
+<!-- kind: activity -->
+## Worked Exam Solutions + How-to-Pass Tips, Lesson 5
+
+**Answer Key, Conceptual Questions**
+
+1. Variables live in memory and disappear when the program ends. A file stays on disk, so data can be saved in one run and read back in the next.
+2. `"w"` erases an existing file before writing; `"a"` keeps it and writes at the end. `"r"` only reads; `"r+"` reads **and** writes. Both fail with `NULL` if the file does not exist.
+3. Any two of: the file does not exist and the mode is `"r"` or `"r+"`; the name or folder is wrong; there is no permission to create or write the file. The program should print a message and stop (or take another path), and it must not use the pointer.
+4. `fgetc` returns every possible character plus `EOF`, which needs a value no character uses. A `char` cannot hold all of them, so either a real character is mistaken for `EOF` or `EOF` is never detected.
+5. `fscanf` with `%s` stops at the first space and stores only `Ben`. `fgets` stores the whole line, `Ben Dela Cruz`, followed by `'\n'`.
+
+**Worked Exam-Style Problem, Find the Errors**
+
+*Solution:* A compiler rejects the first three:
+1. `FILE fp;` declares a `FILE` object, not a pointer. `fopen` returns a `FILE *`, so declare `FILE *fp;`.
+2. `'r'` is a character. The mode must be a string, `"r"`. (Some older compilers only warn here, but it is still wrong.)
+3. Because `fp` is not a pointer, `fgetc(fp)` gets the wrong type too. Fixing error 1 fixes this line as well.
+
+The other four compile but are bugs:
+
+4. No `NULL` check after `fopen`.
+5. `char c;` should be `int c;` so it can hold `EOF`.
+6. `c = fgetc(fp) != EOF` compares before it assigns, so `c` becomes 1 or 0. Add parentheses: `(c = fgetc(fp)) != EOF`.
+7. The file is never closed with `fclose`.
+
+The corrected program:
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *fp;                          /* a pointer to FILE */
+    int c;                             /* int, so EOF fits */
+
+    fp = fopen("data.txt", "r");       /* mode is a string */
+    if (fp == NULL) {                  /* check before use */
+        printf("Cannot open data.txt\n");
+        return 1;
+    }
+    while ((c = fgetc(fp)) != EOF)     /* parentheses around the assignment */
+        putchar(c);
+    fclose(fp);                        /* close the file */
+    return 0;
+}
+```
+
+**Worked Exam-Style Problem, The Traces**
+
+*(a) Solution:* The file holds `4 7 x 9`. `fscanf` reads 4 (returns 1), then 7 (returns 1). At `x` it cannot read a number, so it returns 0 and the loop stops. The 9 is never reached. Output: `count=2 sum=11`. The trap is assuming the loop reads "all the numbers".
+
+*(b) Solution:* Follow the file after each open. `"w"` writes A: file is A. `"a"` adds B: A B. `"a"` adds C: A B C. `"w"` **erases** and writes D: file is just D. `"a"` adds E: D E. Output:
+```
+D
+E
+```
+Each `"w"` wipes everything before it. Find the **last** `"w"` and start reading the history from there.
+
+**Worked Programming Exercise (#3, Number the Lines)**
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    FILE *in, *out;
+    char line[100];
+    int n = 0;
+
+    in = fopen("in.txt", "r");
+    if (in == NULL) {
+        printf("Cannot open in.txt\n");
+        return 1;
+    }
+    out = fopen("out.txt", "w");
+    if (out == NULL) {
+        printf("Cannot create out.txt\n");
+        fclose(in);                  /* close what you already opened */
+        return 1;
+    }
+
+    while (fgets(line, sizeof line, in) != NULL) {
+        n++;
+        fprintf(out, "%d: ", n);
+        fputs(line, out);            /* line still ends in '\n' */
+    }
+
+    fclose(in);
+    fclose(out);
+    printf("Copied %d lines.\n", n);
+    return 0;
+}
+```
+
+If in.txt holds:
+```
+Bayan Ko
+Lupang Hinirang
+Pilipinas Kong Mahal
+```
+the screen shows `Copied 3 lines.` and out.txt holds:
+```
+1: Bayan Ko
+2: Lupang Hinirang
+3: Pilipinas Kong Mahal
+```
+Two details earn the marks. First, when the second `fopen` fails, the program closes the file it already opened before stopping. Second, it uses `fputs(line, out)` with no extra `'\n'`, because `fgets` kept the newline in `line`. Adding another would double-space the copy.
+
+**How to Pass Tips**
+
+- Write the four steps on every file answer: declare `FILE *`, `fopen` and check `NULL`, read or write, `fclose`. Checkers look for the `NULL` check and the `fclose` even when the question does not mention them.
+- Know the mode table by heart, especially that `"w"` erases and `"r"` fails on a missing file.
+- Loop on what the read function returns: `fscanf(...) == count`, `fgetc(...) != EOF`, `fgets(...) != NULL`. Never `while (!feof(fp))`.
+- `int c` for `fgetc`, with parentheses around the assignment. This pair shows up in nearly every "find the error" item on files.
+- Remember who keeps the newline: `fgets` keeps it, `fputs` does not add one.
+
 ---
+
+<!-- kind: activity -->
+## Code Lab, Lesson 5: Report to Any Stream
+
+**Coding Drill:** Complete `write_record` so it writes a record as `name,score` on its own line to **any** stream, then count how many students passed (75 or higher). Press Run to compile real C right here.
+
+The playground keeps no files, so `main` passes `stdout` and the records appear on the screen. Because `write_record` takes a `FILE *`, the same function would write to a real file if you passed it the pointer from `fopen("results.txt", "w")` on your own computer (with a `NULL` check and an `fclose`).
+
+Expected output:
+```
+Ana,88
+Ben,72
+Carla,93
+Dan,75
+Passed: 3 of 4
+```
+
+Starter code:
+
+```c
+#include <stdio.h>
+
+typedef struct {
+    char name[20];
+    int  score;
+} Record;
+
+/* Write one record as name,score and a newline to ANY stream. */
+void write_record(FILE *out, const Record *r) {
+    /* TODO: fprintf r->name and r->score to out, as name,score */
+}
+
+int main(void) {
+    Record cls[4] = {
+        {"Ana", 88}, {"Ben", 72}, {"Carla", 93}, {"Dan", 75}
+    };
+    FILE *out = stdout;     /* on your own computer: fopen("results.txt", "w") */
+    int i, passed = 0;
+
+    for (i = 0; i < 4; i++) {
+        write_record(out, &cls[i]);
+        /* TODO: add 1 to passed if cls[i].score is 75 or higher */
+    }
+    fprintf(out, "Passed: %d of 4\n", passed);
+    return 0;
+}
+```
+

@@ -1,407 +1,182 @@
 # Computer Programming 2, Complete Study Guide
 <!-- subject: Computer Programming 2 | year: 1st -->
 
----
+Computer Programming 2 (CP2) picks up where CP1 stopped. CP1 taught you the building blocks of C: variables, input and output, decisions, loops, functions, and simple arrays. CP2 uses those to handle real data: lists and tables of values, text, records, files, and the classic searching and sorting algorithms.
 
-# Unit 1: Arrays
+This file is the map of the subject. The full notes, practice exercises, worked exam solutions and code labs for every lesson live in three companion guides in this folder, and each one mirrors the lesson rows on the site:
 
----
+| Guide | Lessons | Mirrors |
+|---|---|---|
+| `Computer_Programming_2_units_1-3.md` | 1 to 3 | `supabase/seeds/cp2_modules_sections.sql`, `supabase/seeds/cp2_units_2_3.sql` |
+| `Computer_Programming_2_units_4-5.md` | 4 and 5 | `supabase/seeds/cp2_units_4_5.sql` |
+| `Computer_Programming_2_units_6-7.md` | 6 and 7 | `supabase/seeds/cp2_units_6_7.sql` |
 
-<!-- kind: content -->
-## What is an Array and Why Do We Need One?
-
-Suppose your program needs to work with 20 integers, reading them, processing them, and printing them. One approach is to declare 20 separate variables, each with its own name. That works for a small number, but it quickly becomes unmanageable. Imagine doing the same thing for 200, 2000, or 20,000 values. You'd need a separate variable declaration and a separate line of code for every single one of them.
-
-Arrays solve this problem. Instead of giving each value its own name, an array groups many values of the same data type under a single name, and lets you refer to individual values by their position (called an **index** or **subscript**).
-
----
-
-<!-- kind: content -->
-## Characteristics of an Array
-
-An array has three defining properties:
-
-1. **Fixed size**, the number of elements is set at the time the array is declared and does not change during the program's execution.
-2. **Same data type**, every element in the array must be of the same type (all integers, all floats, all characters, etc.).
-3. **Contiguous storage**, the elements are stored one after another in memory, which makes it possible to calculate the address of any element efficiently.
-
-Because elements are stored in sequence, you can refer to them by position: the first element, the second element, and so on. In C, positions are counted starting from zero. So for an array named `num` with 20 elements, the valid positions are `num[0]` through `num[19]`.
-
-The notation `num[i]`, a name followed by an integer expression in square brackets, is called **index notation**. The value inside the brackets is the **index** (or subscript), and it tells the compiler which element you want. Using a variable like `i` as the index is what makes it possible to process entire arrays with loops.
+The exam prep module (`supabase/seeds/cp2_exam_prep_module.sql`) covers all seven lessons.
 
 ---
 
-<!-- kind: content -->
-## Declaring an Array in C
+# The Seven Lessons
 
-Before an array can be used it must be declared. The declaration tells the compiler three things: the name of the array, the data type of its elements, and how many elements it holds.
+| Lesson | What you learn | Builds on |
+|---|---|---|
+| 1. Arrays in Depth | Passing arrays to functions, linear search, the classic array algorithms, 2-D arrays and matrix operations | CP1 arrays and functions |
+| 2. Strings and Character Arrays | The null terminator, reading and printing text, `<string.h>`, `<ctype.h>`, writing your own string functions | Lesson 1 |
+| 3. Pointers | Addresses, `&` and `*`, pointer parameters, pointer arithmetic, how arrays and pointers relate | Lessons 1 and 2 |
+| 4. Structures | `struct`, members, arrays of structures, `typedef`, nested structures, the arrow operator | Lessons 1 to 3 |
+| 5. File Handling | Streams and `FILE *`, `fopen` modes, `fprintf`/`fscanf`, `fgetc`/`fputc`, `fgets`/`fputs` | Lessons 2 to 4 |
+| 6. Recursion | Base and recursive cases, the call stack, classic recursive functions, recursion versus loops | CP1 functions |
+| 7. Searching and Sorting | Linear and binary search, bubble, selection and insertion sort, sorting structures, Big-O | Lessons 1, 4 and 6 |
 
-**General form for a one-dimensional array:**
+Take them in order. Each lesson assumes the ones before it: strings are character arrays, pointers explain why arrays and strings behave the way they do, structures and files use all three, and Lesson 7 sorts arrays of structures and searches recursively.
 
-```c
-data_type array_name[size];
-```
+## Where Each Topic Lives
 
-- `data_type`, the type of each element (`int`, `float`, `char`, `double`, etc.)
-- `array_name`, any valid C identifier
-- `size`, a positive integer constant specifying the number of elements
+Every lesson follows the same shape: the notes, then Key Takeaways, then Try It (a program you can run), Practice Exercises, Worked Exam Solutions + How-to-Pass Tips, and a Code Lab.
 
-**Examples:**
+**Lesson 1: Arrays in Depth** (`Computer_Programming_2_units_1-3.md`)
 
-```c
-int    scores[20];   /* 20-element integer array        */
-char   labels[30];   /* 30-element character array       */
-float  data[20];     /* 20-element floating-point array  */
-double values[12];   /* 12-element double array          */
-```
+- Arrays Recap: What Carries Over from CP1
+- Passing Arrays to Functions
+- Linear Search
+- Common Array Algorithms
+- Two-Dimensional Arrays
+- 2-D Arrays and Functions: Matrix Operations
 
-The storage class is optional and can be placed before the data type. If omitted, the default depends on where the array is declared (automatic inside a function, external outside).
+**Lesson 2: Strings and Character Arrays** (`Computer_Programming_2_units_1-3.md`)
 
----
+- Strings in C: Character Arrays with a Null Terminator
+- Reading and Printing Strings
+- The <string.h> Toolkit
+- Character Handling with <ctype.h>
+- Writing Your Own String Functions
+- Common String Bugs and How to Avoid Them
 
-<!-- kind: content -->
-## How C Finds an Element in Memory
+**Lesson 3: Pointers** (`Computer_Programming_2_units_1-3.md`)
 
-The array name itself is a symbolic reference to the address of the first element in memory. To locate any specific element, C uses this formula:
+- Memory Addresses and the & Operator
+- Pointer Variables and the * Operator
+- Pointers as Function Parameters
+- Pointer Arithmetic
+- Pointers and Arrays
+- Common Pointer Mistakes
 
-```
-element address = base address + (size of one element × index)
-```
+**Lesson 4: Structures** (`Computer_Programming_2_units_4-5.md`)
 
-For example, if an integer array starts at memory address 10,000 and each integer occupies 2 bytes, the element at index 3 is at:
+- What Is a Structure?
+- Declaring Structures and Accessing Members
+- Arrays of Structures
+- typedef and Nested Structures
+- Structures and Functions
+- Pointers to Structures: The Arrow Operator
 
-```
-10,000 + (2 × 3) = 10,006
-```
+**Lesson 5: File Handling** (`Computer_Programming_2_units_4-5.md`)
 
-This is why array indexing is fast, calculating an address from a base and an offset is a single arithmetic operation.
+- Why Files? Streams and the FILE Pointer
+- Opening and Closing Files
+- Formatted File I/O: fprintf() and fscanf()
+- Character I/O: fgetc(), fputc(), and EOF
+- Line I/O: fgets() and fputs()
+- Putting It Together: A Small Records Program
 
----
+**Lesson 6: Recursion** (`Computer_Programming_2_units_6-7.md`)
 
-<!-- kind: content -->
-## Storing Values in an Array
+- What Is Recursion?
+- Base Case and Recursive Case: Factorial
+- Tracing the Call Stack
+- Classic Recursive Functions
+- Recursion vs. Iteration
 
-Declaring an array only reserves memory, it does not put any values in. There are three ways to get values into an array.
+**Lesson 7: Searching and Sorting** (`Computer_Programming_2_units_6-7.md`)
 
-### 1. Initialization at Declaration
-
-You can supply initial values in curly braces at the point of declaration:
-
-```c
-/* General form */
-data_type array_name[size] = {value1, value2, ..., valueN};
-```
-
-**Rules:**
-- You cannot supply more values than there are elements, that is a compile error.
-- If you supply fewer values than the declared size, the remaining elements are automatically set to zero.
-- If you initialize all elements, you can omit the size and the compiler will count them for you.
-
-**Examples:**
-
-```c
-int a[5] = {5, 3, 2, 7, 9};       /* all 5 elements initialized         */
-int b[]  = {11, 21, 75, 24, 5};   /* size inferred as 5                 */
-int c[15] = {3, 7, 4, 6, 1};      /* first 5 set; elements 5–14 = 0     */
-```
-
-### 2. Reading Values from the Keyboard
-
-Use a loop combined with `scanf()` to fill an array at runtime:
-
-```c
-int scores[10];
-int i;
-
-for (i = 0; i < 10; i++) {
-    scanf("%d", &scores[i]);
-}
-```
-
-Note that `&scores[i]` uses the address-of operator, required by `scanf()` just as it is for ordinary variables.
-
-### 3. Assigning Values Individually
-
-You can assign a value to any single element using the assignment operator:
-
-```c
-scores[4] = 23;
-```
-
-You cannot assign one array directly to another (e.g., `second = first;` is illegal). To copy an array you must loop through it element by element:
-
-```c
-for (i = 0; i < 25; i++)
-    second[i] = first[i];
-```
+- Linear Search
+- Binary Search
+- Bubble Sort
+- Selection Sort and Insertion Sort
+- Sorting an Array of Structs by a Field
+- Comparing the Algorithms: Big-O in Plain Words
 
 ---
 
-<!-- kind: content -->
-## Character Arrays and Strings
+# Key Takeaways, All Lessons
 
-A string in C is stored as a character array. The key difference from other arrays is the **null terminator**: every string ends with the special character `'\0'`, which the compiler adds automatically when you initialize with a string literal.
+The same summaries that close each lesson, in one place for review the night before an exam.
 
-```c
-char city[6] = "HELLO";
-```
+## Lesson 1: Arrays in Depth
 
-This creates a 6-element array: `'H'`, `'E'`, `'L'`, `'L'`, `'O'`, `'\0'`. You can also let the compiler determine the size:
+- Passing an array to a function passes the address of its first element, not a copy, so the function can change the caller's array. Call it with the name alone, `f(scores, n)`, and mark read-only parameters `const`.
+- Always pass the number of elements as its own parameter: inside the function, `sizeof` sees an address, not the whole array.
+- Linear search checks each element from first to last and returns the index of the first match, or `-1` when the key is missing. It needs up to `n` comparisons and works on unsorted arrays.
+- For the largest value, keep its position and start from the first element. `>` keeps the first maximum and `>=` keeps the last; reversing in place swaps `a[i]` with `a[n - 1 - i]` for only `n / 2` passes.
+- A 2-D array `t[ROWS][COLS]` is stored row by row, so `t[r][c]` sits at position `r × COLS + c`. A function parameter may leave out the rows but must state the columns: `int m[][COLS]`.
 
-```c
-char city[] = "HELLO";   /* compiler sets size to 6 automatically */
-```
+## Lesson 2: Strings and Character Arrays
 
-If you declare the array without an initial value and enter the size yourself, make sure to add one extra slot for the null terminator.
+- A string is a `char` array that ends with `'\0'`. A string of n characters needs at least n + 1 slots, and `'A'` (one character) is not `"A"` (two: `'A'` and `'\0'`).
+- `strlen` counts the characters before the `'\0'`; `sizeof` gives the whole array's size. Walk any string with `for (i = 0; s[i] != '\0'; i++)`.
+- `scanf("%19s", name)` reads one word with no `&`; `fgets(name, sizeof name, stdin)` reads a whole line and keeps the newline, which `name[strcspn(name, "\n")] = '\0';` removes. Never use `gets`.
+- Copy with `strcpy`, join with `strcat` (or `snprintf`), and compare with `strcmp(a, b) == 0`. Never `=` or `==`, and always check that the destination has room for the text plus `'\0'`.
+- Characters are small integers: `<ctype.h>` tests them (`isalpha`, `isdigit`, `isspace`) and converts them (`toupper`, `tolower`), and `c - '0'` turns a digit character into its value.
 
----
+## Lesson 3: Pointers
 
-<!-- kind: content -->
-## Multidimensional Arrays
+- `&x` gives the address of `x`. A pointer is a variable that holds an address: `int *p = &x;` makes `p` point to `x`, and `%p` with a `(void *)` cast prints it.
+- In a declaration `*` means "is a pointer"; in an expression `*p` means "the value at that address". `*p = 25;` changes `x` without naming it. Initialize every pointer to a real address or `NULL`, and never follow a `NULL` or uninitialized pointer.
+- To let a function change the caller's variables, or give back more than one result, pass addresses (`swap(&x, &y)`) and work through `*` inside the function.
+- Adding 1 to a pointer moves it one element, not one byte. `q - p` counts the elements between them, and pointer arithmetic is only valid inside one array.
+- An array name is the address of its first element, so `a[i]` is `*(a + i)` and an array parameter is really a pointer. But an array name cannot be moved or reassigned, and `sizeof` only sees the whole array where it is declared.
 
-C supports arrays with more than one dimension. A **two-dimensional array** is the most common and can be thought of as a table with rows and columns.
+## Lesson 4: Structures
 
-**Declaration:**
+- A **structure** groups related variables, which may have different types, under one name. Each variable inside it is a **member**.
+- A `struct` definition is only a template and must end with `;`. Memory is set aside only when you declare a variable of that type.
+- Use the dot with a structure variable (`s.gwa`) and the arrow with a pointer to one (`p->gwa`, which means `(*p).gwa`). Nested members take one dot per level: `s.birthday.year`.
+- You can copy a whole structure with `=`, but you cannot compare two with `==`, and a string member needs `strcpy`, not `=`.
+- Passing a structure to a function passes a copy. Pass its address (`&s`) when the function must change it, and use `typedef` to give the type a shorter name.
 
-```c
-data_type array_name[rows][columns];
-```
+## Lesson 5: File Handling
 
-**Examples:**
+- Data in variables disappears when the program ends; a file keeps it. C reaches a file through a stream, held in a `FILE *` pointer.
+- `fopen(name, mode)` opens a file: `"r"` reads, `"w"` creates or **erases**, `"a"` adds to the end. Always check the pointer for `NULL`, and `fclose` every file you open.
+- `fprintf` and `fscanf` work like `printf` and `scanf` with a `FILE *` first. `fscanf` returns how many items it read, so loop with `while (fscanf(...) == 2)`, not `while (!feof(fp))`.
+- `fgetc` returns an `int`, so store it in an `int` and compare it with `EOF`; `fputc` writes one character.
+- `fgets(buf, size, fp)` reads one line, keeps the `'\n'`, and returns `NULL` at the end of the file. `fputs` writes a string without adding a newline.
 
-```c
-float grid[5][3];   /* 5 rows, 3 columns of floats  */
-int   table[3][3];  /* 3×3 integer table             */
-```
+## Lesson 6: Recursion
 
-### Initialization of 2D Arrays
+- A **recursive** function calls itself. It needs a **base case** that answers without recursing, and a **recursive case** that calls itself on a smaller input.
+- Every recursive call must move toward the base case. If it can skip past it or never reach it, the calls never end.
+- Each call gets its own **stack frame** with its own copy of the parameters. Calls wind down until the base case, then the answers unwind back up in reverse order.
+- Code before the recursive call runs on the way down (`down(3)` prints `3 2 1`); code after it runs on the way back up (`up(3)` prints `1 2 3`).
+- Too many calls at once cause a **stack overflow**. Use recursion when the problem shrinks naturally or splits in half; use a loop when a loop is simpler or the depth could be large.
 
-Values are assigned row by row (the last subscript increases fastest):
+## Lesson 7: Searching and Sorting
 
-```c
-int mat[3][3] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-```
-
-This produces:
-
-| | Col 0 | Col 1 | Col 2 |
-|---|---|---|---|
-| Row 0 | 1 | 2 | 3 |
-| Row 1 | 4 | 5 | 6 |
-| Row 2 | 7 | 8 | 9 |
-
-You can also use nested braces to make the row grouping explicit:
-
-```c
-int mat[3][3] = { {1,2,3}, {4,5,6}, {7,8,9} };
-```
-
-If a row's inner brace contains fewer values than the column count, the remaining elements in that row are set to zero. However, you cannot put *more* values in a row's inner brace than the declared column count, that is a compile error.
-
----
-
-<!-- kind: activity -->
-## Sample Program 1, Sorting an Array
-
-This program sorts a small integer array using a basic comparison-and-swap approach.
-
-```c
-#include <stdio.h>
-#include <conio.h>
-
-void main() {
-    clrscr();
-    int num[3] = {5, 3, 7};
-    int h, i, temp;
-
-    for (h = 0; h < 3; ++h)
-        for (i = 0; i < h; ++i) {
-            if (num[i] > num[i + 1]) {
-                temp     = num[i];
-                num[i]   = num[i + 1];
-                num[i+1] = temp;
-            }
-        }
-
-    for (i = 0; i < 3; i++)
-        printf("%d\n", num[i]);
-
-    getch();
-}
-```
-
-**Expected output:**
-```
-3
-5
-7
-```
+- **Linear search** checks elements one by one and works on any array: up to n comparisons. **Binary search** halves the range each step, so it needs only about 20 comparisons for a million elements, but the array **must be sorted**.
+- **Bubble sort** swaps neighbors that are out of order; each pass moves the largest remaining value to the end, and a `swapped` flag lets it stop early on sorted data.
+- **Selection sort** finds the smallest value in the unsorted part and swaps it to the front: at most one swap per pass. **Insertion sort** shifts bigger values right and drops each key into place, which makes it fast on nearly sorted data.
+- To sort structs, compare **one field** (use `strcmp()` for strings) but swap the **whole struct** with a temporary struct variable.
+- Big-O describes how work grows with n: O(log n) barely grows, O(n) doubles when n doubles, and O(n²), the class of all three sorts here, quadruples.
 
 ---
 
-<!-- kind: activity -->
-## Sample Program 2, Counting Positives and Negatives
+# Preparing for Exams
 
-This program reads `n` integers into an array, then counts how many are negative and how many are non-negative.
+| Exam | Lessons covered | Focus |
+|---|---|---|
+| Prelim | 1 to 3 | Arrays and functions, 2-D arrays, strings and `<string.h>`, pointers and pointer arithmetic |
+| Final | 4 to 7, plus review of 1 to 3 | Structures, files, recursion, searching and sorting, and the earlier lessons as they are used there |
 
-```c
-#include <stdio.h>
-#include <conio.h>
+Both exams lean on the same four skills, so practice each one for every lesson:
 
-void main() {
-    int a[50], n, count_neg = 0, count_pos = 0, i;
-    clrscr();
+1. **Rules and syntax.** Declarations, what compiles and what does not, which function does what.
+2. **Output tracing.** Running loops, pointer moves, recursive calls and sort passes by hand, one line at a time.
+3. **Finding errors.** Missing `'\0'`, `==` on strings, uninitialized pointers, a missing `;` after a `struct`, a skippable base case.
+4. **Short programs.** Small functions that take an array or a structure and return an answer.
 
-    printf("Enter the size of the array: ");
-    scanf("%d", &n);
+A study order that works:
 
-    printf("Enter the elements of the array: ");
-    for (i = 0; i < n; i++)
-        scanf("%d", &a[i]);
-
-    for (i = 0; i < n; i++) {
-        if (a[i] < 0)
-            count_neg++;
-        else
-            count_pos++;
-    }
-
-    printf("Negative numbers: %d\n", count_neg);
-    printf("Non-negative numbers: %d\n", count_pos);
-
-    getch();
-}
-```
-
----
-
-<!-- kind: activity -->
-## Sample Program 3, Adding Two Matrices
-
-This program reads two matrices of equal dimensions from the user, adds them element by element, and stores the result in a third matrix.
-
-```c
-#include <stdio.h>
-#include <conio.h>
-
-void main() {
-    int a[10][10], b[10][10], c[10][10];
-    int i, j, m, n;
-    clrscr();
-
-    printf("Enter the number of rows and columns: ");
-    scanf("%d %d", &m, &n);
-
-    printf("Enter elements of matrix A:\n");
-    for (i = 0; i < m; i++)
-        for (j = 0; j < n; j++)
-            scanf("%d", &a[i][j]);
-
-    printf("Enter elements of matrix B:\n");
-    for (i = 0; i < m; i++)
-        for (j = 0; j < n; j++)
-            scanf("%d", &b[i][j]);
-
-    printf("Sum of A and B:\n");
-    for (i = 0; i < m; i++) {
-        for (j = 0; j < n; j++) {
-            c[i][j] = a[i][j] + b[i][j];
-            printf("%d\t", c[i][j]);
-        }
-        printf("\n");
-    }
-
-    getch();
-}
-```
-
----
-
-<!-- kind: activity -->
-## Practice Exercises
-
-### Exercise 1, Array Definitions
-
-Write appropriate array declarations for each of the following:
-
-a. A 12-element integer array. Assign it the values 1, 4, 7, 10, … 34 (arithmetic sequence with step 3).
-
-b. A character array to hold the string `"NORTH"`, including the null terminator.
-
-c. A 4-element character array holding the compass characters `'N'`, `'S'`, `'E'`, and `'W'`.
-
----
-
-### Exercise 2, Trace the Output
-
-Determine what each program prints without running it. Write your answer in the box provided.
-
-**Program A:**
-
-```c
-#include <stdio.h>
-#include <conio.h>
-
-main() {
-    int a, b = 0;
-    static int c[10] = {1,2,3,4,5,6,7,8,9,10};
-    clrscr();
-    for (a = 0; a < 10; a++)
-        if ((c[a] % 2) == 0)
-            b += c[a];
-    printf("%d", b);
-    getch();
-    return 1;
-}
-```
-
-> **Output:** `[ ]`
-
----
-
-**Program B:**
-
-```c
-#include <stdio.h>
-#include <conio.h>
-
-void main() {
-    int a, b = 0;
-    static int c[10] = {1,2,3,4,5,6,7,8,9,10};
-    clrscr();
-    for (a = 0; a < 10; a++)
-        if ((a % 2) == 0)
-            b += c[a];
-    printf("%d", b);
-    getch();
-}
-```
-
-> **Output:** `[ ]`
-
----
-
-**Program C:**
-
-```c
-#include <stdio.h>
-#include <conio.h>
-#define R 3
-#define C 4
-
-int z[R][C] = {1,2,3,4,5,6,7,8,9,10,11,12};
-
-main() {
-    int a, b, smallest = 999;
-    clrscr();
-    for (a = 0; a < R; ++a)
-        for (b = 0; b < C; ++b)
-            if (z[a][b] < smallest)
-                smallest = z[a][b];
-    printf("%d", smallest);
-    getch();
-    return 1;
-}
-```
-
-> **Output:** `[ ]`
+1. Read a lesson's notes and its Key Takeaways.
+2. Run its Try It program and change it until the output stops surprising you.
+3. Answer its Practice Exercises on paper, then check them against the Worked Exam Solutions.
+4. Finish its Code Lab without looking at the solution.
+5. A week before the exam, take the mock exams in the Exam Prep module under time pressure and review every item you missed.
