@@ -67,14 +67,14 @@ describe("ModuleSections — free sample upsell vs paid status", () => {
     expect(screen.getAllByText(LABEL).length).toBeGreaterThan(0);
   });
 
-  it("drops the card and labels for a subject-plan subscriber", () => {
+  it("drops the card and labels for a subject-plan subscriber", async () => {
     status = { ...base, subscribed: true, plan: { scope: "subject", until: "2026-12-01T00:00:00Z" } };
     renderFreeModule();
     expect(screen.queryByText(CARD)).toBeNull();
     expect(screen.queryByText(LABEL)).toBeNull();
     expect(screen.queryByRole("link", { name: /unlock/i })).toBeNull();
     // The reviewers themselves stay.
-    expect(screen.getByText("Free drill two")).toBeInTheDocument();
+    expect(await screen.findByText("Free drill two")).toBeInTheDocument();
   });
 
   it("drops them for a year-pass subscriber", () => {

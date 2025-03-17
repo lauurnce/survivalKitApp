@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi } from "vitest";
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -15,8 +15,9 @@ import { SectionRenderer } from "./SectionRenderer";
 // an opening `$$` is fence meta and is silently dropped. Written as
 // `$$\begin{array}{llcc}`, the environment vanished, KaTeX met bare `&`
 // separators, and a free-sample answer key rendered as red source (QA CT-01).
-function renderBody(body_md: string) {
-  return render(
+// The body renderer is lazy-loaded (next/dynamic), so wait for KaTeX output.
+async function renderBody(body_md: string) {
+  const result = render(
     <SectionRenderer
       section={{ id: "s1", kind: "content", heading: "Body", body_md, sort_order: 1 }}
       index={1}
@@ -26,23 +27,25 @@ function renderBody(body_md: string) {
       unlockAll={false}
     />
   );
+  await waitFor(() => expect(result.container.querySelector(".katex")).not.toBeNull());
+  return result;
 }
 
 describe("SectionRenderer — display math", () => {
-  it("renders an array whose $$ fences sit on their own lines", () => {
-    const { container } = renderBody(
+  it("renders an array whose $$ fences sit on their own lines", async () => {
+    const { container } = await renderBody(
       "$$\n\\begin{array}{llcc}\n\\text{Dec 31} & \\text{Cash} & 1 & \\\\\n\\end{array}\n$$"
     );
     expect(container.querySelectorAll(".katex-error")).toHaveLength(0);
     expect(container.querySelectorAll(".katex-display")).toHaveLength(1);
   });
 
-  it("renders the Accounting Principles module source without a KaTeX error", () => {
+  it("renders the Accounting Principles module source without a KaTeX error", async () => {
     const file = path.join(
       process.cwd(),
       "content/modules/1st year/1st sem/Financial Accounting Principles.md"
     );
-    const { container } = renderBody(fs.readFileSync(file, "utf8"));
+    const { container } = await renderBody(fs.readFileSync(file, "utf8"));
     const errors = [...container.querySelectorAll(".katex-error")].map((e) =>
       (e.getAttribute("title") ?? "").slice(0, 120)
     );

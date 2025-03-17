@@ -62,7 +62,7 @@ afterEach(() => {
 describe("ModuleSections", () => {
   it("renders the locked view with the teaser and never asks for paid bodies", async () => {
     renderSections();
-    expect(screen.getByText("Lesson text")).toBeInTheDocument();
+    expect(await screen.findByText("Lesson text")).toBeInTheDocument();
     expect(screen.getByText("Drill one")).toBeInTheDocument();
     expect(screen.getByText("TEASER")).toBeInTheDocument();
     await new Promise((r) => setTimeout(r, 0));
