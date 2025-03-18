@@ -17,31 +17,33 @@ export function BodyMarkdown({ body }: { body: string }) {
       components={{
         // Headings
         h1: ({ children }) => (
-          <h1 className="font-serif text-2xl text-ink mt-8 mb-3 leading-tight">{children}</h1>
+          <h1 className="max-w-prose font-serif text-2xl text-ink mt-8 mb-3 leading-tight">{children}</h1>
         ),
         h2: ({ children }) => (
-          <h2 className="font-serif text-xl text-ink mt-6 mb-2 leading-tight">{children}</h2>
+          <h2 className="max-w-prose font-serif text-xl text-ink mt-6 mb-2 leading-tight">{children}</h2>
         ),
         h3: ({ children }) => (
-          <h3 className="font-sans text-base font-semibold text-ink mt-5 mb-2 tracking-wide">{children}</h3>
+          <h3 className="max-w-prose font-sans text-base font-semibold text-ink mt-5 mb-2 tracking-wide">{children}</h3>
         ),
-        // Paragraphs
+        // Running text: main ink at a ~70-character measure (QA DS-12). Grey
+        // body copy and 109-character lines made whole lessons tiring to read.
+        // Code blocks and tables keep the full column width.
         p: ({ children }) => (
-          <p className="font-sans text-base text-ink-muted leading-relaxed mb-4">{children}</p>
+          <p className="max-w-prose font-sans text-base text-ink leading-relaxed mb-4">{children}</p>
         ),
         // Bold / italic
         strong: ({ children }) => (
           <strong className="font-semibold text-ink">{children}</strong>
         ),
         em: ({ children }) => (
-          <em className="italic text-ink-muted">{children}</em>
+          <em className="italic">{children}</em>
         ),
         // Lists
         ul: ({ children }) => (
-          <ul className="list-disc pl-5 space-y-1 mb-4 font-sans text-base text-ink-muted">{children}</ul>
+          <ul className="max-w-prose list-disc pl-5 space-y-1 mb-4 font-sans text-base text-ink">{children}</ul>
         ),
         ol: ({ children }) => (
-          <ol className="list-decimal pl-5 space-y-1 mb-4 font-sans text-base text-ink-muted">{children}</ol>
+          <ol className="max-w-prose list-decimal pl-5 space-y-1 mb-4 font-sans text-base text-ink">{children}</ol>
         ),
         li: ({ children }) => (
           <li className="leading-relaxed">{children}</li>
@@ -76,7 +78,7 @@ export function BodyMarkdown({ body }: { body: string }) {
         hr: () => <hr className="border-ink-faint/30 my-6" />,
         // Blockquote
         blockquote: ({ children }) => (
-          <blockquote className="border-l-2 border-accent pl-4 italic text-ink-muted mb-4">{children}</blockquote>
+          <blockquote className="max-w-prose border-l-2 border-accent pl-4 italic text-ink-muted mb-4">{children}</blockquote>
         ),
       }}
     >
