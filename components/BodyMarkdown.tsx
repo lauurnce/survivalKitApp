@@ -6,6 +6,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 // Only the module reader renders math, so KaTeX styles load here, not globally.
 import "katex/dist/katex.min.css";
+import { ScrollTable } from "./ScrollTable";
 
 // A section body: GitHub-flavoured markdown with KaTeX math. Imported only
 // through next/dynamic in SectionRenderer, so this stack ships in its own chunk.
@@ -60,16 +61,16 @@ export function BodyMarkdown({ body }: { body: string }) {
           ) : (
             <code>{children}</code>
           ),
-        // Tables
+        // Tables. Headers were label-sm (ink-faint, 2.07:1); ink-muted passes AA.
         table: ({ children }) => (
-          <div className="overflow-x-auto mb-4">
+          <ScrollTable>
             <table className="w-full font-sans text-sm border-collapse">{children}</table>
-          </div>
+          </ScrollTable>
         ),
         thead: ({ children }) => <thead className="border-b border-ink-faint">{children}</thead>,
         tbody: ({ children }) => <tbody className="divide-y divide-ink-faint/30">{children}</tbody>,
         th: ({ children }) => (
-          <th className="text-left py-2 pr-4 font-semibold text-ink label-sm">{children}</th>
+          <th className="text-left py-2 pr-4 font-mono text-label-sm font-semibold uppercase tracking-[0.12em] text-ink-muted">{children}</th>
         ),
         td: ({ children }) => (
           <td className="py-2 pr-4 text-ink-muted">{children}</td>

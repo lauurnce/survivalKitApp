@@ -19,3 +19,22 @@ describe("BodyMarkdown — reading measure and ink (QA DS-12)", () => {
     expect(container.querySelector("pre")).not.toHaveClass("max-w-prose");
   });
 });
+
+describe("BodyMarkdown — tables (QA DS-13)", () => {
+  const table = "| Week | Topic | Notes |\n|---|---|---|\n| 1 | Patterns | classifying frieze patterns |";
+
+  it("wraps tables in a keyboard-scrollable region", () => {
+    render(<BodyMarkdown body={table} />);
+    const region = screen.getByRole("region", { name: /scrolls sideways/i });
+    expect(region).toHaveAttribute("tabindex", "0");
+    expect(region).toHaveClass("overflow-x-auto");
+    expect(region.querySelector("table")).not.toBeNull();
+  });
+
+  it("sets table headers in ink-muted, not the 2.07:1 ink-faint label", () => {
+    render(<BodyMarkdown body={table} />);
+    const th = screen.getByRole("columnheader", { name: "Topic" });
+    expect(th).toHaveClass("text-ink-muted");
+    expect(th).not.toHaveClass("label-sm");
+  });
+});
