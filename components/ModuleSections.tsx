@@ -2,6 +2,9 @@
 
 import { Fragment, useEffect, useState } from "react";
 import { SectionRenderer } from "@/components/SectionRenderer";
+import { LockedReviewerGroup } from "@/components/LockedReviewer";
+import { sectionAnchor } from "@/lib/lesson/anchors";
+import { modulePath } from "@/lib/subscribeRedirect";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { useShowUpsell } from "@/hooks/useShowUpsell";
 import type { TopologyData } from "@/lib/topology/types";
@@ -82,6 +85,20 @@ export function ModuleSections({
   const firstActivity = shown.findIndex((s) => s.kind === "activity");
   const slotAt = firstActivity === -1 ? shown.length : firstActivity;
 
+  // Runs of two or more consecutive locked reviewers render as one card with
+  // one CTA instead of a blurred block and button each (QA DS-14).
+  const isLocked = (s: ReaderSection) =>
+    !isUnlocked && s.kind === "activity" && !freeSectionIds.includes(s.id);
+  const blocks: { start: number; sections: ReaderSection[] }[] = [];
+  shown.forEach((section, i) => {
+    const last = blocks[blocks.length - 1];
+    if (last && isLocked(section) && isLocked(last.sections[0]) && i !== slotAt) {
+      last.sections.push(section);
+    } else {
+      blocks.push({ start: i, sections: [section] });
+    }
+  });
+
   return (
     <>
       {/* Watching the status keeps a listener on the shared store, so it
@@ -97,12 +114,25 @@ export function ModuleSections({
         />
       )}
       {!isUnlocked && teaser && <div className="print:hidden">{teaser}</div>}
-      {shown.map((section, i) => (
-        <Fragment key={section.id}>
-          {i === slotAt && afterContent}
+      {blocks.map(({ start, sections: run }) => (
+        <Fragment key={run[0].id}>
+          {start === slotAt && afterContent}
+          {run.length > 1 ? (
+            <LockedReviewerGroup
+              yearId={yearId}
+              subjectId={subjectId}
+              from={modulePath(yearId, subjectId, moduleId)}
+              items={run.map((s, k) => ({
+                id: s.id,
+                heading: s.heading,
+                index: start + k,
+                anchorId: sectionAnchor(s.id),
+              }))}
+            />
+          ) : (
           <SectionRenderer
-            section={section}
-            index={i}
+            section={run[0]}
+            index={start}
             moduleId={moduleId}
             yearId={yearId}
             subjectId={subjectId}
@@ -112,6 +142,7 @@ export function ModuleSections({
             reviewerCount={reviewerCount}
             showUpsell={showUpsell}
           />
+          )}
         </Fragment>
       ))}
       {slotAt === shown.length && afterContent}

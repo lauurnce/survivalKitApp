@@ -144,3 +144,40 @@ describe("ModuleSections — afterContent slot", () => {
     expect(screen.getAllByText("QUICK CHECK")).toHaveLength(1);
   });
 });
+
+describe("ModuleSections — runs of locked reviewers (QA DS-14)", () => {
+  const EXAM_PREP: ReaderSection[] = [
+    { id: "c1", kind: "content", heading: "Intro", body_md: "Lesson text", sort_order: 1 },
+    ...["A", "B", "C", "D"].map((x, i) => ({
+      id: `l${i}`, kind: "activity", heading: `Prelim Mock Exam ${x}`, body_md: "", sort_order: 3 + i,
+    })),
+  ];
+
+  it("collapses consecutive locked reviewers into one card with one CTA", () => {
+    renderSections({ sections: EXAM_PREP, freeSectionIds: ["elsewhere"] });
+    expect(screen.getByText(/4 reviewers locked/i)).toBeInTheDocument();
+    for (const x of ["A", "B", "C", "D"]) {
+      expect(screen.getByText(`Prelim Mock Exam ${x}`)).toBeInTheDocument();
+    }
+    expect(screen.getAllByRole("link", { name: /^unlock/i })).toHaveLength(1);
+    expect(screen.queryByText(/reviewer — locked/i)).toBeNull();
+    // LessonOverview's topic links still have somewhere to land.
+    expect(document.getElementById("sec-l2")).toHaveTextContent("Prelim Mock Exam C");
+  });
+
+  it("keeps a lone locked reviewer as its own strip", () => {
+    renderSections();
+    expect(screen.getByText(/reviewer — locked/i)).toBeInTheDocument();
+    expect(screen.queryByText(/reviewers locked/i)).toBeNull();
+  });
+
+  it("drops the card once a subscriber's bodies arrive", async () => {
+    subscribed = true;
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify({ subscribed: true, sections: EXAM_PREP.slice(1).map((s) => ({ ...s, body_md: `Body ${s.id}` })) }), { status: 200 }),
+    );
+    renderSections({ sections: EXAM_PREP, freeSectionIds: ["elsewhere"] });
+    expect(await screen.findByText("Body l3")).toBeInTheDocument();
+    expect(screen.queryByText(/reviewers locked/i)).toBeNull();
+  });
+});
