@@ -104,4 +104,21 @@ describe("ModulesPage — paywall teaser", () => {
     await renderPage();
     expect(screen.getByTestId("paywall-teaser")).toBeInTheDocument();
   });
+
+  // On a phone the teaser was ~1000px of copy above the first module (QA
+  // PF-01 follow-up): it is ordered after the list below md, above from md up.
+  it("orders the teaser after the module list on mobile only", async () => {
+    modules = [
+      { id: "m1", title: "Lesson 1" },
+      { id: "m2", title: "Lesson 2" },
+    ];
+    activities = [
+      { id: "a1", module_id: "m1" },
+      { id: "a2", module_id: "m2" },
+    ];
+    await renderPage();
+    const slot = screen.getByTestId("paywall-teaser-slot");
+    expect(slot).toHaveClass("order-last", "md:order-none");
+    expect(slot.parentElement).toHaveClass("flex", "flex-col");
+  });
 });

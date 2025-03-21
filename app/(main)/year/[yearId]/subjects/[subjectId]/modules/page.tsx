@@ -115,38 +115,49 @@ export default async function ModulesPage({ params }: Props) {
       </div>
 
       {/* Module list — cream */}
-      <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
-        <div className="max-w-wide mx-auto">
-          {modules && modules.length > 0 && (
-            <>
-              <SubscriberProBanner
-                yearId={yearId}
+      <div className="flex-1 flex flex-col px-6 py-12 md:px-16 md:py-16">
+        {modules && modules.length > 0 && (
+          <div className="w-full max-w-wide mx-auto">
+            <SubscriberProBanner
+              yearId={yearId}
+              subjectId={subjectId}
+              unlockAll={devUnlockAll}
+              subjectTitle={subject.title}
+              yearLabel={year?.label}
+            />
+          </div>
+        )}
+        {/* The offer sits above the list from md up. On a phone it is ~3
+            screens of copy before the first module, so it moves below the
+            list (QA PF-01) — by CSS order, so there is one copy and the
+            reserved-space handling in PaywallTeaser still keeps CLS at 0. */}
+        {modules && modules.length > 0 && !nothingToUnlock && (
+          <div
+            data-testid="paywall-teaser-slot"
+            className="order-last mt-10 w-full max-w-wide mx-auto md:order-none md:mt-0"
+          >
+            <PaywallTeaser
+              yearId={yearId}
+              subjectId={subjectId}
+              subjectTitle={subject.title}
+              from={modulePath(yearId, subjectId, modules[0].id)}
+              reviewerCount={reviewerCount ?? undefined}
+              fromPrice={cheapestSubjectPrice()}
+            />
+          </div>
+        )}
+        {modules && modules.length > 0 && (
+          <div className="w-full max-w-wide mx-auto">
+            <div className="mt-6 flex justify-end">
+              <ShareProgressButton
                 subjectId={subjectId}
-                unlockAll={devUnlockAll}
                 subjectTitle={subject.title}
-                yearLabel={year?.label}
+                moduleIds={moduleIds}
               />
-              {!nothingToUnlock && (
-                <PaywallTeaser
-                  yearId={yearId}
-                  subjectId={subjectId}
-                  subjectTitle={subject.title}
-                  from={modulePath(yearId, subjectId, modules[0].id)}
-                  reviewerCount={reviewerCount ?? undefined}
-                  fromPrice={cheapestSubjectPrice()}
-                />
-              )}
-              <div className="mt-6 flex justify-end">
-                <ShareProgressButton
-                  subjectId={subjectId}
-                  subjectTitle={subject.title}
-                  moduleIds={moduleIds}
-                />
-              </div>
-            </>
-          )}
-        </div>
-        <div className="flex flex-col divide-y divide-ink-faint/30 max-w-wide mx-auto">
+            </div>
+          </div>
+        )}
+        <div className="flex flex-col divide-y divide-ink-faint/30 w-full max-w-wide mx-auto">
           {/* PRO treatment only for modules that actually carry gated
               reviewer content, and only once the reader can open them. */}
           <SubscriberModuleList
