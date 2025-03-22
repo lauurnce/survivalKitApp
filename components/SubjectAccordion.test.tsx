@@ -40,4 +40,20 @@ describe("SubjectAccordion", () => {
     ).toHaveAttribute("aria-expanded", "true");
     expect(screen.getByRole("link", { name: /Variables and types/ })).toBeInTheDocument();
   });
+
+  // Both controls were under WCAG 2.5.8's 24px on phones: the toggle was 11px
+  // tall and the arrow link 14px wide (QA CR-07). 44px is the system minimum.
+  it("gives the toggle and the arrow link 44px tap targets", () => {
+    render(
+      <SubjectAccordion
+        subject={{ id: "cp1", title: "Computer Programming 1", kind: "major" }}
+        modules={[{ id: "variables", title: "Variables and types", sort_order: 1 }]}
+        yearId="first-year"
+        index={0}
+        reads={0}
+      />
+    );
+    expect(screen.getByRole("button", { name: /show modules/i })).toHaveClass("min-h-11");
+    expect(screen.getByRole("link", { name: /view modules for/i })).toHaveClass("min-h-11", "min-w-11");
+  });
 });

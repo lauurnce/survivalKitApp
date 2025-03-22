@@ -73,7 +73,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
           <Link
             href={modulesHref}
             aria-label={`View modules for ${subject.title}`}
-            className="font-sans text-sm text-ink-faint hover:text-ink transition-colors mt-1 flex-shrink-0"
+            className="-mr-3 -mt-2 inline-flex min-h-11 min-w-11 flex-shrink-0 items-center justify-center font-sans text-sm text-ink-faint hover:text-ink transition-colors"
             prefetch={true}
           >
             →
@@ -87,7 +87,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
             aria-expanded={open}
             aria-controls={listId}
             aria-label={`${open ? "Hide" : "Show"} modules for ${subject.title}`}
-            className="mt-3 font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint hover:text-ink-muted transition-colors duration-150"
+            className="mt-1 -mb-3 inline-flex min-h-11 items-center font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint hover:text-ink-muted transition-colors duration-150"
           >
             {open ? "Hide modules ▴" : "Show modules ▾"}
           </button>
