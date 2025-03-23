@@ -41,16 +41,19 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
   }, [open]);
 
   return (
-    <div className="flex items-start gap-6 py-8 -mx-4 px-4">
+    <div className="flex items-start gap-3 sm:gap-6 py-8 -mx-4 px-4">
       <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mt-1 w-8 shrink-0 text-right">
         {String(index + 1).padStart(2, "0")}
       </span>
       <SubjectIcon title={subject.title} className="w-9 h-9 mt-0.5" />
-      <div className="flex-1">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
+      {/* min-w-0 lets these columns shrink below a long single-word title
+          ("Technopreneurship"), which otherwise pushed the arrow off-screen
+          and overflowed the page at 320px (QA FL-09 / DS-11 / CR-09). */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2 sm:gap-4">
+          <div className="flex-1 min-w-0">
             <Link href={modulesHref} className="group block" prefetch={true}>
-              <h2 className="font-serif text-2xl text-ink group-hover:text-accent transition-colors duration-150 mb-1">
+              <h2 className="font-serif text-2xl text-ink [overflow-wrap:anywhere] hyphens-auto group-hover:text-accent transition-colors duration-150 mb-1">
                 {subject.title}
               </h2>
             </Link>
@@ -105,7 +108,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
                 <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mt-0.5 w-6 shrink-0 text-right">
                   {String(mi + 1).padStart(2, "0")}
                 </span>
-                <span className="font-serif text-base text-ink group-hover:text-accent transition-colors duration-150">
+                <span className="min-w-0 [overflow-wrap:anywhere] font-serif text-base text-ink group-hover:text-accent transition-colors duration-150">
                   {m.title}
                 </span>
               </Link>
