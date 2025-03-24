@@ -22,6 +22,7 @@ import { LessonEngagement, LESSON_END_ID } from "@/components/lesson/LessonEngag
 import { NextLessonLink } from "@/components/lesson/NextLessonLink";
 import { QuickCheck } from "@/components/lesson/QuickCheck";
 import { ShareLesson } from "@/components/lesson/ShareLesson";
+import { SubjectEndLabel } from "@/components/lesson/SubjectEndLabel";
 import { quickChecksFor } from "@/lib/lesson/quickChecks";
 import { estimateReadingMinutes } from "@/lib/lesson/readingTime";
 import { freeIdsInModule, pickFreeActivities } from "@/lib/freeSample";
@@ -358,9 +359,10 @@ export default async function ReaderPage({ params }: Props) {
           </>
         ) : (
           <>
-            <p className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-faint mb-4">
-              You&apos;ve finished this subject
-            </p>
+            <SubjectEndLabel
+              moduleIds={siblings.map((m) => m.id)}
+              className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-faint mb-4"
+            />
             <div className="flex flex-col gap-3">
               <Link
                 href={`/year/${yearId}/subjects/${subjectId}/modules`}
