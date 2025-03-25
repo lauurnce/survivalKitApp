@@ -74,4 +74,17 @@ describe("SubjectAccordion", () => {
       if (el.className.includes("flex-1")) expect(el).toHaveClass("min-w-0");
     }
   });
+
+  it("says \"1 read\", not \"1 reads\" (QA CT-13)", () => {
+    render(
+      <SubjectAccordion
+        subject={{ id: "cp1", title: "Computer Programming 1", kind: "major" }}
+        modules={[]}
+        yearId="first-year"
+        index={0}
+        reads={1}
+      />
+    );
+    expect(screen.getByText(/^1$/).parentElement).toHaveTextContent(/^1 read$/);
+  });
 });

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { formatCount } from "@/lib/counters";
+import { pluralize } from "@/lib/plural";
 import { SubjectProgressBar } from "@/components/SubjectProgressBar";
 import { SubjectIcon } from "@/components/dashboard/SubjectIcon";
 import { SubjectUnlockedTag } from "@/components/SubjectUnlockedTag";
@@ -66,7 +67,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
                 <>
                   <span className="font-mono text-label-sm text-ink-faint/40">·</span>
                   <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
-                    <span className="text-ink-muted">{formatCount(reads)}</span> reads
+                    <span className="text-ink-muted">{formatCount(reads)}</span> {pluralize(reads, "read")}
                   </span>
                 </>
               )}

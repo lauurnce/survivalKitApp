@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ModuleDoneToggle } from "@/components/ModuleDoneToggle";
 import { ProBadge } from "@/components/ProBadge";
 import { formatCount } from "@/lib/counters";
+import { pluralize } from "@/lib/plural";
 
 interface Props {
   href: string;
@@ -53,7 +54,7 @@ export function ModuleListItem({
         </div>
         {readCount > 0 ? (
           <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
-            <span className="text-ink-muted">{formatCount(readCount)}</span> reads
+            <span className="text-ink-muted">{formatCount(readCount)}</span> {pluralize(readCount, "read")}
           </span>
         ) : (
           <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent">
