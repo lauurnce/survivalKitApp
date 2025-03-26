@@ -7,7 +7,8 @@ import { PageTracker } from "@/components/PageTracker";
 import { RecentLessons } from "@/components/retention/RecentLessons";
 import { SubjectAccordion, type SubjectModule } from "@/components/SubjectAccordion";
 import { sectionLabel } from "@/lib/sectionLabel";
-import { getYears, getSubjectsByYear, getSubjectCounters, getModulesBySubject } from "@/lib/cache/queries";
+import { getYears, getSubjectsByYear, getModuleCounters, getModulesBySubject } from "@/lib/cache/queries";
+import { sumReadsBySubject } from "@/lib/cache/countersSum";
 import { pageMetadata, subjectsDescription } from "@/lib/seo/pageMetadata";
 
 export const revalidate = 60;
@@ -51,7 +52,6 @@ export default async function SubjectsPage({ params }: Props) {
   // Use cached queries for static data
   const year = (await getYears()).find((y) => y.id === yearId);
   const rawSubjects = await getSubjectsByYear(yearId);
-  const subjectCounters = await getSubjectCounters((rawSubjects ?? []).map((s) => s.id));
 
   if (!year) notFound();
   if (year.coming_soon) notFound();
@@ -76,8 +76,16 @@ export default async function SubjectsPage({ params }: Props) {
     });
   }
 
+  // A subject's reads are its lessons' reads summed (QA CT-12): its own
+  // counter only counted module-list opens, so CP1 trailed its own Lesson 1.
+  const moduleCounters = await getModuleCounters([...modulesBySubject.values()].flat().map((m) => m.id));
+  const subjectReads = sumReadsBySubject(
+    new Map([...modulesBySubject].map(([id, ms]) => [id, ms.map((m) => m.id)])),
+    moduleCounters ?? [],
+  );
+
   function readCount(subjectId: string): number {
-    return subjectCounters?.find((c) => c.resource_id === subjectId)?.read_count ?? 0;
+    return subjectReads.get(subjectId) ?? 0;
   }
 
   return (
