@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { ButtonLink } from "@/components/ui/Button";
 import { ProBadge } from "./ProBadge";
 import { LockIcon } from "./ProIcons";
 import { logEvent } from "@/lib/analytics";
@@ -99,13 +99,13 @@ function LockedCta({ yearId, subjectId, from, label = "Unlock →" }: Props & { 
 
   if (showUpsell) {
     return (
-      <Link
+      <ButtonLink
         href={buildUnlockHref({ yearId, subjectId, from })}
         onClick={handleClick}
-        className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150 shrink-0"
+        className="shrink-0"
       >
         {label}
-      </Link>
+      </ButtonLink>
     );
   }
   if (polling || unlocked) return <p className="font-sans text-sm text-ink-muted">{PAYMENT_PENDING_COPY}</p>;

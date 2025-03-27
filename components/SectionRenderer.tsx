@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import { ButtonLink } from "@/components/ui/Button";
 import { LockedReviewer } from "./LockedReviewer";
 import { ProBadge } from "./ProBadge";
 import { LockIcon } from "./ProIcons";
@@ -185,13 +185,12 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
               reviewers with answer keys in {subjectTitle ?? "this subject"}. Unlock the rest for
               the semester.
             </p>
-            <Link
+            <ButtonLink
               href={buildUnlockHref({ yearId, subjectId, from: returnPath })}
               onClick={handleUnlockClick}
-              className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
             >
               Unlock all reviewers →
-            </Link>
+            </ButtonLink>
           </div>
         </div>
       )}
