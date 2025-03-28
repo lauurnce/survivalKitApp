@@ -95,8 +95,8 @@ export default async function SubjectsPage({ params }: Props) {
         <main className="min-h-screen bg-paper flex flex-col">
           <PageTracker event="subject_open" yearId={yearId} />
 
-          {/* Page header — dark navy */}
-          <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
+          {/* Page header — inverse band, dark in both themes */}
+          <div className="bg-inverse px-6 py-12 md:px-16 md:py-16">
             <div className="max-w-wide mx-auto">
               <Breadcrumbs
                 items={[{ label: "Year", href: "/year" }, { label: year.label }]}
@@ -105,14 +105,14 @@ export default async function SubjectsPage({ params }: Props) {
               <ReferrerBackLink
                 href="/year"
                 label="Select Year"
-                className="text-taupe hover:text-paper"
+                className="text-on-inverse/70 hover:text-on-inverse"
                 dashboardFallback={{ href: "/account", label: "Back to Dashboard" }}
               />
               <div className="mt-10">
-                <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
+                <p className="font-mono text-label-md uppercase tracking-[0.1em] text-on-inverse/70 mb-4">
                   {sectionLabel(year.sort_order)} — {year.label}
                 </p>
-                <h1 className="font-serif text-display-lg text-paper">Subjects</h1>
+                <h1 className="font-serif text-display-lg text-on-inverse">Subjects</h1>
               </div>
             </div>
           </div>
@@ -129,8 +129,8 @@ export default async function SubjectsPage({ params }: Props) {
                 .map(({ label, items }) => (
                   <section key={label}>
                     {/* Semester label — dark band */}
-                    <div className="bg-navy px-4 py-3 mb-6 inline-block">
-                      <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe">
+                    <div className="bg-inverse px-4 py-3 mb-6 inline-block">
+                      <p className="font-mono text-label-md uppercase tracking-[0.1em] text-on-inverse/70">
                         {label}
                       </p>
                     </div>

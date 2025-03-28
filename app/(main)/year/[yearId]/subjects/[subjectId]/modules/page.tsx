@@ -88,8 +88,8 @@ export default async function ModulesPage({ params }: Props) {
     <main className="min-h-screen bg-paper flex flex-col">
       <PageTracker event="subject_open" yearId={yearId} subjectId={subjectId} />
 
-      {/* Page header — dark navy */}
-      <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
+      {/* Page header — inverse band, dark in both themes */}
+      <div className="bg-inverse px-6 py-12 md:px-16 md:py-16">
         <div className="max-w-wide mx-auto">
           <Breadcrumbs
             items={[
@@ -102,14 +102,14 @@ export default async function ModulesPage({ params }: Props) {
           <ReferrerBackLink
             href={`/year/${yearId}/subjects`}
             label={year?.label ?? "Subjects"}
-            className="text-taupe hover:text-paper"
+            className="text-on-inverse/70 hover:text-on-inverse"
             dashboardFallback={{ href: "/account", label: "Back to Dashboard" }}
           />
           <div className="mt-10">
-            <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
+            <p className="font-mono text-label-md uppercase tracking-[0.1em] text-on-inverse/70 mb-4">
               {sectionLabel(year?.sort_order)} — {subject.title}
             </p>
-            <h1 className="font-serif text-display-lg text-paper">Modules</h1>
+            <h1 className="font-serif text-display-lg text-on-inverse">Modules</h1>
           </div>
         </div>
       </div>

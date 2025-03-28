@@ -51,7 +51,7 @@ export function BodyMarkdown({ body }: { body: string }) {
         ),
         // Code blocks
         pre: ({ children }) => (
-          <pre className="bg-ink text-paper font-mono text-sm p-4 overflow-x-auto leading-relaxed rounded-none mb-4 whitespace-pre">
+          <pre className="bg-inverse text-on-inverse font-mono text-sm p-4 overflow-x-auto leading-relaxed rounded-none mb-4 whitespace-pre">
             {children}
           </pre>
         ),

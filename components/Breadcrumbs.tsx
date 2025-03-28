@@ -40,17 +40,17 @@ export function Breadcrumbs({ items, className }: Props) {
                 <Link
                   href={item.href}
                   prefetch={true}
-                  className="text-taupe hover:text-paper transition-colors duration-150"
+                  className="text-on-inverse/70 hover:text-on-inverse transition-colors duration-150"
                 >
                   {item.label}
                 </Link>
               ) : (
-                <span aria-current={isLast ? "page" : undefined} className="text-paper">
+                <span aria-current={isLast ? "page" : undefined} className="text-on-inverse">
                   {item.label}
                 </span>
               )}
               {!isLast && (
-                <span aria-hidden="true" className="text-taupe/60">
+                <span aria-hidden="true" className="text-on-inverse/40">
                   /
                 </span>
               )}

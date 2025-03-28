@@ -17,6 +17,8 @@ describe("BodyMarkdown — reading measure and ink (QA DS-12)", () => {
   it("lets code blocks run wider than the prose measure", () => {
     const { container } = render(<BodyMarkdown body={"```\nprint('hi')\n```"} />);
     expect(container.querySelector("pre")).not.toHaveClass("max-w-prose");
+    // A dark panel in both themes; bg-ink flipped to a light slab in dark mode.
+    expect(container.querySelector("pre")).toHaveClass("bg-inverse", "text-on-inverse");
   });
 });
 
