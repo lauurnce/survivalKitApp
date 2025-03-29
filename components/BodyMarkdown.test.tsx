@@ -7,16 +7,16 @@ describe("BodyMarkdown — reading measure and ink (QA DS-12)", () => {
   it("sets body text in the main ink colour at a ~70ch measure", () => {
     render(<BodyMarkdown body={"A paragraph of lesson text.\n\n- a list item\n\n1. a step"} />);
     const p = screen.getByText("A paragraph of lesson text.");
-    expect(p).toHaveClass("text-ink", "max-w-prose");
+    expect(p).toHaveClass("text-ink", "max-w-[60ch]");
     expect(p).not.toHaveClass("text-ink-muted");
     for (const list of [document.querySelector("ul"), document.querySelector("ol")]) {
-      expect(list).toHaveClass("text-ink", "max-w-prose");
+      expect(list).toHaveClass("text-ink", "max-w-[60ch]");
     }
   });
 
   it("lets code blocks run wider than the prose measure", () => {
     const { container } = render(<BodyMarkdown body={"```\nprint('hi')\n```"} />);
-    expect(container.querySelector("pre")).not.toHaveClass("max-w-prose");
+    expect(container.querySelector("pre")).not.toHaveClass("max-w-[60ch]");
     // A dark panel in both themes; bg-ink flipped to a light slab in dark mode.
     expect(container.querySelector("pre")).toHaveClass("bg-inverse", "text-on-inverse");
   });
