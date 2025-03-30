@@ -1,18 +1,18 @@
 export default function Loading() {
   return (
     <main className="min-h-screen bg-paper">
-      {/* Top nav skeleton — dark navy */}
-      <div className="bg-navy px-6 py-8 md:px-16 border-b border-paper/10 animate-pulse">
+      {/* Top nav skeleton — inverse band, dark in both themes */}
+      <div className="bg-inverse px-6 py-8 md:px-16 border-b border-on-inverse/10 animate-pulse">
         <div className="max-w-wide mx-auto">
-          <div className="h-4 w-24 bg-paper/20" />
+          <div className="h-4 w-24 bg-on-inverse/20" />
         </div>
       </div>
 
-      {/* Module header skeleton — dark navy */}
-      <header className="bg-navy px-6 pt-10 pb-12 md:px-16 border-b border-paper/10 animate-pulse">
+      {/* Module header skeleton — inverse band, dark in both themes */}
+      <header className="bg-inverse px-6 pt-10 pb-12 md:px-16 border-b border-on-inverse/10 animate-pulse">
         <div className="max-w-wide mx-auto">
-          <div className="h-3 w-24 bg-paper/20 mb-4" />
-          <div className="h-10 w-3/4 bg-paper/20" />
+          <div className="h-3 w-24 bg-on-inverse/20 mb-4" />
+          <div className="h-10 w-3/4 bg-on-inverse/20" />
         </div>
       </header>
 
@@ -49,8 +49,8 @@ export default function Loading() {
               <div className="h-10 w-32 bg-ink-faint/20 rounded-xl" />
             </div>
             <div className="h-3 w-20 bg-ink-faint/20 mb-4" />
-            <div className="group flex items-center justify-between gap-6 bg-navy px-8 py-6">
-              <div className="h-10 w-3/4 bg-paper/20" />
+            <div className="group flex items-center justify-between gap-6 bg-inverse px-8 py-6">
+              <div className="h-10 w-3/4 bg-on-inverse/20" />
               <div className="h-8 w-8 bg-accent/20 flex-shrink-0 rounded" />
             </div>
           </div>

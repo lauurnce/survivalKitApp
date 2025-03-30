@@ -1,12 +1,12 @@
 export default function Loading() {
   return (
     <main className="min-h-screen bg-paper flex flex-col">
-      {/* Page header skeleton — dark navy */}
-      <div className="bg-navy px-6 py-12 md:px-16 md:py-16 animate-pulse">
+      {/* Page header skeleton — inverse band, dark in both themes */}
+      <div className="bg-inverse px-6 py-12 md:px-16 md:py-16 animate-pulse">
         <div className="max-w-wide mx-auto">
-          <div className="h-4 w-24 bg-paper/20 mb-4" />
-          <div className="h-3 w-20 bg-paper/20 mb-4" />
-          <div className="h-10 w-3/4 bg-paper/20" />
+          <div className="h-4 w-24 bg-on-inverse/20 mb-4" />
+          <div className="h-3 w-20 bg-on-inverse/20 mb-4" />
+          <div className="h-10 w-3/4 bg-on-inverse/20" />
         </div>
       </div>
 

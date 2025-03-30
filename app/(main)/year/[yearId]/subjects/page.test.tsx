@@ -23,8 +23,18 @@ vi.mock("@/lib/cache/queries", () => ({
     Promise.resolve([
       { id: "s1", title: "Subject One", slug: "subject-one", semester: 1, kind: "major", sort_order: 1 },
     ]),
-  getSubjectCounters: () => Promise.resolve([{ resource_id: "s1", read_count: 0 }]),
-  getModulesBySubject: () => Promise.resolve([]),
+  // The subject's own counter is stale by design; the page must not read it.
+  getSubjectCounters: () => Promise.resolve([{ resource_id: "s1", read_count: 5 }]),
+  getModulesBySubject: () =>
+    Promise.resolve([
+      { id: "m1", title: "Lesson 1", sort_order: 1 },
+      { id: "m2", title: "Lesson 2", sort_order: 2 },
+    ]),
+  getModuleCounters: () =>
+    Promise.resolve([
+      { resource_id: "m1", read_count: 6400 },
+      { resource_id: "m2", read_count: 3700 },
+    ]),
 }));
 
 import SubjectsPage, { generateMetadata } from "./page";
@@ -56,5 +66,12 @@ describe("SubjectsPage — metadata", () => {
 
   it("returns nothing for an unknown year", async () => {
     expect(await generateMetadata({ params: Promise.resolve({ yearId: "nope" }) })).toEqual({});
+  });
+});
+
+describe("SubjectsPage — subject reads (QA CT-12)", () => {
+  it("shows the sum of the subject's lesson reads, never fewer than one lesson", async () => {
+    await renderPage();
+    expect(screen.getByText("10.1k")).toBeInTheDocument();
   });
 });

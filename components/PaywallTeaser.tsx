@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Link from "next/link";
+import { ButtonLink } from "@/components/ui/Button";
 import { usePathname } from "next/navigation";
 import { logEvent } from "@/lib/analytics";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
@@ -86,13 +86,12 @@ export function PaywallTeaser({ yearId, subjectId, subjectTitle, from, reviewerC
         </p>
       )}
       <p className="font-mono text-label-sm text-ink-faint mb-4">{socialProofLine()}</p>
-      <Link
+      <ButtonLink
         href={href}
         onClick={handleClick}
-        className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
       >
         Unlock reviewers →
-      </Link>
+      </ButtonLink>
     </div>
   );
 }

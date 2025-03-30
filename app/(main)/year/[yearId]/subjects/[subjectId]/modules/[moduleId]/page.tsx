@@ -22,6 +22,7 @@ import { LessonEngagement, LESSON_END_ID } from "@/components/lesson/LessonEngag
 import { NextLessonLink } from "@/components/lesson/NextLessonLink";
 import { QuickCheck } from "@/components/lesson/QuickCheck";
 import { ShareLesson } from "@/components/lesson/ShareLesson";
+import { SubjectEndLabel } from "@/components/lesson/SubjectEndLabel";
 import { quickChecksFor } from "@/lib/lesson/quickChecks";
 import { estimateReadingMinutes } from "@/lib/lesson/readingTime";
 import { freeIdsInModule, pickFreeActivities } from "@/lib/freeSample";
@@ -208,8 +209,8 @@ export default async function ReaderPage({ params }: Props) {
         subjectTitle={subject.title}
       />
 
-      {/* Top nav — dark navy */}
-      <div className="bg-navy px-6 py-8 md:px-16 border-b border-paper/10 print:hidden">
+      {/* Top nav — inverse band, dark in both themes */}
+      <div className="bg-inverse px-6 py-8 md:px-16 border-b border-on-inverse/10 print:hidden">
         <div className="max-w-wide mx-auto">
           <Breadcrumbs
             items={[
@@ -223,18 +224,18 @@ export default async function ReaderPage({ params }: Props) {
           <BackLink
             href={`/year/${yearId}/subjects/${subjectId}/modules`}
             label={subject.title}
-            className="text-taupe hover:text-paper"
+            className="text-on-inverse/70 hover:text-on-inverse"
           />
         </div>
       </div>
 
-      {/* Module header — dark navy */}
-      <header className="bg-navy px-6 pt-10 pb-12 md:px-16 border-b border-paper/10">
+      {/* Module header — inverse band, dark in both themes */}
+      <header className="bg-inverse px-6 pt-10 pb-12 md:px-16 border-b border-on-inverse/10">
         <div className="max-w-wide mx-auto">
-          <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
+          <p className="font-mono text-label-md uppercase tracking-[0.1em] text-on-inverse/70 mb-4">
             {sectionLabel(year?.sort_order)} — {subject.title}
           </p>
-          <h1 className="font-serif text-display-md text-paper">{mod.title}</h1>
+          <h1 className="font-serif text-display-md text-on-inverse">{mod.title}</h1>
           {/* "You already paid", up top, no click needed — or the
               post-payment progress while the webhook lands. Client-side:
               this HTML is shared by every visitor. */}
@@ -338,9 +339,9 @@ export default async function ReaderPage({ params }: Props) {
               moduleId={moduleId}
               subjectId={subjectId}
               yearId={yearId}
-              className="group flex items-center justify-between gap-6 bg-navy px-8 py-6 hover:bg-ink transition-colors duration-150"
+              className="group flex items-center justify-between gap-6 bg-inverse px-8 py-6 hover:bg-inverse/90 transition-colors duration-150"
             >
-              <span className="font-serif text-display-md text-paper">
+              <span className="font-serif text-display-md text-on-inverse">
                 {nextTarget.title}
               </span>
               <span className="text-accent text-xl flex-shrink-0">→</span>
@@ -358,9 +359,10 @@ export default async function ReaderPage({ params }: Props) {
           </>
         ) : (
           <>
-            <p className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-faint mb-4">
-              You&apos;ve finished this subject
-            </p>
+            <SubjectEndLabel
+              moduleIds={siblings.map((m) => m.id)}
+              className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-faint mb-4"
+            />
             <div className="flex flex-col gap-3">
               <Link
                 href={`/year/${yearId}/subjects/${subjectId}/modules`}

@@ -45,4 +45,9 @@ describe("ModuleListItem", () => {
     expect(heading).toHaveClass("break-words");
     expect(screen.getByText("→")).toHaveClass("hidden", "sm:block");
   });
+
+  it("says \"1 read\", not \"1 reads\" (QA CT-13)", () => {
+    render(<ModuleListItem {...PROPS} readCount={1} />);
+    expect(screen.getByText(/^1$/).parentElement).toHaveTextContent(/^1 read$/);
+  });
 });

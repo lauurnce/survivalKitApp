@@ -98,7 +98,7 @@ describe("SectionRenderer — locked activities", () => {
     expect(container.textContent).not.toContain("₱");
   });
 
-  it("still renders the subject's free sample in full", () => {
+  it("still renders the subject's free sample in full", async () => {
     render(
       <SectionRenderer
         {...common}
@@ -109,12 +109,12 @@ describe("SectionRenderer — locked activities", () => {
       />
     );
 
-    expect(screen.getByText("Answer key body")).toBeInTheDocument();
+    expect(await screen.findByText("Answer key body")).toBeInTheDocument();
     expect(screen.queryByText(/reviewer — locked/i)).not.toBeInTheDocument();
     expect(screen.getByText(/that was the free sample: 1 of 12 reviewers/i)).toBeInTheDocument();
   });
 
-  it("renders every free-sample reviewer in full but upsells only under the last", () => {
+  it("renders every free-sample reviewer in full but upsells only under the last", async () => {
     const free = ["free-1", "free-2", "free-3"];
     render(
       <>
@@ -138,7 +138,7 @@ describe("SectionRenderer — locked activities", () => {
       </>
     );
 
-    expect(screen.getByText("Body 0")).toBeInTheDocument();
+    expect(await screen.findByText("Body 0")).toBeInTheDocument();
     expect(screen.getByText("Body 1")).toBeInTheDocument();
     expect(screen.getByText("Body 2")).toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: /unlock all reviewers/i })).toHaveLength(1);
@@ -147,7 +147,7 @@ describe("SectionRenderer — locked activities", () => {
     expect(screen.getAllByText(/reviewer — locked/i)).toHaveLength(1);
   });
 
-  it("offers no upsell when the free sample is every reviewer in the subject", () => {
+  it("offers no upsell when the free sample is every reviewer in the subject", async () => {
     // Operating Systems: 3 of 3 reviewers free. "Unlock the rest" sold nothing (QA CT-07).
     const free = ["f1", "f2", "f3"];
     const { container } = render(
@@ -166,7 +166,7 @@ describe("SectionRenderer — locked activities", () => {
       </>
     );
 
-    expect(screen.getByText("Body 2")).toBeInTheDocument();
+    expect(await screen.findByText("Body 2")).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /unlock/i })).toBeNull();
     expect(container.textContent).not.toMatch(/free sample/i);
   });
@@ -250,7 +250,7 @@ describe("SectionRenderer — locked activities", () => {
     expect(pill.className).not.toMatch(/dark:bg-(ink|navy|taupe)/);
   });
 
-  it("renders the body when the reader has unlocked the subject", () => {
+  it("renders the body when the reader has unlocked the subject", async () => {
     render(
       <SectionRenderer
         {...common}
@@ -261,7 +261,7 @@ describe("SectionRenderer — locked activities", () => {
       />
     );
 
-    expect(screen.getByText("Full solutions")).toBeInTheDocument();
+    expect(await screen.findByText("Full solutions")).toBeInTheDocument();
     expect(screen.queryByText(/reviewer — locked/i)).not.toBeInTheDocument();
   });
 });

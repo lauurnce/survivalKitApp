@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { formatCount } from "@/lib/counters";
+import { pluralize } from "@/lib/plural";
 import { SubjectProgressBar } from "@/components/SubjectProgressBar";
 import { SubjectIcon } from "@/components/dashboard/SubjectIcon";
 import { SubjectUnlockedTag } from "@/components/SubjectUnlockedTag";
@@ -41,16 +42,21 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
   }, [open]);
 
   return (
-    <div className="flex items-start gap-6 py-8 -mx-4 px-4">
+    <div className="flex items-start gap-3 sm:gap-6 py-8 -mx-4 px-4">
       <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mt-1 w-8 shrink-0 text-right">
         {String(index + 1).padStart(2, "0")}
       </span>
       <SubjectIcon title={subject.title} className="w-9 h-9 mt-0.5" />
-      <div className="flex-1">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
+      {/* min-w-0 lets these columns shrink below a long single-word title
+          ("Technopreneurship"), which otherwise pushed the arrow off-screen
+          and overflowed the page at 320px (QA FL-09 / DS-11 / CR-09). The
+          title breaks with break-words + hyphens, not overflow-wrap:anywhere,
+          which split "Architectur / e" without a hyphen. */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2 sm:gap-4">
+          <div className="flex-1 min-w-0">
             <Link href={modulesHref} className="group block" prefetch={true}>
-              <h2 className="font-serif text-2xl text-ink group-hover:text-accent transition-colors duration-150 mb-1">
+              <h2 className="font-serif text-xl sm:text-2xl text-ink break-words hyphens-auto group-hover:text-accent transition-colors duration-150 mb-1">
                 {subject.title}
               </h2>
             </Link>
@@ -63,7 +69,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
                 <>
                   <span className="font-mono text-label-sm text-ink-faint/40">·</span>
                   <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
-                    <span className="text-ink-muted">{formatCount(reads)}</span> reads
+                    <span className="text-ink-muted">{formatCount(reads)}</span> {pluralize(reads, "read")}
                   </span>
                 </>
               )}
@@ -73,7 +79,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
           <Link
             href={modulesHref}
             aria-label={`View modules for ${subject.title}`}
-            className="font-sans text-sm text-ink-faint hover:text-ink transition-colors mt-1 flex-shrink-0"
+            className="-mr-3 -mt-2 inline-flex min-h-11 min-w-11 flex-shrink-0 items-center justify-center font-sans text-sm text-ink-faint hover:text-ink transition-colors"
             prefetch={true}
           >
             →
@@ -87,7 +93,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
             aria-expanded={open}
             aria-controls={listId}
             aria-label={`${open ? "Hide" : "Show"} modules for ${subject.title}`}
-            className="mt-3 font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint hover:text-ink-muted transition-colors duration-150"
+            className="mt-1 -mb-3 inline-flex min-h-11 items-center font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint hover:text-ink-muted transition-colors duration-150"
           >
             {open ? "Hide modules ▴" : "Show modules ▾"}
           </button>
@@ -105,7 +111,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
                 <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mt-0.5 w-6 shrink-0 text-right">
                   {String(mi + 1).padStart(2, "0")}
                 </span>
-                <span className="font-serif text-base text-ink group-hover:text-accent transition-colors duration-150">
+                <span className="min-w-0 [overflow-wrap:anywhere] font-serif text-base text-ink group-hover:text-accent transition-colors duration-150">
                   {m.title}
                 </span>
               </Link>

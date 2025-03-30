@@ -56,7 +56,7 @@ export function QuickCheck({ moduleId, subjectId, yearId, questions }: Props) {
                   {q.prompt}
                 </legend>
                 {q.code && (
-                  <pre className="bg-ink text-paper font-mono text-sm p-3 overflow-x-auto mb-3 whitespace-pre">
+                  <pre className="bg-inverse text-on-inverse font-mono text-sm p-3 overflow-x-auto mb-3 whitespace-pre">
                     <code>{q.code}</code>
                   </pre>
                 )}

@@ -103,4 +103,10 @@ describe("LockedReviewer", () => {
     render(<LockedReviewer yearId={YEAR} subjectId={SUBJECT} from={FROM} />);
     expect(screen.getByRole("link", { name: /unlock/i })).toBeInTheDocument();
   });
+
+  it("uses the shared Button for its CTA (QA DS-07)", () => {
+    render(<LockedReviewer yearId={YEAR} subjectId={SUBJECT} from={FROM} />);
+    // The system button: square, 44px minimum height.
+    expect(screen.getByRole("link", { name: /unlock/i })).toHaveClass("min-h-11", "rounded-none");
+  });
 });
