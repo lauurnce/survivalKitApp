@@ -68,7 +68,7 @@ describe("SubjectAccordion", () => {
       />
     );
     const h2 = screen.getByRole("heading", { name: "Technopreneurship" });
-    expect(h2).toHaveClass("[overflow-wrap:anywhere]");
+    expect(h2).toHaveClass("break-words", "hyphens-auto");
     // Every flex column between the row and the title can shrink.
     for (let el = h2.parentElement; el && !el.className.includes("py-8"); el = el.parentElement) {
       if (el.className.includes("flex-1")) expect(el).toHaveClass("min-w-0");

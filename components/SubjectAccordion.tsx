@@ -49,12 +49,14 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
       <SubjectIcon title={subject.title} className="w-9 h-9 mt-0.5" />
       {/* min-w-0 lets these columns shrink below a long single-word title
           ("Technopreneurship"), which otherwise pushed the arrow off-screen
-          and overflowed the page at 320px (QA FL-09 / DS-11 / CR-09). */}
+          and overflowed the page at 320px (QA FL-09 / DS-11 / CR-09). The
+          title breaks with break-words + hyphens, not overflow-wrap:anywhere,
+          which split "Architectur / e" without a hyphen. */}
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2 sm:gap-4">
           <div className="flex-1 min-w-0">
             <Link href={modulesHref} className="group block" prefetch={true}>
-              <h2 className="font-serif text-2xl text-ink [overflow-wrap:anywhere] hyphens-auto group-hover:text-accent transition-colors duration-150 mb-1">
+              <h2 className="font-serif text-xl sm:text-2xl text-ink break-words hyphens-auto group-hover:text-accent transition-colors duration-150 mb-1">
                 {subject.title}
               </h2>
             </Link>
