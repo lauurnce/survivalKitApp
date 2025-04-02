@@ -15,6 +15,12 @@ interface NavRailProps {
    * pages that render the rail on the server are signed in by definition.
    */
   signedIn?: boolean;
+  /**
+   * Prefetch the /account pages. Off for signed-out readers: proxy 307s those
+   * pages to /login, so each prefetch costs a dynamic /login render for a link
+   * they cannot use.
+   */
+  prefetchAccount?: boolean;
 }
 
 interface NavItem {
@@ -48,7 +54,7 @@ function isItemActive(pathname: string, item: NavItem): boolean {
  * list, progress ring), and a horizontal scrollable tab strip below that —
  * same markup, responsive classes only.
  */
-export function NavRail({ overallDone, overallTotal, signedIn = true }: NavRailProps) {
+export function NavRail({ overallDone, overallTotal, signedIn = true, prefetchAccount = true }: NavRailProps) {
   const pathname = usePathname();
   const percent = completionPercentage(overallDone, overallTotal);
 
@@ -84,7 +90,7 @@ export function NavRail({ overallDone, overallTotal, signedIn = true }: NavRailP
                     ? "bg-accent/10 text-accent"
                     : "text-ink-muted hover:text-ink"
                 }`}
-                prefetch={true}
+                prefetch={prefetchAccount || !item.href.startsWith("/account")}
               >
                 <Icon className="h-5 w-5 shrink-0" />
                 {item.label}
