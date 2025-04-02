@@ -17,7 +17,14 @@ export function SessionNavRail() {
   const { ready, signedIn, overallDone, overallTotal } = useSession({ overview: true });
   // Until the session resolves, keep the ring (it fills in) rather than
   // flashing a log-in prompt at a signed-in reader.
-  return <NavRail overallDone={overallDone} overallTotal={overallTotal} signedIn={!ready || signedIn} />;
+  return (
+    <NavRail
+      overallDone={overallDone}
+      overallTotal={overallTotal}
+      signedIn={!ready || signedIn}
+      prefetchAccount={ready && signedIn}
+    />
+  );
 }
 
 function DashboardNavRailInner({ children }: { children?: React.ReactNode }) {
@@ -27,7 +34,12 @@ function DashboardNavRailInner({ children }: { children?: React.ReactNode }) {
   if (!signedIn && !fromDashboard) return null;
   return (
     <>
-      <NavRail overallDone={overallDone} overallTotal={overallTotal} signedIn={!ready || signedIn} />
+      <NavRail
+        overallDone={overallDone}
+        overallTotal={overallTotal}
+        signedIn={!ready || signedIn}
+        prefetchAccount={ready && signedIn}
+      />
       {children}
     </>
   );
