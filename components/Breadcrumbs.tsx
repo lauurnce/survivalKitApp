@@ -31,7 +31,10 @@ export function Breadcrumbs({ items, className }: Props) {
 
   return (
     <nav aria-label="Breadcrumb" className={className}>
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-label-sm uppercase tracking-[0.1em]">
+      {/* Below lg the fixed TopBar (theme toggle + Log in) sits over the top
+          right of the header band; the right padding keeps the trail from
+          running underneath it. */}
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 pr-36 font-mono text-label-sm uppercase tracking-[0.1em] lg:pr-0">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           return (

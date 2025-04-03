@@ -12,6 +12,13 @@ const TRAIL = [
 ];
 
 describe("Breadcrumbs", () => {
+  it("keeps the trail clear of the fixed TopBar below lg", () => {
+    render(<Breadcrumbs items={TRAIL} />);
+
+    const list = screen.getByRole("navigation", { name: "Breadcrumb" }).querySelector("ol");
+    expect(list).toHaveClass("pr-36", "lg:pr-0");
+  });
+
   it("renders a labeled navigation landmark with an ordered list", () => {
     render(<Breadcrumbs items={TRAIL} />);
 
