@@ -59,3 +59,31 @@ export function signInErrorMessage(e: AuthErrorLike | null | undefined): string 
   if (e.code === "email_not_confirmed") return CHECK_EMAIL;
   return GENERIC_LOGIN_ERROR;
 }
+
+// Password reset. The request form always answers with RESET_EMAIL_SENT, the
+// same sentence whether or not the address has an account, so the form can
+// never be used to find out who is registered.
+export const RESET_EMAIL_SENT =
+  "If an account uses that email, we've sent a link to reset your password. Check your inbox and spam folder.";
+
+export const RESET_LINK_EXPIRED =
+  "This reset link has expired or was already used. Request a new one.";
+
+export const GENERIC_RESET_ERROR = "Couldn't update your password. Please try again.";
+
+export function updatePasswordErrorMessage(e: AuthErrorLike | null | undefined): string {
+  if (!e) return GENERIC_RESET_ERROR;
+  if (isRateLimit(e)) return RATE_LIMITED;
+  switch (e.code) {
+    case "same_password":
+      return "That's your current password. Choose a different one.";
+    case "weak_password":
+      return "That password is too easy to guess. Use at least 8 characters with a mix of letters and numbers.";
+    case "session_not_found":
+    case "session_expired":
+    case "refresh_token_not_found":
+      return RESET_LINK_EXPIRED;
+    default:
+      return GENERIC_RESET_ERROR;
+  }
+}

@@ -120,6 +120,11 @@ export function AuthForm({
           aria-describedby={mode === "signup" ? passwordHintId : undefined}
           className="mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-base text-ink"
         />
+        {mode === "login" && (
+          <a href="/forgot-password" className="mt-1 inline-block text-xs text-accent underline">
+            Forgot password?
+          </a>
+        )}
         {mode === "signup" && (
           <span id={passwordHintId} className="mt-1 block text-xs text-ink-faint">
             At least 8 characters.

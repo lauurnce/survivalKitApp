@@ -166,3 +166,15 @@ describe("AuthForm — session cache", () => {
     }
   });
 });
+
+describe("AuthForm — forgot password (QA FL-03)", () => {
+  it("links to the reset flow from the login form", () => {
+    render(<AuthForm mode="login" action={noop} next="/account" />);
+    expect(screen.getByRole("link", { name: "Forgot password?" })).toHaveAttribute("href", "/forgot-password");
+  });
+
+  it("does not offer it on signup", () => {
+    render(<AuthForm mode="signup" action={noop} next="/account" />);
+    expect(screen.queryByRole("link", { name: "Forgot password?" })).toBeNull();
+  });
+});

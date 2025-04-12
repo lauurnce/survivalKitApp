@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { safeNextParam, safeNextPath } from "./safeNext";
+import { safeAdminNext, safeNextParam, safeNextPath } from "./safeNext";
 
 const MODULE = "/year/y1/subjects/s1/modules/m1";
 
@@ -85,5 +85,31 @@ describe("safeNextParam", () => {
 
   it("falls back when absent", () => {
     expect(safeNextParam(undefined)).toBe("/account");
+  });
+});
+
+describe("safeAdminNext (QA GT-21)", () => {
+  it("keeps an admin destination, query included", () => {
+    expect(safeAdminNext("/admin/feedback")).toBe("/admin/feedback");
+    expect(safeAdminNext("/admin/feedback?x=1")).toBe("/admin/feedback?x=1");
+    expect(safeAdminNext("/admin")).toBe("/admin");
+  });
+
+  it("refuses anything outside /admin", () => {
+    expect(safeAdminNext("/account")).toBe("/admin");
+    expect(safeAdminNext("/administrator")).toBe("/admin");
+    expect(safeAdminNext("//evil.example/admin")).toBe("/admin");
+    expect(safeAdminNext("https://evil.example/admin")).toBe("/admin");
+    expect(safeAdminNext("/admin/../account")).toBe("/admin");
+  });
+
+  it("never returns to the login page itself", () => {
+    expect(safeAdminNext("/admin/login")).toBe("/admin");
+    expect(safeAdminNext("/admin/login?next=/admin/feedback")).toBe("/admin");
+  });
+
+  it("falls back when missing, and takes the first of a repeated param", () => {
+    expect(safeAdminNext(undefined)).toBe("/admin");
+    expect(safeAdminNext(["/admin/feedback", "/x"])).toBe("/admin/feedback");
   });
 });
