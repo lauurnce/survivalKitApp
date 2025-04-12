@@ -1,9 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function AdminLoginPage() {
+// Errors from a non-JSON body (a proxy's 429 page, a 5xx) used to throw in
+// res.json() and surface as "Network error" (QA GT-21). Read it defensively.
+async function errorMessage(res: Response): Promise<string> {
+  try {
+    const body = await res.json();
+    if (typeof body?.error === "string") return body.error;
+  } catch {
+    // not JSON: fall through
+  }
+  if (res.status === 429) return "Too many attempts. Try again in a few minutes.";
+  return res.status >= 500 ? "Server error — try again" : "Invalid password";
+}
+
+/** `next` is already validated server-side by safeAdminNext. */
+export function AdminLoginForm({ next }: { next: string }) {
+  const passwordId = useId();
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,11 +37,10 @@ export default function AdminLoginPage() {
       });
 
       if (res.ok) {
-        router.push("/admin");
+        router.push(next);
         router.refresh();
       } else {
-        const { error: msg } = await res.json();
-        setError(msg ?? "Invalid password");
+        setError(await errorMessage(res));
         setPassword("");
       }
     } catch {
@@ -48,7 +62,11 @@ export default function AdminLoginPage() {
           </p>
         )}
 
+        <label htmlFor={passwordId} className="sr-only">
+          Admin password
+        </label>
         <input
+          id={passwordId}
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

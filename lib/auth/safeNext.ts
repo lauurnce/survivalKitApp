@@ -81,3 +81,18 @@ export function safeNextPath(raw: unknown, fallback: string = DEFAULT_NEXT): str
 export function safeNextParam(raw: string | string[] | undefined, fallback: string = DEFAULT_NEXT): string {
   return safeNextPath(Array.isArray(raw) ? raw[0] : raw, fallback);
 }
+
+const ADMIN_HOME = "/admin";
+
+/**
+ * Where to send the admin after logging in: a safe internal path inside
+ * /admin (QA GT-21), else the admin home. The login page itself is never a
+ * destination.
+ */
+export function safeAdminNext(raw: string | string[] | undefined): string {
+  const path = safeNextParam(raw, ADMIN_HOME);
+  const pathname = path.split(/[?#]/, 1)[0];
+  const inAdmin = pathname === ADMIN_HOME || pathname.startsWith(`${ADMIN_HOME}/`);
+  const isLogin = pathname === "/admin/login" || pathname.startsWith("/admin/login/");
+  return inAdmin && !isLogin ? path : ADMIN_HOME;
+}
