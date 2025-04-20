@@ -3,14 +3,8 @@ import type { CurrentTerm, Recommendation } from "@/lib/dashboard";
 import { continueHref } from "@/lib/dashboard";
 import type { Profile } from "@/lib/profile";
 import { ProBadge } from "@/components/ProBadge";
+import { greetingFor } from "@/lib/manilaTime";
 import { LandmarkArt } from "./LandmarkArt";
-
-function greeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
-}
 
 interface Props {
   term: CurrentTerm | null;
@@ -25,7 +19,7 @@ export function HeroCard({ term, topPick, profile, pro }: Props) {
     <div>
       <p className="font-serif text-lg text-ink mb-4 flex items-center gap-2">
         <span>
-          {greeting()}
+          {greetingFor()}
           {profile?.firstName ? `, ${profile.firstName}` : ""}
         </span>
         {pro && <ProBadge size="md" />}

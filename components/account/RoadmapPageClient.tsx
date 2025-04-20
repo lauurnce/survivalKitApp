@@ -5,6 +5,7 @@ import { ActivityGraph } from "@/components/dashboard/ActivityGraph";
 import { SubscriptionTimeline } from "@/components/dashboard/SubscriptionTimeline";
 import { RoadmapTour } from "@/components/tour/RoadmapTour";
 import type { DashboardData } from "@/lib/dashboard";
+import { formatManilaDate } from "@/lib/manilaTime";
 
 interface Props {
   initialData: DashboardData;
@@ -46,7 +47,7 @@ export function RoadmapPageClient({ initialData }: Props) {
                     <p className="font-serif text-sm text-ink">
                       Started your journey on{" "}
                       <span className="font-medium">
-                        {new Date(roadmap.journeyStartedAt).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
+                        {formatManilaDate(roadmap.journeyStartedAt)}
                       </span>
                     </p>
                     {roadmap.overall.totalModules > 0 && (

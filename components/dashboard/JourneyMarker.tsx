@@ -1,8 +1,5 @@
 import type { RoadmapData } from "@/lib/dashboard";
-
-function formatDate(date: Date): string {
-  return date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-}
+import { formatManilaDate } from "@/lib/manilaTime";
 
 interface JourneyMarkerProps {
   journeyStartedAt: string;
@@ -10,8 +7,7 @@ interface JourneyMarkerProps {
 }
 
 export function JourneyMarker({ journeyStartedAt, overall }: JourneyMarkerProps) {
-  const startedDate = new Date(journeyStartedAt);
-  const formattedDate = formatDate(startedDate);
+  const formattedDate = formatManilaDate(journeyStartedAt);
 
   return (
     <div className="relative mb-6 pl-10" role="region" aria-label="Journey start">

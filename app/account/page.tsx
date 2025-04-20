@@ -17,6 +17,7 @@ import { SemesterSections } from "@/components/dashboard/SemesterSections";
 import { DiscountCodesSectionWrapper } from "@/components/DiscountCodesSectionWrapper";
 import { PageTracker } from "@/components/PageTracker";
 import { DashboardTour } from "@/components/tour/DashboardTour";
+import { formatManilaDate } from "@/lib/manilaTime";
 import { groupByTerm, deriveCurrentTerm, pickRecommended, continueHref, formatDurationRemaining } from "@/lib/dashboard";
 
 export const dynamic = "force-dynamic";
@@ -159,12 +160,7 @@ export default async function AccountPage() {
                       {formatDurationRemaining(new Date(), new Date(subscriptions[0].endsAt))} remaining
                     </p>
                     <p className="text-xs text-ink-faint mt-0.5">
-                      Ends{" "}
-                      {new Date(subscriptions[0].endsAt).toLocaleDateString(undefined, {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      Ends {formatManilaDate(subscriptions[0].endsAt)}
                     </p>
                   </>
                 ) : roadmap.milestones.find(m => m.state === "upcoming") ? (
