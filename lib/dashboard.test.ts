@@ -8,6 +8,7 @@ import {
   roadmapNodes,
   continueHref,
   formatDurationRemaining,
+  subscriptionOverlaySpan,
   type TermGroup,
   type CurrentTerm,
   type Recommendation,
@@ -464,5 +465,31 @@ describe("deriveMilestoneState", () => {
 
   it("never calls an empty milestone locked or completed", () => {
     expect(deriveMilestoneState(m(0, 0, 0), false)).toBe("upcoming");
+  });
+});
+
+describe("subscriptionOverlaySpan", () => {
+  // Window: 56 Manila days, the first being 2026-09-06 (so the last is 2026-10-31).
+  const FIRST = "2026-09-06";
+
+  it("places a monthly plan bought 10 days ago at the right end of the window", () => {
+    // Bought Oct 21 noon Manila, 31-day plan.
+    const span = subscriptionOverlaySpan("2026-10-21T04:00:00Z", "2026-11-21T04:00:00Z", FIRST, 56);
+    expect(span).not.toBeNull();
+    expect(span!.from).toBeCloseTo(45.5, 5);
+    expect(span!.to).toBe(55);
+  });
+
+  it("clamps a long pass that started before the window to the left edge", () => {
+    const span = subscriptionOverlaySpan("2026-06-01T00:00:00Z", "2027-01-31T00:00:00Z", FIRST, 56);
+    expect(span).toEqual({ from: 0, to: 55 });
+  });
+
+  it("hides a plan that ended before the window opened", () => {
+    expect(subscriptionOverlaySpan("2026-07-01T00:00:00Z", "2026-08-01T00:00:00Z", FIRST, 56)).toBeNull();
+  });
+
+  it("hides unparseable dates", () => {
+    expect(subscriptionOverlaySpan("nope", "2026-11-21T04:00:00Z", FIRST, 56)).toBeNull();
   });
 });

@@ -32,4 +32,18 @@ describe("ActivityGraph", () => {
     expect(getByRole("img", { name: /activity graph/i })).toBeInTheDocument();
   });
 
+  it("draws a current monthly subscription at the right end of the window", () => {
+    const { container } = render(
+      <ActivityGraph
+        data={mkData()}
+        showSubscriptionOverlay
+        subscriptionItems={[{ startedAt: "2026-10-21T04:00:00Z", endsAt: "2026-11-21T04:00:00Z", progressPct: 30 }]}
+      />,
+    );
+    const rect = container.querySelector(".subscription-overlay rect");
+    expect(rect).not.toBeNull();
+    const perDay = 560 / 55;
+    expect(Number(rect!.getAttribute("x"))).toBeCloseTo(30 + 45.5 * perDay, 3);
+    expect(Number(rect!.getAttribute("x")) + Number(rect!.getAttribute("width"))).toBeCloseTo(30 + 560, 3);
+  });
 });

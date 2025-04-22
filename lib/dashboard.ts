@@ -314,3 +314,31 @@ export function formatDurationRemaining(from: Date, to: Date): string {
 
   return parts.slice(0, 3).join(", ");
 }
+
+const OVERLAY_DAY_MS = 24 * 60 * 60 * 1000;
+const OVERLAY_PH_OFFSET_MS = 8 * 60 * 60 * 1000;
+
+/**
+ * Where a subscription sits on the activity graph's day axis, in day-index
+ * units (0 = the window's first Manila day, totalDays - 1 = today), clamped to
+ * the window. Null when the plan doesn't overlap the window. The axis is the
+ * 56-day window, so offsets are measured in days from its start — not as a
+ * fraction of the subscription's own length, which pushed current monthly
+ * plans off the graph.
+ */
+export function subscriptionOverlaySpan(
+  startedAt: string,
+  endsAt: string,
+  firstDayKey: string,
+  totalDays: number,
+): { from: number; to: number } | null {
+  const windowStart = Date.parse(`${firstDayKey}T00:00:00Z`) - OVERLAY_PH_OFFSET_MS; // Manila midnight
+  const start = Date.parse(startedAt);
+  const end = Date.parse(endsAt);
+  if ([windowStart, start, end].some(Number.isNaN) || totalDays < 1) return null;
+  const last = totalDays - 1;
+  const from = (start - windowStart) / OVERLAY_DAY_MS;
+  const to = (end - windowStart) / OVERLAY_DAY_MS;
+  if (to < 0 || from > last || to <= from) return null;
+  return { from: Math.max(0, from), to: Math.min(last, to) };
+}

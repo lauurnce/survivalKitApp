@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import type { ActivityData } from "@/lib/dashboard";
+import { subscriptionOverlaySpan } from "@/lib/dashboard";
 
 interface ActivityGraphProps {
   data: ActivityData;
@@ -67,22 +68,12 @@ export function ActivityGraph({
     "Z",
   ].join(" ");
 
-  // Subscription overlay segments
-  const subscriptionSegments = subscriptionItems.map(sub => {
-    const startDate = new Date(sub.startedAt);
-    const endDate = new Date(sub.endsAt);
-    const now = new Date();
-    const totalMs = endDate.getTime() - startDate.getTime();
-    const startOffset = totalMs > 0 ? (startDate.getTime() - (now.getTime() - 56 * 24 * 60 * 60 * 1000)) / totalMs : 0;
-    const endOffset = totalMs > 0 ? (endDate.getTime() - (now.getTime() - 56 * 24 * 60 * 60 * 1000)) / totalMs : 1;
-    const clampedStart = Math.max(0, Math.min(1, startOffset));
-    const clampedEnd = Math.max(0, Math.min(1, endOffset));
-    if (clampedEnd <= 0 || clampedStart >= 1) return null;
-    return {
-      x1: xScale(clampedStart * (totalDays - 1)),
-      x2: xScale(clampedEnd * (totalDays - 1)),
-    };
-  }).filter((s): s is { x1: number; x2: number } => s !== null);
+  // Subscription overlay segments, positioned on the 56-day axis
+  const firstDayKey = allDays[0]?.date;
+  const subscriptionSegments = (firstDayKey ? subscriptionItems : [])
+    .map((sub) => subscriptionOverlaySpan(sub.startedAt, sub.endsAt, firstDayKey!, totalDays))
+    .filter((span): span is { from: number; to: number } => span !== null)
+    .map((span) => ({ x1: xScale(span.from), x2: xScale(span.to) }));
 
   // Weekend bands
   const weekendBands = allDays
