@@ -170,6 +170,8 @@ export default async function AccountPage() {
                     </p>
                     <p className="text-sm text-ink-muted">Locked — unlock to begin</p>
                   </>
+                ) : !current ? (
+                  <p className="text-sm text-ink-muted">Unlock a subject to set your first milestone.</p>
                 ) : (
                   <p className="text-sm text-ink-muted">All caught up!</p>
                 )}
@@ -182,7 +184,7 @@ export default async function AccountPage() {
               <SemesterSections terms={terms} currentKey={currentKey} />
             </div>
             <div data-tour="dashboard-this-week">
-              <ThisWeekPanel recs={recs} />
+              <ThisWeekPanel recs={recs} nothingUnlocked={!current} />
             </div>
           </div>
 
