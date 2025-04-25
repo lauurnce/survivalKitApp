@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useModalDialog } from "./useModalDialog";
 
 const CONFIRM_PHRASE = "delete my account";
 
@@ -12,6 +13,13 @@ function DeleteConfirmModal({ onClose }: { onClose: () => void }) {
   const [error, setError] = useState<string | null>(null);
 
   const canSubmit = confirmText.trim().toLowerCase() === CONFIRM_PHRASE && !pending;
+
+  const requestClose = useCallback(() => {
+    if (!pending) onClose();
+  }, [pending, onClose]);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  useModalDialog(panelRef, requestClose, inputRef);
 
   async function handleDelete() {
     if (!canSubmit) return;
@@ -38,11 +46,19 @@ function DeleteConfirmModal({ onClose }: { onClose: () => void }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm px-4"
-      onClick={(e) => { if (e.target === e.currentTarget && !pending) onClose(); }}
+      onClick={(e) => { if (e.target === e.currentTarget) requestClose(); }}
     >
-      <div className="w-full max-w-md bg-paper border border-taupe/50 rounded-xl p-6 space-y-4 shadow-xl">
+      <div
+        ref={panelRef}
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="delete-account-title"
+        aria-describedby="delete-account-desc"
+        tabIndex={-1}
+        className="w-full max-w-md bg-paper border border-taupe/50 rounded-xl p-6 space-y-4 shadow-xl"
+      >
         <div className="flex items-start justify-between gap-2">
-          <h2 className="font-serif text-lg text-ink leading-snug">Delete your account</h2>
+          <h2 id="delete-account-title" className="font-serif text-lg text-ink leading-snug">Delete your account</h2>
           <button
             onClick={onClose}
             disabled={pending}
@@ -53,7 +69,7 @@ function DeleteConfirmModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <p className="text-sm text-ink-muted leading-relaxed">
+        <p id="delete-account-desc" className="text-sm text-ink-muted leading-relaxed">
           This permanently deletes your profile and account login, and removes
           your name from your subscription and progress history. This cannot
           be undone.
@@ -70,6 +86,7 @@ function DeleteConfirmModal({ onClose }: { onClose: () => void }) {
         <label className="block text-sm text-ink-muted">
           Type <span className="font-mono text-ink">{CONFIRM_PHRASE}</span> to confirm
           <input
+            ref={inputRef}
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
             disabled={pending}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useCallback, useEffect, useRef, useState } from "react";
 import {
   BACKGROUNDS,
   DEVICES,
@@ -13,6 +13,7 @@ import { SECTORS, type Sector } from "@/lib/universities";
 import { saveProfileAction, type ProfileFormState } from "@/app/account/actions";
 import { SchoolFields } from "../SchoolFields";
 import { MajorCombobox } from "./MajorCombobox";
+import { useModalDialog } from "./useModalDialog";
 
 const inputClass =
   "mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-sm text-ink";
@@ -148,23 +149,44 @@ export function EditProfileModal({
     if (state.savedAt) onClose();
   }, [state.savedAt, onClose]);
 
+  // Any edit makes closing a question: Escape, the ✕ and a stray backdrop
+  // click used to throw the whole form away silently.
+  const dirtyRef = useRef(false);
+  const requestClose = useCallback(() => {
+    if (pending) return;
+    if (dirtyRef.current && !window.confirm("Discard your unsaved profile changes?")) return;
+    onClose();
+  }, [pending, onClose]);
+
+  const panelRef = useRef<HTMLDivElement>(null);
+  const firstFieldRef = useRef<HTMLInputElement>(null);
+  useModalDialog(panelRef, requestClose, firstFieldRef);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm px-4"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => { if (e.target === e.currentTarget) requestClose(); }}
     >
-      <div className="w-full max-w-md max-h-[85vh] overflow-y-auto bg-paper border border-taupe/50 rounded-xl p-6 space-y-5 shadow-xl">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-profile-title"
+        tabIndex={-1}
+        className="w-full max-w-md max-h-[85vh] overflow-y-auto bg-paper border border-taupe/50 rounded-xl p-6 space-y-5 shadow-xl"
+      >
         <div className="flex items-start justify-between gap-2">
           <div>
             <p className="text-label-sm tracking-widest uppercase text-ink-muted mb-1">
               My profile
             </p>
-            <h2 className="font-serif text-lg text-ink leading-snug">
+            <h2 id="edit-profile-title" className="font-serif text-lg text-ink leading-snug">
               {profile ? "Edit profile" : "Set up your profile"}
             </h2>
           </div>
           <button
-            onClick={onClose}
+            type="button"
+            onClick={requestClose}
             aria-label="Close"
             className="text-ink-faint hover:text-ink text-lg leading-none mt-0.5"
           >
@@ -172,11 +194,17 @@ export function EditProfileModal({
           </button>
         </div>
 
-        <form key={formKey} action={formAction} className="space-y-4">
+        <form
+          key={formKey}
+          action={formAction}
+          onChange={() => { dirtyRef.current = true; }}
+          className="space-y-4"
+        >
           <div className="grid grid-cols-2 gap-3">
             <label className="block text-sm text-ink-muted">
               First name *
               <input
+                ref={firstFieldRef}
                 name="firstName"
                 required
                 maxLength={60}

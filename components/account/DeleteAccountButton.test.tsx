@@ -60,3 +60,20 @@ describe("DeleteAccountButton", () => {
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("boom"));
   });
 });
+
+describe("DeleteAccountButton — dialog behaviour (GT-19)", () => {
+  it("opens a labelled modal dialog with focus in the confirm field, and Escape returns focus to the trigger", () => {
+    render(<DeleteAccountButton />);
+    const trigger = screen.getByRole("button", { name: /delete my account/i });
+    trigger.focus();
+    fireEvent.click(trigger);
+
+    const dialog = screen.getByRole("alertdialog", { name: "Delete your account" });
+    expect(dialog).toHaveAttribute("aria-modal", "true");
+    expect(screen.getByRole("textbox")).toHaveFocus();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+  });
+});

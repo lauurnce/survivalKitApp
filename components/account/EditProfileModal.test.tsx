@@ -56,3 +56,45 @@ describe("EditProfileModal — server validation error (GT-11)", () => {
     expect(screen.getByLabelText("Portfolio URL")).toHaveAttribute("pattern", "https://.*");
   });
 });
+
+describe("EditProfileModal — dialog behaviour (GT-19)", () => {
+  it("is a labelled modal dialog with focus on the first field", () => {
+    render(<EditProfileModal profile={profile} onClose={() => {}} />);
+    const dialog = screen.getByRole("dialog", { name: "Edit profile" });
+    expect(dialog).toHaveAttribute("aria-modal", "true");
+    expect(screen.getByLabelText(/First name/)).toHaveFocus();
+  });
+
+  it("closes on Escape when nothing was edited", () => {
+    const onClose = vi.fn();
+    render(<EditProfileModal profile={profile} onClose={onClose} />);
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("asks before a backdrop click throws away edits", () => {
+    const onClose = vi.fn();
+    const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
+    render(<EditProfileModal profile={profile} onClose={onClose} />);
+    fireEvent.change(screen.getByLabelText(/First name/), { target: { value: "Maria" } });
+
+    const backdrop = screen.getByRole("dialog").parentElement!;
+    fireEvent.click(backdrop);
+    expect(confirm).toHaveBeenCalled();
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByLabelText(/First name/)).toHaveValue("Maria");
+
+    confirm.mockReturnValue(true);
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(onClose).toHaveBeenCalledTimes(1);
+    confirm.mockRestore();
+  });
+
+  it("wraps Tab from the last control back to the first", () => {
+    render(<EditProfileModal profile={profile} onClose={() => {}} />);
+    const save = screen.getByRole("button", { name: /Save profile/i });
+    save.focus();
+    fireEvent.keyDown(document, { key: "Tab" });
+    expect(screen.getByRole("button", { name: "Close" })).toHaveFocus();
+  });
+});

@@ -14,3 +14,11 @@ describe("DangerZone", () => {
     ).toBeInTheDocument();
   });
 });
+
+describe("DangerZone copy (GT-19)", () => {
+  it("doesn't promise to remove progress, which deletion anonymises instead", () => {
+    render(<DangerZone />);
+    expect(screen.queryByText(/removes your profile, progress/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/unlinks your name from your progress/i)).toBeInTheDocument();
+  });
+});

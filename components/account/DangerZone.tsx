@@ -10,8 +10,9 @@ export function DangerZone() {
     >
       <h2 className="label-sm">Danger zone</h2>
       <p className="mt-2 text-xs text-ink-muted">
-        Deleting your account removes your profile, progress, and login for
-        good. This cannot be undone.
+        Deleting your account removes your profile and login for good, and
+        unlinks your name from your progress and payment history. This cannot
+        be undone.
       </p>
       <div className="mt-3">
         <DeleteAccountButton />
