@@ -21,7 +21,9 @@ interface AdminFeedbackResponse {
     app_rating: number;
     module_rating: number;
     feedback_text: string;
+    user_id: string | null;
     user_email: string | null;
+    user_name: string | null;
     is_anonymous: boolean;
     is_quality_approved: boolean;
     coupon_code: string | null;

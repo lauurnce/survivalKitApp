@@ -7,7 +7,9 @@ interface Feedback {
   app_rating: number;
   module_rating: number;
   feedback_text: string;
+  user_id?: string | null;
   user_email: string | null;
+  user_name?: string | null;
   is_anonymous: boolean;
   is_quality_approved: boolean;
   coupon_code: string | null;
@@ -60,7 +62,18 @@ export function FeedbackTable({
               <td className="px-4 py-3 text-center">{item.app_rating} ⭐</td>
               <td className="px-4 py-3 text-center">{item.module_rating} ⭐</td>
               <td className="px-4 py-3 text-xs">
-                {item.is_anonymous ? 'Anonymous' : item.user_email || 'N/A'}
+                {item.is_anonymous ? (
+                  'Anonymous'
+                ) : item.user_email || item.user_name ? (
+                  <>
+                    {item.user_name && <span className="block font-medium">{item.user_name}</span>}
+                    {item.user_email && <span className="block text-gray-500 dark:text-gray-400">{item.user_email}</span>}
+                  </>
+                ) : item.user_id ? (
+                  <span className="font-mono" title={item.user_id}>{item.user_id.slice(0, 8)}…</span>
+                ) : (
+                  'Guest'
+                )}
               </td>
               <td className="px-4 py-3 text-gray-700 dark:text-gray-300 max-w-xs truncate">
                 {item.feedback_text || '(no feedback)'}

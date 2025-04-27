@@ -41,6 +41,55 @@ const SORT_COLUMNS: Record<string, string> = {
   module: "modules(title)",
 };
 
+type SupabaseServer = ReturnType<typeof createServerClient>;
+
+interface UserLabel {
+  email: string | null;
+  name: string | null;
+}
+
+/**
+ * Email (auth.users, service role) and name (profiles) for the registered
+ * users on this page of feedback. user_feedback stores only user_id, which is
+ * why the User column used to read "N/A" for everyone. Admin-only route, at
+ * most one page of ids. A failed lookup degrades to no label — the table then
+ * shows the id — rather than failing the whole response.
+ */
+async function lookupUserLabels(
+  supabase: SupabaseServer,
+  userIds: string[],
+): Promise<Map<string, UserLabel>> {
+  const labels = new Map<string, UserLabel>(userIds.map((id) => [id, { email: null, name: null }]));
+  if (userIds.length === 0) return labels;
+
+  await Promise.all([
+    ...userIds.map(async (id) => {
+      try {
+        const { data } = await supabase.auth.admin.getUserById(id);
+        labels.get(id)!.email = data?.user?.email ?? null;
+      } catch (err) {
+        console.error("Admin feedback user lookup failed:", err);
+      }
+    }),
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from("profiles")
+          .select("user_id, first_name, last_name")
+          .in("user_id", userIds);
+        for (const row of (data ?? []) as { user_id: string; first_name: string | null; last_name: string | null }[]) {
+          const name = [row.first_name, row.last_name].filter(Boolean).join(" ");
+          const label = labels.get(row.user_id);
+          if (label && name) label.name = name;
+        }
+      } catch (err) {
+        console.error("Admin feedback profile lookup failed:", err);
+      }
+    })(),
+  ]);
+  return labels;
+}
+
 export async function GET(req: NextRequest) {
   // Check admin access
   const authed = await getAdminSession();
@@ -208,6 +257,14 @@ export async function GET(req: NextRequest) {
 
     // Transform response
     const typedData = data ?? [];
+    const registeredIds = Array.from(
+      new Set(
+        typedData
+          .filter((item) => item.user_id && !item.is_anonymous)
+          .map((item) => item.user_id as string),
+      ),
+    );
+    const userLabels = await lookupUserLabels(supabase, registeredIds);
     const transformedData =
       typedData.map((item) => ({
         id: item.id,
@@ -218,6 +275,8 @@ export async function GET(req: NextRequest) {
         module_rating: item.module_rating,
         feedback_text: item.feedback_text,
         user_id: item.user_id || null,
+        user_email: (item.user_id && userLabels.get(item.user_id)?.email) || null,
+        user_name: (item.user_id && userLabels.get(item.user_id)?.name) || null,
         is_anonymous: item.is_anonymous,
         is_quality_approved: item.is_quality_approved,
         coupon_code: item.coupon_code,

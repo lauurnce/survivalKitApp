@@ -557,3 +557,50 @@ describe("GET /api/admin/feedback", () => {
     });
   });
 });
+
+describe("user column (GT-07)", () => {
+  beforeEach(() => {
+    mockAuthed = true;
+  });
+
+  it("returns the registered user's email and name, looked up server-side", async () => {
+    const mock = makeSupabase({});
+    const getUserById = vi.fn(async (id: string) => ({
+      data: { user: { id, email: `${id}@example.com` } },
+      error: null,
+    }));
+    const profilesIn = vi.fn().mockResolvedValue({
+      data: [{ user_id: "user-1", first_name: "Juan", last_name: "Dela Cruz" }],
+      error: null,
+    });
+    const baseFrom = mock.supabase.from;
+    (mock.supabase as any).from = vi.fn((table: string) =>
+      table === "profiles" ? { select: () => ({ in: profilesIn }) } : baseFrom(table),
+    );
+    (mock.supabase as any).auth = { admin: { getUserById } };
+    mockSupabase = mock.supabase;
+
+    const json = await (await GET(makeReq("/api/admin/feedback") as any)).json();
+
+    expect(json.data[0].user_email).toBe("user-1@example.com");
+    expect(json.data[0].user_name).toBe("Juan Dela Cruz");
+    // Anonymous rows are never looked up.
+    expect(getUserById).toHaveBeenCalledTimes(1);
+    expect(json.data[1].user_email).toBeNull();
+  });
+
+  it("still answers when the lookup fails, leaving the id for the table to show", async () => {
+    const mock = makeSupabase({});
+    (mock.supabase as any).auth = {
+      admin: { getUserById: vi.fn().mockRejectedValue(new Error("auth down")) },
+    };
+    mockSupabase = mock.supabase;
+    vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const res = await GET(makeReq("/api/admin/feedback") as any);
+    const json = await res.json();
+    expect(res.status).toBe(200);
+    expect(json.data[0].user_email).toBeNull();
+    expect(json.data[0].user_id).toBe("user-1");
+  });
+});
