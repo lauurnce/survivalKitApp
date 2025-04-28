@@ -78,10 +78,16 @@ function makeSupabase(opts: {
     }),
   };
 
-  // Second call for stats
-  const statsSelectMock = vi.fn().mockResolvedValue({
-    data: statsData,
-    error: null,
+  // Second call for stats. The route pages through every row with .range(),
+  // and this mock enforces PostgREST's 1000-row max per request.
+  const statsRangeMock = vi.fn((from: number, to: number) =>
+    Promise.resolve({
+      data: statsData.slice(from, Math.min(to + 1, from + 1000)),
+      error: null,
+    }),
+  );
+  const statsSelectMock = vi.fn().mockReturnValue({
+    order: vi.fn().mockReturnValue({ range: statsRangeMock }),
   });
 
   const statsQueryChain = {
@@ -106,7 +112,7 @@ function makeSupabase(opts: {
     return null;
   });
 
-  return { supabase, selectMock, orderMock, rangeMock, statsSelectMock };
+  return { supabase, selectMock, orderMock, rangeMock, statsSelectMock, statsRangeMock };
 }
 
 vi.mock("@/lib/supabase/server", () => ({
@@ -602,5 +608,29 @@ describe("user column (GT-07)", () => {
     expect(res.status).toBe(200);
     expect(json.data[0].user_email).toBeNull();
     expect(json.data[0].user_id).toBe("user-1");
+  });
+});
+
+describe("stats past the 1000-row cap (GT-15)", () => {
+  beforeEach(() => {
+    mockAuthed = true;
+  });
+
+  it("counts every feedback row, not just the first 1000", async () => {
+    const rows = Array.from({ length: 1500 }, (_, i) => ({
+      app_rating: i < 1000 ? 5 : 1,
+      module_rating: 4,
+      is_quality_approved: true,
+      coupon_code: null,
+      redeemed_at: null,
+    }));
+    const mock = makeSupabase({ statsData: rows });
+    mockSupabase = mock.supabase;
+
+    const json = await (await GET(makeReq("/api/admin/feedback") as any)).json();
+    expect(json.stats.total_feedback).toBe(1500);
+    // (1000 * 5 + 500 * 1) / 1500
+    expect(json.stats.avg_app_rating).toBeCloseTo(3.67, 2);
+    expect(mock.statsRangeMock).toHaveBeenCalledTimes(2);
   });
 });

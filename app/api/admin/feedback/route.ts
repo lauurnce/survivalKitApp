@@ -43,6 +43,14 @@ const SORT_COLUMNS: Record<string, string> = {
 
 type SupabaseServer = ReturnType<typeof createServerClient>;
 
+interface FeedbackRow {
+  app_rating: number;
+  module_rating: number;
+  is_quality_approved: boolean;
+  coupon_code: string | null;
+  redeemed_at: string | null;
+}
+
 interface UserLabel {
   email: string | null;
   name: string | null;
@@ -188,10 +196,26 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Fetch stats from full dataset
-    const { data: statsData, error: statsError } = await supabase
-      .from("user_feedback")
-      .select("app_rating, module_rating, is_quality_approved, coupon_code, redeemed_at");
+    // Fetch stats from the full dataset. PostgREST returns at most 1000 rows
+    // per request, so an unpaged read undercounted every figure past 1000
+    // rows; page through all of them in a stable order.
+    const STATS_PAGE = 1000;
+    const statsData: FeedbackRow[] = [];
+    let statsError: { message: string } | null = null;
+    for (let from = 0; ; from += STATS_PAGE) {
+      const { data: pageRows, error: pageError } = await supabase
+        .from("user_feedback")
+        .select("app_rating, module_rating, is_quality_approved, coupon_code, redeemed_at")
+        .order("id", { ascending: true })
+        .range(from, from + STATS_PAGE - 1);
+      if (pageError) {
+        statsError = pageError;
+        break;
+      }
+      const rows = (pageRows ?? []) as FeedbackRow[];
+      statsData.push(...rows);
+      if (rows.length < STATS_PAGE) break;
+    }
 
     if (statsError) {
       console.error("Admin feedback stats error:", statsError);
@@ -199,14 +223,6 @@ export async function GET(req: NextRequest) {
         { error: "Failed to fetch stats" },
         { status: 500 }
       );
-    }
-
-    interface FeedbackRow {
-      app_rating: number;
-      module_rating: number;
-      is_quality_approved: boolean;
-      coupon_code: string | null;
-      redeemed_at: string | null;
     }
 
     const stats = statsData

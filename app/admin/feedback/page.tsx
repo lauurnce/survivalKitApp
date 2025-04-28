@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { StatsBar } from './components/StatsBar';
 import { FeedbackTable } from './components/FeedbackTable';
 
@@ -32,7 +33,12 @@ interface AdminFeedbackResponse {
   stats: Stats;
 }
 
+// Wait this long after the last keystroke before searching, so typing a word
+// sends one request rather than one per letter.
+const SEARCH_DEBOUNCE_MS = 300;
+
 export default function AdminFeedbackPage() {
+  const router = useRouter();
   const [response, setResponse] = useState<AdminFeedbackResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,8 +51,17 @@ export default function AdminFeedbackPage() {
   const [filterApproval, setFilterApproval] = useState('');
   const [filterUserType, setFilterUserType] = useState('');
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
   useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  useEffect(() => {
+    // Only the latest request may write state: a slow earlier response
+    // landing after a newer one would otherwise overwrite it.
+    let current = true;
     async function fetchFeedback() {
       setLoading(true);
       try {
@@ -57,28 +72,43 @@ export default function AdminFeedbackPage() {
           order: sortOrder,
           ...(filterApproval && { filter_approval: filterApproval }),
           ...(filterUserType && { filter_user_type: filterUserType }),
-          ...(search && { search }),
+          ...(debouncedSearch && { search: debouncedSearch }),
         });
 
         const response = await fetch(`/api/admin/feedback?${params}`);
+        if (!current) return;
+        if (response.status === 401) {
+          // Session expired: an error banner can't fix that, the login can.
+          router.replace('/admin/login');
+          return;
+        }
         if (!response.ok) {
           const body = await response.json().catch(() => null);
           throw new Error(body?.error || `Failed to fetch feedback (HTTP ${response.status})`);
         }
 
         const data = await response.json();
+        if (!current) return;
         setResponse(data);
         setError(null);
       } catch (err) {
+        if (!current) return;
         console.error('Error fetching feedback:', err);
         setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {
-        setLoading(false);
+        if (current) setLoading(false);
       }
     }
 
     fetchFeedback();
-  }, [page, limit, sortColumn, sortOrder, filterApproval, filterUserType, search]);
+    return () => {
+      current = false;
+    };
+  }, [page, limit, sortColumn, sortOrder, filterApproval, filterUserType, debouncedSearch, router]);
+
+  const total = response?.pagination.total ?? 0;
+  const firstShown = (page - 1) * limit + 1;
+  const lastShown = Math.min(page * limit, total);
 
   if (loading && !response) {
     return <div className="text-gray-600">Loading...</div>;
@@ -109,7 +139,8 @@ export default function AdminFeedbackPage() {
       <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <input
-            type="text"
+            type="search"
+            aria-label="Search feedback"
             placeholder="Search feedback..."
             value={search}
             onChange={(e) => {
@@ -163,17 +194,25 @@ export default function AdminFeedbackPage() {
           <FeedbackTable
             data={response.data}
             onSort={(column) => {
-              setSortColumn(column);
-              setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+              // Same column flips direction; a new column starts newest/highest first.
+              if (column === sortColumn) {
+                setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+              } else {
+                setSortColumn(column);
+                setSortOrder('desc');
+              }
+              setPage(1);
             }}
             currentSort={sortColumn}
+            currentOrder={sortOrder === 'asc' ? 'asc' : 'desc'}
           />
 
           {/* Pagination */}
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600 dark:text-gray-400">
-              Showing {(page - 1) * limit + 1} to {Math.min(page * limit, response.pagination.total)} of{' '}
-              {response.pagination.total} feedback
+              {total === 0
+                ? '0 feedback'
+                : `Showing ${firstShown} to ${lastShown} of ${total} feedback`}
             </div>
             <div className="flex gap-2">
               <button

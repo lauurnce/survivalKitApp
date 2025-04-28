@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { FeedbackTable } from "./FeedbackTable";
 
 const base = {
@@ -31,5 +31,29 @@ describe("FeedbackTable user column (GT-07)", () => {
     expect(screen.getByText("0f1e2d3c…")).toBeInTheDocument();
     expect(screen.getByText("Anonymous")).toBeInTheDocument();
     expect(screen.queryByText("N/A")).not.toBeInTheDocument();
+  });
+});
+
+describe("FeedbackTable copy and empty state (GT-15)", () => {
+  it("renders an empty-table row when there is no feedback", () => {
+    render(<FeedbackTable data={[]} onSort={() => {}} currentSort="created_at" />);
+    expect(screen.getByText(/no feedback matches/i)).toBeInTheDocument();
+  });
+
+  it("confirms a copy only after the clipboard write succeeds", async () => {
+    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+    const writeText = vi.fn().mockRejectedValue(new Error("denied"));
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
+    render(
+      <FeedbackTable
+        data={[{ ...base, id: "a", user_id: null, user_email: null, is_anonymous: true, coupon_code: "FEEDBACK-AAA111" }]}
+        onSort={() => {}}
+        currentSort="created_at"
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: /FEEDBACK-AAA111/ }));
+    expect(await screen.findByText(/copy failed/i)).toBeInTheDocument();
+    expect(alertSpy).not.toHaveBeenCalled();
+    alertSpy.mockRestore();
   });
 });
