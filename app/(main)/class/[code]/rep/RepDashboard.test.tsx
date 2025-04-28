@@ -257,3 +257,100 @@ describe("RepDashboard", () => {
     expect(await screen.findByText("Copied!")).toBeInTheDocument();
   });
 });
+
+describe("RepDashboard polling and polish (GT-13)", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("polls every 30s while visible and badges requests that arrived since opening", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const later = fullDashboard({
+      pending: [
+        { id: "req-1", createdAt: "2026-07-17T10:00:00.000Z" },
+        { id: "req-2", createdAt: "2026-07-18T02:00:00.000Z" },
+        { id: "req-3", createdAt: "2026-07-18T03:00:00.000Z" },
+      ],
+    });
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() => jsonResponse(fullDashboard()))
+      .mockImplementation(() => jsonResponse(later));
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<RepDashboard code={CODE} />);
+    expect(await screen.findByText("Pending requests (1)")).toBeInTheDocument();
+    expect(screen.queryByText(/new$/)).not.toBeInTheDocument();
+
+    await vi.advanceTimersByTimeAsync(30_000);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(await screen.findByText("Pending requests (3)")).toBeInTheDocument();
+    expect(screen.getByText("2 new")).toBeInTheDocument();
+  });
+
+  it("doesn't poll while the tab is hidden, and refreshes when it comes back", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const fetchMock = vi.fn(() => jsonResponse(fullDashboard()));
+    vi.stubGlobal("fetch", fetchMock);
+    let visibility: DocumentVisibilityState = "visible";
+    vi.spyOn(document, "visibilityState", "get").mockImplementation(() => visibility);
+
+    render(<RepDashboard code={CODE} />);
+    await screen.findByText("Your class");
+    visibility = "hidden";
+    await vi.advanceTimersByTimeAsync(90_000);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    visibility = "visible";
+    document.dispatchEvent(new Event("visibilitychange"));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+  });
+
+  it("keeps the dashboard up when a background poll fails", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() => jsonResponse(fullDashboard()))
+      .mockImplementation(() => Promise.reject(new Error("offline")));
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<RepDashboard code={CODE} />);
+    await screen.findByText("Your class");
+    await vi.advanceTimersByTimeAsync(30_000);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(screen.getByText("Your class")).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("shows a loading state instead of a blank page", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise(() => {})));
+    render(<RepDashboard code={CODE} />);
+    expect(screen.getByText(/loading your class/i)).toBeInTheDocument();
+  });
+
+  it("dates each request and the expiry on the Manila calendar", async () => {
+    vi.stubGlobal("fetch", vi.fn(() => jsonResponse(fullDashboard())));
+    render(<RepDashboard code={CODE} />);
+    // 2026-07-17 10:00Z is 6:00 PM in Manila; 2026-08-15 00:00Z is Aug 15 there.
+    expect(await screen.findByText(/Jul 17, 2026, 6:00 PM/)).toBeInTheDocument();
+    expect(screen.getByText("Aug 15, 2026")).toBeInTheDocument();
+  });
+
+  it("hints how to fill an empty roster", async () => {
+    vi.stubGlobal("fetch", vi.fn(() => jsonResponse(fullDashboard({ roster: [], pending: [] }))));
+    render(<RepDashboard code={CODE} />);
+    expect(await screen.findByText(/share the invite link/i)).toBeInTheDocument();
+  });
+
+  it("shows the invite link to copy by hand when the clipboard is refused", async () => {
+    vi.stubGlobal("fetch", vi.fn(() => jsonResponse(fullDashboard())));
+    vi.stubGlobal("navigator", {
+      ...globalThis.navigator,
+      clipboard: { writeText: vi.fn(() => Promise.reject(new Error("denied"))) },
+    });
+    render(<RepDashboard code={CODE} />);
+    fireEvent.click(await screen.findByRole("button", { name: "Copy invite link" }));
+    const field = await screen.findByRole("textbox", { name: /invite link/i });
+    expect((field as HTMLInputElement).value).toContain(`/class/${CODE}/join`);
+  });
+});
