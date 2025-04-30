@@ -14,18 +14,20 @@ import { signOutAction } from "@/app/(auth)/actions";
 
 /** Nav rail that is always shown; progress fills in once the session loads. */
 export function SessionNavRail() {
-  const { overallDone, overallTotal } = useSession({ overview: true });
-  return <NavRail overallDone={overallDone} overallTotal={overallTotal} />;
+  const { ready, signedIn, overallDone, overallTotal } = useSession({ overview: true });
+  // Until the session resolves, keep the ring (it fills in) rather than
+  // flashing a log-in prompt at a signed-in reader.
+  return <NavRail overallDone={overallDone} overallTotal={overallTotal} signedIn={!ready || signedIn} />;
 }
 
 function DashboardNavRailInner({ children }: { children?: React.ReactNode }) {
   const searchParams = useSearchParams();
-  const { signedIn, overallDone, overallTotal } = useSession({ overview: true });
+  const { ready, signedIn, overallDone, overallTotal } = useSession({ overview: true });
   const fromDashboard = hasDashboardReferrer(searchParams);
   if (!signedIn && !fromDashboard) return null;
   return (
     <>
-      <NavRail overallDone={overallDone} overallTotal={overallTotal} />
+      <NavRail overallDone={overallDone} overallTotal={overallTotal} signedIn={!ready || signedIn} />
       {children}
     </>
   );

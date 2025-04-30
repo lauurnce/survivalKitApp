@@ -8,6 +8,13 @@ import { withDashboardReferrer } from "@/lib/navigation";
 interface NavRailProps {
   overallDone: number;
   overallTotal: number;
+  /**
+   * False for a signed-out visitor (the rail also shows on public pages such
+   * as /resources). They have unlocked nothing, so the ring would read
+   * "0 / 0" — show a log-in prompt instead. Defaults to true: the account
+   * pages that render the rail on the server are signed in by definition.
+   */
+  signedIn?: boolean;
 }
 
 interface NavItem {
@@ -41,7 +48,7 @@ function isItemActive(pathname: string, item: NavItem): boolean {
  * list, progress ring), and a horizontal scrollable tab strip below that —
  * same markup, responsive classes only.
  */
-export function NavRail({ overallDone, overallTotal }: NavRailProps) {
+export function NavRail({ overallDone, overallTotal, signedIn = true }: NavRailProps) {
   const pathname = usePathname();
   const percent = completionPercentage(overallDone, overallTotal);
 
@@ -87,24 +94,29 @@ export function NavRail({ overallDone, overallTotal }: NavRailProps) {
         })}
       </ul>
 
+      {!signedIn && (
+        <div className="mt-auto hidden flex-col items-center gap-3 border-t border-taupe/30 px-6 py-6 text-center lg:flex">
+          <p className="text-xs text-ink-muted">
+            Log in to track your progress across every subject.
+          </p>
+          <Link
+            href={`/login?next=${encodeURIComponent(pathname)}`}
+            className="text-sm text-accent underline underline-offset-2 hover:text-accent-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          >
+            Log in
+          </Link>
+        </div>
+      )}
+
       {/* Progress ring block — desktop only */}
-      <div className="mt-auto hidden flex-col items-center gap-3 border-t border-taupe/30 px-6 py-6 lg:flex">
-        <div
-          role="img"
-          aria-label={`Overall progress: ${percent}% complete — ${overallDone} of ${overallTotal} modules done`}
-          className="relative h-[72px] w-[72px] shrink-0"
-        >
-          <svg viewBox="0 0 80 80" aria-hidden="true" className="h-full w-full -rotate-90">
-            <circle
-              cx="40"
-              cy="40"
-              r={RADIUS}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="8"
-              className="text-ink-faint/20"
-            />
-            {percent > 0 && (
+      {signedIn && (
+        <div className="mt-auto hidden flex-col items-center gap-3 border-t border-taupe/30 px-6 py-6 lg:flex">
+          <div
+            role="img"
+            aria-label={`Overall progress: ${percent}% complete — ${overallDone} of ${overallTotal} modules done`}
+            className="relative h-[72px] w-[72px] shrink-0"
+          >
+            <svg viewBox="0 0 80 80" aria-hidden="true" className="h-full w-full -rotate-90">
               <circle
                 cx="40"
                 cy="40"
@@ -112,24 +124,35 @@ export function NavRail({ overallDone, overallTotal }: NavRailProps) {
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="8"
-                strokeLinecap="round"
-                strokeDasharray={CIRCUMFERENCE}
-                strokeDashoffset={CIRCUMFERENCE * (1 - percent / 100)}
-                className="text-accent"
+                className="text-ink-faint/20"
               />
-            )}
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="font-serif text-base leading-none text-ink">
-              {overallDone} / {overallTotal}
-            </span>
+              {percent > 0 && (
+                <circle
+                  cx="40"
+                  cy="40"
+                  r={RADIUS}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  strokeDasharray={CIRCUMFERENCE}
+                  strokeDashoffset={CIRCUMFERENCE * (1 - percent / 100)}
+                  className="text-accent"
+                />
+              )}
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="font-serif text-base leading-none text-ink">
+                {overallDone} / {overallTotal}
+              </span>
+            </div>
           </div>
+          <span className="label-sm text-center">Modules done</span>
+          <p className="text-center text-xs italic text-ink-muted font-serif">
+            Across every year and subject you&apos;ve unlocked.
+          </p>
         </div>
-        <span className="label-sm text-center">Modules done</span>
-        <p className="text-center text-xs italic text-ink-muted font-serif">
-          Across every year and subject you&apos;ve unlocked.
-        </p>
-      </div>
+      )}
     </nav>
   );
 }
