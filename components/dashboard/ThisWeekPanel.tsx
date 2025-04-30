@@ -6,9 +6,11 @@ import { SubjectIcon } from "./SubjectIcon";
 
 interface Props {
   recs: Recommendation[];
+  /** No subject unlocked yet: a new account, not one that finished everything. */
+  nothingUnlocked?: boolean;
 }
 
-export function ThisWeekPanel({ recs }: Props) {
+export function ThisWeekPanel({ recs, nothingUnlocked = false }: Props) {
   return (
     <div className="rounded-xl border border-taupe/30 bg-paper">
       <div className="px-6 pt-6">
@@ -16,7 +18,20 @@ export function ThisWeekPanel({ recs }: Props) {
         <h2 className="font-serif text-lg text-ink mt-1">Your next modules</h2>
       </div>
 
-      {recs.length === 0 ? (
+      {recs.length === 0 && nothingUnlocked ? (
+        <div className="px-6 py-6">
+          <p className="text-sm font-medium text-ink">Start your first module</p>
+          <p className="mt-1 text-sm text-ink-muted">
+            Every subject opens with a free lesson. Pick one to begin, and it will show up here.
+          </p>
+          <Link
+            href="/year"
+            className="mt-4 inline-block rounded-lg bg-accent px-4 py-2 text-sm font-medium text-paper hover:bg-accent-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          >
+            Browse subjects →
+          </Link>
+        </div>
+      ) : recs.length === 0 ? (
         <div className="px-6 py-6">
           <p className="text-sm text-ink-muted">
             You&apos;re all caught up. Browse subjects to unlock your next one.{" "}

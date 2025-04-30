@@ -444,6 +444,8 @@ interface EventRowFull {
 
 const ACTIVITY_WINDOW_DAYS = 56; // 8 weeks
 const DAY_MS = 24 * 60 * 60 * 1000;
+const ACTIVITY_PAGE_SIZE = 1000; // PostgREST's default max-rows per request
+const ACTIVITY_MAX_PAGES = 10;
 
 /** "YYYY-MM-DD" of the Asia/Manila calendar day containing `instant`. */
 function phDayKey(instant: Date): string {
@@ -533,17 +535,28 @@ export async function getActivityData(deviceId: string | null): Promise<Activity
   // events has no user_id column — every row is keyed by device_id, so a
   // signed-in user's activity is only visible through the device cookie set
   // on their browser (the same one subscriptions/unlocks fall back to).
-  const eventsRes = deviceId
-    ? await supabase
-        .from("events")
-        .select("event_type, subject_id, module_id, created_at")
-        .eq("device_id", deviceId)
-        .gte("created_at", activityWindowStartUtc(now).toISOString())
-        .order("created_at", { ascending: true })
-    : { data: [] as EventRowFull[] };
+  if (!deviceId) return buildActivityData([], now);
 
-  const allEvents = (eventsRes.data ?? []) as EventRowFull[];
-  return buildActivityData(allEvents.map((e) => e.created_at), now);
+  // Newest first and paged: PostgREST returns at most 1000 rows per request,
+  // and an ascending unpaged read kept the oldest 1000, dropping the recent
+  // days the streak depends on. Only the 56-day window is read, and a runaway
+  // device is capped so one dashboard load can't page forever.
+  const since = activityWindowStartUtc(now).toISOString();
+  const createdAts: string[] = [];
+  for (let page = 0; page < ACTIVITY_MAX_PAGES; page++) {
+    const from = page * ACTIVITY_PAGE_SIZE;
+    const { data } = await supabase
+      .from("events")
+      .select("created_at")
+      .eq("device_id", deviceId)
+      .gte("created_at", since)
+      .order("created_at", { ascending: false })
+      .range(from, from + ACTIVITY_PAGE_SIZE - 1);
+    const rows = (data ?? []) as Pick<EventRowFull, "created_at">[];
+    for (const r of rows) createdAts.push(r.created_at);
+    if (rows.length < ACTIVITY_PAGE_SIZE) break;
+  }
+  return buildActivityData(createdAts, now);
 }
 
 // ─── Subscription Timeline Data ───────────────────────────────────────────────

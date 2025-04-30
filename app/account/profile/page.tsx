@@ -10,6 +10,7 @@ import { ProfileCard } from "@/components/account/ProfileCard";
 import { DangerZone } from "@/components/account/DangerZone";
 import { TourReplay } from "@/components/account/TourReplay";
 import { ProfileTour } from "@/components/tour/ProfileTour";
+import { MANILA_TZ } from "@/lib/manilaTime";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export default async function ProfilePage() {
   // Formatted server-side so the client renders the same string and hydration
   // can't disagree about locale or date parsing.
   const startedLabel = profile?.createdAt
-    ? new Intl.DateTimeFormat("en-PH", { month: "long", year: "numeric" }).format(
+    ? new Intl.DateTimeFormat("en-PH", { month: "long", year: "numeric", timeZone: MANILA_TZ }).format(
         new Date(profile.createdAt)
       )
     : null;

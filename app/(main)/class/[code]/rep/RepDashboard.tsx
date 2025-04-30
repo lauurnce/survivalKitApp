@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BackLink } from "@/components/BackLink";
 import { withUtm } from "@/lib/utm";
+import { formatManilaDate } from "@/lib/manilaTime";
 
 interface DashboardData {
   summary: {
@@ -21,6 +22,11 @@ interface DashboardData {
 interface Props {
   code: string;
 }
+
+// Join requests only reach the rep through this page, so it re-checks while
+// it's on screen. 30 s keeps a waiting classmate's wait short without
+// hammering the route; hidden tabs don't poll at all.
+const POLL_MS = 30_000;
 
 // Same public contact address the privacy page lists.
 const SUPPORT_EMAIL = "paneslawrence8@gmail.com";
@@ -41,20 +47,42 @@ export function RepDashboard({ code }: Props) {
   const [deciding, setDeciding] = useState<string | null>(null);
   const [decideError, setDecideError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [manualLink, setManualLink] = useState<string | null>(null);
+  // Request ids already on screen when the dashboard first loaded; anything
+  // else that shows up while it's open is badged "new".
+  const [seen, setSeen] = useState<Set<string> | null>(null);
+  const dataRef = useRef<DashboardData | null>(null);
 
-  const load = useCallback(async () => {
+  // `background` is a poll: a failed poll keeps the dashboard that's already
+  // on screen instead of swapping it for an error page.
+  const load = useCallback(async ({ background = false }: { background?: boolean } = {}) => {
     try {
       const res = await fetch(`/api/class/${code}/rep`);
       if (!res.ok) {
-        setError(errorKindForStatus(res.status));
+        if (!background || !dataRef.current) setError(errorKindForStatus(res.status));
         return;
       }
-      setData(await res.json());
+      const next: DashboardData = await res.json();
+      dataRef.current = next;
+      setData(next);
+      setSeen((prev) => prev ?? new Set(next.pending.map((p) => p.id)));
       setError(null);
     } catch {
-      setError("failed");
+      if (!background || !dataRef.current) setError("failed");
     }
   }, [code]);
+
+  useEffect(() => {
+    const poll = () => {
+      if (document.visibilityState === "visible") void load({ background: true });
+    };
+    const id = setInterval(poll, POLL_MS);
+    document.addEventListener("visibilitychange", poll);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", poll);
+    };
+  }, [load]);
 
   useEffect(() => {
     // Fetch-on-mount: every setState in load() runs after its awaits, so no
@@ -101,16 +129,32 @@ export function RepDashboard({ code }: Props) {
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
+      setManualLink(null);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // clipboard access denied — nothing more we can do here
+      // Clipboard refused (in-app browsers, insecure contexts): show the link
+      // in a field the rep can select and copy by hand.
+      setManualLink(url);
     }
   }
 
   if (error) {
     return <RepDashboardError code={code} kind={error} onRetry={() => void load()} />;
   }
-  if (!data) return null;
+  if (!data) {
+    return (
+      <main className="min-h-screen bg-paper px-6 py-12 md:px-16 md:py-20">
+        <div className="max-w-2xl mx-auto">
+          <p className="label-sm mb-4">Class Rep Dashboard</p>
+          <p role="status" className="font-sans text-sm text-ink-muted">
+            Loading your class…
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  const newCount = seen ? data.pending.filter((p) => !seen.has(p.id)).length : 0;
 
   const classAverage =
     data.roster.length > 0
@@ -143,7 +187,7 @@ export function RepDashboard({ code }: Props) {
           <div className="rounded-xl border border-taupe/30 p-4">
             <p className="font-sans text-xs text-ink-faint mb-1">Expires</p>
             <p className="font-serif text-lg text-ink">
-              {new Date(data.summary.expiresAt).toLocaleDateString()}
+              {formatManilaDate(data.summary.expiresAt, "short")}
             </p>
           </div>
         </div>
@@ -154,6 +198,17 @@ export function RepDashboard({ code }: Props) {
         >
           {copied ? "Copied!" : "Copy invite link"}
         </button>
+        {manualLink && (
+          <label className="-mt-6 mb-8 block font-sans text-xs text-ink-muted">
+            Couldn&apos;t copy automatically. Select the invite link and copy it:
+            <input
+              readOnly
+              value={manualLink}
+              onFocus={(e) => e.currentTarget.select()}
+              className="mt-1 w-full rounded border border-taupe/30 bg-paper px-3 py-2 font-mono text-xs text-ink"
+            />
+          </label>
+        )}
 
         {decideError && (
           <p className="mb-4 font-sans text-sm text-red-500">{decideError}</p>
@@ -161,8 +216,16 @@ export function RepDashboard({ code }: Props) {
 
         {data.pending.length > 0 && (
           <div className="mb-8">
-            <h3 className="font-sans text-sm uppercase tracking-wide text-ink-muted mb-3">
-              Pending requests ({data.pending.length})
+            <h3 className="flex items-center gap-2 font-sans text-sm uppercase tracking-wide text-ink-muted mb-3">
+              <span>Pending requests ({data.pending.length})</span>
+              {newCount > 0 && (
+                <span
+                  aria-live="polite"
+                  className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold normal-case tracking-normal text-paper"
+                >
+                  {newCount} new
+                </span>
+              )}
             </h3>
             <div className="space-y-2">
               {data.pending.map((p) => (
@@ -171,7 +234,7 @@ export function RepDashboard({ code }: Props) {
                   className="flex items-center justify-between rounded-lg border border-taupe/20 px-4 py-3"
                 >
                   <span className="font-sans text-sm text-ink-muted">
-                    Request · {new Date(p.createdAt).toLocaleTimeString()}
+                    Request · {formatManilaDate(p.createdAt, "dateTime")}
                   </span>
                   <div className="flex gap-2">
                     <button
@@ -199,6 +262,11 @@ export function RepDashboard({ code }: Props) {
           <h3 className="font-sans text-sm uppercase tracking-wide text-ink-muted mb-3">
             Roster ({data.roster.length})
           </h3>
+          {data.roster.length === 0 && (
+            <p className="font-sans text-sm text-ink-faint">
+              No classmates yet. Share the invite link in your class group chat to get them in.
+            </p>
+          )}
           <div className="space-y-2">
             {data.roster.map((r) => {
               const pct = r.total > 0 ? Math.round((r.completed / r.total) * 100) : 0;

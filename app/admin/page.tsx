@@ -5,6 +5,7 @@ import { AdminDashboard } from "@/components/AdminDashboard";
 import { revenueByMonth, PH_OFFSET_MS } from "@/lib/payments";
 import { findUnreflectedPayments, type UnreflectedPayment } from "@/lib/reconcile";
 import { ADMIN_FUNNEL_STEPS } from "@/lib/adminFunnel";
+import type { AdminQueryError } from "@/components/AdminDashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -45,21 +46,21 @@ export default async function AdminPage() {
   const nextMonthStartUtcIso = new Date(nextMonthStartUtcMs).toISOString();
 
   const [
-    { data: funnelRaw },
-    { data: dauRaw },
-    { data: subjectCounters },
-    { data: moduleCounters },
-    { data: topSectionsRaw },
-    { data: activeRaw },
-    { data: userTotalsRaw },
-    { data: activeSubscribersRaw },
-    { data: paymentsRaw },
+    { data: funnelRaw, error: funnelError },
+    { data: dauRaw, error: dauError },
+    { data: subjectCounters, error: topSubjectsError },
+    { data: moduleCounters, error: topModulesError },
+    { data: topSectionsRaw, error: topSectionsError },
+    { data: activeRaw, error: activeNowError },
+    { data: userTotalsRaw, error: userTotalsError },
+    { data: activeSubscribersRaw, error: activeSubscribersError },
+    { data: paymentsRaw, error: transactionsError },
     // Revenue query is SEPARATE from paymentsRaw and has NO row cap. The
     // transactions list (paymentsRaw) is capped at 100 for display; using it
     // for revenue would silently undercount once lifetime payments exceed 100.
-    { data: revenueRaw },
-    { data: profilesAggRaw },
-    { data: feedbackAggRaw },
+    { data: revenueRaw, error: revenueError },
+    { data: profilesAggRaw, error: profilesError },
+    { data: feedbackAggRaw, error: feedbackError },
   ] = await Promise.all([
     // Funnel distinct-device counts per event_type, aggregated in Postgres
     // (the old raw .limit() was capped at 1000 rows and undercounted).
@@ -113,6 +114,28 @@ export default async function AdminPage() {
     // are never subject to PostgREST's 1000-row default cap.
     supabase.rpc("admin_feedback_agg"),
   ]);
+
+  // Every query reports its own error. A failed RPC (missing migration,
+  // timeout) used to fall through to the `?? 0` / `?? []` defaults below and
+  // render as real zeros; the dashboard now marks those figures "not read".
+  const queryErrors: AdminQueryError[] = (
+    [
+      ["funnel", "admin_funnel_counts", funnelError],
+      ["dau", "admin_dau_30d", dauError],
+      ["topSubjects", "counters (subjects)", topSubjectsError],
+      ["topModules", "counters (modules)", topModulesError],
+      ["topSections", "admin_top_sections", topSectionsError],
+      ["activeNow", "admin_active_since", activeNowError],
+      ["userTotals", "admin_user_totals", userTotalsError],
+      ["activeSubscribers", "admin_active_subscribers", activeSubscribersError],
+      ["transactions", "payments (recent)", transactionsError],
+      ["revenue", "payments (revenue window)", revenueError],
+      ["profiles", "admin_profiles_agg", profilesError],
+      ["feedback", "admin_feedback_agg", feedbackError],
+    ] as const
+  )
+    .filter(([, , error]) => !!error)
+    .map(([key, query, error]) => ({ key, query, message: error!.message }));
 
   const funnelCounts = new Map<string, number>();
   for (const r of (funnelRaw ?? []) as { event_type: string; unique_devices: number }[]) {
@@ -319,6 +342,7 @@ export default async function AdminPage() {
       transactions={transactions}
       unreflectedPayments={unreflectedPayments}
       reconcileError={reconcileError}
+      queryErrors={queryErrors}
     />
   );
 }

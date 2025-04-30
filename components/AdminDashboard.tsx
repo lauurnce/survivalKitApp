@@ -62,6 +62,19 @@ interface ProfilesAgg {
   by_major: { major: string; count: number }[] | null;
 }
 
+/** Which dashboard figure a failed query feeds. */
+export type AdminQueryKey =
+  | "funnel" | "dau" | "topSubjects" | "topModules" | "topSections"
+  | "activeNow" | "userTotals" | "activeSubscribers" | "transactions"
+  | "revenue" | "profiles" | "feedback";
+
+export interface AdminQueryError {
+  key: AdminQueryKey;
+  /** The table or RPC that failed, shown to the admin. */
+  query: string;
+  message: string;
+}
+
 interface Props {
   funnel: FunnelStep[];
   dau: DauDay[];
@@ -83,6 +96,43 @@ interface Props {
   transactions: TransactionRow[];
   unreflectedPayments: UnreflectedPayment[];
   reconcileError: string | null;
+  /**
+   * Queries that returned an error. Their figures render as "not read" — the
+   * page's `?? 0` defaults would otherwise pass a failure off as a real zero.
+   */
+  queryErrors?: AdminQueryError[];
+}
+
+const NOT_READ = "not read";
+
+function NotRead({ label, query }: { label: string; query: string }) {
+  return (
+    <div className="min-w-0">
+      <p className="label mb-4">{label}</p>
+      <p className="font-sans text-xs text-red-500">
+        {NOT_READ} — <span className="font-mono">{query}</span> failed.
+      </p>
+    </div>
+  );
+}
+
+function QueryErrorBanner({ errors }: { errors: AdminQueryError[] }) {
+  if (errors.length === 0) return null;
+  return (
+    <div role="alert" className="mb-12 border border-red-500/40 bg-red-500/5 px-5 py-4">
+      <p className="font-sans text-sm text-ink">
+        {errors.length === 1 ? "1 query" : `${errors.length} queries`} failed. Their figures show
+        as &ldquo;{NOT_READ}&rdquo; below, not as zero.
+      </p>
+      <ul className="mt-2 space-y-1">
+        {errors.map((e) => (
+          <li key={e.key} className="font-mono text-xs text-ink-muted break-words">
+            {e.query}: {e.message}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 /**
@@ -124,7 +174,8 @@ function Stat({
   dot,
   subValue,
 }: {
-  value: number | string;
+  /** null: the source query failed — shown as "not read", never as 0. */
+  value: number | string | null;
   label: string;
   accent?: boolean;
   dot?: boolean;
@@ -145,10 +196,14 @@ function Stat({
             title="Live — active within the last 15 minutes"
           />
         )}
-        <p className={`font-serif text-4xl ${accent ? "text-accent" : "text-ink"}`}>{value}</p>
+        {value === null ? (
+          <p className="font-serif text-2xl text-red-500">{NOT_READ}</p>
+        ) : (
+          <p className={`font-serif text-4xl ${accent ? "text-accent" : "text-ink"}`}>{value}</p>
+        )}
       </div>
       <p className="label-sm text-ink-muted">{label}</p>
-      {subValue && (
+      {subValue && value !== null && (
         <p className="absolute bottom-2 right-3 font-mono text-[10px] text-ink-faint">
           {subValue}
         </p>
@@ -705,8 +760,10 @@ export function AdminDashboard({
   activeNow, newUsers, totalRevenue, monthlyRevenue,
   activeSubscribers, newSubscribersToday,
   feedbackAgg, profilesAgg, transactions,
-  unreflectedPayments, reconcileError,
+  unreflectedPayments, reconcileError, queryErrors = [],
 }: Props) {
+  const failed = (key: AdminQueryKey) => queryErrors.find((e) => e.key === key);
+  const unread = (key: AdminQueryKey) => !!failed(key);
   return (
     <main className="min-h-screen bg-paper px-6 py-12 md:px-16 md:py-20">
 
@@ -728,23 +785,25 @@ export function AdminDashboard({
         </div>
       </div>
 
+      <QueryErrorBanner errors={queryErrors} />
+
       {/* ── Revenue & subscribers ───────────────────────────── */}
       <section className="mb-20">
         <SectionBand
           eyebrow="01"
           title="Revenue & Subscribers"
-          summary={`₱${totalRevenue} this month`}
+          summary={unread("revenue") ? `revenue ${NOT_READ}` : `₱${totalRevenue} this month`}
         />
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          <Stat value={activeSubscribers} label="Active Subscribers" accent />
+          <Stat value={unread("activeSubscribers") ? null : activeSubscribers} label="Active Subscribers" accent />
           <Stat
-            value={`₱${totalRevenue}`}
+            value={unread("revenue") ? null : `₱${totalRevenue}`}
             label="Monthly Revenue"
             subValue={`≈ $${(totalRevenue / PHP_TO_USD_RATE).toFixed(2)}`}
           />
-          <Stat value={newSubscribersToday} label="Payments Today" />
+          <Stat value={unread("revenue") ? null : newSubscribersToday} label="Payments Today" />
         </div>
-        <MonthlyRevenueSection months={monthlyRevenue} />
+        {!unread("revenue") && <MonthlyRevenueSection months={monthlyRevenue} />}
       </section>
 
       {/* ── Activity ────────────────────────────────────────── */}
@@ -752,17 +811,21 @@ export function AdminDashboard({
         <SectionBand
           eyebrow="02"
           title="Activity"
-          summary={`${activeNow} active now`}
+          summary={unread("activeNow") ? `active now ${NOT_READ}` : `${activeNow} active now`}
         />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
-          <Stat value={activeNow} label="Active Now (15 min)" dot />
-          <Stat value={totalUniqueUsers.toLocaleString()} label="Devices reached" />
-          <Stat value={newUsers} label="New Devices (3 days)" />
-          <Stat value={todayUsers} label="Active Today (PH)" />
-          <Stat value={last7Sessions} label="Active Device-Days (7d)" subValue="volume, not people" />
+          <Stat value={unread("activeNow") ? null : activeNow} label="Active Now (15 min)" dot={!unread("activeNow")} />
+          <Stat value={unread("userTotals") ? null : totalUniqueUsers.toLocaleString()} label="Devices reached" />
+          <Stat value={unread("userTotals") ? null : newUsers} label="New Devices (3 days)" />
+          <Stat value={unread("dau") ? null : todayUsers} label="Active Today (PH)" />
+          <Stat value={unread("dau") ? null : last7Sessions} label="Active Device-Days (7d)" subValue="volume, not people" />
         </div>
         <div className="max-w-wide mx-auto">
-          <DauChart data={dau} />
+          {unread("dau") ? (
+            <NotRead label="Daily Active Devices" query={failed("dau")!.query} />
+          ) : (
+            <DauChart data={dau} />
+          )}
         </div>
       </section>
 
@@ -771,10 +834,14 @@ export function AdminDashboard({
         <SectionBand
           eyebrow="03"
           title="Onboarding"
-          summary={`${funnel[0]?.unique.toLocaleString() ?? 0} opened the app`}
+          summary={unread("funnel") ? NOT_READ : `${funnel[0]?.unique.toLocaleString() ?? 0} opened the app`}
         />
         <div className="max-w-wide mx-auto">
-          <FunnelChart steps={funnel} />
+          {unread("funnel") ? (
+            <NotRead label="Onboarding Funnel" query={failed("funnel")!.query} />
+          ) : (
+            <FunnelChart steps={funnel} />
+          )}
         </div>
       </section>
 
@@ -782,12 +849,24 @@ export function AdminDashboard({
       <section className="mb-20">
         <SectionBand eyebrow="04" title="Content Engagement" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-wide mx-auto">
-          <BarChart data={topSubjects} label="Top Subjects" />
-          <BarChart data={topModules} label="Top Modules" />
-          <BarChart
-            data={topSections.map(s => ({ label: s.heading, count: s.count }))}
-            label="Top Sections"
-          />
+          {unread("topSubjects") ? (
+            <NotRead label="Top Subjects" query={failed("topSubjects")!.query} />
+          ) : (
+            <BarChart data={topSubjects} label="Top Subjects" />
+          )}
+          {unread("topModules") ? (
+            <NotRead label="Top Modules" query={failed("topModules")!.query} />
+          ) : (
+            <BarChart data={topModules} label="Top Modules" />
+          )}
+          {unread("topSections") ? (
+            <NotRead label="Top Sections" query={failed("topSections")!.query} />
+          ) : (
+            <BarChart
+              data={topSections.map(s => ({ label: s.heading, count: s.count }))}
+              label="Top Sections"
+            />
+          )}
         </div>
       </section>
 
@@ -796,10 +875,16 @@ export function AdminDashboard({
         <SectionBand
           eyebrow="05"
           title="Payments"
-          summary={`${transactions.length} transactions`}
+          summary={unread("transactions") ? `transactions ${NOT_READ}` : `${transactions.length} transactions`}
         />
         <p className="label mb-6">Transactions</p>
-        <TransactionsSection rows={transactions} />
+        {unread("transactions") ? (
+          <p className="font-sans text-xs text-red-500">
+            {NOT_READ} — <span className="font-mono">{failed("transactions")!.query}</span> failed.
+          </p>
+        ) : (
+          <TransactionsSection rows={transactions} />
+        )}
 
         <div className="mt-12">
           <p className="label mb-6">
@@ -831,12 +916,18 @@ export function AdminDashboard({
           eyebrow="07"
           title="Student Profiles"
           summary={
-            profilesAgg.named === null
+            unread("profiles")
+              ? NOT_READ
+              : profilesAgg.named === null
               ? `${profilesAgg.total} rows — completed not read`
               : `${profilesAgg.named} of ${profilesAgg.total} profiles completed`
           }
         />
-        {profilesAgg.total === 0 ? (
+        {unread("profiles") ? (
+          <p className="font-sans text-xs text-red-500">
+            {NOT_READ} — <span className="font-mono">{failed("profiles")!.query}</span> failed.
+          </p>
+        ) : profilesAgg.total === 0 ? (
           <p className="font-sans text-xs text-ink-faint">
             No profiles yet — this fills in as logged-in accounts complete the
             profile card on their account page.

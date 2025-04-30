@@ -372,3 +372,38 @@ describe("ReconcileSection grant action", () => {
     vi.unstubAllGlobals();
   });
 });
+
+describe("AdminDashboard — failed queries (GT-16)", () => {
+  it("shows a failed query as an error and 'not read', never as zero", () => {
+    render(
+      <AdminDashboard
+        {...makeDashboardProps({
+          activeNow: 0,
+          activeSubscribers: 0,
+          totalRevenue: 0,
+          queryErrors: [
+            { key: "activeNow", query: "admin_active_since", message: "function does not exist" },
+            { key: "revenue", query: "payments (revenue window)", message: "timeout" },
+          ],
+        })}
+      />,
+    );
+    const alert = screen.getByRole("alert");
+    expect(alert).toHaveTextContent("2 queries failed");
+    expect(alert).toHaveTextContent("admin_active_since: function does not exist");
+
+    const activeTile = screen.getByText("Active Now (15 min)").parentElement!;
+    expect(activeTile).toHaveTextContent("not read");
+    expect(activeTile).not.toHaveTextContent(/^0/);
+    expect(screen.getByText("Monthly Revenue").parentElement!).toHaveTextContent("not read");
+    expect(screen.queryByText("₱0 this month")).not.toBeInTheDocument();
+
+    // A query that succeeded with a real zero still shows its zero.
+    expect(screen.getByText("Active Subscribers").parentElement!).toHaveTextContent("0");
+  });
+
+  it("renders no error banner when every query succeeded", () => {
+    render(<AdminDashboard {...makeDashboardProps()} />);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+});

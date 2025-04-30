@@ -1,6 +1,7 @@
 "use client";
 
 import type { SubscriptionTimelineItem } from "@/lib/dashboard";
+import { formatManilaDate } from "@/lib/manilaTime";
 
 interface SubscriptionTimelineProps {
   items: SubscriptionTimelineItem[];
@@ -40,7 +41,7 @@ export function SubscriptionTimeline({ items, compact = false, className = "" }:
                 {item.daysRemaining} day{item.daysRemaining !== 1 ? "s" : ""} left
               </p>
               <p className="text-[10px] text-ink-faint">
-                Ends {new Date(item.endsAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                Ends {formatManilaDate(item.endsAt, "short")}
               </p>
             </div>
           </div>
@@ -73,7 +74,7 @@ export function SubscriptionTimeline({ items, compact = false, className = "" }:
 
           {!compact && (
             <div className="mt-2 flex items-center justify-between text-[10px] text-ink-faint">
-              <span>Started {new Date(item.startedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
+              <span>Started {formatManilaDate(item.startedAt, "short")}</span>
               <span className="font-mono tabular-nums">{item.progressPct}% elapsed</span>
             </div>
           )}

@@ -78,10 +78,16 @@ function makeSupabase(opts: {
     }),
   };
 
-  // Second call for stats
-  const statsSelectMock = vi.fn().mockResolvedValue({
-    data: statsData,
-    error: null,
+  // Second call for stats. The route pages through every row with .range(),
+  // and this mock enforces PostgREST's 1000-row max per request.
+  const statsRangeMock = vi.fn((from: number, to: number) =>
+    Promise.resolve({
+      data: statsData.slice(from, Math.min(to + 1, from + 1000)),
+      error: null,
+    }),
+  );
+  const statsSelectMock = vi.fn().mockReturnValue({
+    order: vi.fn().mockReturnValue({ range: statsRangeMock }),
   });
 
   const statsQueryChain = {
@@ -106,7 +112,7 @@ function makeSupabase(opts: {
     return null;
   });
 
-  return { supabase, selectMock, orderMock, rangeMock, statsSelectMock };
+  return { supabase, selectMock, orderMock, rangeMock, statsSelectMock, statsRangeMock };
 }
 
 vi.mock("@/lib/supabase/server", () => ({
@@ -555,5 +561,76 @@ describe("GET /api/admin/feedback", () => {
       // Verify legitimate search term passes through
       expect(orCalledWith).toContain("normal search string with spaces");
     });
+  });
+});
+
+describe("user column (GT-07)", () => {
+  beforeEach(() => {
+    mockAuthed = true;
+  });
+
+  it("returns the registered user's email and name, looked up server-side", async () => {
+    const mock = makeSupabase({});
+    const getUserById = vi.fn(async (id: string) => ({
+      data: { user: { id, email: `${id}@example.com` } },
+      error: null,
+    }));
+    const profilesIn = vi.fn().mockResolvedValue({
+      data: [{ user_id: "user-1", first_name: "Juan", last_name: "Dela Cruz" }],
+      error: null,
+    });
+    const baseFrom = mock.supabase.from;
+    (mock.supabase as any).from = vi.fn((table: string) =>
+      table === "profiles" ? { select: () => ({ in: profilesIn }) } : baseFrom(table),
+    );
+    (mock.supabase as any).auth = { admin: { getUserById } };
+    mockSupabase = mock.supabase;
+
+    const json = await (await GET(makeReq("/api/admin/feedback") as any)).json();
+
+    expect(json.data[0].user_email).toBe("user-1@example.com");
+    expect(json.data[0].user_name).toBe("Juan Dela Cruz");
+    // Anonymous rows are never looked up.
+    expect(getUserById).toHaveBeenCalledTimes(1);
+    expect(json.data[1].user_email).toBeNull();
+  });
+
+  it("still answers when the lookup fails, leaving the id for the table to show", async () => {
+    const mock = makeSupabase({});
+    (mock.supabase as any).auth = {
+      admin: { getUserById: vi.fn().mockRejectedValue(new Error("auth down")) },
+    };
+    mockSupabase = mock.supabase;
+    vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const res = await GET(makeReq("/api/admin/feedback") as any);
+    const json = await res.json();
+    expect(res.status).toBe(200);
+    expect(json.data[0].user_email).toBeNull();
+    expect(json.data[0].user_id).toBe("user-1");
+  });
+});
+
+describe("stats past the 1000-row cap (GT-15)", () => {
+  beforeEach(() => {
+    mockAuthed = true;
+  });
+
+  it("counts every feedback row, not just the first 1000", async () => {
+    const rows = Array.from({ length: 1500 }, (_, i) => ({
+      app_rating: i < 1000 ? 5 : 1,
+      module_rating: 4,
+      is_quality_approved: true,
+      coupon_code: null,
+      redeemed_at: null,
+    }));
+    const mock = makeSupabase({ statsData: rows });
+    mockSupabase = mock.supabase;
+
+    const json = await (await GET(makeReq("/api/admin/feedback") as any)).json();
+    expect(json.stats.total_feedback).toBe(1500);
+    // (1000 * 5 + 500 * 1) / 1500
+    expect(json.stats.avg_app_rating).toBeCloseTo(3.67, 2);
+    expect(mock.statsRangeMock).toHaveBeenCalledTimes(2);
   });
 });
