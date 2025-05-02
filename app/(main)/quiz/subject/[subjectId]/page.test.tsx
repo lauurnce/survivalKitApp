@@ -71,7 +71,7 @@ vi.mock("@/lib/supabase/server", () => ({
   }),
 }));
 
-import SubjectQuizPage from "./page";
+import SubjectQuizPage, { generateMetadata } from "./page";
 
 async function renderPage(subjectId = SUBJECT) {
   const ui = await SubjectQuizPage({ params: Promise.resolve({ subjectId }) });
@@ -145,6 +145,27 @@ describe("SubjectQuizPage", () => {
     deviceProgress = [{ module_id: MODULE_B }];
     await renderPage();
     expect(screen.getByTestId("quiz")).toBeInTheDocument();
+  });
+
+  it("404s an unknown subject for a signed-out visitor too, instead of a sign-in prompt", async () => {
+    currentUserId = null;
+    subjectRow = null;
+    await expect(renderPage()).rejects.toThrow("NEXT_NOT_FOUND");
+  });
+
+  it("titles the tab with the subject name, never the raw id", async () => {
+    const meta = await generateMetadata({ params: Promise.resolve({ subjectId: SUBJECT }) });
+    expect(meta.title).toBe(`Quiz • ${TITLE}`);
+  });
+
+  it("404s the metadata for an invalid or unknown id", async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve({ subjectId: "not-a-uuid" }) })
+    ).rejects.toThrow("NEXT_NOT_FOUND");
+    subjectRow = null;
+    await expect(
+      generateMetadata({ params: Promise.resolve({ subjectId: SUBJECT }) })
+    ).rejects.toThrow("NEXT_NOT_FOUND");
   });
 
   it("year-level plan unlocks the subject", async () => {

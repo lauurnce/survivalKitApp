@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
@@ -13,11 +14,6 @@ import { QuizUnavailable } from "./QuizUnavailable";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: Promise<{ subjectId: string }> }): Promise<Metadata> {
-  const { subjectId } = await params;
-  return { title: `Quiz • Subject ${subjectId}` };
-}
-
 interface SubjectData {
   id: string;
   title: string;
@@ -25,10 +21,34 @@ interface SubjectData {
   semester: number;
 }
 
+// One lookup per request, shared by generateMetadata and the page.
+const getSubject = cache(async (subjectId: string): Promise<SubjectData | null> => {
+  if (!isUuid(subjectId)) return null;
+  const { data } = await createServerClient()
+    .from("subjects")
+    .select("id, title, year_id, semester")
+    .eq("id", subjectId)
+    .maybeSingle();
+  return (data as SubjectData | null) ?? null;
+});
+
+// Titles the tab with the subject name instead of the raw id (QA CR-06).
+// Unknown ids 404 here as well as in the page.
+export async function generateMetadata({ params }: { params: Promise<{ subjectId: string }> }): Promise<Metadata> {
+  const { subjectId } = await params;
+  const subject = await getSubject(subjectId);
+  if (!subject) notFound();
+  return { title: `Quiz • ${subject.title}` };
+}
+
 export default async function SubjectQuizPage({ params }: { params: Promise<{ subjectId: string }> }) {
   const { subjectId } = await params;
 
-  if (!isUuid(subjectId)) {
+  // Unknown subject ids are the only real 404, and they are checked before the
+  // sign-in prompt so a signed-out visitor gets one too. A subject that exists
+  // but that this student can't quiz on yet gets an explanation and a next step.
+  const subject = await getSubject(subjectId);
+  if (!subject) {
     notFound();
   }
 
@@ -57,7 +77,7 @@ export default async function SubjectQuizPage({ params }: { params: Promise<{ su
   const cookieStore = await cookies();
   const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
 
-  const [progressRes, subsRes, subjectRes] = await Promise.all([
+  const [progressRes, subsRes] = await Promise.all([
     supabase.from("module_progress").select("module_id").eq("user_id", userId),
     isUuid(userId)
       ? supabase
@@ -67,15 +87,7 @@ export default async function SubjectQuizPage({ params }: { params: Promise<{ su
           .eq("status", "active")
           .gt("current_period_end", now)
       : { data: [] as ActiveSub[] },
-    supabase.from("subjects").select("id, title, year_id, semester").eq("id", subjectId).maybeSingle(),
   ]);
-
-  // Unknown subject ids are the only real 404. A subject that exists but
-  // that this student can't quiz on yet gets an explanation and a next step.
-  const subject = subjectRes.data as SubjectData | null;
-  if (!subject) {
-    notFound();
-  }
 
   const activeSubs = (subsRes.data ?? []) as ActiveSub[];
   if (!isUnlockedBy(activeSubs, subject.year_id, subject.id)) {
