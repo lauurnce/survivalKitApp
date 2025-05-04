@@ -23,14 +23,20 @@ interface Props {
    * back via next= rather than fail at checkout.
    */
   signInHref?: string | null;
+  /**
+   * Price label per plan ("₱49"), formatted on the server from PLANS in
+   * lib/paymongo.ts. This client component can't import PLANS (node:crypto),
+   * and restating the numbers here is how the labels used to drift.
+   */
+  prices: GatePrices;
 }
 
-// Keep labels below in sync with PLANS in lib/paymongo.ts (₱49 / ₱99 / ₱299).
-type GatePlan = "subject_month" | "subject_sem" | "year_sem";
+export type GatePlan = "subject_month" | "subject_sem" | "year_sem";
+export type GatePrices = Record<GatePlan, string>;
 
 // The three plan cards and the checkout hand-off. This is the only place in the
 // app that shows a price — the locked strips and the teaser link here instead.
-export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, returnPath, signInHref }: Props) {
+export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, returnPath, signInHref, prices }: Props) {
   const [loading, setLoading] = useState<GatePlan | null>(null);
   const [error, setError] = useState<string | null>(null);
   // From the term schedule (lib/terms.ts), so the date quoted is the one the
@@ -100,7 +106,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
       )}
 
       <div className="flex flex-col sm:flex-row gap-4">
-        {/* ₱49 — subject, 1 month */}
+        {/* Subject, 1 month */}
         <div className="flex-1 border border-ink-faint/30 p-5 flex flex-col gap-4">
           <div>
             <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-1">
@@ -111,7 +117,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
             </p>
           </div>
           <div className="flex items-baseline gap-2 mt-auto">
-            <span className="font-serif text-3xl text-ink">₱49</span>
+            <span className="font-serif text-3xl text-ink">{prices.subject_month}</span>
             <span className="font-sans text-sm text-ink-muted">/ month</span>
           </div>
           <button
@@ -119,11 +125,11 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
             disabled={loading !== null}
             className="bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading === "subject_month" ? "Redirecting…" : "Unlock — ₱49"}
+            {loading === "subject_month" ? "Redirecting…" : `Unlock — ${prices.subject_month}`}
           </button>
         </div>
 
-        {/* ₱99 — subject, whole semester (anchor) */}
+        {/* Subject, whole semester (anchor) */}
         <div className="flex-1 border border-accent/60 p-5 flex flex-col gap-4">
           <div>
             <div className="flex items-baseline justify-between gap-3 mb-1">
@@ -140,7 +146,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
             </p>
           </div>
           <div className="flex items-baseline gap-2 mt-auto">
-            <span className="font-serif text-3xl text-ink">₱99</span>
+            <span className="font-serif text-3xl text-ink">{prices.subject_sem}</span>
             <span className="font-sans text-sm text-ink-muted">/ semester</span>
           </div>
           <button
@@ -148,11 +154,11 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
             disabled={loading !== null}
             className="bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading === "subject_sem" ? "Redirecting…" : "Unlock — ₱99"}
+            {loading === "subject_sem" ? "Redirecting…" : `Unlock — ${prices.subject_sem}`}
           </button>
         </div>
 
-        {/* ₱299 — all subjects, whole semester */}
+        {/* All subjects, whole semester */}
         <div className="flex-1 border border-ink/60 p-5 flex flex-col gap-4">
           <div>
             <div className="flex items-baseline justify-between gap-3 mb-1">
@@ -168,7 +174,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
             </p>
           </div>
           <div className="flex items-baseline gap-2 mt-auto">
-            <span className="font-serif text-3xl text-ink">₱299</span>
+            <span className="font-serif text-3xl text-ink">{prices.year_sem}</span>
             <span className="font-sans text-sm text-ink-muted">/ semester</span>
           </div>
           <button
@@ -176,7 +182,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
             disabled={loading !== null}
             className="bg-ink text-paper font-sans text-sm px-4 py-3 hover:bg-accent transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading === "year_sem" ? "Redirecting…" : "Unlock everything — ₱299"}
+            {loading === "year_sem" ? "Redirecting…" : `Unlock everything — ${prices.year_sem}`}
           </button>
         </div>
       </div>
