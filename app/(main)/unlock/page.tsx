@@ -10,7 +10,9 @@ import { BackLink } from "@/components/BackLink";
 import { SubscribeGate, type GatePrices } from "@/components/SubscribeGate";
 import { PLANS } from "@/lib/paymongo";
 import { formatPeso } from "@/lib/pricing";
-
+import { semesterUntilLabel } from "@/lib/terms";
+import { getYears } from "@/lib/cache/queries";
+import { PricingOverview } from "./PricingOverview";
 import { parseModuleRoute, safeReturnPath } from "@/lib/subscribeRedirect";
 import { isUuid } from "@/lib/validation";
 import { sectionLabel } from "@/lib/sectionLabel";
@@ -34,8 +36,21 @@ function gatePrices(): GatePrices {
   };
 }
 
+// Bare /unlock (no year and no subject) is the pricing overview. Anything that
+// names a target has to name a real one.
+function isOverview(year: string | string[] | undefined, subject: string | string[] | undefined) {
+  return year === undefined && subject === undefined;
+}
+
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  const { subject: subjectParam } = await searchParams;
+  const { year: yearParam, subject: subjectParam } = await searchParams;
+  if (isOverview(yearParam, subjectParam)) {
+    return {
+      title: "Pricing",
+      description:
+        "Lessons are free. Unlock reviewers with answer keys for one subject or a whole year level.",
+    };
+  }
   const subjectId = single(subjectParam);
   if (!isUuid(subjectId)) return { title: "Unlock reviewers" };
 
@@ -58,6 +73,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 // quotes only a "from" price, derived from the same PLANS (lib/pricing.ts).
 export default async function UnlockPage({ searchParams }: Props) {
   const { year: yearParam, subject: subjectParam, from: fromParam } = await searchParams;
+  if (isOverview(yearParam, subjectParam)) {
+    const years = await getYears();
+    return (
+      <PricingOverview prices={gatePrices()} semesterUntil={semesterUntilLabel()} years={years} />
+    );
+  }
+
   const yearId = single(yearParam);
   const subjectId = single(subjectParam);
 

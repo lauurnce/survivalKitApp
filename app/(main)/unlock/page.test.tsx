@@ -51,6 +51,14 @@ vi.mock("@/components/SubscribeGate", () => ({
   ),
 }));
 
+vi.mock("@/lib/cache/queries", () => ({
+  getYears: () =>
+    Promise.resolve([
+      { id: "y1", label: "1st Year", coming_soon: false },
+      { id: "y4", label: "4th Year", coming_soon: true },
+    ]),
+}));
+
 const YEAR = "11111111-1111-1111-1111-111111111111";
 const SUBJECT = "22222222-2222-2222-2222-222222222222";
 const OWN_MODULE = "33333333-3333-3333-3333-333333333333";
@@ -138,7 +146,7 @@ vi.mock("@/lib/supabase/server", () => ({
   createServerClient: () => ({ from: (table: string) => makeQuery(table) }),
 }));
 
-import UnlockPage from "./page";
+import UnlockPage, { generateMetadata } from "./page";
 import { PLANS } from "@/lib/paymongo";
 import { formatPeso } from "@/lib/pricing";
 
@@ -301,5 +309,35 @@ describe("UnlockPage — sign-in requirement", () => {
   it("shows the social-proof line under the subject header", async () => {
     await renderPage({ year: YEAR, subject: SUBJECT });
     expect(screen.getByText("Students rate it 4.7/5 · Used at 8+ universities")).toBeInTheDocument();
+  });
+});
+
+describe("UnlockPage — bare /unlock", () => {
+  it("renders a pricing overview instead of a 404", async () => {
+    await renderPage({});
+    expect(screen.getByRole("heading", { level: 1, name: "Unlock reviewers" })).toBeInTheDocument();
+    for (const plan of Object.values(PLANS)) {
+      expect(screen.getByText(formatPeso(plan.amount))).toBeInTheDocument();
+    }
+    expect(screen.queryByTestId("gate")).toBeNull();
+  });
+
+  it("links to the subjects of each open year", async () => {
+    await renderPage({});
+    expect(screen.getByRole("link", { name: /1st Year subjects/ })).toHaveAttribute(
+      "href",
+      "/year/y1/subjects"
+    );
+    expect(screen.queryByRole("link", { name: /4th Year/ })).toBeNull();
+  });
+
+  it("still 404s a link that names an invalid target", async () => {
+    await expect(renderPage({ year: "x" })).rejects.toThrow("NEXT_NOT_FOUND");
+    await expect(renderPage({ year: YEAR, subject: "nope" })).rejects.toThrow("NEXT_NOT_FOUND");
+  });
+
+  it("titles the overview Pricing", async () => {
+    const meta = await generateMetadata({ searchParams: Promise.resolve({}) });
+    expect(meta.title).toBe("Pricing");
   });
 });
