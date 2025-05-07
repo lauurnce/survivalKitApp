@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SessionLogoutButton, SessionNavRail, SignedInOnly } from "@/components/dashboard/SessionShell";
+import { SessionLogoutButton, SignedInOnly } from "@/components/dashboard/SessionShell";
+import { ResourcesNavRail } from "@/components/resources/ResourcesNavRail";
 import { ResourcesTour } from "@/components/tour/ResourcesTour";
 
 // Fully static and CDN-cached. Session-aware bits (nav rail progress, log out,
@@ -43,11 +44,15 @@ export default function ResourcesPage() {
       <SignedInOnly>
         <ResourcesTour signedIn />
       </SignedInOnly>
-      <SessionNavRail />
+      <ResourcesNavRail />
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
-          <SessionLogoutButton />
-        </div>
+        {/* Signed-out visitors have nothing to put here; an empty bordered
+            band read as a layout glitch (QA DS-09). */}
+        <SignedInOnly>
+          <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
+            <SessionLogoutButton />
+          </div>
+        </SignedInOnly>
 
         <main className="mx-auto max-w-wide px-4 sm:px-8 py-6 space-y-10">
           <header className="space-y-2">

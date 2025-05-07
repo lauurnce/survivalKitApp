@@ -31,10 +31,17 @@ function stubSession(signedIn: boolean, overview = { overallDone: 0, overallTota
 
 
 let signedIn = true;
+// jsdom has neither; the mobile rail uses both.
+let desktop = false;
+const scrollIntoView = vi.fn();
 
 beforeEach(() => {
   signedIn = true;
+  desktop = false;
+  scrollIntoView.mockClear();
   localStorage.clear();
+  window.matchMedia = ((query: string) => ({ matches: desktop, media: query })) as unknown as typeof window.matchMedia;
+  Element.prototype.scrollIntoView = scrollIntoView;
 });
 
 afterEach(() => {
@@ -91,5 +98,41 @@ describe("ResourcesPage — tour anchors", () => {
     const anon = await renderPage();
     expect(anon.container.querySelector('[data-tour="resources-quiz"]')).toBeNull();
     expect(screen.queryByText(/sign in to quiz yourself/i)).not.toBeInTheDocument();
+  });
+});
+
+describe("ResourcesPage — mobile rail (QA DS-09)", () => {
+  it("scrolls the active Resources tab into view on a phone", async () => {
+    await renderPage();
+    await settle();
+    expect(scrollIntoView).toHaveBeenCalledWith({ inline: "center", block: "nearest" });
+    const active = screen.getByRole("link", { name: "Resources", current: "page" });
+    expect(scrollIntoView.mock.contexts[0]).toBe(active);
+  });
+
+  it("leaves the desktop sidebar alone", async () => {
+    desktop = true;
+    await renderPage();
+    await settle();
+    // The signed-in tour scrolls its own targets; only the rail's call matters.
+    expect(scrollIntoView).not.toHaveBeenCalledWith({ inline: "center", block: "nearest" });
+  });
+
+  it("keeps the rail's scroll area clear of the fixed top bar", async () => {
+    await renderPage();
+    expect(screen.getByTestId("resources-rail").className).toMatch(/\bpr-40\b.*\blg:contents\b/);
+  });
+
+  it("renders no empty log-out band for an anonymous visitor", async () => {
+    signedIn = false;
+    const { container } = await renderPage();
+    await settle();
+    expect(screen.queryByRole("button", { name: /log out/i })).toBeNull();
+    expect(container.querySelector(".py-3.border-b")).toBeNull();
+  });
+
+  it("keeps the log-out band for a signed-in visitor", async () => {
+    await renderPage();
+    expect(await screen.findByRole("button", { name: /log out/i })).toBeInTheDocument();
   });
 });
