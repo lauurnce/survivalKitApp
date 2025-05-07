@@ -33,13 +33,30 @@ vi.mock("@/lib/subscriptions", () => ({
 // Stand in for the client component so the test can read exactly which
 // returnPath the page decided to hand checkout.
 vi.mock("@/components/SubscribeGate", () => ({
-  SubscribeGate: ({ returnPath, signInHref }: { returnPath?: string | null; signInHref?: string | null }) => (
+  SubscribeGate: ({
+    returnPath,
+    signInHref,
+    prices,
+  }: {
+    returnPath?: string | null;
+    signInHref?: string | null;
+    prices: Record<string, string>;
+  }) => (
     <div
       data-testid="gate"
       data-return-path={returnPath ?? "none"}
       data-sign-in-href={signInHref ?? "none"}
+      data-prices={JSON.stringify(prices)}
     />
   ),
+}));
+
+vi.mock("@/lib/cache/queries", () => ({
+  getYears: () =>
+    Promise.resolve([
+      { id: "y1", label: "1st Year", coming_soon: false },
+      { id: "y4", label: "4th Year", coming_soon: true },
+    ]),
 }));
 
 const YEAR = "11111111-1111-1111-1111-111111111111";
@@ -129,7 +146,9 @@ vi.mock("@/lib/supabase/server", () => ({
   createServerClient: () => ({ from: (table: string) => makeQuery(table) }),
 }));
 
-import UnlockPage from "./page";
+import UnlockPage, { generateMetadata } from "./page";
+import { PLANS } from "@/lib/paymongo";
+import { formatPeso } from "@/lib/pricing";
 
 async function renderPage(search: Record<string, string>) {
   const ui = await UnlockPage({ searchParams: Promise.resolve(search) });
@@ -261,12 +280,12 @@ describe("UnlockPage — sign-in requirement", () => {
     expect(screen.getByTestId("gate")).not.toBeNull();
   });
 
-  it("points the signed-out gate at sign-in instead of checkout", async () => {
+  it("points the signed-out gate at sign-up instead of checkout", async () => {
     currentUserId = null;
     await renderPage({ year: YEAR, subject: SUBJECT });
 
     const href = screen.getByTestId("gate").getAttribute("data-sign-in-href")!;
-    expect(href).toContain("/login?next=");
+    expect(href).toMatch(/^\/signup\?next=/);
     expect(decodeURIComponent(href)).toContain(`/unlock?year=${YEAR}&subject=${SUBJECT}`);
   });
 
@@ -277,8 +296,48 @@ describe("UnlockPage — sign-in requirement", () => {
     expect(screen.getByTestId("gate").getAttribute("data-sign-in-href")).toBe("none");
   });
 
+  it("hands the gate prices formatted from PLANS", async () => {
+    await renderPage({ year: YEAR, subject: SUBJECT });
+    const prices = JSON.parse(screen.getByTestId("gate").getAttribute("data-prices")!);
+    expect(prices).toEqual({
+      subject_month: formatPeso(PLANS.subject_month.amount),
+      subject_sem: formatPeso(PLANS.subject_sem.amount),
+      year_sem: formatPeso(PLANS.year_sem.amount),
+    });
+  });
+
   it("shows the social-proof line under the subject header", async () => {
     await renderPage({ year: YEAR, subject: SUBJECT });
     expect(screen.getByText("Students rate it 4.7/5 · Used at 8+ universities")).toBeInTheDocument();
+  });
+});
+
+describe("UnlockPage — bare /unlock", () => {
+  it("renders a pricing overview instead of a 404", async () => {
+    await renderPage({});
+    expect(screen.getByRole("heading", { level: 1, name: "Unlock reviewers" })).toBeInTheDocument();
+    for (const plan of Object.values(PLANS)) {
+      expect(screen.getByText(formatPeso(plan.amount))).toBeInTheDocument();
+    }
+    expect(screen.queryByTestId("gate")).toBeNull();
+  });
+
+  it("links to the subjects of each open year", async () => {
+    await renderPage({});
+    expect(screen.getByRole("link", { name: /1st Year subjects/ })).toHaveAttribute(
+      "href",
+      "/year/y1/subjects"
+    );
+    expect(screen.queryByRole("link", { name: /4th Year/ })).toBeNull();
+  });
+
+  it("still 404s a link that names an invalid target", async () => {
+    await expect(renderPage({ year: "x" })).rejects.toThrow("NEXT_NOT_FOUND");
+    await expect(renderPage({ year: YEAR, subject: "nope" })).rejects.toThrow("NEXT_NOT_FOUND");
+  });
+
+  it("titles the overview Pricing", async () => {
+    const meta = await generateMetadata({ searchParams: Promise.resolve({}) });
+    expect(meta.title).toBe("Pricing");
   });
 });

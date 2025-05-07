@@ -7,7 +7,12 @@ import { isSubscribed } from "@/lib/subscriptions";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { BackLink } from "@/components/BackLink";
-import { SubscribeGate } from "@/components/SubscribeGate";
+import { SubscribeGate, type GatePrices } from "@/components/SubscribeGate";
+import { PLANS } from "@/lib/paymongo";
+import { formatPeso } from "@/lib/pricing";
+import { semesterUntilLabel } from "@/lib/terms";
+import { getYears } from "@/lib/cache/queries";
+import { PricingOverview } from "./PricingOverview";
 import { parseModuleRoute, safeReturnPath } from "@/lib/subscribeRedirect";
 import { isUuid } from "@/lib/validation";
 import { sectionLabel } from "@/lib/sectionLabel";
@@ -21,8 +26,31 @@ function single(value: string | string[] | undefined): string {
   return typeof value === "string" ? value : "";
 }
 
+// Every label comes from PLANS, so a price change in lib/paymongo.ts reaches
+// the plan cards without a second edit.
+function gatePrices(): GatePrices {
+  return {
+    subject_month: formatPeso(PLANS.subject_month.amount),
+    subject_sem: formatPeso(PLANS.subject_sem.amount),
+    year_sem: formatPeso(PLANS.year_sem.amount),
+  };
+}
+
+// Bare /unlock (no year and no subject) is the pricing overview. Anything that
+// names a target has to name a real one.
+function isOverview(year: string | string[] | undefined, subject: string | string[] | undefined) {
+  return year === undefined && subject === undefined;
+}
+
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  const { subject: subjectParam } = await searchParams;
+  const { year: yearParam, subject: subjectParam } = await searchParams;
+  if (isOverview(yearParam, subjectParam)) {
+    return {
+      title: "Pricing",
+      description:
+        "Lessons are free. Unlock reviewers with answer keys for one subject or a whole year level.",
+    };
+  }
   const subjectId = single(subjectParam);
   if (!isUuid(subjectId)) return { title: "Unlock reviewers" };
 
@@ -45,6 +73,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 // quotes only a "from" price, derived from the same PLANS (lib/pricing.ts).
 export default async function UnlockPage({ searchParams }: Props) {
   const { year: yearParam, subject: subjectParam, from: fromParam } = await searchParams;
+  if (isOverview(yearParam, subjectParam)) {
+    const years = await getYears();
+    return (
+      <PricingOverview prices={gatePrices()} semesterUntil={semesterUntilLabel()} years={years} />
+    );
+  }
+
   const yearId = single(yearParam);
   const subjectId = single(subjectParam);
 
@@ -164,7 +199,7 @@ export default async function UnlockPage({ searchParams }: Props) {
               {/* Signed-out visitors still see the plans. This is the only page
                   that quotes a price, so putting the account wall in front of it
                   asks people to sign up before they know what it costs. The gate
-                  routes their tap to sign-in instead of a checkout it cannot
+                  routes their tap to sign-up instead of a checkout it cannot
                   complete — /api/subscribe rejects anonymous callers. */}
               {!userId && (
                 <div className="border border-ink-faint/30 p-6 mb-6">
@@ -202,7 +237,11 @@ export default async function UnlockPage({ searchParams }: Props) {
                 yearLabel={year?.label}
                 subjectTitle={subject.title}
                 returnPath={returnPath}
-                signInHref={userId ? undefined : `/login?next=${encodeURIComponent(returnHref)}`}
+                prices={gatePrices()}
+                // A price tap is a new buyer far more often than a returning
+                // one, and the box above already says "create a free account"
+                // — so the tap goes to sign-up, which links to log in (QA FL-11).
+                signInHref={userId ? undefined : `/signup?next=${encodeURIComponent(returnHref)}`}
               />
 
               <p className="font-sans text-xs text-ink-faint mt-4">
