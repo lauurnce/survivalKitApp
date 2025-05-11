@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 import { signingSecretCandidates } from "@/lib/auth/signingSecrets";
-import { THEME_BOOTSTRAP_SHA256 } from "@/lib/csp";
+import { THEME_BOOTSTRAP_SHA256, buildStaticCsp, usesNonceCsp } from "@/lib/csp";
 
 // Nonce-based CSP for scripts on every route proxy runs on. 'unsafe-inline' on
 // script-src would defeat most of CSP's XSS value (any injected <script> would
@@ -145,8 +145,15 @@ export async function proxy(req: NextRequest) {
   // /pyodideWorker.js keeps its own narrowly-scoped, eval-permitting CSP set
   // in next.config.ts (needed for Safari's lack of 'wasm-unsafe-eval' support)
   // — don't overwrite it with the nonce-based page policy.
+  //
+  // Paths that match no dynamic page render the prerendered root 404, whose
+  // scripts carry no nonce: they get the static policy so the page hydrates
+  // (see usesNonceCsp in lib/csp.ts).
   if (req.nextUrl.pathname !== "/pyodideWorker.js") {
-    res.headers.set("Content-Security-Policy", buildCsp(nonce));
+    res.headers.set(
+      "Content-Security-Policy",
+      usesNonceCsp(req.nextUrl.pathname) ? buildCsp(nonce) : buildStaticCsp(),
+    );
   }
 
   const { pathname } = req.nextUrl;

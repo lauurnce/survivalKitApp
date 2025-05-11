@@ -1,4 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+// proxy refreshes the Supabase session on non-public paths; no network here.
+vi.mock("@supabase/ssr", () => ({
+  createServerClient: () => ({ auth: { getUser: async () => ({ data: { user: null } }) } }),
+}));
 import { unstable_doesMiddlewareMatch } from "next/experimental/testing/server";
 import { buildCsp, config } from "./proxy";
 import nextConfig from "./next.config";
@@ -49,3 +54,27 @@ describe("static CSP routes", () => {
     }
   });
 });
+
+// QA CR-02: proxy runs on unknown paths, which Next answers with the
+// prerendered root 404. Its scripts carry no nonce, so it needs the static
+// policy or no script on the page runs.
+describe("proxy CSP choice", () => {
+  async function cspFor(path: string): Promise<string | null> {
+    const { proxy } = await import("./proxy");
+    const { NextRequest } = await import("next/server");
+    const res = await proxy(new NextRequest(`https://example.test${path}`));
+    return res.headers.get("Content-Security-Policy");
+  }
+
+  it("sends the static policy for an unknown path", async () => {
+    const csp = await cspFor("/some-missing-page");
+    expect(csp).toBe(buildStaticCsp());
+    expect(csp).not.toContain("'strict-dynamic'");
+  });
+
+  it("keeps the nonce policy on a dynamic page", async () => {
+    const csp = await cspFor("/unlock");
+    expect(csp).toMatch(/script-src[^;]*'nonce-[^']+'[^;]*'strict-dynamic'/);
+  });
+});
+

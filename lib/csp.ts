@@ -40,6 +40,31 @@ export function isStaticCspPath(pathname: string): boolean {
   );
 }
 
+// Routes proxy runs on whose HTML is rendered per request, so Next.js can
+// stamp proxy's nonce on every script. One pattern per page in app/ outside
+// STATIC_CSP_ROUTES, plus the API surface. lib/csp.test.ts walks app/ and
+// fails if a page is missing here.
+//
+// Any other path proxy sees is a 404, and the root 404 is the prerendered,
+// CDN-cached /_not-found page: its scripts carry no nonce, so under the
+// nonce policy ('strict-dynamic' ignores 'self') none of them run and the
+// page never hydrates (QA CR-02). Those responses get buildStaticCsp instead.
+// A page missing from this list still works, just under the static policy.
+const NONCE_PAGE_PATTERNS: ReadonlyArray<RegExp> = [
+  /^\/api(?:\/|$)/,
+  /^\/(?:login|signup|playground|unlock)$/,
+  /^\/account(?:\/(?:profile|roadmap))?$/,
+  /^\/admin(?:\/(?:login|feedback))?$/,
+  /^\/class\/[^/]+\/(?:join|rep)$/,
+  /^\/quiz\/subject\/[^/]+$/,
+];
+
+/** True when proxy should send the per-request nonce policy for this path. */
+export function usesNonceCsp(pathname: string): boolean {
+  const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
+  return NONCE_PAGE_PATTERNS.some((re) => re.test(path));
+}
+
 // Every directive except script-src/script-src-attr matches buildCsp in
 // proxy.ts (lib/csp.test.ts asserts they stay identical). The nonce policy is
 // spelled out in proxy.ts itself because lib/reports/securityBaseline.ts
