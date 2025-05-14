@@ -28,22 +28,30 @@ vi.mock("@/lib/serverRateLimit", () => ({
 type UpsertPayload = Record<string, unknown>;
 const upserts: UpsertPayload[] = [];
 const selectDeviceIdFilters: string[] = [];
+const selectFilters: Array<Record<string, string>> = [];
+// What a progress read returns, whatever device it was filtered to.
+let storedRows: Array<{ module_id: string }> = [];
 
 // ── Mock @/lib/supabase/server ───────────────────────────────────────────────
 vi.mock("@/lib/supabase/server", () => ({
   createServerClient: () => ({
     from: (_table: string) => ({
-      select: (_cols: string) => ({
-        eq: (col: string, value: string) => {
-          if (col === "device_id") selectDeviceIdFilters.push(value);
-          return {
-            eq: (_c2: string, _v2: string) => ({
-              maybeSingle: () => Promise.resolve({ data: null }),
-            }),
-            in: () => Promise.resolve({ data: [] }),
-          };
-        },
-      }),
+      select: (_cols: string) => {
+        const filters: Record<string, string> = {};
+        selectFilters.push(filters);
+        const chain = {
+          eq: (col: string, value: string) => {
+            if (col === "device_id") selectDeviceIdFilters.push(value);
+            filters[col] = value;
+            return chain;
+          },
+          in: () => chain,
+          maybeSingle: () => Promise.resolve({ data: null }),
+          then: (resolve: (v: { data: Array<{ module_id: string }> }) => unknown) =>
+            resolve({ data: storedRows }),
+        };
+        return chain;
+      },
       upsert: (payload: UpsertPayload, _opts: unknown) => {
         upserts.push(payload);
         return Promise.resolve({ error: null });
@@ -89,6 +97,9 @@ const USER   = "11111111-1111-1111-1111-111111111111";
 beforeEach(() => {
   upserts.length = 0;
   selectDeviceIdFilters.length = 0;
+  selectFilters.length = 0;
+  storedRows = [];
+  mockGetCurrentUserId.mockResolvedValue(null);
   mockCookieValue = undefined;
   rateLimited = false;
   limiterDown = false;
@@ -225,3 +236,37 @@ describe("progress payload validation", () => {
     expect(res.status).toBe(400);
   });
 });
+
+// QA GT-22: a caller with no cookie could read any device's progress by
+// naming its UUID in ?device_id=.
+describe("GET /api/progress — cookieless callers (GT-22)", () => {
+  it("returns nothing for an anonymous caller who only names a device id", async () => {
+    storedRows = [{ module_id: MODULE }];
+    const res = await GET(makeGetReq(`?device_id=${VICTIM_DEVICE}`));
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ completed: [] });
+    expect(selectDeviceIdFilters).not.toContain(VICTIM_DEVICE);
+  });
+
+  it("lets a signed-in caller read the named device only where the rows are theirs", async () => {
+    mockGetCurrentUserId.mockResolvedValue(USER);
+    storedRows = [{ module_id: MODULE }];
+    const res = await GET(makeGetReq(`?device_id=${DEVICE}`));
+    expect(await res.json()).toEqual({ completed: [MODULE] });
+    expect(selectFilters[0]).toEqual({ device_id: DEVICE, user_id: USER });
+  });
+
+  it("still serves the signed cookie's device without a session", async () => {
+    mockCookieValue = signDeviceCookie(DEVICE);
+    storedRows = [{ module_id: MODULE }];
+    const res = await GET(makeGetReq(""));
+    expect(await res.json()).toEqual({ completed: [MODULE] });
+    expect(selectFilters[0]).toEqual({ device_id: DEVICE });
+  });
+
+  it("rejects a request with neither a cookie nor a valid device id", async () => {
+    const res = await GET(makeGetReq("?device_id=nope"));
+    expect(res.status).toBe(400);
+  });
+});
+
