@@ -53,7 +53,7 @@ export function isStaticCspPath(pathname: string): boolean {
 // A page missing from this list still works, just under the static policy.
 const NONCE_PAGE_PATTERNS: ReadonlyArray<RegExp> = [
   /^\/api(?:\/|$)/,
-  /^\/(?:login|signup|unlock)$/,
+  /^\/(?:login|signup|unlock|forgot-password|reset-password)$/,
   /^\/account(?:\/(?:profile|roadmap))?$/,
   /^\/admin(?:\/(?:login|feedback))?$/,
   /^\/class\/[^/]+\/(?:join|rep)$/,
