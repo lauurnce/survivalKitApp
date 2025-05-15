@@ -31,6 +31,7 @@ export const STATIC_CSP_ROUTES: ReadonlyArray<{ path: string; prefix: boolean }>
   { path: "/resources", prefix: false },
   { path: "/search", prefix: false },
   { path: "/for-blocks", prefix: false },
+  { path: "/playground", prefix: false },
   { path: "/year", prefix: true },
 ];
 
@@ -52,7 +53,7 @@ export function isStaticCspPath(pathname: string): boolean {
 // A page missing from this list still works, just under the static policy.
 const NONCE_PAGE_PATTERNS: ReadonlyArray<RegExp> = [
   /^\/api(?:\/|$)/,
-  /^\/(?:login|signup|playground|unlock)$/,
+  /^\/(?:login|signup|unlock)$/,
   /^\/account(?:\/(?:profile|roadmap))?$/,
   /^\/admin(?:\/(?:login|feedback))?$/,
   /^\/class\/[^/]+\/(?:join|rep)$/,

@@ -92,12 +92,12 @@ describe.each([
 });
 
 describe("isStaticCspPath", () => {
-  it.each(["/", "/faq", "/privacy", "/resources", "/search", "/for-blocks", "/year", "/year/abc/subjects", "/year/a/subjects/b/modules/c"])(
+  it.each(["/", "/faq", "/privacy", "/resources", "/search", "/for-blocks", "/playground", "/year", "/year/abc/subjects", "/year/a/subjects/b/modules/c"])(
     "treats %s as a static page",
     (p) => expect(isStaticCspPath(p)).toBe(true),
   );
 
-  it.each(["/account", "/admin", "/login", "/unlock", "/playground", "/class/X/join", "/yearly", "/faq/x", "/api/me"])(
+  it.each(["/account", "/admin", "/login", "/unlock", "/class/X/join", "/yearly", "/faq/x", "/api/me"])(
     "keeps %s on the nonce policy",
     (p) => expect(isStaticCspPath(p)).toBe(false),
   );

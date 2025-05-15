@@ -23,12 +23,12 @@ describe("proxy matcher", () => {
 
   // Prerendered public pages: proxy must not run, or Vercel would invoke a
   // function on every CDN hit and stamp a nonce the cached HTML doesn't carry.
-  it.each(["/", "/faq", "/privacy", "/resources", "/search", "/for-blocks", "/year", "/year/y1/subjects/s1/modules/m1", "/?ref=share"])(
+  it.each(["/", "/faq", "/privacy", "/resources", "/search", "/for-blocks", "/playground", "/year", "/year/y1/subjects/s1/modules/m1", "/?ref=share"])(
     "skips static page %s",
     (url) => expect(matches(url)).toBe(false),
   );
 
-  it.each(["/account", "/account/profile", "/admin", "/admin/login", "/login", "/signup", "/unlock", "/playground", "/class/ABC/join", "/api/me", "/api/admin/feedback", "/yearly", "/faq/extra", "/pyodideWorker.js"])(
+  it.each(["/account", "/account/profile", "/admin", "/admin/login", "/login", "/signup", "/unlock", "/class/ABC/join", "/api/me", "/api/admin/feedback", "/yearly", "/faq/extra", "/pyodideWorker.js"])(
     "runs on %s",
     (url) => expect(matches(url)).toBe(true),
   );

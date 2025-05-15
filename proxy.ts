@@ -228,12 +228,12 @@ export async function proxy(req: NextRequest) {
 
 // Besides static assets, the matcher skips the prerendered public pages listed
 // in STATIC_CSP_ROUTES (lib/csp.ts): "/", /faq, /privacy, /resources, /search,
-// /for-blocks and everything under /year. Those are served from the CDN with
+// /for-blocks, /playground and everything under /year. Those are served from the CDN with
 // the nonce-free policy set in next.config.ts; running proxy there would cost
 // a function invocation per cache hit and gains nothing — they skip the auth
 // refresh anyway. proxy.test.ts pins this list against isStaticCspPath.
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|$|(?:faq|privacy|resources|search|for-blocks|year)$|year/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|$|(?:faq|privacy|resources|search|for-blocks|playground|year)$|year/).*)",
   ],
 };
