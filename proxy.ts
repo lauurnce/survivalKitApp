@@ -174,7 +174,20 @@ export async function proxy(req: NextRequest) {
         },
       },
     );
-    await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    // Signed-out visitors to /account get a real 307 to login. The page's
+    // own redirect runs after app/loading.tsx has streamed a 200 shell, so
+    // it could only answer with a client-side refresh (QA GT-20).
+    if (!user && (pathname === "/account" || pathname.startsWith("/account/"))) {
+      const loginUrl = req.nextUrl.clone();
+      loginUrl.pathname = "/login";
+      loginUrl.search = "";
+      loginUrl.searchParams.set("next", pathname + req.nextUrl.search);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
   // Guard all /admin routes except the login page itself

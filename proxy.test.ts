@@ -1,8 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
 // proxy refreshes the Supabase session on non-public paths; no network here.
+let sessionUser: { id: string } | null = null;
 vi.mock("@supabase/ssr", () => ({
-  createServerClient: () => ({ auth: { getUser: async () => ({ data: { user: null } }) } }),
+  createServerClient: () => ({ auth: { getUser: async () => ({ data: { user: sessionUser } }) } }),
 }));
 import { unstable_doesMiddlewareMatch } from "next/experimental/testing/server";
 import { buildCsp, config } from "./proxy";
@@ -75,6 +76,44 @@ describe("proxy CSP choice", () => {
   it("keeps the nonce policy on a dynamic page", async () => {
     const csp = await cspFor("/unlock");
     expect(csp).toMatch(/script-src[^;]*'nonce-[^']+'[^;]*'strict-dynamic'/);
+  });
+});
+
+// QA GT-20: signed-out /account visits returned a 200 shell plus a
+// client-side refresh, because app/loading.tsx streams before the page's
+// own redirect runs.
+describe("proxy /account guard", () => {
+  async function run(path: string) {
+    const { proxy } = await import("./proxy");
+    const { NextRequest } = await import("next/server");
+    return proxy(new NextRequest(`https://example.test${path}`));
+  }
+
+  it.each([
+    ["/account", "/account"],
+    ["/account/profile", "/account/profile"],
+    ["/account/roadmap?tab=2", "/account/roadmap?tab=2"],
+  ])("sends a signed-out visitor on %s to login with next", async (path, next) => {
+    sessionUser = null;
+    const res = await run(path);
+    expect(res.status).toBe(307);
+    const loc = new URL(res.headers.get("location")!);
+    expect(loc.pathname).toBe("/login");
+    expect(loc.searchParams.get("next")).toBe(next);
+    expect([...loc.searchParams.keys()]).toEqual(["next"]);
+  });
+
+  it("lets a signed-in user through", async () => {
+    sessionUser = { id: "u1" };
+    const res = await run("/account/profile");
+    expect(res.headers.get("location")).toBeNull();
+    sessionUser = null;
+  });
+
+  it("leaves look-alike paths alone", async () => {
+    sessionUser = null;
+    const res = await run("/accountant");
+    expect(res.headers.get("location")).toBeNull();
   });
 });
 
