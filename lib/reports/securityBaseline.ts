@@ -651,7 +651,6 @@ export const PROXIED_PROBE_PATHS: readonly string[] = [
   "/login",
   "/signup",
   "/unlock",
-  "/playground",
 ];
 
 /**

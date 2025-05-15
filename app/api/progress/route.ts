@@ -25,36 +25,46 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const moduleIdsParam = searchParams.get("module_ids");
 
-    // Trust only the signed device cookie — a raw ?device_id= query param let
-    // anyone read another device's completed-modules list by guessing/copying
-    // a UUID. Fall back to the query param ONLY when no cookie exists yet
-    // (first-time visitor whose /api/device sync hasn't landed); there's
-    // nothing to leak for a device with no established cookie/progress yet.
-    const cookieStore = await cookies();
-    const cookieDeviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
-    const queryDeviceId = searchParams.get("device_id");
-    const device_id = cookieDeviceId ?? (isUuid(queryDeviceId) ? queryDeviceId : null);
-
-    if (!device_id) {
-      return NextResponse.json({ error: "Missing device_id" }, { status: 400 });
-    }
-
-    const supabase = createServerClient();
-    let query = supabase
-      .from("module_progress")
-      .select("module_id")
-      .eq("device_id", device_id);
-
+    let moduleIds: string[] | null = null;
     if (moduleIdsParam) {
-      const moduleIds = moduleIdsParam.split(",").map((m) => m.trim()).filter(Boolean);
+      moduleIds = moduleIdsParam.split(",").map((m) => m.trim()).filter(Boolean);
       if (moduleIds.length === 0) {
         return NextResponse.json({ completed: [] });
       }
       if (moduleIds.length > MAX_MODULE_IDS || moduleIds.some((id) => !isUuid(id))) {
         return NextResponse.json({ error: "Invalid module_ids" }, { status: 400 });
       }
-      query = query.in("module_id", moduleIds);
     }
+
+    // Trust only the signed device cookie: it wins over whatever ?device_id=
+    // the caller names. Without one, a raw query id is honoured only for the
+    // signed-in owner of that progress (rows stamped with their user_id).
+    // A cookieless anonymous caller gets an empty list, not the named
+    // device's progress (QA GT-22). That costs a real first-time visitor
+    // nothing: their progress writes go through POST, which mints the cookie.
+    const cookieStore = await cookies();
+    const cookieDeviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+    const queryDeviceId = searchParams.get("device_id");
+
+    if (!cookieDeviceId && !isUuid(queryDeviceId)) {
+      return NextResponse.json({ error: "Missing device_id" }, { status: 400 });
+    }
+
+    const supabase = createServerClient();
+    let query;
+    if (cookieDeviceId) {
+      query = supabase.from("module_progress").select("module_id").eq("device_id", cookieDeviceId);
+    } else {
+      const userId = await getCurrentUserId();
+      if (!userId) return NextResponse.json({ completed: [] });
+      query = supabase
+        .from("module_progress")
+        .select("module_id")
+        .eq("device_id", queryDeviceId as string)
+        .eq("user_id", userId);
+    }
+
+    if (moduleIds) query = query.in("module_id", moduleIds);
 
     const { data } = await query;
     const completed = (data ?? []).map((row) => row.module_id);

@@ -5,7 +5,10 @@ import {
   THEME_BOOTSTRAP_SHA256,
   buildStaticCsp,
   isStaticCspPath,
+  usesNonceCsp,
 } from "./csp";
+import { readdirSync, statSync } from "node:fs";
+import { join, relative, sep } from "node:path";
 import { buildCsp } from "../proxy";
 
 function withEnv<T>(env: string, fn: () => T): T {
@@ -89,12 +92,12 @@ describe.each([
 });
 
 describe("isStaticCspPath", () => {
-  it.each(["/", "/faq", "/privacy", "/resources", "/search", "/for-blocks", "/year", "/year/abc/subjects", "/year/a/subjects/b/modules/c"])(
+  it.each(["/", "/faq", "/privacy", "/resources", "/search", "/for-blocks", "/playground", "/year", "/year/abc/subjects", "/year/a/subjects/b/modules/c"])(
     "treats %s as a static page",
     (p) => expect(isStaticCspPath(p)).toBe(true),
   );
 
-  it.each(["/account", "/admin", "/login", "/unlock", "/playground", "/class/X/join", "/yearly", "/faq/x", "/api/me"])(
+  it.each(["/account", "/admin", "/login", "/unlock", "/class/X/join", "/yearly", "/faq/x", "/api/me"])(
     "keeps %s on the nonce policy",
     (p) => expect(isStaticCspPath(p)).toBe(false),
   );
@@ -107,3 +110,49 @@ describe("policy parity", () => {
     expect(strip(buildStaticCsp(false))).toEqual(strip(withEnv("production", () => buildCsp("n"))));
   });
 });
+
+// QA CR-02: the root 404 is the prerendered /_not-found page, whose scripts
+// carry no nonce. Proxy must not send the nonce policy for paths that 404.
+describe("usesNonceCsp", () => {
+  // Every page.tsx under app/, as a URL with dynamic segments filled in.
+  function pageRoutes(dir = join(__dirname, "..", "app")): string[] {
+    const out: string[] = [];
+    for (const name of readdirSync(dir)) {
+      const full = join(dir, name);
+      if (statSync(full).isDirectory()) {
+        if (name === "api") continue;
+        out.push(...pageRoutes(full));
+      } else if (name === "page.tsx") {
+        const rel = relative(join(__dirname, "..", "app"), dir).split(sep);
+        const segs = rel
+          .filter((seg) => seg && !(seg.startsWith("(") && seg.endsWith(")")))
+          .map((seg) => (seg.startsWith("[") ? "x1" : seg));
+        out.push("/" + segs.join("/"));
+      }
+    }
+    return out;
+  }
+
+  it("covers every dynamic page in app/, so none of them loses its nonce", () => {
+    const dynamicPages = pageRoutes().filter((p) => !isStaticCspPath(p));
+    expect(dynamicPages.length).toBeGreaterThan(5);
+    for (const page of dynamicPages) {
+      expect([page, usesNonceCsp(page)]).toEqual([page, true]);
+    }
+  });
+
+  it.each(["/api/me", "/api/admin/feedback", "/api/does-not-exist"])(
+    "keeps the nonce policy for API path %s",
+    (path) => expect(usesNonceCsp(path)).toBe(true),
+  );
+
+  it.each(["/this-page-does-not-exist", "/some-missing-page", "/faq/extra", "/yearly", "/account/bogus", "/class/ABC", "/apiary"])(
+    "gives the static policy to unknown path %s (served as the prerendered 404)",
+    (path) => expect(usesNonceCsp(path)).toBe(false),
+  );
+
+  it("ignores a trailing slash", () => {
+    expect(usesNonceCsp("/login/")).toBe(true);
+  });
+});
+

@@ -32,6 +32,11 @@ const SITE_URL = canonicalOrigin();
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  // "./" resolves against each page's own pathname (query string dropped),
+  // so every route inherits a self-referencing canonical on the custom domain
+  // without per-page boilerplate, and /search?q=… variants collapse to
+  // /search. A page that needs a different canonical overrides `alternates`.
+  alternates: { canonical: "./" },
   title: {
     default: "BSIT Survival Kit",
     template: "%s — BSIT Survival Kit",

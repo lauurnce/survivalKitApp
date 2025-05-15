@@ -17,12 +17,14 @@ vi.mock("@/lib/serverRateLimit", () => ({
 }));
 
 import { POST } from "./route";
+import { signDeviceCookie } from "@/lib/auth/deviceCookie";
 
 const DEVICE = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
 
-function makeReq(body: unknown) {
+function makeReq(body: unknown, cookie?: string) {
   return {
     json: () => Promise.resolve(body),
+    cookies: { get: (n: string) => (n === "bsit_device_id" && cookie ? { value: cookie } : undefined) },
     headers: { get: (h: string) => (h === "x-real-ip" ? "127.0.0.1" : null) },
   } as unknown as import("next/server").NextRequest;
 }
@@ -58,7 +60,7 @@ describe("POST /api/device", () => {
     await POST(makeReq({ deviceId: DEVICE }));
     expect(rateLimitCalls).toHaveLength(1);
     expect(rateLimitCalls[0].key).toBe("device:ip:127.0.0.1");
-    expect(rateLimitCalls[0].max).toBe(20);
+    expect(rateLimitCalls[0].max).toBe(60);
     expect(rateLimitCalls[0].windowSeconds).toBe(60);
   });
 
@@ -75,5 +77,37 @@ describe("POST /api/device", () => {
     expect(res.status).toBe(200);
     expect(rateLimitCalls[0].onFailure).toBe("allow");
     expect(res.headers.get("set-cookie")).toContain(DEVICE);
+  });
+});
+
+describe("POST /api/device — register once (CR-05)", () => {
+  it("sets a readable marker cookie beside the signed one", async () => {
+    const res = await POST(makeReq({ deviceId: DEVICE }));
+    const cookies = res.headers.getSetCookie();
+    const marker = cookies.find((c) => c.startsWith("bsit_device_ok="));
+    expect(marker).toBeDefined();
+    expect(marker).toContain(`bsit_device_ok=${DEVICE}`);
+    expect(marker!.toLowerCase()).not.toContain("httponly");
+  });
+
+  it("does not spend the per-IP allowance when a valid signed cookie already matches", async () => {
+    rateLimited = true; // would 429 if the limiter were consulted
+    const res = await POST(makeReq({ deviceId: DEVICE }, signDeviceCookie(DEVICE)));
+    expect(res.status).toBe(200);
+    expect(rateLimitCalls).toHaveLength(0);
+    expect(res.headers.get("set-cookie")).toContain("bsit_device_ok=");
+  });
+
+  it("still rate-limits when the signed cookie is for a different device", async () => {
+    rateLimited = true;
+    const other = "11111111-2222-4333-8444-555555555555";
+    const res = await POST(makeReq({ deviceId: DEVICE }, signDeviceCookie(other)));
+    expect(res.status).toBe(429);
+  });
+
+  it("still rate-limits when the cookie is forged", async () => {
+    rateLimited = true;
+    const res = await POST(makeReq({ deviceId: DEVICE }, `${DEVICE}.forged`));
+    expect(res.status).toBe(429);
   });
 });

@@ -17,7 +17,7 @@ vi.mock("next/font/google", () => ({
   JetBrains_Mono: () => ({ variable: "font-jetbrains-mono" }),
 }));
 
-import RootLayout from "./layout";
+import RootLayout, { metadata } from "./layout";
 import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/csp";
 
 // Walks a React element tree (not real DOM — these are unrendered elements)
@@ -78,3 +78,13 @@ describe("RootLayout", () => {
     expect(faqLink!.props.children).toMatch(/faq/i);
   });
 });
+
+// QA CR-10 / GT-17: no page emitted <link rel="canonical">.
+describe("root metadata", () => {
+  it("gives every route a self-referencing canonical by default", () => {
+    // "./" is resolved by Next against each page's pathname, dropping the query.
+    expect(metadata.alternates?.canonical).toBe("./");
+    expect(metadata.metadataBase).toBeInstanceOf(URL);
+  });
+});
+

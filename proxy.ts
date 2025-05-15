@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 import { signingSecretCandidates } from "@/lib/auth/signingSecrets";
-import { THEME_BOOTSTRAP_SHA256 } from "@/lib/csp";
+import { THEME_BOOTSTRAP_SHA256, buildStaticCsp, usesNonceCsp } from "@/lib/csp";
 
 // Nonce-based CSP for scripts on every route proxy runs on. 'unsafe-inline' on
 // script-src would defeat most of CSP's XSS value (any injected <script> would
@@ -145,8 +145,15 @@ export async function proxy(req: NextRequest) {
   // /pyodideWorker.js keeps its own narrowly-scoped, eval-permitting CSP set
   // in next.config.ts (needed for Safari's lack of 'wasm-unsafe-eval' support)
   // — don't overwrite it with the nonce-based page policy.
+  //
+  // Paths that match no dynamic page render the prerendered root 404, whose
+  // scripts carry no nonce: they get the static policy so the page hydrates
+  // (see usesNonceCsp in lib/csp.ts).
   if (req.nextUrl.pathname !== "/pyodideWorker.js") {
-    res.headers.set("Content-Security-Policy", buildCsp(nonce));
+    res.headers.set(
+      "Content-Security-Policy",
+      usesNonceCsp(req.nextUrl.pathname) ? buildCsp(nonce) : buildStaticCsp(),
+    );
   }
 
   const { pathname } = req.nextUrl;
@@ -167,7 +174,20 @@ export async function proxy(req: NextRequest) {
         },
       },
     );
-    await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    // Signed-out visitors to /account get a real 307 to login. The page's
+    // own redirect runs after app/loading.tsx has streamed a 200 shell, so
+    // it could only answer with a client-side refresh (QA GT-20).
+    if (!user && (pathname === "/account" || pathname.startsWith("/account/"))) {
+      const loginUrl = req.nextUrl.clone();
+      loginUrl.pathname = "/login";
+      loginUrl.search = "";
+      loginUrl.searchParams.set("next", pathname + req.nextUrl.search);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
   // Guard all /admin routes except the login page itself
@@ -177,6 +197,10 @@ export async function proxy(req: NextRequest) {
     if (!valid) {
       const loginUrl = req.nextUrl.clone();
       loginUrl.pathname = "/admin/login";
+      // Keep the destination so login can send the admin back to it
+      // (QA GT-21); /admin/login validates `next` with safeAdminNext.
+      loginUrl.search = "";
+      loginUrl.searchParams.set("next", pathname + req.nextUrl.search);
       return NextResponse.redirect(loginUrl);
     }
   }
@@ -204,12 +228,12 @@ export async function proxy(req: NextRequest) {
 
 // Besides static assets, the matcher skips the prerendered public pages listed
 // in STATIC_CSP_ROUTES (lib/csp.ts): "/", /faq, /privacy, /resources, /search,
-// /for-blocks and everything under /year. Those are served from the CDN with
+// /for-blocks, /playground and everything under /year. Those are served from the CDN with
 // the nonce-free policy set in next.config.ts; running proxy there would cost
 // a function invocation per cache hit and gains nothing — they skip the auth
 // refresh anyway. proxy.test.ts pins this list against isStaticCspPath.
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|$|(?:faq|privacy|resources|search|for-blocks|year)$|year/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|$|(?:faq|privacy|resources|search|for-blocks|playground|year)$|year/).*)",
   ],
 };
