@@ -117,3 +117,18 @@ describe("proxy /account guard", () => {
   });
 });
 
+// QA GT-21: the redirect to admin login dropped the destination.
+describe("proxy /admin guard", () => {
+  it("keeps the destination, query included, as next", async () => {
+    const { proxy } = await import("./proxy");
+    const { NextRequest } = await import("next/server");
+    const res = await proxy(new NextRequest("https://example.test/admin/feedback?page=2&x=1"));
+    expect(res.status).toBe(307);
+    const loc = new URL(res.headers.get("location")!);
+    expect(loc.pathname).toBe("/admin/login");
+    expect(loc.searchParams.get("next")).toBe("/admin/feedback?page=2&x=1");
+    // The original query lives only inside next, not on the login URL.
+    expect([...loc.searchParams.keys()]).toEqual(["next"]);
+  });
+});
+

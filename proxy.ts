@@ -197,6 +197,10 @@ export async function proxy(req: NextRequest) {
     if (!valid) {
       const loginUrl = req.nextUrl.clone();
       loginUrl.pathname = "/admin/login";
+      // Keep the destination so login can send the admin back to it
+      // (QA GT-21); /admin/login validates `next` with safeAdminNext.
+      loginUrl.search = "";
+      loginUrl.searchParams.set("next", pathname + req.nextUrl.search);
       return NextResponse.redirect(loginUrl);
     }
   }
