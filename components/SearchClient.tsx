@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { searchItems } from "@/lib/searchMatch";
 
 export interface SearchItem {
   type: "subject" | "module";
@@ -22,19 +23,40 @@ interface Props {
 export function SearchClient({ items, suggestions = [] }: Props) {
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const seeded = useRef(false);
+
+  // /search?q=… (shared links, the landing page, site-search integrations)
+  // opens with that query. Read from window.location rather than
+  // useSearchParams so the page stays prerendered without a Suspense
+  // boundary; the URL only exists post-mount anyway.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("q");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (q) setQuery(q);
+  }, []);
+
+  // Mirror the query back into the URL so a search can be shared or
+  // bookmarked. replaceState, not router.replace: no RSC round trip and no
+  // history entry per keystroke.
+  useEffect(() => {
+    // Skip the first run: it sees the empty initial state, before the seed
+    // above has landed, and would strip ?q= from the URL.
+    if (!seeded.current) {
+      seeded.current = true;
+      return;
+    }
+    const url = new URL(window.location.href);
+    const q = query.trim();
+    if (q) url.searchParams.set("q", q);
+    else url.searchParams.delete("q");
+    if (url.href !== window.location.href) {
+      window.history.replaceState(window.history.state, "", url.href);
+    }
+  }, [query]);
 
   const trimmed = query.trim().toLowerCase();
 
-  const results = useMemo(() => {
-    if (!trimmed) return [];
-    return items
-      .filter(
-        (item) =>
-          item.title.toLowerCase().includes(trimmed) ||
-          item.context.toLowerCase().includes(trimmed)
-      )
-      .slice(0, 50);
-  }, [items, trimmed]);
+  const results = useMemo(() => searchItems(items, trimmed), [items, trimmed]);
 
   return (
     <div className="flex flex-col gap-8 max-w-wide">
