@@ -111,7 +111,9 @@ export function SearchClient({ items, suggestions = [] }: Props) {
         )
       ) : results.length === 0 ? (
         <div className="flex flex-col gap-4">
-          <p className="font-sans text-sm text-ink-muted">
+          {/* break-words: a pasted URL or a 300-character query used to
+              push the page sideways (QA FL-08). */}
+          <p className="font-sans text-sm text-ink-muted break-words [overflow-wrap:anywhere]">
             No matches for{" "}
             <span className="text-ink">&ldquo;{query.trim()}&rdquo;</span>.
             Try a shorter keyword, or browse by year instead.

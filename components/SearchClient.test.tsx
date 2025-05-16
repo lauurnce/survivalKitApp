@@ -102,3 +102,14 @@ describe("SearchClient — query matching and the ?q= link (QA FL-07)", () => {
     expect(new URL(window.location.href).searchParams.has("q")).toBe(false);
   });
 });
+
+describe("SearchClient — long queries (QA FL-08)", () => {
+  it("lets the echoed no-match query wrap instead of overflowing", () => {
+    render(<SearchClient items={items} />);
+    const long = "x".repeat(300);
+    fireEvent.change(screen.getByLabelText("Search subjects and modules"), { target: { value: long } });
+    const line = screen.getByText(/No matches for/);
+    expect(line.className).toContain("break-words");
+    expect(line.className).toContain("[overflow-wrap:anywhere]");
+  });
+});
