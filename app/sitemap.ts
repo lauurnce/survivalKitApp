@@ -13,6 +13,10 @@ function staticEntries(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/`, changeFrequency: "weekly", priority: 1 },
     { url: `${SITE_URL}/year`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${SITE_URL}/search`, changeFrequency: "monthly", priority: 0.5 },
+    // Public, indexable and linked site-wide, but missing until QA CR-10.
+    { url: `${SITE_URL}/resources`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${SITE_URL}/faq`, changeFrequency: "monthly", priority: 0.4 },
+    { url: `${SITE_URL}/for-blocks`, changeFrequency: "monthly", priority: 0.4 },
     { url: `${SITE_URL}/privacy`, changeFrequency: "yearly", priority: 0.1 },
   ];
 }

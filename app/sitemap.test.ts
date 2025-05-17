@@ -39,6 +39,8 @@ afterEach(() => {
 
 const paths = (entries: { url: string }[]) => entries.map((e) => new URL(e.url).pathname);
 
+const STATIC_URLS = ["/", "/year", "/search", "/resources", "/faq", "/for-blocks", "/privacy"];
+
 describe("sitemap", () => {
   it("lists static pages plus every live year, subject and module", async () => {
     const urls = paths(await sitemap());
@@ -46,6 +48,9 @@ describe("sitemap", () => {
       "/",
       "/year",
       "/search",
+      "/resources",
+      "/faq",
+      "/for-blocks",
       "/privacy",
       `/year/${YEAR}/subjects`,
       `/year/${YEAR}/subjects/${SUBJECT}/modules`,
@@ -56,7 +61,7 @@ describe("sitemap", () => {
   it("serves only static URLs, with a warning and no client, when Supabase env is absent", async () => {
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
     const urls = paths(await sitemap());
-    expect(urls).toEqual(["/", "/year", "/search", "/privacy"]);
+    expect(urls).toEqual(STATIC_URLS);
     expect(createServerClient).not.toHaveBeenCalled();
     expect(console.warn).toHaveBeenCalled();
   });
@@ -71,7 +76,7 @@ describe("sitemap", () => {
     vi.stubEnv("NEXT_PHASE", "phase-production-build");
     results.years = { data: null, error: { message: "boom" } };
     const urls = paths(await sitemap());
-    expect(urls).toEqual(["/", "/year", "/search", "/privacy"]);
+    expect(urls).toEqual(STATIC_URLS);
     expect(console.error).toHaveBeenCalledWith(expect.stringContaining("years: boom"));
   });
 });
