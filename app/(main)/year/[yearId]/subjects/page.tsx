@@ -7,7 +7,7 @@ import { PageTracker } from "@/components/PageTracker";
 import { SubjectAccordion, type SubjectModule } from "@/components/SubjectAccordion";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { getYears, getSubjectsByYear, getSubjectCounters, getModulesBySubject } from "@/lib/cache/queries";
-import { createServerClient } from "@/lib/supabase/server";
+import { pageMetadata, subjectsDescription } from "@/lib/seo/pageMetadata";
 
 export const revalidate = 60;
 
@@ -24,19 +24,18 @@ interface Subject {
   sort_order: number;
 }
 
+// Reads through the same cached queries as the page, instead of a second,
+// uncached `years` query on every regeneration.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { yearId } = await params;
-  const supabase = createServerClient();
-  const { data: year } = await supabase
-    .from("years")
-    .select("label")
-    .eq("id", yearId)
-    .single();
-  if (!year) return {};
-  return {
-    title: `${year.label} Subjects`,
-    description: `Browse all ${year.label} BSIT subjects, modules, and reviewers.`,
-  };
+  const year = (await getYears()).find((y) => y.id === yearId);
+  if (!year || year.coming_soon) return {};
+  const subjects = ((await getSubjectsByYear(yearId)) ?? []) as Subject[];
+  return pageMetadata({
+    title: `${year.label} BSIT Subjects`,
+    description: subjectsDescription(year.label, subjects),
+    path: `/year/${yearId}/subjects`,
+  });
 }
 
 // Prerendered on first request per year (ISR, 60s) and CDN-cached. The nav

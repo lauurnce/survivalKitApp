@@ -26,7 +26,7 @@ vi.mock("@/lib/cache/queries", () => ({
   getYearCounters: () => Promise.resolve([{ resource_id: YEAR_ID, reader_count: 5 }]),
 }));
 
-import YearPage from "./page";
+import YearPage, { metadata as yearMetadata } from "./page";
 import { resetSessionCache } from "@/hooks/useSession";
 
 // Session now resolves client-side via /api/me (hooks/useSession).
@@ -127,5 +127,11 @@ describe("YearPage — static shell", () => {
     signedIn = true;
     await renderPage();
     expect(await screen.findByRole("button", { name: /log out/i })).toBeInTheDocument();
+  });
+});
+
+describe("YearPage — metadata", () => {
+  it("has its own og:url and share title", () => {
+    expect(yearMetadata.openGraph).toMatchObject({ url: "/year", title: "BSIT Subjects by Year — BSIT Survival Kit" });
   });
 });

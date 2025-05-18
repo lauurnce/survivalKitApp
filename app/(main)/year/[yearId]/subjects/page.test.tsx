@@ -27,7 +27,7 @@ vi.mock("@/lib/cache/queries", () => ({
   getModulesBySubject: () => Promise.resolve([]),
 }));
 
-import SubjectsPage from "./page";
+import SubjectsPage, { generateMetadata } from "./page";
 
 async function renderPage(params: { yearId: string } = { yearId: YEAR_ID }) {
   const ui = await SubjectsPage({
@@ -43,5 +43,18 @@ describe("SubjectsPage — Select Year back-link", () => {
 
     const backLink = screen.getByRole("link", { name: /select year/i });
     expect(backLink).toHaveAttribute("href", "/year");
+  });
+});
+
+describe("SubjectsPage — metadata", () => {
+  it("titles the page by year, through the same cached queries as the page", async () => {
+    const meta = await generateMetadata({ params: Promise.resolve({ yearId: YEAR_ID }) });
+    expect(meta.title).toBe("1st Year BSIT Subjects");
+    expect(meta.description).toContain("Subject One");
+    expect(meta.openGraph).toMatchObject({ url: `/year/${YEAR_ID}/subjects` });
+  });
+
+  it("returns nothing for an unknown year", async () => {
+    expect(await generateMetadata({ params: Promise.resolve({ yearId: "nope" }) })).toEqual({});
   });
 });

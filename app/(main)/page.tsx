@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { PageTracker } from "@/components/PageTracker";
 import { ContinueReading } from "@/components/ContinueReading";
@@ -6,8 +7,17 @@ import { LandingTour } from "@/components/tour/LandingTour";
 import { createServerClient } from "@/lib/supabase/server";
 import { getCp1StartPath } from "@/lib/landing";
 import { cheapestSubjectPrice } from "@/lib/pricing";
+import { pageMetadata } from "@/lib/seo/pageMetadata";
 
 export const revalidate = 300;
+
+export const metadata: Metadata = pageMetadata({
+  title: "BSIT Survival Kit — Free lessons and reviewers for BSIT students",
+  absoluteTitle: true,
+  description:
+    "Free lesson notes for BSIT subjects — Computer Programming 1, Introduction to Computing, Discrete Structures and more — plus reviewers with answer keys, organized by year and semester.",
+  path: "/",
+});
 
 export default async function LandingPage() {
   const supabase = createServerClient();
