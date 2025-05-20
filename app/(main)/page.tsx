@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageTracker } from "@/components/PageTracker";
-import { ContinueReading } from "@/components/ContinueReading";
+import { RecentLessons } from "@/components/retention/RecentLessons";
 import { PopularModules, type PopularModule } from "@/components/PopularModules";
 import { LandingTour } from "@/components/tour/LandingTour";
 import { createServerClient } from "@/lib/supabase/server";
@@ -153,8 +153,9 @@ export default async function LandingPage() {
         </div>
       </div>
 
-      {/* Continue reading — client, null for first-time visitors */}
-      <ContinueReading />
+      {/* Pick up where you left off — device-local, null for first-time
+          visitors. Replaces the single-lesson "Continue reading" card. */}
+      <RecentLessons />
 
       {/* Popular modules — hidden when no reads. The data-tour wrapper is
           conditional too, not just PopularModules' own empty state, so the

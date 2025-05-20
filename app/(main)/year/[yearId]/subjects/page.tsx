@@ -4,6 +4,7 @@ import { DashboardNavRail } from "@/components/dashboard/SessionShell";
 import { ReferrerBackLink } from "@/components/ReferrerAware";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTracker } from "@/components/PageTracker";
+import { RecentLessons } from "@/components/retention/RecentLessons";
 import { SubjectAccordion, type SubjectModule } from "@/components/SubjectAccordion";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { getYears, getSubjectsByYear, getSubjectCounters, getModulesBySubject } from "@/lib/cache/queries";
@@ -111,6 +112,7 @@ export default async function SubjectsPage({ params }: Props) {
           {/* Subject list — cream */}
           <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
             <div className="flex flex-col gap-12 max-w-wide mx-auto">
+              <RecentLessons yearId={yearId} extra={1} />
               {[
                 { label: "1st Semester", items: sem1 },
                 { label: "2nd Semester", items: sem2 },
