@@ -28,6 +28,7 @@ const LOCAL_STORAGE: [key: string, purpose: string][] = [
   ["bsit_device_id", "Your device ID (see Section 2)."],
   ["theme", "Whether you chose light or dark mode."],
   ["bsit_last_module", "The module you last opened, for the \"Continue reading\" link on the home page."],
+  ["bsit_recent_lessons", "The last few lessons you opened (titles and links), for \"Pick up where you left off\". Never sent to us."],
   ["bsit:tour:…", "Which page tours you have finished or skipped, so they don't repeat."],
   ["bsit_signup_nudge_dismissed", "That you closed the \"create a free account\" prompt."],
   ["last-feedback-prompt, rated-modules", "When we last asked for feedback, and which modules you already rated, so we don't ask again."],

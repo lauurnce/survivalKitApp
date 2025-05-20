@@ -24,6 +24,7 @@ describe("PrivacyPage", () => {
       "_ga",
       "theme",
       "bsit_last_module",
+      "bsit_recent_lessons",
       "bsit:tour:",
       "bsit_signup_nudge_dismissed",
       "bsit_signup_nudge_shown",

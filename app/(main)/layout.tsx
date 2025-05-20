@@ -1,5 +1,6 @@
 import { TopBar } from "@/components/TopBar";
 import { SearchHotkey } from "@/components/SearchHotkey";
+import { RecentLessonTracker } from "@/components/retention/RecentLessonTracker";
 
 // Renders the fixed top bar with theme toggle and login/account link.
 // Must stay free of request-time APIs (cookies(), headers(), the session):
@@ -11,6 +12,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     <>
       <TopBar />
       <SearchHotkey />
+      <RecentLessonTracker />
       {children}
     </>
   );
