@@ -10,7 +10,7 @@ import { getCp1StartPath } from "@/lib/landing";
 import { cheapestSubjectPrice } from "@/lib/pricing";
 import { pageMetadata } from "@/lib/seo/pageMetadata";
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 export const metadata: Metadata = pageMetadata({
   title: "BSIT Survival Kit — Free lessons and reviewers for BSIT students",
