@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageTracker } from "@/components/PageTracker";
 import { RecentLessons } from "@/components/retention/RecentLessons";
+import { ExamCountdown } from "@/components/retention/ExamCountdown";
 import { PopularModules, type PopularModule } from "@/components/PopularModules";
 import { LandingTour } from "@/components/tour/LandingTour";
 import { createServerClient } from "@/lib/supabase/server";
@@ -152,6 +153,12 @@ export default async function LandingPage() {
           </Link>
         </div>
       </div>
+
+      {/* Exam countdown — client, only within 45 days of midterms/finals */}
+      <ExamCountdown
+        href={startPath?.href ?? "/year"}
+        linkLabel={startPath ? `Review ${startPath.subjectTitle} from Lesson 1` : "Find your subject"}
+      />
 
       {/* Pick up where you left off — device-local, null for first-time
           visitors. Replaces the single-lesson "Continue reading" card. */}
