@@ -23,7 +23,7 @@ describe("proxy matcher", () => {
 
   // Prerendered public pages: proxy must not run, or Vercel would invoke a
   // function on every CDN hit and stamp a nonce the cached HTML doesn't carry.
-  it.each(["/", "/faq", "/privacy", "/resources", "/search", "/for-blocks", "/playground", "/year", "/year/y1/subjects/s1/modules/m1", "/?ref=share"])(
+  it.each(["/", "/faq", "/privacy", "/resources", "/search", "/for-blocks", "/playground", "/year", "/year/y1/subjects/s1/modules/m1", "/?ref=share", "/sw.js"])(
     "skips static page %s",
     (url) => expect(matches(url)).toBe(false),
   );
@@ -132,3 +132,15 @@ describe("proxy /admin guard", () => {
   });
 });
 
+describe("service worker headers", () => {
+  it("serve /sw.js uncached, with its own CSP", async () => {
+    const rules = await nextConfig.headers!();
+    const sw = rules.find((r) => r.source === "/sw.js");
+    expect(sw?.headers).toEqual(
+      expect.arrayContaining([
+        { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+        expect.objectContaining({ key: "Content-Security-Policy" }),
+      ]),
+    );
+  });
+});
