@@ -23,7 +23,7 @@ describe("proxy matcher", () => {
 
   // Prerendered public pages: proxy must not run, or Vercel would invoke a
   // function on every CDN hit and stamp a nonce the cached HTML doesn't carry.
-  it.each(["/", "/faq", "/privacy", "/resources", "/search", "/for-blocks", "/playground", "/year", "/year/y1/subjects/s1/modules/m1", "/?ref=share", "/sw.js"])(
+  it.each(["/", "/faq", "/privacy", "/resources", "/search", "/for-blocks", "/playground", "/year", "/year/y1/subjects/s1/modules/m1", "/?ref=share", "/sw.js", "/icons/icon-192.png"])(
     "skips static page %s",
     (url) => expect(matches(url)).toBe(false),
   );
