@@ -26,6 +26,7 @@ describe("PrivacyPage", () => {
       "bsit_last_module",
       "bsit_recent_lessons",
       "bsit-pages-",
+      "bsit_install_prompt_dismissed",
       "bsit:tour:",
       "bsit_signup_nudge_dismissed",
       "bsit_signup_nudge_shown",

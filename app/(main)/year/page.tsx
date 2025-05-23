@@ -7,6 +7,7 @@ import { ReferrerYearGrid } from "@/components/ReferrerAware";
 import { SubjectsTour } from "@/components/tour/SubjectsTour";
 import { RecentLessons } from "@/components/retention/RecentLessons";
 import { ExamCountdown } from "@/components/retention/ExamCountdown";
+import { InstallPrompt } from "@/components/retention/InstallPrompt";
 import { getYears, getAllSubjects, getYearCounters } from "@/lib/cache/queries";
 import { pageMetadata } from "@/lib/seo/pageMetadata";
 
@@ -93,6 +94,7 @@ export default async function YearPage() {
           <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
             <ExamCountdown className="mx-auto mb-10" />
             <RecentLessons extra={1} className="mx-auto mb-12" />
+            <InstallPrompt className="mx-auto mb-12" />
             <div className="max-w-wide mx-auto" data-tour="subjects-years">
               <ReferrerYearGrid cards={cards} />
             </div>

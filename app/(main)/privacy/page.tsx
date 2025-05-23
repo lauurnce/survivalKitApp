@@ -29,6 +29,7 @@ const LOCAL_STORAGE: [key: string, purpose: string][] = [
   ["theme", "Whether you chose light or dark mode."],
   ["bsit_last_module", "The module you last opened, for the \"Continue reading\" link on the home page."],
   ["bsit-pages-…, bsit-static-… (Cache Storage)", "Copies of the public lesson and subject pages you opened, so they still open with no signal. Never sent to us; your browser can clear them."],
+  ["bsit_install_prompt_dismissed", "When you closed the \"add to home screen\" suggestion, so it stays away for three weeks."],
   ["bsit_recent_lessons", "The last few lessons you opened (titles and links), for \"Pick up where you left off\". Never sent to us."],
   ["bsit:tour:…", "Which page tours you have finished or skipped, so they don't repeat."],
   ["bsit_signup_nudge_dismissed", "That you closed the \"create a free account\" prompt."],
