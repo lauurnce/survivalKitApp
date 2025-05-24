@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { registerServiceWorker, SERVICE_WORKER_URL } from "./ServiceWorkerRegister";
+import { render } from "@testing-library/react";
+import { registerServiceWorker, ServiceWorkerRegister, SERVICE_WORKER_URL } from "./ServiceWorkerRegister";
+
+const logEvent = vi.fn();
+vi.mock("@/lib/analytics", () => ({ logEvent: (...args: unknown[]) => logEvent(...args) }));
 
 function fakeNavigator(register = vi.fn(() => Promise.resolve({}))) {
   return { nav: { serviceWorker: { register } } as unknown as Navigator, register };
@@ -26,5 +30,13 @@ describe("registerServiceWorker", () => {
     const { nav } = fakeNavigator(vi.fn(() => Promise.reject(new Error("blocked"))));
     expect(() => registerServiceWorker(nav, true)).not.toThrow();
     await Promise.resolve();
+  });
+});
+
+describe("ServiceWorkerRegister", () => {
+  it("logs an install however it happened", () => {
+    render(<ServiceWorkerRegister />);
+    window.dispatchEvent(new Event("appinstalled"));
+    expect(logEvent).toHaveBeenCalledWith("pwa_installed");
   });
 });

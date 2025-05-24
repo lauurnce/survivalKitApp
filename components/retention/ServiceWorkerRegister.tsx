@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { logEvent } from "@/lib/analytics";
 
 export const SERVICE_WORKER_URL = "/sw.js";
 
@@ -28,6 +29,10 @@ export function registerServiceWorker(
 export function ServiceWorkerRegister() {
   useEffect(() => {
     registerServiceWorker();
+    // Fires however the install happened: our prompt or the browser menu.
+    const onInstalled = () => void logEvent("pwa_installed");
+    window.addEventListener("appinstalled", onInstalled);
+    return () => window.removeEventListener("appinstalled", onInstalled);
   }, []);
   return null;
 }

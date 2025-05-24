@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { logEvent } from "@/lib/analytics";
 import { readRecentLessons } from "@/lib/retention/recentLessons";
 import {
   detectInstallPlatform,
@@ -63,6 +64,10 @@ export function InstallPrompt({ className = "" }: { className?: string }) {
       window.removeEventListener("appinstalled", onInstalled);
     };
   }, []);
+
+  useEffect(() => {
+    if (visible) void logEvent("install_prompt_shown");
+  }, [visible]);
 
   if (!visible) return null;
 

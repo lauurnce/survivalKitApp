@@ -1,5 +1,8 @@
-import { afterEach, describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+
+const logEvent = vi.fn();
+vi.mock("@/lib/analytics", () => ({ logEvent: (...args: unknown[]) => logEvent(...args) }));
 import { RecentLessons } from "./RecentLessons";
 import { RECENT_LESSONS_KEY } from "@/lib/retention/recentLessons";
 
@@ -42,5 +45,12 @@ describe("RecentLessons", () => {
     render(<RecentLessons yearId="y1" extra={0} />);
     expect(screen.getAllByRole("link")).toHaveLength(1);
     expect(screen.getByText("Lesson 2")).toBeInTheDocument();
+  });
+
+  it("logs which lesson was resumed", () => {
+    store([entry("1")]);
+    render(<RecentLessons />);
+    fireEvent.click(screen.getByRole("link"));
+    expect(logEvent).toHaveBeenCalledWith("recent_lesson_click", { year_id: "y1", subject_id: "s1", module_id: "1" });
   });
 });

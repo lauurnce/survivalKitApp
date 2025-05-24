@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { InstallPrompt } from "./InstallPrompt";
+
+const logEvent = vi.fn();
+vi.mock("@/lib/analytics", () => ({ logEvent: (...args: unknown[]) => logEvent(...args) }));
 import { INSTALL_DISMISSED_KEY } from "@/lib/retention/installPrompt";
 import { RECENT_LESSONS_KEY } from "@/lib/retention/recentLessons";
 
@@ -59,6 +62,7 @@ describe("InstallPrompt", () => {
     readLessons(3);
     render(<InstallPrompt />);
     expect(screen.getByText("Add to Home Screen")).toBeInTheDocument();
+    expect(logEvent).toHaveBeenCalledWith("install_prompt_shown");
     expect(screen.queryByRole("button", { name: "Add to home screen" })).not.toBeInTheDocument();
   });
 

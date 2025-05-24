@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { logEvent } from "@/lib/analytics";
 import { lessonHref, readRecentLessons, visitedAgo, type RecentLesson } from "@/lib/retention/recentLessons";
 
 interface Props {
@@ -33,6 +34,8 @@ export function RecentLessons({ yearId, extra = 2, className = "" }: Props) {
   const [latest, ...rest] = lessons;
   const older = rest.slice(0, extra);
   const when = visitedAgo(latest.visitedAt, now);
+  const track = (l: RecentLesson) => () =>
+    void logEvent("recent_lesson_click", { year_id: l.yearId, subject_id: l.subjectId, module_id: l.moduleId });
 
   return (
     <section aria-labelledby="recent-lessons-heading" className={`max-w-wide ${className}`}>
@@ -44,6 +47,7 @@ export function RecentLessons({ yearId, extra = 2, className = "" }: Props) {
       </p>
       <Link
         href={lessonHref(latest)}
+        onClick={track(latest)}
         className="group flex items-center justify-between gap-6 border border-ink-faint hover:border-navy hover:bg-navy p-6 transition-colors duration-200"
       >
         <div className="min-w-0">
@@ -62,6 +66,7 @@ export function RecentLessons({ yearId, extra = 2, className = "" }: Props) {
             <li key={l.moduleId}>
               <Link
                 href={lessonHref(l)}
+                onClick={track(l)}
                 className="flex items-baseline justify-between gap-4 py-3 font-sans text-sm text-ink-muted hover:text-ink transition-colors duration-150"
               >
                 <span className="min-w-0 break-words">
