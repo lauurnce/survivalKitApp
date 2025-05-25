@@ -235,6 +235,16 @@ describe("POST /api/events — print_click", () => {
     expect((await res.json()).ok).toBe(true);
     expect(inserts[0]).toMatchObject({ event_type });
   });
+
+  it.each(["recent_lesson_click", "install_prompt_shown", "pwa_installed"])(
+    "accepts the discovery/retention event %s",
+    async (event_type) => {
+      const res = await POST(makeReq({ device_id: DEVICE, event_type }));
+      expect((await res.json()).ok).toBe(true);
+      expect(inserts).toHaveLength(1);
+      expect(inserts[0]).toMatchObject({ event_type });
+    }
+  );
 });
 
 describe("POST /api/events — device_id trust", () => {

@@ -16,6 +16,7 @@ const VALID_EVENT_TYPES = new Set<EventType>([
   "print_click", "print_gate_shown",
   "lesson_halfway", "lesson_end", "next_lesson_click", "lesson_resume",
   "quick_check_correct", "quick_check_wrong", "lesson_share", "code_run",
+  "recent_lesson_click", "install_prompt_shown", "pwa_installed",
 ]);
 
 // Shared across all serverless instances via the check_rate_limit RPC — the
