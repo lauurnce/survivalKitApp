@@ -3,13 +3,17 @@ import Link from "next/link";
 import { SessionLogoutButton, SignedInOnly } from "@/components/dashboard/SessionShell";
 import { ResourcesNavRail } from "@/components/resources/ResourcesNavRail";
 import { ResourcesTour } from "@/components/tour/ResourcesTour";
+import { pageMetadata } from "@/lib/seo/pageMetadata";
 
 // Fully static and CDN-cached. Session-aware bits (nav rail progress, log out,
 // the tour) resolve client-side; anonymous visitors are never redirected away.
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Resources",
-};
+  description:
+    "Free study tools for BSIT students: run Python, SQL, Java, and C in your browser, and search every lesson, module, and reviewer in the kit.",
+  path: "/resources",
+});
 
 interface ResourceCard {
   kicker: string;

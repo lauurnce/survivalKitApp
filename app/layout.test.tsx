@@ -88,3 +88,9 @@ describe("root metadata", () => {
   });
 });
 
+describe("RootLayout metadata", () => {
+  it("resolves og:url per page, like the canonical, instead of pinning the home page", () => {
+    expect(metadata.alternates?.canonical).toBe("./");
+    expect(metadata.openGraph?.url).toBe("./");
+  });
+});

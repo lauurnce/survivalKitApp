@@ -12,7 +12,7 @@ vi.mock("@/lib/account", () => ({
   completionPercentage: (done: number, total: number) => (total > 0 ? done / total : 0),
 }));
 
-import ResourcesPage from "./page";
+import ResourcesPage, { metadata } from "./page";
 import { resetSessionCache } from "@/hooks/useSession";
 
 // Session now resolves client-side via /api/me (hooks/useSession).
@@ -134,5 +134,14 @@ describe("ResourcesPage — mobile rail (QA DS-09)", () => {
   it("keeps the log-out band for a signed-in visitor", async () => {
     await renderPage();
     expect(await screen.findByRole("button", { name: /log out/i })).toBeInTheDocument();
+  });
+});
+
+describe("ResourcesPage — link preview metadata", () => {
+  it("has its own description and og:url instead of the site defaults", () => {
+    expect(metadata.description).toMatch(/run Python, SQL, Java, and C/);
+    expect(metadata.openGraph?.description).toBe(metadata.description);
+    expect(metadata.openGraph?.url).toBe("/resources");
+    expect(metadata.openGraph?.title).toBe("Resources — BSIT Survival Kit");
   });
 });

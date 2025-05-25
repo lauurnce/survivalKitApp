@@ -49,7 +49,10 @@ export const metadata: Metadata = {
     title: "BSIT Survival Kit",
     description:
       "Module notes, programming guides, and reviewers with answer keys for BSIT students — organized by year and subject.",
-    url: SITE_URL,
+    // Like the canonical above, "./" resolves to each page's own URL. A fixed
+    // SITE_URL made /faq, /resources, /privacy and /for-blocks preview (and
+    // count, on Facebook) as the home page.
+    url: "./",
   },
   twitter: {
     card: "summary",
