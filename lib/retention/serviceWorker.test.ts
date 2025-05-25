@@ -67,6 +67,12 @@ function navigate(url: string): Request {
   return req;
 }
 
+async function message(worker: Worker, data: unknown): Promise<void> {
+  let pending: Promise<unknown> = Promise.resolve();
+  worker.listeners.message({ data, waitUntil: (p: Promise<unknown>) => (pending = p) });
+  await pending;
+}
+
 async function dispatch(worker: Worker, request: Request): Promise<Response | undefined> {
   let responded: Promise<Response> | undefined;
   worker.listeners.fetch({ request, respondWith: (p: Promise<Response>) => (responded = p) });
@@ -167,6 +173,33 @@ describe("pages", () => {
   it("does not intercept a non-page request", async () => {
     const w = loadWorker(vi.fn());
     expect(await dispatch(w, new Request(`${ORIGIN}/api/events`))).toBeUndefined();
+  });
+});
+
+describe("SAVE_LESSON messages", () => {
+  it("saves a lesson the page asks for, keyed by path", async () => {
+    const fetchImpl = vi.fn(async () => htmlResponse("Arrays · CP1 — BSIT Survival Kit"));
+    const w = loadWorker(fetchImpl);
+    await message(w, { type: "SAVE_LESSON", url: "/year/y/subjects/s/modules/m1?utm_source=gc" });
+    expect(fetchImpl).toHaveBeenCalledWith(LESSON, { credentials: "same-origin" });
+    expect(w.caches.get("bsit-pages-v1")!.store.has(LESSON)).toBe(true);
+  });
+
+  it("does not download a lesson it already has", async () => {
+    const fetchImpl = vi.fn(async () => htmlResponse("x · y — BSIT Survival Kit"));
+    const w = loadWorker(fetchImpl);
+    await message(w, { type: "SAVE_LESSON", url: LESSON });
+    await message(w, { type: "SAVE_LESSON", url: LESSON });
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+
+  it("refuses anything but a same-origin lesson URL", async () => {
+    const fetchImpl = vi.fn();
+    const w = loadWorker(fetchImpl);
+    await message(w, { type: "SAVE_LESSON", url: "/account" });
+    await message(w, { type: "SAVE_LESSON", url: "https://evil.example/year/y/subjects/s/modules/m" });
+    await message(w, { type: "OTHER", url: LESSON });
+    expect(fetchImpl).not.toHaveBeenCalled();
   });
 });
 

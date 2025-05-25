@@ -11,6 +11,11 @@
  *   the saved copy is served, or a list of the saved lessons.
  * - /_next/static/* (content-hashed, immutable) is cache-first, so a saved
  *   page still has its scripts and styles offline.
+ * - A page can ask for a lesson to be saved ({type: "SAVE_LESSON", url}).
+ *   The registering component does this for every lesson opened, because
+ *   the first lesson loads before this worker controls the tab, and moving
+ *   between lessons is a client-side (RSC) fetch, not a navigation. Only
+ *   lesson URLs, and only when no copy is saved yet.
  * - Everything else (API calls, sign-in, account, admin, unlock, RSC
  *   payloads, other origins, non-GET) is never touched.
  *
@@ -141,6 +146,29 @@ function handlePage(request) {
   });
 }
 
+/** Save a lesson page on request from the page, if not saved already. */
+function saveLesson(rawUrl, origin) {
+  var url;
+  try {
+    url = new URL(rawUrl, origin);
+  } catch (e) {
+    return Promise.resolve(false);
+  }
+  if (url.origin !== origin || !LESSON_PATH.test(url.pathname)) return Promise.resolve(false);
+  var key = pageKey(url.href);
+  return caches.open(PAGE_CACHE).then(function (cache) {
+    return cache.match(key).then(function (hit) {
+      if (hit) return false;
+      return fetch(url.origin + url.pathname, { credentials: "same-origin" }).then(function (response) {
+        if (!cacheable(response)) return false;
+        return cache.put(key, response).then(function () {
+          return trimCache(cache, PAGE_LIMIT);
+        }).then(function () { return true; });
+      });
+    });
+  }).catch(function () { return false; });
+}
+
 function handleStatic(request) {
   return caches.open(STATIC_CACHE).then(function (cache) {
     return cache.match(request).then(function (hit) {
@@ -167,6 +195,13 @@ self.addEventListener("activate", function (event) {
       }).map(function (n) { return caches.delete(n); }));
     }).then(function () { return self.clients.claim(); })
   );
+});
+
+self.addEventListener("message", function (event) {
+  var data = event.data;
+  if (data && data.type === "SAVE_LESSON" && typeof data.url === "string") {
+    event.waitUntil(saveLesson(data.url, self.location.origin));
+  }
 });
 
 self.addEventListener("fetch", function (event) {

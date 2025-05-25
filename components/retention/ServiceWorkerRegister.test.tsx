@@ -1,6 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 import { render } from "@testing-library/react";
-import { registerServiceWorker, ServiceWorkerRegister, SERVICE_WORKER_URL } from "./ServiceWorkerRegister";
+import {
+  registerServiceWorker,
+  saveLessonForOffline,
+  ServiceWorkerRegister,
+  SERVICE_WORKER_URL,
+} from "./ServiceWorkerRegister";
+
+vi.mock("next/navigation", () => ({ usePathname: () => "/year" }));
 
 const logEvent = vi.fn();
 vi.mock("@/lib/analytics", () => ({ logEvent: (...args: unknown[]) => logEvent(...args) }));
@@ -38,5 +45,27 @@ describe("ServiceWorkerRegister", () => {
     render(<ServiceWorkerRegister />);
     window.dispatchEvent(new Event("appinstalled"));
     expect(logEvent).toHaveBeenCalledWith("pwa_installed");
+  });
+});
+
+describe("saveLessonForOffline", () => {
+  function readyNavigator() {
+    const postMessage = vi.fn();
+    const nav = { serviceWorker: { ready: Promise.resolve({ active: { postMessage } }) } } as unknown as Navigator;
+    return { nav, postMessage };
+  }
+
+  it("asks the worker to save a lesson", async () => {
+    const { nav, postMessage } = readyNavigator();
+    expect(saveLessonForOffline("/year/y/subjects/s/modules/m", nav, true)).toBe(true);
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(postMessage).toHaveBeenCalledWith({ type: "SAVE_LESSON", url: "/year/y/subjects/s/modules/m" });
+  });
+
+  it("ignores pages that are not lessons, and dev builds", () => {
+    const { nav } = readyNavigator();
+    expect(saveLessonForOffline("/year", nav, true)).toBe(false);
+    expect(saveLessonForOffline("/year/y/subjects/s/modules/m", nav, false)).toBe(false);
   });
 });
