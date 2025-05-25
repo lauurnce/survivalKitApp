@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
@@ -27,6 +27,7 @@ import { estimateReadingMinutes } from "@/lib/lesson/readingTime";
 import { freeIdsInModule, pickFreeActivities } from "@/lib/freeSample";
 import { cheapestSubjectPrice } from "@/lib/pricing";
 import { sectionLabel } from "@/lib/sectionLabel";
+import { pageMetadata } from "@/lib/seo/pageMetadata";
 import { getModuleWithSubject, getSiblingModules, getModuleContentSections, getModuleActivitySections } from "@/lib/cache/queries";
 
 // Prerendered on first request per module (ISR, 60s) and CDN-cached. The HTML
@@ -43,14 +44,36 @@ interface Props {
   params: Promise<{ yearId: string; subjectId: string; moduleId: string }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { subjectId, moduleId } = await params;
+export async function generateMetadata(
+  { params }: Props,
+  parent?: ResolvingMetadata,
+): Promise<Metadata> {
+  const { yearId, subjectId, moduleId } = await params;
   const { mod, subject } = await getModuleWithSubject(moduleId, subjectId);
   if (!mod) return {};
-  return {
+  // A lesson link is the most-shared URL on the site: give its preview the
+  // lesson's own og:title and og:url instead of the subject layout's. Keep the
+  // "Module · Subject" title shape; RecentLessonTracker parses it.
+  const meta = pageMetadata({
     title: subject ? `${mod.title} · ${subject.title}` : mod.title,
     description: `Study notes and reviewers for ${mod.title}${subject ? ` in ${subject.title}` : ""}.`,
-  };
+    path: `/year/${yearId}/subjects/${subjectId}/modules/${moduleId}`,
+  });
+  // Keep the subject card from the segment's opengraph-image, not the default.
+  // Setting openGraph here replaces the parent's wholesale, file image included,
+  // so carry the card over from the resolved parent explicitly.
+  const parentMeta = parent ? await parent : null;
+  const ogImages = parentMeta?.openGraph?.images;
+  const twitterImages = parentMeta?.twitter?.images;
+  if (meta.openGraph) {
+    if (ogImages?.length) meta.openGraph.images = ogImages;
+    else delete meta.openGraph.images;
+  }
+  if (meta.twitter) {
+    if (twitterImages?.length) meta.twitter.images = twitterImages;
+    else delete meta.twitter.images;
+  }
+  return meta;
 }
 
 export default async function ReaderPage({ params }: Props) {

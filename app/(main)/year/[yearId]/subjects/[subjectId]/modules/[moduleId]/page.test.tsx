@@ -46,7 +46,7 @@ vi.mock("@/lib/cache/queries", () => ({
   getModuleActivitySections: () => Promise.resolve([]),
 }));
 
-import ReaderPage from "./page";
+import ReaderPage, { generateMetadata } from "./page";
 
 async function renderPage() {
   const ui = await ReaderPage({
@@ -86,5 +86,35 @@ describe("ReaderPage — year context in the header", () => {
     await renderPage();
 
     expect(screen.getByText("§ — — Computer Programming 1")).toBeInTheDocument();
+  });
+});
+
+describe("generateMetadata — the lesson's own link preview", () => {
+  const params = Promise.resolve({ yearId: YEAR_ID, subjectId: SUBJECT_ID, moduleId: MODULE_ID });
+
+  it("gives the lesson its own og:title and og:url", async () => {
+    const meta = await generateMetadata({ params });
+    expect(meta.title).toBe("Variables · Computer Programming 1");
+    expect(meta.openGraph?.title).toBe("Variables · Computer Programming 1 — BSIT Survival Kit");
+    expect(meta.openGraph?.url).toBe(`/year/${YEAR_ID}/subjects/${SUBJECT_ID}/modules/${MODULE_ID}`);
+    expect(meta.twitter?.title).toBe("Variables · Computer Programming 1 — BSIT Survival Kit");
+  });
+
+  it("carries the subject segment's card over from the parent, not the default image", async () => {
+    const card = { url: new URL("https://tryi2i.com/year/y/subjects/s/opengraph-image-abc"), width: 1200, height: 630 };
+    const parent = Promise.resolve({
+      openGraph: { images: [card] },
+      twitter: { images: [card] },
+    }) as unknown as Parameters<typeof generateMetadata>[1];
+    const meta = await generateMetadata({ params }, parent);
+    expect(meta.openGraph?.images).toEqual([card]);
+    expect(meta.twitter?.images).toEqual([card]);
+    expect(JSON.stringify(meta)).not.toContain('"/opengraph-image"');
+  });
+
+  it("emits no image of its own when the parent has none", async () => {
+    const meta = await generateMetadata({ params });
+    expect(meta.openGraph).not.toHaveProperty("images");
+    expect(meta.twitter).not.toHaveProperty("images");
   });
 });
