@@ -28,6 +28,7 @@ describe("PrivacyPage", () => {
       "bsit-pages-",
       "bsit_install_prompt_dismissed",
       "bsit:tour:",
+      "bsit:landing-seen",
       "bsit_signup_nudge_dismissed",
       "bsit_signup_nudge_shown",
       "bsit:session-entered",

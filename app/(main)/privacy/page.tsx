@@ -32,6 +32,7 @@ const LOCAL_STORAGE: [key: string, purpose: string][] = [
   ["bsit_install_prompt_dismissed", "When you closed the \"add to home screen\" suggestion, so it stays away for three weeks."],
   ["bsit_recent_lessons", "The last few lessons you opened (titles and links), for \"Pick up where you left off\". Never sent to us."],
   ["bsit:tour:…", "Which page tours you have finished or skipped, so they don't repeat."],
+  ["bsit:landing-seen", "That this browser has opened the home page before, so the home page tour waits until your second visit."],
   ["bsit_signup_nudge_dismissed", "That you closed the \"create a free account\" prompt."],
   ["last-feedback-prompt, rated-modules", "When we last asked for feedback, and which modules you already rated, so we don't ask again."],
 ];

@@ -2,6 +2,7 @@
 
 import { useTour, type TourStep } from "@/lib/tour/useTour";
 import { TourOverlay } from "@/components/tour/TourOverlay";
+import { isReturnLandingVisit } from "@/lib/tour/landingVisit";
 
 const LANDING_STEPS: TourStep[] = [
   {
@@ -41,14 +42,19 @@ const LANDING_STEPS: TourStep[] = [
   },
 ];
 
+const TOUR_OPTIONS = { shouldStart: isReturnLandingVisit };
+
 /**
- * Mounts the first-time-visitor tour for the landing page (`tourId:
- * "landing"`). Takes no props — the popular-modules step skips itself
- * automatically via `TourOverlay` when that section isn't rendered (no
- * reads yet on a fresh install), same as any other tour built on `useTour`.
+ * Mounts the newcomer tour for the landing page (`tourId: "landing"`). It
+ * never starts on a device's first load of `/`, where on a phone it would
+ * cover the hero; it starts on the next visit instead (see
+ * `lib/tour/landingVisit.ts`). Takes no props — the popular-modules step
+ * skips itself automatically via `TourOverlay` when that section isn't
+ * rendered (no reads yet on a fresh install), same as any other tour built
+ * on `useTour`.
  */
 export function LandingTour() {
-  const { active, stepIndex, totalSteps, next, prev, skip } = useTour("landing", LANDING_STEPS);
+  const { active, stepIndex, totalSteps, next, prev, skip } = useTour("landing", LANDING_STEPS, TOUR_OPTIONS);
 
   if (!active) return null;
 

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach } from "vitest";
 import { act, render, screen } from "@testing-library/react";
-import { useTour, resetAllTours, type TourStep } from "./useTour";
+import { useTour, resetAllTours, type TourStep, type UseTourOptions } from "./useTour";
 
 const STEPS: TourStep[] = [
   { id: "welcome", title: "Welcome", body: "Let's take a look around." },
@@ -9,8 +9,8 @@ const STEPS: TourStep[] = [
   { id: "search", target: "landing-search", title: "Search", body: "Find a module." },
 ];
 
-function Probe({ tourId, steps }: { tourId: string; steps: TourStep[] }) {
-  const { active, stepIndex, totalSteps, next, prev, skip } = useTour(tourId, steps);
+function Probe({ tourId, steps, options }: { tourId: string; steps: TourStep[]; options?: UseTourOptions }) {
+  const { active, stepIndex, totalSteps, next, prev, skip } = useTour(tourId, steps, options);
   return (
     <div>
       <span data-testid="state">{`active=${active} step=${stepIndex} total=${totalSteps}`}</span>
@@ -23,6 +23,34 @@ function Probe({ tourId, steps }: { tourId: string; steps: TourStep[] }) {
 
 beforeEach(() => {
   localStorage.clear();
+});
+
+describe("useTour — shouldStart", () => {
+  it("holds the tour back without marking it done when shouldStart returns false", async () => {
+    render(<Probe tourId="landing" steps={STEPS} options={{ shouldStart: () => false }} />);
+    await act(async () => {});
+    expect(screen.getByTestId("state")).toHaveTextContent("active=false");
+    expect(localStorage.getItem("bsit:tour:landing")).toBeNull();
+  });
+
+  it("activates when shouldStart returns true", async () => {
+    render(<Probe tourId="landing" steps={STEPS} options={{ shouldStart: () => true }} />);
+    await act(async () => {});
+    expect(screen.getByTestId("state")).toHaveTextContent("active=true step=0");
+  });
+
+  it("never consults shouldStart once the tour is done", async () => {
+    localStorage.setItem("bsit:tour:landing", "1");
+    let calls = 0;
+    const shouldStart = () => {
+      calls++;
+      return true;
+    };
+    render(<Probe tourId="landing" steps={STEPS} options={{ shouldStart }} />);
+    await act(async () => {});
+    expect(screen.getByTestId("state")).toHaveTextContent("active=false");
+    expect(calls).toBe(0);
+  });
 });
 
 describe("useTour", () => {

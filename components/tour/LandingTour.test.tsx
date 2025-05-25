@@ -2,6 +2,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import { LandingTour } from "./LandingTour";
+import { LANDING_SEEN_KEY, resetLandingVisitForTests } from "@/lib/tour/landingVisit";
+import { resetAllTours } from "@/lib/tour/useTour";
 
 function Anchors() {
   return (
@@ -21,12 +23,88 @@ async function clickNext() {
   });
 }
 
+function renderLanding() {
+  return render(
+    <>
+      <Anchors />
+      <LandingTour />
+    </>
+  );
+}
+
 beforeEach(() => {
   localStorage.clear();
+  resetLandingVisitForTests();
+  // Most tests below are about the tour itself, so start them on a device
+  // that has already been to `/` once. The first-visit cases clear this.
+  localStorage.setItem(LANDING_SEEN_KEY, "1");
+});
+
+describe("LandingTour — not on a device's first visit", () => {
+  it("stays hidden on the first load of / and records the visit", async () => {
+    localStorage.removeItem(LANDING_SEEN_KEY);
+    renderLanding();
+    await act(async () => {});
+
+    expect(screen.queryByRole("heading", { name: "New here?" })).not.toBeInTheDocument();
+    expect(screen.queryByText(/Step 1 of/)).not.toBeInTheDocument();
+    expect(localStorage.getItem(LANDING_SEEN_KEY)).not.toBeNull();
+    // Deferred, not dismissed: the tour itself is not marked done.
+    expect(localStorage.getItem("bsit:tour:landing")).toBeNull();
+  });
+
+  it("stays hidden when / remounts within the same page load", async () => {
+    localStorage.removeItem(LANDING_SEEN_KEY);
+    const first = renderLanding();
+    await act(async () => {});
+    first.unmount();
+
+    renderLanding();
+    await act(async () => {});
+    expect(screen.queryByRole("heading", { name: "New here?" })).not.toBeInTheDocument();
+  });
+
+  it("starts on the next visit (a later page load)", async () => {
+    localStorage.removeItem(LANDING_SEEN_KEY);
+    const first = renderLanding();
+    await act(async () => {});
+    first.unmount();
+
+    resetLandingVisitForTests(); // a new page load
+    renderLanding();
+    await act(async () => {});
+    expect(screen.getByRole("heading", { name: "New here?" })).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 6")).toBeInTheDocument();
+  });
+
+  it("replays on the next visit after Replay tour on /account, without deferring again", async () => {
+    localStorage.setItem("bsit:tour:landing", "1");
+    resetAllTours();
+    expect(localStorage.getItem(LANDING_SEEN_KEY)).not.toBeNull();
+
+    renderLanding();
+    await act(async () => {});
+    expect(screen.getByRole("heading", { name: "New here?" })).toBeInTheDocument();
+  });
+
+  it("stays hidden when storage is unavailable", async () => {
+    localStorage.removeItem(LANDING_SEEN_KEY);
+    const getItem = Storage.prototype.getItem;
+    Storage.prototype.getItem = () => {
+      throw new Error("blocked");
+    };
+    try {
+      renderLanding();
+      await act(async () => {});
+    } finally {
+      Storage.prototype.getItem = getItem;
+    }
+    expect(screen.queryByRole("heading", { name: "New here?" })).not.toBeInTheDocument();
+  });
 });
 
 describe("LandingTour", () => {
-  it("auto-runs for a first-time visitor, starting on the welcome step", async () => {
+  it("auto-runs on a returning device's visit, starting on the welcome step", async () => {
     render(
       <>
         <Anchors />

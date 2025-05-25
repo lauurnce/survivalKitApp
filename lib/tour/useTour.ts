@@ -70,6 +70,15 @@ export function resetAllTours(): void {
   }
 }
 
+export interface UseTourOptions {
+  /**
+   * Extra gate on auto-activation, checked once on mount and only when the
+   * tour isn't already done. Return false to hold the tour back this time
+   * without marking it done, so it can still start on a later mount.
+   */
+  shouldStart?: () => boolean;
+}
+
 /**
  * Drives a step-by-step onboarding tour. Pure state + persistence — it knows
  * nothing about rendering or the DOM. Pair it with `TourOverlay` (or a
@@ -82,14 +91,15 @@ export function resetAllTours(): void {
  * several tours (one per dashboard section, say) can each be skipped
  * independently without affecting one another.
  */
-export function useTour(tourId: string, steps: TourStep[]): UseTourResult {
+export function useTour(tourId: string, steps: TourStep[], options: UseTourOptions = {}): UseTourResult {
   const totalSteps = steps.length;
   const [active, setActive] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
+  const { shouldStart } = options;
 
   useEffect(() => {
     if (totalSteps === 0) return;
-    if (!readDone(tourId)) {
+    if (!readDone(tourId) && (shouldStart?.() ?? true)) {
       // localStorage can't be read during render (server/client mismatch),
       // so this one-time "should we even start" check has to live here.
       // eslint-disable-next-line react-hooks/set-state-in-effect
