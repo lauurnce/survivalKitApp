@@ -1,13 +1,25 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { PageTracker } from "@/components/PageTracker";
-import { ContinueReading } from "@/components/ContinueReading";
+import { RecentLessons } from "@/components/retention/RecentLessons";
+import { ExamCountdown } from "@/components/retention/ExamCountdown";
+import { InstallPrompt } from "@/components/retention/InstallPrompt";
 import { PopularModules, type PopularModule } from "@/components/PopularModules";
 import { LandingTour } from "@/components/tour/LandingTour";
 import { createServerClient } from "@/lib/supabase/server";
 import { getCp1StartPath } from "@/lib/landing";
 import { cheapestSubjectPrice } from "@/lib/pricing";
+import { pageMetadata } from "@/lib/seo/pageMetadata";
 
-export const revalidate = 300;
+export const revalidate = 60;
+
+export const metadata: Metadata = pageMetadata({
+  title: "BSIT Survival Kit — Free lessons and reviewers for BSIT students",
+  absoluteTitle: true,
+  description:
+    "Free lesson notes for BSIT subjects — Computer Programming 1, Introduction to Computing, Discrete Structures and more — plus reviewers with answer keys, organized by year and semester.",
+  path: "/",
+});
 
 export default async function LandingPage() {
   const supabase = createServerClient();
@@ -143,8 +155,18 @@ export default async function LandingPage() {
         </div>
       </div>
 
-      {/* Continue reading — client, null for first-time visitors */}
-      <ContinueReading />
+      {/* Exam countdown — client, only within 45 days of midterms/finals */}
+      <ExamCountdown
+        href={startPath?.href ?? "/year"}
+        linkLabel={startPath ? `Review ${startPath.subjectTitle} from Lesson 1` : "Find your subject"}
+      />
+
+      {/* Pick up where you left off — device-local, null for first-time
+          visitors. Replaces the single-lesson "Continue reading" card. */}
+      <RecentLessons />
+
+      {/* Add to home screen — only for devices that read 2+ lessons */}
+      <InstallPrompt />
 
       {/* Popular modules — hidden when no reads. The data-tour wrapper is
           conditional too, not just PopularModules' own empty state, so the

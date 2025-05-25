@@ -71,7 +71,7 @@ vi.mock("@/lib/landing", () => ({
 
 const CP1_PATH = `/year/${YEAR_ID}/subjects/cp1/modules/lesson-1`;
 
-import LandingPage from "./page";
+import LandingPage, { metadata as landingMetadata } from "./page";
 import { cheapestSubjectPrice } from "@/lib/pricing";
 
 beforeEach(() => {
@@ -164,5 +164,12 @@ describe("LandingPage — footer claims", () => {
     const { container } = await renderPage();
     expect(screen.getByText(/we never sell your data\./i)).toBeInTheDocument();
     expect(container.textContent).not.toMatch(/sell or share/i);
+  });
+});
+
+describe("LandingPage — metadata", () => {
+  it("shares a descriptive title", () => {
+    expect(landingMetadata.openGraph).toMatchObject({ url: "/" });
+    expect(String(landingMetadata.openGraph?.title)).toMatch(/BSIT Survival Kit — Free lessons/);
   });
 });

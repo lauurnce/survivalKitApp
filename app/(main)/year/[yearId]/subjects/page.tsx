@@ -4,10 +4,11 @@ import { DashboardNavRail } from "@/components/dashboard/SessionShell";
 import { ReferrerBackLink } from "@/components/ReferrerAware";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTracker } from "@/components/PageTracker";
+import { RecentLessons } from "@/components/retention/RecentLessons";
 import { SubjectAccordion, type SubjectModule } from "@/components/SubjectAccordion";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { getYears, getSubjectsByYear, getSubjectCounters, getModulesBySubject } from "@/lib/cache/queries";
-import { createServerClient } from "@/lib/supabase/server";
+import { pageMetadata, subjectsDescription } from "@/lib/seo/pageMetadata";
 
 export const revalidate = 60;
 
@@ -24,19 +25,18 @@ interface Subject {
   sort_order: number;
 }
 
+// Reads through the same cached queries as the page, instead of a second,
+// uncached `years` query on every regeneration.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { yearId } = await params;
-  const supabase = createServerClient();
-  const { data: year } = await supabase
-    .from("years")
-    .select("label")
-    .eq("id", yearId)
-    .single();
-  if (!year) return {};
-  return {
-    title: `${year.label} Subjects`,
-    description: `Browse all ${year.label} BSIT subjects, modules, and reviewers.`,
-  };
+  const year = (await getYears()).find((y) => y.id === yearId);
+  if (!year || year.coming_soon) return {};
+  const subjects = ((await getSubjectsByYear(yearId)) ?? []) as Subject[];
+  return pageMetadata({
+    title: `${year.label} BSIT Subjects`,
+    description: subjectsDescription(year.label, subjects),
+    path: `/year/${yearId}/subjects`,
+  });
 }
 
 // Prerendered on first request per year (ISR, 60s) and CDN-cached. The nav
@@ -112,6 +112,7 @@ export default async function SubjectsPage({ params }: Props) {
           {/* Subject list — cream */}
           <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
             <div className="flex flex-col gap-12 max-w-wide mx-auto">
+              <RecentLessons yearId={yearId} extra={1} />
               {[
                 { label: "1st Semester", items: sem1 },
                 { label: "2nd Semester", items: sem2 },

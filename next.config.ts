@@ -42,6 +42,15 @@ const pyodideWorkerHeaders = [
   },
 ];
 
+// The service worker (public/sw.js). no-cache so a fixed or kill-switch
+// worker reaches every browser on its next visit instead of after the CDN's
+// default max-age; proxy.ts skips this path, so this CSP is its only one.
+const serviceWorkerHeaders = [
+  { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+  { key: "Content-Type", value: "application/javascript; charset=utf-8" },
+  { key: "Content-Security-Policy", value: "default-src 'self'; script-src 'self'; connect-src 'self'" },
+];
+
 const nextConfig: NextConfig = {
   // Stop leaking "X-Powered-By: Next.js" on every response — free framework
   // fingerprinting for an attacker with no benefit to us.
@@ -61,6 +70,7 @@ const nextConfig: NextConfig = {
         source: "/pyodideWorker.js",
         headers: pyodideWorkerHeaders,
       },
+      { source: "/sw.js", headers: serviceWorkerHeaders },
       ...STATIC_CSP_ROUTES.flatMap(({ path, prefix }) =>
         (prefix ? [path, `${path}/:path*`] : [path]).map((source) => ({
           source,

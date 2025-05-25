@@ -27,7 +27,11 @@ export type EventType =
   | "quick_check_correct"
   | "quick_check_wrong"
   | "lesson_share"
-  | "code_run";
+  | "code_run"
+  // Discovery/retention (migration 20261101000600, components/retention/**).
+  | "recent_lesson_click"
+  | "install_prompt_shown"
+  | "pwa_installed";
 
 export interface Database {
   public: {

@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import { BackLink } from "@/components/BackLink";
+import { pageMetadata } from "@/lib/seo/pageMetadata";
 import { popularKeywords } from "@/lib/searchSuggestions";
 import { SearchClient, type SearchItem } from "@/components/SearchClient";
 import { getYears, getAllSubjects, getAllModules } from "@/lib/cache/queries";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
+// og:url is /search for every ?q= variant, like the canonical.
+export const metadata: Metadata = pageMetadata({
   title: "Search",
-  description: "Find any BSIT subject or module by name.",
-};
+  description: "Find any BSIT subject or module by name — try cp1, arrays or SQL join.",
+  path: "/search",
+});
 
 export default async function SearchPage() {
   const [years, subjects, modules] = await Promise.all([

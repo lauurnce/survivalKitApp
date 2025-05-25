@@ -5,17 +5,23 @@ import { PageTracker } from "@/components/PageTracker";
 import { type YearCardData } from "@/components/YearGrid";
 import { ReferrerYearGrid } from "@/components/ReferrerAware";
 import { SubjectsTour } from "@/components/tour/SubjectsTour";
+import { RecentLessons } from "@/components/retention/RecentLessons";
+import { ExamCountdown } from "@/components/retention/ExamCountdown";
+import { InstallPrompt } from "@/components/retention/InstallPrompt";
 import { getYears, getAllSubjects, getYearCounters } from "@/lib/cache/queries";
+import { pageMetadata } from "@/lib/seo/pageMetadata";
 
 // Prerendered (ISR, 60s) and CDN-cached: identical for every visitor. The
 // session-dependent bits — nav rail, its progress, log out — and the
 // ?from=dashboard variant are resolved client-side.
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Select Year",
-  description: "Pick your year level to browse BSIT subjects and modules.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "BSIT Subjects by Year",
+  description:
+    "Every BSIT subject from 1st to 4th year, by semester — free lesson notes, programming guides and reviewers for each module.",
+  path: "/year",
+});
 
 export default async function YearPage() {
   // Use cached queries for static data
@@ -86,6 +92,9 @@ export default async function YearPage() {
 
           {/* Year cards — cream */}
           <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
+            <ExamCountdown className="mx-auto mb-10" />
+            <RecentLessons extra={1} className="mx-auto mb-12" />
+            <InstallPrompt className="mx-auto mb-12" />
             <div className="max-w-wide mx-auto" data-tour="subjects-years">
               <ReferrerYearGrid cards={cards} />
             </div>

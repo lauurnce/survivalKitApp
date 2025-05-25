@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { SearchClient, type SearchItem } from "./SearchClient";
 
@@ -50,5 +50,66 @@ describe("SearchClient", () => {
     expect(screen.getByText("Networking Basics")).toBeInTheDocument();
     expect(screen.queryByText("Data Structures")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Data" })).not.toBeInTheDocument();
+  });
+});
+
+describe("SearchClient — query matching and the ?q= link (QA FL-07)", () => {
+  const catalogue: SearchItem[] = [
+    { type: "subject", id: "cp1", title: "Computer Programming 1", href: "/cp1", context: "1st Year" },
+    { type: "module", id: "sql", title: "SQL Joins and Subqueries", href: "/sql", context: "2nd Year · Database Systems" },
+    { type: "module", id: "ll", title: "Linked List", href: "/ll", context: "2nd Year · Data Structures and Algorithms" },
+  ];
+
+  afterEach(() => {
+    window.history.replaceState(null, "", "/");
+  });
+
+  function type(value: string) {
+    fireEvent.change(screen.getByLabelText("Search subjects and modules"), { target: { value } });
+  }
+
+  it("matches every word of a multi-word query, not the whole phrase", () => {
+    render(<SearchClient items={catalogue} />);
+    type("SQL join");
+    expect(screen.getByText("SQL Joins and Subqueries")).toBeInTheDocument();
+  });
+
+  it("expands course abbreviations like cp1", () => {
+    render(<SearchClient items={catalogue} />);
+    type("cp1");
+    expect(screen.getByText("Computer Programming 1")).toBeInTheDocument();
+  });
+
+  it("treats a trailing plural as optional", () => {
+    render(<SearchClient items={catalogue} />);
+    type("linked lists");
+    expect(screen.getByText("Linked List")).toBeInTheDocument();
+  });
+
+  it("opens with the query from ?q=", () => {
+    window.history.replaceState(null, "", "/search?q=linked");
+    render(<SearchClient items={catalogue} />);
+    expect(screen.getByLabelText("Search subjects and modules")).toHaveValue("linked");
+    expect(screen.getByText("Linked List")).toBeInTheDocument();
+  });
+
+  it("writes the typed query back into the URL, and removes it when cleared", () => {
+    window.history.replaceState(null, "", "/search");
+    render(<SearchClient items={catalogue} />);
+    type("sql join");
+    expect(new URL(window.location.href).searchParams.get("q")).toBe("sql join");
+    type("");
+    expect(new URL(window.location.href).searchParams.has("q")).toBe(false);
+  });
+});
+
+describe("SearchClient — long queries (QA FL-08)", () => {
+  it("lets the echoed no-match query wrap instead of overflowing", () => {
+    render(<SearchClient items={items} />);
+    const long = "x".repeat(300);
+    fireEvent.change(screen.getByLabelText("Search subjects and modules"), { target: { value: long } });
+    const line = screen.getByText(/No matches for/);
+    expect(line.className).toContain("break-words");
+    expect(line.className).toContain("[overflow-wrap:anywhere]");
   });
 });
