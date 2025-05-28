@@ -265,3 +265,28 @@ describe("SectionRenderer — locked activities", () => {
     expect(screen.queryByText(/reviewer — locked/i)).not.toBeInTheDocument();
   });
 });
+
+describe("SectionRenderer — section anchors", () => {
+  it("gives open and locked sections the anchor LessonOverview links to", () => {
+    const { container } = render(
+      <>
+        <SectionRenderer
+          {...common}
+          section={{ id: "c1", kind: "content", heading: "Loops", body_md: "Text", sort_order: 1 }}
+          index={0}
+          unlockAll={false}
+          freeSectionIds={[]}
+        />
+        <SectionRenderer
+          {...common}
+          section={activity("a9", "Practice")}
+          index={1}
+          unlockAll={false}
+          freeSectionIds={[]}
+        />
+      </>
+    );
+    expect(container.querySelector("#sec-c1")).toHaveTextContent("Loops");
+    expect(container.querySelector("#sec-a9")).toHaveTextContent("Practice");
+  });
+});

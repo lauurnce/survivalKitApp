@@ -17,6 +17,7 @@ import { PaidStatusBar } from "@/components/PaidStatusBar";
 import { SignupNudgeToast } from "@/components/SignupNudgeToast";
 import { ModuleReaderClient } from "@/components/ModuleReaderClient";
 import { ModuleSurveyCard } from "@/components/ModuleSurveyCard";
+import { LessonOverview } from "@/components/lesson/LessonOverview";
 import { freeIdsInModule, pickFreeActivities } from "@/lib/freeSample";
 import { cheapestSubjectPrice } from "@/lib/pricing";
 import { sectionLabel } from "@/lib/sectionLabel";
@@ -212,8 +213,11 @@ export default async function ReaderPage({ params }: Props) {
       </header>
 
       {/* Article content — cream */}
-      <article className="px-6 py-12 md:px-16">
+      <article id="lesson-body" className="px-6 py-12 md:px-16">
         <div className="max-w-wide mx-auto space-y-16">
+        {/* Length and topic map up front, for readers who land here from a
+            group-chat link and would otherwise have to scroll to find out. */}
+        <LessonOverview sections={allSections} />
         {/* Surface the offer at the top when this module has gated activities
             and the user hasn't unlocked them. A module whose reviewers are all
             free sample (the subject's first) gets no teaser — the offer starts

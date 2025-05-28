@@ -13,6 +13,7 @@ import { LockedReviewer } from "./LockedReviewer";
 import { ProBadge } from "./ProBadge";
 import { LockIcon } from "./ProIcons";
 import { logEvent, logSectionView } from "@/lib/analytics";
+import { sectionAnchor } from "@/lib/lesson/anchors";
 import { buildUnlockHref, modulePath } from "@/lib/subscribeRedirect";
 import type { TopologyData } from "@/lib/topology/types";
 
@@ -88,7 +89,7 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
 
   if (section.kind === "activity" && !unlockAll && !isFreeSample) {
     return (
-      <section className="print-section" data-kind={section.kind}>
+      <section id={sectionAnchor(section.id)} className="print-section scroll-mt-20" data-kind={section.kind}>
         {/* Locked preview: the server only ever sent the heading, so the
             blurred layer is that heading plus decorative ghost lines — never
             gated bodies. The overlay chip is deliberately inert (no link, no
@@ -131,7 +132,7 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
   }
 
   return (
-    <section className="print-section" data-kind={section.kind}>
+    <section id={sectionAnchor(section.id)} className="print-section scroll-mt-20" data-kind={section.kind}>
       <div className="flex items-baseline gap-4 mb-6">
         <span className="label-sm shrink-0">{String(index + 1).padStart(2, "0")}</span>
         <h2 className="font-serif text-2xl md:text-3xl text-ink leading-tight">{section.heading}</h2>
