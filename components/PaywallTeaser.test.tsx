@@ -26,13 +26,35 @@ beforeEach(() => {
 });
 
 describe("PaywallTeaser", () => {
-  it("renders nothing while the subscription check is still in flight", () => {
+  it("reserves its space, invisibly, while the subscription check is in flight", () => {
+    // Rendering nothing here let the teaser pop in above the module list once
+    // the check resolved, shifting the whole page (CLS 0.24 on mobile).
     status = { subscribed: null, polling: false, unlocked: false, pollTimedOut: false };
     const { container } = render(
       <PaywallTeaser yearId={YEAR} subjectId={SUBJECT} subjectTitle="CP1" reviewerCount={12} />
     );
-    expect(container).toBeEmptyDOMElement();
+    const box = container.firstElementChild as HTMLElement;
+    expect(box).not.toBeNull();
+    // Same markup, so the same height at every viewport...
+    expect(box.textContent).toContain("12 reviewers with answer keys in CP1");
+    // ...but never painted, announced, or focusable, so a subscriber never
+    // sees a paywall flash before it collapses.
+    expect(box).toHaveClass("invisible");
+    expect(box).toHaveAttribute("aria-hidden", "true");
+    expect(box).toHaveAttribute("inert");
+    expect(screen.queryByRole("link", { name: /unlock reviewers/i })).toBeNull();
     expect(logEvent).not.toHaveBeenCalled();
+  });
+
+  it("shows the same box once the check confirms the reader has not paid", () => {
+    status = { subscribed: false, polling: false, unlocked: false, pollTimedOut: false };
+    const { container } = render(
+      <PaywallTeaser yearId={YEAR} subjectId={SUBJECT} subjectTitle="CP1" reviewerCount={12} />
+    );
+    const box = container.firstElementChild as HTMLElement;
+    expect(box).not.toHaveClass("invisible");
+    expect(box).not.toHaveAttribute("aria-hidden");
+    expect(box).not.toHaveAttribute("inert");
   });
 
   it("renders nothing for a reader who already paid", () => {
