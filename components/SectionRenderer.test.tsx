@@ -208,6 +208,24 @@ describe("SectionRenderer — locked activities", () => {
     expect(container.querySelectorAll("#subscribe")).toHaveLength(0);
   });
 
+  // `ink` flips to the light colour in dark mode, so a `dark:bg-ink` pill
+  // turned into a light slab with 1.71:1 text. `paper` already flips.
+  it("keeps the Pro activity pill on the theme-aware paper surface in dark mode", () => {
+    render(
+      <SectionRenderer
+        {...common}
+        section={activity("a1", "Worked Exam Solutions")}
+        index={4}
+        unlockAll={false}
+        freeSectionIds={["other"]}
+      />
+    );
+
+    const pill = screen.getByText("Pro activity").parentElement!;
+    expect(pill).toHaveClass("bg-paper/90");
+    expect(pill.className).not.toMatch(/dark:bg-(ink|navy|taupe)/);
+  });
+
   it("renders the body when the reader has unlocked the subject", () => {
     render(
       <SectionRenderer
