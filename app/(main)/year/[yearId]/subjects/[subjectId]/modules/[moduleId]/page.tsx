@@ -122,7 +122,13 @@ export default async function ReaderPage({ params }: Props) {
     }),
   ].sort((a, b) => a.sort_order - b.sort_order);
 
-  const year = (subject.years as { label: string; sort_order: number }[] | null)?.[0] ?? null;
+  // years(...) is a many-to-one embed, so PostgREST returns an object; accept
+  // an array too so a typegen or query change can't silently drop the year.
+  const yearEmbed = subject.years as unknown as
+    | { label: string; sort_order: number }
+    | { label: string; sort_order: number }[]
+    | null;
+  const year = (Array.isArray(yearEmbed) ? yearEmbed[0] : yearEmbed) ?? null;
 
   return (
     <ModuleReaderClient moduleId={moduleId} moduleTitle={mod.title}>

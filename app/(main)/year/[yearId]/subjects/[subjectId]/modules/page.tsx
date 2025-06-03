@@ -68,7 +68,13 @@ export default async function ModulesPage({ params }: Props) {
   // Build-wide dev flag only; per-reader subscription resolves client-side.
   const devUnlockAll = process.env.UNLOCK_ALL === "true";
 
-  const year = (subject.years as { label: string; sort_order: number }[] | null)?.[0] ?? null;
+  // years(...) is a many-to-one embed, so PostgREST returns an object; accept
+  // an array too so a typegen or query change can't silently drop the year.
+  const yearEmbed = subject.years as unknown as
+    | { label: string; sort_order: number }
+    | { label: string; sort_order: number }[]
+    | null;
+  const year = (Array.isArray(yearEmbed) ? yearEmbed[0] : yearEmbed) ?? null;
 
   function readCount(moduleId: string): number {
     return moduleCounters?.find((c) => c.resource_id === moduleId)?.read_count ?? 0;
