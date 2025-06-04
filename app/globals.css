@@ -92,6 +92,26 @@ a, button, input, select, textarea {
   }
 }
 
+/* KaTeX on screen (components/SectionRenderer.tsx). KaTeX never wraps, so a
+   long formula pushed the whole reader sideways on phones. Each formula now
+   scrolls inside its own box instead. Screen only: the print block below
+   lets math run at full width on paper. */
+@media screen {
+  .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  /* Inline math. overflow turns the box's baseline into its bottom edge, so
+     vertical-align puts the formula's depth back under the text baseline. */
+  :not(.katex-display) > .katex {
+    display: inline-block;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    vertical-align: bottom;
+  }
+}
+
 /* ---------------------------------------------------------------------------
    Print / Save as PDF — module reader (components/PrintButton.tsx).
    Only an entitled reader's page prints the lesson (see "Print gate" below);
