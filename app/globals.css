@@ -6,7 +6,11 @@
   --color-paper: 247 245 243;
   --color-ink: 26 31 35;
   --color-ink-muted: 107 111 117;
-  --color-ink-faint: 168 173 181;
+  /* Quiet text: #6C7076, 4.58:1 on paper (was #A8ADB5, 2.07:1). */
+  --color-ink-faint: 108 112 118;
+  /* Rules, tracks and fills keep the original lighter grey
+     (tailwind.config.ts maps bg-/border-/divide-ink-faint here). */
+  --color-ink-faint-rule: 168 173 181;
   --color-accent: 224 73 43;
   --color-accent-dark: 184 56 32;
   --color-navy: 26 26 26;
@@ -17,7 +21,9 @@
   --color-paper: 26 31 35;
   --color-ink: 247 245 243;
   --color-ink-muted: 168 173 181;
-  --color-ink-faint: 107 111 117;
+  /* Quiet text: #868A90, 4.79:1 on paper (was #6B6F75, 3.29:1). */
+  --color-ink-faint: 134 138 144;
+  --color-ink-faint-rule: 107 111 117;
   --color-accent: 224 73 43;
   --color-accent-dark: 184 56 32;
   --color-navy: 240 237 233;
@@ -65,7 +71,7 @@ a, button, input, select, textarea {
   background: rgb(var(--color-paper));
 }
 ::-webkit-scrollbar-thumb {
-  background: rgb(var(--color-ink-faint));
+  background: rgb(var(--color-ink-faint-rule));
   border-radius: 0;
 }
 
@@ -129,6 +135,7 @@ a, button, input, select, textarea {
     --color-ink: 0 0 0;
     --color-ink-muted: 45 45 45;
     --color-ink-faint: 130 130 130;
+    --color-ink-faint-rule: 130 130 130;
     --color-navy: 255 255 255;
     --color-taupe: 90 90 90;
   }

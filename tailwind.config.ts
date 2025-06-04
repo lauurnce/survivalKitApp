@@ -18,6 +18,14 @@ const config: Config = {
         navy: "rgb(var(--color-navy) / <alpha-value>)",
         taupe: "rgb(var(--color-taupe) / <alpha-value>)",
       },
+      // ink-faint is a text colour tuned for contrast; rules, tracks and fills
+      // keep the lighter grey they were designed with (globals.css).
+      backgroundColor: {
+        "ink-faint": "rgb(var(--color-ink-faint-rule) / <alpha-value>)",
+      },
+      borderColor: {
+        "ink-faint": "rgb(var(--color-ink-faint-rule) / <alpha-value>)",
+      },
       fontFamily: {
         serif: ["var(--font-fraunces)", "Georgia", "serif"],
         sans: ["var(--font-inter-tight)", "system-ui", "sans-serif"],
