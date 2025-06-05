@@ -107,7 +107,7 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
             </div>
           </div>
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="flex items-center gap-2 border border-amber-300/60 bg-paper/90 px-4 py-2 shadow-sm dark:border-amber-300/25 dark:bg-ink/90">
+            <span className="flex items-center gap-2 border border-amber-300/60 bg-paper/90 px-4 py-2 shadow-sm dark:border-amber-300/25">
               <LockIcon className="h-3.5 w-3.5 shrink-0 text-amber-700 dark:text-amber-400" />
               <ProBadge />
               <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-muted">

@@ -64,17 +64,17 @@ export function SignupNudgeToast({ signupHref }: Props) {
   if (!visible || typeof document === "undefined") return null;
 
   return createPortal(
-    // Anchored to the TOP of the viewport, deliberately distinct from every
-    // bottom-anchored toast in this codebase (ModuleDoneToggle's own "Nice!
-    // One more down" prompt uses this exact bottom-6/inset-x-0/z-40 wrapper,
-    // and UnlockSuccessToast sits at bottom-6/right-6). This toast has no
-    // auto-dismiss timer and can stay open indefinitely, so it must never
-    // share a position with something that can appear while it's still up —
-    // ModuleDoneToggle's prompt fires from marking a module done, which only
-    // needs the device cookie, not sign-in, so the signed-out reader this
-    // toast targets can trigger both at once.
+    // Bottom-anchored, one slot above ModuleDoneToggle's "Nice! One more
+    // down" prompt (fixed bottom-6, centered, z-40). This toast has no
+    // auto-dismiss timer, so it must never share a position with something
+    // that can appear while it is still up: that prompt only needs the device
+    // cookie, so the signed-out reader this toast targets can trigger both.
+    // The top of the viewport is taken by the fixed TopBar (theme + Log in,
+    // z-50) and the reader's breadcrumb and back link, which a top-anchored
+    // toast covered on phones. print:hidden keeps it off the PDF: the portal
+    // lands in <body>, outside the reader's print gate.
     <div
-      className="fixed top-6 inset-x-0 z-40 flex justify-center px-4 print:hidden"
+      className="fixed bottom-24 inset-x-0 z-40 flex justify-center px-4 print:hidden"
       onClick={(e) => e.stopPropagation()}
     >
       <div
