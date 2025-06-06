@@ -55,6 +55,19 @@ describe("ClassJoinRequest", () => {
     expect(fetchMock).toHaveBeenCalledWith(`/api/class/${CODE}/request`, { method: "POST" });
   });
 
+  it("pending copy is truthful: no notification is claimed, and it says where the rep approves", async () => {
+    vi.stubGlobal("fetch", vi.fn(() => jsonResponse({ status: "pending" })));
+
+    render(<ClassJoinRequest code={CODE} />);
+    fireEvent.click(screen.getByRole("button", { name: "Request to join →" }));
+
+    expect(await screen.findByText("Waiting for approval")).toBeInTheDocument();
+    // Nothing notifies the rep (no email, push or trigger exists), so the page must not say so.
+    expect(screen.queryByText(/notified/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/your request is pending/i)).toBeInTheDocument();
+    expect(screen.getByText(/rep page/i)).toBeInTheDocument();
+  });
+
   it("transitions pending -> approved once polling sees status 'approved', showing the redirect button", async () => {
     let pollCount = 0;
     const fetchMock = vi.fn((url: RequestInfo | URL) => {

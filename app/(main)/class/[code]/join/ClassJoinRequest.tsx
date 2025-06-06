@@ -134,7 +134,11 @@ export function ClassJoinRequest({ code }: Props) {
           <>
             <div className="mx-auto mb-6 h-14 w-14 rounded-full border-4 border-taupe/30 border-t-accent animate-spin" />
             <h1 className="font-serif text-display-md text-ink mb-2">Waiting for approval</h1>
-            <p className="font-sans text-sm text-ink-muted">Your rep has been notified.</p>
+            {/* No email or push goes out: the rep only sees the request on their rep page. */}
+            <p className="font-sans text-sm text-ink-muted">
+              Your request is pending. Your rep will see it the next time they open their rep page,
+              so let them know you&apos;ve asked to join.
+            </p>
           </>
         )}
 
