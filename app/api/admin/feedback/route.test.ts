@@ -226,6 +226,45 @@ describe("GET /api/admin/feedback", () => {
     expect(first.module_rating).toBe(4);
   });
 
+  describe("sort allow-list", () => {
+    it.each([
+      ["created_at", "created_at"],
+      ["app_rating", "app_rating"],
+      ["module_rating", "module_rating"],
+      // Ordering the parent rows by a to-one embed uses PostgREST's
+      // `order=modules(title)`; `order=modules` is a 42703 error.
+      ["module", "modules(title)"],
+    ])("sort=%s orders by %s", async (sort, column) => {
+      const mock = makeSupabase({});
+      mockSupabase = mock.supabase;
+
+      const res = await GET(makeReq(`/api/admin/feedback?sort=${sort}&order=asc`) as any);
+
+      expect(res.status).toBe(200);
+      expect(mock.orderMock).toHaveBeenCalledWith(column, { ascending: true });
+    });
+
+    it.each(["modules", "feedback_text", "user_id;drop", "modules(title)"])(
+      "rejects unknown sort %s with 400 before querying",
+      async (sort) => {
+        const mock = makeSupabase({});
+        mockSupabase = mock.supabase;
+
+        const res = await GET(makeReq(`/api/admin/feedback?sort=${encodeURIComponent(sort)}`) as any);
+        const json = await res.json();
+
+        expect(res.status).toBe(400);
+        expect(json.error).toMatch(/sort/i);
+        expect(mock.supabase.from).not.toHaveBeenCalled();
+      }
+    );
+
+    it("rejects an unknown order direction with 400", async () => {
+      const res = await GET(makeReq("/api/admin/feedback?order=sideways") as any);
+      expect(res.status).toBe(400);
+    });
+  });
+
   it("handles database error gracefully", async () => {
     mockSupabase = makeSupabase({
       selectError: { message: "Database error" },

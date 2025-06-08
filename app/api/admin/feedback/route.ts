@@ -30,6 +30,17 @@ type AdminFeedbackItem = {
   coupon_expires_at: string | null;
 };
 
+// Public sort keys → the PostgREST order column. Anything else is a 400: the
+// value is interpolated into the query, and an unknown column is a 500 from
+// PostgREST. "module" orders the feedback rows by the to-one embedded module's
+// title (`order=modules(title)`); plain `modules` is a relation, not a column.
+const SORT_COLUMNS: Record<string, string> = {
+  created_at: "created_at",
+  app_rating: "app_rating",
+  module_rating: "module_rating",
+  module: "modules(title)",
+};
+
 export async function GET(req: NextRequest) {
   // Check admin access
   const authed = await getAdminSession();
@@ -44,6 +55,16 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const sort = searchParams.get("sort") || "created_at";
     const order = searchParams.get("order") || "desc";
+    const sortColumn = Object.hasOwn(SORT_COLUMNS, sort) ? SORT_COLUMNS[sort] : null;
+    if (!sortColumn) {
+      return NextResponse.json(
+        { error: `Unknown sort "${sort}". Use one of: ${Object.keys(SORT_COLUMNS).join(", ")}` },
+        { status: 400 }
+      );
+    }
+    if (order !== "asc" && order !== "desc") {
+      return NextResponse.json({ error: 'order must be "asc" or "desc"' }, { status: 400 });
+    }
     const filterAppRating = searchParams.get("filter_app_rating");
     const filterModuleId = searchParams.get("filter_module_id");
     const filterApproval = searchParams.get("filter_approval");
@@ -105,7 +126,7 @@ export async function GET(req: NextRequest) {
 
     // Sort and paginate
     query = query
-      .order(sort, { ascending: order === "asc" })
+      .order(sortColumn, { ascending: order === "asc" })
       .range(offset, offset + limit - 1);
 
     const { data, error, count } = await query.returns<AdminFeedbackItem[]>();

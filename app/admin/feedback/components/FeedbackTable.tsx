@@ -33,8 +33,8 @@ export function FeedbackTable({
               </button>
             </th>
             <th className="text-left px-4 py-3">
-              <button onClick={() => onSort('modules')} className="font-semibold hover:underline">
-                Module {currentSort === 'modules' ? '↓' : ''}
+              <button onClick={() => onSort('module')} className="font-semibold hover:underline">
+                Module {currentSort === 'module' ? '↓' : ''}
               </button>
             </th>
             <th className="text-center px-4 py-3">App ⭐</th>
