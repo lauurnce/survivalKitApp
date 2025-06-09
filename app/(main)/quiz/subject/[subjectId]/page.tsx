@@ -8,6 +8,8 @@ import { isUuid } from "@/lib/validation";
 import { verifyDeviceCookie, DEVICE_COOKIE } from "@/lib/auth/deviceCookie";
 import { ReviewQuiz } from "@/components/account/ReviewQuiz";
 import { BackLink } from "@/components/BackLink";
+import { buildUnlockHref } from "@/lib/subscribeRedirect";
+import { QuizUnavailable } from "./QuizUnavailable";
 
 export const dynamic = "force-dynamic";
 
@@ -68,20 +70,8 @@ export default async function SubjectQuizPage({ params }: { params: Promise<{ su
     supabase.from("subjects").select("id, title, year_id, semester").eq("id", subjectId).maybeSingle(),
   ]);
 
-  // Fallback to device_id if user_id query returns nothing
-  if (!progressRes.data || progressRes.data.length === 0) {
-    if (deviceId) {
-      const deviceProgress = await supabase
-        .from("module_progress")
-        .select("module_id")
-        .eq("device_id", deviceId);
-      progressRes.data = deviceProgress.data;
-    }
-    if (!progressRes.data || progressRes.data.length === 0) {
-      notFound();
-    }
-  }
-
+  // Unknown subject ids are the only real 404. A subject that exists but
+  // that this student can't quiz on yet gets an explanation and a next step.
   const subject = subjectRes.data as SubjectData | null;
   if (!subject) {
     notFound();
@@ -89,7 +79,22 @@ export default async function SubjectQuizPage({ params }: { params: Promise<{ su
 
   const activeSubs = (subsRes.data ?? []) as ActiveSub[];
   if (!isUnlockedBy(activeSubs, subject.year_id, subject.id)) {
-    notFound();
+    return (
+      <QuizUnavailable
+        reason="locked"
+        subjectTitle={subject.title}
+        ctaHref={buildUnlockHref({ yearId: subject.year_id, subjectId: subject.id })}
+      />
+    );
+  }
+
+  // Fallback to device_id if user_id query returns nothing
+  if ((!progressRes.data || progressRes.data.length === 0) && deviceId) {
+    const deviceProgress = await supabase
+      .from("module_progress")
+      .select("module_id")
+      .eq("device_id", deviceId);
+    progressRes.data = deviceProgress.data;
   }
 
   // Verify user has completed at least one module in this subject
@@ -101,7 +106,13 @@ export default async function SubjectQuizPage({ params }: { params: Promise<{ su
 
   const hasCompletedInSubject = (subjectModules ?? []).some((m) => completedModuleIds.has(m.id));
   if (!hasCompletedInSubject) {
-    notFound();
+    return (
+      <QuizUnavailable
+        reason="unfinished"
+        subjectTitle={subject.title}
+        ctaHref={`/year/${subject.year_id}/subjects/${subject.id}/modules`}
+      />
+    );
   }
 
   return (
