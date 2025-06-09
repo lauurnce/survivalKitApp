@@ -59,7 +59,10 @@ export default function AdminFeedbackPage() {
         });
 
         const response = await fetch(`/api/admin/feedback?${params}`);
-        if (!response.ok) throw new Error('Failed to fetch feedback');
+        if (!response.ok) {
+          const body = await response.json().catch(() => null);
+          throw new Error(body?.error || `Failed to fetch feedback (HTTP ${response.status})`);
+        }
 
         const data = await response.json();
         setResponse(data);
@@ -88,6 +91,17 @@ export default function AdminFeedbackPage() {
       <h1 className="text-3xl font-bold">User Feedback</h1>
 
       {response && <StatsBar stats={response.stats} />}
+
+      {/* A failed refetch keeps the previous rows on screen; say so, or the
+          admin reads a stale table as the result of their sort or filter. */}
+      {error && (
+        <div
+          role="alert"
+          className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200"
+        >
+          Couldn&apos;t load feedback: {error}. Showing the last loaded results.
+        </div>
+      )}
 
       {/* Filters */}
       <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 space-y-4">

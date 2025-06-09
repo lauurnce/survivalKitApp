@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { BackLink } from "@/components/BackLink";
 import { withUtm } from "@/lib/utm";
 
@@ -21,9 +22,22 @@ interface Props {
   code: string;
 }
 
+// Same public contact address the privacy page lists.
+const SUPPORT_EMAIL = "paneslawrence8@gmail.com";
+
+type LoadErrorKind = "unauthorized" | "forbidden" | "not_found" | "rate_limited" | "failed";
+
+function errorKindForStatus(status: number): LoadErrorKind {
+  if (status === 401) return "unauthorized";
+  if (status === 403) return "forbidden";
+  if (status === 404) return "not_found";
+  if (status === 429) return "rate_limited";
+  return "failed";
+}
+
 export function RepDashboard({ code }: Props) {
   const [data, setData] = useState<DashboardData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<LoadErrorKind | null>(null);
   const [deciding, setDeciding] = useState<string | null>(null);
   const [decideError, setDecideError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -32,12 +46,13 @@ export function RepDashboard({ code }: Props) {
     try {
       const res = await fetch(`/api/class/${code}/rep`);
       if (!res.ok) {
-        setError(res.status === 403 ? "This isn't your class dashboard." : "Class not found.");
+        setError(errorKindForStatus(res.status));
         return;
       }
       setData(await res.json());
+      setError(null);
     } catch {
-      setError("Something went wrong loading your dashboard.");
+      setError("failed");
     }
   }, [code]);
 
@@ -93,11 +108,7 @@ export function RepDashboard({ code }: Props) {
   }
 
   if (error) {
-    return (
-      <main className="min-h-screen bg-paper px-6 py-12">
-        <p className="font-sans text-ink-muted">{error}</p>
-      </main>
-    );
+    return <RepDashboardError code={code} kind={error} onRetry={() => void load()} />;
   }
   if (!data) return null;
 
@@ -202,6 +213,93 @@ export function RepDashboard({ code }: Props) {
               );
             })}
           </div>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+const ERROR_COPY: Record<LoadErrorKind, { title: string; body: string; retry: boolean }> = {
+  // The rep is identified only by this browser's device cookie, so a new
+  // phone, another browser or cleared site data all land here. Retry covers
+  // the first-visit case where the device cookie hadn't been issued yet.
+  unauthorized: {
+    title: "Open this on your setup device",
+    body:
+      "Your class dashboard only opens on the device you used to set up the class. Open this link on that phone or browser. If you no longer have it or cleared its data, email us and we'll move the class to this device.",
+    retry: true,
+  },
+  forbidden: {
+    title: "This isn't your class dashboard.",
+    body: "This link belongs to a class rep's dashboard. If you're a classmate, request to join instead.",
+    retry: false,
+  },
+  not_found: {
+    title: "Class not found.",
+    body: "Check that the link matches the one from your class setup.",
+    retry: false,
+  },
+  rate_limited: {
+    title: "Too many requests",
+    body: "Wait a moment, then try again.",
+    retry: true,
+  },
+  failed: {
+    title: "Couldn't load your class dashboard.",
+    body: "Something went wrong on our end or with your connection.",
+    retry: true,
+  },
+};
+
+function RepDashboardError({
+  code,
+  kind,
+  onRetry,
+}: {
+  code: string;
+  kind: LoadErrorKind;
+  onRetry: () => void;
+}) {
+  const copy = ERROR_COPY[kind];
+  const mailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
+    `Move my class dashboard (${code}) to a new device`
+  )}`;
+
+  return (
+    <main className="min-h-screen bg-paper px-6 py-12 md:px-16 md:py-20">
+      <div className="max-w-sm mx-auto">
+        <BackLink href="/" label="Back to home" className="text-ink-muted hover:text-ink mb-10" />
+        <p className="label-sm mb-4">Class Rep Dashboard</p>
+        <h1 role="alert" className="font-serif text-display-md text-ink mb-3 leading-tight">
+          {copy.title}
+        </h1>
+        <p className="font-sans text-sm text-ink-muted mb-8">{copy.body}</p>
+        <div className="flex flex-col gap-3">
+          {copy.retry && (
+            <button
+              type="button"
+              onClick={onRetry}
+              className="w-full rounded-xl bg-ink px-4 py-3 font-sans font-medium text-paper hover:opacity-90"
+            >
+              Try again
+            </button>
+          )}
+          {kind === "unauthorized" && (
+            <a
+              href={mailto}
+              className="w-full rounded-xl border border-ink/20 px-4 py-3 text-center font-sans font-medium text-ink hover:bg-ink/5"
+            >
+              Email us to move the class
+            </a>
+          )}
+          {kind === "forbidden" && (
+            <Link
+              href={`/class/${code}/join`}
+              className="w-full rounded-xl bg-ink px-4 py-3 text-center font-sans font-medium text-paper hover:opacity-90"
+            >
+              Join this class instead
+            </Link>
+          )}
         </div>
       </div>
     </main>

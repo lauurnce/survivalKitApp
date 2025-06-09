@@ -172,24 +172,67 @@ describe("RepDashboard", () => {
     expect(screen.getByText("Pending requests (1)")).toBeInTheDocument();
   });
 
-  it("shows a 403 error state when the device isn't the class rep", async () => {
-    const fetchMock = vi.fn(() => jsonResponse({ error: "forbidden" }, 403));
-    vi.stubGlobal("fetch", fetchMock);
+  describe("error states map each status to an accurate message with a way out", () => {
+    const cases: { status: number; body: unknown; text: RegExp; retry: boolean }[] = [
+      { status: 401, body: { error: "unauthorized" }, text: /device you used to set up the class/i, retry: true },
+      { status: 403, body: { error: "forbidden" }, text: /This isn't your class dashboard\./, retry: false },
+      { status: 404, body: { error: "not_found" }, text: /Class not found\./, retry: false },
+      { status: 429, body: { error: "rate_limited" }, text: /too many requests/i, retry: true },
+      { status: 500, body: { error: "boom" }, text: /couldn't load your class dashboard/i, retry: true },
+      { status: 503, body: {}, text: /couldn't load your class dashboard/i, retry: true },
+    ];
 
-    render(<RepDashboard code={CODE} />);
+    it.each(cases)("$status", async ({ status, body, text, retry }) => {
+      vi.stubGlobal("fetch", vi.fn(() => jsonResponse(body, status)));
+      render(<RepDashboard code={CODE} />);
 
-    expect(
-      await screen.findByText("This isn't your class dashboard.")
-    ).toBeInTheDocument();
-  });
+      expect(await screen.findByText(text)).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /back to home/i })).toHaveAttribute("href", "/");
+      expect(!!screen.queryByRole("button", { name: /try again/i })).toBe(retry);
+      if (status !== 404) expect(screen.queryByText("Class not found.")).not.toBeInTheDocument();
+    });
 
-  it("shows a 404 error state when the class doesn't exist", async () => {
-    const fetchMock = vi.fn(() => jsonResponse({ error: "not_found" }, 404));
-    vi.stubGlobal("fetch", fetchMock);
+    it("401 gives the rep a recovery path: retry here, or email to move the class", async () => {
+      vi.stubGlobal("fetch", vi.fn(() => jsonResponse({ error: "unauthorized" }, 401)));
+      render(<RepDashboard code={CODE} />);
 
-    render(<RepDashboard code={CODE} />);
+      await screen.findByText(/device you used to set up the class/i);
+      const email = screen.getByRole("link", { name: /email us/i });
+      expect(email.getAttribute("href")).toMatch(/^mailto:/);
+      expect(email.getAttribute("href")).toContain(CODE);
+    });
 
-    expect(await screen.findByText("Class not found.")).toBeInTheDocument();
+    it("403 points a student to the join page instead", async () => {
+      vi.stubGlobal("fetch", vi.fn(() => jsonResponse({ error: "forbidden" }, 403)));
+      render(<RepDashboard code={CODE} />);
+
+      await screen.findByText("This isn't your class dashboard.");
+      expect(screen.getByRole("link", { name: /join this class/i })).toHaveAttribute(
+        "href",
+        `/class/${CODE}/join`
+      );
+    });
+
+    it("network failure shows a retryable error", async () => {
+      vi.stubGlobal("fetch", vi.fn(() => Promise.reject(new TypeError("offline"))));
+      render(<RepDashboard code={CODE} />);
+
+      expect(await screen.findByText(/couldn't load your class dashboard/i)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /try again/i })).toBeInTheDocument();
+    });
+
+    it("Try again refetches and recovers into the dashboard", async () => {
+      const fetchMock = vi
+        .fn()
+        .mockImplementationOnce(() => jsonResponse({ error: "boom" }, 500))
+        .mockImplementation(() => jsonResponse(fullDashboard()));
+      vi.stubGlobal("fetch", fetchMock);
+      render(<RepDashboard code={CODE} />);
+
+      fireEvent.click(await screen.findByRole("button", { name: /try again/i }));
+      expect(await screen.findByText("Your class")).toBeInTheDocument();
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
   });
 
   it("copies the invite link to the clipboard with the origin-based, UTM-tagged join URL", async () => {

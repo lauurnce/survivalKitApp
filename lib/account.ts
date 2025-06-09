@@ -1,4 +1,5 @@
 import { createServerClient } from "./supabase/server";
+import { PH_OFFSET_MS } from "./payments";
 import { isUuid } from "./validation";
 import type {
   ActivityData,
@@ -441,15 +442,93 @@ interface EventRowFull {
   created_at: string;
 }
 
+const ACTIVITY_WINDOW_DAYS = 56; // 8 weeks
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** "YYYY-MM-DD" of the Asia/Manila calendar day containing `instant`. */
+function phDayKey(instant: Date): string {
+  return new Date(instant.getTime() + PH_OFFSET_MS).toISOString().slice(0, 10);
+}
+
 /**
- * Fetches activity data for the past 8 weeks (56 days).
+ * The UTC instant at which the activity window opens: Manila midnight
+ * 55 days before today, so the window is 56 whole Manila days ending today.
+ */
+export function activityWindowStartUtc(now: Date): Date {
+  const todayKey = phDayKey(now);
+  return new Date(Date.parse(`${todayKey}T00:00:00Z`) - (ACTIVITY_WINDOW_DAYS - 1) * DAY_MS - PH_OFFSET_MS);
+}
+
+/**
+ * Buckets event timestamps into the 56 Manila calendar days ending today and
+ * derives the streaks. Pure, so the day and streak rules are unit-tested.
+ *
+ * A "day" is an Asia/Manila calendar day (UTC+8, no DST): users are in the
+ * Philippines, and events.created_at is timestamptz, returned as UTC ISO.
+ * The current streak counts back from today, or from yesterday when today has
+ * no activity yet (the day isn't over), and stops at the first gap. The
+ * longest streak is the longest run of consecutive active days in the window.
+ */
+export function buildActivityData(createdAts: string[], now: Date): ActivityData {
+  const windowStart = activityWindowStartUtc(now);
+  const dayKeys: string[] = [];
+  for (let i = 0; i < ACTIVITY_WINDOW_DAYS; i++) {
+    dayKeys.push(phDayKey(new Date(windowStart.getTime() + i * DAY_MS)));
+  }
+
+  const eventCounts = new Map<string, number>(dayKeys.map((k) => [k, 0]));
+  for (const createdAt of createdAts) {
+    const t = Date.parse(createdAt);
+    if (Number.isNaN(t)) continue;
+    const key = phDayKey(new Date(t));
+    const count = eventCounts.get(key);
+    if (count !== undefined) eventCounts.set(key, count + 1);
+  }
+
+  // Group into weeks (Monday-Sunday, Manila calendar)
+  const weeks: ActivityWeek[] = [];
+  let currentWeek: ActivityWeek | null = null;
+  for (const key of dayKeys) {
+    const eventCount = eventCounts.get(key)!;
+    const isActive = eventCount > 0;
+    const dayOfWeek = new Date(`${key}T00:00:00Z`).getUTCDay(); // 0=Sun, 1=Mon...
+
+    if (dayOfWeek === 1 || currentWeek === null) {
+      if (currentWeek) weeks.push(currentWeek);
+      currentWeek = { weekStart: key, activeDays: 0, totalEvents: 0, days: [] };
+    }
+    currentWeek.days.push({ date: key, isActive, eventCount });
+    if (isActive) currentWeek.activeDays++;
+    currentWeek.totalEvents += eventCount;
+  }
+  if (currentWeek) weeks.push(currentWeek);
+
+  const active = dayKeys.map((k) => eventCounts.get(k)! > 0);
+
+  let longestStreak = 0;
+  let run = 0;
+  for (const isActive of active) {
+    run = isActive ? run + 1 : 0;
+    if (run > longestStreak) longestStreak = run;
+  }
+
+  let currentStreak = 0;
+  let i = active.length - 1;
+  if (!active[i]) i--; // today not active yet: the streak may still end yesterday
+  for (; i >= 0 && active[i]; i--) currentStreak++;
+
+  const totalActiveDays = active.filter(Boolean).length;
+
+  return { weeks, currentStreak, longestStreak, totalActiveDays };
+}
+
+/**
+ * Fetches activity data for the 56 Manila calendar days ending today.
  * Used for the activity line graph visualization.
  */
 export async function getActivityData(deviceId: string | null): Promise<ActivityData> {
   const supabase = createServerClient();
   const now = new Date();
-  const cutoff = new Date(now);
-  cutoff.setDate(cutoff.getDate() - 56); // 8 weeks
 
   // events has no user_id column — every row is keyed by device_id, so a
   // signed-in user's activity is only visible through the device cookie set
@@ -459,89 +538,12 @@ export async function getActivityData(deviceId: string | null): Promise<Activity
         .from("events")
         .select("event_type, subject_id, module_id, created_at")
         .eq("device_id", deviceId)
-        .gte("created_at", cutoff.toISOString())
+        .gte("created_at", activityWindowStartUtc(now).toISOString())
         .order("created_at", { ascending: true })
     : { data: [] as EventRowFull[] };
 
   const allEvents = (eventsRes.data ?? []) as EventRowFull[];
-
-  // Build daily activity map
-  const dailyActivity = new Map<string, { eventCount: number; isActive: boolean }>();
-  
-  for (let i = 0; i < 56; i++) {
-    const d = new Date(cutoff);
-    d.setDate(d.getDate() + i);
-    const key = d.toISOString().split("T")[0];
-    dailyActivity.set(key, { eventCount: 0, isActive: false });
-  }
-
-  for (const e of allEvents) {
-    const date = new Date(e.created_at).toISOString().split("T")[0];
-    const existing = dailyActivity.get(date);
-    if (existing) {
-      existing.eventCount++;
-      existing.isActive = true;
-    }
-  }
-
-  // Group into weeks (Monday-Sunday)
-  const weeks: ActivityWeek[] = [];
-  let currentWeek: ActivityWeek | null = null;
-
-  for (let i = 0; i < 56; i++) {
-    const d = new Date(cutoff);
-    d.setDate(d.getDate() + i);
-    const key = d.toISOString().split("T")[0];
-    const dayData = dailyActivity.get(key)!;
-    const dayOfWeek = d.getDay(); // 0=Sun, 1=Mon...
-
-    if (dayOfWeek === 1 || currentWeek === null) { // Monday = new week
-      if (currentWeek) weeks.push(currentWeek);
-      currentWeek = {
-        weekStart: key,
-        activeDays: 0,
-        totalEvents: 0,
-        days: [],
-      };
-    }
-
-    currentWeek!.days.push({
-      date: key,
-      isActive: dayData.isActive,
-      eventCount: dayData.eventCount,
-    });
-    if (dayData.isActive) currentWeek!.activeDays++;
-    currentWeek!.totalEvents += dayData.eventCount;
-  }
-  if (currentWeek) weeks.push(currentWeek);
-
-  // Calculate streaks
-  let currentStreak = 0;
-  let longestStreak = 0;
-  let tempStreak = 0;
-
-  // Check from most recent day backwards
-  for (let i = weeks.length - 1; i >= 0; i--) {
-    const week = weeks[i];
-    for (let d = week.days.length - 1; d >= 0; d--) {
-      const day = week.days[d];
-      if (day.isActive) {
-        tempStreak++;
-        if (i === weeks.length - 1 && d === week.days.length - 1) {
-          // Most recent day (today or yesterday)
-          currentStreak = tempStreak;
-        }
-      } else {
-        if (tempStreak > longestStreak) longestStreak = tempStreak;
-        if (currentStreak === 0) tempStreak = 0; // streak broken before today
-      }
-    }
-  }
-  if (tempStreak > longestStreak) longestStreak = tempStreak;
-
-  const totalActiveDays = weeks.reduce((sum, w) => sum + w.activeDays, 0);
-
-  return { weeks, currentStreak, longestStreak, totalActiveDays };
+  return buildActivityData(allEvents.map((e) => e.created_at), now);
 }
 
 // ─── Subscription Timeline Data ───────────────────────────────────────────────
