@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { lessonFraction, newMilestones, minutesLeft, type Milestone } from "./progress";
+import { lessonFraction, newMilestones, minutesLeft, scrollYForFraction, type Milestone } from "./progress";
 
 const base = { viewportHeight: 800, top: 1000, height: 4000 };
 
@@ -44,5 +44,16 @@ describe("minutesLeft", () => {
 
   it("is 0 at the end", () => {
     expect(minutesLeft(6, 0.98)).toBe(0);
+  });
+});
+
+describe("scrollYForFraction", () => {
+  it("inverts lessonFraction", () => {
+    const y = scrollYForFraction(0.5, base);
+    expect(lessonFraction({ ...base, scrollY: y })).toBe(0.5);
+  });
+
+  it("never scrolls above the top", () => {
+    expect(scrollYForFraction(0, { ...base, top: 0 })).toBe(0);
   });
 });

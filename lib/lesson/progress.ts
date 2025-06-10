@@ -28,9 +28,11 @@ export function lessonFraction({ scrollY, viewportHeight, top, height }: Progres
 export type Milestone = "halfway" | "end";
 
 /** End counts from 97%, so a few px of bottom padding never blocks it. */
+export const END_AT = 0.97;
+
 export const MILESTONES: ReadonlyArray<{ name: Milestone; at: number }> = [
   { name: "halfway", at: 0.5 },
-  { name: "end", at: 0.97 },
+  { name: "end", at: END_AT },
 ];
 
 /** Milestones reached at `fraction` that are not already in `reached`. */
@@ -40,6 +42,14 @@ export function newMilestones(fraction: number, reached: ReadonlySet<Milestone>)
 
 /** Minutes still to read, rounded up; 0 once the end milestone is reached. */
 export function minutesLeft(totalMinutes: number, fraction: number): number {
-  if (fraction >= 0.97) return 0;
+  if (fraction >= END_AT) return 0;
   return Math.max(1, Math.ceil(totalMinutes * (1 - fraction)));
+}
+
+/** Inverse of lessonFraction: the scrollY that puts the reader at `fraction`. */
+export function scrollYForFraction(
+  fraction: number,
+  { viewportHeight, top, height }: Omit<ProgressInput, "scrollY">
+): number {
+  return Math.max(0, Math.round(top + fraction * height - viewportHeight));
 }

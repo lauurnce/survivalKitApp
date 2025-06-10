@@ -85,3 +85,59 @@ describe("LessonEngagement", () => {
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 });
+
+describe("LessonEngagement — pick up where you left off", () => {
+  beforeEach(() => localStorage.clear());
+
+  it("saves the position after the reader rests past the start", async () => {
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    mountBody();
+    render(<LessonEngagement {...IDS} totalMinutes={6} next={NEXT} />);
+    await scrollTo(250); // 45%
+    act(() => vi.advanceTimersByTime(1000));
+    vi.useRealTimers();
+    const saved = JSON.parse(localStorage.getItem("bsit:lesson-pos:m1") ?? "null");
+    expect(saved.fraction).toBeCloseTo(0.45);
+  });
+
+  it("offers a saved position on a return visit and jumps to it", async () => {
+    localStorage.setItem(
+      "bsit:lesson-pos:m1",
+      JSON.stringify({ fraction: 0.5, heading: "Algorithms (Pseudocode)", savedAt: Date.now() - 1000 })
+    );
+    mountBody(0, 2000);
+    const scrollSpy = vi.fn();
+    window.scrollTo = scrollSpy as unknown as typeof window.scrollTo;
+    render(<LessonEngagement {...IDS} totalMinutes={6} next={NEXT} />);
+    await scrollTo(0);
+
+    const chip = screen.getByRole("button", { name: /pick up where you left off/i });
+    expect(chip).toHaveTextContent("Algorithms (Pseudocode)");
+    fireEvent.click(chip);
+    expect(scrollSpy).toHaveBeenCalledWith({ top: 800, behavior: "smooth" });
+    expect(logEvent).toHaveBeenCalledWith("lesson_resume", { module_id: "m1", subject_id: "s", year_id: "y" });
+    expect(screen.queryByRole("button", { name: /pick up/i })).not.toBeInTheDocument();
+  });
+
+  it("does not offer it to a reader who has nothing saved, or who starts over", async () => {
+    mountBody(0, 4000);
+    const { unmount } = render(<LessonEngagement {...IDS} totalMinutes={6} next={NEXT} />);
+    await scrollTo(0);
+    expect(screen.queryByRole("button", { name: /pick up/i })).not.toBeInTheDocument();
+    unmount();
+
+    localStorage.setItem("bsit:lesson-pos:m1", JSON.stringify({ fraction: 0.5, heading: null, savedAt: Date.now() }));
+    render(<LessonEngagement {...IDS} totalMinutes={6} next={NEXT} />);
+    await scrollTo(0);
+    fireEvent.click(screen.getByRole("button", { name: "Start from the top" }));
+    expect(screen.queryByRole("button", { name: /pick up/i })).not.toBeInTheDocument();
+  });
+
+  it("forgets the position once the lesson is finished", async () => {
+    localStorage.setItem("bsit:lesson-pos:m1", JSON.stringify({ fraction: 0.5, heading: null, savedAt: Date.now() }));
+    mountBody();
+    render(<LessonEngagement {...IDS} totalMinutes={6} next={NEXT} />);
+    await scrollTo(900);
+    expect(localStorage.getItem("bsit:lesson-pos:m1")).toBeNull();
+  });
+});
