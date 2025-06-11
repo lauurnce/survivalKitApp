@@ -403,11 +403,13 @@ Days worked but unpaid (Monday through Wednesday) = 3 days.
 
 Accrued liability = $8,000 \text{ Pesos/day} \times 3 \text{ days} = 24,000 \text{ Pesos}$.
 
-$$\begin{array}{llcc}
+$$
+\begin{array}{llcc}
 \text{Dec 31} & \text{Salaries Expense} & 24,000 & \\
 & \quad\text{Salaries Payable} & & 24,000 \\
 & \text{\textit{To record accrued but unpaid employee wages.}} & & \\
-\end{array}$$
+\end{array}
+$$
 
 **2. Insurance Allocation Analysis (Expense Method Reversal)**
 
@@ -421,11 +423,13 @@ Expired expense = $1,500 \times 3 = 4,500 \text{ Pesos}$.
 
 Unused asset portion to preserve = $36,000 - 4,500 = 31,500 \text{ Pesos}$.
 
-$$\begin{array}{llcc}
+$$
+\begin{array}{llcc}
 \text{Dec 31} & \text{Prepaid Insurance} & 31,500 & \\
 & \quad\text{Insurance Expense} & & 31,500 \\
 & \text{\textit{To extract the unexpired asset portion of prepaid insurance.}} & & \\
-\end{array}$$
+\end{array}
+$$
 
 **3. Rent Revenue Allocation Analysis (Revenue Method Reversal)**
 
@@ -439,11 +443,13 @@ Earned lease revenue = $2,000 \times 2 = 4,000 \text{ Pesos}$.
 
 Unearned liability portion to isolate = $18,000 - 4,000 = 14,000 \text{ Pesos}$.
 
-$$\begin{array}{llcc}
+$$
+\begin{array}{llcc}
 \text{Dec 31} & \text{Rent Income} & 14,000 & \\
 & \quad\text{Unearned Rent} & & 14,000 \\
 & \text{\textit{To isolate the unearned liability portion of pre-collected rent.}} & & \\
-\end{array}$$
+\end{array}
+$$
 
 **4. Mixed-Date Equipment Depreciation Analysis**
 
@@ -461,11 +467,13 @@ $$\text{Depreciation Group B} = 52,000 \times 25\% \times \frac{9}{12} = 9,750 \
 
 Total depreciation expense = $80,000 + 9,750 = 89,750 \text{ Pesos}$.
 
-$$\begin{array}{llcc}
+$$
+\begin{array}{llcc}
 \text{Dec 31} & \text{Depreciation Expense - Equipment} & 89,750 & \\
 & \quad\text{Accumulated Depreciation - Equipment} & & 89,750 \\
 & \text{\textit{To record annual depreciation using fractional month tracking.}} & & \\
-\end{array}$$
+\end{array}
+$$
 
 **5. Note Payable Interest Analysis**
 
@@ -477,11 +485,13 @@ Interest equation ($I = P \times R \times T$):
 
 $$\text{Interest Accrued} = 120,000 \times 9\% \times \frac{26}{360} = 780 \text{ Pesos}$$
 
-$$\begin{array}{llcc}
+$$
+\begin{array}{llcc}
 \text{Dec 31} & \text{Interest Expense} & 780 & \\
 & \quad\text{Interest Payable} & & 780 \\
 & \text{\textit{To record accrued interest obligation on short-term bank note.}} & & \\
-\end{array}$$
+\end{array}
+$$
 $md$, 5),
 
 ('a2000002-0001-0001-0002-000000000006','activity','Exercise D: The Complete Year-End Closing Sequence',$md$
@@ -495,7 +505,8 @@ Using the adjusted operational metrics compiled below, draft the final year-end 
 - Owner's Drawing Account: 50,000 Pesos (Debit Balance)
 - Initial Capital Balance: 805,000 Pesos
 
-$$\begin{array}{llcc}
+$$
+\begin{array}{llcc}
 \text{Step 1} & \text{Consulting Fees Earned} & 1,191,000 & \\
 & \text{Interest Income} & 14,000 & \\
 & \quad\text{Income Summary} & & 1,205,000 \\
@@ -514,7 +525,8 @@ $$\begin{array}{llcc}
 \text{Step 4} & \text{Owner's Capital Account} & 50,000 & \\
 & \quad\text{Owner's Drawing Account} & & 50,000 \\
 & \text{\textit{To close the temporary owner's extraction account balance.}} & & \\
-\end{array}$$
+\end{array}
+$$
 
 **Final Adjusted Capital Balance Computation**
 
