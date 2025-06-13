@@ -36,7 +36,7 @@ export function LockedReviewer({ yearId, subjectId, from }: Props) {
           Reviewer — locked
         </p>
         <p className="font-sans text-sm text-ink-muted">
-          Drills, code labs, and full solutions.
+          Part of this subject&apos;s paid reviewers.
         </p>
       </div>
       {showUpsell ? (

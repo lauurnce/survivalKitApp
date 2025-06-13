@@ -30,7 +30,9 @@ describe("LockedReviewer", () => {
     );
 
     expect(screen.getByText(/reviewer — locked/i)).toBeInTheDocument();
-    expect(screen.getByText("Drills, code labs, and full solutions.")).toBeInTheDocument();
+    expect(screen.getByText("Part of this subject's paid reviewers.")).toBeInTheDocument();
+    // Ethics, Rizal and World Literature have no code labs (QA CT-04).
+    expect(container.textContent).not.toMatch(/code lab/i);
     expect(container.textContent).not.toContain("₱");
   });
 

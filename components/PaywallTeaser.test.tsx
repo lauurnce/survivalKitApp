@@ -64,9 +64,12 @@ describe("PaywallTeaser", () => {
     );
 
     expect(
-      screen.getByText(/12 reviewers with answer keys in CP1 — drills, code labs, and full solutions\./i)
+      screen.getByText(/12 reviewers with answer keys in CP1 — practice exercises and full worked solutions\./i)
     ).toBeInTheDocument();
-    expect(screen.getByText(/the first lesson's reviewers are free\./i)).toBeInTheDocument();
+    expect(screen.getByText(/the first set is free to try\./i)).toBeInTheDocument();
+    // The free set is the first module WITH reviewers, which is Unit VI in
+    // Accounting and Kabanata 3 in Filipinolohiya, not "the first lesson" (QA CT-08).
+    expect(screen.queryByText(/first lesson/i)).toBeNull();
     expect(container.textContent).not.toContain("₱");
   });
 

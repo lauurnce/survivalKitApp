@@ -36,7 +36,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   return {
     title: subject ? `Unlock ${subject.title}` : "Unlock reviewers",
     description:
-      "Unlock every reviewer with answer keys — drills, code labs, and full worked solutions.",
+      "Unlock every reviewer with answer keys — practice exercises and full worked solutions.",
   };
 }
 
@@ -133,7 +133,7 @@ export default async function UnlockPage({ searchParams }: Props) {
               {reviewerCount
                 ? `${reviewerCount} reviewers with answer keys`
                 : "Reviewers with answer keys"}{" "}
-              — drills, code labs, and full worked solutions.
+              — practice exercises and full worked solutions.
             </p>
             <p className="font-mono text-label-sm text-taupe mt-3">{socialProofLine()}</p>
           </div>
