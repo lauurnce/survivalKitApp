@@ -147,6 +147,30 @@ describe("SectionRenderer — locked activities", () => {
     expect(screen.getAllByText(/reviewer — locked/i)).toHaveLength(1);
   });
 
+  it("offers no upsell when the free sample is every reviewer in the subject", () => {
+    // Operating Systems: 3 of 3 reviewers free. "Unlock the rest" sold nothing (QA CT-07).
+    const free = ["f1", "f2", "f3"];
+    const { container } = render(
+      <>
+        {free.map((id, i) => (
+          <SectionRenderer
+            key={id}
+            {...common}
+            reviewerCount={3}
+            section={activity(id, `Reviewer ${i}`, `Body ${i}`)}
+            index={i}
+            unlockAll={false}
+            freeSectionIds={free}
+          />
+        ))}
+      </>
+    );
+
+    expect(screen.getByText("Body 2")).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /unlock/i })).toBeNull();
+    expect(container.textContent).not.toMatch(/free sample/i);
+  });
+
   it("sends the free sample's upsell to /unlock, not a #subscribe anchor that may not exist", () => {
     render(
       <SectionRenderer

@@ -16,18 +16,20 @@ vi.mock("@/components/SubscriberState", () => ({
   SubscriberModuleList: () => null,
   SubscriberProBanner: () => null,
 }));
-vi.mock("@/components/PaywallTeaser", () => ({ PaywallTeaser: () => null }));
+vi.mock("@/components/PaywallTeaser", () => ({ PaywallTeaser: () => <div data-testid="paywall-teaser" /> }));
 vi.mock("@/components/share/ShareProgressButton", () => ({ ShareProgressButton: () => null }));
 vi.mock("@/components/PageTracker", () => ({ PageTracker: () => null }));
 vi.mock("@/components/SubjectComingSoon", () => ({ SubjectComingSoon: () => null }));
 
 let subjectYears: unknown;
+let modules: { id: string; title: string }[] = [];
+let activities: { id: string; module_id: string }[] = [];
 vi.mock("@/lib/cache/queries", () => ({
   getSubjectWithYear: () =>
     Promise.resolve({ id: SUBJECT_ID, title: "Computer Programming 1", year_id: YEAR_ID, years: subjectYears }),
-  getModulesBySubject: () => Promise.resolve([]),
+  getModulesBySubject: () => Promise.resolve(modules),
   getModuleCounters: () => Promise.resolve([]),
-  getActivitySectionsForModules: () => Promise.resolve([]),
+  getActivitySectionsForModules: () => Promise.resolve(activities),
 }));
 
 import ModulesPage from "./page";
@@ -39,10 +41,13 @@ async function renderPage() {
   return render(ui);
 }
 
+beforeEach(() => {
+  subjectYears = undefined;
+  modules = [];
+  activities = [];
+});
+
 describe("ModulesPage — year context in the header", () => {
-  beforeEach(() => {
-    subjectYears = undefined;
-  });
 
   // PostgREST returns the many-to-one years(...) embed as an object, not an
   // array; reading it as `[0]` dropped the year from every modules page.
@@ -70,5 +75,33 @@ describe("ModulesPage — year context in the header", () => {
     await renderPage();
 
     expect(screen.getByText("§ — — Computer Programming 1")).toBeInTheDocument();
+  });
+});
+
+describe("ModulesPage — paywall teaser", () => {
+  // Operating Systems: one module whose 3 reviewers are all the free sample.
+  // The page sold "every reviewer … from ₱49" for nothing (QA CT-07).
+  it("hides the teaser when the free sample is every reviewer in the subject", async () => {
+    modules = [{ id: "m1", title: "Module 1: Introduction to Operating Systems" }];
+    activities = [
+      { id: "a1", module_id: "m1" },
+      { id: "a2", module_id: "m1" },
+      { id: "a3", module_id: "m1" },
+    ];
+    await renderPage();
+    expect(screen.queryByTestId("paywall-teaser")).toBeNull();
+  });
+
+  it("shows the teaser while reviewers remain past the free sample", async () => {
+    modules = [
+      { id: "m1", title: "Lesson 1" },
+      { id: "m2", title: "Lesson 2" },
+    ];
+    activities = [
+      { id: "a1", module_id: "m1" },
+      { id: "a2", module_id: "m2" },
+    ];
+    await renderPage();
+    expect(screen.getByTestId("paywall-teaser")).toBeInTheDocument();
   });
 });

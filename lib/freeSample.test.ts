@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { freeIdsInModule, pickFreeActivities } from "./freeSample";
+import { freeIdsInModule, freeSampleIsEverything, pickFreeActivities } from "./freeSample";
 
 describe("pickFreeActivities", () => {
   const sections = [
@@ -65,5 +65,31 @@ describe("freeIdsInModule", () => {
 
   it("returns nothing for a module past the free sample", () => {
     expect(freeIdsInModule(["l2-practice", "l2-lab"], ["l1-practice", "l1-lab"])).toEqual([]);
+  });
+});
+
+describe("freeSampleIsEverything", () => {
+  // Operating Systems: one module, three reviewers, all of them the free
+  // sample. Selling "the rest" sold nothing (QA CT-07).
+  it("is true when every reviewer sits in the free-sample module", () => {
+    const os = [
+      { module_id: "m1" },
+      { module_id: "m1" },
+      { module_id: "m1" },
+    ];
+    expect(freeSampleIsEverything(["m1"], os)).toBe(true);
+  });
+
+  it("is true when earlier modules have no reviewers and later ones none either", () => {
+    expect(freeSampleIsEverything(["u1", "u2", "u6"], [{ module_id: "u6" }])).toBe(true);
+  });
+
+  it("is false once any reviewer lives past the free-sample module", () => {
+    const acct = [{ module_id: "u6" }, { module_id: "u6" }, { module_id: "u7" }];
+    expect(freeSampleIsEverything(["u1", "u6", "u7"], acct)).toBe(false);
+  });
+
+  it("is false for a subject with no reviewers at all, which has nothing to sample", () => {
+    expect(freeSampleIsEverything(["m1"], [])).toBe(false);
   });
 });

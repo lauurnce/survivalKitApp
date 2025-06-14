@@ -70,7 +70,14 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
 
   const isFreeSample =
     section.kind === "activity" && !unlockAll && freeSectionIds.includes(section.id);
-  const isLastFreeSample = isFreeSample && freeSectionIds[freeSectionIds.length - 1] === section.id;
+  // When the sample is every reviewer the subject has (Operating Systems: 3 of
+  // 3), there is no "rest" to unlock: render the reviewers as plain content,
+  // with no sample label and no upsell (QA CT-07).
+  const sampleIsEverything =
+    reviewerCount !== undefined && reviewerCount > 0 && freeSectionIds.length >= reviewerCount;
+  const showSampleChrome = isFreeSample && !sampleIsEverything;
+  const isLastFreeSample =
+    showSampleChrome && freeSectionIds[freeSectionIds.length - 1] === section.id;
 
   // Where payment should drop the reader back — this very module page.
   const returnPath = modulePath(yearId, subjectId, moduleId);
@@ -158,7 +165,7 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
           <span className="label-sm text-accent">Activity (UNLOCK_ALL active)</span>
         </div>
       )}
-      {isFreeSample && !isLastFreeSample && showUpsell && (
+      {showSampleChrome && !isLastFreeSample && showUpsell && (
         <div className="mt-4 pl-10 md:pl-12">
           <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent">
             Free sample

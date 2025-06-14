@@ -10,6 +10,7 @@ import { PaywallTeaser } from "@/components/PaywallTeaser";
 import { ShareProgressButton } from "@/components/share/ShareProgressButton";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { modulePath } from "@/lib/subscribeRedirect";
+import { freeSampleIsEverything } from "@/lib/freeSample";
 import { cheapestSubjectPrice } from "@/lib/pricing";
 import { getSubjectWithYear, getModulesBySubject, getModuleCounters, getActivitySectionsForModules } from "@/lib/cache/queries";
 
@@ -64,6 +65,9 @@ export default async function ModulesPage({ params }: Props) {
   // none is free content and must never wear the PRO treatment.
   const reviewerCount = activityRows?.length ?? 0;
   const proModuleIds = new Set((activityRows ?? []).map((row) => row.module_id));
+  // When the free sample is every reviewer the subject has, there is nothing
+  // to unlock, so the page must not sell "every reviewer" for a price.
+  const nothingToUnlock = freeSampleIsEverything(moduleIds, activityRows ?? []);
 
   // Build-wide dev flag only; per-reader subscription resolves client-side.
   const devUnlockAll = process.env.UNLOCK_ALL === "true";
@@ -122,14 +126,16 @@ export default async function ModulesPage({ params }: Props) {
                 subjectTitle={subject.title}
                 yearLabel={year?.label}
               />
-              <PaywallTeaser
-                yearId={yearId}
-                subjectId={subjectId}
-                subjectTitle={subject.title}
-                from={modulePath(yearId, subjectId, modules[0].id)}
-                reviewerCount={reviewerCount ?? undefined}
-                fromPrice={cheapestSubjectPrice()}
-              />
+              {!nothingToUnlock && (
+                <PaywallTeaser
+                  yearId={yearId}
+                  subjectId={subjectId}
+                  subjectTitle={subject.title}
+                  from={modulePath(yearId, subjectId, modules[0].id)}
+                  reviewerCount={reviewerCount ?? undefined}
+                  fromPrice={cheapestSubjectPrice()}
+                />
+              )}
               <div className="mt-6 flex justify-end">
                 <ShareProgressButton
                   subjectId={subjectId}

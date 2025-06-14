@@ -31,3 +31,17 @@ export function freeIdsInModule(moduleActivityIds: string[], freeIds: string[]):
   const free = new Set(freeIds);
   return moduleActivityIds.filter((id) => free.has(id));
 }
+
+// True when the free sample IS the whole paid catalogue: every reviewer of the
+// subject lives in its first module with reviewers. Then there is nothing left
+// to sell, so no surface may offer to "unlock the rest" (QA CT-07: Operating
+// Systems, one module, 3 of 3 reviewers free). Needs only module ids, because
+// the free sample is that module's activities in full.
+export function freeSampleIsEverything(
+  orderedModuleIds: string[],
+  sections: { module_id: string }[]
+): boolean {
+  const withReviewers = new Set(sections.map((s) => s.module_id));
+  const freeModule = orderedModuleIds.find((id) => withReviewers.has(id));
+  return freeModule !== undefined && sections.every((s) => s.module_id === freeModule);
+}
