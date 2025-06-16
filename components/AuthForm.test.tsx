@@ -152,4 +152,17 @@ describe("AuthForm — session cache", () => {
       vi.unstubAllGlobals();
     }
   });
+
+  // iOS Safari zooms into any focused field under 16px (QA FL-04).
+  it("renders every text field at 16px so iOS does not zoom on focus", () => {
+    const { container } = render(<AuthForm mode="signup" action={noop} next="/account" />);
+    const fields = container.querySelectorAll(
+      'input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])'
+    );
+    expect(fields.length).toBeGreaterThanOrEqual(3);
+    for (const field of fields) {
+      expect(field.className).toMatch(/\btext-base\b/);
+      expect(field.className).not.toMatch(/\btext-(xs|sm)\b/);
+    }
+  });
 });

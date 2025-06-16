@@ -81,6 +81,9 @@ export function AuthForm({
           : "An account keeps your unlocks and progress across devices."}
       </p>
       <input type="hidden" name="next" value={next} />
+      {/* Inputs set text-base (16px) explicitly: inheriting the label's
+          text-sm made them 14px, and iOS Safari zooms into any field under
+          16px on focus, then stays zoomed (QA FL-04). */}
       <label className="block text-sm text-ink-muted">
         Email
         <input
@@ -90,7 +93,7 @@ export function AuthForm({
           onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="email"
-          className="mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-ink"
+          className="mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-base text-ink"
         />
       </label>
       <div className="block text-sm text-ink-muted">
@@ -115,7 +118,7 @@ export function AuthForm({
           minLength={8}
           autoComplete={mode === "login" ? "current-password" : "new-password"}
           aria-describedby={mode === "signup" ? passwordHintId : undefined}
-          className="mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-ink"
+          className="mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-base text-ink"
         />
         {mode === "signup" && (
           <span id={passwordHintId} className="mt-1 block text-xs text-ink-faint">
