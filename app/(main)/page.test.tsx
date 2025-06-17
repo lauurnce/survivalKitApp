@@ -72,6 +72,7 @@ vi.mock("@/lib/landing", () => ({
 const CP1_PATH = `/year/${YEAR_ID}/subjects/cp1/modules/lesson-1`;
 
 import LandingPage from "./page";
+import { cheapestSubjectPrice } from "@/lib/pricing";
 
 beforeEach(() => {
   queries = [];
@@ -147,5 +148,21 @@ describe("LandingPage — CP1 path", () => {
     expect(start).toHaveAttribute("data-tour", "landing-subjects");
     expect(screen.queryByRole("link", { name: /start lesson 1/i })).toBeNull();
     expect(screen.queryByText(/first year\?/i)).toBeNull();
+  });
+});
+
+describe("LandingPage — footer claims", () => {
+  it("says lessons are free and quotes the reviewer price from PLANS (QA CT-05)", async () => {
+    const { container } = await renderPage();
+    expect(
+      screen.getByText(`Lessons free · Reviewers from ${cheapestSubjectPrice().amountLabel}`)
+    ).toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/^free to read$/im);
+  });
+
+  it("promises only what is true about data: never sold, not never shared (QA CT-06)", async () => {
+    const { container } = await renderPage();
+    expect(screen.getByText(/we never sell your data\./i)).toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/sell or share/i);
   });
 });

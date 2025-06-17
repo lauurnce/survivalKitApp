@@ -222,20 +222,29 @@ describe("UnlockPage — return path binding", () => {
 });
 
 describe("UnlockPage — sign-in requirement", () => {
-  it("offers sign-in instead of checkout when signed out", async () => {
+  // The wall says "Create a free account", so its main button must go to
+  // /signup, not /login (QA FL-11). Returning students keep a Log in link.
+  it("sends a signed-out visitor to sign up, with a log-in link for returners", async () => {
     currentUserId = null;
     await renderPage({ year: YEAR, subject: SUBJECT });
 
-    const link = screen.getByRole("link", { name: /sign in to unlock/i });
-    expect(link.getAttribute("href")).toContain("/login?next=");
+    const signup = screen.getByRole("link", { name: /create free account to unlock/i });
+    expect(signup.getAttribute("href")).toMatch(/^\/signup\?next=/);
+    const login = screen.getByRole("link", { name: /^log in$/i });
+    expect(login.getAttribute("href")).toMatch(/^\/login\?next=/);
+    expect(decodeURIComponent(login.getAttribute("href")!)).toContain(
+      `/unlock?year=${YEAR}&subject=${SUBJECT}`
+    );
   });
 
-  it("carries a valid from path through sign-in so the payer returns to the plans", async () => {
+  it("carries a valid from path through sign-up so the payer returns to the plans", async () => {
     currentUserId = null;
     const from = `/year/${YEAR}/subjects/${SUBJECT}/modules/${OWN_MODULE}`;
     await renderPage({ year: YEAR, subject: SUBJECT, from });
 
-    const href = screen.getByRole("link", { name: /sign in to unlock/i }).getAttribute("href")!;
+    const href = screen
+      .getByRole("link", { name: /create free account to unlock/i })
+      .getAttribute("href")!;
     // from is encoded into returnHref, which is itself encoded into next —
     // so reaching the raw module path takes two passes.
     const next = decodeURIComponent(href.split("next=")[1]);

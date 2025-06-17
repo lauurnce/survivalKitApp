@@ -98,6 +98,20 @@ a, button, input, select, textarea {
   }
 }
 
+/* iOS Safari zooms into any focused form field under 16px and, with
+   minimum-scale 1, stays zoomed after blur (QA FL-04). The auth and school
+   fields set text-base themselves; this catches every other field (profile,
+   quiz, feedback, admin) on phone-width screens. !important because a
+   text-sm utility on the field would otherwise win. CodeMirror is a
+   contenteditable div, not a field, so it is untouched here. */
+@media screen and (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  select,
+  textarea {
+    font-size: max(16px, 1em) !important;
+  }
+}
+
 /* KaTeX on screen (components/SectionRenderer.tsx). KaTeX never wraps, so a
    long formula pushed the whole reader sideways on phones. Each formula now
    scrolls inside its own box instead. Screen only: the print block below

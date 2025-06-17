@@ -5,6 +5,7 @@ import { PopularModules, type PopularModule } from "@/components/PopularModules"
 import { LandingTour } from "@/components/tour/LandingTour";
 import { createServerClient } from "@/lib/supabase/server";
 import { getCp1StartPath } from "@/lib/landing";
+import { cheapestSubjectPrice } from "@/lib/pricing";
 
 export const revalidate = 300;
 
@@ -161,12 +162,14 @@ export default async function LandingPage() {
           <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
             For BSIT students
           </span>
-          <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent">
-            Free to read
+          {/* Lessons are free; reviewers are not. Saying only "free to read"
+              here contradicted the paywall one tap away (QA CT-05). */}
+          <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent text-right">
+            Lessons free · Reviewers from {cheapestSubjectPrice().amountLabel}
           </span>
         </div>
         <p className="font-mono text-label-sm text-ink-faint">
-          We don&apos;t sell or share your data.
+          We never sell your data.
         </p>
       </div>
       </div>

@@ -36,7 +36,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   return {
     title: subject ? `Unlock ${subject.title}` : "Unlock reviewers",
     description:
-      "Unlock every reviewer with answer keys — drills, code labs, and full worked solutions.",
+      "Unlock every reviewer with answer keys — practice exercises and full worked solutions.",
   };
 }
 
@@ -133,7 +133,7 @@ export default async function UnlockPage({ searchParams }: Props) {
               {reviewerCount
                 ? `${reviewerCount} reviewers with answer keys`
                 : "Reviewers with answer keys"}{" "}
-              — drills, code labs, and full worked solutions.
+              — practice exercises and full worked solutions.
             </p>
             <p className="font-mono text-label-sm text-taupe mt-3">{socialProofLine()}</p>
           </div>
@@ -175,12 +175,24 @@ export default async function UnlockPage({ searchParams }: Props) {
                     Create a free account so we can email your receipt and keep this unlock
                     on every device.
                   </p>
+                  {/* The copy asks for a new account, so the primary action
+                      creates one; returning students get the smaller link.
+                      Both carry next= back to these plans (QA FL-11). */}
                   <Link
-                    href={`/login?next=${encodeURIComponent(returnHref)}`}
+                    href={`/signup?next=${encodeURIComponent(returnHref)}`}
                     className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
                   >
-                    Sign in to unlock →
+                    Create free account to unlock →
                   </Link>
+                  <p className="font-sans text-sm text-ink-muted mt-3">
+                    Already have an account?{" "}
+                    <Link
+                      href={`/login?next=${encodeURIComponent(returnHref)}`}
+                      className="text-ink underline underline-offset-2 hover:text-accent transition-colors"
+                    >
+                      Log in
+                    </Link>
+                  </p>
                 </div>
               )}
 
@@ -200,7 +212,7 @@ export default async function UnlockPage({ searchParams }: Props) {
 
               <p className="font-sans text-xs text-ink-faint mt-2">
                 One-time payment via GCash, Maya, or card. No auto-renew — access simply
-                ends with the semester. Instant unlock after payment.
+                ends when your plan does. Instant unlock after payment.
               </p>
             </>
           )}

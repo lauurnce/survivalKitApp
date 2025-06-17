@@ -12,7 +12,7 @@ import {
 } from "@/lib/universities";
 
 const inputClass =
-  "mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-sm text-ink";
+  "mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-base text-ink";
 
 interface Props {
   defaultUniversity?: string;

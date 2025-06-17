@@ -1,5 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PLANS } from "@/lib/paymongo";
+import { formatPeso } from "@/lib/pricing";
+
+// Every amount comes from PLANS, so a price change in lib/paymongo.ts reaches
+// this page without a second edit.
+const price = {
+  subjectMonth: formatPeso(PLANS.subject_month.amount),
+  subjectSem: formatPeso(PLANS.subject_sem.amount),
+  yearSem: formatPeso(PLANS.year_sem.amount),
+};
 
 export const metadata: Metadata = {
   title: "FAQ",
@@ -12,9 +22,22 @@ const FAQS: { question: string; answer: React.ReactNode }[] = [
     question: "Is this actually free?",
     answer: (
       <p>
-        Yes. BSIT Survival Kit is free to read &mdash; that&apos;s stated right on
-        the homepage. Module notes, programming guides, and reviewers are available
-        at no cost.
+        The lessons are. Module notes, programming guides, and computation
+        walkthroughs are free to read, with or without an account. The
+        reviewers &mdash; practice drills, code labs, and full worked solutions
+        with answer keys &mdash; are paid. Each subject&apos;s first set of
+        reviewers is free to try, so you can see what you&apos;d be paying for.
+      </p>
+    ),
+  },
+  {
+    question: "How much do the reviewers cost?",
+    answer: (
+      <p>
+        {price.subjectMonth} unlocks every reviewer in one subject for a month,
+        or {price.subjectSem} for the whole semester. {price.yearSem} unlocks every
+        subject in your year for the semester. Each is a one-time payment by
+        GCash, Maya, or card &mdash; nothing renews automatically.
       </p>
     ),
   },
@@ -23,7 +46,7 @@ const FAQS: { question: string; answer: React.ReactNode }[] = [
     answer: (
       <p>
         Your email is collected when you create an account, so you can sign in
-        and keep your progress synced. We don&apos;t sell or share your data.
+        and keep your progress synced. We never sell your data.
         See the{" "}
         <Link
           href="/privacy"
