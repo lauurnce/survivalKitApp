@@ -128,3 +128,19 @@ describe("ModuleSections — print-ready marker", () => {
     expect(pending()).toBeNull();
   });
 });
+
+describe("ModuleSections — afterContent slot", () => {
+  it("sits between the notes and the first reviewer", () => {
+    renderSections({ afterContent: <p>QUICK CHECK</p> });
+    const text = document.body.textContent ?? "";
+    expect(text.indexOf("Lesson text")).toBeLessThan(text.indexOf("QUICK CHECK"));
+    expect(text.indexOf("QUICK CHECK")).toBeLessThan(text.indexOf("Drill one"));
+  });
+
+  it("goes last when the lesson has no reviewers", () => {
+    renderSections({ sections: [LOCKED[0]], afterContent: <p>QUICK CHECK</p> });
+    const text = document.body.textContent ?? "";
+    expect(text.indexOf("Lesson text")).toBeLessThan(text.indexOf("QUICK CHECK"));
+    expect(screen.getAllByText("QUICK CHECK")).toHaveLength(1);
+  });
+});

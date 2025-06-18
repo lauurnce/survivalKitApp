@@ -20,6 +20,8 @@ import { ModuleSurveyCard } from "@/components/ModuleSurveyCard";
 import { LessonOverview } from "@/components/lesson/LessonOverview";
 import { LessonEngagement, LESSON_END_ID } from "@/components/lesson/LessonEngagement";
 import { NextLessonLink } from "@/components/lesson/NextLessonLink";
+import { QuickCheck } from "@/components/lesson/QuickCheck";
+import { quickChecksFor } from "@/lib/lesson/quickChecks";
 import { estimateReadingMinutes } from "@/lib/lesson/readingTime";
 import { freeIdsInModule, pickFreeActivities } from "@/lib/freeSample";
 import { cheapestSubjectPrice } from "@/lib/pricing";
@@ -251,6 +253,14 @@ export default async function ReaderPage({ params }: Props) {
           unlockAll={unlockActivities}
           freeSectionIds={freeSectionIds}
           reviewerCount={reviewerCount}
+          afterContent={
+            <QuickCheck
+              moduleId={moduleId}
+              subjectId={subjectId}
+              yearId={yearId}
+              questions={quickChecksFor(moduleId)}
+            />
+          }
           teaser={
             !unlockActivities && (activityMeta?.length ?? 0) > freeSections.length ? (
               <PaywallTeaser
