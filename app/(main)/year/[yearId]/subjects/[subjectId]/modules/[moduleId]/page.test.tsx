@@ -29,6 +29,7 @@ vi.mock("@/components/LastModuleTracker", () => ({ LastModuleTracker: () => null
 vi.mock("@/components/PaywallTeaser", () => ({ PaywallTeaser: () => null }));
 vi.mock("@/components/UnlockSuccessToast", () => ({ UnlockSuccessToast: () => null }));
 vi.mock("@/components/SignupNudgeToast", () => ({ SignupNudgeToast: () => null }));
+vi.mock("@/components/lesson/ShareLesson", () => ({ ShareLesson: () => null }));
 vi.mock("@/components/lesson/LessonEngagement", () => ({ LessonEngagement: () => null, LESSON_END_ID: "lesson-next" }));
 vi.mock("@/lib/supabase/server", () => ({ createServerClient: () => ({}) }));
 

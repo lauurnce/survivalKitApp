@@ -21,6 +21,7 @@ import { LessonOverview } from "@/components/lesson/LessonOverview";
 import { LessonEngagement, LESSON_END_ID } from "@/components/lesson/LessonEngagement";
 import { NextLessonLink } from "@/components/lesson/NextLessonLink";
 import { QuickCheck } from "@/components/lesson/QuickCheck";
+import { ShareLesson } from "@/components/lesson/ShareLesson";
 import { quickChecksFor } from "@/lib/lesson/quickChecks";
 import { estimateReadingMinutes } from "@/lib/lesson/readingTime";
 import { freeIdsInModule, pickFreeActivities } from "@/lib/freeSample";
@@ -291,6 +292,16 @@ export default async function ReaderPage({ params }: Props) {
               moduleTitle: mod.title,
               moduleIds: siblings.map((m) => m.id),
             }}
+          />
+        </div>
+        <div className="mb-10">
+          <ShareLesson
+            path={`/year/${yearId}/subjects/${subjectId}/modules/${moduleId}`}
+            moduleTitle={mod.title}
+            subjectTitle={subject.title}
+            moduleId={moduleId}
+            subjectId={subjectId}
+            yearId={yearId}
           />
         </div>
         <ModuleSurveyCard />
