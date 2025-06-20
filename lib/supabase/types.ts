@@ -18,7 +18,16 @@ export type EventType =
   | "share_card_share"
   | "share_card_download"
   | "print_click"
-  | "print_gate_shown";
+  | "print_gate_shown"
+  // Lesson engagement (migration 20261101000500, components/lesson/**).
+  | "lesson_halfway"
+  | "lesson_end"
+  | "next_lesson_click"
+  | "lesson_resume"
+  | "quick_check_correct"
+  | "quick_check_wrong"
+  | "lesson_share"
+  | "code_run";
 
 export interface Database {
   public: {

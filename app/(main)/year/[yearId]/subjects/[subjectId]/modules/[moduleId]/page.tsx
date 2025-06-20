@@ -17,6 +17,13 @@ import { PaidStatusBar } from "@/components/PaidStatusBar";
 import { SignupNudgeToast } from "@/components/SignupNudgeToast";
 import { ModuleReaderClient } from "@/components/ModuleReaderClient";
 import { ModuleSurveyCard } from "@/components/ModuleSurveyCard";
+import { LessonOverview } from "@/components/lesson/LessonOverview";
+import { LessonEngagement, LESSON_END_ID } from "@/components/lesson/LessonEngagement";
+import { NextLessonLink } from "@/components/lesson/NextLessonLink";
+import { QuickCheck } from "@/components/lesson/QuickCheck";
+import { ShareLesson } from "@/components/lesson/ShareLesson";
+import { quickChecksFor } from "@/lib/lesson/quickChecks";
+import { estimateReadingMinutes } from "@/lib/lesson/readingTime";
 import { freeIdsInModule, pickFreeActivities } from "@/lib/freeSample";
 import { cheapestSubjectPrice } from "@/lib/pricing";
 import { sectionLabel } from "@/lib/sectionLabel";
@@ -130,6 +137,14 @@ export default async function ReaderPage({ params }: Props) {
     | null;
   const year = (Array.isArray(yearEmbed) ? yearEmbed[0] : yearEmbed) ?? null;
 
+  const lessonMinutes = estimateReadingMinutes(allSections.filter((s) => s.body_md));
+  const nextTarget = nextModule
+    ? {
+        href: `/year/${yearId}/subjects/${subjectId}/modules/${nextModule.id}`,
+        title: nextModule.title,
+      }
+    : null;
+
   return (
     <ModuleReaderClient moduleId={moduleId} moduleTitle={mod.title}>
       <main className="min-h-screen bg-paper">
@@ -137,6 +152,14 @@ export default async function ReaderPage({ params }: Props) {
           subject. Anyone else's printout is a single notice (globals.css). */}
       <PrintGateRoot yearId={yearId} subjectId={subjectId} subjectTitle={subject.title}>
       <PageTracker event="module_open" yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
+      {/* Reading-progress line, sticky "Up next" bar, lesson_halfway/end. */}
+      <LessonEngagement
+        moduleId={moduleId}
+        subjectId={subjectId}
+        yearId={yearId}
+        totalMinutes={lessonMinutes}
+        next={nextTarget}
+      />
       {/* Post-payment confirmation: shown once, when the shared status
           confirms the unlock; self-dismisses. */}
       <div className="print:hidden">
@@ -212,8 +235,11 @@ export default async function ReaderPage({ params }: Props) {
       </header>
 
       {/* Article content — cream */}
-      <article className="px-6 py-12 md:px-16">
+      <article id="lesson-body" className="px-6 py-12 md:px-16">
         <div className="max-w-wide mx-auto space-y-16">
+        {/* Length and topic map up front, for readers who land here from a
+            group-chat link and would otherwise have to scroll to find out. */}
+        <LessonOverview sections={allSections} />
         {/* Surface the offer at the top when this module has gated activities
             and the user hasn't unlocked them. A module whose reviewers are all
             free sample (the subject's first) gets no teaser — the offer starts
@@ -228,6 +254,14 @@ export default async function ReaderPage({ params }: Props) {
           unlockAll={unlockActivities}
           freeSectionIds={freeSectionIds}
           reviewerCount={reviewerCount}
+          afterContent={
+            <QuickCheck
+              moduleId={moduleId}
+              subjectId={subjectId}
+              yearId={yearId}
+              questions={quickChecksFor(moduleId)}
+            />
+          }
           teaser={
             !unlockActivities && (activityMeta?.length ?? 0) > freeSections.length ? (
               <PaywallTeaser
@@ -244,7 +278,7 @@ export default async function ReaderPage({ params }: Props) {
       </article>
 
       {/* Next-module CTA */}
-      <div className="border-t border-ink-faint/20 px-6 py-12 md:px-16 print:hidden">
+      <div id={LESSON_END_ID} className="border-t border-ink-faint/20 px-6 py-12 md:px-16 print:hidden">
         <div className="max-w-wide mx-auto">
         <div className="flex items-center justify-between gap-4 mb-10">
           <p className="font-sans text-sm text-ink-muted">
@@ -260,22 +294,34 @@ export default async function ReaderPage({ params }: Props) {
             }}
           />
         </div>
+        <div className="mb-10">
+          <ShareLesson
+            path={`/year/${yearId}/subjects/${subjectId}/modules/${moduleId}`}
+            moduleTitle={mod.title}
+            subjectTitle={subject.title}
+            moduleId={moduleId}
+            subjectId={subjectId}
+            yearId={yearId}
+          />
+        </div>
         <ModuleSurveyCard />
-        {nextModule ? (
+        {nextTarget ? (
           <>
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-faint mb-4">
               Up next
             </p>
-            <Link
-              href={`/year/${yearId}/subjects/${subjectId}/modules/${nextModule.id}`}
-              prefetch={true}
+            <NextLessonLink
+              {...nextTarget}
+              moduleId={moduleId}
+              subjectId={subjectId}
+              yearId={yearId}
               className="group flex items-center justify-between gap-6 bg-navy px-8 py-6 hover:bg-ink transition-colors duration-150"
             >
               <span className="font-serif text-display-md text-paper">
-                {nextModule.title}
+                {nextTarget.title}
               </span>
               <span className="text-accent text-xl flex-shrink-0">→</span>
-            </Link>
+            </NextLessonLink>
             {prevModule && (
               <Link
                 href={`/year/${yearId}/subjects/${subjectId}/modules/${prevModule.id}`}

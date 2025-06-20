@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { useShowUpsell } from "@/hooks/useShowUpsell";
@@ -33,6 +33,11 @@ interface Props {
   reviewerCount: number;
   /** The paywall teaser, shown above the sections while the reader is locked. */
   teaser?: React.ReactNode;
+  /**
+   * Shown between the lesson's notes and its reviewers (before the first
+   * activity, or at the end when there is none) — the lesson's quick check.
+   */
+  afterContent?: React.ReactNode;
 }
 
 // Renders the module's sections and, for a subscriber, swaps the gated
@@ -55,6 +60,7 @@ export function ModuleSections({
   freeSectionIds,
   reviewerCount,
   teaser,
+  afterContent,
 }: Props) {
   const [unlocked, setUnlocked] = useState<ReaderSection[] | null>(null);
   // Every reader page watches the status — including a subject's first
@@ -73,6 +79,9 @@ export function ModuleSections({
       ].sort((a, b) => a.sort_order - b.sort_order)
     : sections;
 
+  const firstActivity = shown.findIndex((s) => s.kind === "activity");
+  const slotAt = firstActivity === -1 ? shown.length : firstActivity;
+
   return (
     <>
       {/* Watching the status keeps a listener on the shared store, so it
@@ -89,20 +98,23 @@ export function ModuleSections({
       )}
       {!isUnlocked && teaser && <div className="print:hidden">{teaser}</div>}
       {shown.map((section, i) => (
-        <SectionRenderer
-          key={section.id}
-          section={section}
-          index={i}
-          moduleId={moduleId}
-          yearId={yearId}
-          subjectId={subjectId}
-          unlockAll={isUnlocked}
-          subjectTitle={subjectTitle}
-          freeSectionIds={freeSectionIds}
-          reviewerCount={reviewerCount}
-          showUpsell={showUpsell}
-        />
+        <Fragment key={section.id}>
+          {i === slotAt && afterContent}
+          <SectionRenderer
+            section={section}
+            index={i}
+            moduleId={moduleId}
+            yearId={yearId}
+            subjectId={subjectId}
+            unlockAll={isUnlocked}
+            subjectTitle={subjectTitle}
+            freeSectionIds={freeSectionIds}
+            reviewerCount={reviewerCount}
+            showUpsell={showUpsell}
+          />
+        </Fragment>
       ))}
+      {slotAt === shown.length && afterContent}
     </>
   );
 }
