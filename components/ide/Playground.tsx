@@ -6,13 +6,16 @@ import { OutputPanel } from "./OutputPanel";
 import { getRunner } from "@/lib/ide/runners";
 import { getLanguage } from "@/lib/ide/languages";
 import type { LanguageId, RunPhase, RunResult } from "@/lib/ide/types";
+import { logEvent } from "@/lib/analytics";
 
 interface Props {
   languageId: LanguageId;
   initialCode?: string;
+  /** When set, each Run is logged as a code_run event for this module. */
+  moduleId?: string;
 }
 
-export function Playground({ languageId, initialCode }: Props) {
+export function Playground({ languageId, initialCode, moduleId }: Props) {
   const lang = getLanguage(languageId);
   const [code, setCode] = useState(initialCode ?? lang.starter);
   const [result, setResult] = useState<RunResult | null>(null);
@@ -22,6 +25,7 @@ export function Playground({ languageId, initialCode }: Props) {
   const [executedCode, setExecutedCode] = useState<string | null>(null);
 
   async function handleRun() {
+    void logEvent("code_run", moduleId ? { module_id: moduleId } : {});
     setRunning(true);
     setPhase("running");
     setError(null);

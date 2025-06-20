@@ -151,6 +151,7 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
             <Playground
               languageId={section.ide_language}
               initialCode={section.starter_code ?? undefined}
+              moduleId={moduleId}
             />
           </div>
           {/* The editor is interactive-only; paper gets the starter code. */}
