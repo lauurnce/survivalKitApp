@@ -224,6 +224,17 @@ describe("POST /api/events — print_click", () => {
     expect((await res.json()).ok).toBe(true);
     expect(inserts[0]).toMatchObject({ event_type: "print_gate_shown" });
   });
+
+  it.each([
+    "lesson_halfway", "lesson_end", "next_lesson_click", "lesson_resume",
+    "quick_check_correct", "quick_check_wrong", "lesson_share", "code_run",
+  ])("accepts the lesson engagement event %s", async (event_type) => {
+    const res = await POST(
+      makeReq({ device_id: DEVICE, event_type, module_id: "11111111-2222-3333-4444-555555555555" })
+    );
+    expect((await res.json()).ok).toBe(true);
+    expect(inserts[0]).toMatchObject({ event_type });
+  });
 });
 
 describe("POST /api/events — device_id trust", () => {

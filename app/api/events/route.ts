@@ -14,6 +14,8 @@ const VALID_EVENT_TYPES = new Set<EventType>([
   "paywall_teaser_click", "unlock_click", "unlock_submitted",
   "share_card_open", "share_card_share", "share_card_download",
   "print_click", "print_gate_shown",
+  "lesson_halfway", "lesson_end", "next_lesson_click", "lesson_resume",
+  "quick_check_correct", "quick_check_wrong", "lesson_share", "code_run",
 ]);
 
 // Shared across all serverless instances via the check_rate_limit RPC — the
