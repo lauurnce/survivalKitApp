@@ -6,6 +6,7 @@ import { isUuid } from "@/lib/validation";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getClientIp } from "@/lib/rateLimit";
 import { isServerRateLimited } from "@/lib/serverRateLimit";
+import { counterVisitsFor } from "@/lib/readCounting";
 
 const VALID_EVENT_TYPES = new Set<EventType>([
   "enter", "year_select", "subject_open", "module_open",
@@ -123,31 +124,25 @@ export async function POST(req: NextRequest) {
       console.error(`events insert failed (${event_type}):`, insertError.message);
     }
 
-    // Determine which resource to count (fire-and-forget — never blocks response)
-    const counterArgs = (() => {
-      if (event_type === "subject_open" && year_id && !subject_id) {
-        return { type: "year" as const, id: year_id };
-      }
-      if (event_type === "subject_open" && subject_id) {
-        return { type: "subject" as const, id: subject_id };
-      }
-      if (event_type === "module_open" && module_id) {
-        return { type: "module" as const, id: module_id };
-      }
-      if (event_type === "section_view" && section_id) {
-        return { type: "section" as const, id: section_id };
-      }
-      return null;
-    })();
-
-    if (counterArgs) {
+    // Reader/read counters (lib/readCounting.ts). Keyed by device, so signed-out
+    // visitors count exactly like signed-in ones. Fire-and-forget: a counter failure must never fail the request, but it
+    // must reach the function logs.
+    const visits = counterVisitsFor({ event_type, year_id, subject_id, module_id, section_id });
+    for (const visit of visits) {
       supabase
         .rpc("record_visit", {
           p_device_id: device_id,
-          p_resource_type: counterArgs.type,
-          p_resource_id: counterArgs.id,
+          p_resource_type: visit.type,
+          p_resource_id: visit.id,
         })
-        .then(null, () => null);
+        .then(
+          ({ error }) => {
+            if (error) console.error(`record_visit failed (${visit.type}):`, error.message);
+          },
+          (error: unknown) => {
+            console.error(`record_visit failed (${visit.type}):`, error instanceof Error ? error.message : error);
+          },
+        );
     }
 
     return NextResponse.json({ ok: true });
