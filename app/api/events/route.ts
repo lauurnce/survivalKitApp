@@ -6,7 +6,7 @@ import { isUuid } from "@/lib/validation";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getClientIp } from "@/lib/rateLimit";
 import { isServerRateLimited } from "@/lib/serverRateLimit";
-import { counterVisitsFor } from "@/lib/readCounting";
+import { counterVisitsFor, isUncountableRequest } from "@/lib/readCounting";
 
 const VALID_EVENT_TYPES = new Set<EventType>([
   "enter", "year_select", "subject_open", "module_open",
@@ -125,9 +125,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Reader/read counters (lib/readCounting.ts). Keyed by device, so signed-out
-    // visitors count exactly like signed-in ones. Fire-and-forget: a counter failure must never fail the request, but it
+    // visitors count exactly like signed-in ones. Bots and speculative
+    // prerenders still land in `events` but never move a public counter.
+    // Fire-and-forget: a counter failure must never fail the request, but it
     // must reach the function logs.
-    const visits = counterVisitsFor({ event_type, year_id, subject_id, module_id, section_id });
+    const visits = isUncountableRequest(req.headers)
+      ? []
+      : counterVisitsFor({ event_type, year_id, subject_id, module_id, section_id });
     for (const visit of visits) {
       supabase
         .rpc("record_visit", {

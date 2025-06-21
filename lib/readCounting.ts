@@ -54,3 +54,35 @@ export function counterVisitsFor(event: CountableEvent): CounterVisit[] {
 
   return visits;
 }
+
+// Crawlers that execute JavaScript (Googlebot, Bingbot, Lighthouse, headless
+// scrapers) mount the page trackers like a browser does. Each run starts with
+// empty storage, so every crawl would mint a fresh device and a new "reader".
+const BOT_USER_AGENT =
+  /bot\b|bot\/|crawler|crawling|spider|slurp|mediapartners|facebookexternalhit|headlesschrome|lighthouse|pagespeed|pingdom|uptimerobot|statuscake|phantomjs|puppeteer|playwright|selenium|\bcurl\/|\bwget\/|python-requests|python-urllib|axios\/|node-fetch|go-http-client|okhttp|java\//i;
+
+interface HeaderSource {
+  get(name: string): string | null;
+}
+
+/**
+ * True when the request must not move the counters: a known bot or tool user
+ * agent (or none at all — every browser sends one), or a request made while a
+ * page was being speculatively prefetched/prerendered rather than viewed.
+ * Next's own <Link> prefetch never runs page effects, but Chrome's
+ * speculation-rules prerender does, and tags those requests
+ * `Sec-Purpose: prefetch;prerender`.
+ */
+export function isUncountableRequest(headers: HeaderSource): boolean {
+  const purpose = ["sec-purpose", "purpose", "x-purpose", "x-moz"]
+    .map((name) => headers.get(name))
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  if (/prefetch|prerender|preview/.test(purpose)) return true;
+  if (headers.get("next-router-prefetch")) return true;
+
+  const userAgent = headers.get("user-agent");
+  if (!userAgent) return true;
+  return BOT_USER_AGENT.test(userAgent);
+}

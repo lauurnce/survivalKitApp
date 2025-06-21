@@ -108,6 +108,28 @@ describe("POST /api/events — reader/read counters", () => {
     expect(visits()).toEqual([`record_visit:year:${YEAR}:${DEVICE}`]);
   });
 
+  it("does not count a speculative prerender, but still records the event", async () => {
+    const res = await POST(makeReq(lessonOpen, { "Sec-Purpose": "prefetch;prerender" }));
+    expect(res.status).toBe(200);
+    expect(visits()).toEqual([]);
+    expect(inserts).toHaveLength(1);
+  });
+
+  it("does not count a Next router prefetch", async () => {
+    await POST(makeReq(lessonOpen, { "Next-Router-Prefetch": "1" }));
+    expect(visits()).toEqual([]);
+  });
+
+  it("does not count a crawler that runs JavaScript", async () => {
+    await POST(
+      makeReq(lessonOpen, {
+        "user-agent":
+          "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/130.0.0.0 Safari/537.36",
+      }),
+    );
+    expect(visits()).toEqual([]);
+  });
+
   it("does not count non-read events", async () => {
     await POST(makeReq({ device_id: DEVICE, event_type: "enter" }));
     await POST(makeReq({ device_id: DEVICE, event_type: "paywall_teaser_view", year_id: YEAR, subject_id: SUBJECT }));
