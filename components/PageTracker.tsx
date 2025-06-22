@@ -11,6 +11,11 @@ interface Props {
   moduleId?: string;
 }
 
+// Fires once per page view. Keyed on the ids, not on mount alone: if a
+// client-side navigation from one lesson to the next ever reuses this
+// instance instead of remounting it, the new lesson must still count.
+// Repeat views of the same lesson inside 10 minutes are deduped server-side
+// by record_visit, so back/forward cannot inflate the counters.
 export function PageTracker({ event, yearId, subjectId, moduleId }: Props) {
   useEffect(() => {
     void logEvent(event, {
@@ -18,8 +23,7 @@ export function PageTracker({ event, yearId, subjectId, moduleId }: Props) {
       subject_id: subjectId,
       module_id: moduleId,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [event, yearId, subjectId, moduleId]);
 
   return null;
 }

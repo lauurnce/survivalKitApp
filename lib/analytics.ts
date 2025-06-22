@@ -61,6 +61,51 @@ export function resetSessionEntry() {
   }
 }
 
+// When storage is blocked (some in-app browsers, strict privacy modes)
+// getDeviceId() has nowhere to keep an id and returns "". Those visitors
+// still read, so they still count: they get an id for this page load, and the
+// server prefers their signed device cookie whenever they have one.
+let pageLoadDeviceId = "";
+
+function randomUuid(): string {
+  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+function resolveDeviceId(): string {
+  const id = getDeviceId();
+  if (id) return id;
+  try {
+    if (!pageLoadDeviceId) pageLoadDeviceId = randomUuid();
+  } catch {
+    return "";
+  }
+  return pageLoadDeviceId;
+}
+
+/**
+ * Resolves once the page is actually being viewed. A page Chrome prerenders
+ * from speculation rules runs its effects while nobody is looking; a reader
+ * who never opens it must not count. (The server also refuses to count
+ * requests tagged `Sec-Purpose: prefetch;prerender`.)
+ */
+function whenViewed(): Promise<void> {
+  const doc = typeof document === "undefined" ? undefined : (document as Document & { prerendering?: boolean });
+  if (!doc?.prerendering) return Promise.resolve();
+  return new Promise((resolve) => {
+    doc.addEventListener("prerenderingchange", () => resolve(), { once: true });
+  });
+}
+
+/** Test hook: forget the page-load fallback device id. */
+export function resetPageLoadDeviceId() {
+  pageLoadDeviceId = "";
+}
+
 export async function logEvent(
   event_type: EventType,
   meta: {
@@ -70,7 +115,8 @@ export async function logEvent(
     section_id?: string;
   } = {}
 ) {
-  const device_id = getDeviceId();
+  await whenViewed();
+  const device_id = resolveDeviceId();
   if (!device_id) return;
   if (event_type === "enter" && !claimSessionEntry()) return;
 
