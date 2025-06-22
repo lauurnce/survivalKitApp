@@ -74,53 +74,67 @@ export const getAllModules = unstable_cache(
   { revalidate: 60, tags: ["modules"] }
 );
 
+// Reader/read counters (definitions: lib/readCounting.ts). They change on
+// every read, so they ride the same 60s revalidation as the pages that show
+// them. A failed read throws INSIDE the cache, so unstable_cache never stores
+// it and the next request retries; the wrapper then degrades to "no counts"
+// (the year cards and module rows hide a zero) instead of failing the page.
+type CounterRow<K extends "reader_count" | "read_count"> = { resource_id: string } & Record<K, number>;
+
+function counterQuery<A extends unknown[], R>(
+  name: string,
+  query: (...args: A) => Promise<R[]>,
+): (...args: A) => Promise<R[]> {
+  const cached = unstable_cache(query, [name], { revalidate: 60, tags: ["counters"] });
+  return async (...args: A) => {
+    try {
+      return await cached(...args);
+    } catch (error) {
+      console.error(`${name} read failed:`, error instanceof Error ? error.message : error);
+      return [];
+    }
+  };
+}
+
+function rowsOrThrow<T>(result: { data: T[] | null; error: { message: string } | null }): T[] {
+  if (result.error) throw new Error(result.error.message);
+  return result.data ?? [];
+}
+
 // Year counters (reader counts)
-export const getYearCounters = unstable_cache(
-  async () => {
-    const supabase = getSupabase();
-    const { data } = await supabase
+export const getYearCounters = counterQuery("year-counters", async () =>
+  rowsOrThrow<CounterRow<"reader_count">>(
+    await getSupabase()
       .from("counters")
       .select("resource_id, reader_count")
-      .eq("resource_type", "year");
-    return data ?? [];
-  },
-  ["year-counters"],
-  { revalidate: 60, tags: ["counters"] }
+      .eq("resource_type", "year"),
+  ),
 );
 
 // Subject counters (read counts)
-export const getSubjectCounters = unstable_cache(
-  async (subjectIds: string[]) => {
-    if (subjectIds.length === 0) return [];
-    const supabase = getSupabase();
-    const { data } = await supabase
+export const getSubjectCounters = counterQuery("subject-counters", async (subjectIds: string[]) => {
+  if (subjectIds.length === 0) return [];
+  return rowsOrThrow<CounterRow<"read_count">>(
+    await getSupabase()
       .from("counters")
       .select("resource_id, read_count")
       .eq("resource_type", "subject")
-      .in("resource_id", subjectIds);
-    return data ?? [];
-  },
-  ["subject-counters"],
-  { revalidate: 60, tags: ["counters"] }
-);
+      .in("resource_id", subjectIds),
+  );
+});
 
 // Module counters (read counts)
-export const getModuleCounters = unstable_cache(
-  async (moduleIds: string[]) => {
-    if (moduleIds.length === 0) return [];
-    const supabase = getSupabase();
-    const { data } = await supabase
+export const getModuleCounters = counterQuery("module-counters", async (moduleIds: string[]) => {
+  if (moduleIds.length === 0) return [];
+  return rowsOrThrow<CounterRow<"read_count">>(
+    await getSupabase()
       .from("counters")
       .select("resource_id, read_count")
       .eq("resource_type", "module")
-      .in("resource_id", moduleIds);
-    return data ?? [];
-  },
-  ["module-counters"],
-  { revalidate: 60, tags: ["counters"] }
-);
+      .in("resource_id", moduleIds),
+  );
+});
 
-// Module content sections
 export const getModuleContentSections = unstable_cache(
   async (moduleId: string) => {
     const supabase = getSupabase();
