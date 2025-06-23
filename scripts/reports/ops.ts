@@ -13,6 +13,9 @@
  * payments ledger (lib/reports/zeroAmountUnlocks.ts). Counts only — no rows.
  * If .env.reports.local is missing or the count fails, those rows read
  * `not read` and the rest of the run is unaffected.
+ *
+ * Two more head:true counts detect a silent reader tracker: lessons opened in
+ * the last 24h with no counter_log row touched (lib/reports/readCounter.ts).
  */
 
 import { execFileSync } from "node:child_process";
@@ -28,6 +31,12 @@ import {
   zeroAmountSignal,
   type ZeroAmountCounts,
 } from "../../lib/reports/zeroAmountUnlocks";
+import {
+  READ_COUNTER_WINDOW_HOURS,
+  readCounterMetrics,
+  readCounterSignal,
+  type ReadCounterCounts,
+} from "../../lib/reports/readCounter";
 import { countRows, loadReportsEnv, reportsClient } from "./supabaseClient";
 
 const PRODUCTION = "https://survival-kit-app.vercel.app";
@@ -160,6 +169,30 @@ async function zeroAmountCounts(now: Date): Promise<{ counts: ZeroAmountCounts; 
   }
 }
 
+/**
+ * Lesson opens vs counter_log updates in the last 24h. Degrades to nulls, like
+ * zeroAmountCounts: a database outage must not fail the ops run.
+ */
+async function readCounterCounts(now: Date): Promise<{ counts: ReadCounterCounts; error: string | null }> {
+  try {
+    loadReportsEnv();
+    const client = reportsClient();
+    const since = new Date(now.getTime() - READ_COUNTER_WINDOW_HOURS * 60 * 60 * 1000).toISOString();
+    const [lessonOpens, counterTouches] = await Promise.all([
+      countRows(client, "events", (q) => q.eq("event_type", "module_open").gte("created_at", since)),
+      countRows(client, "counter_log", (q) => q.gte("last_read_at", since)),
+    ]);
+    const error =
+      lessonOpens === null || counterTouches === null ? "reader counter counts unavailable" : null;
+    return { counts: { lessonOpens, counterTouches }, error };
+  } catch (error) {
+    return {
+      counts: { lessonOpens: null, counterTouches: null },
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
 async function main(): Promise<void> {
   const started = Date.now();
 
@@ -179,6 +212,8 @@ async function main(): Promise<void> {
   const migrations = migrationInventory();
   const zeroAmount = await zeroAmountCounts(new Date());
   const freeUnlocks = zeroAmountSignal(zeroAmount.counts);
+  const readCounter = await readCounterCounts(new Date());
+  const readTracker = readCounterSignal(readCounter.counts);
 
   const metrics: Metric[] = [
     ...routes.map((route) => ({
@@ -194,6 +229,7 @@ async function main(): Promise<void> {
     { label: "Outdated packages", value: outdated.length },
     { label: "Migration files", value: migrations.count },
     ...zeroAmountMetrics(freeUnlocks),
+    ...readCounterMetrics(readTracker),
     // Read by eye at vercel.com/lauurnces-projects/~/usage. Never estimated.
     { label: "Active CPU / 4h", value: null },
   ];
@@ -228,6 +264,7 @@ async function main(): Promise<void> {
       outdated,
       migrations,
       freeUnlocks: { ...freeUnlocks, error: zeroAmount.error },
+      readCounter: { ...readTracker, error: readCounter.error },
     },
   };
 
