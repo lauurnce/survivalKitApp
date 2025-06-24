@@ -5,19 +5,27 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 const refresh = vi.fn();
 vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh }) }));
 vi.mock("@/lib/device", () => ({ getDeviceId: () => "device-1" }));
+const resetSessionCache = vi.fn();
+vi.mock("@/hooks/useSession", () => ({ resetSessionCache: () => resetSessionCache() }));
 
 import {
   MAX_POLLS,
-  MAX_REFRESHES,
   POLL_INTERVAL_MS,
-  REFRESH_RETRY_MS,
+  planForSubject,
+  retrySubscriptionCheck,
   useSubscriptionStatus,
+  useYearEntitlements,
+  resetYearEntitlementsCache,
+  type PlanInfo,
 } from "./useSubscriptionStatus";
+
+const PLAN: PlanInfo = { scope: "subject", until: "2026-12-01T00:00:00.000Z" };
 
 const SUBJECT = "22222222-2222-2222-2222-222222222222";
 
 let statusCalls: string[];
 let subscribedReplies: boolean[];
+let yearReply: unknown;
 
 // jsdom refuses to let a spy replace location.replace, so swap the whole
 // Location for one that delegates every read to the real thing (so
@@ -42,10 +50,10 @@ async function advance(ms: number) {
 }
 
 function Probe({ yearId, name }: { yearId: string; name: string }) {
-  const { subscribed, polling, unlocked, pollTimedOut } = useSubscriptionStatus(yearId, SUBJECT);
+  const { subscribed, polling, unlocked, pollTimedOut, plan } = useSubscriptionStatus(yearId, SUBJECT);
   return (
     <span data-testid={name}>
-      {`subscribed=${subscribed} polling=${polling} unlocked=${unlocked} timedOut=${pollTimedOut}`}
+      {`subscribed=${subscribed} polling=${polling} unlocked=${unlocked} timedOut=${pollTimedOut} plan=${plan?.scope ?? "none"}`}
     </span>
   );
 }
@@ -53,7 +61,10 @@ function Probe({ yearId, name }: { yearId: string; name: string }) {
 beforeEach(() => {
   statusCalls = [];
   subscribedReplies = [];
+  yearReply = { subscribed: false, subjects: {} };
   refresh.mockClear();
+  resetSessionCache.mockClear();
+  resetYearEntitlementsCache();
   navigate.mockClear();
   window.history.replaceState({}, "", "/year/x/subjects/y/modules/z");
   Object.defineProperty(window, "location", {
@@ -72,10 +83,13 @@ beforeEach(() => {
     "fetch",
     vi.fn((url: RequestInfo | URL) => {
       statusCalls.push(String(url));
+      if (String(url).includes("list=subjects")) {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(yearReply) } as Response);
+      }
       const subscribed = subscribedReplies.shift() ?? false;
       return Promise.resolve({
         ok: true,
-        json: () => Promise.resolve({ subscribed }),
+        json: () => Promise.resolve(subscribed ? { subscribed, plan: PLAN } : { subscribed }),
       } as Response);
     })
   );
@@ -123,10 +137,10 @@ describe("useSubscriptionStatus", () => {
     expect(refresh).not.toHaveBeenCalled();
   });
 
-  it("polls after ?payment=success and refreshes the route once when it confirms", async () => {
+  it("polls after ?payment=success and flips in place when it confirms — no refresh, no reload", async () => {
     vi.useFakeTimers();
     const yearId = freshYear();
-    window.history.replaceState({}, "", "/year/x/subjects/y/modules/z?payment=success");
+    window.history.replaceState({}, "", "/year/x/subjects/y/modules/z?payment=success&print=1");
     subscribedReplies = [false, false, true];
 
     render(
@@ -138,22 +152,79 @@ describe("useSubscriptionStatus", () => {
 
     await advance(0);
     expect(screen.getByTestId("a")).toHaveTextContent("polling=true");
+    // Back from checkout: the cached session answer is thrown away.
+    expect(resetSessionCache).toHaveBeenCalledTimes(1);
 
     await advance(POLL_INTERVAL_MS);
     expect(screen.getByTestId("a")).toHaveTextContent("polling=true");
 
     await advance(POLL_INTERVAL_MS);
     expect(screen.getByTestId("a")).toHaveTextContent("unlocked=true");
+    expect(screen.getByTestId("a")).toHaveTextContent("subscribed=true");
+    expect(screen.getByTestId("a")).toHaveTextContent("plan=subject");
     expect(screen.getByTestId("b")).toHaveTextContent("unlocked=true");
     expect(screen.getByTestId("a")).toHaveTextContent("polling=false");
 
-    // Two consumers, one route refresh.
-    expect(refresh).toHaveBeenCalledTimes(1);
+    // The page unlocks in place: nothing refreshes or reloads.
+    expect(refresh).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
+    // The marker is gone from the URL; other params survive.
+    expect(realLocation.search).toBe("?print=1");
 
     // The interval is cleared once the poll confirms.
     const callsAfterUnlock = statusCalls.length;
     await advance(POLL_INTERVAL_MS * 3);
     expect(statusCalls).toHaveLength(callsAfterUnlock);
+  });
+
+  it("confirms at once when the webhook beat the redirect back", async () => {
+    const yearId = freshYear();
+    window.history.replaceState({}, "", "/year/x/subjects/y/modules/z?payment=success");
+    subscribedReplies = [true];
+
+    render(<Probe yearId={yearId} name="a" />);
+
+    await waitFor(() => expect(screen.getByTestId("a")).toHaveTextContent("unlocked=true"));
+    expect(screen.getByTestId("a")).toHaveTextContent("polling=false");
+    expect(realLocation.search).toBe("");
+    expect(statusCalls).toHaveLength(1);
+  });
+
+  it("passes the plan through for a reader who was already subscribed", async () => {
+    const yearId = freshYear();
+    subscribedReplies = [true];
+    render(<Probe yearId={yearId} name="a" />);
+    await waitFor(() => expect(screen.getByTestId("a")).toHaveTextContent("plan=subject"));
+    expect(screen.getByTestId("a")).toHaveTextContent("unlocked=false");
+    expect(resetSessionCache).not.toHaveBeenCalled();
+  });
+
+  it("asks the server every time, never the HTTP cache", async () => {
+    const yearId = freshYear();
+    render(<Probe yearId={yearId} name="a" />);
+    await waitFor(() => expect(screen.getByTestId("a")).toHaveTextContent("subscribed=false"));
+    const init = vi.mocked(fetch).mock.calls[0][1] as RequestInit;
+    expect(init.cache).toBe("no-store");
+  });
+
+  it("retries after the poll timed out, and confirms on the retry", async () => {
+    vi.useFakeTimers();
+    const yearId = freshYear();
+    window.history.replaceState({}, "", "/year/x/subjects/y/modules/z?payment=success");
+
+    render(<Probe yearId={yearId} name="a" />);
+    await advance(0);
+    await advance(POLL_INTERVAL_MS * MAX_POLLS);
+    expect(screen.getByTestId("a")).toHaveTextContent("timedOut=true");
+
+    subscribedReplies = [true];
+    act(() => retrySubscriptionCheck(yearId, SUBJECT));
+    expect(screen.getByTestId("a")).toHaveTextContent("polling=true");
+    expect(screen.getByTestId("a")).toHaveTextContent("timedOut=false");
+
+    await advance(POLL_INTERVAL_MS);
+    expect(screen.getByTestId("a")).toHaveTextContent("unlocked=true");
+    expect(screen.getByTestId("a")).toHaveTextContent("timedOut=false");
   });
 
   it("gives up after MAX_POLLS and reports the timeout", async () => {
@@ -216,7 +287,7 @@ describe("useSubscriptionStatus", () => {
     expect(statusCalls).toHaveLength(1);
   });
 
-  it("retries the route refresh when the refreshed render comes back still locked", async () => {
+  it("never refreshes or reloads, even while a consumer stays mounted after the unlock", async () => {
     vi.useFakeTimers();
     const yearId = freshYear();
     window.history.replaceState({}, "", "/year/x/subjects/y/modules/z?payment=success");
@@ -225,54 +296,40 @@ describe("useSubscriptionStatus", () => {
     render(<Probe yearId={yearId} name="a" />);
     await advance(0);
     await advance(POLL_INTERVAL_MS);
-
     expect(screen.getByTestId("a")).toHaveTextContent("unlocked=true");
-    expect(refresh).toHaveBeenCalledTimes(1);
 
-    // The probe is still mounted, so the server still rendered locked content.
-    await advance(REFRESH_RETRY_MS);
-    expect(refresh).toHaveBeenCalledTimes(MAX_REFRESHES);
+    await advance(60_000);
+    expect(refresh).not.toHaveBeenCalled();
     expect(navigate).not.toHaveBeenCalled();
   });
+});
 
-  it("falls back to a full page load, without the payment marker, when refreshing never unlocks", async () => {
-    vi.useFakeTimers();
+describe("useYearEntitlements", () => {
+  function YearProbe({ yearId, subjectId }: { yearId: string; subjectId: string }) {
+    const ents = useYearEntitlements(yearId);
+    const plan = planForSubject(ents, subjectId);
+    return <span data-testid={`y-${subjectId}`}>{`ready=${ents.ready} plan=${plan?.scope ?? "none"}`}</span>;
+  }
+
+  it("makes one request for every subject row and reports per-subject grants", async () => {
     const yearId = freshYear();
-    window.history.replaceState({}, "", "/year/x/subjects/y/modules/z?payment=success");
-    subscribedReplies = [false, true];
-
-    render(<Probe yearId={yearId} name="a" />);
-    await advance(0);
-    await advance(POLL_INTERVAL_MS);
-    await advance(REFRESH_RETRY_MS * MAX_REFRESHES);
-
-    expect(navigate).toHaveBeenCalledTimes(1);
-    const target = String(navigate.mock.calls[0][0]);
-    expect(target).toContain("/year/x/subjects/y/modules/z");
-    // Dropping the marker is what stops the reload from looping forever.
-    expect(target).not.toContain("payment=success");
-
-    // And the strip stops claiming an unlock is moments away.
-    expect(screen.getByTestId("a")).toHaveTextContent("unlocked=false");
-    expect(screen.getByTestId("a")).toHaveTextContent("timedOut=true");
+    yearReply = { subscribed: false, subjects: { s1: PLAN } };
+    render(
+      <>
+        <YearProbe yearId={yearId} subjectId="s1" />
+        <YearProbe yearId={yearId} subjectId="s2" />
+      </>
+    );
+    await waitFor(() => expect(screen.getByTestId("y-s1")).toHaveTextContent("ready=true plan=subject"));
+    expect(screen.getByTestId("y-s2")).toHaveTextContent("ready=true plan=none");
+    expect(statusCalls).toHaveLength(1);
+    expect(statusCalls[0]).toContain("list=subjects");
   });
 
-  it("stops retrying once the refreshed render has replaced the locked content", async () => {
-    vi.useFakeTimers();
+  it("applies a year pass to every subject", async () => {
     const yearId = freshYear();
-    window.history.replaceState({}, "", "/year/x/subjects/y/modules/z?payment=success");
-    subscribedReplies = [false, true];
-
-    const { unmount } = render(<Probe yearId={yearId} name="a" />);
-    await advance(0);
-    await advance(POLL_INTERVAL_MS);
-    expect(refresh).toHaveBeenCalledTimes(1);
-
-    // A successful refresh unmounts every locked strip on the page.
-    unmount();
-    await advance(REFRESH_RETRY_MS * (MAX_REFRESHES + 2));
-
-    expect(refresh).toHaveBeenCalledTimes(1);
-    expect(navigate).not.toHaveBeenCalled();
+    yearReply = { subscribed: true, plan: { scope: "year", until: null }, subjects: {} };
+    render(<YearProbe yearId={yearId} subjectId="s9" />);
+    await waitFor(() => expect(screen.getByTestId("y-s9")).toHaveTextContent("plan=year"));
   });
 });
