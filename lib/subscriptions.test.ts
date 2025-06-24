@@ -5,7 +5,7 @@ vi.mock("./supabase/server", () => ({
 }));
 
 import { createServerClient } from "./supabase/server";
-import { isSubscribed } from "./subscriptions";
+import { getEntitlement, getYearEntitlements, isSubscribed } from "./subscriptions";
 
 describe("isSubscribed", () => {
   beforeEach(() => {
@@ -23,7 +23,7 @@ describe("isSubscribed", () => {
   // .is() (subscriptions queries) and .or() (class_members query).
   function mockSupabase(data: unknown) {
     const builder: Record<string, unknown> = {};
-    for (const m of ["select", "eq", "is", "or", "gt", "limit"]) {
+    for (const m of ["select", "eq", "is", "or", "gt", "order", "limit"]) {
       builder[m] = vi.fn().mockReturnValue(builder);
     }
     builder.maybeSingle = vi.fn().mockResolvedValue({ data, error: null });
@@ -41,7 +41,7 @@ describe("isSubscribed", () => {
   it("returns true when a subject-level active subscription exists", async () => {
     // First query (year plan) returns null, second (subject plan) returns a row
     const builder: Record<string, unknown> = {};
-    for (const m of ["select", "eq", "is", "gt", "limit"]) {
+    for (const m of ["select", "eq", "is", "gt", "order", "limit"]) {
       builder[m] = vi.fn().mockReturnValue(builder);
     }
     let call = 0;
@@ -99,7 +99,7 @@ describe("isSubscribed - class membership branch", () => {
   // is the one under test here. Dispatch per-table like payments.test.ts does.
   function mockSupabaseWithClassMembership(membershipData: unknown) {
     const subsBuilder: Record<string, unknown> = {};
-    for (const m of ["select", "eq", "is", "gt", "limit"]) {
+    for (const m of ["select", "eq", "is", "gt", "order", "limit"]) {
       subsBuilder[m] = vi.fn().mockReturnValue(subsBuilder);
     }
     subsBuilder.maybeSingle = vi.fn().mockResolvedValue({ data: null, error: null });
@@ -177,7 +177,7 @@ describe("isSubscribed - all-subjects class membership", () => {
   // generated query string, since the mock builder doesn't build real SQL.
   function mockSupabaseWithClassMembership(membershipData: unknown) {
     const subsBuilder: Record<string, unknown> = {};
-    for (const m of ["select", "eq", "is", "gt", "limit"]) {
+    for (const m of ["select", "eq", "is", "gt", "order", "limit"]) {
       subsBuilder[m] = vi.fn().mockReturnValue(subsBuilder);
     }
     subsBuilder.maybeSingle = vi.fn().mockResolvedValue({ data: null, error: null });
@@ -243,5 +243,111 @@ describe("isSubscribed - all-subjects class membership", () => {
 
     expect(result).toBe(false);
     expect(classMembersBuilder.select).not.toHaveBeenCalled();
+  });
+});
+
+describe("getEntitlement — scope and access end", () => {
+  const SUBJECT_ID = "cccccccc-cccc-cccc-cccc-cccccccccccc";
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    delete process.env.UNLOCK_ALL;
+  });
+
+  // Per-table builders; subscriptions answers one row per maybeSingle() call
+  // in order (year plan first, then subject plan).
+  function mockTables(subsReplies: unknown[], membership: unknown = null) {
+    const subs: Record<string, unknown> = {};
+    for (const m of ["select", "eq", "is", "gt", "order", "limit"]) subs[m] = vi.fn().mockReturnValue(subs);
+    subs.maybeSingle = vi.fn(() => Promise.resolve({ data: subsReplies.shift() ?? null, error: null }));
+    const cls: Record<string, unknown> = {};
+    for (const m of ["select", "eq", "or", "gt", "limit"]) cls[m] = vi.fn().mockReturnValue(cls);
+    cls.maybeSingle = vi.fn().mockResolvedValue({ data: membership, error: null });
+    vi.mocked(createServerClient).mockReturnValue({
+      from: vi.fn((t: string) => (t === "class_members" ? cls : subs)),
+    } as never);
+    return { subs, cls };
+  }
+
+  it("reports a year pass with its current_period_end", async () => {
+    mockTables([{ id: "s1", current_period_end: "2027-01-31T15:59:59Z" }]);
+    expect(await getEntitlement("device-1", "year-1", SUBJECT_ID)).toEqual({
+      scope: "year",
+      until: "2027-01-31T15:59:59Z",
+    });
+  });
+
+  it("reports a subject plan when no year pass exists", async () => {
+    const { subs } = mockTables([null, { id: "s2", current_period_end: "2026-12-01T00:00:00Z" }]);
+    expect(await getEntitlement("device-1", "year-1", SUBJECT_ID)).toEqual({
+      scope: "subject",
+      until: "2026-12-01T00:00:00Z",
+    });
+    // Overlapping renewals: report the grant that runs longest.
+    expect(subs.order).toHaveBeenCalledWith("current_period_end", { ascending: false });
+  });
+
+  it("reports a class grant with the class's end date", async () => {
+    mockTables([null, null], {
+      class_id: "c1",
+      classes: { subject_id: SUBJECT_ID, year_id: "year-1", status: "active", current_period_end: "2026-12-15T00:00:00Z" },
+    });
+    expect(await getEntitlement("device-1", "year-1", SUBJECT_ID)).toEqual({
+      scope: "class",
+      until: "2026-12-15T00:00:00Z",
+    });
+  });
+
+  it("returns null when nothing unlocks the subject", async () => {
+    mockTables([null, null]);
+    expect(await getEntitlement("device-1", "year-1", SUBJECT_ID)).toBeNull();
+  });
+
+  it("has no end date under the UNLOCK_ALL dev flag", async () => {
+    process.env.UNLOCK_ALL = "true";
+    expect(await getEntitlement("device-1", "year-1")).toEqual({ scope: "year", until: null });
+  });
+});
+
+describe("getYearEntitlements", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    delete process.env.UNLOCK_ALL;
+  });
+
+  // Both queries are awaited directly (no maybeSingle), so the builder itself
+  // is the thenable that resolves with the rows.
+  function thenable(rows: unknown[]) {
+    const b: Record<string, unknown> = {};
+    for (const m of ["select", "eq", "is", "gt"]) b[m] = vi.fn().mockReturnValue(b);
+    b.then = (resolve: (v: unknown) => void) => resolve({ data: rows, error: null });
+    return b;
+  }
+
+  it("collects subject plans, a year pass, and class grants for one year", async () => {
+    const subs = thenable([
+      { subject_id: "sub-a", current_period_end: "2026-12-01T00:00:00Z" },
+      { subject_id: "sub-a", current_period_end: "2027-01-01T00:00:00Z" },
+      { subject_id: null, current_period_end: "2027-01-31T00:00:00Z" },
+    ]);
+    const cls = thenable([
+      { classes: { subject_id: "sub-b", current_period_end: "2026-12-10T00:00:00Z" } },
+    ]);
+    vi.mocked(createServerClient).mockReturnValue({
+      from: vi.fn((t: string) => (t === "class_members" ? cls : subs)),
+    } as never);
+
+    const got = await getYearEntitlements("device-1", "year-1");
+    expect(got.year).toEqual({ scope: "year", until: "2027-01-31T00:00:00Z" });
+    expect(got.subjects["sub-a"]).toEqual({ scope: "subject", until: "2027-01-01T00:00:00Z" });
+    expect(got.subjects["sub-b"]).toEqual({ scope: "class", until: "2026-12-10T00:00:00Z" });
+    expect(subs.eq).toHaveBeenCalledWith("status", "active");
+    expect(cls.eq).toHaveBeenCalledWith("device_id", "device-1");
+  });
+
+  it("returns nothing for a reader with no grants", async () => {
+    const empty = thenable([]);
+    vi.mocked(createServerClient).mockReturnValue({ from: vi.fn(() => empty) } as never);
+    expect(await getYearEntitlements("device-1", "year-1")).toEqual({ year: null, subjects: {} });
   });
 });

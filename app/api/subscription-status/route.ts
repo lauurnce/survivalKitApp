@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { isSubscribed } from "@/lib/subscriptions";
+import { getEntitlement, getYearEntitlements, type Entitlement } from "@/lib/subscriptions";
 import { isUuid } from "@/lib/validation";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
@@ -10,7 +10,24 @@ export const runtime = "nodejs";
 
 const NO_STORE = { "Cache-Control": "private, no-store" };
 
-// Whether this reader is subscribed to (yearId[, subjectId]).
+/** The reader's own grant, as the client sees it: what kind, and until when. */
+export interface PlanInfo {
+  scope: Entitlement["scope"];
+  /** ISO current_period_end; null only under the UNLOCK_ALL dev flag. */
+  until: string | null;
+}
+
+function plan(ent: Entitlement): PlanInfo {
+  return { scope: ent.scope, until: ent.until };
+}
+
+// Whether this reader is subscribed to (yearId[, subjectId]), and — when they
+// are — the plan's scope and access end date, so the reader can say "Unlocked
+// until Dec 1" without a trip to /unlock. Only the grant that answers this
+// request is described: no ids, prices, or other subjects.
+//
+// With `list=subjects` (yearId only) the answer is every subject in that year
+// this reader can open, for the subject list's "Unlocked" tags.
 //
 // With `moduleId` (requires `subjectId`) a subscriber also receives the full
 // bodies of that module's gated activity sections. The module reader is
@@ -25,15 +42,31 @@ export async function GET(req: NextRequest) {
   const yearId = req.nextUrl.searchParams.get("yearId") ?? "";
   const subjectId = req.nextUrl.searchParams.get("subjectId");
   const moduleId = req.nextUrl.searchParams.get("moduleId");
+  const list = req.nextUrl.searchParams.get("list");
   const userId = await getCurrentUserId();
 
   const locked = () => NextResponse.json({ subscribed: false }, { headers: NO_STORE });
 
   if (!isUuid(yearId) || (!deviceId && !userId)) {
-    return locked();
+    return list === "subjects"
+      ? NextResponse.json({ subscribed: false, subjects: {} }, { headers: NO_STORE })
+      : locked();
   }
   if (subjectId !== null && !isUuid(subjectId)) return locked();
   if (moduleId !== null && (!isUuid(moduleId) || subjectId === null)) return locked();
+
+  if (list === "subjects") {
+    if (subjectId !== null || moduleId !== null) return locked();
+    const ents = await getYearEntitlements(deviceId, yearId, userId ?? undefined);
+    const subjects: Record<string, PlanInfo> = {};
+    for (const [id, ent] of Object.entries(ents.subjects)) subjects[id] = plan(ent);
+    return NextResponse.json(
+      ents.year
+        ? { subscribed: true, plan: plan(ents.year), subjects }
+        : { subscribed: false, subjects },
+      { headers: NO_STORE },
+    );
+  }
 
   if (moduleId !== null && subjectId !== null) {
     // The entitlement is checked against (yearId, subjectId), so those must be
@@ -43,11 +76,12 @@ export async function GET(req: NextRequest) {
     if (!mod || !subject || subject.year_id !== yearId) return locked();
   }
 
-  const subscribed = await isSubscribed(deviceId, yearId, subjectId ?? undefined, userId ?? undefined);
-  if (!subscribed || moduleId === null) {
-    return NextResponse.json({ subscribed }, { headers: NO_STORE });
+  const ent = await getEntitlement(deviceId, yearId, subjectId ?? undefined, userId ?? undefined);
+  if (!ent) return locked();
+  if (moduleId === null) {
+    return NextResponse.json({ subscribed: true, plan: plan(ent) }, { headers: NO_STORE });
   }
 
   const sections = await getModuleActivitySections(moduleId, true);
-  return NextResponse.json({ subscribed: true, sections }, { headers: NO_STORE });
+  return NextResponse.json({ subscribed: true, plan: plan(ent), sections }, { headers: NO_STORE });
 }
