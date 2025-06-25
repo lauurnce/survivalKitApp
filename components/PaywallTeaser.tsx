@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logEvent } from "@/lib/analytics";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
+import { useShowUpsell } from "@/hooks/useShowUpsell";
 import { buildUnlockHref } from "@/lib/subscribeRedirect";
 import { socialProofLine } from "@/lib/socialProof";
 
@@ -30,18 +31,23 @@ interface Props {
 export function PaywallTeaser({ yearId, subjectId, subjectTitle, from, reviewerCount, fromPrice }: Props) {
   const pathname = usePathname();
   const { subscribed } = useSubscriptionStatus(yearId, subjectId);
+  // Also false while a payment is being confirmed — the poll runs with
+  // subscribed: false, and a reader who just paid must not be re-sold.
+  const showUpsell = useShowUpsell(yearId, subjectId);
+  const visible = subscribed === false && showUpsell;
   const viewLogged = useRef(false);
 
   // Fire a one-time view event once we know the teaser is actually shown.
   useEffect(() => {
-    if (subscribed === false && !viewLogged.current) {
+    if (visible && !viewLogged.current) {
       viewLogged.current = true;
       void logEvent("paywall_teaser_view", { year_id: yearId, subject_id: subjectId });
     }
-  }, [subscribed, yearId, subjectId]);
+  }, [visible, yearId, subjectId]);
 
-  // Hide while checking, and permanently for already-subscribed users.
-  if (subscribed !== false) return null;
+  // Hide while checking, while a payment is confirming, and permanently for
+  // already-subscribed users.
+  if (!visible) return null;
 
   // /unlock is the single pricing entry point — there is deliberately no way
   // for a caller to point this CTA somewhere else.

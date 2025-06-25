@@ -65,14 +65,40 @@ describe("LockedReviewer", () => {
     status = { subscribed: false, polling: true, unlocked: false, pollTimedOut: false };
     render(<LockedReviewer yearId={YEAR} subjectId={SUBJECT} from={FROM} />);
 
-    expect(screen.getByText(/unlocking access/i)).toBeInTheDocument();
+    expect(screen.getByText("Payment received — unlocking…")).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /unlock →/i })).not.toBeInTheDocument();
   });
 
-  it("tells the reader to refresh when the poll times out", () => {
+  it("says the payment is being confirmed, not 'Unlock', when the poll times out", () => {
     status = { subscribed: false, polling: false, unlocked: false, pollTimedOut: true };
     render(<LockedReviewer yearId={YEAR} subjectId={SUBJECT} from={FROM} />);
 
-    expect(screen.getByText(/still processing/i)).toBeInTheDocument();
+    expect(screen.getByText(/payment received — confirming access/i)).toBeInTheDocument();
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  it("drops the CTA for a subscriber whose reviewer is on its way", () => {
+    status = { subscribed: true, polling: false, unlocked: false, pollTimedOut: false, plan: { scope: "year", until: null } };
+    render(<LockedReviewer yearId={YEAR} subjectId={SUBJECT} from={FROM} />);
+
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.getByText(/unlocked — loading reviewer/i)).toBeInTheDocument();
+  });
+
+  it("holds the CTA back for a signed-in reader while the status loads", () => {
+    status = { subscribed: null, polling: false, unlocked: false, pollTimedOut: false };
+    document.cookie = "sb-ref-auth-token=x; path=/";
+    try {
+      render(<LockedReviewer yearId={YEAR} subjectId={SUBJECT} from={FROM} />);
+      expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    } finally {
+      document.cookie = "sb-ref-auth-token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+    }
+  });
+
+  it("keeps the static locked CTA for a signed-out reader while the status loads", () => {
+    status = { subscribed: null, polling: false, unlocked: false, pollTimedOut: false };
+    render(<LockedReviewer yearId={YEAR} subjectId={SUBJECT} from={FROM} />);
+    expect(screen.getByRole("link", { name: /unlock/i })).toBeInTheDocument();
   });
 });

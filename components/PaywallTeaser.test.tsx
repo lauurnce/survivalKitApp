@@ -43,6 +43,21 @@ describe("PaywallTeaser", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
+  it("stays hidden while a just-paid reader's payment is confirming", () => {
+    for (const s of [
+      { subscribed: false, polling: true, unlocked: false, pollTimedOut: false },
+      { subscribed: false, polling: false, unlocked: false, pollTimedOut: true },
+    ]) {
+      status = s;
+      const { container, unmount } = render(
+        <PaywallTeaser yearId={YEAR} subjectId={SUBJECT} subjectTitle="CP1" reviewerCount={12} />
+      );
+      expect(container).toBeEmptyDOMElement();
+      unmount();
+    }
+    expect(logEvent).not.toHaveBeenCalled();
+  });
+
   it("keeps the value message and quotes no price when none is passed", () => {
     const { container } = render(
       <PaywallTeaser yearId={YEAR} subjectId={SUBJECT} subjectTitle="CP1" reviewerCount={12} />

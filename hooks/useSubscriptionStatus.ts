@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { getDeviceId } from "@/lib/device";
 import { resetSessionCache } from "@/hooks/useSession";
+import { hasPaymentMarker } from "@/lib/paymentMarker";
+
+export { hasPaymentMarker };
 
 export const MAX_POLLS = 10;
 export const POLL_INTERVAL_MS = 3000;
@@ -93,12 +96,6 @@ function stopPolling(entry: Entry) {
     clearInterval(entry.timer);
     entry.timer = null;
   }
-}
-
-/** True while the URL still carries PayMongo's ?payment=success return marker. */
-export function hasPaymentMarker(): boolean {
-  if (typeof window === "undefined") return false;
-  return new URLSearchParams(window.location.search).get("payment") === "success";
 }
 
 // Drop ?payment=success in place once the unlock is confirmed: no reload, no
