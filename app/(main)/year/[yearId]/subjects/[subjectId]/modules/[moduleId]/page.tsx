@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -14,6 +13,7 @@ import { PrintGateRoot } from "@/components/PrintGateRoot";
 import { LastModuleTracker } from "@/components/LastModuleTracker";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
 import { UnlockSuccessToast } from "@/components/UnlockSuccessToast";
+import { PaidStatusBar } from "@/components/PaidStatusBar";
 import { SignupNudgeToast } from "@/components/SignupNudgeToast";
 import { ModuleReaderClient } from "@/components/ModuleReaderClient";
 import { ModuleSurveyCard } from "@/components/ModuleSurveyCard";
@@ -131,12 +131,10 @@ export default async function ReaderPage({ params }: Props) {
           subject. Anyone else's printout is a single notice (globals.css). */}
       <PrintGateRoot yearId={yearId} subjectId={subjectId} subjectTitle={subject.title}>
       <PageTracker event="module_open" yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
-      {/* Post-payment confirmation; self-dismisses, needs the Suspense that
-          Next.js 15 requires around useSearchParams. */}
+      {/* Post-payment confirmation: shown once, when the shared status
+          confirms the unlock; self-dismisses. */}
       <div className="print:hidden">
-        <Suspense fallback={null}>
-          <UnlockSuccessToast />
-        </Suspense>
+        <UnlockSuccessToast yearId={yearId} subjectId={subjectId} subjectTitle={subject.title} />
       </div>
       {/* This page already serves free (non-activity) content to anonymous
           visitors — the nudge here is purely a soft prompt to create an
@@ -185,6 +183,17 @@ export default async function ReaderPage({ params }: Props) {
             {sectionLabel(year?.sort_order)} — {subject.title}
           </p>
           <h1 className="font-serif text-display-md text-paper">{mod.title}</h1>
+          {/* "You already paid", up top, no click needed — or the
+              post-payment progress while the webhook lands. Client-side:
+              this HTML is shared by every visitor. */}
+          <PaidStatusBar
+            yearId={yearId}
+            subjectId={subjectId}
+            subjectTitle={subject.title}
+            yearLabel={year?.label}
+            tone="dark"
+            className="mt-6 w-fit max-w-full print:hidden"
+          />
           <div className="mt-6">
             <PrintButton
               yearId={yearId}

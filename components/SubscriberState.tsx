@@ -2,16 +2,37 @@
 
 import { ModuleListItem } from "@/components/ModuleListItem";
 import { ProAccessBanner } from "@/components/ProAccessBanner";
+import { PaidStatusBar } from "@/components/PaidStatusBar";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 
 // Subscriber-only treatment for the prerendered modules list. The page HTML is
-// the same for every visitor, so the "Pro access" strip and the PRO marking on
+// the same for every visitor, so the paid-status strip and the PRO marking on
 // gated modules switch on after hydration, from the shared subscription status
 // the PaywallTeaser on the same page already requests.
 
-export function SubscriberProBanner({ yearId, subjectId, unlockAll }: { yearId: string; subjectId: string; unlockAll: boolean }) {
-  const { subscribed } = useSubscriptionStatus(yearId, subjectId);
-  return unlockAll || subscribed === true ? <ProAccessBanner /> : null;
+export function SubscriberProBanner({
+  yearId,
+  subjectId,
+  unlockAll,
+  subjectTitle,
+  yearLabel,
+}: {
+  yearId: string;
+  subjectId: string;
+  unlockAll: boolean;
+  subjectTitle: string;
+  yearLabel?: string;
+}) {
+  if (unlockAll) return <ProAccessBanner />;
+  return (
+    <PaidStatusBar
+      yearId={yearId}
+      subjectId={subjectId}
+      subjectTitle={subjectTitle}
+      yearLabel={yearLabel}
+      className="mb-8"
+    />
+  );
 }
 
 type ItemProps = Omit<React.ComponentProps<typeof ModuleListItem>, "isPro">;

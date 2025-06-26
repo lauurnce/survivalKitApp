@@ -109,7 +109,13 @@ export default async function ModulesPage({ params }: Props) {
         <div className="max-w-wide mx-auto">
           {modules && modules.length > 0 && (
             <>
-              <SubscriberProBanner yearId={yearId} subjectId={subjectId} unlockAll={devUnlockAll} />
+              <SubscriberProBanner
+                yearId={yearId}
+                subjectId={subjectId}
+                unlockAll={devUnlockAll}
+                subjectTitle={subject.title}
+                yearLabel={year?.label}
+              />
               <PaywallTeaser
                 yearId={yearId}
                 subjectId={subjectId}
