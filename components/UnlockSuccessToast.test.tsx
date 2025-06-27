@@ -1,16 +1,19 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, act } from "@testing-library/react";
+import type { SubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 
-const searchParams = new URLSearchParams();
-vi.mock("next/navigation", () => ({
-  useSearchParams: () => searchParams,
-}));
+let status: SubscriptionStatus;
+vi.mock("@/hooks/useSubscriptionStatus", () => ({ useSubscriptionStatus: () => status }));
 
 import { UnlockSuccessToast } from "./UnlockSuccessToast";
 
+const base: SubscriptionStatus = { subscribed: false, polling: false, unlocked: false, pollTimedOut: false };
+const props = { yearId: "y", subjectId: "s", subjectTitle: "Computer Programming 1" };
+const COPY = "Payment successful — Computer Programming 1 is unlocked.";
+
 beforeEach(() => {
-  searchParams.delete("payment");
+  status = { ...base };
   vi.useFakeTimers();
 });
 
@@ -19,43 +22,41 @@ afterEach(() => {
 });
 
 describe("UnlockSuccessToast", () => {
-  it("renders nothing without the payment=success marker", () => {
-    const { container } = render(<UnlockSuccessToast />);
-    act(() => {
-      vi.advanceTimersByTime(0);
-    });
+  it("renders nothing for an ordinary visit, subscribed or not", () => {
+    const { container, rerender } = render(<UnlockSuccessToast {...props} />);
+    expect(container).toBeEmptyDOMElement();
+    status = { ...base, subscribed: true };
+    rerender(<UnlockSuccessToast {...props} />);
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("announces a successful payment when the marker is present", () => {
-    searchParams.set("payment", "success");
-    render(<UnlockSuccessToast />);
-    expect(screen.getByText(/payment successful — module unlocked/i)).toBeInTheDocument();
+  it("waits while the payment is still being confirmed", () => {
+    status = { ...base, polling: true };
+    const { container } = render(<UnlockSuccessToast {...props} />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("announces the unlock once the poll confirms it", () => {
+    status = { ...base, polling: true };
+    const { rerender } = render(<UnlockSuccessToast {...props} />);
+    status = { ...base, subscribed: true, unlocked: true };
+    rerender(<UnlockSuccessToast {...props} />);
+    expect(screen.getByRole("status")).toHaveTextContent(COPY);
   });
 
   it("auto-dismisses after six seconds and never comes back", () => {
-    searchParams.set("payment", "success");
-    render(<UnlockSuccessToast />);
-
+    status = { ...base, subscribed: true, unlocked: true };
+    const { rerender } = render(<UnlockSuccessToast {...props} />);
     act(() => {
       vi.advanceTimersByTime(6000);
     });
-    expect(screen.queryByText(/payment successful — module unlocked/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(COPY)).not.toBeInTheDocument();
 
-    // A later re-render (the subscription hook refreshes the route) must not
-    // resurrect the toast.
+    status = { ...status };
+    rerender(<UnlockSuccessToast {...props} />);
     act(() => {
       vi.advanceTimersByTime(60000);
     });
-    expect(screen.queryByText(/payment successful — module unlocked/i)).not.toBeInTheDocument();
-  });
-
-  it("ignores any payment marker other than success", () => {
-    searchParams.set("payment", "failed");
-    const { container } = render(<UnlockSuccessToast />);
-    act(() => {
-      vi.advanceTimersByTime(10000);
-    });
-    expect(container).toBeEmptyDOMElement();
+    expect(screen.queryByText(COPY)).not.toBeInTheDocument();
   });
 });

@@ -52,9 +52,16 @@ interface Props {
   freeSectionIds?: string[];
   /** Total gated reviewers in the subject — shown in the free-sample upsell. */
   reviewerCount?: number;
+  /**
+   * False once the reader is known to have access (or is mid-payment, or is
+   * a signed-in reader whose status is still loading): the free-sample label
+   * and "Unlock all reviewers" card are for readers who have not paid.
+   * Defaults to true — the prerendered locked view.
+   */
+  showUpsell?: boolean;
 }
 
-export function SectionRenderer({ section, index, moduleId, yearId, subjectId, unlockAll, subjectTitle, freeSectionIds = [], reviewerCount }: Props) {
+export function SectionRenderer({ section, index, moduleId, yearId, subjectId, unlockAll, subjectTitle, freeSectionIds = [], reviewerCount, showUpsell = true }: Props) {
   useEffect(() => {
     if (section.kind === "content") {
       logSectionView(section.id, moduleId);
@@ -151,14 +158,14 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
           <span className="label-sm text-accent">Activity (UNLOCK_ALL active)</span>
         </div>
       )}
-      {isFreeSample && !isLastFreeSample && (
+      {isFreeSample && !isLastFreeSample && showUpsell && (
         <div className="mt-4 pl-10 md:pl-12">
           <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent">
             Free sample
           </span>
         </div>
       )}
-      {isLastFreeSample && (
+      {isLastFreeSample && showUpsell && (
         <div className="mt-6 pl-10 md:pl-12 print:hidden">
           <div className="border border-accent/40 bg-accent/[0.03] p-5">
             <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent mb-2">

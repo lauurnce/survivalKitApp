@@ -5,6 +5,8 @@ import { ProBadge } from "./ProBadge";
 import { LockIcon } from "./ProIcons";
 import { logEvent } from "@/lib/analytics";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
+import { useShowUpsell } from "@/hooks/useShowUpsell";
+import { PAYMENT_PENDING_COPY } from "@/lib/paidStatus";
 import { buildUnlockHref } from "@/lib/subscribeRedirect";
 
 interface Props {
@@ -18,7 +20,8 @@ interface Props {
 // the top of the page quotes the "from" price once), so a module with three
 // gated reviewers costs three lines instead of three copies of the plan table.
 export function LockedReviewer({ yearId, subjectId, from }: Props) {
-  const { polling, unlocked, pollTimedOut } = useSubscriptionStatus(yearId, subjectId);
+  const { subscribed, polling, unlocked, pollTimedOut } = useSubscriptionStatus(yearId, subjectId);
+  const showUpsell = useShowUpsell(yearId, subjectId);
 
   function handleClick() {
     void logEvent("unlock_click", { year_id: yearId, subject_id: subjectId });
@@ -36,15 +39,7 @@ export function LockedReviewer({ yearId, subjectId, from }: Props) {
           Drills, code labs, and full solutions.
         </p>
       </div>
-      {polling || unlocked ? (
-        <p className="font-sans text-sm text-ink-muted">
-          Payment received — unlocking access…
-        </p>
-      ) : pollTimedOut ? (
-        <p className="font-sans text-sm text-ink-muted">
-          Your payment is still processing. Refresh this page in a moment.
-        </p>
-      ) : (
+      {showUpsell ? (
         <Link
           href={buildUnlockHref({ yearId, subjectId, from })}
           onClick={handleClick}
@@ -52,7 +47,14 @@ export function LockedReviewer({ yearId, subjectId, from }: Props) {
         >
           Unlock →
         </Link>
-      )}
+      ) : polling || unlocked ? (
+        <p className="font-sans text-sm text-ink-muted">{PAYMENT_PENDING_COPY}</p>
+      ) : pollTimedOut ? (
+        <p className="font-sans text-sm text-ink-muted">Payment received — confirming access…</p>
+      ) : subscribed === true ? (
+        // Access confirmed; the full reviewer replaces this strip in a moment.
+        <p className="font-sans text-sm text-ink-muted">Unlocked — loading reviewer…</p>
+      ) : null}
     </div>
   );
 }

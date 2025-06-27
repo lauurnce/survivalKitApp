@@ -5,6 +5,7 @@ import Link from "next/link";
 import { formatCount } from "@/lib/counters";
 import { SubjectProgressBar } from "@/components/SubjectProgressBar";
 import { SubjectIcon } from "@/components/dashboard/SubjectIcon";
+import { SubjectUnlockedTag } from "@/components/SubjectUnlockedTag";
 
 export interface SubjectModule {
   id: string;
@@ -57,6 +58,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
               <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
                 {subject.kind === "major" ? "Major" : "Minor"}
               </span>
+              <SubjectUnlockedTag yearId={yearId} subjectId={subject.id} />
               {reads > 0 && (
                 <>
                   <span className="font-mono text-label-sm text-ink-faint/40">·</span>

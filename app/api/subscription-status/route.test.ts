@@ -13,7 +13,12 @@ let moduleParent: { mod: unknown; subject: unknown } = {
   mod: { id: MODULE, subject_id: SUBJECT },
   subject: { id: SUBJECT, year_id: YEAR },
 };
-const isSubscribedMock = vi.fn(async (..._args: unknown[]) => subscribed);
+const UNTIL = "2026-12-01T00:00:00.000Z";
+let yearEnts: { year: unknown; subjects: Record<string, unknown> } = { year: null, subjects: {} };
+const isSubscribedMock = vi.fn(async (..._args: unknown[]) =>
+  subscribed ? { scope: "subject", until: UNTIL } : null,
+);
+const yearEntsMock = vi.fn(async (..._args: unknown[]) => yearEnts);
 const activityMock = vi.fn(async (_id: string, unlocked: boolean) =>
   unlocked ? [{ id: "a1", kind: "activity", heading: "Drill", body_md: "secret", sort_order: 5 }] : [],
 );
@@ -27,7 +32,8 @@ vi.mock("@/lib/auth/deviceCookie", () => ({
 }));
 vi.mock("@/lib/auth/currentUser", () => ({ getCurrentUserId: async () => userId }));
 vi.mock("@/lib/subscriptions", () => ({
-  isSubscribed: (...a: unknown[]) => isSubscribedMock(...a),
+  getEntitlement: (...a: unknown[]) => isSubscribedMock(...a),
+  getYearEntitlements: (...a: unknown[]) => yearEntsMock(...a),
 }));
 vi.mock("@/lib/cache/queries", () => ({
   getModuleWithSubject: async () => moduleParent,
@@ -48,13 +54,15 @@ beforeEach(() => {
   subscribed = true;
   moduleParent = { mod: { id: MODULE, subject_id: SUBJECT }, subject: { id: SUBJECT, year_id: YEAR } };
   isSubscribedMock.mockClear();
+  yearEntsMock.mockClear();
+  yearEnts = { year: null, subjects: {} };
   activityMock.mockClear();
 });
 
 describe("GET /api/subscription-status", () => {
   it("answers the plain status without any section bodies", async () => {
     const res = await GET(req({ yearId: YEAR, subjectId: SUBJECT }));
-    expect(await res.json()).toEqual({ subscribed: true });
+    expect(await res.json()).toEqual({ subscribed: true, plan: { scope: "subject", until: UNTIL } });
     expect(res.headers.get("cache-control")).toBe("private, no-store");
     expect(activityMock).not.toHaveBeenCalled();
   });
@@ -63,6 +71,57 @@ describe("GET /api/subscription-status", () => {
     deviceId = null;
     expect(await (await GET(req({ yearId: YEAR }))).json()).toEqual({ subscribed: false });
     expect(isSubscribedMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("GET /api/subscription-status — plan details", () => {
+  it("describes a year pass covering the requested subject", async () => {
+    isSubscribedMock.mockResolvedValueOnce({ scope: "year", until: "2027-01-31T00:00:00.000Z" });
+    const body = await (await GET(req({ yearId: YEAR, subjectId: SUBJECT }))).json();
+    expect(body).toEqual({ subscribed: true, plan: { scope: "year", until: "2027-01-31T00:00:00.000Z" } });
+  });
+
+  it("sends no plan to a reader without access", async () => {
+    subscribed = false;
+    expect(await (await GET(req({ yearId: YEAR, subjectId: SUBJECT }))).json()).toEqual({ subscribed: false });
+  });
+});
+
+describe("GET /api/subscription-status?list=subjects", () => {
+  it("lists the reader's unlocked subjects in the year", async () => {
+    yearEnts = { year: null, subjects: { [SUBJECT]: { scope: "subject", until: UNTIL } } };
+    const res = await GET(req({ yearId: YEAR, list: "subjects" }));
+    expect(await res.json()).toEqual({
+      subscribed: false,
+      subjects: { [SUBJECT]: { scope: "subject", until: UNTIL } },
+    });
+    expect(res.headers.get("cache-control")).toBe("private, no-store");
+    expect(yearEntsMock).toHaveBeenCalledWith("device-1", YEAR, undefined);
+  });
+
+  it("reports a year pass as covering the whole year", async () => {
+    yearEnts = { year: { scope: "year", until: UNTIL }, subjects: {} };
+    expect(await (await GET(req({ yearId: YEAR, list: "subjects" }))).json()).toEqual({
+      subscribed: true,
+      plan: { scope: "year", until: UNTIL },
+      subjects: {},
+    });
+  });
+
+  it("answers empty without querying for a visitor with no identity", async () => {
+    deviceId = null;
+    expect(await (await GET(req({ yearId: YEAR, list: "subjects" }))).json()).toEqual({
+      subscribed: false,
+      subjects: {},
+    });
+    expect(yearEntsMock).not.toHaveBeenCalled();
+  });
+
+  it("refuses to combine the list with a subject or module", async () => {
+    expect(await (await GET(req({ yearId: YEAR, subjectId: SUBJECT, list: "subjects" }))).json()).toEqual({
+      subscribed: false,
+    });
+    expect(yearEntsMock).not.toHaveBeenCalled();
   });
 });
 

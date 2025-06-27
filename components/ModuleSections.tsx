@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
+import { useShowUpsell } from "@/hooks/useShowUpsell";
 import type { TopologyData } from "@/lib/topology/types";
 
 export interface ReaderSection {
@@ -56,6 +57,10 @@ export function ModuleSections({
   teaser,
 }: Props) {
   const [unlocked, setUnlocked] = useState<ReaderSection[] | null>(null);
+  // Every reader page watches the status — including a subject's first
+  // module, whose reviewers are all free sample and so has nothing to fetch:
+  // a subscriber there must still lose the "That was the free sample" card.
+  const showUpsell = useShowUpsell(yearId, subjectId) && !unlockAll;
 
   const hasLockedActivities =
     !unlockAll && sections.some((s) => s.kind === "activity" && !freeSectionIds.includes(s.id));
@@ -95,11 +100,15 @@ export function ModuleSections({
           subjectTitle={subjectTitle}
           freeSectionIds={freeSectionIds}
           reviewerCount={reviewerCount}
+          showUpsell={showUpsell}
         />
       ))}
     </>
   );
 }
+
+/** Delay before the one retry of a failed paid-bodies request. */
+export const BODIES_RETRY_MS = 2000;
 
 export async function fetchUnlockedActivities(
   yearId: string,
@@ -136,11 +145,21 @@ function UnlockWatcher({
   useEffect(() => {
     if (subscribed !== true) return;
     let cancelled = false;
-    void fetchUnlockedActivities(yearId, subjectId, moduleId).then((full) => {
-      if (!cancelled && full) onUnlocked(full);
-    });
+    let retry: ReturnType<typeof setTimeout> | null = null;
+    // The status said yes, so the bodies request runs the same check; one
+    // retry covers a dropped request or a replica that has not caught up with
+    // a payment that landed seconds ago.
+    const load = (attempt: number) => {
+      void fetchUnlockedActivities(yearId, subjectId, moduleId).then((full) => {
+        if (cancelled) return;
+        if (full) onUnlocked(full);
+        else if (attempt === 0) retry = setTimeout(() => load(1), BODIES_RETRY_MS);
+      });
+    };
+    load(0);
     return () => {
       cancelled = true;
+      if (retry !== null) clearTimeout(retry);
     };
   }, [subscribed, yearId, subjectId, moduleId, onUnlocked]);
 
