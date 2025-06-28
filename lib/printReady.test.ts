@@ -1,6 +1,13 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from "vitest";
-import { consumePrintParam, waitForPrintReady } from "./printReady";
+import {
+  consumePrintAfterUnlock,
+  consumePrintParam,
+  PRINT_AFTER_UNLOCK_KEY,
+  PRINT_AFTER_UNLOCK_TTL_MS,
+  rememberPrintAfterUnlock,
+  waitForPrintReady,
+} from "./printReady";
 
 afterEach(() => {
   document.body.innerHTML = "";
@@ -45,5 +52,36 @@ describe("waitForPrintReady", () => {
     const started = Date.now();
     await waitForPrintReady({ timeoutMs: 100, intervalMs: 10 });
     expect(Date.now() - started).toBeGreaterThanOrEqual(90);
+  });
+});
+
+describe("print-after-unlock intent", () => {
+  const PATH = "/year/y/subjects/s/modules/m";
+
+  afterEach(() => {
+    sessionStorage.clear();
+  });
+
+  it("fires once for the module it was parked for", () => {
+    rememberPrintAfterUnlock(PATH, 1_000);
+    expect(consumePrintAfterUnlock(PATH, 2_000)).toBe(true);
+    expect(consumePrintAfterUnlock(PATH, 2_000)).toBe(false);
+  });
+
+  it("is cleared, not honoured, on a different module", () => {
+    rememberPrintAfterUnlock(PATH, 1_000);
+    expect(consumePrintAfterUnlock("/year/y/subjects/s/modules/other", 2_000)).toBe(false);
+    expect(sessionStorage.getItem(PRINT_AFTER_UNLOCK_KEY)).toBeNull();
+  });
+
+  it("expires after the TTL", () => {
+    rememberPrintAfterUnlock(PATH, 0);
+    expect(consumePrintAfterUnlock(PATH, PRINT_AFTER_UNLOCK_TTL_MS + 1)).toBe(false);
+  });
+
+  it("treats junk in storage as no intent", () => {
+    sessionStorage.setItem(PRINT_AFTER_UNLOCK_KEY, "{not json");
+    expect(consumePrintAfterUnlock(PATH)).toBe(false);
+    expect(sessionStorage.getItem(PRINT_AFTER_UNLOCK_KEY)).toBeNull();
   });
 });
