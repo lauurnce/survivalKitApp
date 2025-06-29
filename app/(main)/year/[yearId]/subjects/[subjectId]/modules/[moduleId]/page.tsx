@@ -127,9 +127,9 @@ export default async function ReaderPage({ params }: Props) {
   return (
     <ModuleReaderClient moduleId={moduleId} moduleTitle={mod.title}>
       <main className="min-h-screen bg-paper">
-      {/* Locked in the static HTML; opens for a signed-in reader. A
-          signed-out printout is a single "sign up" page (globals.css). */}
-      <PrintGateRoot>
+      {/* Locked in the static HTML; opens only for a reader entitled to this
+          subject. Anyone else's printout is a single notice (globals.css). */}
+      <PrintGateRoot yearId={yearId} subjectId={subjectId} subjectTitle={subject.title}>
       <PageTracker event="module_open" yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
       {/* Post-payment confirmation; self-dismisses, needs the Suspense that
           Next.js 15 requires around useSearchParams. */}
