@@ -186,7 +186,12 @@ export default async function ReaderPage({ params }: Props) {
           </p>
           <h1 className="font-serif text-display-md text-paper">{mod.title}</h1>
           <div className="mt-6">
-            <PrintButton yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
+            <PrintButton
+              yearId={yearId}
+              subjectId={subjectId}
+              moduleId={moduleId}
+              subjectTitle={subject.title}
+            />
           </div>
         </div>
       </header>
