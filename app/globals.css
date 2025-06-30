@@ -32,8 +32,8 @@ html {
   overflow-x: clip;
 }
 
-/* Print gate (components/PrintGateRoot.tsx): the signed-out notice exists in
-   the page for print only. */
+/* Print gate (components/PrintGateRoot.tsx): the "sign up" / "unlock" notice
+   exists in the page for print only. */
 .print-gate-notice {
   display: none;
 }
@@ -94,8 +94,8 @@ a, button, input, select, textarea {
 
 /* ---------------------------------------------------------------------------
    Print / Save as PDF — module reader (components/PrintButton.tsx).
-   Prints only what is on the page: chrome is marked print:hidden in markup,
-   locked reviewers print as a one-line note, never their (absent) bodies.
+   Only an entitled reader's page prints the lesson (see "Print gate" below);
+   chrome is marked print:hidden in markup.
    --------------------------------------------------------------------------- */
 @media print {
   @page {
@@ -196,8 +196,10 @@ a, button, input, select, textarea {
   }
 
   /* Print gate. The prerendered reader is data-print-gate="locked" until the
-     client confirms a signed-in reader, so a signed-out Ctrl/Cmd+P prints one
-     page with the sign-up notice and none of the lesson. */
+     client confirms the reader is entitled to this subject (subject or year
+     plan), so Ctrl/Cmd+P from anyone else — signed out, signed in but unpaid,
+     or not yet known — prints one page with the notice and none of the
+     lesson. */
   [data-print-gate="locked"] > .print-gate-content {
     display: none !important;
   }
