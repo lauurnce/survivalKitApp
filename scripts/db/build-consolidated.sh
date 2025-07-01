@@ -19,7 +19,9 @@ cd "$(dirname "$0")/../.."
 # the Supabase connector and verified). New unapplied migrations go here in
 # version order. An empty array is a healthy state — the artifact degenerates
 # to its header and the CI jobs remain meaningful.
-pending=()
+pending=(
+  supabase/migrations/20261101000000_user_id_fk_on_delete_set_null.sql
+)
 
 if [ "${1:-}" = "--list" ]; then
   printf '%s\n' ${pending[@]+"${pending[@]}"}

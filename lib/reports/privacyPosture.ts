@@ -48,6 +48,16 @@ export const RETENTION_REGISTER: Record<string, RetentionEntry> = {
       "Ledger rows survive erasure so disputes and accounting obligations can be met; the user_id link is severed so no personal data remains attached.",
     policySection: "Privacy policy Section 7 — retention",
   },
+  classes: {
+    reason:
+      "A class is a paid, shared entitlement other students depend on; deleting it on one member's erasure would revoke their access. The only identity is the representative's pseudonymous rep_device_id, and erasure severs every user_id that could tie it to a person.",
+    policySection: "Privacy policy Section 7 — retention",
+  },
+  class_members: {
+    reason:
+      "Membership rows are the seat entitlement in a class someone paid for, keyed only by a pseudonymous device_id; erasure unlinks the account but leaves the device's paid access in place, the same as subscriptions.",
+    policySection: "Privacy policy Section 6 — unlink from subscription history",
+  },
 };
 
 export function inventoryIdentityTables(tables: TableRecord[]): IdentityTable[] {
