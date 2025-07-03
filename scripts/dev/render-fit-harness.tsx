@@ -4,9 +4,10 @@ import { RoadmapTimeline } from "@/components/dashboard/RoadmapTimeline";
 import { SemesterSections } from "@/components/dashboard/SemesterSections";
 import { ThisWeekPanel } from "@/components/dashboard/ThisWeekPanel";
 import type { SubjectSummary } from "@/lib/account";
+import { groupByTerm, deriveCurrentTerm, pickRecommended, roadmapNodes, continueHref } from "@/lib/dashboard";
 import type { Profile } from "@/lib/profile";
 import { viewportConfig } from "@/lib/viewport";
-import { readdirSync, copyFileSync, mkdirSync } from "fs";
+import { readdirSync, copyFileSync, mkdirSync, writeFileSync } from "fs";
 
 const fontPreconnect = `
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,7 +52,6 @@ function generateMockData() {
     { yearId: "yr-4", label: "Year 4", sortOrder: 4, subjects: mockSubjects.filter(s => s.yearId === "yr-4") },
   ];
 
-  const { groupByTerm, deriveCurrentTerm, pickRecommended, roadmapNodes, continueHref } = require("@/lib/dashboard");
 
   const terms = groupByTerm(years);
   const current = deriveCurrentTerm(terms);
@@ -220,9 +220,8 @@ function buildPage(): string {
 const html = buildPage();
   const outPath = "/tmp/opencode/fitharness/index.html";
   const outDir = "/tmp/opencode/fitharness";
-  const fs = require("fs");
   mkdirSync(outDir, { recursive: true });
   copyBuiltCSS(outDir);
-  fs.writeFileSync(outPath, html);
+  writeFileSync(outPath, html);
   console.log(`Harness written to ${outPath}`);
   console.log(`Open file://${outPath} in a browser or run check-mobile-fit.mjs`);

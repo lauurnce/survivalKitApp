@@ -49,7 +49,10 @@ export function useFeedbackPrompt(moduleId: string | null) {
   const [openFor, setOpenFor] = useState<string | null>(null);
 
   // Moving to another module inside the same reader retires the old survey.
+  // Deriving isOpen from `openFor === moduleId` alone is not enough: coming
+  // back to the earlier module would re-show its survey.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOpenFor(null);
   }, [moduleId]);
 

@@ -32,7 +32,7 @@ export async function register() {
         setItem: (k: string, v: string) => { _data[k] = v; },
         removeItem: (k: string) => { delete _data[k]; },
         clear: () => { Object.keys(_data).forEach((k) => delete _data[k]); },
-        key: (_i: number) => null,
+        key: () => null,
         get length() { return Object.keys(_data).length; },
       };
     } catch {
@@ -45,7 +45,7 @@ export async function register() {
           setItem: (k: string, v: string) => { _data[k] = v; },
           removeItem: (k: string) => { delete _data[k]; },
           clear: () => { Object.keys(_data).forEach((k) => delete _data[k]); },
-          key: (_i: number) => null,
+          key: () => null,
           get length() { return Object.keys(_data).length; },
         },
       });
