@@ -80,9 +80,33 @@ vi.mock('@supabase/supabase-js', () => {
 });
 
 import { POST } from './route';
+import { createClient } from '@supabase/supabase-js';
+
+// Runs first, before any request: the Supabase client must not be built at
+// module load, or `next build` fails whenever Supabase env is absent.
+describe('module load', () => {
+  it('creates no Supabase client on import', () => {
+    expect(createClient).not.toHaveBeenCalled();
+  });
+
+  it('returns 500 (not a crash at import) when Supabase env is missing', async () => {
+    vi.stubEnv('NEXT_PUBLIC_SUPABASE_URL', '');
+    try {
+      const res = await POST(new Request('http://localhost/api/feedback', {
+        method: 'POST',
+        body: JSON.stringify({ device_id: '11111111-1111-1111-1111-111111111111', module_id: '22222222-2222-2222-2222-222222222222', app_rating: 5, module_rating: 5 }),
+      }));
+      expect(res.status).toBe(500);
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+});
 
 describe('POST /api/feedback', () => {
   beforeEach(() => {
+    vi.stubEnv('NEXT_PUBLIC_SUPABASE_URL', 'https://example.supabase.co');
+    vi.stubEnv('SUPABASE_SERVICE_ROLE_KEY', 'service-role-test');
     vi.clearAllMocks();
     mockCookieDeviceId = null;
     lastInsert = {};
