@@ -3,6 +3,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { drain, enqueue } from "@/lib/email/outbox";
 import { canonicalUrl } from "@/lib/appOrigin";
 import { SCAN_SLACK_MS, expiryScopeKey } from "@/lib/email/expiryScan";
+import { timingSafeEqualStrings } from "@/lib/auth/timingSafeEqualStrings";
 
 export const runtime = "nodejs";
 
@@ -105,7 +106,7 @@ export async function GET(req: Request) {
   // Fail closed: an unset secret rejects everyone rather than matching
   // "Bearer undefined" and exposing the queue on a misconfigured deploy.
   const secret = process.env.CRON_SECRET;
-  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {
+  if (!secret || !timingSafeEqualStrings(req.headers.get("authorization"), `Bearer ${secret}`)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
