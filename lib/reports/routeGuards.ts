@@ -180,7 +180,7 @@ export const ROUTE_EXPECTATIONS: Record<string, Expectation> = {
   "/api/class/[code]/rep/decide": { auth: ["device"], rateLimit: false, validation: true },
   "/api/class/[code]/request": { auth: ["device"], rateLimit: true, validation: true },
   "/api/class/[code]/request/status": { auth: ["device"], rateLimit: false, validation: true },
-  "/api/class/checkout": { auth: ["device"], rateLimit: false, validation: true },
+  "/api/class/checkout": { auth: ["device"], rateLimit: true, validation: true, note: "Each accepted request mints a real payment link; the per-IP limiter fails open because a link grants nothing until paid." },
   "/api/cron/email": { auth: ["signature"], rateLimit: false, validation: false, note: "Triggered by the platform scheduler and authenticated by a fail-closed CRON_SECRET bearer check rather than a session; there is no client input to validate." },
   "/api/device": { auth: "none", rateLimit: true, validation: true, note: "Mints the device identity, so it cannot require one." },
   "/api/email/unsubscribe": { auth: ["signature"], rateLimit: false, validation: false, note: "Opened from an email, signed out, so a session cannot be required. The per-user HMAC is the guard; it also validates the user id as a UUID, and a forged link writes nothing." },
