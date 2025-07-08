@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { deleteAccount } from "@/lib/deleteAccount";
+import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getClientIp } from "@/lib/rateLimit";
 import { isServerRateLimited } from "@/lib/serverRateLimit";
 
@@ -26,8 +27,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not signed in" }, { status: 401 });
   }
 
+  // The requesting browser's own device is erased too, even if no row links
+  // it to the account yet. Only a signature-verified cookie counts.
+  const cookieDeviceId = verifyDeviceCookie(req.cookies?.get(DEVICE_COOKIE)?.value);
+
   const supabase = createServerClient();
-  const result = await deleteAccount(supabase, userId);
+  const result = await deleteAccount(supabase, userId, {
+    extraDeviceIds: cookieDeviceId ? [cookieDeviceId] : [],
+  });
 
   if (!result.ok) {
     console.error("[account/delete] failed:", result.error);

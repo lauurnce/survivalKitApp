@@ -31,7 +31,9 @@ import {
 import { countRows, loadReportsEnv, reportsClient } from "./supabaseClient";
 
 const PRODUCTION = "https://survival-kit-app.vercel.app";
-const ROUTES = ["/", "/login", "/year", "/for-blocks"];
+// /api/health answers 503 when the database is unreachable from production,
+// so its status code alone separates "site up, database down" from a 200.
+const ROUTES = ["/", "/login", "/year", "/for-blocks", "/api/health"];
 const CACHE_CANARY = "/for-blocks";
 const REPO_ROOT = join(__dirname, "..", "..");
 

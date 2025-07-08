@@ -25,6 +25,8 @@
  *    faithful to the baseline.
  */
 
+import { STATIC_CSP_ROUTES } from "../csp";
+
 export type ControlGroup = "BASELINE" | "IDENTITY" | "EXECUTION" | "PAYMENT" | "BUSINESS";
 
 export interface ControlSignal {
@@ -49,6 +51,12 @@ export interface Control {
   absentMeans: string;
   /** Task number in the June baseline plan, for BASELINE controls. */
   baselineTask?: number;
+  /**
+   * A behavioural check a regex cannot express, run on the raw text of `file`.
+   * Returns the labels of the checks that failed (empty when it holds); a
+   * throw counts as one failure labelled with the control's id.
+   */
+  verify?: (source: string) => string[];
 }
 
 export const BASELINE_PLAN = "docs/superpowers/plans/2026-06-15-security-hardening.md";
@@ -406,6 +414,43 @@ export const CONTROLS: readonly Control[] = [
     absentMeans:
       "The eval permission the Python runtime needs would have to be granted to every page instead of to one script.",
   },
+  {
+    id: "EXEC-07",
+    group: "EXECUTION",
+    title: "Static-page CSP keeps its non-script hard edges",
+    file: "lib/csp.ts",
+    signals: [
+      { label: "static policy built here", pattern: /export function buildStaticCsp\(/ },
+      { label: "shared directives included", pattern: /\.\.\.NON_SCRIPT_DIRECTIVES/ },
+      { label: "inline handlers blocked", pattern: /"script-src-attr 'none'"/ },
+      { label: "plugins blocked", pattern: /"object-src 'none'"/ },
+      { label: "framing denied", pattern: /"frame-ancestors 'none'"/ },
+      { label: "base element pinned", pattern: /"base-uri 'self'"/ },
+      { label: "form targets pinned", pattern: /"form-action 'self'"/ },
+      {
+        label: "no trust propagation in the static policy",
+        pattern: /'strict-dynamic'/,
+        absent: true,
+      },
+      {
+        label: "applied by next.config headers",
+        pattern: /buildStaticCsp\(\)/,
+        file: "next.config.ts",
+      },
+    ],
+    absentMeans:
+      "The prerendered public pages, which already allow inline script elements, would also lose the directives that keep markup injection from becoming inline handlers, plugin content, framing, base-URL rewriting or off-site form posts.",
+  },
+  {
+    id: "EXEC-08",
+    group: "EXECUTION",
+    title: "Edge proxy skips exactly the static-CSP routes",
+    file: "proxy.ts",
+    signals: [{ label: "matcher declared", pattern: /matcher:\s*\[/ }],
+    verify: (source) => staticRouteMatcherDrift(source, STATIC_CSP_ROUTES),
+    absentMeans:
+      "A page outside the static list would be served without the per-request nonce policy, or a static page would be stamped with a nonce its cached HTML does not carry, breaking it.",
+  },
 
   // ── PAYMENT — sub-function 7 ─────────────────────────────────────────────
   {
@@ -593,6 +638,54 @@ export const CONTROLS: readonly Control[] = [
   },
 ];
 
+/**
+ * Paths that must keep running through the proxy (nonce CSP, auth refresh,
+ * admin guard). Includes near-misses of the static names so a matcher that
+ * excludes by prefix rather than exact name is caught.
+ */
+export const PROXIED_PROBE_PATHS: readonly string[] = [
+  "/account",
+  "/admin",
+  "/admin/login",
+  "/api/me",
+  "/login",
+  "/signup",
+  "/unlock",
+  "/playground",
+];
+
+/**
+ * Reads the first `matcher` entry out of proxy.ts and checks it skips every
+ * STATIC_CSP_ROUTES path (and, for prefix routes, a path below it) while still
+ * matching every PROXIED_PROBE_PATHS entry and the near-misses of each static
+ * name (`/faqx`, `/faq/extra` for a non-prefix route). Next.js anchors a
+ * matcher to the whole pathname, which is what `^…$` reproduces here.
+ *
+ * Returns failure labels naming paths, which are public routes, never policy.
+ */
+export function staticRouteMatcherDrift(
+  proxySource: string,
+  routes: ReadonlyArray<{ path: string; prefix: boolean }>
+): string[] {
+  const literal = /matcher:\s*\[\s*"((?:[^"\\]|\\.)*)"/.exec(proxySource)?.[1];
+  if (literal === undefined) return ["matcher string not found"];
+  const matcher = new RegExp(`^${JSON.parse(`"${literal}"`) as string}$`);
+  const failures: string[] = [];
+
+  for (const { path, prefix } of routes) {
+    if (matcher.test(path)) failures.push(`proxy runs on static ${path}`);
+    if (prefix && matcher.test(`${path}/x/y`)) failures.push(`proxy runs below static ${path}`);
+    if (path !== "/") {
+      if (!matcher.test(`${path}x`)) failures.push(`proxy skips non-static ${path}x`);
+      if (!prefix && !matcher.test(`${path}/extra`)) failures.push(`proxy skips non-static ${path}/extra`);
+    }
+  }
+  for (const path of PROXIED_PROBE_PATHS) {
+    if (!matcher.test(path)) failures.push(`proxy skips ${path}`);
+  }
+  return failures;
+}
+
 export type ControlState = "present" | "MISSING" | "unknown";
 
 export interface ControlResult {
@@ -643,6 +736,14 @@ export function evaluateControls(
         return signal.absent ? matched : !matched;
       })
       .map((signal) => signal.label);
+
+    if (control.verify) {
+      try {
+        missingSignals.push(...control.verify(sources[control.file] as string));
+      } catch {
+        missingSignals.push(`${control.id} check could not run`);
+      }
+    }
 
     return {
       control,

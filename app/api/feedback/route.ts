@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 import { checkFeedbackQuality, earnsCoupon, generateCouponCode } from '@/lib/feedback';
 import { DEVICE_COOKIE, verifyDeviceCookie } from '@/lib/auth/deviceCookie';
@@ -11,13 +11,14 @@ const RATE_LIMIT_DEVICE = { max: 5, windowSeconds: 3600 };
 const MAX_FEEDBACK_LENGTH = 500;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 export async function POST(request: Request) {
   try {
+    // Created per request, not at module scope: a module-level client reads
+    // env during `next build`'s route analysis and fails the build when
+    // Supabase env is absent. Missing env now fails this request (500) only.
+    const supabase = createServerClient();
+
     const body = await request.json();
     const {
       device_id: bodyDeviceId,

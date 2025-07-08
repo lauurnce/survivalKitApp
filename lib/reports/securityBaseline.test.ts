@@ -12,8 +12,10 @@ import {
   EXECUTOR_INVENTORY,
   renderControlTable,
   renderExecutorTable,
+  staticRouteMatcherDrift,
   type Control,
 } from "./securityBaseline";
+import { STATIC_CSP_ROUTES, buildStaticCsp } from "../csp";
 
 const control = (overrides: Partial<Control> = {}): Control => ({
   id: "TEST-01",
@@ -296,5 +298,127 @@ describe("standing assertion: the registry points at files that exist", () => {
       .map((result) => result.control.id);
 
     expect(missing).toEqual([]);
+  });
+});
+
+describe("evaluateControls with a verify check", () => {
+  it("is present when the check returns no failures", () => {
+    const [result] = evaluateControls({ "lib/thing.ts": "guardIt();" }, [control({ verify: () => [] })]);
+    expect(result.state).toBe("present");
+  });
+
+  it("is MISSING and names the failures the check returns", () => {
+    const [result] = evaluateControls({ "lib/thing.ts": "guardIt();" }, [
+      control({ verify: () => ["drift A"] }),
+    ]);
+    expect(result).toMatchObject({ state: "MISSING", missingSignals: ["drift A"] });
+  });
+
+  it("is MISSING rather than crashing when the check throws", () => {
+    const [result] = evaluateControls({ "lib/thing.ts": "guardIt();" }, [
+      control({
+        verify: () => {
+          throw new Error("bad");
+        },
+      }),
+    ]);
+    expect(result.state).toBe("MISSING");
+    expect(result.missingSignals).toEqual(["TEST-01 check could not run"]);
+  });
+
+  it("is unknown, and never runs the check, when the file could not be read", () => {
+    let ran = false;
+    const [result] = evaluateControls({ "lib/thing.ts": null }, [
+      control({
+        verify: () => {
+          ran = true;
+          return [];
+        },
+      }),
+    ]);
+    expect(result.state).toBe("unknown");
+    expect(ran).toBe(false);
+  });
+});
+
+describe("staticRouteMatcherDrift", () => {
+  const routes = [
+    { path: "/", prefix: false },
+    { path: "/faq", prefix: false },
+    { path: "/year", prefix: true },
+  ];
+  const proxyWith = (matcher: string) =>
+    `export const config = {\n  matcher: [\n    ${JSON.stringify(matcher)},\n  ],\n};`;
+  const GOOD = "/((?!_next/static|$|(?:faq|year)$|year/).*)";
+
+  it("holds when the matcher skips exactly the static routes", () => {
+    expect(staticRouteMatcherDrift(proxyWith(GOOD), routes)).toEqual([]);
+  });
+
+  it("flags a static route the proxy still runs on", () => {
+    const drift = staticRouteMatcherDrift(proxyWith("/((?!_next/static|$|(?:year)$|year/).*)"), routes);
+    expect(drift).toContain("proxy runs on static /faq");
+  });
+
+  it("flags a prefix route whose children still reach the proxy", () => {
+    const drift = staticRouteMatcherDrift(proxyWith("/((?!_next/static|$|(?:faq|year)$).*)"), routes);
+    expect(drift).toContain("proxy runs below static /year");
+  });
+
+  it("flags a matcher that excludes by prefix and so skips a non-static near-miss", () => {
+    const drift = staticRouteMatcherDrift(proxyWith("/((?!_next/static|$|faq|year).*)"), routes);
+    expect(drift).toEqual(
+      expect.arrayContaining(["proxy skips non-static /faqx", "proxy skips non-static /faq/extra"])
+    );
+  });
+
+  it("flags a matcher that skips a route the proxy must guard", () => {
+    const drift = staticRouteMatcherDrift(proxyWith("/((?!_next/static|$|(?:faq|year|admin)$|year/|admin/).*)"), routes);
+    expect(drift).toEqual(expect.arrayContaining(["proxy skips /admin", "proxy skips /admin/login"]));
+  });
+
+  it("reports a missing matcher instead of passing", () => {
+    expect(staticRouteMatcherDrift("export const config = {};", routes)).toEqual([
+      "matcher string not found",
+    ]);
+  });
+
+  it("holds against the live proxy.ts and STATIC_CSP_ROUTES", () => {
+    const source = readFileSync(join(__dirname, "..", "..", "proxy.ts"), "utf8");
+    expect(staticRouteMatcherDrift(source, STATIC_CSP_ROUTES)).toEqual([]);
+  });
+});
+
+describe("static-page CSP (the policy EXEC-07 guards)", () => {
+  const directives = new Map(
+    buildStaticCsp(false)
+      .split(";")
+      .map((d) => d.trim().split(/\s+/))
+      .map(([name, ...values]) => [name, values.join(" ")] as const)
+  );
+
+  it.each([
+    ["script-src-attr", "'none'"],
+    ["object-src", "'none'"],
+    ["frame-ancestors", "'none'"],
+    ["base-uri", "'self'"],
+    ["form-action", "'self'"],
+  ])("keeps %s %s", (name, value) => {
+    expect(directives.get(name)).toBe(value);
+  });
+
+  it("keeps script-src to self and named hosts, with no trust propagation", () => {
+    const scriptSrc = directives.get("script-src") ?? "";
+    expect(scriptSrc).not.toContain("'strict-dynamic'");
+    expect(scriptSrc.split(" ")).not.toEqual(expect.arrayContaining(["*", "https:", "http:", "data:"]));
+  });
+
+  it("reports EXEC-07 MISSING when a hard edge is loosened", () => {
+    const csp = readFileSync(join(__dirname, "..", "csp.ts"), "utf8");
+    const config = readFileSync(join(__dirname, "..", "..", "next.config.ts"), "utf8");
+    const exec07 = CONTROLS.filter((c) => c.id === "EXEC-07");
+    const loosened = csp.replace(`"object-src 'none'"`, `"object-src 'self'"`);
+    const [result] = evaluateControls({ "lib/csp.ts": loosened, "next.config.ts": config }, exec07);
+    expect(result).toMatchObject({ state: "MISSING", missingSignals: ["plugins blocked"] });
   });
 });

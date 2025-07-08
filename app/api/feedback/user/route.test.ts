@@ -26,6 +26,7 @@ vi.mock('@supabase/supabase-js', () => {
 });
 
 import { GET } from './route';
+import { createClient } from '@supabase/supabase-js';
 
 function makeReq(token?: string) {
   return new Request('http://localhost/api/feedback/user', {
@@ -34,8 +35,28 @@ function makeReq(token?: string) {
   });
 }
 
+// Runs first, before any request: the Supabase client must not be built at
+// module load, or `next build` fails whenever Supabase env is absent.
+describe('module load', () => {
+  it('creates no Supabase client on import', () => {
+    expect(createClient).not.toHaveBeenCalled();
+  });
+
+  it('returns 500 (not a crash at import) when Supabase env is missing', async () => {
+    vi.stubEnv('NEXT_PUBLIC_SUPABASE_URL', '');
+    try {
+      const res = await GET(makeReq('valid-token'));
+      expect(res.status).toBe(500);
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+});
+
 describe('GET /api/feedback/user', () => {
   beforeEach(() => {
+    vi.stubEnv('NEXT_PUBLIC_SUPABASE_URL', 'https://example.supabase.co');
+    vi.stubEnv('SUPABASE_SERVICE_ROLE_KEY', 'service-role-test');
     queryResult = { data: [], error: null };
   });
 

@@ -1,9 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@/lib/supabase/server';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 // Shape of one row from the query below. The untyped Supabase client misinfers
 // the embedded `modules!inner(title)` join, so the query pins its result type
@@ -23,6 +19,11 @@ type UserFeedbackItem = {
 
 export async function GET(request: Request) {
   try {
+    // Created per request, not at module scope: a module-level client reads
+    // env during `next build`'s route analysis and fails the build when
+    // Supabase env is absent. Missing env now fails this request (500) only.
+    const supabase = createServerClient();
+
     // Get authenticated user from request headers
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

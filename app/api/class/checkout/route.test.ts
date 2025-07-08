@@ -43,6 +43,18 @@ vi.mock("@/lib/supabase/server", () => ({
   }),
 }));
 
+// Controllable distributed rate limiter (the real one is Supabase-backed).
+let rateLimited = false;
+const rateLimitCalls: Array<{ key: string; max: number; windowSeconds: number; onFailure?: string }> = [];
+vi.mock("@/lib/serverRateLimit", () => ({
+  isServerRateLimited: vi.fn(
+    async (key: string, opts: { max: number; windowSeconds: number; onFailure?: string }) => {
+      rateLimitCalls.push({ key, ...opts });
+      return rateLimited;
+    }
+  ),
+}));
+
 import { POST } from "./route";
 import { signDeviceCookie } from "@/lib/auth/deviceCookie";
 
@@ -58,7 +70,9 @@ function makeReq(
 ) {
   return {
     json: () => Promise.resolve(body),
-    headers: { get: (name: string) => (name === "origin" ? origin : null) },
+    headers: {
+      get: (name: string) => (name === "origin" ? origin : name === "x-real-ip" ? "10.7.7.7" : null),
+    },
     nextUrl: { origin: requestUrlOrigin },
   } as unknown as import("next/server").NextRequest;
 }
@@ -70,6 +84,24 @@ beforeEach(() => {
   mockCookieValue = signDeviceCookie(REP_DEVICE);
   mockSubjectRow = { id: "x" };
   mockYearRow = { id: "x" };
+  rateLimited = false;
+  rateLimitCalls.length = 0;
+});
+
+describe("POST /api/class/checkout rate limit", () => {
+  it("checks a 5-per-minute per-IP key on the shared limiter, failing open", async () => {
+    await POST(makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 }));
+    expect(rateLimitCalls).toEqual([
+      { key: "class-checkout:ip:10.7.7.7", max: 5, windowSeconds: 60, onFailure: "allow" },
+    ]);
+  });
+
+  it("returns 429 and creates no payment link when limited", async () => {
+    rateLimited = true;
+    const res = await POST(makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 }));
+    expect(res.status).toBe(429);
+    expect(linkCalls).toHaveLength(0);
+  });
 });
 
 describe("POST /api/class/checkout", () => {

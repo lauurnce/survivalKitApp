@@ -12,7 +12,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { createClient } from "@supabase/supabase-js";
-// @ts-ignore — pdf-parse has no bundled types
+// @ts-expect-error — pdf-parse has no bundled types
 import pdfParse from "pdf-parse";
 
 // ── Config ──────────────────────────────────────────────────────────────────

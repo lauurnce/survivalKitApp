@@ -201,6 +201,9 @@ export function useSubscriptionStatus(yearId: string, subjectId: string): Subscr
 
   useEffect(() => {
     const entry = ensureEntry(key);
+    // Sync with the shared module-level store on (re)subscribe: another
+    // instance may have updated it since this one's initial state was read.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setStatus(entry.status);
     entry.listeners.add(setStatus);
     void start(key, yearId, subjectId);

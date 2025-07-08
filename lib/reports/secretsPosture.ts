@@ -41,6 +41,8 @@ export const ENV_CLASS: Record<string, SecretClass> = {
   NEXT_PUBLIC_APP_ORIGIN: "PUBLIC_OK",
   NODE_ENV: "PUBLIC_OK",
   NODE_OPTIONS: "PUBLIC_OK",
+  // Set by `next build` itself (phase-production-build); read by app/sitemap.ts.
+  NEXT_PHASE: "PUBLIC_OK",
 
   SUPABASE_SERVICE_ROLE_KEY: "SERVER_ONLY",
   ADMIN_PASSWORD: "SERVER_ONLY",
