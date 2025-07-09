@@ -6,14 +6,21 @@ import { getDeviceId } from "./device";
 const pendingSectionViews = new Map<string, ReturnType<typeof setTimeout>>();
 
 // Traffic attribution, captured only on "enter" (first pageview of a visit):
-// where the visitor came from (document.referrer) and any utm_* tags on the URL.
-// utm_content and utm_term are not captured: the events table has no columns
-// for them yet (adding them needs a migration).
+// where the visitor came from (document.referrer) and the five standard utm_*
+// tags on the URL (utm_content / utm_term columns: migration 20261101000100).
+export const UTM_KEYS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_content",
+  "utm_term",
+] as const;
+
 function getAttribution(): Record<string, string> {
   const attribution: Record<string, string> = {};
   if (document.referrer) attribution.referrer = document.referrer;
   const params = new URLSearchParams(window.location.search);
-  for (const key of ["utm_source", "utm_medium", "utm_campaign"] as const) {
+  for (const key of UTM_KEYS) {
     const value = params.get(key);
     if (value) attribution[key] = value;
   }
