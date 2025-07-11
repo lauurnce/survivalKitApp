@@ -25,7 +25,7 @@ export function JourneyMarker({ journeyStartedAt, overall }: JourneyMarkerProps)
             </p>
             {overall && overall.totalModules > 0 && (
               <p className="text-xs text-ink-muted mt-1">
-                {overall.completedModules} of {overall.totalModules} modules completed •{" "}
+                {overall.completedModules} of {overall.totalModules} modules marked done •{" "}
                 {overall.completionRate}% overall
               </p>
             )}

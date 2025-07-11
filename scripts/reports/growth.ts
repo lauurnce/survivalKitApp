@@ -159,6 +159,9 @@ interface ContentRow {
   module_title: string;
   subject_title: string;
   open_devices: number;
+  // Devices that MARKED the module done in the window (module_progress, a
+  // manual "Mark done" tap) — not devices that completed it. The key follows
+  // the module_progress.completed_at column and is left as the RPC returns it.
   completed_devices: number;
 }
 
