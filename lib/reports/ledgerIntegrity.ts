@@ -152,8 +152,9 @@ const OWNER_UNLOCK_REASON =
  * the deliberate grants the owner confirmed on 2026-08-24: one batch of four
  * hand-granted owner unlocks and the seeded demo subscription. The sixth was
  * classified during the 2026-08-25 ledger-gap ruling (see
- * docs/superpowers/plans/2026-08-25-ledger-gap-ruling.md): observed-facts
- * basis recorded there; reopens if the owner disavows it. Coupon free-unlocks
+ * docs/superpowers/plans/2026-08-25-ledger-gap-ruling.md) on observed facts,
+ * and the owner confirmed it as his own manual grant on 2026-10-31; `since`
+ * keeps the date it was first accepted. Coupon free-unlocks
  * must NOT be registered here; zero-value payment rows make those reconcile
  * on their own.
  */
@@ -172,9 +173,9 @@ export const KNOWN_EXCEPTIONS: readonly KnownException[] = [
   {
     linkId: "manual-grant-1782539037042",
     reason:
-      "Year plan with a hand-minted manual-grant- link id whose device id carries the same " +
-      "prefix; matches the early 'manual grant' population the owner's 2026-07-07 handoff " +
-      "describes. No events, no payment, period expired.",
+      "Manual grant: year plan granted by hand under a manual-grant- link id, no " +
+      "payment by design (classified 2026-08-25 from observed facts; not yet " +
+      "confirmed by the owner).",
     since: "2026-08-25",
   },
 ];

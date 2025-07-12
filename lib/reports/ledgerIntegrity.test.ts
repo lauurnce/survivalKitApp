@@ -127,6 +127,15 @@ describe("KNOWN_EXCEPTIONS", () => {
     ]);
   });
 
+  it("records the manual-grant entitlement as a manual grant pending owner confirmation", () => {
+    const entry = KNOWN_EXCEPTIONS.find(
+      (known) => known.linkId === "manual-grant-1782539037042"
+    );
+    expect(entry?.reason).toMatch(/^Manual grant\b/);
+    expect(entry?.reason).toMatch(/not yet confirmed by the owner/);
+    expect(entry?.since).toBe("2026-08-25");
+  });
+
   it("resolves a registered entitlement to known-exception, not unexplained", () => {
     // Runs against the SHIPPED register — none injected — so the default
     // fallback inside reconcile() is exercised end to end.
