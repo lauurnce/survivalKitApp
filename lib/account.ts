@@ -10,6 +10,9 @@ import type {
   ModuleProgress,
   SubscriptionTimelineItem,
 } from "./dashboard";
+// A value import is safe here: dashboard.ts imports only types from this
+// module, which are erased at build time, so there is no runtime cycle.
+import { deriveMilestoneState, milestoneLabel } from "./dashboard";
 
 // Canonical definitions live in ./dashboard; re-exported for existing importers.
 export type { ActivityData, ActivityWeek, DashboardData, SubscriptionTimelineItem };
@@ -427,26 +430,6 @@ export async function getRoadmapData(userId: string): Promise<RoadmapData> {
       completionRate: overallTotal > 0 ? Math.round((overallCompleted / overallTotal) * 100) : 0,
     },
   };
-}
-
-// Local helpers (avoid circular import with dashboard.ts)
-function milestoneLabel(yearLabel: string, semester: number): string {
-  const semLabel = semester === 1 ? "1st" : "2nd";
-  return `${yearLabel} • ${semLabel} Semester`;
-}
-
-function deriveMilestoneState(
-  milestone: Pick<RoadmapMilestone, "totalModules" | "completedModules" | "lockedModules">,
-  isCurrent: boolean
-): RoadmapMilestone["state"] {
-  if (milestone.lockedModules === milestone.totalModules && milestone.totalModules > 0) {
-    return "locked";
-  }
-  if (milestone.completedModules === milestone.totalModules && milestone.totalModules > 0) {
-    return "completed";
-  }
-  if (isCurrent) return "current";
-  return "upcoming";
 }
 
 // ─── Activity Graph Data ──────────────────────────────────────────────────────
