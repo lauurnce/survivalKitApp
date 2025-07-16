@@ -97,11 +97,15 @@ Fields you will use beyond the tables:
 | `termPhase` | Seasonality: `{phase, mixed, estimated}`. `unknown` outside the recorded term windows; `estimated` means a covering window is not from a published calendar — see Step 4. |
 | `funnel` | Per-step devices, `fromPrevious`, `fromTop`, `nonMonotonic`. |
 | `leak` | The transition that lost the most devices, with its rate. |
+| `enterDefinition` | `{changedOn, current, previous, comparable, note}`. Whether this week's and last week's `enter` numbers were counted the same way — see "The `enter` redefinition" below. **Read it before citing any `enter`-based delta.** |
+| `raw.acquisition.by_utm` | Enters and distinct devices per full `utm_source` / `utm_medium` / `utm_campaign` triple — capped at 15. Absent until migration `20261101000101` is applied; say "not read", never zero. |
+| `raw.acquisition.tagged_enters` | Enters carrying any UTM tag. Same availability caveat. |
+| `attribution.reactivationCampaign` | The tags on the finals reactivation email's CTA. The audience table's "Enters · reactivation email" row is that triple's count from `by_utm`; `—` means not read (RPC missing, or the triple is below a truncated cap), not zero. |
 | `raw.identity` | The account-versus-device reconciliation. |
 | `raw.segments.by_year` | Conversion by year — a flat array, not capped. |
 | `raw.segments.by_subject.rows` | Conversion by subject — capped at 25, see "Capped distributions" below. **Carries `subject_plan_paid_devices`, not `paid_devices` — read the callout below before you touch this field.** |
 | `raw.cohorts` | Weekly cohorts and the 8-week active series. Both `weekly_active` and `cohorts` are flat arrays, not capped. |
-| `raw.content` | Module opens versus completions. **The entire value is `{rows, total_groups}`** — not a sub-key inside a larger object. |
+| `raw.content` | Module opens versus modules **marked done**. **The entire value is `{rows, total_groups}`** — not a sub-key inside a larger object. Its `completed_devices` field is named after the `module_progress.completed_at` column, but it counts devices that tapped the manual "Mark done" toggle in the window — see "Marked done is not completion" below. |
 | `raw.demand` | Waitlist — what people ask for that does not exist yet. `by_subject` is capped (`.rows` + `.total_groups`); `by_source`, `by_year`, `willing_to_pay`, `by_device_type` are flat arrays, not capped. |
 | `raw.feedback.recent.rows` | Verbatim user text. Read for themes, not counts. `raw.feedback.recent.total_groups` is the untruncated count of non-blank-text rows in the window — it is **not** the same number as `raw.feedback.rows_window`, which also counts blank-text rows `recent` excludes. |
 | `errors` | RPCs that failed. Each one is a finding. |
@@ -119,6 +123,40 @@ Fields you will use beyond the tables:
 > `subject_plan_paid_devices` exists specifically to stop that reconciliation from
 > being attempted.
 
+### The `enter` redefinition — 2026-10-31
+
+On **2026-10-31** `enter` changed meaning. Before: it fired on **every visit to `/`
+and `/account`** — bouncing back to the home page counted again, and a visit that
+landed on a module page, `/unlock`, or a class join link recorded no `enter` (and no
+attribution) at all. Since: it fires **once per browser tab session, on whichever
+page the visit lands** (`components/SessionEntryTracker.tsx`, deduped in
+`lib/analytics.ts`).
+
+Consequences you must not misread:
+
+- **`Enters this week` will drop** — repeat home-page visits in one session no longer
+  count. That is the definition, **not a reach collapse.** Never report it as one.
+- **Devices that opened the app can rise** — deep landings now count. "Devices
+  reached (all-time)" and funnel step 1 ("Opened app") are `enter`-based too.
+- **Step 1 → step 2 conversion can fall** — a visit landing on a module page counts
+  as entered without ever selecting a year. `nonMonotonic` on later steps should
+  become rarer for the same reason.
+
+When `enterDefinition.comparable` is `false`, say so in the header's VERDICT or the
+first finding, paste `enterDefinition.note`, and **do not open a finding, and never a
+P0, on any `enter`-based week-over-week move.** Escalation rule 2 does not apply to
+step 1 across the break. From the first week where both windows fall after
+2026-10-31, `comparable` turns `true` and the numbers diff normally again.
+
+### Marked done is not completion
+
+`module_progress` rows come from one manual "Mark done" tap
+(`components/ModuleDoneToggle.tsx`). Nothing checks that the module was read, and a
+reader who finishes without tapping leaves no row. Write **"marked done"**, never
+"completed", "finished" or "completion rate", whenever a number comes from
+`module_progress` — including `raw.content`'s `completed_devices`, whose name follows
+the database column, not what it measures.
+
 ### Capped distributions — report the truncation, never hide it
 
 Every distribution capped by row count comes back from Postgres as
@@ -132,7 +170,7 @@ Nested, capped fields — always go through `.rows`, always have a sibling
 `.total_groups`:
 
 - `raw.acquisition.by_referrer_host`, `raw.acquisition.by_utm_source`,
-  `raw.acquisition.by_utm_campaign` (capped at 15)
+  `raw.acquisition.by_utm_campaign`, `raw.acquisition.by_utm` (capped at 15)
 - `raw.segments.by_subject` (capped at 25)
 - `raw.content` — its **entire** return value is `{rows, total_groups}` (capped at 20)
 - `raw.demand.by_subject` (capped at 20)
@@ -153,8 +191,15 @@ moved or what is wrong.
 1. **Acquisition.** `raw.acquisition`. Where enters came from, and the no-referrer
    share — the dark-social signal that links are moving through group chats rather than
    search. A large no-referrer share is normal here and is not a finding on its own.
-   Citing `by_referrer_host`, `by_utm_source`, or `by_utm_campaign`: say "top N of M"
-   using each field's `total_groups`.
+   **Report tagged traffic by campaign, as source / medium / campaign** from
+   `raw.acquisition.by_utm` — one row is one push, e.g. the finals reactivation email
+   is `reactivation / email / finals-dec-2026`, the finals social push is
+   `groupchat|tiktok|facebook|x / social / finals-dec-2026`. Read a campaign's enters
+   against its devices (one device opening an email twice is two enters). Fall back to
+   `by_utm_source` + `by_utm_campaign` only when `by_utm` is absent, and say so —
+   those two cannot be joined back into a triple. Citing any of `by_referrer_host`,
+   `by_utm_source`, `by_utm_campaign`, `by_utm`: say "top N of M" using each field's
+   `total_groups`. Check `enterDefinition` before comparing enters week over week.
 2. **Activation.** How far a device gets in a first session: `funnel` steps 1–4, and
    how many reach the paywall at all. A device that never sees the paywall is a
    different problem from one that sees it and leaves — say which.
@@ -171,9 +216,10 @@ moved or what is wrong.
    `subject_plan_paid_devices`, and `sum(subject_plan_paid_devices)` will always fall
    short of `by_year.paid_devices` by exactly the year-plan population — that gap is
    expected, not a finding.** See the callout in Step 2.
-6. **Content–market fit.** `raw.content`. High opens with low completion is a content
-   problem wearing an engagement costume. The whole payload is capped at 20 — say "top
-   N of M" using `total_groups`.
+6. **Content–market fit.** `raw.content`. High opens with few marks-done can be a
+   content problem wearing an engagement costume — or readers who never tap the
+   toggle. Weigh it as a weak signal, not proof. The whole payload is capped at 20 —
+   say "top N of M" using `total_groups`.
 7. **Demand sensing.** `raw.demand`. **If `signups_all_time` is in the single digits,
    say plainly that demand-sensing has no real signal yet and stop there — do not
    break a population that small down by source, year, subject, willingness-to-pay, or
@@ -373,6 +419,9 @@ and never move a quote outside `docs/reports/`.
 | Computing or retyping a delta by hand | Paste `tables.funnel` and `tables.audience` verbatim. |
 | Calling a quiet week a regression | Step 4. Check the phase, or say it is not recorded. |
 | Asserting it is exam week from memory | The calendar ships empty on purpose. Say "not recorded". |
+| Reading the post-2026-10-31 drop in enters as lost reach | `enter` was redefined that day. Check `enterDefinition.comparable`; across the break the delta is the definition. |
+| Rebuilding a campaign from `by_utm_source` and `by_utm_campaign` | Use `by_utm`, which keeps source / medium / campaign together. |
+| Calling `module_progress` "completions" | It is a manual "Mark done" tap. Say "marked done". |
 | Treating `nonMonotonic` as a bug | Deep links into module URLs are real. Report it, do not clamp it. |
 | Reporting `unlock_click` / `unlock_submitted` movement | They are dead types. `raw.funnel.dead_events.dead_last_seen` is the evidence. |
 | Ignoring `errors[]` | A failed RPC means a section of this report is blank. That is a finding. |

@@ -4,10 +4,10 @@ Paste these instead of a bare `tryi2i.com`. An untagged link is invisible in
 the growth report: 0 of 1,001 `events` rows in one 60-day window carried any
 tag, so no channel could be credited with anything.
 
-All links point at the home page on purpose. The `enter` event, which is the
-only event that records `utm_source` / `utm_medium` / `utm_campaign`, fires on
-`/` (and `/account`). A tagged link to a subject or module page is not
-recorded today.
+The `enter` event is the only event that records UTM tags. Since 2026-10-31
+it fires once per tab session on whichever page the visit lands, so a tagged
+link to a subject or module page is recorded too (before that date only `/`
+and `/account` recorded attribution). Home-page links remain the default.
 
 Campaign for this push: **`finals-dec-2026`** (Aug-10-wave finals run
 Dec 9–19, 2026).
@@ -32,8 +32,8 @@ You do not need to tag these by hand; `lib/utm.ts` does it.
 | Receipt / welcome / expiry / win-back email CTA | `lifecycle` | `email` | the email kind |
 | Finals reactivation email CTA | `reactivation` | `email` | `finals-dec-2026` |
 
-The class invite lands on `/class/<code>/join`, which does not record
-attribution yet, so those tags are carried but not counted until it does.
+The class invite lands on `/class/<code>/join`; since 2026-10-31 that landing
+records its tags like any other page.
 
 ## Rules for new links
 
@@ -41,6 +41,8 @@ attribution yet, so those tags are carried but not counted until it does.
   two channels.
 - `utm_source` is the place (`tiktok`, `groupchat`), `utm_medium` the kind of
   channel (`social`, `email`, `referral`), `utm_campaign` the push.
-- Only those three. `utm_content` and `utm_term` are not stored, so adding
-  them changes nothing.
+- Those three are required. `utm_content` (which creative or button) and
+  `utm_term` (which keyword) are optional and stored too, since migration
+  `20261101000100`; use them only when one push has several links to tell
+  apart.
 - One campaign name per push. Reuse `finals-dec-2026` until the push ends.

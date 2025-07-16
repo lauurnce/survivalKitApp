@@ -50,6 +50,25 @@ describe("logEvent attribution capture", () => {
     });
   });
 
+  it("captures utm_content and utm_term on enter events", async () => {
+    window.history.replaceState(
+      null,
+      "",
+      "/?utm_source=reactivation&utm_medium=email&utm_campaign=finals-dec-2026" +
+        "&utm_content=cta_button&utm_term=finals"
+    );
+
+    await logEvent("enter");
+
+    expect(lastFetchBody(fetchMock)).toMatchObject({
+      utm_source: "reactivation",
+      utm_medium: "email",
+      utm_campaign: "finals-dec-2026",
+      utm_content: "cta_button",
+      utm_term: "finals",
+    });
+  });
+
   it("omits empty attribution values on enter events", async () => {
     Object.defineProperty(document, "referrer", { value: "", configurable: true });
     window.history.replaceState(null, "", "/?utm_source=fb_group");
@@ -61,6 +80,8 @@ describe("logEvent attribution capture", () => {
     expect(body).not.toHaveProperty("referrer");
     expect(body).not.toHaveProperty("utm_medium");
     expect(body).not.toHaveProperty("utm_campaign");
+    expect(body).not.toHaveProperty("utm_content");
+    expect(body).not.toHaveProperty("utm_term");
   });
 
   it("does not attach attribution to non-enter events", async () => {

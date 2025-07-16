@@ -85,7 +85,7 @@ export function RoadmapTimeline({ nodes, roadmapData }: Props) {
         </h2>
         {overall && (
           <span className="text-xs text-ink-muted font-mono">
-            {overall.completionRate}% complete overall
+            {overall.completionRate}% marked done overall
           </span>
         )}
       </div>

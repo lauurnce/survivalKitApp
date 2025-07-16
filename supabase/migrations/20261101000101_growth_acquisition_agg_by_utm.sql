@@ -1,0 +1,146 @@
+-- growth_acquisition_agg: add the source/medium/campaign triple.
+--
+-- Replaces the function created in 20260808000002_growth_audience_agg.sql.
+-- Every key it returned before is returned unchanged (enters, devices,
+-- no_referrer, by_referrer_host, by_utm_source, by_utm_campaign), so the
+-- growth collector keeps working whether or not this has been applied. Two
+-- keys are added:
+--
+--   tagged_enters  enters with any of utm_source / utm_medium / utm_campaign
+--   by_utm         { rows, total_groups } of the full triple, capped at 15,
+--                  each row carrying enters and distinct devices
+--
+-- by_utm_source groups source+medium and by_utm_campaign groups campaign on
+-- its own; neither can say how many enters one tagged push produced, which
+-- is what the finals reactivation email (reactivation / email /
+-- finals-dec-2026) needs to be read by.
+--
+-- `enter` semantics changed on 2026-10-31: it now fires once per tab session
+-- on whichever page the visit lands on, not on every visit to / and /account.
+-- Counts in this function are per-`enter` row either way; see
+-- lib/reports/growthAttribution.ts for how the report handles the break.
+--
+-- Idempotent: create or replace, and grants/revokes are repeatable.
+
+create or replace function growth_acquisition_agg(
+  p_since timestamptz,
+  p_until timestamptz
+)
+returns json
+language sql
+security definer
+set search_path = public
+as $$
+  with enters as (
+    select device_id, referrer, utm_source, utm_medium, utm_campaign
+    from events
+    where event_type = 'enter'
+      and created_at >= p_since
+      and created_at <  p_until
+  )
+  select json_build_object(
+    'enters',  (select count(*) from enters),
+    'devices', (select count(distinct device_id) from enters),
+    -- The dark-social signal: links arriving through group chats rather than
+    -- search or a linked profile.
+    'no_referrer', (select count(*) from enters
+                      where referrer is null or referrer = ''),
+    -- Capped distributions below are wrapped as { rows, total_groups } so a
+    -- reader can tell "top 15 of 15" (complete) from "top 15 of 40"
+    -- (truncated) rather than the bare array implying completeness either
+    -- way. total_groups is the number of groups the GROUP BY would have
+    -- produced with no LIMIT applied.
+    'by_referrer_host', (
+      with hosts as (
+        select
+          coalesce(
+            nullif(split_part(split_part(referrer, '://', 2), '/', 1), ''),
+            '(none)'
+          ) as host,
+          count(*)::int as count
+        from enters
+        group by 1
+      )
+      select json_build_object(
+        'rows', (
+          select json_agg(row_to_json(t))
+          from (select host, count from hosts order by count desc limit 15) t
+        ),
+        'total_groups', (select count(*)::int from hosts)
+      )
+    ),
+    'by_utm_source', (
+      with sources as (
+        select
+          coalesce(utm_source, '(none)') as utm_source,
+          coalesce(utm_medium, '(none)') as utm_medium,
+          count(*)::int as count
+        from enters
+        group by 1, 2
+      )
+      select json_build_object(
+        'rows', (
+          select json_agg(row_to_json(t))
+          from (select utm_source, utm_medium, count from sources order by count desc limit 15) t
+        ),
+        'total_groups', (select count(*)::int from sources)
+      )
+    ),
+    -- Enters carrying any UTM tag at all. The complement is untagged traffic,
+    -- which is most of it and is not by itself a finding.
+    'tagged_enters', (select count(*) from enters
+                        where utm_source is not null
+                           or utm_medium is not null
+                           or utm_campaign is not null),
+    -- The full source / medium / campaign triple, so one push can be read
+    -- as a unit (e.g. reactivation / email / finals-dec-2026) instead of
+    -- being reassembled from two independent breakdowns that cannot be
+    -- joined. Tagged enters only; devices is distinct per triple.
+    'by_utm', (
+      with triples as (
+        select
+          coalesce(utm_source,   '(none)') as utm_source,
+          coalesce(utm_medium,   '(none)') as utm_medium,
+          coalesce(utm_campaign, '(none)') as utm_campaign,
+          count(*)::int                   as enters,
+          count(distinct device_id)::int  as devices
+        from enters
+        where utm_source is not null
+           or utm_medium is not null
+           or utm_campaign is not null
+        group by 1, 2, 3
+      )
+      select json_build_object(
+        'rows', (
+          select json_agg(row_to_json(t))
+          from (
+            select utm_source, utm_medium, utm_campaign, enters, devices
+            from triples
+            order by enters desc, utm_source, utm_medium, utm_campaign
+            limit 15
+          ) t
+        ),
+        'total_groups', (select count(*)::int from triples)
+      )
+    ),
+    'by_utm_campaign', (
+      with campaigns as (
+        select utm_campaign, count(*)::int as count
+        from enters
+        where utm_campaign is not null
+        group by utm_campaign
+      )
+      select json_build_object(
+        'rows', (
+          select json_agg(row_to_json(t))
+          from (select utm_campaign, count from campaigns order by count desc limit 15) t
+        ),
+        'total_groups', (select count(*)::int from campaigns)
+      )
+    )
+  );
+$$;
+
+revoke execute on function growth_acquisition_agg(timestamptz, timestamptz)
+  from public, anon, authenticated;
+grant execute on function growth_acquisition_agg(timestamptz, timestamptz) to service_role;

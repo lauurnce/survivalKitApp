@@ -39,6 +39,12 @@ import {
   type FunnelCounts,
 } from "../../lib/reports/funnel";
 import { phaseForRange, rangeIncludesEstimate } from "../../lib/reports/academicCalendar";
+import {
+  REACTIVATION_CAMPAIGN,
+  campaignEnters,
+  enterDefinitionNote,
+  type UtmTripleRow,
+} from "../../lib/reports/growthAttribution";
 import { callRpc, createReportsClient } from "./supabaseAdmin";
 
 const REPO_ROOT = join(__dirname, "..", "..");
@@ -92,6 +98,10 @@ interface AcquisitionAgg {
   by_referrer_host: Capped<{ host: string; count: number }>;
   by_utm_source: Capped<{ utm_source: string; utm_medium: string; count: number }>;
   by_utm_campaign: Capped<{ utm_campaign: string; count: number }>;
+  // Added by 20261101000101. Optional: absent until that migration is
+  // applied, and every reader below treats absence as "not read".
+  tagged_enters?: number;
+  by_utm?: Capped<UtmTripleRow>;
 }
 
 interface SegmentYearRow {
@@ -149,6 +159,9 @@ interface ContentRow {
   module_title: string;
   subject_title: string;
   open_devices: number;
+  // Devices that MARKED the module done in the window (module_progress, a
+  // manual "Mark done" tap) — not devices that completed it. The key follows
+  // the module_progress.completed_at column and is left as the RPC returns it.
   completed_devices: number;
 }
 
@@ -301,6 +314,11 @@ async function main(): Promise<void> {
   });
   const leak = largestLeak(steps);
 
+  // `enter` was redefined on 2026-10-31 (once per tab session, any landing
+  // page — no longer every visit to / and /account). Across that date the
+  // enter-based deltas measure the definition change, not reach.
+  const enterDefinition = enterDefinitionNote(current.label, previous.label);
+
   const funnelRows: Metric[] = [
     ...funnelMetrics(steps, leak),
     {
@@ -323,8 +341,14 @@ async function main(): Promise<void> {
     { label: "Profiles", value: identity.profiles },
     { label: "Devices paid (all-time)", value: identity.devices_paid },
     { label: "Subscriptions active", value: identity.subscriptions_active },
-    // Acquisition.
+    // Acquisition. "Enters" and "Devices reached" are `enter`-based; read
+    // payload.enterDefinition before comparing them across 2026-10-31.
     { label: "Enters this week", value: acquisition?.enters ?? null },
+    { label: "UTM-tagged enters", value: acquisition?.tagged_enters ?? null },
+    {
+      label: "Enters · reactivation email",
+      value: campaignEnters(acquisition?.by_utm, REACTIVATION_CAMPAIGN),
+    },
     {
       label: "No-referrer share",
       value: acquisition ? pct(acquisition.no_referrer, acquisition.enters) : null,
@@ -391,6 +415,8 @@ async function main(): Promise<void> {
       ...phaseForRange(startPhDate, endPhDate),
       estimated: rangeIncludesEstimate(startPhDate, endPhDate),
     },
+    enterDefinition,
+    attribution: { reactivationCampaign: REACTIVATION_CAMPAIGN },
     metrics,
     previousDate: previousRun?.date ?? null,
     tables,
@@ -399,6 +425,7 @@ async function main(): Promise<void> {
     // Stored as the RPCs returned them, so every capped distribution's
     // total_groups travels with it automatically — nothing here reshapes or
     // strips it. VANTAGE reads raw.acquisition.by_referrer_host.total_groups,
+    // raw.acquisition.by_utm.total_groups (once 20261101000101 is applied),
     // raw.segments.by_subject.total_groups, raw.content.total_groups,
     // raw.demand.by_subject.total_groups and raw.feedback.recent.total_groups
     // to report "top N of M" honestly.
