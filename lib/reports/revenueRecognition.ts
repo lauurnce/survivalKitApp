@@ -4,12 +4,13 @@
  * Recognition is straight-line between paid_at and the entitlement's
  * current_period_end; a renewal that overwrites a period counts that period
  * as fully earned rather than deferred. `semesterPlanParity` below guards a
- * pricing edge case near SEMESTER_END. Full rationale, including the exact
+ * pricing edge case near a term's access end (lib/terms.ts). Full rationale, including the exact
  * mechanics of both:
  * docs/reports/finance/billing-edge-cases.md (gitignored).
  */
 
-import { SEMESTER_END, periodEndFor } from "../paymongo";
+import { periodEndFor } from "../paymongo";
+import { daysUntilScheduleEnds, scheduleHorizon, termForPurchase } from "../terms";
 import { PH_OFFSET_MS } from "../payments";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -109,21 +110,30 @@ export function recogniseLedger(
   return totals;
 }
 
-// ── The SEMESTER_END constant ───────────────────────────────────────────────
+// ── The term schedule ───────────────────────────────────────────────────────
 
 export interface SemesterEndStatus {
+  /** Term a semester pass bought now belongs to; null once the schedule ran out. */
+  termId: string | null;
+  /** Access end a semester pass bought now gets (the schedule horizon once it ran out). */
   semesterEndIso: string;
   daysRemaining: number;
-  /** True once the constant is in the past and has not been bumped. */
+  /** Days until the last scheduled term ends. lib/terms.test.ts fails at 30. */
+  scheduleDaysRemaining: number;
+  /** True once no term covers `now`: semester buyers are on the 31-day fallback. */
   past: boolean;
 }
 
 export function semesterEndStatus(now: Date): SemesterEndStatus {
-  const remainingMs = SEMESTER_END.getTime() - now.getTime();
+  const term = termForPurchase(now);
+  const end = term ? new Date(term.accessEndsAt) : scheduleHorizon();
+  const remainingMs = end.getTime() - now.getTime();
   return {
-    semesterEndIso: SEMESTER_END.toISOString(),
+    termId: term?.id ?? null,
+    semesterEndIso: end.toISOString(),
     daysRemaining: Math.floor(remainingMs / DAY_MS),
-    past: remainingMs <= 0,
+    scheduleDaysRemaining: daysUntilScheduleEnds(now),
+    past: term === null,
   };
 }
 
@@ -137,15 +147,18 @@ export interface PlanParity {
 }
 
 /**
- * Guards a pricing edge case near SEMESTER_END — see
- * docs/reports/finance/billing-edge-cases.md for the exact mechanics.
+ * Guards a pricing edge case near a term's access end — see
+ * docs/reports/finance/billing-edge-cases.md for the exact mechanics. With a
+ * term cutoff a month before each end this should only fire late in a short
+ * term (midyear) or once the schedule has run out.
  */
 export function semesterPlanParity(now: Date): PlanParity {
   const semesterPlanEnd = periodEndFor("subject_sem", now);
   const monthPlanEnd = periodEndFor("subject_month", now);
   const identical = semesterPlanEnd.getTime() === monthPlanEnd.getTime();
 
-  const remainingMs = SEMESTER_END.getTime() - now.getTime();
+  const term = termForPurchase(now);
+  const remainingMs = term ? new Date(term.accessEndsAt).getTime() - now.getTime() : 0;
   const daysUntilParity = identical
     ? 0
     : Math.max(0, Math.floor((remainingMs - 31 * DAY_MS) / DAY_MS));

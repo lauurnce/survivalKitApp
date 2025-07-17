@@ -9,7 +9,6 @@ import {
   getPaymentById,
   listRecentPaidLinks,
   PLANS,
-  SEMESTER_END,
   resolvePlan,
   periodEndFor,
   MIN_CHARGE,
@@ -19,6 +18,7 @@ import {
   type PlanKey,
 } from "./paymongo";
 import crypto from "crypto";
+import { TERM_SCHEDULE } from "./terms";
 
 const FAKE_SECRET = "sk_test_fakesecretkey";
 const FAKE_WEBHOOK_SECRET = "whsec_fakewebhooksecret";
@@ -1039,27 +1039,43 @@ describe("resolvePlan", () => {
 
 describe("periodEndFor", () => {
   const DAY_MS = 24 * 60 * 60 * 1000;
+  const SEM1_END = new Date(TERM_SCHEDULE[0].accessEndsAt);
 
   it("gives subject_month exactly 31 days from `from`", () => {
     const from = new Date("2026-07-10T00:00:00Z");
     expect(periodEndFor("subject_month", from).getTime()).toBe(from.getTime() + 31 * DAY_MS);
   });
 
-  it("gives semester plans access until SEMESTER_END", () => {
+  it("gives semester plans access until the end of the term they were bought in", () => {
     const from = new Date("2026-07-10T00:00:00Z");
-    expect(periodEndFor("subject_sem", from).getTime()).toBe(SEMESTER_END.getTime());
-    expect(periodEndFor("year_sem", from).getTime()).toBe(SEMESTER_END.getTime());
+    expect(periodEndFor("subject_sem", from).getTime()).toBe(SEM1_END.getTime());
+    expect(periodEndFor("year_sem", from).getTime()).toBe(SEM1_END.getTime());
   });
 
   it("ends 1st semester AY 2026-27 access on Jan 31, 2027 23:59 PH", () => {
-    // Past PUP's mid-January finals. The UI copy ("until Jan 31") in
-    // SubscribeGate.tsx and account/SubscribeModals.tsx is hand-typed against
-    // this value; change them together.
-    expect(SEMESTER_END.toISOString()).toBe("2027-01-31T15:59:59.000Z");
+    // Past PUP's mid-January finals. The plan cards read the same schedule
+    // through semesterUntilLabel, so the copy cannot drift from this.
+    expect(periodEndFor("subject_sem", new Date("2026-11-01T00:00:00Z")).toISOString()).toBe(
+      "2027-01-31T15:59:59.000Z"
+    );
   });
 
-  it("floors semester plans at 31 days when SEMESTER_END is stale", () => {
-    const from = new Date("2027-01-25T00:00:00Z"); // < 31 days before SEMESTER_END
+  it("rolls a purchase after the 1st-sem cutoff into the 2nd semester", () => {
+    const from = new Date("2027-01-25T00:00:00Z");
+    expect(periodEndFor("subject_sem", from).toISOString()).toBe("2027-06-30T15:59:59.000Z");
+    expect(periodEndFor("year_sem", from).toISOString()).toBe("2027-06-30T15:59:59.000Z");
+  });
+
+  it("floors semester plans at 31 days late in a term", () => {
+    const from = new Date("2027-07-15T00:00:00Z"); // midyear, < 31 days before Jul 31
     expect(periodEndFor("subject_sem", from).getTime()).toBe(from.getTime() + 31 * DAY_MS);
+  });
+
+  it("falls back to 31 days, loudly, when the schedule has run out", () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const from = new Date("2027-09-01T00:00:00Z");
+    expect(periodEndFor("year_sem", from).getTime()).toBe(from.getTime() + 31 * DAY_MS);
+    expect(spy).toHaveBeenCalledWith(expect.stringMatching(/TERM_SCHEDULE/));
+    spy.mockRestore();
   });
 });

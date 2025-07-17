@@ -1,30 +1,43 @@
 /**
- * One-off: extend semester subscriptions sold under the old SEMESTER_END.
+ * Move semester subscriptions from one term access end to another.
  *
- * SEMESTER_END moved from 2026-12-31 23:59 PH to 2027-01-31 23:59 PH so that
- * semester access covers PUP's mid-January finals. Rows already written by the
- * webhook carry the old value as `current_period_end`; this script finds rows
- * whose end equals the old constant EXACTLY and moves them to the new one.
+ * Use when a scheduled term's `accessEndsAt` in lib/terms.ts moves after
+ * passes have already been sold against it (first needed when the old
+ * SEMESTER_END constant moved from 2026-12-31 to 2027-01-31 to cover PUP's January
+ * finals). Rows the webhook wrote carry the old end as `current_period_end`;
+ * this finds rows whose end equals --from EXACTLY and moves them to --to.
  *
- *   npx tsx scripts/db/extend-semester-subscriptions.ts           # dry run
- *   npx tsx scripts/db/extend-semester-subscriptions.ts --apply   # write
+ *   npx tsx scripts/db/extend-semester-subscriptions.ts --from 2027-06-30T15:59:59Z --to 2027-07-07T15:59:59Z
+ *   npx tsx scripts/db/extend-semester-subscriptions.ts --from ... --to ... --apply
+ *
+ * --to must be a term end currently in TERM_SCHEDULE, so the script cannot
+ * move rows to a date the code would not itself grant. Change lib/terms.ts
+ * first, then run this. Full procedure: docs/runbooks/semester-rollover.md.
  *
  * Dry run is the default and never writes. Output is ids, inferred plan,
  * status and period end only — no device ids, user ids or emails.
  *
  * The exact-equality match is the safety property: a subject_month row can
- * only land on 2026-12-31T15:59:59Z to the second by coincidence, and any row
- * an admin set by hand to a different end is left alone. The update re-checks
- * the old value too, so a second --apply is a no-op.
+ * only land on a term end to the second by coincidence, and any row an admin
+ * set by hand to a different end is left alone. The update re-checks the old
+ * value too, so a second --apply is a no-op. Only ever extends: --to must be
+ * later than --from.
  *
  * Credentials come from .env.reports.local, like scripts/db/schema-check.ts.
  * tsx transpiles to CommonJS, so no top-level await.
  */
 
-import { SEMESTER_END } from "../../lib/paymongo";
+import { TERM_SCHEDULE } from "../../lib/terms";
 import { createReportsClient } from "../reports/supabaseAdmin";
 
-const OLD_SEMESTER_END_ISO = "2026-12-31T15:59:59.000Z";
+function isoArg(flag: string): string {
+  const i = process.argv.indexOf(flag);
+  const raw = i === -1 ? undefined : process.argv[i + 1];
+  if (!raw) throw new Error(`${flag} <ISO instant> is required`);
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) throw new Error(`${flag} is not a date: ${raw}`);
+  return d.toISOString();
+}
 
 interface SubscriptionRow {
   id: string;
@@ -35,10 +48,15 @@ interface SubscriptionRow {
 
 async function main(): Promise<void> {
   const apply = process.argv.includes("--apply");
-  const newEndIso = SEMESTER_END.toISOString();
+  const oldEndIso = isoArg("--from");
+  const newEndIso = isoArg("--to");
 
-  if (newEndIso === OLD_SEMESTER_END_ISO) {
-    throw new Error("SEMESTER_END still equals the old end; nothing to extend to.");
+  if (new Date(newEndIso).getTime() <= new Date(oldEndIso).getTime()) {
+    throw new Error("--to must be later than --from; this script only extends access.");
+  }
+  const scheduled = TERM_SCHEDULE.map((t) => new Date(t.accessEndsAt).toISOString());
+  if (!scheduled.includes(newEndIso)) {
+    throw new Error(`--to ${newEndIso} is not a term end in lib/terms.ts (${scheduled.join(", ")}).`);
   }
 
   const client = createReportsClient();
@@ -46,13 +64,13 @@ async function main(): Promise<void> {
   const { data, error } = await client
     .from("subscriptions")
     .select("id, subject_id, status, current_period_end")
-    .eq("current_period_end", OLD_SEMESTER_END_ISO)
+    .eq("current_period_end", oldEndIso)
     .order("created_at", { ascending: true });
   if (error) throw new Error(`Reading subscriptions failed: ${error.message}`);
   const rows = (data ?? []) as SubscriptionRow[];
 
   console.log(`Mode: ${apply ? "APPLY" : "dry run (pass --apply to write)"}`);
-  console.log(`Old end: ${OLD_SEMESTER_END_ISO}`);
+  console.log(`Old end: ${oldEndIso}`);
   console.log(`New end: ${newEndIso}`);
   console.log(`Matching subscriptions: ${rows.length}`);
   for (const row of rows) {
@@ -62,12 +80,12 @@ async function main(): Promise<void> {
     console.log(`  ${row.id}  ${plan.padEnd(11)}  ${row.status.padEnd(9)}  ${row.current_period_end}`);
   }
 
-  // Class blocks are also granted until SEMESTER_END. Reported, not touched:
-  // extending them is a separate decision.
+  // Class blocks are also granted until the term end. Reported, not touched:
+  // extending them is a separate decision (SQL in the runbook).
   const { count: classCount, error: classError } = await client
     .from("classes")
     .select("id", { count: "exact", head: true })
-    .eq("current_period_end", OLD_SEMESTER_END_ISO);
+    .eq("current_period_end", oldEndIso);
   console.log(
     `Classes on the old end (not modified by this script): ${
       classError ? `not read (${classError.message})` : classCount ?? "not read"
@@ -81,7 +99,7 @@ async function main(): Promise<void> {
     .from("subscriptions")
     .update({ current_period_end: newEndIso })
     .in("id", ids)
-    .eq("current_period_end", OLD_SEMESTER_END_ISO)
+    .eq("current_period_end", oldEndIso)
     .select("id, current_period_end");
   if (updateError) throw new Error(`Updating subscriptions failed: ${updateError.message}`);
   console.log(`Updated ${updated?.length ?? 0} of ${ids.length} subscriptions to ${newEndIso}.`);
