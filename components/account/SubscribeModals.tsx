@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { YearGroup, SubjectSummary } from "@/lib/account";
 import { getDeviceId } from "@/lib/device";
+import { semesterUntilLabel } from "@/lib/terms";
 
 // ── subscribe helper (shared by year and subject buttons) ─────────────────────
 
@@ -44,6 +45,8 @@ export function YearSubscribeModal({
   type ModalPlan = "subject_month" | "subject_sem" | "year_sem";
   const [loading, setLoading] = useState<ModalPlan | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // From the term schedule, so the date quoted is the one the webhook grants.
+  const semesterUntil = semesterUntilLabel();
 
   async function handlePlan(plan: ModalPlan) {
     setLoading(plan);
@@ -99,8 +102,7 @@ export function YearSubscribeModal({
               >
                 <div>
                   <p className="text-sm font-medium text-ink">{subjectTitle ?? "This subject"}</p>
-                  {/* "Jan 31" is hand-typed — keep in sync with SEMESTER_END in lib/paymongo.ts */}
-                  <p className="text-xs text-ink-muted">Single subject · until Jan 31 (whole semester)</p>
+                  <p className="text-xs text-ink-muted">Single subject · until {semesterUntil} (whole semester)</p>
                   <span className="inline-block mt-1 text-[10px] font-medium text-accent uppercase tracking-wider">★ Most popular</span>
                 </div>
                 <span className="text-sm font-semibold text-accent shrink-0">
@@ -119,8 +121,7 @@ export function YearSubscribeModal({
           >
             <div>
               <p className="text-sm font-medium text-ink">All of {year.label}</p>
-              {/* "Jan 31" is hand-typed — keep in sync with SEMESTER_END in lib/paymongo.ts */}
-              <p className="text-xs text-ink-muted">Every subject in this year · until Jan 31</p>
+              <p className="text-xs text-ink-muted">Every subject in this year · until {semesterUntil}</p>
               <span className="inline-block mt-1 text-[10px] font-medium text-accent uppercase tracking-wider">Best value</span>
             </div>
             <span className="text-sm font-semibold text-accent shrink-0">

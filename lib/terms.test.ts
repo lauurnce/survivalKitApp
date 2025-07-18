@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   TERM_SCHEDULE,
   SCHEDULE_RUNWAY_DAYS,
@@ -125,3 +127,23 @@ describe("PH date labels", () => {
   });
 });
 
+// ── Single source: no surface may hand-type a term end. ─────────────────────
+// The old SEMESTER_END needed a matching "until Jan 31" typed into two plan
+// components and a reminder comment to change them together. These surfaces
+// now read semesterUntilLabel; a hand-typed date coming back is drift.
+describe("plan copy derives the access end from the schedule", () => {
+  const SURFACES = ["components/SubscribeGate.tsx", "components/account/SubscribeModals.tsx"];
+  const HAND_TYPED = /until (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d/;
+
+  it.each(SURFACES)("%s quotes semesterUntilLabel, not a typed date", (path) => {
+    const text = readFileSync(join(process.cwd(), path), "utf8");
+    expect(text).toMatch(/semesterUntilLabel\(/);
+    expect(text).not.toMatch(HAND_TYPED);
+  });
+
+  it("leaves no SEMESTER_END constant behind in the payment path", () => {
+    for (const path of ["lib/paymongo.ts", "app/api/webhooks/paymongo/route.ts", "app/api/subscribe/route.ts"]) {
+      expect(readFileSync(join(process.cwd(), path), "utf8"), path).not.toMatch(/\bSEMESTER_END\b/);
+    }
+  });
+});
