@@ -181,6 +181,38 @@ describe("drain — priority and renewal", () => {
     expect(await drain(mockSupabase(), 2)).toEqual({ sent: 2, failed: 0 });
     expect(drainQueries).toHaveLength(1);
   });
+
+  it("tells an expiring 1st-sem payer what a renewal now buys: the 2nd semester", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2027-01-28T01:00:00Z")); // the Jan 28 cron run
+    try {
+      pendingRows = [{
+        id: "w1", kind: "expiry_warning", user_id: "u1", to_email: "a@b.test", attempts: 0,
+        payload: { planLabel: "All subjects", accessEndsAt: "2027-01-31T15:59:59.000Z" },
+      }];
+      sendEmail.mockResolvedValue({ ok: true, id: "abc" });
+      const { drain } = await import("./outbox");
+      await drain(mockSupabase());
+    } finally {
+      vi.useRealTimers();
+    }
+    expect((templateArgs[0].accessEndsAt as Date).toISOString()).toBe("2027-01-31T15:59:59.000Z");
+    expect((templateArgs[0].renewalEndsAt as Date).toISOString()).toBe("2027-06-30T15:59:59.000Z");
+  });
+
+  it("quotes the 2nd-semester end in the win-back too", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2027-02-04T01:00:00Z"));
+    try {
+      pendingRows = [{ id: "b1", kind: "winback", user_id: "u1", to_email: "a@b.test", attempts: 0, payload: {} }];
+      sendEmail.mockResolvedValue({ ok: true, id: "abc" });
+      const { drain } = await import("./outbox");
+      await drain(mockSupabase());
+    } finally {
+      vi.useRealTimers();
+    }
+    expect((templateArgs[0].renewalEndsAt as Date).toISOString()).toBe("2027-06-30T15:59:59.000Z");
+  });
 });
 
 describe("drain — reactivation", () => {

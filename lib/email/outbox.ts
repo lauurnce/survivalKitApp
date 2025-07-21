@@ -6,6 +6,7 @@ import { isUnsubscribed, listUnsubscribeHeaders, unsubscribeUrl } from "@/lib/em
 import { MARKETING_KINDS, TRANSACTIONAL_KINDS, type EmailKind, type RenderedEmail } from "./types";
 import { canonicalUrl } from "@/lib/appOrigin";
 import { taggedUrl, withUtm } from "@/lib/utm";
+import { semesterAccessEndFor } from "@/lib/terms";
 
 const MAX_ATTEMPTS = 5;
 
@@ -54,11 +55,14 @@ function render(kind: EmailKind, p: Record<string, unknown>, userId: string): Re
   const planLabel = String(p.planLabel ?? "your plan");
   const ends = p.accessEndsAt ? new Date(String(p.accessEndsAt)) : new Date();
   const url = lifecycleUrl(kind, String(p.url ?? canonicalUrl("/account")));
+  // What renewing buys, worked out at send time: by the Jan 28 warning for a
+  // Jan 31 term end, a semester pass already belongs to the next term.
+  const renewalEndsAt = semesterAccessEndFor(new Date()) ?? undefined;
   switch (kind) {
     case "receipt": return receiptEmail({ planLabel, amountCentavos: Number(p.amountCentavos ?? 0), accessEndsAt: ends, returnUrl: url });
     case "welcome": return welcomeEmail({ planLabel, returnUrl: url });
-    case "expiry_warning": return expiryWarningEmail({ planLabel, accessEndsAt: ends, renewUrl: url });
-    case "winback": return winbackEmail({ planLabel, renewUrl: url });
+    case "expiry_warning": return expiryWarningEmail({ planLabel, accessEndsAt: ends, renewUrl: url, renewalEndsAt });
+    case "winback": return winbackEmail({ planLabel, renewUrl: url, renewalEndsAt });
     case "reactivation": {
       // "/" is where the enter event records UTM tags.
       const campaign = String(p.campaign ?? REACTIVATION_CAMPAIGN);
