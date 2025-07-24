@@ -8,7 +8,6 @@ import {
   couponDiscountFor,
   getCheckoutSessionById,
   PLANS,
-  SEMESTER_END,
   MAX_SEATS,
 } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
@@ -228,7 +227,9 @@ export async function POST(req: NextRequest) {
         rep_device_id: repDeviceId,
         seat_cap: seats,
         status: "active",
-        current_period_end: SEMESTER_END.toISOString(),
+        // A class block is a semester product: it ends with the term it was
+        // paid in, exactly like a year_sem pass (lib/terms.ts).
+        current_period_end: periodEndFor("year_sem", paidAt).toISOString(),
         paymongo_link_id: linkId,
       });
       if (error?.code === "23505") {
@@ -299,6 +300,11 @@ export async function POST(req: NextRequest) {
       ? new Date(paidAtSeconds * 1000)
       : new Date();
 
+  // One access end for the grant and the receipt, keyed to when the payment
+  // was made: a semester pass ends with the term it was bought in, even if
+  // the webhook is delivered after a term cutoff.
+  const periodEnd = periodEndFor(plan, paidAt);
+
   try {
     const { deduped } = await recordPayment(supabase, {
       linkId,
@@ -308,7 +314,7 @@ export async function POST(req: NextRequest) {
       amount: paidAmount,
       paidAt,
       userId,
-      periodEnd: periodEndFor(plan),
+      periodEnd,
     });
     if (deduped) return NextResponse.json({ ok: true, deduped: true });
   } catch (err) {
@@ -337,7 +343,7 @@ export async function POST(req: NextRequest) {
           payload: {
             planLabel: PLANS[plan].description.replace("BSIT Survival Kit — ", ""),
             amountCentavos: paidAmount,
-            accessEndsAt: periodEndFor(plan).toISOString(),
+            accessEndsAt: periodEnd.toISOString(),
             url: canonicalUrl("/account"),
           },
         };

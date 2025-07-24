@@ -456,7 +456,7 @@ describe("POST /api/subscribe coupon free unlocks", () => {
       amount: 0,
       userId: USER,
     });
-    // Semester plan grants until SEMESTER_END, not a stub period.
+    // Semester plan grants until the end of the current term (lib/terms.ts), not a stub period.
     expect(recordedPayments[0].periodEnd).toBeInstanceOf(Date);
   });
 

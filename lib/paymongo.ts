@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { semesterAccessEndFor } from "./terms";
 
 // ── Plans ─────────────────────────────────────────────────────────────────────
 // The single source of truth for what we sell. Display labels in
@@ -41,15 +42,6 @@ export function couponDiscountFor(plan: PlanKey): number {
 // client-side copy (this file pulls in node:crypto) — keep the numbers equal.
 export const MAX_SEATS = 55;
 
-// End of 1st Semester AY 2026-27 access: Jan 31, 2027 23:59 PH (UTC+8).
-// Deliberately past the calendar year: PUP's first-semester finals run
-// ~Jan 12-17, 2027 (docs/gtm/academic-calendars-ay2026-27.md), so a Dec 31
-// cut-off would lock payers out right before their exam.
-// Bump once per semester when the selling window rolls over, and update the
-// hand-typed "Jan 31" copy in SubscribeGate.tsx and account/SubscribeModals.tsx
-// in the same change.
-export const SEMESTER_END = new Date("2027-01-31T15:59:59Z");
-
 const PERIOD_31_DAYS_MS = 31 * 24 * 60 * 60 * 1000;
 
 // PayMongo's Links API (POST /v1/links) was discontinued for this account on
@@ -69,12 +61,26 @@ export function resolvePlan(planToken: string | null, subjectId: string | null):
   return subjectId !== null ? "subject_month" : "year_sem";
 }
 
-// Access end for a plan. Semester plans are floored at 31 days so a stale
-// SEMESTER_END constant can never grant less than a month.
+// Access end for a plan bought at `from`. Semester plans run to the end of
+// the term they were bought in (lib/terms.ts TERM_SCHEDULE), floored at 31 days
+// so a purchase late in a term can never get less than a month.
+//
+// If the schedule has run out, the floor is all that is left: the buyer gets
+// 31 days and the error log says why. lib/terms.test.ts fails the build 30 days
+// before that can happen, so reaching this branch means the tripwire was
+// ignored — see docs/runbooks/semester-rollover.md.
 export function periodEndFor(plan: PlanKey, from: Date = new Date()): Date {
   const monthEnd = new Date(from.getTime() + PERIOD_31_DAYS_MS);
   if (plan === "subject_month") return monthEnd;
-  return SEMESTER_END.getTime() > monthEnd.getTime() ? SEMESTER_END : monthEnd;
+  const termEnd = semesterAccessEndFor(from);
+  if (!termEnd) {
+    console.error(
+      `periodEndFor: no term in TERM_SCHEDULE covers ${from.toISOString()}; ` +
+        `granting ${plan} 31 days. Add the next term to lib/terms.ts.`
+    );
+    return monthEnd;
+  }
+  return termEnd.getTime() > monthEnd.getTime() ? termEnd : monthEnd;
 }
 
 export async function createPaymongoLink(

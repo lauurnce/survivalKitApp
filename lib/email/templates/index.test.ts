@@ -36,6 +36,21 @@ describe("templates", () => {
       .toContain("expired");
   });
 
+  it("tells the reader what a renewal buys when the term schedule knows", () => {
+    const renewalEndsAt = new Date("2027-06-30T15:59:59Z");
+    const warn = expiryWarningEmail({ planLabel: "P", accessEndsAt: ENDS, renewUrl: "https://x.test/c", renewalEndsAt });
+    const back = winbackEmail({ planLabel: "P", renewUrl: "https://x.test/d", renewalEndsAt });
+    for (const e of [warn, back]) {
+      expect(e.text).toContain("A semester pass bought now runs until June 30, 2027.");
+      expect(e.html).toContain("June 30, 2027");
+    }
+  });
+
+  it("omits the renewal line rather than guess when no end is known", () => {
+    expect(expiryWarningEmail({ planLabel: "P", accessEndsAt: ENDS, renewUrl: "https://x.test/c" }).text)
+      .not.toContain("semester pass bought now");
+  });
+
   it("escapes HTML metacharacters in interpolated values", () => {
     const e = welcomeEmail({ planLabel: `Evil<script>alert(1)</script>`, returnUrl: "https://x.test/b" });
     expect(e.html).not.toContain("<script>");

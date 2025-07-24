@@ -484,6 +484,8 @@ async function main(): Promise<void> {
     },
     { label: "Semester end", value: semesterEnd.semesterEndIso.slice(0, 10) },
     { label: "Days to semester end", value: semesterEnd.daysRemaining },
+    // lib/terms.test.ts fails the build at 30; docs/runbooks/semester-rollover.md.
+    { label: "Days of term schedule left", value: semesterEnd.scheduleDaysRemaining },
     { label: "Sem/month plan parity", value: parity.identical ? "IDENTICAL" : "distinct" },
     // Copied from Operations, never estimated here.
     { label: ACTIVE_CPU_LABEL, value: activeCpu.value },

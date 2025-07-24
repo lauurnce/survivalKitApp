@@ -3,9 +3,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { sendEmail } from "@/lib/email/client";
 import { receiptEmail, welcomeEmail, expiryWarningEmail, winbackEmail, reactivationEmail } from "@/lib/email/templates";
 import { isUnsubscribed, listUnsubscribeHeaders, unsubscribeUrl } from "@/lib/email/unsubscribe";
-import { MARKETING_KINDS, type EmailKind, type RenderedEmail } from "./types";
+import { MARKETING_KINDS, TRANSACTIONAL_KINDS, type EmailKind, type RenderedEmail } from "./types";
 import { canonicalUrl } from "@/lib/appOrigin";
 import { taggedUrl, withUtm } from "@/lib/utm";
+import { semesterAccessEndFor } from "@/lib/terms";
 
 const MAX_ATTEMPTS = 5;
 
@@ -54,11 +55,14 @@ function render(kind: EmailKind, p: Record<string, unknown>, userId: string): Re
   const planLabel = String(p.planLabel ?? "your plan");
   const ends = p.accessEndsAt ? new Date(String(p.accessEndsAt)) : new Date();
   const url = lifecycleUrl(kind, String(p.url ?? canonicalUrl("/account")));
+  // What renewing buys, worked out at send time: by the Jan 28 warning for a
+  // Jan 31 term end, a semester pass already belongs to the next term.
+  const renewalEndsAt = semesterAccessEndFor(new Date()) ?? undefined;
   switch (kind) {
     case "receipt": return receiptEmail({ planLabel, amountCentavos: Number(p.amountCentavos ?? 0), accessEndsAt: ends, returnUrl: url });
     case "welcome": return welcomeEmail({ planLabel, returnUrl: url });
-    case "expiry_warning": return expiryWarningEmail({ planLabel, accessEndsAt: ends, renewUrl: url });
-    case "winback": return winbackEmail({ planLabel, renewUrl: url });
+    case "expiry_warning": return expiryWarningEmail({ planLabel, accessEndsAt: ends, renewUrl: url, renewalEndsAt });
+    case "winback": return winbackEmail({ planLabel, renewUrl: url, renewalEndsAt });
     case "reactivation": {
       // "/" is where the enter event records UTM tags.
       const campaign = String(p.campaign ?? REACTIVATION_CAMPAIGN);
@@ -74,15 +78,29 @@ function render(kind: EmailKind, p: Record<string, unknown>, userId: string): Re
   }
 }
 
-// Sends every due pending row. Never throws: the cron reports counts, and a
-// permanently failing row parks at status 'failed' where it stays queryable.
+// Sends every due pending row, up to `limit`. Never throws: the cron reports
+// counts, and a permanently failing row parks at status 'failed' where it
+// stays queryable.
+//
+// Transactional mail (receipts, expiry warnings, win-backs) is fetched first
+// and marketing only fills what is left. Ordering by send_after alone let a
+// backlog of older marketing rows — a reactivation campaign at 40/day, or a
+// batch stuck retrying — crowd a time-critical "your access ends Jan 31"
+// warning past the 50-row cap.
 export async function drain(supabase: SupabaseClient, limit = 50): Promise<{ sent: number; failed: number }> {
-  const { data } = await supabase
-    .from("email_outbox").select("*")
-    .eq("status", "pending")
-    .lte("send_after", new Date().toISOString())
-    .order("send_after", { ascending: true })
-    .limit(limit);
+  const due = (kinds: readonly EmailKind[], n: number) =>
+    supabase
+      .from("email_outbox").select("*")
+      .eq("status", "pending")
+      .in("kind", [...kinds])
+      .lte("send_after", new Date().toISOString())
+      .order("send_after", { ascending: true })
+      .limit(n);
+
+  const { data: urgent } = await due(TRANSACTIONAL_KINDS, limit);
+  const room = limit - (urgent?.length ?? 0);
+  const { data: marketing } = room > 0 ? await due([...MARKETING_KINDS], room) : { data: [] };
+  const data = [...(urgent ?? []), ...(marketing ?? [])];
 
   let sent = 0, failed = 0;
   for (const row of data ?? []) {

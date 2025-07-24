@@ -10,8 +10,14 @@ vi.mock("@/lib/email/templates", () => ({
     return { subject: "r", html: "<p>r</p>", text: "r" };
   },
   welcomeEmail: () => ({ subject: "w", html: "<p>w</p>", text: "w" }),
-  expiryWarningEmail: () => ({ subject: "e", html: "<p>e</p>", text: "e" }),
-  winbackEmail: () => ({ subject: "b", html: "<p>b</p>", text: "b" }),
+  expiryWarningEmail: (i: Record<string, unknown>) => {
+    templateArgs.push(i);
+    return { subject: "e", html: "<p>e</p>", text: "e" };
+  },
+  winbackEmail: (i: Record<string, unknown>) => {
+    templateArgs.push(i);
+    return { subject: "b", html: "<p>b</p>", text: "b" };
+  },
   reactivationEmail: (i: Record<string, unknown>) => {
     templateArgs.push(i);
     return { subject: "f", html: "<p>f</p>", text: "f" };
@@ -21,6 +27,7 @@ vi.mock("@/lib/email/templates", () => ({
 let inserted: Record<string, unknown>[] = [];
 let insertError: { code?: string; message: string } | null = null;
 let pendingRows: Record<string, unknown>[] = [];
+const drainQueries: Array<{ kinds: string[]; limit: number }> = [];
 const updates: Record<string, unknown>[] = [];
 
 let unsubscribed: Set<string> = new Set();
@@ -42,9 +49,20 @@ function mockSupabase() {
         if (!insertError) inserted.push(row);
         return Promise.resolve({ error: insertError });
       },
+      // drain(): select().eq(status).in(kind, kinds).lte(send_after).order().limit(n)
       select: () => ({
         eq: () => ({
-          lte: () => ({ order: () => ({ limit: () => Promise.resolve({ data: pendingRows, error: null }) }) }),
+          in: (_c: string, kinds: string[]) => ({
+            lte: () => ({
+              order: () => ({
+                limit: (n: number) => {
+                  drainQueries.push({ kinds, limit: n });
+                  const hit = pendingRows.filter((r) => kinds.includes(String(r.kind))).slice(0, n);
+                  return Promise.resolve({ data: hit, error: null });
+                },
+              }),
+            }),
+          }),
         }),
       }),
       update: (patch: Record<string, unknown>) => ({
@@ -55,7 +73,7 @@ function mockSupabase() {
 }
 
 beforeEach(() => {
-  inserted = []; insertError = null; pendingRows = []; updates.length = 0; templateArgs.length = 0; sendEmail.mockReset();
+  inserted = []; insertError = null; pendingRows = []; updates.length = 0; drainQueries.length = 0; templateArgs.length = 0; sendEmail.mockReset();
   unsubscribed = new Set(); unsubLookupError = null;
   process.env.EMAIL_UNSUBSCRIBE_SECRET = "test-unsubscribe-secret-at-least-32-chars";
 });
@@ -129,6 +147,74 @@ describe("drain", () => {
   });
 });
 
+describe("drain — priority and renewal", () => {
+  const reactivation = (i: number) => ({
+    id: `r${i}`, kind: "reactivation", user_id: "11111111-2222-4333-8444-555555555555",
+    to_email: "a@b.test", attempts: 0, payload: { scope_key: "finals-dec-2026" },
+  });
+
+  // A reactivation backlog older than the warning must not push the warning
+  // past the daily cap.
+  it("sends transactional mail before an older marketing backlog", async () => {
+    pendingRows = [
+      ...Array.from({ length: 60 }, (_, i) => reactivation(i)),
+      { id: "w1", kind: "expiry_warning", user_id: "u1", to_email: "a@b.test", attempts: 0, payload: {} },
+    ];
+    sendEmail.mockResolvedValue({ ok: true, id: "abc" });
+    const { drain } = await import("./outbox");
+    expect(await drain(mockSupabase(), 50)).toEqual({ sent: 50, failed: 0 });
+    expect(updates[0]).toMatchObject({ id: "w1", status: "sent" });
+    expect(drainQueries).toEqual([
+      { kinds: ["receipt", "welcome", "expiry_warning", "winback"], limit: 50 },
+      { kinds: ["reactivation"], limit: 49 },
+    ]);
+  });
+
+  it("skips the marketing query when transactional mail fills the cap", async () => {
+    pendingRows = [
+      { id: "e1", kind: "receipt", to_email: "a@b.test", attempts: 0, payload: {} },
+      { id: "e2", kind: "receipt", to_email: "a@b.test", attempts: 0, payload: {} },
+      reactivation(1),
+    ];
+    sendEmail.mockResolvedValue({ ok: true, id: "abc" });
+    const { drain } = await import("./outbox");
+    expect(await drain(mockSupabase(), 2)).toEqual({ sent: 2, failed: 0 });
+    expect(drainQueries).toHaveLength(1);
+  });
+
+  it("tells an expiring 1st-sem payer what a renewal now buys: the 2nd semester", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2027-01-28T01:00:00Z")); // the Jan 28 cron run
+    try {
+      pendingRows = [{
+        id: "w1", kind: "expiry_warning", user_id: "u1", to_email: "a@b.test", attempts: 0,
+        payload: { planLabel: "All subjects", accessEndsAt: "2027-01-31T15:59:59.000Z" },
+      }];
+      sendEmail.mockResolvedValue({ ok: true, id: "abc" });
+      const { drain } = await import("./outbox");
+      await drain(mockSupabase());
+    } finally {
+      vi.useRealTimers();
+    }
+    expect((templateArgs[0].accessEndsAt as Date).toISOString()).toBe("2027-01-31T15:59:59.000Z");
+    expect((templateArgs[0].renewalEndsAt as Date).toISOString()).toBe("2027-06-30T15:59:59.000Z");
+  });
+
+  it("quotes the 2nd-semester end in the win-back too", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2027-02-04T01:00:00Z"));
+    try {
+      pendingRows = [{ id: "b1", kind: "winback", user_id: "u1", to_email: "a@b.test", attempts: 0, payload: {} }];
+      sendEmail.mockResolvedValue({ ok: true, id: "abc" });
+      const { drain } = await import("./outbox");
+      await drain(mockSupabase());
+    } finally {
+      vi.useRealTimers();
+    }
+    expect((templateArgs[0].renewalEndsAt as Date).toISOString()).toBe("2027-06-30T15:59:59.000Z");
+  });
+});
+
 describe("drain — reactivation", () => {
   const row = () => ({
     id: "r1", kind: "reactivation", user_id: "11111111-2222-4333-8444-555555555555",
@@ -180,7 +266,7 @@ describe("drain — reactivation", () => {
     const { drain } = await import("./outbox");
     expect(await drain(mockSupabase())).toEqual({ sent: 1, failed: 1 });
     expect(sendEmail).toHaveBeenCalledTimes(1);
-    expect(updates[0]).toMatchObject({ id: "r1", status: "pending", last_error: expect.stringMatching(/EMAIL_UNSUBSCRIBE_SECRET/) });
+    expect(updates.find((u) => u.id === "r1")).toMatchObject({ status: "pending", last_error: expect.stringMatching(/EMAIL_UNSUBSCRIBE_SECRET/) });
   });
 
   it("does not consult the opt-out list for transactional mail", async () => {
