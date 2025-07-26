@@ -165,3 +165,26 @@ describe("signUpAction", () => {
     }
   });
 });
+
+describe("signUpAction — return path", () => {
+  async function redirectTarget(next: string) {
+    try {
+      await signUpAction({}, form({ ...valid, next }));
+    } catch (e) {
+      return (e as { to?: string }).to;
+    }
+    return undefined;
+  }
+
+  it("returns to the module with ?print=1 intact", async () => {
+    expect(await redirectTarget("/year/y1/subjects/s1/modules/m1?print=1")).toBe(
+      "/year/y1/subjects/s1/modules/m1?print=1",
+    );
+  });
+
+  it("never redirects off-site, whatever the hidden field says", async () => {
+    for (const evil of ["//evil.com", "https://evil.com", "/\\evil.com", "/%2F%2Fevil.com"]) {
+      expect(await redirectTarget(evil)).toBe("/account");
+    }
+  });
+});

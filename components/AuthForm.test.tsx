@@ -75,3 +75,28 @@ describe("AuthForm — accessible password field", () => {
     );
   });
 });
+
+describe("AuthForm — return path round trip", () => {
+  const next = "/year/y1/subjects/s1/modules/m1?print=1";
+
+  it("signup's Log in link carries the same return path, query included", () => {
+    render(<AuthForm mode="signup" action={noop} next={next} />);
+    const href = screen.getByRole("link", { name: "Log in" }).getAttribute("href")!;
+    const url = new URL(href, "https://x.test");
+    expect(url.pathname).toBe("/login");
+    expect(url.searchParams.get("next")).toBe(next);
+  });
+
+  it("login's Sign up link carries the same return path, query included", () => {
+    render(<AuthForm mode="login" action={noop} next={next} />);
+    const href = screen.getByRole("link", { name: "Sign up" }).getAttribute("href")!;
+    const url = new URL(href, "https://x.test");
+    expect(url.pathname).toBe("/signup");
+    expect(url.searchParams.get("next")).toBe(next);
+  });
+
+  it("submits the return path with the form", () => {
+    const { container } = render(<AuthForm mode="login" action={noop} next={next} />);
+    expect(container.querySelector('input[name="next"]')).toHaveValue(next);
+  });
+});

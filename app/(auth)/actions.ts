@@ -5,6 +5,7 @@ import { createSSRServerClient } from "@/lib/supabase/ssrServer";
 import { claimDeviceRows } from "@/lib/auth/claim";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { validateCredentials } from "@/lib/auth/validateCredentials";
+import { safeNextPath } from "@/lib/auth/safeNext";
 import { validateSignupSchool } from "@/lib/profile";
 import { saveSignupSchool } from "@/lib/profileStore";
 
@@ -12,17 +13,6 @@ async function claimForUser(userId: string) {
   const jar = await cookies();
   const deviceId = verifyDeviceCookie(jar.get(DEVICE_COOKIE)?.value);
   if (deviceId) await claimDeviceRows(userId, deviceId);
-}
-
-// Only allow redirects to an internal path. Rejects "null"/"undefined" strings
-// (which break new URL()) and absolute URLs / protocol-relative paths (open
-// redirect). Falls back to the dashboard.
-function safeNext(raw: FormDataEntryValue | null): string {
-  const v = typeof raw === "string" ? raw : "";
-  if (!v || v === "null" || v === "undefined") return "/account";
-  // must be a single-leading-slash internal path, not "//host" or "/\evil"
-  if (!v.startsWith("/") || v.startsWith("//") || v.startsWith("/\\")) return "/account";
-  return v;
 }
 
 // Signature matches React 19's useActionState: (prevState, formData).
@@ -36,7 +26,7 @@ export async function signUpAction(
 ): Promise<AuthState> {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  const next = safeNext(formData.get("next"));
+  const next = safeNextPath(formData.get("next"));
   const invalid = validateCredentials(email, password);
   if (invalid) return { error: invalid };
 
@@ -79,7 +69,7 @@ export async function signInAction(
 ): Promise<AuthState> {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  const next = safeNext(formData.get("next"));
+  const next = safeNextPath(formData.get("next"));
   const invalid = validateCredentials(email, password);
   if (invalid) return { error: invalid };
 
