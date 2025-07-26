@@ -8,7 +8,7 @@ import { SchoolFields } from "./SchoolFields";
 // success. useActionState wires it directly to the form, so submission works
 // via native form POST even before/without client hydration (progressive
 // enhancement) — no fragile client-side onClick wrapper.
-type State = { error?: string };
+type State = { error?: string; notice?: string };
 type Action = (state: State, formData: FormData) => Promise<State>;
 
 function SubmitButton({ label, pendingLabel }: { label: string; pendingLabel: string }) {
@@ -112,6 +112,11 @@ export function AuthForm({
       {state?.error && (
         <p role="alert" className="text-sm text-accent">
           {state.error}
+        </p>
+      )}
+      {state?.notice && (
+        <p role="status" className="text-sm text-ink">
+          {state.notice}
         </p>
       )}
       <SubmitButton label={title} pendingLabel={pendingLabel} />

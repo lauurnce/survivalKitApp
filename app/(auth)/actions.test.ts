@@ -12,16 +12,18 @@ vi.mock("next/navigation", () => ({
     throw Object.assign(new Error("NEXT_REDIRECT"), { to });
   },
 }));
+
+const signInWithPassword = vi.fn();
+vi.mock("@/lib/supabase/ssrServer", () => ({
+  createSSRServerClient: async () => ({ auth: { signUp, signInWithPassword } }),
+}));
 vi.mock("next/headers", () => ({
   cookies: async () => ({ get: () => undefined }),
-}));
-vi.mock("@/lib/supabase/ssrServer", () => ({
-  createSSRServerClient: async () => ({ auth: { signUp } }),
 }));
 vi.mock("@/lib/auth/claim", () => ({ claimDeviceRows }));
 vi.mock("@/lib/profileStore", () => ({ saveSignupSchool }));
 
-const { signUpAction } = await import("./actions");
+const { signUpAction, signInAction } = await import("./actions");
 
 function form(fields: Record<string, string>) {
   const fd = new FormData();
@@ -50,7 +52,10 @@ beforeEach(() => {
   signUp.mockReset();
   saveSignupSchool.mockReset();
   claimDeviceRows.mockReset();
-  signUp.mockResolvedValue({ data: { user: { id: "user-1" } }, error: null });
+  signUp.mockResolvedValue({
+    data: { user: { id: "user-1", identities: [{ id: "i1" }] }, session: { access_token: "t" } },
+    error: null,
+  });
   saveSignupSchool.mockResolvedValue(undefined);
 });
 
@@ -186,5 +191,111 @@ describe("signUpAction — return path", () => {
     for (const evil of ["//evil.com", "https://evil.com", "/\\evil.com", "/%2F%2Fevil.com"]) {
       expect(await redirectTarget(evil)).toBe("/account");
     }
+  });
+});
+
+describe("signUpAction — provider errors become clear messages", () => {
+  const cases: [Record<string, unknown>, RegExp][] = [
+    [{ code: "user_already_exists", status: 422 }, /already exists.*log in/i],
+    [{ code: "email_exists", status: 422 }, /already exists/i],
+    [{ code: "weak_password", status: 422 }, /too easy to guess/i],
+    [{ code: "email_address_invalid", status: 400 }, /can't be used/i],
+    [{ code: "over_request_rate_limit", status: 429 }, /too many attempts/i],
+    [{ status: 429 }, /too many attempts/i],
+    [{ code: "over_email_send_rate_limit", status: 429 }, /too many attempts/i],
+    [{ code: "signup_disabled", status: 422 }, /paused/i],
+    [{ code: "unexpected_failure", status: 500 }, /^Unable to create account/],
+  ];
+  for (const [err, expected] of cases) {
+    it(`${err.code ?? err.status} → ${expected}`, async () => {
+      const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+      signUp.mockResolvedValueOnce({
+        data: { user: null, session: null },
+        error: { ...err, message: "internal provider detail" },
+      });
+      const result = (await run(valid)) as { error?: string };
+      consoleError.mockRestore();
+      expect(result.error).toMatch(expected);
+      expect(result.error).not.toContain("internal provider detail");
+      expect(claimDeviceRows).not.toHaveBeenCalled();
+    });
+  }
+});
+
+describe("signUpAction — email confirmation", () => {
+  it("asks the student to confirm instead of redirecting them signed out", async () => {
+    signUp.mockResolvedValueOnce({
+      data: { user: { id: "user-1", identities: [{ id: "i1" }] }, session: null },
+      error: null,
+    });
+    const result = await run(valid);
+    expect(result).toEqual({ notice: expect.stringMatching(/confirm your email/i) });
+    expect(claimDeviceRows).not.toHaveBeenCalled();
+    expect(saveSignupSchool).toHaveBeenCalledWith("user-1", expect.anything());
+  });
+
+  it("answers an obfuscated duplicate identically and writes nothing for it", async () => {
+    signUp.mockResolvedValueOnce({
+      data: { user: { id: "fake", identities: [] }, session: null },
+      error: null,
+    });
+    const result = await run(valid);
+    expect(result).toEqual({ notice: expect.stringMatching(/confirm your email/i) });
+    expect(saveSignupSchool).not.toHaveBeenCalled();
+    expect(claimDeviceRows).not.toHaveBeenCalled();
+  });
+
+  it("points the confirmation link at the canonical login page with the return path", async () => {
+    await run({ ...valid, next: "/year/y1/subjects/s1/modules/m1?print=1" });
+    const redirectTo = signUp.mock.calls[0][0].options.emailRedirectTo as string;
+    const url = new URL(redirectTo);
+    expect(url.origin).toBe("https://tryi2i.com");
+    expect(url.pathname).toBe("/login");
+    expect(url.searchParams.get("next")).toBe("/year/y1/subjects/s1/modules/m1?print=1");
+  });
+});
+
+describe("signUpAction — email normalisation", () => {
+  it("trims and lowercases the email before creating the account", async () => {
+    await run({ ...valid, email: "  Student@Example.COM " });
+    expect(signUp.mock.calls[0][0].email).toBe("student@example.com");
+  });
+});
+
+describe("validateCredentials — upper bound", () => {
+  it("rejects a password longer than bcrypt reads", () => {
+    expect(validateCredentials("a@b.com", "x".repeat(73))).toMatch(/at most 72/);
+  });
+});
+
+describe("signInAction", () => {
+  async function login(fields: Record<string, string>) {
+    try {
+      return await signInAction({}, form(fields));
+    } catch (e) {
+      if (e instanceof Error && e.message === "NEXT_REDIRECT") return { redirected: true };
+      throw e;
+    }
+  }
+
+  it("does not say whether the email exists", async () => {
+    signInWithPassword.mockResolvedValueOnce({
+      data: { user: null },
+      error: { code: "invalid_credentials", status: 400, message: "Invalid login credentials" },
+    });
+    expect(await login(valid)).toEqual({ error: "Invalid email or password." });
+  });
+
+  it("tells a rate-limited student to wait", async () => {
+    signInWithPassword.mockResolvedValueOnce({
+      data: { user: null },
+      error: { code: "over_request_rate_limit", status: 429, message: "x" },
+    });
+    expect(await login(valid)).toEqual({ error: expect.stringMatching(/too many attempts/i) });
+  });
+
+  it("follows the return path on success", async () => {
+    signInWithPassword.mockResolvedValueOnce({ data: { user: { id: "user-1" } }, error: null });
+    expect(await login(valid)).toEqual({ redirected: true });
   });
 });
