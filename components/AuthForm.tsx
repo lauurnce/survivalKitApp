@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
-import { useActionState, useId, useState } from "react";
+import { useActionState, useEffect, useId, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { SchoolFields } from "./SchoolFields";
+import { resetSessionCache } from "@/hooks/useSession";
 
 // The server action returns { error?: string } on failure, or redirects on
 // success. useActionState wires it directly to the form, so submission works
@@ -40,6 +41,15 @@ export function AuthForm({
   // a student had just typed whenever signup said "password too weak". The
   // school combobox is already controlled; the password is left to reset.
   const [email, setEmail] = useState("");
+
+  // useSession caches /api/me per pathname, and the auth pages render nothing
+  // that asks it — so a page visited signed out kept its signed-out answer
+  // across the sign-in. The redirect back to it (a client-side navigation)
+  // then showed the reader as still signed out: TopBar said "Log in" and the
+  // print gate re-appeared. Forget every answer while the student is here.
+  useEffect(() => {
+    resetSessionCache();
+  }, []);
   const passwordId = useId();
   const passwordHintId = `${passwordId}-hint`;
   const title = mode === "login" ? "Log in" : "Create account";
