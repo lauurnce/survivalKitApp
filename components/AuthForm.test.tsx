@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { AuthForm } from "./AuthForm";
 
 const noop = vi.fn(async () => ({}));
@@ -98,5 +98,33 @@ describe("AuthForm — return path round trip", () => {
   it("submits the return path with the form", () => {
     const { container } = render(<AuthForm mode="login" action={noop} next={next} />);
     expect(container.querySelector('input[name="next"]')).toHaveValue(next);
+  });
+});
+
+describe("AuthForm — a failed submit keeps what was typed", () => {
+  it("keeps the email and shows the error", async () => {
+    const failing = vi.fn(async () => ({ error: "That password is too easy to guess." }));
+    const { container } = render(<AuthForm mode="login" action={failing} next="/account" />);
+    const email = container.querySelector('input[name="email"]') as HTMLInputElement;
+    const password = container.querySelector('input[name="password"]') as HTMLInputElement;
+    fireEvent.change(email, { target: { value: "student@example.com" } });
+    fireEvent.change(password, { target: { value: "password123" } });
+    await act(async () => {
+      (container.querySelector("form") as HTMLFormElement).requestSubmit();
+    });
+    expect(await screen.findByRole("alert")).toHaveTextContent("too easy to guess");
+    expect(email).toHaveValue("student@example.com");
+  });
+
+  it("shows a notice (not an error) when the action returns one", async () => {
+    const notice = vi.fn(async () => ({ notice: "Check your inbox to confirm your email, then log in to continue." }));
+    const { container } = render(<AuthForm mode="login" action={notice} next="/account" />);
+    fireEvent.change(container.querySelector('input[name="email"]')!, { target: { value: "a@b.co" } });
+    fireEvent.change(container.querySelector('input[name="password"]')!, { target: { value: "password123" } });
+    await act(async () => {
+      (container.querySelector("form") as HTMLFormElement).requestSubmit();
+    });
+    expect(await screen.findByRole("status")).toHaveTextContent(/check your inbox/i);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 });

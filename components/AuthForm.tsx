@@ -35,6 +35,11 @@ export function AuthForm({
 }) {
   const [state, formAction] = useActionState(action, {});
   const [showPassword, setShowPassword] = useState(false);
+  // Controlled on purpose: React 19 resets a form's uncontrolled fields after
+  // every action, including one that returns an error, which wiped the email
+  // a student had just typed whenever signup said "password too weak". The
+  // school combobox is already controlled; the password is left to reset.
+  const [email, setEmail] = useState("");
   const passwordId = useId();
   const passwordHintId = `${passwordId}-hint`;
   const title = mode === "login" ? "Log in" : "Create account";
@@ -71,6 +76,8 @@ export function AuthForm({
         <input
           name="email"
           type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="email"
           className="mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-ink"
