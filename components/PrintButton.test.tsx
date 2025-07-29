@@ -132,3 +132,49 @@ describe("PrintButton — clicked before the session is known", () => {
     expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 });
+
+describe("PrintButton — back from sign-up with ?print=1", () => {
+  beforeEach(() => {
+    window.history.replaceState(null, "", `${MODULE_PATH}?from=dashboard&print=1#top`);
+  });
+
+  it("opens the print dialog once for the now signed-in reader and strips the marker", async () => {
+    const { waitFor } = await import("@testing-library/react");
+    signedIn();
+    const { rerender } = render(<PrintButton {...IDS} />);
+    await waitFor(() => expect(window.print).toHaveBeenCalledTimes(1));
+    expect(window.location.search).toBe("?from=dashboard");
+    expect(window.location.hash).toBe("#top");
+    rerender(<PrintButton {...IDS} />);
+    await new Promise((r) => setTimeout(r, 50));
+    expect(window.print).toHaveBeenCalledTimes(1);
+  });
+
+  it("does nothing until the session is known", () => {
+    loading();
+    render(<PrintButton {...IDS} />);
+    expect(window.location.search).toContain("print=1");
+    expect(window.print).not.toHaveBeenCalled();
+  });
+
+  it("strips the marker but never prints for a reader who is still signed out", async () => {
+    signedOut();
+    render(<PrintButton {...IDS} />);
+    expect(window.location.search).toBe("?from=dashboard");
+    await new Promise((r) => setTimeout(r, 50));
+    expect(window.print).not.toHaveBeenCalled();
+  });
+
+  it("waits for a subscriber's reviewers before printing", async () => {
+    const { waitFor } = await import("@testing-library/react");
+    signedIn();
+    const marker = document.createElement("span");
+    marker.setAttribute("data-reader-unlock", "pending");
+    document.body.appendChild(marker);
+    render(<PrintButton {...IDS} />);
+    await new Promise((r) => setTimeout(r, 300));
+    expect(window.print).not.toHaveBeenCalled();
+    marker.remove();
+    await waitFor(() => expect(window.print).toHaveBeenCalledTimes(1));
+  });
+});

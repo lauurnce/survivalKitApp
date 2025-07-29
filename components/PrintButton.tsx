@@ -4,6 +4,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { logEvent } from "@/lib/analytics";
 import { useSession } from "@/hooks/useSession";
+import { consumePrintParam, waitForPrintReady } from "@/lib/printReady";
 
 interface Props {
   yearId: string;
@@ -53,6 +54,24 @@ export function PrintButton(props: Props) {
     }
     proceed(signedIn);
   }
+
+  // Back from the gate's sign-up/log-in with ?print=1: open the dialog once,
+  // for a signed-in reader, after the reader's content is in. The marker is
+  // stripped from the URL as soon as the session is known, signed in or not,
+  // so a reload or a shared link never re-triggers it.
+  const mounted = useRef(false);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  useEffect(() => {
+    if (!ready || !consumePrintParam() || !signedIn) return;
+    void waitForPrintReady().then(() => {
+      if (mounted.current) window.print();
+    });
+  }, [ready, signedIn]);
 
   useEffect(() => {
     if (!ready || !waitingForSession.current) return;
