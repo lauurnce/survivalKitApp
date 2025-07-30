@@ -212,6 +212,18 @@ describe("POST /api/events — print_click", () => {
     expect(inserts).toHaveLength(1);
     expect(inserts[0]).toMatchObject({ event_type: "print_click" });
   });
+
+  it("accepts print_gate_shown from the signed-out print prompt", async () => {
+    const res = await POST(
+      makeReq({
+        device_id: DEVICE,
+        event_type: "print_gate_shown",
+        module_id: "11111111-2222-3333-4444-555555555555",
+      })
+    );
+    expect((await res.json()).ok).toBe(true);
+    expect(inserts[0]).toMatchObject({ event_type: "print_gate_shown" });
+  });
 });
 
 describe("POST /api/events — device_id trust", () => {

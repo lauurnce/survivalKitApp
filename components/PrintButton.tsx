@@ -43,8 +43,9 @@ export function PrintButton(props: Props) {
       window.print();
     } else {
       setGateOpen(true);
+      void logEvent("print_gate_shown", { year_id: yearId, subject_id: subjectId, module_id: moduleId });
     }
-  }, []);
+  }, [yearId, subjectId, moduleId]);
 
   function handleClick() {
     void logEvent("print_click", { year_id: yearId, subject_id: subjectId, module_id: moduleId });

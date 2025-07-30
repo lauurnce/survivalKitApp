@@ -52,6 +52,7 @@ describe("PrintButton — signed in", () => {
     });
     expect(window.print).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(logEvent).not.toHaveBeenCalledWith("print_gate_shown", expect.anything());
   });
 
   it("leaves itself out of the printout", () => {
@@ -75,6 +76,11 @@ describe("PrintButton — signed out", () => {
     const dialog = screen.getByRole("dialog", { name: PRINT_GATE_TITLE });
     expect(dialog).toBeInTheDocument();
     expect(logEvent).toHaveBeenCalledWith("print_click", expect.anything());
+    expect(logEvent).toHaveBeenCalledWith("print_gate_shown", {
+      year_id: IDS.yearId,
+      subject_id: IDS.subjectId,
+      module_id: IDS.moduleId,
+    });
   });
 
   it("offers Sign up first and Log in second, both returning here with ?print=1", () => {
