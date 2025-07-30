@@ -18,7 +18,13 @@ export interface DeleteAccountOptions {
   newToken?: () => string;
 }
 
-type DbError = { message: string } | null;
+type DbError = { message: string; code?: string } | null;
+
+// PostgREST answers PGRST205 ("Could not find the table … in the schema
+// cache") for a table that does not exist; Postgres itself says 42P01.
+function isMissingTable(error: DbError): boolean {
+  return !!error && (error.code === "PGRST205" || error.code === "42P01");
+}
 
 // RA 10173 right-to-erasure fulfillment for authenticated users.
 //
@@ -118,10 +124,12 @@ export async function deleteAccount(
     }
 
     // ── 3. User-scoped: delete personal content ───────────────────────────
-    check(
-      "subject_quiz_progress",
-      (await supabase.from("subject_quiz_progress").delete().eq("user_id", userId)).error
-    );
+    // subject_quiz_progress (migration 20260827000001) is not on every
+    // database — production has never had it applied. With no table there is
+    // nothing of this user's to erase, so a missing table must not block the
+    // rest of the erasure; every self-service deletion failed on it.
+    const subjectQuiz = (await supabase.from("subject_quiz_progress").delete().eq("user_id", userId)).error;
+    if (!isMissingTable(subjectQuiz)) check("subject_quiz_progress", subjectQuiz);
     check("user_feedback", (await supabase.from("user_feedback").delete().eq("user_id", userId)).error);
     check("email_outbox", (await supabase.from("email_outbox").delete().eq("user_id", userId)).error);
     check("email_unsubscribes", (await supabase.from("email_unsubscribes").delete().eq("user_id", userId)).error);

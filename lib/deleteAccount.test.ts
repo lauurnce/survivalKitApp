@@ -29,6 +29,8 @@ interface MockOpts {
   failOp?: Op;
   failAuth?: boolean;
   failLookup?: boolean;
+  /** Error code for the failing table (e.g. PGRST205: table missing). */
+  failCode?: string;
   email?: string | null;
   /** device_id rows returned by the discovery selects, per table. */
   linked?: Record<string, string[]>;
@@ -48,7 +50,7 @@ function makeSupabaseMock(opts: MockOpts = {}) {
         op === "select"
           ? (opts.linked?.[table] ?? []).map((device_id) => ({ device_id }))
           : null,
-      error: fail ? { message: `${table} boom` } : null,
+      error: fail ? { message: `${table} boom`, code: opts.failCode } : null,
     });
     const b = {
       eq: (col: string, val: unknown) => {
@@ -221,6 +223,34 @@ describe("deleteAccount", () => {
 
     expect(result).toEqual({ ok: false, error: "auth lookup: lookup boom" });
     expect(calls.some((c) => c.op !== "select")).toBe(false);
+  });
+
+  it("finishes the erasure when subject_quiz_progress does not exist on this database", async () => {
+    const { client } = makeSupabaseMock({
+      failTable: "subject_quiz_progress",
+      failOp: "delete",
+      failCode: "PGRST205",
+    });
+    const result = await deleteAccount(client as never, USER);
+
+    expect(result).toEqual({ ok: true });
+    expect(client.auth.admin.deleteUser).toHaveBeenCalledTimes(1);
+  });
+
+  it("still stops on any other subject_quiz_progress error", async () => {
+    const { client } = makeSupabaseMock({ failTable: "subject_quiz_progress", failOp: "delete", failCode: "42501" });
+    const result = await deleteAccount(client as never, USER);
+
+    expect(result.ok).toBe(false);
+    expect(client.auth.admin.deleteUser).not.toHaveBeenCalled();
+  });
+
+  it("does not excuse a missing table anywhere else", async () => {
+    const { client } = makeSupabaseMock({ failTable: "profiles", failOp: "delete", failCode: "PGRST205" });
+    const result = await deleteAccount(client as never, USER);
+
+    expect(result.ok).toBe(false);
+    expect(client.auth.admin.deleteUser).not.toHaveBeenCalled();
   });
 
   it("reports failure when the auth user deletion itself fails", async () => {
