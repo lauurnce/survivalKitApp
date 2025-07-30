@@ -144,5 +144,8 @@ function UnlockWatcher({
     };
   }, [subscribed, yearId, subjectId, moduleId, onUnlocked]);
 
-  return null;
+  // While this reader might still be a subscriber whose bodies are on their
+  // way, say so for the return-and-print flow (lib/printReady.ts). Gone once
+  // the status says "not subscribed" or the bodies land (this unmounts).
+  return subscribed === false ? null : <span hidden data-reader-unlock="pending" />;
 }

@@ -10,6 +10,7 @@ import { ModuleSections, type ReaderSection } from "@/components/ModuleSections"
 import { SignedOutOnly } from "@/components/dashboard/SessionShell";
 import { PageTracker } from "@/components/PageTracker";
 import { PrintButton } from "@/components/PrintButton";
+import { PrintGateRoot } from "@/components/PrintGateRoot";
 import { LastModuleTracker } from "@/components/LastModuleTracker";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
 import { UnlockSuccessToast } from "@/components/UnlockSuccessToast";
@@ -126,6 +127,9 @@ export default async function ReaderPage({ params }: Props) {
   return (
     <ModuleReaderClient moduleId={moduleId} moduleTitle={mod.title}>
       <main className="min-h-screen bg-paper">
+      {/* Locked in the static HTML; opens for a signed-in reader. A
+          signed-out printout is a single "sign up" page (globals.css). */}
+      <PrintGateRoot>
       <PageTracker event="module_open" yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
       {/* Post-payment confirmation; self-dismisses, needs the Suspense that
           Next.js 15 requires around useSearchParams. */}
@@ -292,6 +296,7 @@ export default async function ReaderPage({ params }: Props) {
         )}
         </div>
       </div>
+      </PrintGateRoot>
       </main>
     </ModuleReaderClient>
   );

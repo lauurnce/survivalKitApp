@@ -1,14 +1,15 @@
 "use client";
 import Link from "next/link";
-import { useActionState, useId, useState } from "react";
+import { useActionState, useEffect, useId, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { SchoolFields } from "./SchoolFields";
+import { resetSessionCache } from "@/hooks/useSession";
 
 // The server action returns { error?: string } on failure, or redirects on
 // success. useActionState wires it directly to the form, so submission works
 // via native form POST even before/without client hydration (progressive
 // enhancement) — no fragile client-side onClick wrapper.
-type State = { error?: string };
+type State = { error?: string; notice?: string };
 type Action = (state: State, formData: FormData) => Promise<State>;
 
 function SubmitButton({ label, pendingLabel }: { label: string; pendingLabel: string }) {
@@ -35,6 +36,20 @@ export function AuthForm({
 }) {
   const [state, formAction] = useActionState(action, {});
   const [showPassword, setShowPassword] = useState(false);
+  // Controlled on purpose: React 19 resets a form's uncontrolled fields after
+  // every action, including one that returns an error, which wiped the email
+  // a student had just typed whenever signup said "password too weak". The
+  // school combobox is already controlled; the password is left to reset.
+  const [email, setEmail] = useState("");
+
+  // useSession caches /api/me per pathname, and the auth pages render nothing
+  // that asks it — so a page visited signed out kept its signed-out answer
+  // across the sign-in. The redirect back to it (a client-side navigation)
+  // then showed the reader as still signed out: TopBar said "Log in" and the
+  // print gate re-appeared. Forget every answer while the student is here.
+  useEffect(() => {
+    resetSessionCache();
+  }, []);
   const passwordId = useId();
   const passwordHintId = `${passwordId}-hint`;
   const title = mode === "login" ? "Log in" : "Create account";
@@ -71,6 +86,8 @@ export function AuthForm({
         <input
           name="email"
           type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="email"
           className="mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-ink"
@@ -112,6 +129,11 @@ export function AuthForm({
       {state?.error && (
         <p role="alert" className="text-sm text-accent">
           {state.error}
+        </p>
+      )}
+      {state?.notice && (
+        <p role="status" className="text-sm text-ink">
+          {state.notice}
         </p>
       )}
       <SubmitButton label={title} pendingLabel={pendingLabel} />

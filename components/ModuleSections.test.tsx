@@ -105,3 +105,26 @@ describe("ModuleSections", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });
+
+describe("ModuleSections — print-ready marker", () => {
+  const pending = () => document.querySelector('[data-reader-unlock="pending"]');
+
+  it("marks the page pending while the subscription check is in flight", () => {
+    subscribed = null;
+    renderSections();
+    expect(pending()).not.toBeNull();
+  });
+
+  it("clears it for a reader who is not subscribed", () => {
+    subscribed = false;
+    renderSections();
+    expect(pending()).toBeNull();
+  });
+
+  it("clears it once a subscriber's bodies are in", async () => {
+    subscribed = true;
+    renderSections();
+    await waitFor(() => expect(screen.getByText("PAID ANSWER KEY")).toBeInTheDocument());
+    expect(pending()).toBeNull();
+  });
+});

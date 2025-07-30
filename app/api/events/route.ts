@@ -12,7 +12,7 @@ const VALID_EVENT_TYPES = new Set<EventType>([
   "section_view", "subscribe_click", "paywall_teaser_view",
   "paywall_teaser_click", "unlock_click", "unlock_submitted",
   "share_card_open", "share_card_share", "share_card_download",
-  "print_click",
+  "print_click", "print_gate_shown",
 ]);
 
 // Shared across all serverless instances via the check_rate_limit RPC — the

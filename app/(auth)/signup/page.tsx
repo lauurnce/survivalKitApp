@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AuthForm } from "@/components/AuthForm";
+import { safeNextParam } from "@/lib/auth/safeNext";
 import { signUpAction } from "../actions";
 
 export const metadata: Metadata = {
@@ -10,9 +11,8 @@ export const metadata: Metadata = {
 export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string | string[] }>;
 }) {
   const { next } = await searchParams;
-  const safe = next && next.startsWith("/") && !next.startsWith("//") ? next : "/account";
-  return <AuthForm mode="signup" action={signUpAction} next={safe} />;
+  return <AuthForm mode="signup" action={signUpAction} next={safeNextParam(next)} />;
 }

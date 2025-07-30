@@ -74,7 +74,7 @@ export function SignupNudgeToast({ signupHref }: Props) {
     // needs the device cookie, not sign-in, so the signed-out reader this
     // toast targets can trigger both at once.
     <div
-      className="fixed top-6 inset-x-0 z-40 flex justify-center px-4"
+      className="fixed top-6 inset-x-0 z-40 flex justify-center px-4 print:hidden"
       onClick={(e) => e.stopPropagation()}
     >
       <div

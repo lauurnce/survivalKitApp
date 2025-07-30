@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { AuthForm } from "./AuthForm";
 
 const noop = vi.fn(async () => ({}));
@@ -73,5 +73,83 @@ describe("AuthForm — accessible password field", () => {
     expect(screen.getByLabelText("Password")).toHaveAccessibleDescription(
       "At least 8 characters.",
     );
+  });
+});
+
+describe("AuthForm — return path round trip", () => {
+  const next = "/year/y1/subjects/s1/modules/m1?print=1";
+
+  it("signup's Log in link carries the same return path, query included", () => {
+    render(<AuthForm mode="signup" action={noop} next={next} />);
+    const href = screen.getByRole("link", { name: "Log in" }).getAttribute("href")!;
+    const url = new URL(href, "https://x.test");
+    expect(url.pathname).toBe("/login");
+    expect(url.searchParams.get("next")).toBe(next);
+  });
+
+  it("login's Sign up link carries the same return path, query included", () => {
+    render(<AuthForm mode="login" action={noop} next={next} />);
+    const href = screen.getByRole("link", { name: "Sign up" }).getAttribute("href")!;
+    const url = new URL(href, "https://x.test");
+    expect(url.pathname).toBe("/signup");
+    expect(url.searchParams.get("next")).toBe(next);
+  });
+
+  it("submits the return path with the form", () => {
+    const { container } = render(<AuthForm mode="login" action={noop} next={next} />);
+    expect(container.querySelector('input[name="next"]')).toHaveValue(next);
+  });
+});
+
+describe("AuthForm — a failed submit keeps what was typed", () => {
+  it("keeps the email and shows the error", async () => {
+    const failing = vi.fn(async () => ({ error: "That password is too easy to guess." }));
+    const { container } = render(<AuthForm mode="login" action={failing} next="/account" />);
+    const email = container.querySelector('input[name="email"]') as HTMLInputElement;
+    const password = container.querySelector('input[name="password"]') as HTMLInputElement;
+    fireEvent.change(email, { target: { value: "student@example.com" } });
+    fireEvent.change(password, { target: { value: "password123" } });
+    await act(async () => {
+      (container.querySelector("form") as HTMLFormElement).requestSubmit();
+    });
+    expect(await screen.findByRole("alert")).toHaveTextContent("too easy to guess");
+    expect(email).toHaveValue("student@example.com");
+  });
+
+  it("shows a notice (not an error) when the action returns one", async () => {
+    const notice = vi.fn(async () => ({ notice: "Check your inbox to confirm your email, then log in to continue." }));
+    const { container } = render(<AuthForm mode="login" action={notice} next="/account" />);
+    fireEvent.change(container.querySelector('input[name="email"]')!, { target: { value: "a@b.co" } });
+    fireEvent.change(container.querySelector('input[name="password"]')!, { target: { value: "password123" } });
+    await act(async () => {
+      (container.querySelector("form") as HTMLFormElement).requestSubmit();
+    });
+    expect(await screen.findByRole("status")).toHaveTextContent(/check your inbox/i);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+});
+
+describe("AuthForm — session cache", () => {
+  it("forgets cached /api/me answers so the page you return to sees you signed in", async () => {
+    const session = await import("@/hooks/useSession");
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify({ signedIn: false }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    try {
+      const { renderHook, waitFor } = await import("@testing-library/react");
+      // A signed-out visit to /module caches the answer for that pathname…
+      const first = renderHook(() => session.useSession());
+      await waitFor(() => expect(first.result.current.ready).toBe(true));
+      first.unmount();
+      // …the student opens the auth form and signs in…
+      render(<AuthForm mode="login" action={noop} next="/account" />);
+      fetchMock.mockImplementation(
+        async () => new Response(JSON.stringify({ signedIn: true, userId: "u1" }), { status: 200 }),
+      );
+      // …and coming back asks again instead of reusing the stale answer.
+      const second = renderHook(() => session.useSession());
+      await waitFor(() => expect(second.result.current.signedIn).toBe(true));
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });

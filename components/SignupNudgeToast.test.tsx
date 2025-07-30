@@ -24,6 +24,12 @@ describe("SignupNudgeToast", () => {
     ).toBeInTheDocument();
   });
 
+  it("stays out of a printout (it is portalled outside the reader's print gate)", async () => {
+    render(<SignupNudgeToast signupHref={SIGNUP_HREF} />);
+    const text = await screen.findByText(/save your progress across devices/i);
+    expect(text.closest(".fixed")).toHaveClass("print:hidden");
+  });
+
   it("links the sign-up CTA to the provided next= href", async () => {
     render(<SignupNudgeToast signupHref={SIGNUP_HREF} />);
 

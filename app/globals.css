@@ -32,6 +32,12 @@ html {
   overflow-x: clip;
 }
 
+/* Print gate (components/PrintGateRoot.tsx): the signed-out notice exists in
+   the page for print only. */
+.print-gate-notice {
+  display: none;
+}
+
 /* Smooth page transitions */
 * {
   transition-property: opacity, transform;
@@ -187,5 +193,26 @@ a, button, input, select, textarea {
   }
   .space-y-16 > .print-section + .print-section {
     margin-top: 18pt !important;
+  }
+
+  /* Print gate. The prerendered reader is data-print-gate="locked" until the
+     client confirms a signed-in reader, so a signed-out Ctrl/Cmd+P prints one
+     page with the sign-up notice and none of the lesson. */
+  [data-print-gate="locked"] > .print-gate-content {
+    display: none !important;
+  }
+  /* Site chrome outside the reader (root-layout footer) and anything
+     portalled to <body> (the signup nudge) is off the locked page too. */
+  body:has([data-print-gate="locked"]) > footer {
+    display: none !important;
+  }
+  [data-print-gate="locked"] > .print-gate-notice {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12pt;
+    min-height: 60vh;
+    text-align: center;
+    break-inside: avoid;
   }
 }

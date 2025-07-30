@@ -17,7 +17,8 @@ export type EventType =
   | "share_card_open"
   | "share_card_share"
   | "share_card_download"
-  | "print_click";
+  | "print_click"
+  | "print_gate_shown";
 
 export interface Database {
   public: {
