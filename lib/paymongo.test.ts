@@ -71,7 +71,7 @@ describe("createPaymongoLink", () => {
     );
     expect(sentBody.data.attributes.line_items[0].amount).toBe(PLANS.year_sem.amount);
     expect(sentBody.data.attributes.payment_method_types).toEqual(
-      expect.arrayContaining(["card", "gcash", "paymaya", "grab_pay"])
+      expect.arrayContaining(["qrph", "card", "gcash", "paymaya", "grab_pay"])
     );
     expect(result.checkoutUrl).toBe("https://checkout.paymongo.com/abc");
     expect(result.linkId).toBe("cs_abc123");
@@ -1077,5 +1077,12 @@ describe("periodEndFor", () => {
     expect(periodEndFor("year_sem", from).getTime()).toBe(from.getTime() + 31 * DAY_MS);
     expect(spy).toHaveBeenCalledWith(expect.stringMatching(/TERM_SCHEDULE/));
     spy.mockRestore();
+  });
+});
+
+describe("CHECKOUT_PAYMENT_METHODS", () => {
+  it("always requests QR Ph, the live account's only enabled channel", async () => {
+    const { CHECKOUT_PAYMENT_METHODS } = await import("./paymongo");
+    expect(CHECKOUT_PAYMENT_METHODS[0]).toBe("qrph");
   });
 });

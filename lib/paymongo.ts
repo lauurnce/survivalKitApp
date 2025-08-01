@@ -46,8 +46,13 @@ const PERIOD_31_DAYS_MS = 31 * 24 * 60 * 60 * 1000;
 
 // PayMongo's Links API (POST /v1/links) was discontinued for this account on
 // 2026-09-03 in favor of Checkout Sessions (POST /v1/checkout_sessions).
-// Verified against the account's own enabled channels in test mode.
-const CHECKOUT_PAYMENT_METHODS = ["card", "gcash", "paymaya", "grab_pay"];
+// QR Ph comes first and must stay in this list: on 2026-10-31 the live account's
+// only enabled channel was QR Ph, and a session requesting just card/e-wallets
+// rendered "No payment methods are available" to every buyer. QR Ph is
+// scannable by GCash, Maya and bank apps. PayMongo shows only the requested
+// types the account has enabled, so listing the others is harmless and lets
+// them appear the day they are activated.
+export const CHECKOUT_PAYMENT_METHODS = ["qrph", "card", "gcash", "paymaya", "grab_pay"];
 
 // Resolve a plan from a link's `plan:` remarks token. Tokens that are unknown
 // or contradict the link's scope (subject plans need a subject; year_sem must
