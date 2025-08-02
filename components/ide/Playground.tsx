@@ -5,7 +5,7 @@ import { CodeEditor } from "./CodeEditor";
 import { OutputPanel } from "./OutputPanel";
 import { getRunner } from "@/lib/ide/runners";
 import { getLanguage } from "@/lib/ide/languages";
-import type { LanguageId, RunResult } from "@/lib/ide/types";
+import type { LanguageId, RunPhase, RunResult } from "@/lib/ide/types";
 
 interface Props {
   languageId: LanguageId;
@@ -17,17 +17,19 @@ export function Playground({ languageId, initialCode }: Props) {
   const [code, setCode] = useState(initialCode ?? lang.starter);
   const [result, setResult] = useState<RunResult | null>(null);
   const [running, setRunning] = useState(false);
+  const [phase, setPhase] = useState<RunPhase>("running");
   const [error, setError] = useState<string | null>(null);
   const [executedCode, setExecutedCode] = useState<string | null>(null);
 
   async function handleRun() {
     setRunning(true);
+    setPhase("running");
     setError(null);
     setResult(null);
     setExecutedCode(code);
     try {
       const runner = await getRunner(languageId);
-      const res = await runner.run({ languageId, code });
+      const res = await runner.run({ languageId, code, onPhase: setPhase });
       setResult(res);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to run");
@@ -63,12 +65,12 @@ export function Playground({ languageId, initialCode }: Props) {
             disabled={running}
             className="bg-accent text-navy font-sans text-xs uppercase tracking-widest px-4 py-1 disabled:opacity-50"
           >
-            {running ? "Running…" : "Run"}
+            {running ? (phase === "loading" ? "Loading…" : "Running…") : "Run"}
           </button>
         </div>
       </div>
       <CodeEditor languageId={languageId} value={code} onChange={setCode} readOnly={running} />
-      <OutputPanel result={result} running={running} error={error} executedCode={executedCode ?? undefined} />
+      <OutputPanel result={result} running={running} phase={phase} error={error} executedCode={executedCode ?? undefined} />
     </div>
   );
 }

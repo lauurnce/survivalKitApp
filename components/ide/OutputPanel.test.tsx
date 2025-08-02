@@ -50,6 +50,17 @@ describe("OutputPanel", () => {
     expect(screen.getByText("NULL")).toHaveClass("italic");
   });
 
+  it("says Python is loading, not running, while the runtime downloads", () => {
+    render(<OutputPanel result={null} running={true} phase="loading" error={null} />);
+    expect(screen.getByRole("status")).toHaveTextContent(/loading python/i);
+    expect(screen.queryByText("Running…")).toBeNull();
+  });
+
+  it("says Running… once the code is executing", () => {
+    render(<OutputPanel result={null} running={true} phase="running" error={null} />);
+    expect(screen.getByRole("status")).toHaveTextContent("Running…");
+  });
+
   it("shows the error state", () => {
     render(<OutputPanel result={null} running={false} error="boom" />);
     expect(screen.getByText("boom")).toBeInTheDocument();
