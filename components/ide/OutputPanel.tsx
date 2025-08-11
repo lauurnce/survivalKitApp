@@ -1,18 +1,26 @@
 "use client";
 
 import type { ReactNode } from "react";
-import type { RunResult } from "@/lib/ide/types";
+import type { RunPhase, RunResult } from "@/lib/ide/types";
 
 interface Props {
   result: RunResult | null;
   running: boolean;
+  /** "loading" while a runtime (Python) downloads before the code can run. */
+  phase?: RunPhase;
   error: string | null;
   executedCode?: string;
 }
 
-export function OutputPanel({ result, running, error, executedCode }: Props) {
+export function OutputPanel({ result, running, phase, error, executedCode }: Props) {
   if (running) {
-    return <Shell><span className="text-taupe">Running…</span></Shell>;
+    return (
+      <Shell>
+        <span role="status" className="text-taupe">
+          {phase === "loading" ? "Loading Python (about 5 MB)…" : "Running…"}
+        </span>
+      </Shell>
+    );
   }
   if (error) {
     return <Shell><span className="text-red-400">{error}</span></Shell>;

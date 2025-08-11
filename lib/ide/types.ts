@@ -18,7 +18,14 @@ export interface RunRequest {
   languageId: LanguageId;
   code: string;
   stdin?: string;
+  /**
+   * Runners with a separate load step (Python) report it here, so the UI can
+   * say "Loading Python…" rather than "Running…" while the runtime downloads.
+   */
+  onPhase?: (phase: RunPhase) => void;
 }
+
+export type RunPhase = "loading" | "running";
 
 export interface RunResult {
   stdout: string;

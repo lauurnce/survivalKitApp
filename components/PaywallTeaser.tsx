@@ -45,9 +45,16 @@ export function PaywallTeaser({ yearId, subjectId, subjectTitle, from, reviewerC
     }
   }, [visible, yearId, subjectId]);
 
-  // Hide while checking, while a payment is confirming, and permanently for
-  // already-subscribed users.
-  if (!visible) return null;
+  // Gone for good once the reader is confirmed subscribed, and hidden while a
+  // just-made payment is being confirmed so a reader who paid is not re-sold.
+  if (subscribed === true || (subscribed === false && !showUpsell)) return null;
+
+  // While the check is in flight, render the real box but invisible. Showing
+  // nothing let it pop in above the module list when the check resolved and
+  // push the whole page down (CLS 0.24 on mobile). An identical hidden copy
+  // holds exactly the space it will take at any viewport, and because it is
+  // never painted, a subscriber never sees a paywall flash before it collapses.
+  const checking = subscribed === null;
 
   // /unlock is the single pricing entry point — there is deliberately no way
   // for a caller to point this CTA somewhere else.
@@ -58,7 +65,11 @@ export function PaywallTeaser({ yearId, subjectId, subjectTitle, from, reviewerC
   }
 
   return (
-    <div className="border border-accent/40 bg-accent/[0.03] p-5 mb-10">
+    <div
+      className={`border border-accent/40 bg-accent/[0.03] p-5 mb-10${checking ? " invisible" : ""}`}
+      aria-hidden={checking || undefined}
+      inert={checking || undefined}
+    >
       <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent mb-2">
         Reviewers with Answer Keys
       </p>
