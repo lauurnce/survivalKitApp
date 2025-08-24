@@ -2,6 +2,13 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { TourStep } from "@/lib/tour/useTour";
+import {
+  HIGHLIGHT_PADDING,
+  needsScroll,
+  placeCard,
+  type Box,
+  type CardPlacement,
+} from "@/lib/tour/placement";
 
 export interface TourOverlayProps {
   /** Same array passed into `useTour` — this component only reads it. */
@@ -13,17 +20,8 @@ export interface TourOverlayProps {
   skip: () => void;
 }
 
-interface TargetRect {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-}
-
-const HIGHLIGHT_PADDING = 8;
-const CARD_WIDTH = 320; // matches Tailwind's max-w-xs (20rem)
-const CARD_GAP = 16;
-const VIEWPORT_MARGIN = 16;
+/** A target taller than this share of the viewport scrolls to its top, not its middle. */
+const TALL_TARGET_RATIO = 0.5;
 
 const FOCUSABLE_SELECTOR =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -38,10 +36,17 @@ const FOCUSABLE_SELECTOR =
  * A step with no `target` (an intro/closing card) renders centered with no
  * highlight. A step whose `target` isn't found in the DOM this visit skips
  * itself by calling `next()` — the caller never has to special-case it.
+ *
+ * Each anchored step scrolls its target on screen, then places the card
+ * beside it — or, when there is no room (small phones, tall sections),
+ * docks the card to the top or bottom edge of the viewport. Either way the
+ * whole card, and so Skip/Back/Next, stays inside the viewport
+ * (`placeCard` in lib/tour/placement.ts).
  */
 export function TourOverlay({ steps, stepIndex, totalSteps, next, prev, skip }: TourOverlayProps) {
   const step = steps[stepIndex] ?? null;
-  const [rect, setRect] = useState<TargetRect | null>(null);
+  const [rect, setRect] = useState<Box | null>(null);
+  const [placement, setPlacement] = useState<CardPlacement | null>(null);
   const [missing, setMissing] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -58,27 +63,84 @@ export function TourOverlay({ steps, stepIndex, totalSteps, next, prev, skip }: 
     }
 
     const target = step.target;
+    const find = () => document.querySelector<HTMLElement>(`[data-tour="${target}"]`);
+
+    // Bring the target on screen once per step, instantly, before measuring.
+    // The card lives in a fixed overlay, so a target left below the fold
+    // used to drag the card below the fold with it — out of reach on phones.
+    const el = find();
+    if (el) {
+      const r = el.getBoundingClientRect();
+      const viewport = { width: window.innerWidth, height: window.innerHeight };
+      if (needsScroll(r, viewport)) {
+        el.scrollIntoView?.({
+          block: r.height > viewport.height * TALL_TARGET_RATIO ? "start" : "center",
+          inline: "nearest",
+          behavior: "instant",
+        });
+      }
+    }
 
     function measure() {
-      const el = document.querySelector<HTMLElement>(`[data-tour="${target}"]`);
-      if (!el) {
+      const node = find();
+      if (!node) {
         setRect(null);
         setMissing(true);
         return;
       }
       setMissing(false);
-      const r = el.getBoundingClientRect();
-      setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
+      const r = node.getBoundingClientRect();
+      setRect((prev) =>
+        prev && prev.top === r.top && prev.left === r.left && prev.width === r.width && prev.height === r.height
+          ? prev
+          : { top: r.top, left: r.left, width: r.width, height: r.height }
+      );
+    }
+
+    // Scroll/resize can fire many times a frame; one measurement per frame
+    // is enough to keep the spotlight on the target.
+    let frame = 0;
+    function schedule() {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        measure();
+      });
     }
 
     measure();
-    window.addEventListener("resize", measure);
-    window.addEventListener("scroll", measure, true);
+    window.addEventListener("resize", schedule);
+    window.addEventListener("scroll", schedule, true);
     return () => {
-      window.removeEventListener("resize", measure);
-      window.removeEventListener("scroll", measure, true);
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("scroll", schedule, true);
     };
   }, [step]);
+
+  // Place the card from its real rendered size (it is narrower than 20rem on
+  // small phones and its height depends on the copy), so the placement can
+  // promise the whole card stays inside the viewport.
+  useLayoutEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+    function place() {
+      if (!card) return;
+      const placed = placeCard(
+        rect,
+        { width: card.offsetWidth, height: card.offsetHeight },
+        { width: window.innerWidth, height: window.innerHeight }
+      );
+      setPlacement((prev) =>
+        prev && prev.mode === placed.mode && prev.x === placed.x && prev.y === placed.y ? prev : placed
+      );
+    }
+    place();
+    // An unanchored step has no scroll/resize listener above; it still has
+    // to re-center when the viewport changes (rotation, URL bar).
+    window.addEventListener("resize", place);
+    return () => window.removeEventListener("resize", place);
+  }, [rect, stepIndex, missing]);
 
   // A target absent from the DOM this visit (no popular modules yet, etc.)
   // moves the tour past that step instead of stalling it.
@@ -123,14 +185,13 @@ export function TourOverlay({ steps, stepIndex, totalSteps, next, prev, skip }: 
   useEffect(() => {
     if (missing) return;
     const first = cardRef.current?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
-    first?.focus();
+    first?.focus({ preventScroll: true });
   }, [stepIndex, missing]);
 
   if (!step || missing) return null;
 
   const isFirst = stepIndex === 0;
   const isLast = stepIndex === totalSteps - 1;
-  const cardStyle = cardPosition(rect);
 
   return (
     <div className="fixed inset-0 z-50">
@@ -156,10 +217,12 @@ export function TourOverlay({ steps, stepIndex, totalSteps, next, prev, skip }: 
         <div
           aria-hidden="true"
           data-tour-spotlight="true"
-          className="pointer-events-none absolute rounded-xl transition-[top,left,width,height] duration-200"
+          className="pointer-events-none absolute left-0 top-0 rounded-xl"
           style={{
-            top: rect.top - HIGHLIGHT_PADDING,
-            left: rect.left - HIGHLIGHT_PADDING,
+            // Positioned by transform, never top/left: it follows the target
+            // on every scroll frame, and moving layout properties there was
+            // counted as layout shift (CLS 2.49 on phones).
+            transform: `translate3d(${rect.left - HIGHLIGHT_PADDING}px, ${rect.top - HIGHLIGHT_PADDING}px, 0)`,
             width: rect.width + HIGHLIGHT_PADDING * 2,
             height: rect.height + HIGHLIGHT_PADDING * 2,
             boxShadow:
@@ -175,8 +238,13 @@ export function TourOverlay({ steps, stepIndex, totalSteps, next, prev, skip }: 
         aria-modal="true"
         aria-labelledby="tour-step-title"
         aria-describedby="tour-step-body"
-        className="absolute flex w-[calc(100%-2rem)] max-w-xs flex-col gap-4 rounded-xl border border-taupe/30 bg-paper p-6 shadow-lg"
-        style={cardStyle}
+        data-tour-card={placement?.mode ?? "pending"}
+        className="absolute left-0 top-0 flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-xs flex-col gap-4 overflow-y-auto rounded-xl border border-taupe/30 bg-paper p-6 shadow-lg"
+        style={
+          placement
+            ? { transform: `translate3d(${placement.x}px, ${placement.y}px, 0)` }
+            : undefined
+        }
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between gap-3">
@@ -234,29 +302,4 @@ export function TourOverlay({ steps, stepIndex, totalSteps, next, prev, skip }: 
       </div>
     </div>
   );
-}
-
-function cardPosition(rect: TargetRect | null): React.CSSProperties {
-  if (typeof window === "undefined") return { top: VIEWPORT_MARGIN, left: VIEWPORT_MARGIN };
-
-  if (!rect) {
-    return {
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-    };
-  }
-
-  const spaceBelow = window.innerHeight - (rect.top + rect.height);
-  const spaceAbove = rect.top;
-  const placeBelow = spaceBelow >= 180 || spaceBelow >= spaceAbove;
-
-  const left = Math.min(
-    Math.max(rect.left, VIEWPORT_MARGIN),
-    window.innerWidth - CARD_WIDTH - VIEWPORT_MARGIN
-  );
-
-  return placeBelow
-    ? { top: rect.top + rect.height + HIGHLIGHT_PADDING + CARD_GAP, left }
-    : { bottom: window.innerHeight - rect.top + HIGHLIGHT_PADDING + CARD_GAP, left };
 }

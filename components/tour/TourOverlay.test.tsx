@@ -187,4 +187,107 @@ describe("TourOverlay", () => {
     expect(backdrop.className).toContain("bg-ink/60");
     expect(container.querySelector("[data-tour-spotlight]")).not.toBeInTheDocument();
   });
+
+  describe("on a small phone", () => {
+    const VIEWPORT = { width: 320, height: 568 };
+
+    function stubLayout(targetTop: number, targetHeight = 40) {
+      Object.defineProperty(window, "innerWidth", { configurable: true, value: VIEWPORT.width });
+      Object.defineProperty(window, "innerHeight", { configurable: true, value: VIEWPORT.height });
+      vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockReturnValue(288);
+      vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(220);
+      let top = targetTop;
+      const scrollIntoView = vi.fn(() => {
+        // Mimic block: "center".
+        top = (VIEWPORT.height - targetHeight) / 2;
+      });
+      Element.prototype.scrollIntoView = scrollIntoView;
+      vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+        if (this.getAttribute("data-tour")) {
+          return { top, left: 200, width: 100, height: targetHeight, right: 300, bottom: top + targetHeight, x: 200, y: top, toJSON() {} } as DOMRect;
+        }
+        return { top: 0, left: 0, width: 0, height: 0, right: 0, bottom: 0, x: 0, y: 0, toJSON() {} } as DOMRect;
+      });
+      return scrollIntoView;
+    }
+
+    function cardBox(container: HTMLElement) {
+      const card = container.querySelector<HTMLElement>("[role=dialog]")!;
+      const m = /translate3d\((-?[\d.]+)px, (-?[\d.]+)px/.exec(card.style.transform);
+      expect(m, "card is positioned by transform").not.toBeNull();
+      const x = Number(m![1]);
+      const y = Number(m![2]);
+      return { x, y, right: x + 288, bottom: y + 220, mode: card.dataset.tourCard };
+    }
+
+    afterEach(() => {
+      // @ts-expect-error -- jsdom has no scrollIntoView; remove the stub again.
+      delete Element.prototype.scrollIntoView;
+    });
+
+    it("scrolls an off-screen target into view and keeps the whole card on screen", () => {
+      const scrollIntoView = stubLayout(1200);
+      const { container } = render(
+        <>
+          <Anchor tour="landing-subjects" />
+          <TourOverlay steps={STEPS} stepIndex={1} totalSteps={3} next={vi.fn()} prev={vi.fn()} skip={vi.fn()} />
+        </>
+      );
+
+      expect(scrollIntoView).toHaveBeenCalledTimes(1);
+      expect(scrollIntoView).toHaveBeenCalledWith(expect.objectContaining({ block: "center", behavior: "instant" }));
+      const box = cardBox(container);
+      expect(box.x).toBeGreaterThanOrEqual(16);
+      expect(box.y).toBeGreaterThanOrEqual(16);
+      expect(box.right).toBeLessThanOrEqual(VIEWPORT.width - 16);
+      expect(box.bottom).toBeLessThanOrEqual(VIEWPORT.height - 16);
+    });
+
+    it("leaves the page alone when the target is already on screen", () => {
+      const scrollIntoView = stubLayout(80);
+      const { container } = render(
+        <>
+          <Anchor tour="landing-subjects" />
+          <TourOverlay steps={STEPS} stepIndex={1} totalSteps={3} next={vi.fn()} prev={vi.fn()} skip={vi.fn()} />
+        </>
+      );
+
+      expect(scrollIntoView).not.toHaveBeenCalled();
+      expect(cardBox(container).mode).toBe("below");
+    });
+
+    it("docks the card to a viewport edge when a tall target leaves no room beside it", () => {
+      stubLayout(16, 700);
+      const { container } = render(
+        <>
+          <Anchor tour="landing-subjects" />
+          <TourOverlay steps={STEPS} stepIndex={1} totalSteps={3} next={vi.fn()} prev={vi.fn()} skip={vi.fn()} />
+        </>
+      );
+
+      const box = cardBox(container);
+      expect(box.mode).toBe("dock-bottom");
+      expect(box.bottom).toBe(VIEWPORT.height - 16);
+    });
+
+    it("moves the spotlight with transform only, so following scroll is not a layout shift", () => {
+      stubLayout(80);
+      const { container } = render(
+        <>
+          <Anchor tour="landing-subjects" />
+          <TourOverlay steps={STEPS} stepIndex={1} totalSteps={3} next={vi.fn()} prev={vi.fn()} skip={vi.fn()} />
+        </>
+      );
+
+      const spotlight = container.querySelector<HTMLElement>("[data-tour-spotlight]")!;
+      expect(spotlight.style.transform).toContain("translate3d(192px, 72px");
+      expect(spotlight.style.top).toBe("");
+      expect(spotlight.style.left).toBe("");
+      expect(spotlight.className).not.toMatch(/transition-\[top/);
+      const card = container.querySelector<HTMLElement>("[role=dialog]")!;
+      expect(card.style.top).toBe("");
+      expect(card.style.bottom).toBe("");
+    });
+  });
 });
+
