@@ -11,6 +11,7 @@ import { SubscribeGate } from "@/components/SubscribeGate";
 import { parseModuleRoute, safeReturnPath } from "@/lib/subscribeRedirect";
 import { isUuid } from "@/lib/validation";
 import { sectionLabel } from "@/lib/sectionLabel";
+import { socialProofLine } from "@/lib/socialProof";
 
 interface Props {
   searchParams: Promise<{ year?: string | string[]; subject?: string | string[]; from?: string | string[] }>;
@@ -134,6 +135,7 @@ export default async function UnlockPage({ searchParams }: Props) {
                 : "Reviewers with answer keys"}{" "}
               — drills, code labs, and full worked solutions.
             </p>
+            <p className="font-mono text-label-sm text-taupe mt-3">{socialProofLine()}</p>
           </div>
         </div>
       </div>

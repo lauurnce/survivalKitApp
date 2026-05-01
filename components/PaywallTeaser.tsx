@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { logEvent } from "@/lib/analytics";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { buildUnlockHref } from "@/lib/subscribeRedirect";
+import { socialProofLine } from "@/lib/socialProof";
 
 interface Props {
   yearId: string;
@@ -67,6 +68,7 @@ export function PaywallTeaser({ yearId, subjectId, subjectTitle, from, reviewerC
           every reviewer in {subjectTitle ?? "this subject"} {fromPrice.term}.
         </p>
       )}
+      <p className="font-mono text-label-sm text-ink-faint mb-4">{socialProofLine()}</p>
       <Link
         href={href}
         onClick={handleClick}

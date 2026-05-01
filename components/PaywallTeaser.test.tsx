@@ -69,6 +69,11 @@ describe("PaywallTeaser", () => {
     expect(container.textContent).toContain("From ₱49 — unlocks every reviewer in CP1 for a month.");
   });
 
+  it("carries the social-proof line", () => {
+    render(<PaywallTeaser yearId={YEAR} subjectId={SUBJECT} subjectTitle="CP1" />);
+    expect(screen.getByText("Students rate it 4.7/5 · Used at 8+ universities")).toBeInTheDocument();
+  });
+
   it("no longer advertises block pricing", () => {
     const { container } = render(
       <PaywallTeaser yearId={YEAR} subjectId={SUBJECT} subjectTitle="CP1" reviewerCount={12} />

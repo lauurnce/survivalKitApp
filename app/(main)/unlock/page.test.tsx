@@ -267,4 +267,9 @@ describe("UnlockPage — sign-in requirement", () => {
 
     expect(screen.getByTestId("gate").getAttribute("data-sign-in-href")).toBe("none");
   });
+
+  it("shows the social-proof line under the subject header", async () => {
+    await renderPage({ year: YEAR, subject: SUBJECT });
+    expect(screen.getByText("Students rate it 4.7/5 · Used at 8+ universities")).toBeInTheDocument();
+  });
 });
