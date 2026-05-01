@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { logEvent } from "@/lib/analytics";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { buildUnlockHref } from "@/lib/subscribeRedirect";
+import { socialProofLine } from "@/lib/socialProof";
 
 interface Props {
   yearId: string;
@@ -19,9 +20,14 @@ interface Props {
   from?: string;
   /** Number of gated reviewer sections in this subject, when the page knows it. */
   reviewerCount?: number;
+  /**
+   * Cheapest plan that unlocks this subject, computed server-side from PLANS
+   * (lib/pricing.ts). Omitted, the teaser quotes no price rather than guess.
+   */
+  fromPrice?: { amountLabel: string; term: string };
 }
 
-export function PaywallTeaser({ yearId, subjectId, subjectTitle, from, reviewerCount }: Props) {
+export function PaywallTeaser({ yearId, subjectId, subjectTitle, from, reviewerCount, fromPrice }: Props) {
   const pathname = usePathname();
   const { subscribed } = useSubscriptionStatus(yearId, subjectId);
   const viewLogged = useRef(false);
@@ -54,8 +60,15 @@ export function PaywallTeaser({ yearId, subjectId, subjectTitle, from, reviewerC
         {reviewerCount
           ? `${reviewerCount} reviewers with answer keys in ${subjectTitle ?? "this subject"} — drills, code labs, and full solutions.`
           : `Reviewers with answer keys in ${subjectTitle ?? "this subject"} — drills, code labs, and full solutions.`}{" "}
-        <span className="text-ink font-semibold">The first one&apos;s free.</span>
+        <span className="text-ink font-semibold">The first lesson&apos;s reviewers are free.</span>
       </p>
+      {fromPrice && (
+        <p className="font-sans text-base text-ink-muted mb-4">
+          From <span className="text-ink font-semibold">{fromPrice.amountLabel}</span> — unlocks
+          every reviewer in {subjectTitle ?? "this subject"} {fromPrice.term}.
+        </p>
+      )}
+      <p className="font-mono text-label-sm text-ink-faint mb-4">{socialProofLine()}</p>
       <Link
         href={href}
         onClick={handleClick}

@@ -11,6 +11,7 @@ import { SubscribeGate } from "@/components/SubscribeGate";
 import { parseModuleRoute, safeReturnPath } from "@/lib/subscribeRedirect";
 import { isUuid } from "@/lib/validation";
 import { sectionLabel } from "@/lib/sectionLabel";
+import { socialProofLine } from "@/lib/socialProof";
 
 interface Props {
   searchParams: Promise<{ year?: string | string[]; subject?: string | string[]; from?: string | string[] }>;
@@ -39,8 +40,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-// The one place in the app that quotes a price. Locked reviewers and the
-// paywall teaser link here instead of repeating the plan table per section.
+// The one place in the app that shows the plan table. Locked reviewers and the
+// paywall teaser link here instead of repeating it per section; the teaser
+// quotes only a "from" price, derived from the same PLANS (lib/pricing.ts).
 export default async function UnlockPage({ searchParams }: Props) {
   const { year: yearParam, subject: subjectParam, from: fromParam } = await searchParams;
   const yearId = single(yearParam);
@@ -133,6 +135,7 @@ export default async function UnlockPage({ searchParams }: Props) {
                 : "Reviewers with answer keys"}{" "}
               — drills, code labs, and full worked solutions.
             </p>
+            <p className="font-mono text-label-sm text-taupe mt-3">{socialProofLine()}</p>
           </div>
         </div>
       </div>

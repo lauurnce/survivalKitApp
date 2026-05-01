@@ -45,13 +45,16 @@ interface Props {
   subjectId: string;
   unlockAll: boolean;
   subjectTitle?: string;
-  /** The subject's one free-sample reviewer; rendered in full even when locked. */
-  freeSectionId?: string | null;
+  /**
+   * The subject's free-sample reviewers (lib/freeSample.ts), in sort order;
+   * rendered in full even when locked. The upsell sits under the last one.
+   */
+  freeSectionIds?: string[];
   /** Total gated reviewers in the subject — shown in the free-sample upsell. */
   reviewerCount?: number;
 }
 
-export function SectionRenderer({ section, index, moduleId, yearId, subjectId, unlockAll, subjectTitle, freeSectionId, reviewerCount }: Props) {
+export function SectionRenderer({ section, index, moduleId, yearId, subjectId, unlockAll, subjectTitle, freeSectionIds = [], reviewerCount }: Props) {
   useEffect(() => {
     if (section.kind === "content") {
       logSectionView(section.id, moduleId);
@@ -59,7 +62,8 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
   }, [section.id, section.kind, moduleId]);
 
   const isFreeSample =
-    section.kind === "activity" && !unlockAll && section.id === freeSectionId;
+    section.kind === "activity" && !unlockAll && freeSectionIds.includes(section.id);
+  const isLastFreeSample = isFreeSample && freeSectionIds[freeSectionIds.length - 1] === section.id;
 
   // Where payment should drop the reader back — this very module page.
   const returnPath = modulePath(yearId, subjectId, moduleId);
@@ -131,15 +135,23 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
           <span className="label-sm text-accent">Activity (UNLOCK_ALL active)</span>
         </div>
       )}
-      {isFreeSample && (
+      {isFreeSample && !isLastFreeSample && (
+        <div className="mt-4 pl-10 md:pl-12">
+          <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent">
+            Free sample
+          </span>
+        </div>
+      )}
+      {isLastFreeSample && (
         <div className="mt-6 pl-10 md:pl-12">
           <div className="border border-accent/40 bg-accent/[0.03] p-5">
             <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent mb-2">
               Free Sample
             </p>
             <p className="font-sans text-base text-ink-muted mb-4">
-              That was 1 of {reviewerCount || "several"} reviewers with answer keys in{" "}
-              {subjectTitle ?? "this subject"}. Unlock all of them for the semester.
+              That was the free sample: {freeSectionIds.length} of {reviewerCount || "several"}{" "}
+              reviewers with answer keys in {subjectTitle ?? "this subject"}. Unlock the rest for
+              the semester.
             </p>
             <Link
               href={buildUnlockHref({ yearId, subjectId, from: returnPath })}

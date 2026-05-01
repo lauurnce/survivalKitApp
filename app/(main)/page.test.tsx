@@ -64,11 +64,23 @@ vi.mock("@/lib/supabase/server", () => ({
   createServerClient: () => ({ from: (table: string) => makeQuery(table) }),
 }));
 
+let startPath: { href: string; subjectTitle: string; moduleTitle: string } | null;
+vi.mock("@/lib/landing", () => ({
+  getCp1StartPath: () => Promise.resolve(startPath),
+}));
+
+const CP1_PATH = `/year/${YEAR_ID}/subjects/cp1/modules/lesson-1`;
+
 import LandingPage from "./page";
 
 beforeEach(() => {
   queries = [];
   counterRows = [];
+  startPath = {
+    href: CP1_PATH,
+    subjectTitle: "Computer Programming 1",
+    moduleTitle: "Lesson 1: Programming Concepts",
+  };
 });
 
 async function renderPage() {
@@ -77,10 +89,14 @@ async function renderPage() {
 }
 
 describe("LandingPage — tour anchors", () => {
-  it("marks the subjects and search links for the tour to anchor to", async () => {
+  it("marks the start, subjects, and search links for the tour to anchor to", async () => {
     await renderPage();
 
-    expect(screen.getByRole("link", { name: /start here/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /start lesson 1/i })).toHaveAttribute(
+      "data-tour",
+      "landing-start"
+    );
+    expect(screen.getByRole("link", { name: /browse all subjects/i })).toHaveAttribute(
       "data-tour",
       "landing-subjects"
     );
@@ -103,5 +119,33 @@ describe("LandingPage — tour anchors", () => {
     const { container } = await renderPage();
 
     expect(container.querySelector('[data-tour="landing-popular"]')).toBeNull();
+  });
+});
+
+describe("LandingPage — CP1 path", () => {
+  it("leads with one primary CTA straight into CP1 Lesson 1", async () => {
+    await renderPage();
+
+    expect(screen.getByRole("link", { name: /start lesson 1/i })).toHaveAttribute("href", CP1_PATH);
+    expect(
+      screen.getByText(/first year\? begin with computer programming 1 — lesson 1 and its reviewers are free\./i)
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /start here/i })).toBeNull();
+  });
+
+  it("keeps every other subject one tap away", async () => {
+    await renderPage();
+    expect(screen.getByRole("link", { name: /browse all subjects/i })).toHaveAttribute("href", "/year");
+  });
+
+  it("falls back to the all-subjects entry when CP1 cannot be found", async () => {
+    startPath = null;
+    await renderPage();
+
+    const start = screen.getByRole("link", { name: /start here/i });
+    expect(start).toHaveAttribute("href", "/year");
+    expect(start).toHaveAttribute("data-tour", "landing-subjects");
+    expect(screen.queryByRole("link", { name: /start lesson 1/i })).toBeNull();
+    expect(screen.queryByText(/first year\?/i)).toBeNull();
   });
 });
