@@ -10,9 +10,15 @@ const LANDING_STEPS: TourStep[] = [
     body: "Take a 30-second look around before you dive in.",
   },
   {
+    id: "start",
+    target: "landing-start",
+    title: "Start with CP1",
+    body: "First year? Jump straight into Computer Programming 1, Lesson 1 — its reviewers are free.",
+  },
+  {
     id: "subjects",
     target: "landing-subjects",
-    title: "Start here",
+    title: "Every subject",
     body: "Browse every year and subject to find your modules.",
   },
   {

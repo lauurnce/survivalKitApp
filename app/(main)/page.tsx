@@ -4,11 +4,13 @@ import { ContinueReading } from "@/components/ContinueReading";
 import { PopularModules, type PopularModule } from "@/components/PopularModules";
 import { LandingTour } from "@/components/tour/LandingTour";
 import { createServerClient } from "@/lib/supabase/server";
+import { getCp1StartPath } from "@/lib/landing";
 
 export const revalidate = 300;
 
 export default async function LandingPage() {
   const supabase = createServerClient();
+  const startPath = await getCp1StartPath();
 
   // Fetch top 5 module IDs by read_count
   const { data: topCounters } = await supabase
@@ -90,15 +92,45 @@ export default async function LandingPage() {
           Module notes, programming guides, and computation walkthroughs,
           organized by year and subject. Start wherever you need to.
         </p>
+        {/* One primary action. First-years are most of our readers and CP1 is
+            their subject, so the main button drops them straight into Lesson 1
+            (whose reviewers are the free sample). Every other subject stays one
+            tap away via "Browse all subjects". If the CP1 lookup fails, the
+            all-subjects link takes the primary slot instead. */}
+        {startPath && (
+          <p className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-muted mb-4">
+            First year? Begin with {startPath.subjectTitle} — Lesson 1 and its reviewers are free.
+          </p>
+        )}
         <div className="flex flex-wrap items-center gap-8">
-          <Link
-            href="/year"
-            data-tour="landing-subjects"
-            className="inline-flex items-center gap-3 bg-navy text-paper font-sans text-sm uppercase tracking-widest px-8 py-4 hover:bg-ink transition-colors duration-150"
-          >
-            Start here
-            <span className="text-accent">→</span>
-          </Link>
+          {startPath ? (
+            <>
+              <Link
+                href={startPath.href}
+                data-tour="landing-start"
+                className="inline-flex items-center gap-3 bg-navy text-paper font-sans text-sm uppercase tracking-widest px-8 py-4 hover:bg-ink transition-colors duration-150"
+              >
+                Start Lesson 1
+                <span className="text-accent">→</span>
+              </Link>
+              <Link
+                href="/year"
+                data-tour="landing-subjects"
+                className="inline-flex items-center gap-2 font-sans text-sm uppercase tracking-widest text-ink-muted hover:text-ink transition-colors duration-150"
+              >
+                Browse all subjects
+              </Link>
+            </>
+          ) : (
+            <Link
+              href="/year"
+              data-tour="landing-subjects"
+              className="inline-flex items-center gap-3 bg-navy text-paper font-sans text-sm uppercase tracking-widest px-8 py-4 hover:bg-ink transition-colors duration-150"
+            >
+              Start here
+              <span className="text-accent">→</span>
+            </Link>
+          )}
           <Link
             href="/search"
             data-tour="landing-search"
