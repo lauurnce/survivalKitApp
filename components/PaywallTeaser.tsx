@@ -60,7 +60,7 @@ export function PaywallTeaser({ yearId, subjectId, subjectTitle, from, reviewerC
         {reviewerCount
           ? `${reviewerCount} reviewers with answer keys in ${subjectTitle ?? "this subject"} — drills, code labs, and full solutions.`
           : `Reviewers with answer keys in ${subjectTitle ?? "this subject"} — drills, code labs, and full solutions.`}{" "}
-        <span className="text-ink font-semibold">The first one&apos;s free.</span>
+        <span className="text-ink font-semibold">The first lesson&apos;s reviewers are free.</span>
       </p>
       {fromPrice && (
         <p className="font-sans text-base text-ink-muted mb-4">

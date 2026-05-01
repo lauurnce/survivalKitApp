@@ -51,7 +51,7 @@ describe("PaywallTeaser", () => {
     expect(
       screen.getByText(/12 reviewers with answer keys in CP1 — drills, code labs, and full solutions\./i)
     ).toBeInTheDocument();
-    expect(screen.getByText(/the first one's free\./i)).toBeInTheDocument();
+    expect(screen.getByText(/the first lesson's reviewers are free\./i)).toBeInTheDocument();
     expect(container.textContent).not.toContain("₱");
   });
 

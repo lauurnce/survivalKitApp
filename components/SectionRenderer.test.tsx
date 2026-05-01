@@ -47,7 +47,7 @@ describe("SectionRenderer — locked activities", () => {
         section={activity("a1", "Worked Exam Solutions")}
         index={4}
         unlockAll={false}
-        freeSectionId="other"
+        freeSectionIds={["other"]}
       />
     );
 
@@ -67,7 +67,7 @@ describe("SectionRenderer — locked activities", () => {
         section={activity("a1", "Code Lab")}
         index={5}
         unlockAll={false}
-        freeSectionId="other"
+        freeSectionIds={["other"]}
       />
     );
 
@@ -87,7 +87,7 @@ describe("SectionRenderer — locked activities", () => {
             section={activity(id, `Reviewer ${i}`)}
             index={i}
             unlockAll={false}
-            freeSectionId="other"
+            freeSectionIds={["other"]}
           />
         ))}
       </>
@@ -105,13 +105,46 @@ describe("SectionRenderer — locked activities", () => {
         section={activity("free-1", "Sample Reviewer", "Answer key body")}
         index={0}
         unlockAll={false}
-        freeSectionId="free-1"
+        freeSectionIds={["free-1"]}
       />
     );
 
     expect(screen.getByText("Answer key body")).toBeInTheDocument();
     expect(screen.queryByText(/reviewer — locked/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/that was 1 of 12 reviewers/i)).toBeInTheDocument();
+    expect(screen.getByText(/that was the free sample: 1 of 12 reviewers/i)).toBeInTheDocument();
+  });
+
+  it("renders every free-sample reviewer in full but upsells only under the last", () => {
+    const free = ["free-1", "free-2", "free-3"];
+    render(
+      <>
+        {free.map((id, i) => (
+          <SectionRenderer
+            key={id}
+            {...common}
+            section={activity(id, `Reviewer ${i}`, `Body ${i}`)}
+            index={i}
+            unlockAll={false}
+            freeSectionIds={free}
+          />
+        ))}
+        <SectionRenderer
+          {...common}
+          section={activity("locked-1", "Later Reviewer")}
+          index={3}
+          unlockAll={false}
+          freeSectionIds={free}
+        />
+      </>
+    );
+
+    expect(screen.getByText("Body 0")).toBeInTheDocument();
+    expect(screen.getByText("Body 1")).toBeInTheDocument();
+    expect(screen.getByText("Body 2")).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: /unlock all reviewers/i })).toHaveLength(1);
+    expect(screen.getByText(/that was the free sample: 3 of 12 reviewers/i)).toBeInTheDocument();
+    // The section outside the sample still gets the locked strip.
+    expect(screen.getAllByText(/reviewer — locked/i)).toHaveLength(1);
   });
 
   it("sends the free sample's upsell to /unlock, not a #subscribe anchor that may not exist", () => {
@@ -121,7 +154,7 @@ describe("SectionRenderer — locked activities", () => {
         section={activity("free-1", "Sample Reviewer", "Answer key body")}
         index={0}
         unlockAll={false}
-        freeSectionId="free-1"
+        freeSectionIds={["free-1"]}
       />
     );
 
@@ -143,7 +176,7 @@ describe("SectionRenderer — locked activities", () => {
           section={activity("free-1", "Sample Reviewer", "Answer key body")}
           index={0}
           unlockAll={false}
-          freeSectionId="free-1"
+          freeSectionIds={["free-1"]}
         />
       </div>
     );
@@ -166,7 +199,7 @@ describe("SectionRenderer — locked activities", () => {
             section={activity(id, `Reviewer ${i}`)}
             index={i}
             unlockAll={false}
-            freeSectionId="other"
+            freeSectionIds={["other"]}
           />
         ))}
       </>
@@ -182,7 +215,7 @@ describe("SectionRenderer — locked activities", () => {
         section={activity("a1", "Worked Exam Solutions", "Full solutions")}
         index={4}
         unlockAll={true}
-        freeSectionId={null}
+        freeSectionIds={[]}
       />
     );
 

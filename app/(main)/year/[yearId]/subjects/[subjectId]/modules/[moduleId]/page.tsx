@@ -18,7 +18,7 @@ import { UnlockSuccessToast } from "@/components/UnlockSuccessToast";
 import { SignupNudgeToast } from "@/components/SignupNudgeToast";
 import { ModuleReaderClient } from "@/components/ModuleReaderClient";
 import { ModuleSurveyCard } from "@/components/ModuleSurveyCard";
-import { pickFirstActivity } from "@/lib/freeSample";
+import { freeIdsInModule, pickFreeActivities } from "@/lib/freeSample";
 import { cheapestSubjectPrice } from "@/lib/pricing";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { getModuleWithSubject, getSiblingModules, getModuleContentSections, getModuleActivitySections } from "@/lib/cache/queries";
@@ -84,12 +84,12 @@ export default async function ReaderPage({ params }: Props) {
     topology_data?: import("@/lib/topology/types").TopologyData | null;
   };
 
-  // Free sample: locked visitors get the subject's FIRST reviewer in full — a
-  // taste of the paid content. Everything else stays headings-only, gated
-  // server-side exactly as before.
-  let freeSectionId: string | null = null;
+  // Free sample: locked visitors get every reviewer of the subject's first
+  // module in full (lib/freeSample.ts) — the whole paid loop, once. Everything
+  // else stays headings-only, gated server-side exactly as before.
+  let freeSectionIds: string[] = [];
   let reviewerCount = 0;
-  let freeSection: ReaderSection | null = null;
+  let freeSections: ReaderSection[] = [];
   if (!unlockActivities && siblings.length > 0) {
     const { data: subjectActivities } = await supabase
       .from("sections")
@@ -98,26 +98,28 @@ export default async function ReaderPage({ params }: Props) {
       .in("module_id", siblings.map((m) => m.id));
     const rows = subjectActivities ?? [];
     reviewerCount = rows.length;
-    freeSectionId = pickFirstActivity(siblings.map((m) => m.id), rows);
+    freeSectionIds = pickFreeActivities(siblings.map((m) => m.id), rows);
 
-    // Fetch the free section's full body only when it lives in THIS module.
-    if (
-      freeSectionId &&
-      ((activityMeta ?? []) as unknown as { id: string }[]).some((s) => s.id === freeSectionId)
-    ) {
+    // Fetch full bodies only for the free sections that live in THIS module.
+    const freeHere = freeIdsInModule(
+      ((activityMeta ?? []) as unknown as { id: string }[]).map((s) => s.id),
+      freeSectionIds
+    );
+    if (freeHere.length > 0) {
       const { data: full } = await supabase
         .from("sections")
         .select("id, kind, heading, body_md, sort_order, ide_language, starter_code, topology_data")
-        .eq("id", freeSectionId)
-        .single();
-      freeSection = (full as unknown as ReaderSection) ?? null;
+        .in("id", freeHere);
+      freeSections = (full as unknown as ReaderSection[] | null) ?? [];
     }
   }
+  const freeById = new Map(freeSections.map((s) => [s.id, s]));
 
   const allSections: ReaderSection[] = [
     ...((contentSections ?? []) as ReaderSection[]),
     ...((activityMeta ?? []) as Partial<ReaderSection>[]).map((s) => {
-      if (freeSection && s.id === freeSection.id) return freeSection;
+      const free = s.id ? freeById.get(s.id) : undefined;
+      if (free) return free;
       return {
         body_md: "",
         ide_language: null,
@@ -191,8 +193,10 @@ export default async function ReaderPage({ params }: Props) {
       <article className="px-6 py-12 md:px-16">
         <div className="max-w-wide mx-auto space-y-16">
         {/* Surface the offer at the top when this module has gated activities
-            and the user hasn't unlocked them. Scrolls to the gate below. */}
-        {!unlockActivities && (activityMeta?.length ?? 0) > 0 && (
+            and the user hasn't unlocked them. A module whose reviewers are all
+            free sample (the subject's first) gets no teaser — the offer starts
+            from the next module, after the reader has had the full loop. */}
+        {!unlockActivities && (activityMeta?.length ?? 0) > freeSections.length && (
           <PaywallTeaser
             yearId={yearId}
             subjectId={subjectId}
@@ -211,7 +215,7 @@ export default async function ReaderPage({ params }: Props) {
             subjectId={subjectId}
             unlockAll={unlockActivities}
             subjectTitle={subject.title}
-            freeSectionId={freeSectionId}
+            freeSectionIds={freeSectionIds}
             reviewerCount={reviewerCount}
           />
         ))}
