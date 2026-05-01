@@ -15,6 +15,7 @@ import { ProAccessBanner } from "@/components/ProAccessBanner";
 import { ShareProgressButton } from "@/components/share/ShareProgressButton";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { modulePath } from "@/lib/subscribeRedirect";
+import { cheapestSubjectPrice } from "@/lib/pricing";
 import { getSubjectWithYear, getModulesBySubject, getModuleCounters, getActivitySectionsForModules } from "@/lib/cache/queries";
 
 export const revalidate = 60;
@@ -125,6 +126,7 @@ export default async function ModulesPage({ params, searchParams }: Props) {
                 subjectTitle={subject.title}
                 from={modulePath(yearId, subjectId, modules[0].id)}
                 reviewerCount={reviewerCount ?? undefined}
+                fromPrice={cheapestSubjectPrice()}
               />
               <div className="mt-6 flex justify-end">
                 <ShareProgressButton

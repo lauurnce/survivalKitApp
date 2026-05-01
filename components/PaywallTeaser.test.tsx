@@ -43,7 +43,7 @@ describe("PaywallTeaser", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("keeps the value message but quotes no price", () => {
+  it("keeps the value message and quotes no price when none is passed", () => {
     const { container } = render(
       <PaywallTeaser yearId={YEAR} subjectId={SUBJECT} subjectTitle="CP1" reviewerCount={12} />
     );
@@ -53,6 +53,20 @@ describe("PaywallTeaser", () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/the first one's free\./i)).toBeInTheDocument();
     expect(container.textContent).not.toContain("₱");
+  });
+
+  it("quotes the starting price it is given and what it unlocks", () => {
+    const { container } = render(
+      <PaywallTeaser
+        yearId={YEAR}
+        subjectId={SUBJECT}
+        subjectTitle="CP1"
+        reviewerCount={12}
+        fromPrice={{ amountLabel: "₱49", term: "for a month" }}
+      />
+    );
+
+    expect(container.textContent).toContain("From ₱49 — unlocks every reviewer in CP1 for a month.");
   });
 
   it("no longer advertises block pricing", () => {

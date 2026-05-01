@@ -14,9 +14,9 @@ interface Props {
   from: string;
 }
 
-// One line per locked reviewer. Pricing lives on /unlock and nowhere else, so a
-// module with three gated reviewers costs three lines instead of three copies
-// of the plan table.
+// One line per locked reviewer. The plan table lives on /unlock (the teaser at
+// the top of the page quotes the "from" price once), so a module with three
+// gated reviewers costs three lines instead of three copies of the plan table.
 export function LockedReviewer({ yearId, subjectId, from }: Props) {
   const { polling, unlocked, pollTimedOut } = useSubscriptionStatus(yearId, subjectId);
 

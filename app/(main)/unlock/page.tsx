@@ -39,8 +39,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-// The one place in the app that quotes a price. Locked reviewers and the
-// paywall teaser link here instead of repeating the plan table per section.
+// The one place in the app that shows the plan table. Locked reviewers and the
+// paywall teaser link here instead of repeating it per section; the teaser
+// quotes only a "from" price, derived from the same PLANS (lib/pricing.ts).
 export default async function UnlockPage({ searchParams }: Props) {
   const { year: yearParam, subject: subjectParam, from: fromParam } = await searchParams;
   const yearId = single(yearParam);

@@ -19,6 +19,7 @@ import { SignupNudgeToast } from "@/components/SignupNudgeToast";
 import { ModuleReaderClient } from "@/components/ModuleReaderClient";
 import { ModuleSurveyCard } from "@/components/ModuleSurveyCard";
 import { pickFirstActivity } from "@/lib/freeSample";
+import { cheapestSubjectPrice } from "@/lib/pricing";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { getModuleWithSubject, getSiblingModules, getModuleContentSections, getModuleActivitySections } from "@/lib/cache/queries";
 
@@ -197,6 +198,7 @@ export default async function ReaderPage({ params }: Props) {
             subjectId={subjectId}
             subjectTitle={subject.title}
             reviewerCount={reviewerCount || undefined}
+            fromPrice={cheapestSubjectPrice()}
           />
         )}
         {allSections.map((section, i) => (
