@@ -1,19 +1,16 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
 
+let search = new URLSearchParams();
 vi.mock("next/navigation", () => ({
   usePathname: () => "/year",
+  useSearchParams: () => search,
 }));
 
-let currentUserId: string | null = null;
-
-vi.mock("@/lib/auth/currentUser", () => ({
-  getCurrentUserId: () => Promise.resolve(currentUserId),
-}));
+vi.mock("@/app/(auth)/actions", () => ({ signOutAction: vi.fn() }));
 
 vi.mock("@/lib/account", () => ({
-  getAccountOverview: () => Promise.resolve({ overallDone: 0, overallTotal: 0 }),
   completionPercentage: () => 0,
 }));
 
@@ -30,20 +27,50 @@ vi.mock("@/lib/cache/queries", () => ({
 }));
 
 import YearPage from "./page";
+import { resetSessionCache } from "@/hooks/useSession";
 
-async function renderPage(search: Record<string, string> = {}) {
-  const ui = await YearPage({ searchParams: Promise.resolve(search) });
+// Session now resolves client-side via /api/me (hooks/useSession).
+function stubSession(signedIn: boolean, overview = { overallDone: 0, overallTotal: 0 }) {
+  resetSessionCache();
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () =>
+      new Response(JSON.stringify(signedIn ? { signedIn: true, firstName: null, overview } : { signedIn: false, firstName: null }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    ),
+  );
+}
+
+
+let signedIn = false;
+
+// Let the /api/me round-trip settle before asserting something stayed absent.
+async function waitForSession() {
+  await waitFor(() => expect(fetch).toHaveBeenCalled());
+  await new Promise((r) => setTimeout(r, 0));
+}
+
+async function renderPage(query: Record<string, string> = {}) {
+  search = new URLSearchParams(query);
+  stubSession(signedIn);
+  const ui = await YearPage();
   return render(ui);
 }
 
 beforeEach(() => {
-  currentUserId = null;
+  signedIn = false;
   localStorage.clear();
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 describe("YearPage — tour anchors", () => {
   it("marks the years grid, per-year stats, and search link for the tour to anchor to", async () => {
-    currentUserId = "user-1";
+    signedIn = true;
     const { container } = await renderPage();
 
     expect(container.querySelector('[data-tour="subjects-years"]')).not.toBeNull();
@@ -57,31 +84,48 @@ describe("YearPage — tour anchors", () => {
 
 describe("YearPage — subjects tour gating", () => {
   it("mounts the tour when signed in (dashboard shell shown)", async () => {
-    currentUserId = "user-1";
+    signedIn = true;
     await renderPage();
 
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
   });
 
   it("mounts the tour for a signed-out visitor arriving via the dashboard referrer", async () => {
-    currentUserId = null;
+    signedIn = false;
     await renderPage({ from: "dashboard" });
 
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
   });
 
   it("does not mount the tour for an anon visitor browsing from the public landing page", async () => {
-    currentUserId = null;
+    signedIn = false;
     await renderPage();
+    await waitForSession();
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("does not run again once bsit:tour:subjects is already set", async () => {
-    currentUserId = "user-1";
+    signedIn = true;
     localStorage.setItem("bsit:tour:subjects", "1");
     await renderPage();
+    await waitForSession();
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+});
+
+describe("YearPage — static shell", () => {
+  it("shows no nav rail to an anonymous visitor from the landing page", async () => {
+    await renderPage();
+    await waitForSession();
+    expect(screen.queryByRole("navigation", { name: /dashboard/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /log out/i })).not.toBeInTheDocument();
+  });
+
+  it("adds log out once the session resolves as signed in", async () => {
+    signedIn = true;
+    await renderPage();
+    expect(await screen.findByRole("button", { name: /log out/i })).toBeInTheDocument();
   });
 });

@@ -3,7 +3,6 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import { ResourcesTour } from "./ResourcesTour";
 
-const USER_ID = "11111111-1111-1111-1111-111111111111";
 
 function Anchors() {
   return (
@@ -29,7 +28,7 @@ describe("ResourcesTour", () => {
     render(
       <>
         <Anchors />
-        <ResourcesTour userId={USER_ID} />
+        <ResourcesTour signedIn />
       </>
     );
     await act(async () => {});
@@ -42,7 +41,7 @@ describe("ResourcesTour", () => {
     render(
       <>
         <Anchors />
-        <ResourcesTour userId={null} />
+        <ResourcesTour signedIn={false} />
       </>
     );
     await act(async () => {});
@@ -56,7 +55,7 @@ describe("ResourcesTour", () => {
     render(
       <>
         <Anchors />
-        <ResourcesTour userId={USER_ID} />
+        <ResourcesTour signedIn />
       </>
     );
     await act(async () => {});
@@ -68,7 +67,7 @@ describe("ResourcesTour", () => {
     render(
       <>
         <Anchors />
-        <ResourcesTour userId={USER_ID} />
+        <ResourcesTour signedIn />
       </>
     );
     await act(async () => {});
@@ -86,7 +85,7 @@ describe("ResourcesTour", () => {
     render(
       <>
         <Anchors />
-        <ResourcesTour userId={USER_ID} />
+        <ResourcesTour signedIn />
       </>
     );
     await act(async () => {});

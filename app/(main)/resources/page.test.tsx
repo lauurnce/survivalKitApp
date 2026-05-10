@@ -1,31 +1,55 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, within, waitFor } from "@testing-library/react";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/resources",
 }));
 
-let currentUserId: string | null = "11111111-1111-1111-1111-111111111111";
-vi.mock("@/lib/auth/currentUser", () => ({
-  getCurrentUserId: () => Promise.resolve(currentUserId),
-}));
+vi.mock("@/app/(auth)/actions", () => ({ signOutAction: vi.fn() }));
 
 vi.mock("@/lib/account", () => ({
   completionPercentage: (done: number, total: number) => (total > 0 ? done / total : 0),
-  getAccountOverview: () => Promise.resolve({ overallDone: 2, overallTotal: 10 }),
 }));
 
 import ResourcesPage from "./page";
+import { resetSessionCache } from "@/hooks/useSession";
+
+// Session now resolves client-side via /api/me (hooks/useSession).
+function stubSession(signedIn: boolean, overview = { overallDone: 0, overallTotal: 0 }) {
+  resetSessionCache();
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () =>
+      new Response(JSON.stringify(signedIn ? { signedIn: true, firstName: null, overview } : { signedIn: false, firstName: null }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    ),
+  );
+}
+
+
+let signedIn = true;
 
 beforeEach(() => {
-  currentUserId = "11111111-1111-1111-1111-111111111111";
+  signedIn = true;
   localStorage.clear();
 });
 
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
 async function renderPage() {
-  const ui = await ResourcesPage();
+  stubSession(signedIn, { overallDone: 2, overallTotal: 10 });
+  const ui = ResourcesPage();
   return render(ui);
+}
+
+async function settle() {
+  await waitFor(() => expect(fetch).toHaveBeenCalled());
+  await new Promise((r) => setTimeout(r, 0));
 }
 
 describe("ResourcesPage — tour anchors", () => {
@@ -43,27 +67,27 @@ describe("ResourcesPage — tour anchors", () => {
   });
 
   it("mounts the tour for a signed-in visitor", async () => {
-    currentUserId = "11111111-1111-1111-1111-111111111111";
     await renderPage();
 
-    const dialog = screen.getByRole("dialog");
+    const dialog = await screen.findByRole("dialog");
     expect(within(dialog).getByRole("heading", { name: "Code playground" })).toBeInTheDocument();
   });
 
   it("does not mount the tour for an anonymous visitor", async () => {
-    currentUserId = null;
+    signedIn = false;
     await renderPage();
+    await settle();
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("no longer lists subject quizzes, signed in or anonymous", async () => {
-    const signedIn = await renderPage();
-    expect(signedIn.container.querySelector('[data-tour="resources-quiz"]')).toBeNull();
+    const member = await renderPage();
+    expect(member.container.querySelector('[data-tour="resources-quiz"]')).toBeNull();
     expect(screen.queryByText(/quiz yourself/i)).not.toBeInTheDocument();
-    signedIn.unmount();
+    member.unmount();
 
-    currentUserId = null;
+    signedIn = false;
     const anon = await renderPage();
     expect(anon.container.querySelector('[data-tour="resources-quiz"]')).toBeNull();
     expect(screen.queryByText(/sign in to quiz yourself/i)).not.toBeInTheDocument();

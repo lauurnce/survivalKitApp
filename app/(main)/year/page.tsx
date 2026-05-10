@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getCurrentUserId } from "@/lib/auth/currentUser";
-import { getAccountOverview } from "@/lib/account";
-import { signOutAction } from "../../(auth)/actions";
-import { NavRail } from "@/components/dashboard/NavRail";
+import { DashboardNavRail, SessionLogoutButton } from "@/components/dashboard/SessionShell";
 import { PageTracker } from "@/components/PageTracker";
-import { YearGrid, type YearCardData } from "@/components/YearGrid";
+import { type YearCardData } from "@/components/YearGrid";
+import { ReferrerYearGrid } from "@/components/ReferrerAware";
 import { SubjectsTour } from "@/components/tour/SubjectsTour";
-import { hasDashboardReferrer } from "@/lib/navigation";
 import { getYears, getAllSubjects, getYearCounters } from "@/lib/cache/queries";
 
-// Year list is static; user progress on nav rail is cached for 60s (acceptable for progress indicator).
+// Prerendered (ISR, 60s) and CDN-cached: identical for every visitor. The
+// session-dependent bits — nav rail, its progress, log out — and the
+// ?from=dashboard variant are resolved client-side.
 export const revalidate = 60;
 
 export const metadata: Metadata = {
@@ -18,20 +17,7 @@ export const metadata: Metadata = {
   description: "Pick your year level to browse BSIT subjects and modules.",
 };
 
-interface Props {
-  searchParams: Promise<{ from?: string }>;
-}
-
-export default async function YearPage({ searchParams }: Props) {
-  const resolvedSearchParams = await searchParams;
-  const fromDashboard = hasDashboardReferrer({ get: (k) => (k === "from" ? resolvedSearchParams.from ?? null : null ) });
-  // Same dashboard shell as Resources/Roadmap/Profile. Anonymous visitors see
-  // the page with zeroed rail progress until they sign in.
-  const userId = await getCurrentUserId();
-  const overview = userId
-    ? await getAccountOverview(userId)
-    : { overallDone: 0, overallTotal: 0 };
-
+export default async function YearPage() {
   // Use cached queries for static data
   const [years, allSubjects, yearCounters] = await Promise.all([
     getYears(),
@@ -56,26 +42,18 @@ export default async function YearPage({ searchParams }: Props) {
     };
   });
 
-  const showNavRail = userId || fromDashboard;
-
   return (
     <div className="min-h-screen bg-paper lg:flex">
-      {showNavRail && (
-        <>
-          <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
-          {/* Only for visitors arriving via the dashboard shell — anon
-              visitors browsing here from the public landing page already
-              saw the landing tour (#60) and shouldn't see this one too. */}
-          <SubjectsTour />
-        </>
-      )}
+      {/* Same dashboard shell as Resources/Roadmap/Profile, shown to signed-in
+          readers and anyone arriving via the dashboard. The tour rides along:
+          anon visitors browsing here from the public landing page already
+          saw the landing tour (#60) and shouldn't see this one too. */}
+      <DashboardNavRail>
+        <SubjectsTour />
+      </DashboardNavRail>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
-          {userId && (
-            <form action={signOutAction}>
-              <button className="text-xs text-ink-muted underline">Log out</button>
-            </form>
-          )}
+          <SessionLogoutButton />
         </div>
 
         <main className="min-h-screen bg-paper flex flex-col">
@@ -109,7 +87,7 @@ export default async function YearPage({ searchParams }: Props) {
           {/* Year cards — cream */}
           <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
             <div className="max-w-wide mx-auto" data-tour="subjects-years">
-              <YearGrid cards={cards} fromDashboard={fromDashboard} />
+              <ReferrerYearGrid cards={cards} />
             </div>
           </div>
         </main>

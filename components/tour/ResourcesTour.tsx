@@ -20,23 +20,23 @@ const RESOURCES_STEPS: TourStep[] = [
 
 export interface ResourcesTourProps {
   /**
-   * Real signed-in userId, or `null` for an anonymous visitor. Resources
-   * allows anon access, but this tour only auto-runs for a signed-in user
-   * arriving via the dashboard shell — anon visitors either never came
-   * through the dashboard or already saw the landing tour (#60), so they
-   * never see this one too. Passing `null` mounts nothing.
+   * Whether the reader is signed in. Resources allows anon access, but this
+   * tour only auto-runs for a signed-in user arriving via the dashboard shell
+   * — anon visitors either never came through the dashboard or already saw
+   * the landing tour (#60), so they never see this one too. `false` mounts
+   * nothing.
    */
-  userId: string | null;
+  signedIn: boolean;
 }
 
 /**
  * Mounts the Resources section tour (`tourId: "resources"`). Steps anchor to
  * the Code Playground card and the Search card.
  */
-export function ResourcesTour({ userId }: ResourcesTourProps) {
+export function ResourcesTour({ signedIn }: ResourcesTourProps) {
   const { active, stepIndex, totalSteps, next, prev, skip } = useTour("resources", RESOURCES_STEPS);
 
-  if (!userId || !active) return null;
+  if (!signedIn || !active) return null;
 
   return (
     <TourOverlay

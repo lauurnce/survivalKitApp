@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { ThemeIcon, toggleTheme } from "@/components/ThemeToggle";
+import { useSession } from "@/hooks/useSession";
 
-interface TopBarProps {
-  userId: string | null;
-}
-
-export function TopBar({ userId }: TopBarProps) {
+// Session is resolved client-side (useSession) so the (main) layout can stay
+// static: the prerendered HTML always says "Log in", and a signed-in reader
+// sees it switch to "My Account" once /api/me answers.
+export function TopBar() {
+  const { signedIn } = useSession();
   return (
-    <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+    <div className="fixed top-4 right-4 z-50 flex items-center gap-2 print:hidden">
       <button
         type="button"
         onClick={toggleTheme}
@@ -19,11 +20,11 @@ export function TopBar({ userId }: TopBarProps) {
         <ThemeIcon />
       </button>
       <Link
-        href={userId ? "/account" : "/login"}
+        href={signedIn ? "/account" : "/login"}
         data-tour="landing-login"
         className="h-9 flex items-center border border-ink-faint/30 bg-paper px-3 font-mono text-label-sm uppercase tracking-[0.12em] text-ink hover:bg-ink hover:text-paper transition-colors duration-150 rounded-xl"
       >
-        {userId ? "My Account" : "Log in"}
+        {signedIn ? "My Account" : "Log in"}
       </Link>
     </div>
   );
