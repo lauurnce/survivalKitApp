@@ -128,19 +128,23 @@ export default async function ReaderPage({ params }: Props) {
       <PageTracker event="module_open" yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
       {/* Post-payment confirmation; self-dismisses, needs the Suspense that
           Next.js 15 requires around useSearchParams. */}
-      <Suspense fallback={null}>
-        <UnlockSuccessToast />
-      </Suspense>
+      <div className="print:hidden">
+        <Suspense fallback={null}>
+          <UnlockSuccessToast />
+        </Suspense>
+      </div>
       {/* This page already serves free (non-activity) content to anonymous
           visitors — the nudge here is purely a soft prompt to create an
           account, not a new gate. It never blocks reading. */}
-      <SignedOutOnly>
-        <SignupNudgeToast
-          signupHref={`/signup?next=${encodeURIComponent(
-            `/year/${yearId}/subjects/${subjectId}/modules/${moduleId}`
-          )}`}
-        />
-      </SignedOutOnly>
+      <div className="print:hidden">
+        <SignedOutOnly>
+          <SignupNudgeToast
+            signupHref={`/signup?next=${encodeURIComponent(
+              `/year/${yearId}/subjects/${subjectId}/modules/${moduleId}`
+            )}`}
+          />
+        </SignedOutOnly>
+      </div>
       <LastModuleTracker
         moduleId={moduleId}
         subjectId={subjectId}
@@ -150,7 +154,7 @@ export default async function ReaderPage({ params }: Props) {
       />
 
       {/* Top nav — dark navy */}
-      <div className="bg-navy px-6 py-8 md:px-16 border-b border-paper/10">
+      <div className="bg-navy px-6 py-8 md:px-16 border-b border-paper/10 print:hidden">
         <div className="max-w-wide mx-auto">
           <Breadcrumbs
             items={[
@@ -212,7 +216,7 @@ export default async function ReaderPage({ params }: Props) {
       </article>
 
       {/* Next-module CTA */}
-      <div className="border-t border-ink-faint/20 px-6 py-12 md:px-16">
+      <div className="border-t border-ink-faint/20 px-6 py-12 md:px-16 print:hidden">
         <div className="max-w-wide mx-auto">
         <div className="flex items-center justify-between gap-4 mb-10">
           <p className="font-sans text-sm text-ink-muted">

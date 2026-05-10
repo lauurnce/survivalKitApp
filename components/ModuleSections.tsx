@@ -82,7 +82,7 @@ export function ModuleSections({
           onUnlocked={setUnlocked}
         />
       )}
-      {!isUnlocked && teaser}
+      {!isUnlocked && teaser && <div className="print:hidden">{teaser}</div>}
       {shown.map((section, i) => (
         <SectionRenderer
           key={section.id}
