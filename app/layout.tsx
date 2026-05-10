@@ -3,6 +3,7 @@ import { canonicalOrigin } from "@/lib/appOrigin";
 import { viewportConfig } from "@/lib/viewport";
 import { Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { SessionEntryTracker } from "@/components/SessionEntryTracker";
 import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/csp";
 import "./globals.css";
 
@@ -78,6 +79,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans min-h-screen flex flex-col">
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        <SessionEntryTracker />
         <a
           href="#content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-navy focus:text-paper focus:px-4 focus:py-2 font-sans text-sm"
