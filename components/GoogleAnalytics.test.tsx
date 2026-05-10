@@ -20,24 +20,26 @@ beforeEach(() => {
 
 describe("GoogleAnalytics", () => {
   it("renders nothing when no measurement ID is configured", () => {
-    const { container } = render(<GoogleAnalytics gaId="" nonce="test-nonce" />);
+    const { container } = render(<GoogleAnalytics gaId="" />);
     expect(container).toBeEmptyDOMElement();
     expect(document.querySelector("script[src*='googletagmanager.com']")).toBeNull();
   });
 
-  it("loads the gtag.js script with the CSP nonce and the measurement ID", () => {
-    render(<GoogleAnalytics gaId="G-TEST123" nonce="test-nonce" />);
+  it("loads the gtag.js script with the measurement ID and no nonce", () => {
+    render(<GoogleAnalytics gaId="G-TEST123" />);
     const script = document.querySelector(
       "script[src*='googletagmanager.com/gtag/js']",
     ) as HTMLScriptElement | null;
     expect(script).not.toBeNull();
     expect(script?.src).toContain("id=G-TEST123");
-    expect(script?.nonce).toBe("test-nonce");
+    // No nonce on purpose: the root layout stays static, so there is no
+    // per-request value to pass. lib/csp.ts explains why it still loads.
+    expect(script?.nonce).toBe("");
   });
 
   it("queues an initial page_view on mount without waiting for gtag.js to load", () => {
     pathname = "/year/1/subjects/data-structures";
-    render(<GoogleAnalytics gaId="G-TEST123" nonce="test-nonce" />);
+    render(<GoogleAnalytics gaId="G-TEST123" />);
     const events = window.dataLayer.filter(
       (entry) => Array.isArray(entry) && entry[0] === "event" && entry[1] === "page_view",
     );
@@ -50,10 +52,10 @@ describe("GoogleAnalytics", () => {
   });
 
   it("queues a fresh page_view on client-side route changes", () => {
-    const { rerender } = render(<GoogleAnalytics gaId="G-TEST123" nonce="test-nonce" />);
+    const { rerender } = render(<GoogleAnalytics gaId="G-TEST123" />);
     pathname = "/year/2/subjects/algorithms";
     searchParams.set("tab", "reviewer");
-    rerender(<GoogleAnalytics gaId="G-TEST123" nonce="test-nonce" />);
+    rerender(<GoogleAnalytics gaId="G-TEST123" />);
 
     const events = window.dataLayer.filter(
       (entry) => Array.isArray(entry) && entry[0] === "event" && entry[1] === "page_view",

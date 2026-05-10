@@ -2,16 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
-import { isSubscribed } from "@/lib/subscriptions";
-import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
-import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { BackLink } from "@/components/BackLink";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ModuleDoneToggle } from "@/components/ModuleDoneToggle";
-import { SectionRenderer } from "@/components/SectionRenderer";
+import { ModuleSections, type ReaderSection } from "@/components/ModuleSections";
+import { SignedOutOnly } from "@/components/dashboard/SessionShell";
 import { PageTracker } from "@/components/PageTracker";
+import { PrintButton } from "@/components/PrintButton";
 import { LastModuleTracker } from "@/components/LastModuleTracker";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
 import { UnlockSuccessToast } from "@/components/UnlockSuccessToast";
@@ -23,7 +21,15 @@ import { cheapestSubjectPrice } from "@/lib/pricing";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { getModuleWithSubject, getSiblingModules, getModuleContentSections, getModuleActivitySections } from "@/lib/cache/queries";
 
+// Prerendered on first request per module (ISR, 60s) and CDN-cached. The HTML
+// is the locked view for every visitor — content, activity headings, and the
+// free sample; paid bodies are never in it. Subscribers get them client-side
+// from /api/subscription-status?moduleId= (components/ModuleSections.tsx).
 export const revalidate = 60;
+
+export async function generateStaticParams() {
+  return [];
+}
 
 interface Props {
   params: Promise<{ yearId: string; subjectId: string; moduleId: string }>;
@@ -60,29 +66,14 @@ export default async function ReaderPage({ params }: Props) {
       : null;
   const prevModule = currentIndex > 0 ? siblings[currentIndex - 1] : null;
 
-  const devUnlockAll = process.env.UNLOCK_ALL === "true";
-  const cookieStore = await cookies();
-  // Only trust the device ID if its HMAC signature checks out — a forged or
-  // copied cookie value verifies to null and grants no access.
-  const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
-  const userId = await getCurrentUserId();
-  const subscribed = (userId || deviceId) ? await isSubscribed(deviceId ?? "", yearId, subjectId, userId ?? undefined) : false;
-  const unlockActivities = devUnlockAll || subscribed;
+  // Per-reader entitlement is NOT read here: this render is shared by every
+  // visitor. Only the build-wide UNLOCK_ALL dev flag unlocks the prerendered
+  // HTML.
+  const unlockActivities = process.env.UNLOCK_ALL === "true";
 
-  // Locked visitors only ever receive activity headings; the full body, drill
-  // markdown, and starter code are fetched solely when this request is unlocked.
+  // The prerendered page only ever receives activity headings; the full body,
+  // drill markdown, and starter code reach subscribers via /api/subscription-status.
   const activityMeta = await getModuleActivitySections(moduleId, unlockActivities);
-
-  type ReaderSection = {
-    id: string;
-    kind: string;
-    heading: string;
-    body_md: string;
-    sort_order: number;
-    ide_language?: "python" | "sql" | "java" | "c" | null;
-    starter_code?: string | null;
-    topology_data?: import("@/lib/topology/types").TopologyData | null;
-  };
 
   // Free sample: locked visitors get every reviewer of the subject's first
   // module in full (lib/freeSample.ts) — the whole paid loop, once. Everything
@@ -133,24 +124,28 @@ export default async function ReaderPage({ params }: Props) {
   const year = (subject.years as { label: string; sort_order: number }[] | null)?.[0] ?? null;
 
   return (
-    <ModuleReaderClient moduleId={moduleId} moduleTitle={mod.title} userId={userId}>
+    <ModuleReaderClient moduleId={moduleId} moduleTitle={mod.title}>
       <main className="min-h-screen bg-paper">
       <PageTracker event="module_open" yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
       {/* Post-payment confirmation; self-dismisses, needs the Suspense that
           Next.js 15 requires around useSearchParams. */}
-      <Suspense fallback={null}>
-        <UnlockSuccessToast />
-      </Suspense>
+      <div className="print:hidden">
+        <Suspense fallback={null}>
+          <UnlockSuccessToast />
+        </Suspense>
+      </div>
       {/* This page already serves free (non-activity) content to anonymous
           visitors — the nudge here is purely a soft prompt to create an
           account, not a new gate. It never blocks reading. */}
-      {!userId && (
-        <SignupNudgeToast
-          signupHref={`/signup?next=${encodeURIComponent(
-            `/year/${yearId}/subjects/${subjectId}/modules/${moduleId}`
-          )}`}
-        />
-      )}
+      <div className="print:hidden">
+        <SignedOutOnly>
+          <SignupNudgeToast
+            signupHref={`/signup?next=${encodeURIComponent(
+              `/year/${yearId}/subjects/${subjectId}/modules/${moduleId}`
+            )}`}
+          />
+        </SignedOutOnly>
+      </div>
       <LastModuleTracker
         moduleId={moduleId}
         subjectId={subjectId}
@@ -160,7 +155,7 @@ export default async function ReaderPage({ params }: Props) {
       />
 
       {/* Top nav — dark navy */}
-      <div className="bg-navy px-6 py-8 md:px-16 border-b border-paper/10">
+      <div className="bg-navy px-6 py-8 md:px-16 border-b border-paper/10 print:hidden">
         <div className="max-w-wide mx-auto">
           <Breadcrumbs
             items={[
@@ -186,6 +181,9 @@ export default async function ReaderPage({ params }: Props) {
             {sectionLabel(year?.sort_order)} — {subject.title}
           </p>
           <h1 className="font-serif text-display-md text-paper">{mod.title}</h1>
+          <div className="mt-6">
+            <PrintButton yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
+          </div>
         </div>
       </header>
 
@@ -195,35 +193,34 @@ export default async function ReaderPage({ params }: Props) {
         {/* Surface the offer at the top when this module has gated activities
             and the user hasn't unlocked them. A module whose reviewers are all
             free sample (the subject's first) gets no teaser — the offer starts
-            from the next module, after the reader has had the full loop. */}
-        {!unlockActivities && (activityMeta?.length ?? 0) > freeSections.length && (
-          <PaywallTeaser
-            yearId={yearId}
-            subjectId={subjectId}
-            subjectTitle={subject.title}
-            reviewerCount={reviewerCount || undefined}
-            fromPrice={cheapestSubjectPrice()}
-          />
-        )}
-        {allSections.map((section, i) => (
-          <SectionRenderer
-            key={section.id}
-            section={section}
-            index={i}
-            moduleId={moduleId}
-            yearId={yearId}
-            subjectId={subjectId}
-            unlockAll={unlockActivities}
-            subjectTitle={subject.title}
-            freeSectionIds={freeSectionIds}
-            reviewerCount={reviewerCount}
-          />
-        ))}
+            from the next module, after the reader has had the full loop.
+            ModuleSections drops it once a subscriber unlocks client-side. */}
+        <ModuleSections
+          yearId={yearId}
+          subjectId={subjectId}
+          moduleId={moduleId}
+          subjectTitle={subject.title}
+          sections={allSections}
+          unlockAll={unlockActivities}
+          freeSectionIds={freeSectionIds}
+          reviewerCount={reviewerCount}
+          teaser={
+            !unlockActivities && (activityMeta?.length ?? 0) > freeSections.length ? (
+              <PaywallTeaser
+                yearId={yearId}
+                subjectId={subjectId}
+                subjectTitle={subject.title}
+                reviewerCount={reviewerCount || undefined}
+                fromPrice={cheapestSubjectPrice()}
+              />
+            ) : null
+          }
+        />
         </div>
       </article>
 
       {/* Next-module CTA */}
-      <div className="border-t border-ink-faint/20 px-6 py-12 md:px-16">
+      <div className="border-t border-ink-faint/20 px-6 py-12 md:px-16 print:hidden">
         <div className="max-w-wide mx-auto">
         <div className="flex items-center justify-between gap-4 mb-10">
           <p className="font-sans text-sm text-ink-muted">

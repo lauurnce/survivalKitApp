@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getCurrentUserId } from "@/lib/auth/currentUser";
-import { getAccountOverview } from "@/lib/account";
-import { signOutAction } from "../../(auth)/actions";
-import { NavRail } from "@/components/dashboard/NavRail";
+import { SessionLogoutButton, SessionNavRail, SignedInOnly } from "@/components/dashboard/SessionShell";
 import { ResourcesTour } from "@/components/tour/ResourcesTour";
 
-// Session-aware (nav rail progress, log out, the tour) but still public —
-// anonymous visitors are never redirected away.
-export const dynamic = "force-dynamic";
+// Fully static and CDN-cached. Session-aware bits (nav rail progress, log out,
+// the tour) resolve client-side; anonymous visitors are never redirected away.
 
 export const metadata: Metadata = {
   title: "Resources",
@@ -39,25 +35,18 @@ const CARDS: ResourceCard[] = [
   },
 ];
 
-export default async function ResourcesPage() {
-  const userId = await getCurrentUserId();
+export default function ResourcesPage() {
   // Same dashboard shell as Profile/Dashboard. Anonymous visitors still see
   // the page — the rail renders with zeroed progress until they sign in.
-  const overview = userId
-    ? await getAccountOverview(userId)
-    : { overallDone: 0, overallTotal: 0 };
-
   return (
     <div className="min-h-screen bg-paper lg:flex">
-      <ResourcesTour userId={userId} />
-      <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
+      <SignedInOnly>
+        <ResourcesTour signedIn />
+      </SignedInOnly>
+      <SessionNavRail />
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
-          {userId && (
-            <form action={signOutAction}>
-              <button className="text-xs text-ink-muted underline">Log out</button>
-            </form>
-          )}
+          <SessionLogoutButton />
         </div>
 
         <main className="mx-auto max-w-wide px-4 sm:px-8 py-6 space-y-10">

@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getCurrentUserId } from "@/lib/auth/currentUser";
-import { hasDashboardReferrer } from "@/lib/navigation";
-import { NavRail } from "@/components/dashboard/NavRail";
-import { BackLink } from "@/components/BackLink";
+import { DashboardNavRail } from "@/components/dashboard/SessionShell";
+import { ReferrerBackLink } from "@/components/ReferrerAware";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTracker } from "@/components/PageTracker";
 import { SubjectAccordion, type SubjectModule } from "@/components/SubjectAccordion";
 import { sectionLabel } from "@/lib/sectionLabel";
-import { getAccountOverview } from "@/lib/account";
 import { getYears, getSubjectsByYear, getSubjectCounters, getModulesBySubject } from "@/lib/cache/queries";
 import { createServerClient } from "@/lib/supabase/server";
 
@@ -16,7 +13,6 @@ export const revalidate = 60;
 
 interface Props {
   params: Promise<{ yearId: string }>;
-  searchParams: Promise<{ from?: string }>;
 }
 
 interface Subject {
@@ -43,17 +39,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function SubjectsPage({ params, searchParams }: Props) {
+// Prerendered on first request per year (ISR, 60s) and CDN-cached. The nav
+// rail and the ?from=dashboard back link resolve client-side.
+export async function generateStaticParams() {
+  return [];
+}
+
+export default async function SubjectsPage({ params }: Props) {
   const { yearId } = await params;
-  const resolvedSearchParams = await searchParams;
-  const fromDashboard = hasDashboardReferrer({ get: (k) => (k === "from" ? resolvedSearchParams.from ?? null : null) });
-
-  const userId = await getCurrentUserId();
-  const overview = userId
-    ? await getAccountOverview(userId)
-    : { overallDone: 0, overallTotal: 0 };
-
-  const showNavRail = userId || fromDashboard;
 
   // Use cached queries for static data
   const year = (await getYears()).find((y) => y.id === yearId);
@@ -89,9 +82,7 @@ export default async function SubjectsPage({ params, searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-paper lg:flex">
-      {showNavRail && (
-        <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
-      )}
+      <DashboardNavRail />
       <div className="flex-1 min-w-0">
         <main className="min-h-screen bg-paper flex flex-col">
           <PageTracker event="subject_open" yearId={yearId} />
@@ -103,12 +94,11 @@ export default async function SubjectsPage({ params, searchParams }: Props) {
                 items={[{ label: "Year", href: "/year" }, { label: year.label }]}
                 className="mb-6"
               />
-              <BackLink
+              <ReferrerBackLink
                 href="/year"
                 label="Select Year"
                 className="text-taupe hover:text-paper"
                 dashboardFallback={{ href: "/account", label: "Back to Dashboard" }}
-                searchParams={{ get: (k) => (k === "from" ? resolvedSearchParams.from : null) }}
               />
               <div className="mt-10">
                 <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">

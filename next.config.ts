@@ -1,14 +1,15 @@
 import type { NextConfig } from "next";
+import { STATIC_CSP_ROUTES, buildStaticCsp } from "./lib/csp";
 
-// Content-Security-Policy is NOT set here for normal page routes — proxy.ts
-// generates a fresh per-request nonce and sets script-src there (nonce-based CSP
-// requires a value that changes every request, which this static config can't
-// produce). Next.js gives a proxy-set header priority over a matching
-// next.config.ts header, so leaving CSP out of securityHeaders below avoids two
-// conflicting policies landing on the same response. /pyodideWorker.js is the
-// one path that keeps its CSP here (see pyodideWorkerHeaders) — middleware
-// deliberately excludes it from its own CSP so this narrower, eval-permitting
-// policy stays authoritative there.
+// Content-Security-Policy comes from two places:
+// - Prerendered public pages (STATIC_CSP_ROUTES in lib/csp.ts) get the
+//   nonce-free policy below. proxy.ts's matcher skips them entirely, so this is
+//   the only CSP they ever receive.
+// - Every other route gets a per-request nonce policy from proxy.ts (a value
+//   that changes every request, which this static config can't produce).
+// /pyodideWorker.js is the one path that keeps its own CSP here (see
+// pyodideWorkerHeaders) — proxy deliberately leaves it alone so this narrower,
+// eval-permitting policy stays authoritative there.
 const securityHeaders = [
   { key: "X-Content-Type-Options",    value: "nosniff" },
   { key: "X-Frame-Options",           value: "DENY" },
@@ -60,6 +61,12 @@ const nextConfig: NextConfig = {
         source: "/pyodideWorker.js",
         headers: pyodideWorkerHeaders,
       },
+      ...STATIC_CSP_ROUTES.flatMap(({ path, prefix }) =>
+        (prefix ? [path, `${path}/:path*`] : [path]).map((source) => ({
+          source,
+          headers: [{ key: "Content-Security-Policy", value: buildStaticCsp() }],
+        })),
+      ),
       {
         // Exclude /pyodideWorker.js so the global CSP does not override the
         // worker-scoped one (Next.js lets a later matching rule win for a

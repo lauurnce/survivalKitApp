@@ -74,12 +74,20 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
 
   if (section.kind === "activity" && !unlockAll && !isFreeSample) {
     return (
-      <section>
+      <section className="print-section" data-kind={section.kind}>
         {/* Locked preview: the server only ever sent the heading, so the
             blurred layer is that heading plus decorative ghost lines — never
             gated bodies. The overlay chip is deliberately inert (no link, no
             pointer events); the actionable row stays in LockedReviewer below. */}
-        <div className="relative">
+        {/* On paper a locked reviewer is just its title and a note — there is
+            no body to print, and the blurred preview prints as noise. */}
+        <p className="hidden print:block font-serif text-lg text-ink">
+          {String(index + 1).padStart(2, "0")} — {section.heading}
+          <span className="block font-sans text-sm text-ink-muted">
+            Pro reviewer — not included in this printout.
+          </span>
+        </p>
+        <div className="relative print:hidden">
           <div className="select-none pointer-events-none opacity-60 blur-[1px]">
             <div className="flex items-baseline gap-4 mb-5">
               <span className="label-sm shrink-0">{String(index + 1).padStart(2, "0")}</span>
@@ -101,7 +109,7 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
             </span>
           </div>
         </div>
-        <div className="pl-10 md:pl-12 mt-6">
+        <div className="pl-10 md:pl-12 mt-6 print:hidden">
           <LockedReviewer yearId={yearId} subjectId={subjectId} from={returnPath} />
         </div>
       </section>
@@ -109,7 +117,7 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
   }
 
   return (
-    <section>
+    <section className="print-section" data-kind={section.kind}>
       <div className="flex items-baseline gap-4 mb-6">
         <span className="label-sm shrink-0">{String(index + 1).padStart(2, "0")}</span>
         <h2 className="font-serif text-2xl md:text-3xl text-ink leading-tight">{section.heading}</h2>
@@ -124,10 +132,18 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
       )}
       {section.ide_language && (
         <div className="mt-6 pl-10 md:pl-12">
-          <Playground
-            languageId={section.ide_language}
-            initialCode={section.starter_code ?? undefined}
-          />
+          <div className="print:hidden">
+            <Playground
+              languageId={section.ide_language}
+              initialCode={section.starter_code ?? undefined}
+            />
+          </div>
+          {/* The editor is interactive-only; paper gets the starter code. */}
+          {section.starter_code && (
+            <pre className="hidden print:block font-mono text-sm p-4">
+              <code>{section.starter_code}</code>
+            </pre>
+          )}
         </div>
       )}
       {section.kind === "activity" && unlockAll && (
@@ -143,7 +159,7 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
         </div>
       )}
       {isLastFreeSample && (
-        <div className="mt-6 pl-10 md:pl-12">
+        <div className="mt-6 pl-10 md:pl-12 print:hidden">
           <div className="border border-accent/40 bg-accent/[0.03] p-5">
             <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent mb-2">
               Free Sample

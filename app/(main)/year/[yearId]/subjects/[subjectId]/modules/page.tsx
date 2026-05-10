@@ -1,28 +1,29 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
-import { isSubscribed } from "@/lib/subscriptions";
-import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
-import { getCurrentUserId } from "@/lib/auth/currentUser";
-import { BackLink } from "@/components/BackLink";
+import { ReferrerBackLink } from "@/components/ReferrerAware";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTracker } from "@/components/PageTracker";
-import { ModuleListItem } from "@/components/ModuleListItem";
+import { SubscriberModuleList, SubscriberProBanner } from "@/components/SubscriberState";
 import { SubjectComingSoon } from "@/components/SubjectComingSoon";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
-import { ProAccessBanner } from "@/components/ProAccessBanner";
 import { ShareProgressButton } from "@/components/share/ShareProgressButton";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { modulePath } from "@/lib/subscribeRedirect";
 import { cheapestSubjectPrice } from "@/lib/pricing";
 import { getSubjectWithYear, getModulesBySubject, getModuleCounters, getActivitySectionsForModules } from "@/lib/cache/queries";
 
+// Prerendered on first request per subject (ISR, 60s) and CDN-cached. The
+// subscriber treatment (Pro banner, PRO marks) and the ?from=dashboard back
+// link resolve client-side.
 export const revalidate = 60;
+
+export async function generateStaticParams() {
+  return [];
+}
 
 interface Props {
   params: Promise<{ yearId: string; subjectId: string }>;
-  searchParams: Promise<{ from?: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -41,9 +42,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ModulesPage({ params, searchParams }: Props) {
+export default async function ModulesPage({ params }: Props) {
   const { yearId, subjectId } = await params;
-  const resolvedSearchParams = await searchParams;
 
   // Use cached queries for static data
   const subject = await getSubjectWithYear(subjectId);
@@ -65,17 +65,8 @@ export default async function ModulesPage({ params, searchParams }: Props) {
   const reviewerCount = activityRows?.length ?? 0;
   const proModuleIds = new Set((activityRows ?? []).map((row) => row.module_id));
 
-  // Same identity approach as the module detail page: signed device cookie or
-  // session user, checked once for the whole page.
+  // Build-wide dev flag only; per-reader subscription resolves client-side.
   const devUnlockAll = process.env.UNLOCK_ALL === "true";
-  const cookieStore = await cookies();
-  const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
-  const userId = await getCurrentUserId();
-  const subscribed =
-    devUnlockAll ||
-    ((userId || deviceId)
-      ? await isSubscribed(deviceId ?? "", yearId, subjectId, userId ?? undefined)
-      : false);
 
   const year = (subject.years as { label: string; sort_order: number }[] | null)?.[0] ?? null;
 
@@ -98,12 +89,11 @@ export default async function ModulesPage({ params, searchParams }: Props) {
             ]}
             className="mb-6"
           />
-          <BackLink
+          <ReferrerBackLink
             href={`/year/${yearId}/subjects`}
             label={year?.label ?? "Subjects"}
             className="text-taupe hover:text-paper"
             dashboardFallback={{ href: "/account", label: "Back to Dashboard" }}
-            searchParams={{ get: (k) => (k === "from" ? resolvedSearchParams.from : null) }}
           />
           <div className="mt-10">
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
@@ -119,7 +109,7 @@ export default async function ModulesPage({ params, searchParams }: Props) {
         <div className="max-w-wide mx-auto">
           {modules && modules.length > 0 && (
             <>
-              {subscribed && <ProAccessBanner />}
+              <SubscriberProBanner yearId={yearId} subjectId={subjectId} unlockAll={devUnlockAll} />
               <PaywallTeaser
                 yearId={yearId}
                 subjectId={subjectId}
@@ -139,28 +129,27 @@ export default async function ModulesPage({ params, searchParams }: Props) {
           )}
         </div>
         <div className="flex flex-col divide-y divide-ink-faint/30 max-w-wide mx-auto">
-          {modules?.map((mod, i) => {
-            // PRO treatment only for modules that actually carry gated
-            // reviewer content, and only once the reader can open them.
-            const isPro = subscribed && proModuleIds.has(mod.id);
-            return (
-              <ModuleListItem
-                key={mod.id}
-                href={modulePath(yearId, subjectId, mod.id)}
-                index={i}
-                moduleId={mod.id}
-                title={mod.title}
-                readCount={readCount(mod.id)}
-                isPro={isPro}
-                share={{
-                  subjectId,
-                  subjectTitle: subject.title,
-                  moduleTitle: mod.title,
-                  moduleIds,
-                }}
-              />
-            );
-          })}
+          {/* PRO treatment only for modules that actually carry gated
+              reviewer content, and only once the reader can open them. */}
+          <SubscriberModuleList
+            yearId={yearId}
+            subjectId={subjectId}
+            unlockAll={devUnlockAll}
+            proModuleIds={[...proModuleIds]}
+            items={(modules ?? []).map((mod, i) => ({
+              href: modulePath(yearId, subjectId, mod.id),
+              index: i,
+              moduleId: mod.id,
+              title: mod.title,
+              readCount: readCount(mod.id),
+              share: {
+                subjectId,
+                subjectTitle: subject.title,
+                moduleTitle: mod.title,
+                moduleIds,
+              },
+            }))}
+          />
 
           {(!modules || modules.length === 0) && (
             <SubjectComingSoon

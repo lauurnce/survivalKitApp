@@ -1,18 +1,20 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
-let currentUserId: string | null = null;
 
 const YEAR_ID = "11111111-1111-1111-1111-111111111111";
 
-vi.mock("@/lib/auth/currentUser", () => ({
-  getCurrentUserId: () => Promise.resolve(currentUserId),
+vi.mock("next/navigation", async (orig) => ({
+  ...(await orig<typeof import("next/navigation")>()),
+  usePathname: () => "/year/x/subjects",
+  useSearchParams: () => new URLSearchParams(),
 }));
 
-vi.mock("@/lib/account", () => ({
-  getAccountOverview: () => Promise.resolve({ overallDone: 0, overallTotal: 0 }),
-}));
+vi.stubGlobal(
+  "fetch",
+  vi.fn(async () => new Response(JSON.stringify({ signedIn: false, firstName: null }), { status: 200 })),
+);
 
 vi.mock("@/lib/cache/queries", () => ({
   getYears: () =>
@@ -30,14 +32,10 @@ import SubjectsPage from "./page";
 async function renderPage(params: { yearId: string } = { yearId: YEAR_ID }) {
   const ui = await SubjectsPage({
     params: Promise.resolve(params),
-    searchParams: Promise.resolve({}),
   });
   return render(ui);
 }
 
-beforeEach(() => {
-  currentUserId = null;
-});
 
 describe("SubjectsPage — Select Year back-link", () => {
   it("points back at the top-level year picker, not a non-existent /year/[yearId] route", async () => {
