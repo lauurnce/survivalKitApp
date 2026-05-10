@@ -9,6 +9,7 @@ import { ModuleDoneToggle } from "@/components/ModuleDoneToggle";
 import { ModuleSections, type ReaderSection } from "@/components/ModuleSections";
 import { SignedOutOnly } from "@/components/dashboard/SessionShell";
 import { PageTracker } from "@/components/PageTracker";
+import { PrintButton } from "@/components/PrintButton";
 import { LastModuleTracker } from "@/components/LastModuleTracker";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
 import { UnlockSuccessToast } from "@/components/UnlockSuccessToast";
@@ -180,6 +181,9 @@ export default async function ReaderPage({ params }: Props) {
             {sectionLabel(year?.sort_order)} — {subject.title}
           </p>
           <h1 className="font-serif text-display-md text-paper">{mod.title}</h1>
+          <div className="mt-6">
+            <PrintButton yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
+          </div>
         </div>
       </header>
 

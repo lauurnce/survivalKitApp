@@ -167,6 +167,21 @@ describe("POST /api/events — share card event types", () => {
   });
 });
 
+describe("POST /api/events — print_click", () => {
+  it("accepts print_click from the module reader", async () => {
+    const res = await POST(
+      makeReq({
+        device_id: DEVICE,
+        event_type: "print_click",
+        module_id: "11111111-2222-3333-4444-555555555555",
+      })
+    );
+    expect((await res.json()).ok).toBe(true);
+    expect(inserts).toHaveLength(1);
+    expect(inserts[0]).toMatchObject({ event_type: "print_click" });
+  });
+});
+
 describe("POST /api/events — device_id trust", () => {
   it("attributes the event to the signed cookie's device, not a spoofed body value", async () => {
     const { signDeviceCookie } = await import("@/lib/auth/deviceCookie");

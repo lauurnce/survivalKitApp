@@ -16,7 +16,8 @@ export type EventType =
   | "unlock_submitted"
   | "share_card_open"
   | "share_card_share"
-  | "share_card_download";
+  | "share_card_download"
+  | "print_click";
 
 export interface Database {
   public: {
