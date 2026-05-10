@@ -1,14 +1,20 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 import { signingSecretCandidates } from "@/lib/auth/signingSecrets";
+import { THEME_BOOTSTRAP_SHA256 } from "@/lib/csp";
 
-// Nonce-based CSP for scripts: 'unsafe-inline' on script-src would defeat most
-// of CSP's XSS value (any injected <script> would execute freely). A fresh
-// nonce per request lets the one legitimate inline script (the dark-mode
-// bootstrap in app/layout.tsx) run while nothing else can. style-src keeps
+// Nonce-based CSP for scripts on every route proxy runs on. 'unsafe-inline' on
+// script-src would defeat most of CSP's XSS value (any injected <script> would
+// execute freely). A fresh nonce per request lets Next.js's own scripts run,
+// and the theme bootstrap in app/layout.tsx runs by hash (it carries no nonce
+// so the root layout never reads request headers). style-src keeps
 // 'unsafe-inline' — React's style={{}} prop compiles to inline style
-// attributes with no nonce support, and CSS-only injection is a much
-// narrower attack surface than script injection.
+// attributes with no nonce support, and CSS-only injection is a much narrower
+// attack surface than script injection.
+//
+// Prerendered public pages never reach proxy (see the matcher below); they get
+// buildStaticCsp from lib/csp.ts via next.config.ts, with the trade-off
+// documented there.
 // Exported for proxy.test.ts — the nonce must stay verifiable without
 // spinning up a full NextRequest/proxy() harness.
 export function buildCsp(nonce: string): string {
@@ -20,11 +26,10 @@ export function buildCsp(nonce: string): string {
     // WITHOUT enabling JS eval()/new Function(). The Pyodide worker itself
     // gets a separate, narrowly-scoped CSP in next.config.ts.
     //
-    // GA4's gtag.js is loaded via a nonced <script src="https://www.
-    // googletagmanager.com/...">  — a nonce match trusts a script element
-    // regardless of its src host, so googletagmanager.com does not need to
-    // be host-allowlisted here too.
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'${devEval} https://cdn.jsdelivr.net`,
+    // GA4's gtag.js is injected by next/script from the nonced Next.js
+    // runtime, which 'strict-dynamic' trusts — so googletagmanager.com does
+    // not need to be host-allowlisted here.
+    `script-src 'self' 'nonce-${nonce}' '${THEME_BOOTSTRAP_SHA256}' 'strict-dynamic' 'wasm-unsafe-eval'${devEval} https://cdn.jsdelivr.net`,
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
     "font-src 'self' https://cdn.jsdelivr.net",
     "worker-src 'self' blob:",
@@ -132,12 +137,10 @@ export async function proxy(req: NextRequest) {
   // Web Crypto (Edge Runtime) — 16 random bytes, base64-encoded, per request.
   const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
 
-  // Forward the nonce as a request header so Server Components (layout.tsx)
-  // can read it via next/headers and stamp it onto the inline script tag.
-  const requestHeaders = new Headers(req.headers);
-  requestHeaders.set("x-csp-nonce", nonce);
-
-  const res = NextResponse.next({ request: { headers: requestHeaders } });
+  // Next.js reads the nonce back out of this response's Content-Security-
+  // Policy header and stamps it on its own framework and RSC scripts. No app
+  // code reads it: the root layout's one inline script is allowed by hash.
+  const res = NextResponse.next();
 
   // /pyodideWorker.js keeps its own narrowly-scoped, eval-permitting CSP set
   // in next.config.ts (needed for Safari's lack of 'wasm-unsafe-eval' support)
@@ -199,8 +202,14 @@ export async function proxy(req: NextRequest) {
   return res;
 }
 
+// Besides static assets, the matcher skips the prerendered public pages listed
+// in STATIC_CSP_ROUTES (lib/csp.ts): "/", /faq, /privacy, /resources, /search,
+// /for-blocks and everything under /year. Those are served from the CDN with
+// the nonce-free policy set in next.config.ts; running proxy there would cost
+// a function invocation per cache hit and gains nothing — they skip the auth
+// refresh anyway. proxy.test.ts pins this list against isStaticCspPath.
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|$|(?:faq|privacy|resources|search|for-blocks|year)$|year/).*)",
   ],
 };

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { canonicalOrigin } from "@/lib/appOrigin";
-import { headers } from "next/headers";
 import { viewportConfig } from "@/lib/viewport";
 import { Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/csp";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -55,15 +55,13 @@ export const metadata: Metadata = {
 
 export const viewport = viewportConfig;
 
-export default async function RootLayout({
+// Must stay free of request-time APIs (headers(), cookies()): any of them here
+// opts every route in the app out of static rendering and CDN caching.
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Set by middleware.ts per request; required to run under the nonce-based
-  // CSP script-src (see middleware.ts for why 'unsafe-inline' isn't used).
-  const nonce = (await headers()).get("x-csp-nonce") ?? undefined;
-
   return (
     <html
       lang="en"
@@ -71,19 +69,15 @@ export default async function RootLayout({
       className={`${fraunces.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
     >
       <head>
+        {/* No nonce: allowed by its sha256 under the nonce policy and by
+            'unsafe-inline' under the static-page policy (lib/csp.ts). */}
         <script
-          nonce={nonce}
           suppressHydrationWarning
-          // First visit follows the device's dark-mode setting; an explicit
-          // toggle choice (stored under 'theme') always wins afterwards.
-          // localStorage can throw in private browsing — fall back to system.
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var t=null;try{t=localStorage.getItem('theme');}catch(e){}var dark=t==='dark'||(!t&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(dark){document.documentElement.classList.add('dark');}})();`,
-          }}
+          dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }}
         />
       </head>
       <body className="font-sans min-h-screen flex flex-col">
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} nonce={nonce} />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         <a
           href="#content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-navy focus:text-paper focus:px-4 focus:py-2 font-sans text-sm"

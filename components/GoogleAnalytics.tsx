@@ -37,8 +37,6 @@ function PageviewTracker({ gaId }: { gaId: string }) {
 interface Props {
   /** GA4 measurement ID, e.g. "G-XXXXXXX". Empty/undefined disables analytics entirely. */
   gaId: string | undefined;
-  /** Per-request CSP nonce from proxy.ts, forwarded through app/layout.tsx. */
-  nonce?: string;
 }
 
 // GA4 wiring. `gtag('config', gaId, { send_page_view: false })` disables
@@ -51,7 +49,11 @@ interface Props {
 // CDN that updates without notice and does not publish stable hashes for it
 // (the officially documented snippet has never included SRI) — pinning a
 // hash here would just break analytics silently on Google's next update.
-export function GoogleAnalytics({ gaId, nonce }: Props) {
+// No nonce: next/script injects both tags from the client runtime after
+// hydration. Under the nonce policy 'strict-dynamic' trusts scripts created by
+// the nonced runtime; under the static-page policy googletagmanager.com is
+// host-allowlisted and inline elements are allowed (lib/csp.ts).
+export function GoogleAnalytics({ gaId }: Props) {
   if (!gaId) return null;
 
   return (
@@ -59,9 +61,8 @@ export function GoogleAnalytics({ gaId, nonce }: Props) {
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
         strategy="afterInteractive"
-        nonce={nonce}
       />
-      <Script id="ga-init" strategy="afterInteractive" nonce={nonce}>
+      <Script id="ga-init" strategy="afterInteractive">
         {`window.dataLayer = window.dataLayer || [];
 function gtag(){window.dataLayer.push(arguments);}
 gtag('js', new Date());

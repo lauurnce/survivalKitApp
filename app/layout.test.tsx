@@ -1,8 +1,14 @@
 import { Children, type ReactElement, type ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 
+// Any request-time API in the root layout would make every route dynamic.
 vi.mock("next/headers", () => ({
-  headers: async () => new Headers({ "x-csp-nonce": "test-nonce" }),
+  headers: () => {
+    throw new Error("RootLayout must not read request headers");
+  },
+  cookies: () => {
+    throw new Error("RootLayout must not read cookies");
+  },
 }));
 
 vi.mock("next/font/google", () => ({
@@ -12,6 +18,7 @@ vi.mock("next/font/google", () => ({
 }));
 
 import RootLayout from "./layout";
+import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/csp";
 
 // Walks a React element tree (not real DOM — these are unrendered elements)
 // and collects every node whose type matches, regardless of how deeply
@@ -32,23 +39,25 @@ function findAllByType(
 }
 
 describe("RootLayout", () => {
-  it("suppresses the expected browser nonce hydration difference", async () => {
-    const layout = await RootLayout({ children: <main>Content</main> });
+  it("renders the theme bootstrap without a nonce, hash-pinned in lib/csp", async () => {
+    const layout = RootLayout({ children: <main>Content</main> });
     const [head] = Children.toArray(layout.props.children) as ReactElement<{
       children: ReactNode;
     }>[];
     const script = Children.only(head.props.children) as ReactElement<{
       nonce?: string;
       suppressHydrationWarning?: boolean;
+      dangerouslySetInnerHTML?: { __html: string };
     }>;
 
     expect(script.type).toBe("script");
-    expect(script.props.nonce).toBe("test-nonce");
+    expect(script.props.nonce).toBeUndefined();
+    expect(script.props.dangerouslySetInnerHTML?.__html).toBe(THEME_BOOTSTRAP_SCRIPT);
     expect(script.props.suppressHydrationWarning).toBe(true);
   });
 
   it("links to the FAQ page from the footer, next to the Privacy Policy link", async () => {
-    const layout = await RootLayout({ children: <main>Content</main> });
+    const layout = RootLayout({ children: <main>Content</main> });
     const [, body] = Children.toArray(layout.props.children) as ReactElement<{
       children: ReactNode;
     }>[];
