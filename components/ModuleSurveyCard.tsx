@@ -29,7 +29,10 @@ export function ModuleSurveyCard() {
 
   return (
     <div className="mb-10" ref={cardRef}>
+      {/* Keyed on the session: FeedbackPrompt seeds its anonymous toggle from
+          userId once, and the session resolves after hydration. */}
       <FeedbackPrompt
+        key={userId ?? "anon"}
         isOpen={isOpen}
         moduleId={moduleId}
         moduleTitle={moduleTitle}

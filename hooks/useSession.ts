@@ -12,15 +12,18 @@ export interface SessionInfo {
   /** False until /api/me answers — render the signed-out variant meanwhile. */
   ready: boolean;
   signedIn: boolean;
+  /** The reader's own user id (for forms that attribute to it), else null. */
+  userId: string | null;
   /** Dashboard progress for the nav rail; zero unless requested and signed in. */
   overallDone: number;
   overallTotal: number;
 }
 
-const SIGNED_OUT: SessionInfo = { ready: false, signedIn: false, overallDone: 0, overallTotal: 0 };
+const SIGNED_OUT: SessionInfo = { ready: false, signedIn: false, userId: null, overallDone: 0, overallTotal: 0 };
 
 interface MeResponse {
   signedIn?: boolean;
+  userId?: string | null;
   overview?: { overallDone: number; overallTotal: number } | null;
 }
 
@@ -38,6 +41,7 @@ function load(url: string, pathname: string): Promise<SessionInfo> {
       .then((data: MeResponse) => ({
         ready: true,
         signedIn: data.signedIn === true,
+        userId: data.signedIn === true ? (data.userId ?? null) : null,
         overallDone: data.overview?.overallDone ?? 0,
         overallTotal: data.overview?.overallTotal ?? 0,
       }));

@@ -60,3 +60,9 @@ export function SignedInOnly({ children }: { children: React.ReactNode }) {
   const { signedIn } = useSession();
   return signedIn ? <>{children}</> : null;
 }
+
+/** Mounts `children` once the session has resolved as signed out. */
+export function SignedOutOnly({ children }: { children: React.ReactNode }) {
+  const { ready, signedIn } = useSession();
+  return ready && !signedIn ? <>{children}</> : null;
+}

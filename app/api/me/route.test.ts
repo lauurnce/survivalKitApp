@@ -45,12 +45,12 @@ describe("GET /api/me", () => {
   it("returns the profile first name when signed in with a profile", async () => {
     currentUserId = "user-1";
     profile = { firstName: "Andrea" };
-    expect(await (await GET()).json()).toEqual({ firstName: "Andrea", signedIn: true });
+    expect(await (await GET()).json()).toEqual({ firstName: "Andrea", signedIn: true, userId: "user-1" });
   });
 
   it("returns null firstName when signed in without a profile", async () => {
     currentUserId = "user-1";
-    expect(await (await GET()).json()).toEqual({ firstName: null, signedIn: true });
+    expect(await (await GET()).json()).toEqual({ firstName: null, signedIn: true, userId: "user-1" });
   });
 
   it("returns null firstName instead of erroring when the store throws", async () => {
@@ -58,7 +58,7 @@ describe("GET /api/me", () => {
     profileThrows = true;
     const res = await GET();
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ firstName: null, signedIn: true });
+    expect(await res.json()).toEqual({ firstName: null, signedIn: true, userId: "user-1" });
   });
 
   it("is never cacheable", async () => {
@@ -70,6 +70,7 @@ describe("GET /api/me", () => {
     expect(await (await GET(withOverview())).json()).toEqual({
       firstName: null,
       signedIn: true,
+      userId: "user-1",
       overview: { overallDone: 3, overallTotal: 12 },
     });
   });

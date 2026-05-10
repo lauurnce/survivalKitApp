@@ -3,20 +3,21 @@
 import { useEffect, useMemo } from "react";
 import { ModuleCompletionProvider } from "@/hooks/useModuleCompletion";
 import { useFeedbackPrompt } from "@/hooks/useFeedbackPrompt";
+import { useSession } from "@/hooks/useSession";
 
 interface ModuleReaderClientProps {
   moduleId: string;
   moduleTitle?: string;
-  userId?: string | null;
   children: React.ReactNode;
 }
 
 export function ModuleReaderClient({
   moduleId,
   moduleTitle,
-  userId,
   children,
 }: ModuleReaderClientProps) {
+  // The reader page is prerendered, so the session arrives after hydration.
+  const { userId } = useSession();
   const { isOpen, currentModuleId, open, closeFeedback, markRated } =
     useFeedbackPrompt(moduleId);
 

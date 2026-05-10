@@ -9,7 +9,7 @@ const NO_STORE = { "Cache-Control": "private, no-store" };
 
 // Session probe for client components on prerendered pages (which cannot read
 // the session during render): TopBar, the dashboard nav rail, log out, the
-// share card. `?overview=1` adds the nav rail's progress totals. Never errors
+// share card, the module feedback form (userId). `?overview=1` adds the nav rail's progress totals. Never errors
 // outward — personalization is best-effort.
 export async function GET(req?: NextRequest) {
   const wantOverview = req?.nextUrl.searchParams.get("overview") === "1";
@@ -33,7 +33,9 @@ export async function GET(req?: NextRequest) {
   ]);
 
   return NextResponse.json(
-    overview === undefined ? { firstName, signedIn: true } : { firstName, signedIn: true, overview },
+    overview === undefined
+      ? { firstName, signedIn: true, userId }
+      : { firstName, signedIn: true, userId, overview },
     { headers: NO_STORE },
   );
 }
