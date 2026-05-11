@@ -58,6 +58,7 @@ export const TABLE_DATA_CLASS: Record<string, DataClass> = {
   class_join_requests: "USER_DATA",
   user_feedback: "USER_DATA",
   email_outbox: "USER_DATA",
+  email_unsubscribes: "USER_DATA",
 
   api_rate_limits: "SERVER_ONLY",
 };

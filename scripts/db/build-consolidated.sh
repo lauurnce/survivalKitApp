@@ -20,6 +20,7 @@ cd "$(dirname "$0")/../.."
 # — the artifact degenerates to its header and the CI jobs remain meaningful.
 pending=(
   supabase/migrations/20260904000001_lock_down_untracked_definer_rpcs.sql
+  supabase/migrations/20260905000000_email_unsubscribes.sql
 )
 
 if [ "${1:-}" = "--list" ]; then
