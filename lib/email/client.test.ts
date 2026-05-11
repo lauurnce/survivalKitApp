@@ -19,6 +19,20 @@ describe("sendEmail", () => {
     );
   });
 
+  it("forwards extra headers and the idempotency key", async () => {
+    sendMock.mockResolvedValue({ data: { id: "abc" }, error: null });
+    const { sendEmail } = await import("./client");
+    await sendEmail(
+      "s@example.com",
+      { subject: "S", html: "h", text: "t", headers: { "List-Unsubscribe": "<https://x.test/u>" } },
+      { idempotencyKey: "email-outbox/1" }
+    );
+    expect(sendMock).toHaveBeenCalledWith(
+      expect.objectContaining({ headers: { "List-Unsubscribe": "<https://x.test/u>" } }),
+      { idempotencyKey: "email-outbox/1" }
+    );
+  });
+
   it("returns ok:false instead of throwing when Resend errors", async () => {
     sendMock.mockResolvedValue({ data: null, error: { message: "rate limited" } });
     const { sendEmail } = await import("./client");

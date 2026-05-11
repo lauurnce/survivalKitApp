@@ -1,6 +1,6 @@
 // lib/email/templates/index.test.ts
 import { describe, it, expect } from "vitest";
-import { receiptEmail, welcomeEmail, expiryWarningEmail, winbackEmail } from "./index";
+import { receiptEmail, welcomeEmail, expiryWarningEmail, winbackEmail, reactivationEmail } from "./index";
 
 const ENDS = new Date("2026-12-31T15:59:59Z");
 
@@ -19,6 +19,7 @@ describe("templates", () => {
       welcomeEmail({ planLabel: "P", returnUrl: "https://x.test/b" }),
       expiryWarningEmail({ planLabel: "P", accessEndsAt: ENDS, renewUrl: "https://x.test/c" }),
       winbackEmail({ planLabel: "P", renewUrl: "https://x.test/d" }),
+      reactivationEmail({ ctaUrl: "https://x.test/e", unsubscribeUrl: "https://x.test/u" }),
     ];
     for (const e of all) {
       expect(e.subject.length).toBeGreaterThan(0);
@@ -38,5 +39,39 @@ describe("templates", () => {
   it("escapes HTML metacharacters in interpolated values", () => {
     const e = welcomeEmail({ planLabel: `Evil<script>alert(1)</script>`, returnUrl: "https://x.test/b" });
     expect(e.html).not.toContain("<script>");
+  });
+});
+
+describe("reactivationEmail", () => {
+  const e = reactivationEmail({
+    ctaUrl: "https://tryi2i.com/?utm_source=reactivation&utm_medium=email&utm_campaign=finals-dec-2026",
+    unsubscribeUrl: "https://tryi2i.com/api/email/unsubscribe?u=x&t=y",
+  });
+
+  it("names finals, the free lessons, and the CP1 lesson range", () => {
+    expect(e.subject).toMatch(/finals/i);
+    for (const body of [e.text, e.html]) {
+      expect(body).toMatch(/free/);
+      expect(body).toContain("Computer Programming 1");
+      expect(body).toContain("Lessons 1–7");
+    }
+  });
+
+  it("has exactly one CTA link plus the unsubscribe link", () => {
+    const hrefs = [...e.html.matchAll(/href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&"));
+    expect(hrefs).toEqual([
+      "https://tryi2i.com/?utm_source=reactivation&utm_medium=email&utm_campaign=finals-dec-2026",
+      "https://tryi2i.com/api/email/unsubscribe?u=x&t=y",
+    ]);
+  });
+
+  it("carries the opt-out line in both parts", () => {
+    expect(e.text).toContain("Unsubscribe: https://tryi2i.com/api/email/unsubscribe?u=x&t=y");
+    expect(e.html).toMatch(/Unsubscribe<\/a>/);
+  });
+
+  it("promises nothing paid and has no images or tracking pixels", () => {
+    expect(e.html).not.toContain("<img");
+    expect(e.text).not.toMatch(/answer key|discount|sale|₱/i);
   });
 });

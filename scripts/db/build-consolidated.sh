@@ -21,6 +21,7 @@ cd "$(dirname "$0")/../.."
 pending=(
   supabase/migrations/20260904000001_lock_down_untracked_definer_rpcs.sql
   supabase/migrations/20260905000000_email_unsubscribes.sql
+  supabase/migrations/20260905000001_email_outbox_reactivation_kind.sql
 )
 
 if [ "${1:-}" = "--list" ]; then

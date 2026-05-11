@@ -42,8 +42,8 @@ naturally repeatable. The SQL Editor may be re-pasted after a partial apply.
 
 Migration filenames are `YYYYMMDDHHMMSS_description.sql` and are applied by
 CI in lexical order, which must equal chronological order. The highest
-number in use is `20260905000000`, so the next free number is
-**20260905000001** and up (or any later timestamp). Never stamp a migration
+number in use is `20260905000001`, so the next free number is
+**20260905000002** and up (or any later timestamp). Never stamp a migration
 earlier than a migration it depends on: `module_quiz_user_id` was once
 numbered `20260820000000`, ahead of the `20260827000000` file that creates
 its tables, and broke every replay until it was renumbered to

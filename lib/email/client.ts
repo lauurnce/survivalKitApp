@@ -9,13 +9,23 @@ export interface SendResult { ok: boolean; id?: string; error?: string }
 
 // Never throws. Callers sit on the payment path, where an email problem must
 // never surface as a failed purchase — so failure is a value, not an exception.
-export async function sendEmail(to: string, email: RenderedEmail): Promise<SendResult> {
+//
+// idempotencyKey makes a retried request within Resend's 24h window return the
+// original send instead of mailing the person twice.
+export async function sendEmail(
+  to: string, email: RenderedEmail, opts: { idempotencyKey?: string } = {}
+): Promise<SendResult> {
   const key = process.env.RESEND_API_KEY;
   if (!key) return { ok: false, error: "RESEND_API_KEY is not set" };
   try {
-    const { data, error } = await new Resend(key).emails.send({
+    const payload = {
       from: FROM, to, subject: email.subject, html: email.html, text: email.text,
-    });
+      ...(email.headers ? { headers: email.headers } : {}),
+    };
+    const emails = new Resend(key).emails;
+    const { data, error } = opts.idempotencyKey
+      ? await emails.send(payload, { idempotencyKey: opts.idempotencyKey })
+      : await emails.send(payload);
     if (error) return { ok: false, error: error.message };
     return { ok: true, id: data?.id };
   } catch (err) {
