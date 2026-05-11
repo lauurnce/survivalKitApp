@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import {
   buildProgressCardUrl,
   progressCardFilename,
+  progressCardShareUrl,
   type ProgressCardParams,
 } from "@/lib/shareCard";
 import { fetchCompletedModules } from "@/lib/progress";
@@ -149,8 +150,12 @@ export function ShareProgressCard({
       if (!res.ok) throw new Error(`card fetch failed: ${res.status}`);
       const blob = await res.blob();
       const file = new File([blob], filename, { type: "image/png" });
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file] });
+      // Prefer sending the tagged link with the image; some targets reject
+      // a url alongside files, so fall back to the image alone.
+      const withLink: ShareData = { files: [file], url: progressCardShareUrl() };
+      const data = navigator.canShare?.(withLink) ? withLink : { files: [file] };
+      if (navigator.canShare?.(data)) {
+        await navigator.share(data);
         void logEvent("share_card_share", { subject_id: subjectId, module_id: moduleId });
       }
     } catch (err) {

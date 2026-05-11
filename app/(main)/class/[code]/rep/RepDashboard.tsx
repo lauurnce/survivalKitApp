@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { BackLink } from "@/components/BackLink";
+import { withUtm } from "@/lib/utm";
 
 interface DashboardData {
   summary: {
@@ -75,7 +76,13 @@ export function RepDashboard({ code }: Props) {
   }
 
   async function copyInviteLink() {
-    const url = `${window.location.origin}/class/${code}/join`;
+    // Tagged so a classmate arriving from the rep's group chat is countable
+    // once the join page records attribution.
+    const url = withUtm(`${window.location.origin}/class/${code}/join`, {
+      source: "class_invite",
+      medium: "referral",
+      campaign: "class_rep",
+    });
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);

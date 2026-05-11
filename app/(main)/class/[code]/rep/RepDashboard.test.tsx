@@ -192,7 +192,7 @@ describe("RepDashboard", () => {
     expect(await screen.findByText("Class not found.")).toBeInTheDocument();
   });
 
-  it("copies the invite link to the clipboard with the origin-based join URL", async () => {
+  it("copies the invite link to the clipboard with the origin-based, UTM-tagged join URL", async () => {
     const fetchMock = vi.fn(() => jsonResponse(fullDashboard()));
     vi.stubGlobal("fetch", fetchMock);
     const writeText = vi.fn(() => Promise.resolve());
@@ -208,7 +208,7 @@ describe("RepDashboard", () => {
 
     await waitFor(() =>
       expect(writeText).toHaveBeenCalledWith(
-        `${window.location.origin}/class/${CODE}/join`
+        `${window.location.origin}/class/${CODE}/join?utm_source=class_invite&utm_medium=referral&utm_campaign=class_rep`
       )
     );
     expect(await screen.findByText("Copied!")).toBeInTheDocument();

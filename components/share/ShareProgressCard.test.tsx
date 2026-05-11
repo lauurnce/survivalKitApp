@@ -145,4 +145,45 @@ describe("ShareProgressCard", () => {
     expect(trigger).toHaveFocus();
     expect(container).not.toHaveAttribute("inert");
   });
+  it("shares the image with a UTM-tagged link when the target accepts one", async () => {
+    const share = vi.fn(() => Promise.resolve());
+    const canShare = vi.fn(() => true);
+    Object.assign(navigator, { share, canShare });
+    try {
+      render(
+        <ShareProgressCard subjectId={SUBJECT_ID} subjectTitle="CP1" moduleIds={["m1"]} onClose={() => {}} />
+      );
+      const btn = await screen.findByRole("button", { name: /^share$/i });
+      await waitFor(() => expect(btn).not.toBeDisabled());
+      fireEvent.click(btn);
+      await waitFor(() => expect(share).toHaveBeenCalled());
+      const data = (share.mock.calls[0] as unknown as [ShareData])[0];
+      expect(data.files).toHaveLength(1);
+      const url = new URL(String(data.url));
+      expect(url.searchParams.get("utm_source")).toBe("share_card");
+      expect(url.searchParams.get("utm_campaign")).toBe("progress_card");
+    } finally {
+      Object.assign(navigator, { share: undefined, canShare: undefined });
+    }
+  });
+
+  it("falls back to the image alone when the target rejects a url with files", async () => {
+    const share = vi.fn(() => Promise.resolve());
+    const canShare = vi.fn((d: ShareData) => !d.url);
+    Object.assign(navigator, { share, canShare });
+    try {
+      render(
+        <ShareProgressCard subjectId={SUBJECT_ID} subjectTitle="CP1" moduleIds={["m1"]} onClose={() => {}} />
+      );
+      const btn = await screen.findByRole("button", { name: /^share$/i });
+      await waitFor(() => expect(btn).not.toBeDisabled());
+      fireEvent.click(btn);
+      await waitFor(() => expect(share).toHaveBeenCalled());
+      const data = (share.mock.calls[0] as unknown as [ShareData])[0];
+      expect(data.url).toBeUndefined();
+      expect(data.files).toHaveLength(1);
+    } finally {
+      Object.assign(navigator, { share: undefined, canShare: undefined });
+    }
+  });
 });

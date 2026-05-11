@@ -18,12 +18,12 @@ function esc(s: string): string {
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 }
 
-function layout(heading: string, body: string, ctaLabel: string, ctaUrl: string): string {
+function layout(heading: string, body: string, ctaLabel: string, ctaUrl: string, footer = ""): string {
   return `<div style="font-family:system-ui,-apple-system,sans-serif;max-width:520px;margin:0 auto;padding:24px;color:#111">
 <h1 style="font-size:20px;margin:0 0 16px">${esc(heading)}</h1>
 ${body}
 <p style="margin:24px 0"><a href="${esc(ctaUrl)}" style="background:#111;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;display:inline-block">${esc(ctaLabel)}</a></p>
-<p style="font-size:12px;color:#666;margin-top:32px">BSIT Survival Kit</p>
+<p style="font-size:12px;color:#666;margin-top:32px">BSIT Survival Kit</p>${footer}
 </div>`;
 }
 
@@ -66,5 +66,44 @@ export function winbackEmail(i: { planLabel: string; renewUrl: string }): Render
     text: `Your ${i.planLabel} access has expired, so the answer keys are locked.\n\nEverything you studied is exactly where you left it. Renew here:\n${i.renewUrl}\n\nBSIT Survival Kit`,
     html: layout("Your access expired", `<p>Your <strong>${esc(i.planLabel)}</strong> access has expired, so the answer keys are locked.</p>
 <p>Everything you studied is exactly where you left it.</p>`, "Renew access", i.renewUrl),
+  };
+}
+
+// The finals reactivation mail, sent once to confirmed accounts. Plain on
+// purpose: one link to the free lessons, no images, no tracking pixels, and
+// nothing it promises that the free tier does not already give.
+export const REACTIVATION_LESSONS = {
+  subject: "Computer Programming 1",
+  range: "Lessons 1–7",
+  topics: "programming concepts, intro to C, input/output, control structures, arrays, functions, and string/math functions",
+} as const;
+
+export function reactivationEmail(i: { ctaUrl: string; unsubscribeUrl: string }): RenderedEmail {
+  const l = REACTIVATION_LESSONS;
+  return {
+    subject: "Finals are coming. Your free lessons are still here",
+    text: `Hi,
+
+Finals season is close. For a lot of BSIT schools, first-sem finals run around December 9–19.
+
+Your BSIT Survival Kit account is still open, and the lessons are still free to read. That includes ${l.subject}, ${l.range}: ${l.topics}.
+
+Open your free lessons:
+${i.ctaUrl}
+
+Good luck on finals.
+BSIT Survival Kit
+
+You're getting this because you made an account at tryi2i.com. Don't want reminders like this? Unsubscribe: ${i.unsubscribeUrl}`,
+    html: layout(
+      "Finals are coming",
+      `<p>Hi,</p>
+<p>Finals season is close. For a lot of BSIT schools, first-sem finals run around December 9–19.</p>
+<p>Your BSIT Survival Kit account is still open, and the lessons are still free to read. That includes <strong>${esc(l.subject)}, ${esc(l.range)}</strong>: ${esc(l.topics)}.</p>`,
+      "Open your free lessons",
+      i.ctaUrl,
+      `
+<p style="font-size:12px;color:#666;margin-top:8px">You're getting this because you made an account at tryi2i.com. Don't want reminders like this? <a href="${esc(i.unsubscribeUrl)}" style="color:#666">Unsubscribe</a>.</p>`
+    ),
   };
 }

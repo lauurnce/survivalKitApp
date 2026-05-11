@@ -3,6 +3,7 @@ import {
   parseProgressCardParams,
   buildProgressCardUrl,
   progressCardFilename,
+  progressCardShareUrl,
   PROGRESS_CARD_LIMITS,
 } from "./shareCard";
 
@@ -104,5 +105,17 @@ describe("progressCardFilename", () => {
     expect(progressCardFilename("  IT Élective: Networking & Security!! ")).toBe(
       "bsit-progress-it-lective-networking-security.png"
     );
+  });
+});
+
+describe("progressCardShareUrl", () => {
+  it("is a UTM-tagged link to the canonical home page", () => {
+    const url = new URL(progressCardShareUrl());
+    expect(url.origin).toBe("https://tryi2i.com");
+    // "/" is where the enter event fires, so the tags are actually recorded.
+    expect(url.pathname).toBe("/");
+    expect(url.searchParams.get("utm_source")).toBe("share_card");
+    expect(url.searchParams.get("utm_medium")).toBe("social");
+    expect(url.searchParams.get("utm_campaign")).toBe("progress_card");
   });
 });
