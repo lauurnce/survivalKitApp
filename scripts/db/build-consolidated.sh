@@ -14,15 +14,12 @@ set -euo pipefail
 
 cd "$(dirname "$0")/../.."
 
-# Empty as of 2026-08-26: profiles context fields (PR #43) were applied to
-# production via the SQL Editor the same day they shipped. New unapplied
+# Empty as of 2026-10-31: the definer-RPC lock-down, email_unsubscribes,
+# the reactivation outbox kind and the print_click event type were applied to
+# production through the Supabase connector and verified. New unapplied
 # migrations go back here in version order. An empty array is a healthy state
 # — the artifact degenerates to its header and the CI jobs remain meaningful.
-pending=(
-  supabase/migrations/20260904000001_lock_down_untracked_definer_rpcs.sql
-  supabase/migrations/20260905000000_email_unsubscribes.sql
-  supabase/migrations/20260905000001_email_outbox_reactivation_kind.sql
-)
+pending=()
 
 if [ "${1:-}" = "--list" ]; then
   printf '%s\n' ${pending[@]+"${pending[@]}"}
