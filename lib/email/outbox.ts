@@ -4,6 +4,7 @@ import { sendEmail } from "@/lib/email/client";
 import { receiptEmail, welcomeEmail, expiryWarningEmail, winbackEmail } from "@/lib/email/templates";
 import type { EmailKind, RenderedEmail } from "./types";
 import { canonicalUrl } from "@/lib/appOrigin";
+import { withUtm } from "@/lib/utm";
 
 const MAX_ATTEMPTS = 5;
 
@@ -32,10 +33,21 @@ export async function enqueue(
   return { enqueued: true, deduped: false };
 }
 
+// Tagged at render time rather than at enqueue, so rows already sitting in
+// the queue go out tagged too. A malformed stored URL is sent as-is: an
+// untagged link beats an email the drain cannot render.
+function lifecycleUrl(kind: EmailKind, raw: string): string {
+  try {
+    return withUtm(raw, { source: "lifecycle", medium: "email", campaign: kind });
+  } catch {
+    return raw;
+  }
+}
+
 function render(kind: EmailKind, p: Record<string, unknown>): RenderedEmail {
   const planLabel = String(p.planLabel ?? "your plan");
   const ends = p.accessEndsAt ? new Date(String(p.accessEndsAt)) : new Date();
-  const url = String(p.url ?? canonicalUrl("/account"));
+  const url = lifecycleUrl(kind, String(p.url ?? canonicalUrl("/account")));
   switch (kind) {
     case "receipt": return receiptEmail({ planLabel, amountCentavos: Number(p.amountCentavos ?? 0), accessEndsAt: ends, returnUrl: url });
     case "welcome": return welcomeEmail({ planLabel, returnUrl: url });

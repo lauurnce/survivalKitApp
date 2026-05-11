@@ -3,8 +3,12 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const sendEmail = vi.fn();
 vi.mock("@/lib/email/client", () => ({ sendEmail: (...a: unknown[]) => sendEmail(...a) }));
+const templateArgs: Record<string, unknown>[] = [];
 vi.mock("@/lib/email/templates", () => ({
-  receiptEmail: () => ({ subject: "r", html: "<p>r</p>", text: "r" }),
+  receiptEmail: (i: Record<string, unknown>) => {
+    templateArgs.push(i);
+    return { subject: "r", html: "<p>r</p>", text: "r" };
+  },
   welcomeEmail: () => ({ subject: "w", html: "<p>w</p>", text: "w" }),
   expiryWarningEmail: () => ({ subject: "e", html: "<p>e</p>", text: "e" }),
   winbackEmail: () => ({ subject: "b", html: "<p>b</p>", text: "b" }),
@@ -35,7 +39,7 @@ function mockSupabase() {
 }
 
 beforeEach(() => {
-  inserted = []; insertError = null; pendingRows = []; updates.length = 0; sendEmail.mockReset();
+  inserted = []; insertError = null; pendingRows = []; updates.length = 0; templateArgs.length = 0; sendEmail.mockReset();
 });
 
 describe("enqueue", () => {
@@ -73,6 +77,29 @@ describe("drain", () => {
     const { drain } = await import("./outbox");
     expect(await drain(mockSupabase())).toEqual({ sent: 0, failed: 1 });
     expect(updates[0]).toMatchObject({ id: "e1", status: "pending", attempts: 2, last_error: "rate limited" });
+  });
+
+  it("UTM-tags the lifecycle CTA with the email kind as the campaign", async () => {
+    pendingRows = [{
+      id: "e1", kind: "receipt", to_email: "a@b.test", attempts: 0,
+      payload: { url: "https://tryi2i.com/account" },
+    }];
+    sendEmail.mockResolvedValue({ ok: true, id: "abc" });
+    const { drain } = await import("./outbox");
+    await drain(mockSupabase());
+    const url = new URL(String(templateArgs[0].returnUrl));
+    expect(url.pathname).toBe("/account");
+    expect(url.searchParams.get("utm_source")).toBe("lifecycle");
+    expect(url.searchParams.get("utm_medium")).toBe("email");
+    expect(url.searchParams.get("utm_campaign")).toBe("receipt");
+  });
+
+  it("sends a malformed stored URL untagged rather than failing the row", async () => {
+    pendingRows = [{ id: "e1", kind: "receipt", to_email: "a@b.test", attempts: 0, payload: { url: "not a url" } }];
+    sendEmail.mockResolvedValue({ ok: true, id: "abc" });
+    const { drain } = await import("./outbox");
+    expect(await drain(mockSupabase())).toEqual({ sent: 1, failed: 0 });
+    expect(templateArgs[0].returnUrl).toBe("not a url");
   });
 
   it("gives up permanently at 5 attempts", async () => {

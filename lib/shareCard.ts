@@ -3,6 +3,8 @@
 // buildProgressCardUrl + progressCardFilename. Keep these in lockstep —
 // they are two ends of the same URL.
 
+import { taggedUrl } from "@/lib/utm";
+
 export const PROGRESS_CARD_LIMITS = {
   subject: 40,
   module: 60,
@@ -66,4 +68,13 @@ export function progressCardFilename(subjectTitle: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
   return `bsit-progress-${slug || "card"}.png`;
+}
+
+/**
+ * The link that rides along with the card in the native share sheet. The PNG
+ * itself only shows the bare host, so this tagged URL is the one way a visit
+ * from a shared card can be told apart from any other.
+ */
+export function progressCardShareUrl(): string {
+  return taggedUrl("/", { source: "share_card", medium: "social", campaign: "progress_card" });
 }
