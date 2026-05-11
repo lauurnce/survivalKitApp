@@ -94,7 +94,7 @@ Fields you will use beyond the tables:
 | Field | What it is for |
 |---|---|
 | `window.current` / `window.previous` | The two complete PH weeks being compared. Name the current one in the header. |
-| `termPhase` | Seasonality: `{phase, mixed}`. `unknown` until the term calendar is populated — see Step 4. |
+| `termPhase` | Seasonality: `{phase, mixed, estimated}`. `unknown` outside the recorded term windows; `estimated` means a covering window is not from a published calendar — see Step 4. |
 | `funnel` | Per-step devices, `fromPrevious`, `fromTop`, `nonMonotonic`. |
 | `leak` | The transition that lost the most devices, with its rate. |
 | `raw.identity` | The account-versus-device reconciliation. |
@@ -201,13 +201,15 @@ during midterms mean opposite things.
 
 - If `termPhase.phase` is anything other than `unknown`, use it, and note
   `termPhase.mixed` when the window straddles two phases.
-- If it is `unknown` — which it will be until someone populates `TERM_CALENDAR` in
-  `lib/reports/academicCalendar.ts` — **say "term phase not recorded"** and fall back to
+- `TERM_CALENDAR` in `lib/reports/academicCalendar.ts` covers the Aug-10 wave
+  (UP system + USTP) for 1st sem AY 2026–27. If `termPhase.estimated` is true,
+  state the phase with an "estimated dates" caveat.
+- If it is `unknown` (a date outside the recorded windows) **say "term phase not recorded"** and fall back to
   `raw.cohorts.weekly_active`, the trailing 8-week series. Compare this week against
   that shape rather than against a single prior week.
 
-**Never assert it is or is not exam week from memory.** That calendar ships empty
-precisely so nobody invents dates. An invented break would let you excuse a real
+**Never assert it is or is not exam week from memory.** That calendar only holds
+sourced dates precisely so nobody invents them. An invented break would let you excuse a real
 regression.
 
 ## Step 5 — Write the report

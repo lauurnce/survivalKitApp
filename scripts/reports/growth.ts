@@ -38,7 +38,7 @@ import {
   pct,
   type FunnelCounts,
 } from "../../lib/reports/funnel";
-import { phaseForRange } from "../../lib/reports/academicCalendar";
+import { phaseForRange, rangeIncludesEstimate } from "../../lib/reports/academicCalendar";
 import { callRpc, createReportsClient } from "./supabaseAdmin";
 
 const REPO_ROOT = join(__dirname, "..", "..");
@@ -387,7 +387,10 @@ async function main(): Promise<void> {
     collectedAt: new Date().toISOString(),
     collectMs,
     window: { current, previous },
-    termPhase: phaseForRange(startPhDate, endPhDate),
+    termPhase: {
+      ...phaseForRange(startPhDate, endPhDate),
+      estimated: rangeIncludesEstimate(startPhDate, endPhDate),
+    },
     metrics,
     previousDate: previousRun?.date ?? null,
     tables,

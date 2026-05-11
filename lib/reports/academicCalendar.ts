@@ -5,17 +5,27 @@
  * quiet week reads identically whether the audience left or the semester
  * ended — and those call for opposite responses.
  *
- * TERM_CALENDAR SHIPS EMPTY ON PURPOSE. Philippine academic dates are not a
- * fact this codebase knows, and an invented one is worse than none: VANTAGE
- * would confidently blame a real regression on a break that was never
- * happening. Same rule the Active CPU row follows — an unknown value is
- * recorded as unknown, never estimated.
+ * WHOSE CALENDAR THIS IS. One contiguous timeline for the "Aug-10 wave" — the
+ * UP system and USTP (confirmed AY 2026–27 dates), which WVSU and CTU track
+ * closely — because that wave is the bulk of the audience and overlapping
+ * windows from other schools would make every week read as `mixed`. Silliman
+ * (Jun start) and PUP (Sep start, finals in January) run on different clocks
+ * and are deliberately left out; a report window that matters to them should
+ * say so in prose.
  *
- * To populate it, add windows below with real dates from the universities the
- * audience actually attends, then re-run the report. Until then VANTAGE says
- * "term phase not recorded" and leans on the trailing weekly-active series
- * from growth_cohort_agg instead.
+ * Source: docs/gtm/academic-calendars-ay2026-27.md. A window whose dates are
+ * not confirmed by a published calendar says "ESTIMATE" in its note, and the
+ * VANTAGE write-up must carry that caveat rather than state the phase as fact.
+ * Dates past the last window are `unknown`, never extrapolated: extend this
+ * list when the 2nd-semester calendars publish.
  */
+
+/** Marker for a window inferred rather than read off a published calendar. */
+export const ESTIMATE_MARKER = "ESTIMATE";
+
+export function isEstimate(w: TermWindow): boolean {
+  return w.note?.includes(ESTIMATE_MARKER) ?? false;
+}
 
 export type TermPhase =
   | "classes"
@@ -35,8 +45,39 @@ export interface TermWindow {
   note?: string;
 }
 
-/** Owner-maintained. Empty until real dates are supplied. */
-export const TERM_CALENDAR: readonly TermWindow[] = [];
+/** Owner-maintained. Contiguous, non-overlapping, in date order. */
+export const TERM_CALENDAR: readonly TermWindow[] = [
+  {
+    phase: "classes",
+    startPhDate: "2026-08-10",
+    endPhDate: "2026-10-04",
+    note: "UP system + USTP 1st-sem classes start Aug 10 (confirmed)",
+  },
+  {
+    phase: "midterms",
+    startPhDate: "2026-10-05",
+    endPhDate: "2026-10-10",
+    note: "USTP midterms Oct 5–10; UP mid-sem Oct 7 (confirmed)",
+  },
+  {
+    phase: "classes",
+    startPhDate: "2026-10-11",
+    endPhDate: "2026-12-08",
+    note: "Between midterms and finals (confirmed by its bounds)",
+  },
+  {
+    phase: "finals",
+    startPhDate: "2026-12-09",
+    endPhDate: "2026-12-19",
+    note: "UP finals Dec 9–17 (confirmed); USTP ~Dec 9–19 — end date ESTIMATE",
+  },
+  {
+    phase: "break",
+    startPhDate: "2026-12-20",
+    endPhDate: "2027-01-04",
+    note: "Sem break; USTP 2nd sem Jan 5 (confirmed), UP Jan 15 — UP break runs longer",
+  },
+];
 
 /** The phase covering a PH calendar date, or "unknown" if none does. */
 export function phaseFor(
@@ -158,4 +199,18 @@ export function phaseForRange(
   }
 
   return { phase, mixed };
+}
+
+/**
+ * True when any window overlapping the range is an ESTIMATE, so the report can
+ * carry the caveat instead of stating an inferred phase as fact.
+ */
+export function rangeIncludesEstimate(
+  startPhDate: string,
+  endPhDate: string,
+  calendar: readonly TermWindow[] = TERM_CALENDAR
+): boolean {
+  return calendar.some(
+    (w) => w.startPhDate <= endPhDate && w.endPhDate >= startPhDate && isEstimate(w)
+  );
 }
