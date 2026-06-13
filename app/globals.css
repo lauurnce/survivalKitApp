@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-paper: #F4F3EF;
+  --color-ink: #15171A;
+  --color-ink-muted: #6B6F75;
+  --color-ink-faint: #A8ADB5;
+  --color-accent: #E0492B;
+}
+
+html {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth page transitions */
+* {
+  transition-property: opacity, transform;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Remove default transition from interactive elements to avoid conflicts */
+a, button, input, select, textarea {
+  transition-property: color, background-color, border-color, opacity;
+  transition-duration: 150ms;
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-paper);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink-faint);
+  border-radius: 0;
+}
+
+@layer utilities {
+  .label {
+    @apply font-mono text-label-md uppercase tracking-[0.1em] text-ink-muted;
+  }
+  .label-sm {
+    @apply font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint;
+  }
+}
