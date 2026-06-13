@@ -9,16 +9,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        paper: "#F4F3EF",
-        ink: "#15171A",
+        paper: "#F7F5F3",
+        ink: "#1A1F23",
         "ink-muted": "#6B6F75",
         "ink-faint": "#A8ADB5",
         accent: "#E0492B",
         "accent-dark": "#B83820",
+        navy: "#1A1A1A",
+        taupe: "#BDB9B2",
       },
       fontFamily: {
-        serif: ["var(--font-newsreader)", "Georgia", "serif"],
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        serif: ["var(--font-fraunces)", "Georgia", "serif"],
+        sans: ["var(--font-inter-tight)", "system-ui", "sans-serif"],
         mono: ["var(--font-jetbrains-mono)", "monospace"],
       },
       fontSize: {

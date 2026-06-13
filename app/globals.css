@@ -3,11 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --color-paper: #F4F3EF;
-  --color-ink: #15171A;
+  --color-paper: #F7F5F3;
+  --color-ink: #1A1F23;
   --color-ink-muted: #6B6F75;
   --color-ink-faint: #A8ADB5;
   --color-accent: #E0492B;
+  --color-navy: #1A1A1A;
+  --color-taupe: #BDB9B2;
 }
 
 html {

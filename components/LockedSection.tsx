@@ -28,17 +28,17 @@ export function LockedSection({ section, index }: Props) {
 
         {/* Lock overlay */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-auto">
-          <div className="border border-ink-faint/50 bg-paper px-6 py-5 text-center max-w-xs">
-            <p className="label-sm mb-2">Activity</p>
-            <p className="font-serif text-lg text-ink mb-3 leading-snug">
+          <div className="bg-navy px-6 py-5 text-center max-w-xs">
+            <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-taupe mb-2">Activity</p>
+            <p className="font-serif text-lg text-paper mb-3 leading-snug">
               Locked
             </p>
-            <p className="font-sans text-xs text-ink-muted mb-4">
+            <p className="font-sans text-xs text-taupe mb-4">
               Coming soon — unlock for ₱20
             </p>
             <button
               disabled
-              className="w-full border border-ink-faint text-ink-faint font-sans text-xs uppercase tracking-widest px-4 py-2 cursor-not-allowed"
+              className="w-full border border-paper/20 text-paper/40 font-sans text-xs uppercase tracking-widest px-4 py-2 cursor-not-allowed"
             >
               Unlock ₱20
             </button>

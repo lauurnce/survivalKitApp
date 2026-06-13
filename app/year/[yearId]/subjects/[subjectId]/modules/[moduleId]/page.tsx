@@ -21,7 +21,6 @@ export default async function ReaderPage({ params }: Props) {
 
   if (!mod || !subject) notFound();
 
-  // Fetch content sections (public via RLS)
   const { data: contentSections } = await supabase
     .from("sections")
     .select("id, kind, heading, body_md, sort_order")
@@ -29,8 +28,6 @@ export default async function ReaderPage({ params }: Props) {
     .eq("kind", "content")
     .order("sort_order");
 
-  // Fetch activity section headings (no body — body gated server-side)
-  // We only need heading + sort_order to position the locked block correctly
   const { data: activityMeta } = await supabase
     .from("sections")
     .select("id, kind, heading, sort_order")
@@ -40,7 +37,6 @@ export default async function ReaderPage({ params }: Props) {
 
   const unlockAll = process.env.UNLOCK_ALL === "true";
 
-  // Merge sections by sort_order
   const allSections = [
     ...(contentSections ?? []).map((s) => ({ ...s, body_md: s.body_md })),
     ...(activityMeta ?? []).map((s) => ({ ...s, body_md: "" })),
@@ -52,18 +48,24 @@ export default async function ReaderPage({ params }: Props) {
     <main className="min-h-screen bg-paper">
       <PageTracker event="module_open" yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
 
-      {/* Top nav */}
-      <div className="px-6 py-12 md:px-16 md:py-10 border-b border-ink-faint/30">
-        <BackLink href={`/year/${yearId}/subjects/${subjectId}/modules`} label={subject.title} />
+      {/* Top nav — dark navy */}
+      <div className="bg-navy px-6 py-8 md:px-16 border-b border-paper/10">
+        <BackLink
+          href={`/year/${yearId}/subjects/${subjectId}/modules`}
+          label={subject.title}
+          className="text-taupe hover:text-paper"
+        />
       </div>
 
-      {/* Module header */}
-      <header className="px-6 pt-12 pb-10 md:px-16 max-w-wide border-b border-ink-faint/30">
-        <p className="label mb-4">§ 0{year?.sort_order ?? "?"} — {subject.title}</p>
-        <h1 className="font-serif text-display-md text-ink">{mod.title}</h1>
+      {/* Module header — dark navy */}
+      <header className="bg-navy px-6 pt-10 pb-12 md:px-16 border-b border-paper/10 max-w-wide">
+        <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
+          § 0{year?.sort_order ?? "?"} — {subject.title}
+        </p>
+        <h1 className="font-serif text-display-md text-paper">{mod.title}</h1>
       </header>
 
-      {/* Sections */}
+      {/* Article content — cream */}
       <article className="px-6 py-12 md:px-16 max-w-wide space-y-16">
         {allSections.map((section, i) => (
           <SectionRenderer
