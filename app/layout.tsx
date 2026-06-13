@@ -35,8 +35,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${interTight.variable} ${jetbrainsMono.variable}`}>
-      <body className="bg-paper text-ink font-sans min-h-screen">
-        {children}
+      <body className="bg-paper text-ink font-sans min-h-screen flex flex-col">
+        <div className="flex-1">{children}</div>
+        <footer className="border-t border-ink-faint/20 px-6 py-4 md:px-16">
+          <p className="font-sans text-[11px] text-ink-faint leading-relaxed">
+            Study guide — original explanations. Content covers standard curriculum topics.
+          </p>
+        </footer>
       </body>
     </html>
   );
