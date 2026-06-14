@@ -2,6 +2,9 @@
   "name": "survival-kit-app",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--no-experimental-webstorage next dev",
     "build": "next build",
