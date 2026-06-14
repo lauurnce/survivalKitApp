@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, { params }: Params) {
   // Look up section to get module_id
   const { data: section } = await supabase
     .from("sections")
-    .select("id, module_id, kind, heading, body_md")
+    .select("id, module_id, kind, heading, body_md, ide_language, starter_code")
     .eq("id", sectionId)
     .single();
 
@@ -35,5 +35,7 @@ export async function GET(req: NextRequest, { params }: Params) {
     id: section.id,
     heading: section.heading,
     body_md: section.body_md,
+    ide_language: section.ide_language,
+    starter_code: section.starter_code,
   });
 }
