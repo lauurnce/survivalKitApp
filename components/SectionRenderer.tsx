@@ -1,6 +1,9 @@
 "use client";
 
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 import { LockedSection } from "./LockedSection";
 
 interface Section {
@@ -44,6 +47,8 @@ export function SectionRenderer({ section, index, moduleId, unlockAll }: Props) 
 function BodyMarkdown({ body }: { body: string }) {
   return (
     <ReactMarkdown
+      remarkPlugins={[remarkGfm, remarkMath]}
+      rehypePlugins={[rehypeKatex]}
       components={{
         // Headings
         h1: ({ children }) => (
