@@ -35,6 +35,8 @@ export interface Database {
           heading: string;
           body_md: string;
           sort_order: number;
+          ide_language: "python" | "sql" | "java" | "c" | null;
+          starter_code: string | null;
         };
         Insert: {
           id?: string;
@@ -43,6 +45,8 @@ export interface Database {
           heading: string;
           body_md: string;
           sort_order: number;
+          ide_language?: "python" | "sql" | "java" | "c" | null;
+          starter_code?: string | null;
         };
         Update: Partial<{
           module_id: string;
@@ -50,6 +54,8 @@ export interface Database {
           heading: string;
           body_md: string;
           sort_order: number;
+          ide_language: "python" | "sql" | "java" | "c" | null;
+          starter_code: string | null;
         }>;
       };
       unlocks: {
