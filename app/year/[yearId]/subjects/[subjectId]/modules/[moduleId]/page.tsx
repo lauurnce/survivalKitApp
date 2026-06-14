@@ -23,7 +23,7 @@ export default async function ReaderPage({ params }: Props) {
 
   const { data: contentSections } = await supabase
     .from("sections")
-    .select("id, kind, heading, body_md, sort_order")
+    .select("id, kind, heading, body_md, sort_order, ide_language, starter_code")
     .eq("module_id", moduleId)
     .eq("kind", "content")
     .order("sort_order");
@@ -38,8 +38,8 @@ export default async function ReaderPage({ params }: Props) {
   const unlockAll = process.env.UNLOCK_ALL === "true";
 
   const allSections = [
-    ...(contentSections ?? []).map((s) => ({ ...s, body_md: s.body_md })),
-    ...(activityMeta ?? []).map((s) => ({ ...s, body_md: "" })),
+    ...(contentSections ?? []),
+    ...(activityMeta ?? []).map((s) => ({ ...s, body_md: "", ide_language: null, starter_code: null })),
   ].sort((a, b) => a.sort_order - b.sort_order);
 
   const year = subject.years as { label: string; sort_order: number } | null;
