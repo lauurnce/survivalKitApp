@@ -52,6 +52,25 @@ Then 5.2 (render `<Playground>` in `SectionRenderer.tsx` + module page) and 5.3 
 
 ---
 
+## Pick up on the other device
+
+Branch is pushed to GitHub: `origin/worktree-code-playground`.
+
+```bash
+git clone https://github.com/lauurnce/survivalKitApp.git
+cd survivalKitApp
+git checkout worktree-code-playground
+npm install        # restores codemirror, pyodide, sql.js, vitest, etc.
+npm test           # expect 14 passing (re-run once if worker-timeout)
+npx tsc --noEmit   # expect clean
+```
+
+Optional: copy `.env.example` → `.env.local`. Java/C default to public Piston (`https://emkc.org/api/v2/piston`) with no key, so they work out of the box.
+
+Then start **Task 5.1** (next section).
+
+---
+
 ## Carry-over gotchas (bit us this session)
 
 - **Bash tool has no PATH** in this worktree (`git: command not found`). Use **PowerShell** for git/npm/ls.
