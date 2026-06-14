@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import type { RunResult } from "@/lib/ide/types";
 
 interface Props {
@@ -31,7 +32,7 @@ export function OutputPanel({ result, running, error }: Props) {
   );
 }
 
-function Shell({ children }: { children: React.ReactNode }) {
+function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="bg-ink text-paper font-mono text-sm p-4 min-h-[120px] overflow-x-auto">
       {children}
