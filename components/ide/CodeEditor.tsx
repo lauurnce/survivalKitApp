@@ -22,6 +22,11 @@ export function CodeEditor({ languageId, value, onChange, readOnly }: Props) {
       .loadExtension()
       .then((ext) => {
         if (active) setLangExt([ext]);
+      })
+      .catch(() => {
+        // Language extension failed to load (e.g. chunk fetch error);
+        // fall back to a plain editor with no syntax highlighting.
+        if (active) setLangExt([]);
       });
     return () => {
       active = false;
