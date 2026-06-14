@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { LockedSection } from "./LockedSection";
+import { Playground } from "./ide/Playground";
 
 interface Section {
   id: string;
@@ -12,6 +13,8 @@ interface Section {
   heading: string;
   body_md: string;
   sort_order: number;
+  ide_language?: "python" | "sql" | "java" | "c" | null;
+  starter_code?: string | null;
 }
 
 interface Props {
@@ -35,6 +38,14 @@ export function SectionRenderer({ section, index, moduleId, unlockAll }: Props) 
       <div className="pl-10 md:pl-12">
         <BodyMarkdown body={section.body_md} />
       </div>
+      {section.ide_language && (
+        <div className="mt-6 pl-10 md:pl-12">
+          <Playground
+            languageId={section.ide_language}
+            initialCode={section.starter_code ?? undefined}
+          />
+        </div>
+      )}
       {section.kind === "activity" && unlockAll && (
         <div className="mt-4 pl-10 md:pl-12">
           <span className="label-sm text-accent">Activity (UNLOCK_ALL active)</span>
