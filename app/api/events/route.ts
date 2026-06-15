@@ -2,16 +2,35 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import type { EventType } from "@/lib/supabase/types";
 
-// Simple in-memory rate limiter: device_id -> last N timestamps
+const VALID_EVENT_TYPES = new Set<EventType>([
+  "enter", "year_select", "subject_open", "module_open",
+  "section_view", "unlock_click", "unlock_submitted",
+]);
+
+// IP-based rate limiter — bounded map to prevent unbounded memory growth
 const rateLimitMap = new Map<string, number[]>();
 const WINDOW_MS = 60_000;
 const MAX_PER_WINDOW = 60;
+const MAX_MAP_SIZE = 10_000;
+
+function getRateLimitKey(req: NextRequest): string {
+  const forwarded = req.headers.get("x-forwarded-for");
+  const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+  return ip;
+}
 
 function isRateLimited(key: string): boolean {
   const now = Date.now();
-  const timestamps = (rateLimitMap.get(key) ?? []).filter(
-    (t) => now - t < WINDOW_MS
-  );
+
+  // Prune map if it gets too large to prevent memory leak
+  if (rateLimitMap.size >= MAX_MAP_SIZE) {
+    for (const [k, timestamps] of rateLimitMap) {
+      if (timestamps.every((t) => now - t >= WINDOW_MS)) rateLimitMap.delete(k);
+      if (rateLimitMap.size < MAX_MAP_SIZE * 0.8) break;
+    }
+  }
+
+  const timestamps = (rateLimitMap.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
   if (timestamps.length >= MAX_PER_WINDOW) return true;
   timestamps.push(now);
   rateLimitMap.set(key, timestamps);
@@ -41,7 +60,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    if (isRateLimited(device_id)) {
+    // Validate event_type at runtime — TS types are erased
+    if (!VALID_EVENT_TYPES.has(event_type)) {
+      return NextResponse.json({ error: "Invalid event_type" }, { status: 400 });
+    }
+
+    if (isRateLimited(getRateLimitKey(req))) {
       return NextResponse.json({ error: "Rate limited" }, { status: 429 });
     }
 

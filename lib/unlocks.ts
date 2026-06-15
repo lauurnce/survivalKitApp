@@ -1,11 +1,12 @@
 import { createServerClient } from "./supabase/server";
 
-/**
- * Check whether a device has an approved unlock for a given module.
- * TODO: PayMongo integration stub — swap body here when auto-verification is live.
- */
 export async function isUnlocked(deviceId: string, moduleId: string): Promise<boolean> {
-  if (process.env.UNLOCK_ALL === "true") return true;
+  if (process.env.UNLOCK_ALL === "true") {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("UNLOCK_ALL must not be set in production — disable it in Vercel environment variables");
+    }
+    return true;
+  }
 
   const supabase = createServerClient();
   const { data } = await supabase
