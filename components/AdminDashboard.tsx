@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 interface FunnelStep {
   type: string;
   label: string;
@@ -183,6 +185,23 @@ export function AdminDashboard({
   const unlockClicks    = funnel.find(s => s.type === "unlock_click")?.unique ?? 0;
   const unlockSubmitted = funnel.find(s => s.type === "unlock_submitted")?.unique ?? 0;
 
+  const [queue, setQueue] = useState<PendingUnlock[]>(pendingUnlocks);
+  const [processing, setProcessing] = useState<Set<string>>(new Set());
+
+  async function handleUnlock(id: string, action: "approve" | "reject") {
+    setProcessing(prev => new Set(prev).add(id));
+    try {
+      const res = await fetch("/api/admin/unlock", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, action }),
+      });
+      if (res.ok) setQueue(prev => prev.filter(u => u.id !== id));
+    } finally {
+      setProcessing(prev => { const n = new Set(prev); n.delete(id); return n; });
+    }
+  }
+
   return (
     <main className="min-h-screen bg-paper px-6 py-12 md:px-16 md:py-20">
 
@@ -266,39 +285,57 @@ export function AdminDashboard({
       </section>
 
       {/* Pending unlocks queue */}
-      {pendingUnlocks.length > 0 ? (
+      {queue.length > 0 ? (
         <section className="mb-16">
           <div className="flex items-baseline gap-3 mb-6">
             <p className="label">Pending Unlocks</p>
-            <span className="font-mono text-xs text-accent">{pendingUnlocks.length} waiting</span>
+            <span className="font-mono text-xs text-accent">{queue.length} waiting</span>
           </div>
           <div className="overflow-x-auto max-w-wide">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b border-ink-faint/30">
-                  {["Module", "GCash Ref", "Amount", "Device", "Submitted"].map(h => (
-                    <th key={h} className="text-left py-2 pr-8 label-sm text-ink-muted font-normal">{h}</th>
+                  {["Module", "GCash Ref", "Amount", "Device", "Submitted", "Action"].map(h => (
+                    <th key={h} className="text-left py-2 pr-6 label-sm text-ink-muted font-normal">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {pendingUnlocks.map(u => (
-                  <tr key={u.id} className="border-b border-ink-faint/15">
-                    <td className="py-3 pr-8 font-sans text-sm text-ink">{u.module_title}</td>
-                    <td className="py-3 pr-8 font-mono text-sm text-ink font-medium">{u.gcash_ref}</td>
-                    <td className="py-3 pr-8 font-sans text-sm text-ink">₱{u.amount}</td>
-                    <td className="py-3 pr-8 font-mono text-xs text-ink-muted">{u.device_id.slice(0, 10)}…</td>
-                    <td className="py-3 font-sans text-xs text-ink-muted">
-                      {new Date(u.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
-                    </td>
-                  </tr>
-                ))}
+                {queue.map(u => {
+                  const busy = processing.has(u.id);
+                  return (
+                    <tr key={u.id} className="border-b border-ink-faint/15">
+                      <td className="py-3 pr-6 font-sans text-sm text-ink">{u.module_title}</td>
+                      <td className="py-3 pr-6 font-mono text-sm text-ink font-medium">{u.gcash_ref}</td>
+                      <td className="py-3 pr-6 font-sans text-sm text-ink">₱{u.amount}</td>
+                      <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{u.device_id.slice(0, 10)}…</td>
+                      <td className="py-3 pr-6 font-sans text-xs text-ink-muted">
+                        {new Date(u.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                      </td>
+                      <td className="py-3">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleUnlock(u.id, "approve")}
+                            disabled={busy}
+                            className="font-mono text-xs text-paper bg-ink px-3 py-1 hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                          >
+                            {busy ? "…" : "Approve"}
+                          </button>
+                          <button
+                            onClick={() => handleUnlock(u.id, "reject")}
+                            disabled={busy}
+                            className="font-mono text-xs text-ink-muted border border-ink-faint/40 px-3 py-1 hover:text-ink hover:border-ink transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
-          <p className="font-sans text-xs text-ink-faint mt-4">
-            Approve via Supabase dashboard → unlock the module manually by updating status to &apos;approved&apos;.
-          </p>
         </section>
       ) : (
         <section className="mb-16">
