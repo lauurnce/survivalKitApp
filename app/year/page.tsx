@@ -2,14 +2,16 @@ import Link from "next/link";
 import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
+import { formatCount } from "@/lib/counters";
 
 export const dynamic = "force-dynamic";
 
 export default async function YearPage() {
   const supabase = createServerClient();
-  const [{ data: years }, { data: subjects }] = await Promise.all([
+  const [{ data: years }, { data: subjects }, { data: yearCounters }] = await Promise.all([
     supabase.from("years").select("*").order("sort_order"),
     supabase.from("subjects").select("id, year_id, semester, kind"),
+    supabase.from("counters").select("resource_id, reader_count").eq("resource_type", "year"),
   ]);
 
   function subjectStats(yearId: string) {
@@ -19,6 +21,10 @@ export default async function YearPage() {
     const major = rows.filter((s) => s.kind === "major").length;
     const minor = rows.filter((s) => s.kind === "minor").length;
     return { total: rows.length, sem1, sem2, major, minor };
+  }
+
+  function readerCount(yearId: string): number {
+    return yearCounters?.find((c) => c.resource_id === yearId)?.reader_count ?? 0;
   }
 
   return (
@@ -70,6 +76,16 @@ export default async function YearPage() {
                 <span className="font-sans text-sm text-ink-muted mt-auto group-hover:text-paper transition-colors duration-200">
                   View subjects →
                 </span>
+
+                <div className="flex items-center gap-2 pt-3 border-t border-ink-faint/20 group-hover:border-taupe/20 transition-colors duration-200">
+                  <div className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
+                  <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint group-hover:text-taupe transition-colors duration-200">
+                    <span className="text-ink-muted group-hover:text-taupe/80 transition-colors duration-200">
+                      {formatCount(readerCount(year.id))}
+                    </span>{" "}
+                    readers
+                  </span>
+                </div>
               </Link>
             );
           })}
