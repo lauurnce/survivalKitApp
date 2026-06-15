@@ -1,11 +1,16 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { LockedSection } from "./LockedSection";
-import { Playground } from "./ide/Playground";
+
+const Playground = dynamic(
+  () => import("./ide/Playground").then((m) => ({ default: m.Playground })),
+  { ssr: false, loading: () => <div className="h-48 bg-ink-faint/10 animate-pulse" /> }
+);
 
 interface Section {
   id: string;

@@ -1,9 +1,14 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { getDeviceId } from "@/lib/device";
-import { Playground } from "./ide/Playground";
 import type { LanguageId } from "@/lib/ide/types";
+
+const Playground = dynamic(
+  () => import("./ide/Playground").then((m) => ({ default: m.Playground })),
+  { ssr: false, loading: () => <div className="h-48 bg-ink-faint/10 animate-pulse" /> }
+);
 
 interface Section {
   id: string;
