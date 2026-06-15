@@ -79,6 +79,30 @@ export async function POST(req: NextRequest) {
       section_id,
     });
 
+    // Determine which resource to count (fire-and-forget — never blocks response)
+    const counterArgs = (() => {
+      if (event_type === "subject_open" && year_id && !subject_id) {
+        return { type: "year" as const, id: year_id };
+      }
+      if (event_type === "subject_open" && subject_id) {
+        return { type: "subject" as const, id: subject_id };
+      }
+      if (event_type === "module_open" && module_id) {
+        return { type: "module" as const, id: module_id };
+      }
+      return null;
+    })();
+
+    if (counterArgs) {
+      supabase
+        .rpc("record_visit", {
+          p_device_id: device_id,
+          p_resource_type: counterArgs.type,
+          p_resource_id: counterArgs.id,
+        })
+        .then(null, () => null);
+    }
+
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
