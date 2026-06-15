@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { runInSandbox } from "@/lib/ide/sandboxRunner";
+import { buildPistonPayload, mapPistonResponse } from "@/lib/ide/piston";
+import type { PistonResponse } from "@/lib/ide/piston";
 import { truncateOutput } from "@/lib/ide/format";
 import type { LanguageId } from "@/lib/ide/types";
 
 export const runtime = "nodejs";
-
-// Give the function enough time to outlive the sandbox (60s timeout inside)
-export const maxDuration = 90;
+export const maxDuration = 30;
 
 const MAX_CODE_BYTES = 50_000;
 const MAX_STDIN_BYTES = 10_000;
 const SERVER_LANGS: LanguageId[] = ["java", "c"];
+const PISTON_URL = "https://emkc.org/api/v2/piston/execute";
 
-// IP-based rate limiter — 10 executions per minute per IP
 const runRateMap = new Map<string, number[]>();
 const RUN_WINDOW_MS = 60_000;
 const RUN_MAX_PER_WINDOW = 10;
@@ -41,7 +40,6 @@ function isRateLimited(ip: string): boolean {
 }
 
 export async function POST(req: NextRequest) {
-  // Rate limit before parsing the body
   const ip = getIp(req);
   if (isRateLimited(ip)) {
     return NextResponse.json(
@@ -70,14 +68,27 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const result = await runInSandbox(languageId, code, stdin);
+    const payload = buildPistonPayload(languageId, code, stdin);
+    const start = Date.now();
+    const pistonRes = await fetch(PISTON_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!pistonRes.ok) {
+      return NextResponse.json({ error: "Code execution service unavailable" }, { status: 502 });
+    }
+
+    const raw = (await pistonRes.json()) as PistonResponse;
+    const result = mapPistonResponse(raw, Date.now() - start);
     result.stdout = truncateOutput(result.stdout).text;
     result.stderr = truncateOutput(result.stderr).text;
     return NextResponse.json(result);
   } catch (e) {
     return NextResponse.json(
       { error: e instanceof Error ? e.message : "Execution failed" },
-      { status: 502 },
+      { status: 502 }
     );
   }
 }
