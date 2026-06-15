@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildPistonPayload, mapPistonResponse } from "@/lib/ide/piston";
+import { runInSandbox } from "@/lib/ide/sandboxRunner";
 import { truncateOutput } from "@/lib/ide/format";
 import type { LanguageId } from "@/lib/ide/types";
 
@@ -9,11 +9,6 @@ const MAX_CODE_BYTES = 50_000;
 const SERVER_LANGS: LanguageId[] = ["java", "c"];
 
 export async function POST(req: NextRequest) {
-  const pistonUrl = process.env.PISTON_URL;
-  if (!pistonUrl) {
-    return NextResponse.json({ error: "Execution engine not configured" }, { status: 503 });
-  }
-
   let body: { languageId?: LanguageId; code?: string; stdin?: string };
   try {
     body = await req.json();
@@ -29,35 +24,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Code too large" }, { status: 413 });
   }
 
-  const payload = buildPistonPayload(languageId, code, stdin);
-  const start = Date.now();
-
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 20_000);
-    const pistonRes = await fetch(`${pistonUrl}/execute`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    });
-    clearTimeout(timer);
-
-    if (!pistonRes.ok) {
-      const detail = await pistonRes.text();
-      return NextResponse.json({ error: `Engine error: ${detail}` }, { status: 502 });
-    }
-
-    const data = await pistonRes.json();
-    const result = mapPistonResponse(data, Date.now() - start);
+    const result = await runInSandbox(languageId, code, stdin);
     result.stdout = truncateOutput(result.stdout).text;
     result.stderr = truncateOutput(result.stderr).text;
     return NextResponse.json(result);
   } catch (e) {
-    const aborted = e instanceof Error && e.name === "AbortError";
     return NextResponse.json(
-      { error: aborted ? "Execution timed out" : "Execution failed" },
-      { status: aborted ? 504 : 502 },
+      { error: e instanceof Error ? e.message : "Execution failed" },
+      { status: 502 },
     );
   }
 }

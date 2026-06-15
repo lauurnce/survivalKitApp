@@ -21,6 +21,7 @@
     "@codemirror/lang-sql": "^6.10.0",
     "@supabase/supabase-js": "^2.49.4",
     "@uiw/react-codemirror": "^4.25.10",
+    "@vercel/sandbox": "^2.2.1",
     "katex": "^0.16.47",
     "next": "^15.5.19",
     "pyodide": "^314.0.0",
