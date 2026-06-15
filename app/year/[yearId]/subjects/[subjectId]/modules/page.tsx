@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
+import { formatCount } from "@/lib/counters";
 
 export const dynamic = "force-dynamic";
 
@@ -14,18 +15,23 @@ export default async function ModulesPage({ params }: Props) {
   const { yearId, subjectId } = await params;
   const supabase = createServerClient();
 
-  const [{ data: subject }, { data: modules }] = await Promise.all([
+  const [{ data: subject }, { data: modules }, { data: moduleCounters }] = await Promise.all([
     supabase.from("subjects").select("*, years(label, sort_order)").eq("id", subjectId).single(),
     supabase
       .from("modules")
       .select("*")
       .eq("subject_id", subjectId)
       .order("sort_order"),
+    supabase.from("counters").select("resource_id, read_count").eq("resource_type", "module"),
   ]);
 
   if (!subject) notFound();
 
   const year = subject.years as { label: string; sort_order: number } | null;
+
+  function readCount(moduleId: string): number {
+    return moduleCounters?.find((c) => c.resource_id === moduleId)?.read_count ?? 0;
+  }
 
   return (
     <main className="min-h-screen bg-paper flex flex-col">
@@ -59,9 +65,12 @@ export default async function ModulesPage({ params }: Props) {
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div className="flex-1">
-                <h2 className="font-serif text-2xl text-ink group-hover:text-accent transition-colors duration-150">
+                <h2 className="font-serif text-2xl text-ink group-hover:text-accent transition-colors duration-150 mb-1">
                   {mod.title}
                 </h2>
+                <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
+                  <span className="text-ink-muted">{formatCount(readCount(mod.id))}</span> reads
+                </span>
               </div>
               <span className="font-sans text-sm text-ink-faint group-hover:text-ink transition-colors mt-1">
                 →
