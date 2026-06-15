@@ -2,8 +2,10 @@ import type { Runner, RunRequest, RunResult } from "@/lib/ide/types";
 import { truncateOutput } from "@/lib/ide/format";
 
 // Pyodide is heavy (~6MB). Load once, cache the promise.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let pyodidePromise: Promise<any> | null = null;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function loadPyodide(): Promise<any> {
   if (!pyodidePromise) {
     pyodidePromise = (async () => {

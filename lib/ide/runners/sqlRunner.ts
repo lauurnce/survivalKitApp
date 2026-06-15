@@ -1,7 +1,9 @@
 import type { Runner, RunRequest, RunResult } from "@/lib/ide/types";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let sqlPromise: Promise<any> | null = null;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function loadSql(): Promise<any> {
   if (!sqlPromise) {
     sqlPromise = (async () => {

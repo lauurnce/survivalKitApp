@@ -16,7 +16,7 @@ describe("buildPistonPayload", () => {
   });
 
   it("rejects a browser-only language", () => {
-    // @ts-ignore python is not a server language
+    // @ts-expect-error python is not a server language
     expect(() => buildPistonPayload("python", "", "")).toThrow();
   });
 });
