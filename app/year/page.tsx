@@ -4,7 +4,7 @@ import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
 import { formatCount } from "@/lib/counters";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default async function YearPage() {
   const supabase = createServerClient();

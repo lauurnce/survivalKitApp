@@ -4,7 +4,7 @@ import { BackLink } from "@/components/BackLink";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import { PageTracker } from "@/components/PageTracker";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 interface Props {
   params: Promise<{ yearId: string; subjectId: string; moduleId: string }>;
