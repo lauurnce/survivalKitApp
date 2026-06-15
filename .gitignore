@@ -35,6 +35,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# claude code internals
+.superpowers/
+
 # content source PDFs (large files)
 /content-source/
 /scripts/output/
