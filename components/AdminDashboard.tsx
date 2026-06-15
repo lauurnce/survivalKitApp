@@ -68,7 +68,7 @@ function BarChart({ data, label }: { data: TopItem[]; label: string }) {
       <div className="space-y-2">
         {data.map(item => (
           <div key={item.label} className="flex items-center gap-3">
-            <span className="font-sans text-xs text-ink-muted w-40 truncate shrink-0" title={item.label}>{item.label}</span>
+            <span className="font-sans text-xs text-ink-muted w-28 sm:w-40 truncate shrink-0" title={item.label}>{item.label}</span>
             <div className="flex-1 bg-ink-faint/20 h-4">
               <div className="h-4 bg-accent" style={{ width: `${(item.count / max) * 100}%` }} />
             </div>
@@ -140,7 +140,7 @@ function FunnelChart({ steps }: { steps: FunnelStep[] }) {
             return (
               <div key={step.type}>
                 {i > 0 && (
-                  <div className="flex items-center gap-2 py-1 pl-44">
+                  <div className="flex items-center gap-2 py-1 pl-28 sm:pl-44">
                     {dropped > 0 ? (
                       <span className="font-mono text-[10px] text-accent">
                         ↓ {dropPct}% dropped ({dropped} users)
@@ -151,7 +151,7 @@ function FunnelChart({ steps }: { steps: FunnelStep[] }) {
                   </div>
                 )}
                 <div className="flex items-center gap-3" title={step.hint}>
-                  <span className="font-sans text-xs text-ink w-44 shrink-0">{step.label}</span>
+                  <span className="font-sans text-xs text-ink w-28 sm:w-44 shrink-0">{step.label}</span>
                   <div className="flex-1 bg-ink-faint/15 h-7 relative">
                     <div
                       className="h-7 bg-ink transition-all"
@@ -161,7 +161,7 @@ function FunnelChart({ steps }: { steps: FunnelStep[] }) {
                       }}
                     />
                   </div>
-                  <div className="w-28 text-right shrink-0">
+                  <div className="w-20 sm:w-28 text-right shrink-0">
                     <span className="font-mono text-xs text-ink">{step.unique.toLocaleString()}</span>
                     <span className="font-mono text-[10px] text-ink-faint ml-2">({pctOfTotal}%)</span>
                   </div>
@@ -187,7 +187,7 @@ export function AdminDashboard({
     <main className="min-h-screen bg-paper px-6 py-12 md:px-16 md:py-20">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-12">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-12">
         <div>
           <p className="label mb-2">Admin</p>
           <h1 className="font-serif text-display-md text-ink">Analytics</h1>
