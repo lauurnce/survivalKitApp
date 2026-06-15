@@ -12,6 +12,38 @@ export type EventType =
 export interface Database {
   public: {
     Tables: {
+      counters: {
+        Row: {
+          resource_type: string;
+          resource_id: string;
+          reader_count: number;
+          read_count: number;
+        };
+        Insert: {
+          resource_type: string;
+          resource_id: string;
+          reader_count?: number;
+          read_count?: number;
+        };
+        Update: Partial<{ reader_count: number; read_count: number }>;
+      };
+      counter_log: {
+        Row: {
+          device_id: string;
+          resource_type: string;
+          resource_id: string;
+          first_seen_at: string;
+          last_read_at: string;
+        };
+        Insert: {
+          device_id: string;
+          resource_type: string;
+          resource_id: string;
+          first_seen_at?: string;
+          last_read_at?: string;
+        };
+        Update: Partial<{ last_read_at: string }>;
+      };
       years: {
         Row: { id: string; label: string; sort_order: number };
         Insert: { id?: string; label: string; sort_order: number };
@@ -104,7 +136,16 @@ export interface Database {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      record_visit: {
+        Args: {
+          p_device_id: string;
+          p_resource_type: string;
+          p_resource_id: string;
+        };
+        Returns: void;
+      };
+    };
     Enums: Record<string, never>;
   };
 }
