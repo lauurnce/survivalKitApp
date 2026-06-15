@@ -12,18 +12,6 @@ function getTitle(rel: unknown): string {
   return (rel as { title?: string }).title ?? "unknown";
 }
 
-function countByLabel<T>(arr: T[], key: (item: T) => string): { label: string; count: number }[] {
-  const map = new Map<string, number>();
-  for (const item of arr) {
-    const k = key(item);
-    map.set(k, (map.get(k) ?? 0) + 1);
-  }
-  return Array.from(map.entries())
-    .map(([label, count]) => ({ label, count }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 8);
-}
-
 function countById(ids: (string | null)[]): { id: string; count: number }[] {
   const map = new Map<string, number>();
   for (const id of ids) {
@@ -56,13 +44,12 @@ export default async function AdminPage() {
   const [
     { data: funnelRaw },
     { data: dauRaw },
-    { data: topSubjectsRaw },
-    { data: topModulesRaw },
+    { data: subjectCounters },
+    { data: moduleCounters },
     { data: sectionEventRaw },
     { data: pendingRaw },
     { data: approvedRaw },
   ] = await Promise.all([
-    // Fetch only what we need for funnel aggregation — keep row count low
     supabase.from("events").select("device_id, event_type").limit(10000),
     supabase
       .from("events")
@@ -70,18 +57,19 @@ export default async function AdminPage() {
       .eq("event_type", "enter")
       .gte("created_at", thirtyDaysAgo)
       .order("created_at", { ascending: true }),
+    // Use pre-aggregated counters (10-min cooldown per device — more accurate than raw event counts)
     supabase
-      .from("events")
-      .select("subject_id, subjects(title)")
-      .eq("event_type", "subject_open")
-      .not("subject_id", "is", null)
-      .limit(1000),
+      .from("counters")
+      .select("resource_id, read_count")
+      .eq("resource_type", "subject")
+      .order("read_count", { ascending: false })
+      .limit(8),
     supabase
-      .from("events")
-      .select("module_id, modules(title)")
-      .eq("event_type", "module_open")
-      .not("module_id", "is", null)
-      .limit(1000),
+      .from("counters")
+      .select("resource_id, read_count")
+      .eq("resource_type", "module")
+      .order("read_count", { ascending: false })
+      .limit(8),
     supabase
       .from("events")
       .select("section_id")
@@ -117,14 +105,27 @@ export default async function AdminPage() {
     .map(([date, devices]) => ({ date, unique: devices.size }))
     .sort((a, b) => a.date.localeCompare(b.date));
 
-  const topSubjects = countByLabel(
-    topSubjectsRaw ?? [],
-    (s) => getTitle((s as { subjects: unknown }).subjects)
-  );
-  const topModules = countByLabel(
-    topModulesRaw ?? [],
-    (m) => getTitle((m as { modules: unknown }).modules)
-  );
+  const subjectIds = (subjectCounters ?? []).map((c) => c.resource_id);
+  const moduleIds = (moduleCounters ?? []).map((c) => c.resource_id);
+
+  const [{ data: subjectTitles }, { data: moduleTitles }] = await Promise.all([
+    subjectIds.length > 0
+      ? supabase.from("subjects").select("id, title").in("id", subjectIds)
+      : Promise.resolve({ data: [] as { id: string; title: string }[] }),
+    moduleIds.length > 0
+      ? supabase.from("modules").select("id, title").in("id", moduleIds)
+      : Promise.resolve({ data: [] as { id: string; title: string }[] }),
+  ]);
+
+  const topSubjects = (subjectCounters ?? []).map((c) => ({
+    label: subjectTitles?.find((s) => s.id === c.resource_id)?.title ?? c.resource_id.slice(0, 8),
+    count: c.read_count,
+  }));
+
+  const topModules = (moduleCounters ?? []).map((c) => ({
+    label: moduleTitles?.find((m) => m.id === c.resource_id)?.title ?? c.resource_id.slice(0, 8),
+    count: c.read_count,
+  }));
 
   const sectionCounts = countById(
     (sectionEventRaw ?? []).map((e) => (e as { section_id: string | null }).section_id)
