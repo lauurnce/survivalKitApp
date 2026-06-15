@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
+import { formatCount } from "@/lib/counters";
 
 export const dynamic = "force-dynamic";
 
@@ -23,13 +24,14 @@ export default async function SubjectsPage({ params }: Props) {
   const { yearId } = await params;
   const supabase = createServerClient();
 
-  const [{ data: year }, { data: rawSubjects }] = await Promise.all([
+  const [{ data: year }, { data: rawSubjects }, { data: subjectCounters }] = await Promise.all([
     supabase.from("years").select("*").eq("id", yearId).single(),
     supabase
       .from("subjects")
       .select("*")
       .eq("year_id", yearId)
       .order("sort_order"),
+    supabase.from("counters").select("resource_id, read_count").eq("resource_type", "subject"),
   ]);
 
   if (!year) notFound();
@@ -37,6 +39,10 @@ export default async function SubjectsPage({ params }: Props) {
   const subjects = (rawSubjects ?? []) as Subject[];
   const sem1 = subjects.filter((s) => s.semester === 1);
   const sem2 = subjects.filter((s) => s.semester === 2);
+
+  function readCount(subjectId: string): number {
+    return subjectCounters?.find((c) => c.resource_id === subjectId)?.read_count ?? 0;
+  }
 
   return (
     <main className="min-h-screen bg-paper flex flex-col">
@@ -84,9 +90,15 @@ export default async function SubjectsPage({ params }: Props) {
                         <h2 className="font-serif text-2xl text-ink group-hover:text-accent transition-colors duration-150 mb-1">
                           {subject.title}
                         </h2>
-                        <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
-                          {subject.kind === "major" ? "Major" : "Minor"}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
+                            {subject.kind === "major" ? "Major" : "Minor"}
+                          </span>
+                          <span className="font-mono text-label-sm text-ink-faint/40">·</span>
+                          <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
+                            <span className="text-ink-muted">{formatCount(readCount(subject.id))}</span> reads
+                          </span>
+                        </div>
                       </div>
                       <span className="font-sans text-sm text-ink-faint group-hover:text-ink transition-colors mt-1">
                         →
