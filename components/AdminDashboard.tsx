@@ -43,7 +43,6 @@ interface Props {
   todayUsers: number;
   last7Sessions: number;
   approvedUnlocks: number;
-  adminPw: string;
 }
 
 function Stat({ value, label, accent }: { value: number | string; label: string; accent?: boolean }) {
@@ -179,7 +178,7 @@ function FunnelChart({ steps }: { steps: FunnelStep[] }) {
 export function AdminDashboard({
   funnel, dau, topSubjects, topModules, topSections,
   pendingUnlocks, totalUniqueUsers, todayUsers, last7Sessions,
-  approvedUnlocks, adminPw,
+  approvedUnlocks,
 }: Props) {
   const unlockClicks    = funnel.find(s => s.type === "unlock_click")?.unique ?? 0;
   const unlockSubmitted = funnel.find(s => s.type === "unlock_submitted")?.unique ?? 0;
@@ -193,9 +192,16 @@ export function AdminDashboard({
           <p className="label mb-2">Admin</p>
           <h1 className="font-serif text-display-md text-ink">Analytics</h1>
         </div>
-        <a href={`/admin?pw=${adminPw}`} className="label-sm text-ink-muted hover:text-ink transition-colors">
-          Refresh
-        </a>
+        <div className="flex items-center gap-4">
+          <a href="/admin" className="label-sm text-ink-muted hover:text-ink transition-colors">
+            Refresh
+          </a>
+          <form action="/api/admin/logout" method="POST">
+            <button type="submit" className="label-sm text-ink-faint hover:text-ink transition-colors">
+              Sign out
+            </button>
+          </form>
+        </div>
       </div>
 
       {/* Key stats */}
