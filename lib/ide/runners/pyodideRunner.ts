@@ -1,52 +1,89 @@
 import type { Runner, RunRequest, RunResult } from "@/lib/ide/types";
 import { truncateOutput } from "@/lib/ide/format";
 
-// Pyodide is heavy (~6MB). Load once, cache the promise.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let pyodidePromise: Promise<any> | null = null;
+const TIMEOUT_MS = 8_000;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function loadPyodide(): Promise<any> {
-  if (!pyodidePromise) {
-    pyodidePromise = (async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mod: any = await (
-        // @ts-expect-error dynamic https import not resolvable by TS
-        import(/* webpackIgnore: true */ "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs")
-      );
-      const { loadPyodide } = mod;
-      return loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/" });
-    })();
-  }
-  return pyodidePromise;
+// One worker instance — terminated and recreated whenever a run times out
+let worker: Worker | null = null;
+let pendingResolve: ((r: RunResult) => void) | null = null;
+let pendingStart = 0;
+
+function spawnWorker(): Worker {
+  const w = new Worker("/pyodideWorker.js");
+
+  w.onmessage = (e: MessageEvent<{ stdout: string; stderr: string; exitCode: number }>) => {
+    if (!pendingResolve) return;
+    const resolve = pendingResolve;
+    pendingResolve = null;
+    const out = truncateOutput(e.data.stdout);
+    const err = truncateOutput(e.data.stderr);
+    resolve({
+      stdout: out.text,
+      stderr: err.text,
+      exitCode: e.data.exitCode,
+      timedOut: false,
+      durationMs: Math.round(performance.now() - pendingStart),
+    });
+  };
+
+  w.onerror = () => {
+    if (pendingResolve) {
+      pendingResolve({
+        stdout: "",
+        stderr: "Python runtime error — please try again",
+        exitCode: 1,
+        timedOut: false,
+        durationMs: Math.round(performance.now() - pendingStart),
+      });
+      pendingResolve = null;
+    }
+    worker = null;
+  };
+
+  return w;
+}
+
+function getWorker(): Worker {
+  if (!worker) worker = spawnWorker();
+  return worker;
 }
 
 export const pyodideRunner: Runner = {
   async run(req: RunRequest): Promise<RunResult> {
-    const start = performance.now();
-    const py = await loadPyodide();
+    return new Promise<RunResult>((resolve) => {
+      const w = getWorker();
+      pendingStart = performance.now();
+      pendingResolve = resolve;
 
-    let stdout = "";
-    let stderr = "";
-    py.setStdout({ batched: (s: string) => (stdout += s + "\n") });
-    py.setStderr({ batched: (s: string) => (stderr += s + "\n") });
+      const timeoutId = setTimeout(() => {
+        // Terminate the frozen worker and clear state so the next run gets a fresh one
+        w.terminate();
+        worker = null;
+        pendingResolve = null;
+        resolve({
+          stdout: "",
+          stderr: `Execution timed out (${TIMEOUT_MS / 1000}s limit). Avoid infinite loops.`,
+          exitCode: 1,
+          timedOut: true,
+          durationMs: TIMEOUT_MS,
+        });
+      }, TIMEOUT_MS);
 
-    let exitCode = 0;
-    try {
-      await py.runPythonAsync(req.code);
-    } catch (e) {
-      stderr += (e instanceof Error ? e.message : String(e)) + "\n";
-      exitCode = 1;
-    }
+      w.onmessage = (e: MessageEvent<{ stdout: string; stderr: string; exitCode: number }>) => {
+        clearTimeout(timeoutId);
+        pendingResolve = null;
+        const out = truncateOutput(e.data.stdout);
+        const err = truncateOutput(e.data.stderr);
+        resolve({
+          stdout: out.text,
+          stderr: err.text,
+          exitCode: e.data.exitCode,
+          timedOut: false,
+          durationMs: Math.round(performance.now() - pendingStart),
+        });
+      };
 
-    const out = truncateOutput(stdout);
-    const err = truncateOutput(stderr);
-    return {
-      stdout: out.text,
-      stderr: err.text,
-      exitCode,
-      timedOut: false,
-      durationMs: Math.round(performance.now() - start),
-    };
+      w.postMessage({ id: Date.now(), code: req.code });
+    });
   },
 };
