@@ -86,12 +86,13 @@ export default async function AdminPage() {
       .eq("status", "pending")
       .order("created_at", { ascending: false })
       .limit(50),
-    supabase.from("unlocks").select("id").eq("status", "approved"),
+    supabase.from("unlocks").select("id, amount").eq("status", "approved"),
     supabase
       .from("events")
       .select("device_id")
       .eq("event_type", "enter")
-      .gte("created_at", fifteenMinutesAgo),
+      .gte("created_at", fifteenMinutesAgo)
+      .limit(1000),
     supabase
       .from("events")
       .select("device_id, created_at")
@@ -190,7 +191,7 @@ export default async function AdminPage() {
     else recurringUsers++;
   }
 
-  const totalRevenue = (approvedRaw?.length ?? 0) * 20;
+  const totalRevenue = (approvedRaw ?? []).reduce((sum, u) => sum + (u.amount ?? 0), 0);
 
   return (
     <AdminDashboard
