@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildPistonPayload, mapPistonResponse } from "@/lib/ide/piston";
-import type { PistonResponse } from "@/lib/ide/piston";
 import { truncateOutput } from "@/lib/ide/format";
 import type { LanguageId } from "@/lib/ide/types";
 
@@ -10,7 +8,12 @@ export const maxDuration = 30;
 const MAX_CODE_BYTES = 50_000;
 const MAX_STDIN_BYTES = 10_000;
 const SERVER_LANGS: LanguageId[] = ["java", "c"];
-const PISTON_URL = "https://emkc.org/api/v2/piston/execute";
+
+// Wandbox compilers — no API key, compilers pre-installed, fast
+const WANDBOX_COMPILER: Partial<Record<LanguageId, string>> = {
+  c:    "gcc-head",
+  java: "openjdk-jdk-21+35",
+};
 
 const runRateMap = new Map<string, number[]>();
 const RUN_WINDOW_MS = 60_000;
@@ -24,19 +27,22 @@ function getIp(req: NextRequest): string {
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
-
   if (runRateMap.size >= MAX_MAP_SIZE) {
     for (const [k, ts] of runRateMap) {
       if (ts.every((t) => now - t >= RUN_WINDOW_MS)) runRateMap.delete(k);
       if (runRateMap.size < MAX_MAP_SIZE * 0.8) break;
     }
   }
-
   const ts = (runRateMap.get(ip) ?? []).filter((t) => now - t < RUN_WINDOW_MS);
   if (ts.length >= RUN_MAX_PER_WINDOW) return true;
   ts.push(now);
   runRateMap.set(ip, ts);
   return false;
+}
+
+// Wandbox requires the public class to be named "prog" (file is prog.java)
+function prepareJavaCode(code: string): string {
+  return code.replace(/public\s+class\s+\w+/g, "class prog");
 }
 
 export async function POST(req: NextRequest) {
@@ -67,24 +73,50 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "stdin too large (max 10 KB)" }, { status: 413 });
   }
 
+  const compiler = WANDBOX_COMPILER[languageId];
+  if (!compiler) {
+    return NextResponse.json({ error: "Unsupported language" }, { status: 400 });
+  }
+
+  const sourceCode = languageId === "java" ? prepareJavaCode(code) : code;
+
   try {
-    const payload = buildPistonPayload(languageId, code, stdin);
     const start = Date.now();
-    const pistonRes = await fetch(PISTON_URL, {
+    const res = await fetch("https://wandbox.org/api/compile.json", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ compiler, code: sourceCode, stdin, options: "" }),
     });
 
-    if (!pistonRes.ok) {
-      return NextResponse.json({ error: "Code execution service unavailable" }, { status: 502 });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      return NextResponse.json(
+        { error: `Execution service error (${res.status}): ${text.slice(0, 200)}` },
+        { status: 502 }
+      );
     }
 
-    const raw = (await pistonRes.json()) as PistonResponse;
-    const result = mapPistonResponse(raw, Date.now() - start);
-    result.stdout = truncateOutput(result.stdout).text;
-    result.stderr = truncateOutput(result.stderr).text;
-    return NextResponse.json(result);
+    const raw = await res.json() as {
+      status: string;
+      compiler_error?: string;
+      compiler_output?: string;
+      program_output?: string;
+      program_error?: string;
+    };
+
+    const compileFailed = raw.compiler_error && raw.status !== "0";
+    const stdout = truncateOutput(raw.program_output ?? "").text;
+    const stderr = truncateOutput(
+      compileFailed ? (raw.compiler_error ?? "") : (raw.program_error ?? "")
+    ).text;
+
+    return NextResponse.json({
+      stdout,
+      stderr,
+      exitCode: parseInt(raw.status ?? "0", 10),
+      timedOut: false,
+      durationMs: Date.now() - start,
+    });
   } catch (e) {
     return NextResponse.json(
       { error: e instanceof Error ? e.message : "Execution failed" },
