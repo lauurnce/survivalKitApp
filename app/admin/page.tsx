@@ -40,6 +40,8 @@ export default async function AdminPage() {
 
   const supabase = createServerClient();
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+  const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
 
   const [
     { data: funnelRaw },
@@ -49,6 +51,8 @@ export default async function AdminPage() {
     { data: sectionEventRaw },
     { data: pendingRaw },
     { data: approvedRaw },
+    { data: activeRaw },
+    { data: allEnterRaw },
   ] = await Promise.all([
     supabase.from("events").select("device_id, event_type").limit(10000),
     supabase
@@ -83,6 +87,17 @@ export default async function AdminPage() {
       .order("created_at", { ascending: false })
       .limit(50),
     supabase.from("unlocks").select("id").eq("status", "approved"),
+    supabase
+      .from("events")
+      .select("device_id")
+      .eq("event_type", "enter")
+      .gte("created_at", fifteenMinutesAgo),
+    supabase
+      .from("events")
+      .select("device_id, created_at")
+      .eq("event_type", "enter")
+      .order("created_at", { ascending: true })
+      .limit(50000),
   ]);
 
   const allEvents = funnelRaw ?? [];
@@ -162,6 +177,21 @@ export default async function AdminPage() {
   const todayUsers = dau.find((d) => d.date === todayStr)?.unique ?? 0;
   const last7Sessions = dau.slice(-7).reduce((sum, d) => sum + d.unique, 0);
 
+  const activeNow = new Set((activeRaw ?? []).map((e) => e.device_id)).size;
+
+  const firstSeen = new Map<string, string>();
+  for (const e of allEnterRaw ?? []) {
+    if (!firstSeen.has(e.device_id)) firstSeen.set(e.device_id, e.created_at);
+  }
+  let newUsers = 0;
+  let recurringUsers = 0;
+  for (const date of firstSeen.values()) {
+    if (date >= threeDaysAgo) newUsers++;
+    else recurringUsers++;
+  }
+
+  const totalRevenue = (approvedRaw?.length ?? 0) * 20;
+
   return (
     <AdminDashboard
       funnel={funnel}
@@ -174,6 +204,10 @@ export default async function AdminPage() {
       todayUsers={todayUsers}
       last7Sessions={last7Sessions}
       approvedUnlocks={approvedRaw?.length ?? 0}
+      activeNow={activeNow}
+      newUsers={newUsers}
+      recurringUsers={recurringUsers}
+      totalRevenue={totalRevenue}
     />
   );
 }
