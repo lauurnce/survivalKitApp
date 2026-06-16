@@ -66,7 +66,10 @@ function Stat({
     <div className={`border p-6 ${accent ? "border-accent/40 bg-accent/5" : "border-ink-faint/30"}`}>
       <div className="flex items-baseline gap-2 mb-1">
         {dot && (
-          <span className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse shrink-0 self-center" />
+          <span
+            className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse shrink-0 self-center"
+            title="Live — active within the last 15 minutes"
+          />
         )}
         <p className={`font-serif text-4xl ${accent ? "text-accent" : "text-ink"}`}>{value}</p>
       </div>
