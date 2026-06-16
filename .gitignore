@@ -41,3 +41,6 @@ next-env.d.ts
 # content source PDFs (large files)
 /content-source/
 /scripts/output/
+
+# Local-only docs
+docs/NEXT_STEPS.md
