@@ -45,12 +45,31 @@ interface Props {
   todayUsers: number;
   last7Sessions: number;
   approvedUnlocks: number;
+  activeNow: number;
+  newUsers: number;
+  recurringUsers: number;
+  totalRevenue: number;
 }
 
-function Stat({ value, label, accent }: { value: number | string; label: string; accent?: boolean }) {
+function Stat({
+  value,
+  label,
+  accent,
+  dot,
+}: {
+  value: number | string;
+  label: string;
+  accent?: boolean;
+  dot?: boolean;
+}) {
   return (
     <div className={`border p-6 ${accent ? "border-accent/40 bg-accent/5" : "border-ink-faint/30"}`}>
-      <p className={`font-serif text-4xl mb-1 ${accent ? "text-accent" : "text-ink"}`}>{value}</p>
+      <div className="flex items-baseline gap-2 mb-1">
+        {dot && (
+          <span className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse shrink-0 self-center" />
+        )}
+        <p className={`font-serif text-4xl ${accent ? "text-accent" : "text-ink"}`}>{value}</p>
+      </div>
       <p className="label-sm text-ink-muted">{label}</p>
     </div>
   );
@@ -180,7 +199,7 @@ function FunnelChart({ steps }: { steps: FunnelStep[] }) {
 export function AdminDashboard({
   funnel, dau, topSubjects, topModules, topSections,
   pendingUnlocks, totalUniqueUsers, todayUsers, last7Sessions,
-  approvedUnlocks,
+  approvedUnlocks, activeNow, newUsers, recurringUsers, totalRevenue,
 }: Props) {
   const unlockClicks    = funnel.find(s => s.type === "unlock_click")?.unique ?? 0;
   const unlockSubmitted = funnel.find(s => s.type === "unlock_submitted")?.unique ?? 0;
@@ -227,9 +246,13 @@ export function AdminDashboard({
       <section className="mb-16">
         <p className="label mb-4">Overview</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <Stat value={activeNow} label="Active Now (15 min)" dot />
           <Stat value={totalUniqueUsers.toLocaleString()} label="Total Users" />
+          <Stat value={newUsers} label="New Users (3 days)" />
+          <Stat value={recurringUsers} label="Recurring Users" />
           <Stat value={todayUsers} label="Today" />
           <Stat value={last7Sessions} label="7-day Sessions" />
+          <Stat value={`₱${totalRevenue.toLocaleString()}`} label="Total Revenue" />
           <Stat
             value={pendingUnlocks.length > 0 ? pendingUnlocks.length : approvedUnlocks}
             label={pendingUnlocks.length > 0 ? "Pending Unlocks ⚠" : "Approved Unlocks"}
