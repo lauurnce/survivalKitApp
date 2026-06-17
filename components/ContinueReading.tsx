@@ -19,7 +19,7 @@ export function ContinueReading() {
       const raw = localStorage.getItem("bsit_last_module");
       if (!raw) return;
       const parsed = JSON.parse(raw) as LastModule;
-      if (parsed.moduleId && parsed.subjectId && parsed.yearId) {
+      if (parsed.moduleId && parsed.subjectId && parsed.yearId && parsed.moduleTitle && parsed.subjectTitle) {
         setLast(parsed);
       }
     } catch {
