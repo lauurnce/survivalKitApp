@@ -4,6 +4,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import { PageTracker } from "@/components/PageTracker";
+import { LastModuleTracker } from "@/components/LastModuleTracker";
 
 export const revalidate = 300;
 
@@ -60,6 +61,13 @@ export default async function ReaderPage({ params }: Props) {
   return (
     <main className="min-h-screen bg-paper">
       <PageTracker event="module_open" yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
+      <LastModuleTracker
+        moduleId={moduleId}
+        subjectId={subjectId}
+        yearId={yearId}
+        moduleTitle={mod.title}
+        subjectTitle={subject.title}
+      />
 
       {/* Top nav — dark navy */}
       <div className="bg-navy px-6 py-8 md:px-16 border-b border-paper/10">
