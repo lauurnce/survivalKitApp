@@ -3,9 +3,11 @@
 -- ============================================================
 
 -- Years
-insert into years (id, label, sort_order) values
-  ('00000000-0000-0000-0000-000000000001', '1st Year', 1),
-  ('00000000-0000-0000-0000-000000000002', '2nd Year', 2)
+insert into years (id, label, sort_order, coming_soon) values
+  ('00000000-0000-0000-0000-000000000001', '1st Year', 1, false),
+  ('00000000-0000-0000-0000-000000000002', '2nd Year', 2, false),
+  ('00000000-0000-0000-0000-000000000003', '3rd Year', 3, true),
+  ('00000000-0000-0000-0000-000000000004', '4th Year', 4, true)
 on conflict do nothing;
 
 -- Subjects (1st Year)
