@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PageTracker } from "@/components/PageTracker";
+import { ContinueReading } from "@/components/ContinueReading";
 
 export default function LandingPage() {
   return (
@@ -33,6 +34,9 @@ export default function LandingPage() {
           <span className="text-accent">→</span>
         </Link>
       </div>
+
+      {/* Continue reading — client, null for first-time visitors */}
+      <ContinueReading />
 
       {/* Footer */}
       <div className="flex items-center justify-between">
