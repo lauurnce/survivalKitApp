@@ -3,7 +3,6 @@ import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
 import { SubjectAccordion, type SubjectModule } from "@/components/SubjectAccordion";
-import { formatCount } from "@/lib/counters";
 
 export const revalidate = 300;
 
