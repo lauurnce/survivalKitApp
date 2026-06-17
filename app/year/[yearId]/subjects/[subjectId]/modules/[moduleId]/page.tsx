@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
@@ -14,12 +15,24 @@ export default async function ReaderPage({ params }: Props) {
   const { yearId, subjectId, moduleId } = await params;
   const supabase = createServerClient();
 
-  const [{ data: mod }, { data: subject }] = await Promise.all([
+  const [{ data: mod }, { data: subject }, { data: siblingModules }] = await Promise.all([
     supabase.from("modules").select("*").eq("id", moduleId).single(),
     supabase.from("subjects").select("*, years(label, sort_order)").eq("id", subjectId).single(),
+    supabase
+      .from("modules")
+      .select("id, title, sort_order")
+      .eq("subject_id", subjectId)
+      .order("sort_order"),
   ]);
 
   if (!mod || !subject) notFound();
+
+  const siblings = siblingModules ?? [];
+  const currentIndex = siblings.findIndex((m) => m.id === moduleId);
+  const nextModule =
+    currentIndex >= 0 && currentIndex < siblings.length - 1
+      ? siblings[currentIndex + 1]
+      : null;
 
   const { data: contentSections } = await supabase
     .from("sections")
@@ -77,6 +90,39 @@ export default async function ReaderPage({ params }: Props) {
           />
         ))}
       </article>
+
+      {/* Next-module CTA */}
+      <div className="border-t border-ink-faint/20 px-6 py-12 md:px-16 max-w-wide">
+        {nextModule ? (
+          <>
+            <p className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-faint mb-4">
+              Up next
+            </p>
+            <Link
+              href={`/year/${yearId}/subjects/${subjectId}/modules/${nextModule.id}`}
+              className="group flex items-center justify-between gap-6 bg-navy px-8 py-6 hover:bg-ink transition-colors duration-150"
+            >
+              <span className="font-serif text-display-md text-paper">
+                {nextModule.title}
+              </span>
+              <span className="text-accent text-xl flex-shrink-0">→</span>
+            </Link>
+          </>
+        ) : (
+          <>
+            <p className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-faint mb-4">
+              You&apos;ve finished this subject
+            </p>
+            <Link
+              href={`/year/${yearId}/subjects/${subjectId}/modules`}
+              className="inline-flex items-center gap-3 font-sans text-sm text-ink-muted hover:text-ink transition-colors duration-150"
+            >
+              <span className="text-accent">←</span>
+              <span>Back to {subject.title}</span>
+            </Link>
+          </>
+        )}
+      </div>
     </main>
   );
 }
