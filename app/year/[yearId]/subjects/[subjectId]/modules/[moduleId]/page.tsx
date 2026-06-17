@@ -23,7 +23,7 @@ export default async function ReaderPage({ params }: Props) {
 
   const { data: contentSections } = await supabase
     .from("sections")
-    .select("id, kind, heading, body_md, sort_order, ide_language, starter_code")
+    .select("id, kind, heading, body_md, sort_order, ide_language, starter_code, topology_data")
     .eq("module_id", moduleId)
     .eq("kind", "content")
     .order("sort_order");

@@ -6,10 +6,16 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { LockedSection } from "./LockedSection";
+import type { TopologyData } from "@/lib/topology/types";
 
 const Playground = dynamic(
   () => import("./ide/Playground").then((m) => ({ default: m.Playground })),
   { ssr: false, loading: () => <div className="h-48 bg-ink-faint/10 animate-pulse" /> }
+);
+
+const TopologyViewer = dynamic(
+  () => import("./topology/TopologyViewer").then(m => ({ default: m.TopologyViewer })),
+  { ssr: false, loading: () => <div className="h-56 bg-ink-faint/10 animate-pulse" /> }
 );
 
 interface Section {
@@ -20,6 +26,7 @@ interface Section {
   sort_order: number;
   ide_language?: "python" | "sql" | "java" | "c" | null;
   starter_code?: string | null;
+  topology_data?: TopologyData | null;
 }
 
 interface Props {
@@ -43,6 +50,11 @@ export function SectionRenderer({ section, index, moduleId, unlockAll }: Props) 
       <div className="pl-10 md:pl-12">
         <BodyMarkdown body={section.body_md} />
       </div>
+      {section.topology_data && (
+        <div className="mt-6 pl-10 md:pl-12">
+          <TopologyViewer data={section.topology_data} />
+        </div>
+      )}
       {section.ide_language && (
         <div className="mt-6 pl-10 md:pl-12">
           <Playground
