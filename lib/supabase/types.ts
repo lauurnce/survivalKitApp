@@ -1,3 +1,5 @@
+import type { TopologyData } from '@/lib/topology/types';
+
 export type SectionKind = "content" | "activity";
 export type UnlockStatus = "pending" | "approved" | "rejected";
 export type EventType =
@@ -69,6 +71,7 @@ export interface Database {
           sort_order: number;
           ide_language: "python" | "sql" | "java" | "c" | null;
           starter_code: string | null;
+          topology_data: TopologyData | null;
         };
         Insert: {
           id?: string;
@@ -79,6 +82,7 @@ export interface Database {
           sort_order: number;
           ide_language?: "python" | "sql" | "java" | "c" | null;
           starter_code?: string | null;
+          topology_data?: TopologyData | null;
         };
         Update: Partial<{
           module_id: string;
@@ -88,6 +92,7 @@ export interface Database {
           sort_order: number;
           ide_language: "python" | "sql" | "java" | "c" | null;
           starter_code: string | null;
+          topology_data: TopologyData | null;
         }>;
       };
       unlocks: {
