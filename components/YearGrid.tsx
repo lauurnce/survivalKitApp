@@ -31,7 +31,7 @@ export function YearGrid({ cards }: Props) {
                 onClick={() => setActiveLabel(year.label)}
                 className="group border border-ink-faint hover:border-navy hover:bg-navy p-8 flex flex-col gap-4 transition-colors duration-200 text-left"
               >
-                <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint group-hover:text-taupe transition-colors duration-200">
+                <span aria-hidden="true" className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint group-hover:text-taupe transition-colors duration-200">
                   § 0{i + 1}
                 </span>
                 <h2 className="font-serif text-display-md text-ink group-hover:text-paper transition-colors duration-200">
@@ -50,7 +50,7 @@ export function YearGrid({ cards }: Props) {
               href={`/year/${year.id}/subjects`}
               className="group border border-ink-faint hover:border-navy hover:bg-navy p-8 flex flex-col gap-4 transition-colors duration-200"
             >
-              <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint group-hover:text-taupe transition-colors duration-200">
+              <span aria-hidden="true" className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint group-hover:text-taupe transition-colors duration-200">
                 § 0{i + 1}
               </span>
               <h2 className="font-serif text-display-md text-ink group-hover:text-paper transition-colors duration-200">
