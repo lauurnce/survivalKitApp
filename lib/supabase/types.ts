@@ -47,9 +47,9 @@ export interface Database {
         Update: Partial<{ last_read_at: string }>;
       };
       years: {
-        Row: { id: string; label: string; sort_order: number };
-        Insert: { id?: string; label: string; sort_order: number };
-        Update: Partial<{ label: string; sort_order: number }>;
+        Row: { id: string; label: string; sort_order: number; coming_soon: boolean };
+        Insert: { id?: string; label: string; sort_order: number; coming_soon?: boolean };
+        Update: Partial<{ label: string; sort_order: number; coming_soon: boolean }>;
       };
       subjects: {
         Row: { id: string; year_id: string; title: string; slug: string; sort_order: number };
