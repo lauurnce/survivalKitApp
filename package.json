@@ -6,9 +6,9 @@
     "node": "24.x"
   },
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=--no-experimental-webstorage next dev",
+    "dev": "node scripts/run-next.mjs dev",
     "build": "next build",
-    "start": "cross-env NODE_OPTIONS=--no-experimental-webstorage next start",
+    "start": "node scripts/run-next.mjs start",
     "lint": "next lint",
     "ingest": "tsx scripts/ingest.ts",
     "test": "vitest run",
