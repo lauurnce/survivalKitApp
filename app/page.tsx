@@ -4,6 +4,8 @@ import { ContinueReading } from "@/components/ContinueReading";
 import { PopularModules, type PopularModule } from "@/components/PopularModules";
 import { createServerClient } from "@/lib/supabase/server";
 
+export const revalidate = 300;
+
 export default async function LandingPage() {
   const supabase = createServerClient();
 
@@ -62,7 +64,7 @@ export default async function LandingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-paper flex flex-col justify-between px-6 py-12 md:px-16 md:py-20">
+    <main className="min-h-screen bg-paper flex flex-col px-6 py-12 md:px-16 md:py-20 gap-16">
       <PageTracker event="enter" />
 
       {/* Header label */}
@@ -100,7 +102,7 @@ export default async function LandingPage() {
       <PopularModules modules={popularModules} />
 
       {/* Footer */}
-      <div className="flex items-center justify-between">
+      <div className="mt-auto flex items-center justify-between">
         <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
           For BSIT students
         </span>
