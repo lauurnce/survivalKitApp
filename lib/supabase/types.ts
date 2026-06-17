@@ -134,6 +134,19 @@ export interface Database {
         };
         Update: never;
       };
+      module_progress: {
+        Row: {
+          device_id: string;
+          module_id: string;
+          completed_at: string;
+        };
+        Insert: {
+          device_id: string;
+          module_id: string;
+          completed_at?: string;
+        };
+        Update: Partial<{ completed_at: string }>;
+      };
     };
     Views: Record<string, never>;
     Functions: {

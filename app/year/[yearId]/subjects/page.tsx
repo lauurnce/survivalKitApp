@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
+import { SubjectProgressBar } from "@/components/SubjectProgressBar";
 import { formatCount } from "@/lib/counters";
 
 export const revalidate = 300;
@@ -39,6 +40,20 @@ export default async function SubjectsPage({ params }: Props) {
   const subjects = (rawSubjects ?? []) as Subject[];
   const sem1 = subjects.filter((s) => s.semester === 1);
   const sem2 = subjects.filter((s) => s.semester === 2);
+
+  // Module ids per subject — used by the per-subject progress bar (client-side
+  // completion lookup happens in <SubjectProgressBar /> via the device_id).
+  const { data: subjectModules } = await supabase
+    .from("modules")
+    .select("id, subject_id")
+    .in("subject_id", subjects.length > 0 ? subjects.map((s) => s.id) : ["__none__"]);
+
+  const moduleIdsBySubject = new Map<string, string[]>();
+  for (const m of subjectModules ?? []) {
+    const list = moduleIdsBySubject.get(m.subject_id) ?? [];
+    list.push(m.id);
+    moduleIdsBySubject.set(m.subject_id, list);
+  }
 
   function readCount(subjectId: string): number {
     return subjectCounters?.find((c) => c.resource_id === subjectId)?.read_count ?? 0;
@@ -99,6 +114,7 @@ export default async function SubjectsPage({ params }: Props) {
                             <span className="text-ink-muted">{formatCount(readCount(subject.id))}</span> reads
                           </span>
                         </div>
+                        <SubjectProgressBar moduleIds={moduleIdsBySubject.get(subject.id) ?? []} />
                       </div>
                       <span className="font-sans text-sm text-ink-faint group-hover:text-ink transition-colors mt-1">
                         →
