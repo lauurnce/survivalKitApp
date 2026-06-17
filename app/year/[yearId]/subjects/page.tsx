@@ -36,6 +36,7 @@ export default async function SubjectsPage({ params }: Props) {
   ]);
 
   if (!year) notFound();
+  if (year.coming_soon) notFound();
 
   const subjects = (rawSubjects ?? []) as Subject[];
   const sem1 = subjects.filter((s) => s.semester === 1);
