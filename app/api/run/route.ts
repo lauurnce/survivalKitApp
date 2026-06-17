@@ -9,10 +9,10 @@ const MAX_CODE_BYTES = 50_000;
 const MAX_STDIN_BYTES = 10_000;
 const SERVER_LANGS: LanguageId[] = ["java", "c"];
 
-// Wandbox compilers — no API key, compilers pre-installed, fast
-const WANDBOX_COMPILER: Partial<Record<LanguageId, string>> = {
-  c:    "gcc-head",
-  java: "openjdk-jdk-21+35",
+// Judge0 CE language IDs — free, no API key, public community instance
+const JUDGE0_LANG: Partial<Record<LanguageId, number>> = {
+  c:    103, // C (GCC 14.1.0)
+  java: 91,  // Java (JDK 17.0.6)
 };
 
 const runRateMap = new Map<string, number[]>();
@@ -40,9 +40,9 @@ function isRateLimited(ip: string): boolean {
   return false;
 }
 
-// Wandbox requires the public class to be named "prog" (file is prog.java)
+// Judge0 requires the public class to be named "Main"
 function prepareJavaCode(code: string): string {
-  return code.replace(/public\s+class\s+\w+/g, "class prog");
+  return code.replace(/public\s+class\s+\w+/g, "public class Main");
 }
 
 export async function POST(req: NextRequest) {
@@ -73,8 +73,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "stdin too large (max 10 KB)" }, { status: 413 });
   }
 
-  const compiler = WANDBOX_COMPILER[languageId];
-  if (!compiler) {
+  const langId = JUDGE0_LANG[languageId];
+  if (!langId) {
     return NextResponse.json({ error: "Unsupported language" }, { status: 400 });
   }
 
@@ -82,11 +82,18 @@ export async function POST(req: NextRequest) {
 
   try {
     const start = Date.now();
-    const res = await fetch("https://wandbox.org/api/compile.json", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ compiler, code: sourceCode, stdin, options: "" }),
-    });
+    const res = await fetch(
+      "https://ce.judge0.com/submissions?wait=true&fields=status,stdout,stderr,compile_output,time",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          language_id: langId,
+          source_code: sourceCode,
+          stdin: stdin || null,
+        }),
+      }
+    );
 
     if (!res.ok) {
       const text = await res.text().catch(() => "");
@@ -97,24 +104,26 @@ export async function POST(req: NextRequest) {
     }
 
     const raw = await res.json() as {
-      status: string;
-      compiler_error?: string;
-      compiler_output?: string;
-      program_output?: string;
-      program_error?: string;
+      status: { id: number; description: string };
+      stdout?: string | null;
+      stderr?: string | null;
+      compile_output?: string | null;
+      time?: string | null;
     };
 
-    const compileFailed = raw.compiler_error && raw.status !== "0";
-    const stdout = truncateOutput(raw.program_output ?? "").text;
+    // status.id 3 = Accepted, 6 = Compilation Error, others are runtime errors
+    const compileFailed = raw.status?.id === 6;
+    const stdout = truncateOutput(raw.stdout ?? "").text;
     const stderr = truncateOutput(
-      compileFailed ? (raw.compiler_error ?? "") : (raw.program_error ?? "")
+      compileFailed ? (raw.compile_output ?? "") : (raw.stderr ?? "")
     ).text;
+    const exitCode = raw.status?.id === 3 ? 0 : raw.status?.id ?? 1;
 
     return NextResponse.json({
       stdout,
       stderr,
-      exitCode: parseInt(raw.status ?? "0", 10),
-      timedOut: false,
+      exitCode,
+      timedOut: raw.status?.id === 5,
       durationMs: Date.now() - start,
     });
   } catch (e) {
