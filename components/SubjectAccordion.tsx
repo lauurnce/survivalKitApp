@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { formatCount } from "@/lib/counters";
 import { SubjectProgressBar } from "@/components/SubjectProgressBar";
@@ -27,6 +27,16 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
   const [open, setOpen] = useState(false);
   const modulesHref = `/year/${yearId}/subjects/${subject.id}/modules`;
   const moduleIds = modules.map((m) => m.id);
+  const listId = `modules-${subject.id}`;
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [open]);
 
   return (
     <div className="flex items-start gap-6 py-8 -mx-4 px-4">
@@ -63,6 +73,8 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
         {modules.length > 0 && (
           <button
             onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            aria-controls={listId}
             className="mt-3 font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint hover:text-ink-muted transition-colors duration-150"
           >
             {open ? "Hide modules ▴" : "Show modules ▾"}
@@ -70,7 +82,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
         )}
 
         {open && (
-          <div className="mt-4 flex flex-col divide-y divide-ink-faint/20">
+          <div id={listId} className="mt-4 flex flex-col divide-y divide-ink-faint/20">
             {modules.map((m, mi) => (
               <Link
                 key={m.id}
