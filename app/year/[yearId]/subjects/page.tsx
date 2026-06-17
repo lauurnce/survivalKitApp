@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
-import { SubjectProgressBar } from "@/components/SubjectProgressBar";
+import { SubjectAccordion, type SubjectModule } from "@/components/SubjectAccordion";
 import { formatCount } from "@/lib/counters";
 
 export const revalidate = 300;
@@ -46,14 +45,15 @@ export default async function SubjectsPage({ params }: Props) {
   // completion lookup happens in <SubjectProgressBar /> via the device_id).
   const { data: subjectModules } = await supabase
     .from("modules")
-    .select("id, subject_id")
-    .in("subject_id", subjects.length > 0 ? subjects.map((s) => s.id) : ["__none__"]);
+    .select("id, title, sort_order, subject_id")
+    .in("subject_id", subjects.length > 0 ? subjects.map((s) => s.id) : ["__none__"])
+    .order("sort_order");
 
-  const moduleIdsBySubject = new Map<string, string[]>();
+  const modulesBySubject = new Map<string, SubjectModule[]>();
   for (const m of subjectModules ?? []) {
-    const list = moduleIdsBySubject.get(m.subject_id) ?? [];
-    list.push(m.id);
-    moduleIdsBySubject.set(m.subject_id, list);
+    const list = modulesBySubject.get(m.subject_id) ?? [];
+    list.push({ id: m.id, title: m.title, sort_order: m.sort_order });
+    modulesBySubject.set(m.subject_id, list);
   }
 
   function readCount(subjectId: string): number {
@@ -94,33 +94,14 @@ export default async function SubjectsPage({ params }: Props) {
 
                 <div className="flex flex-col divide-y divide-ink-faint/30">
                   {items.map((subject, i) => (
-                    <Link
+                    <SubjectAccordion
                       key={subject.id}
-                      href={`/year/${yearId}/subjects/${subject.id}/modules`}
-                      className="group flex items-start gap-6 py-8 hover:bg-ink/[0.02] -mx-4 px-4 transition-colors duration-150"
-                    >
-                      <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mt-1 w-8 shrink-0 text-right">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <div className="flex-1">
-                        <h2 className="font-serif text-2xl text-ink group-hover:text-accent transition-colors duration-150 mb-1">
-                          {subject.title}
-                        </h2>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
-                            {subject.kind === "major" ? "Major" : "Minor"}
-                          </span>
-                          <span className="font-mono text-label-sm text-ink-faint/40">·</span>
-                          <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
-                            <span className="text-ink-muted">{formatCount(readCount(subject.id))}</span> reads
-                          </span>
-                        </div>
-                        <SubjectProgressBar moduleIds={moduleIdsBySubject.get(subject.id) ?? []} />
-                      </div>
-                      <span className="font-sans text-sm text-ink-faint group-hover:text-ink transition-colors mt-1">
-                        →
-                      </span>
-                    </Link>
+                      subject={subject}
+                      modules={modulesBySubject.get(subject.id) ?? []}
+                      yearId={yearId}
+                      index={i}
+                      reads={readCount(subject.id)}
+                    />
                   ))}
                 </div>
               </section>
