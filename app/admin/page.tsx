@@ -173,7 +173,6 @@ export default async function AdminPage() {
     module_title: getTitle((u as { modules: unknown }).modules),
   }));
 
-  const totalUniqueUsers = funnel[0]?.unique ?? 0;
   const todayStr = new Date().toISOString().slice(0, 10);
   const todayUsers = dau.find((d) => d.date === todayStr)?.unique ?? 0;
   const last7Sessions = dau.slice(-7).reduce((sum, d) => sum + d.unique, 0);
@@ -184,6 +183,7 @@ export default async function AdminPage() {
   for (const e of allEnterRaw ?? []) {
     if (!firstSeen.has(e.device_id)) firstSeen.set(e.device_id, e.created_at);
   }
+  const totalUniqueUsers = firstSeen.size;
   let newUsers = 0;
   let recurringUsers = 0;
   for (const date of firstSeen.values()) {
