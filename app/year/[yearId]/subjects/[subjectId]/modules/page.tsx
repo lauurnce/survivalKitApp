@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
+import { ModuleDoneToggle } from "@/components/ModuleDoneToggle";
 import { formatCount } from "@/lib/counters";
 
 export const revalidate = 300;
@@ -72,6 +73,7 @@ export default async function ModulesPage({ params }: Props) {
                   <span className="text-ink-muted">{formatCount(readCount(mod.id))}</span> reads
                 </span>
               </div>
+              <ModuleDoneToggle moduleId={mod.id} />
               <span className="font-sans text-sm text-ink-faint group-hover:text-ink transition-colors mt-1">
                 →
               </span>
