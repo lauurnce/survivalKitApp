@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <main className="relative min-h-screen bg-paper flex flex-col justify-between px-6 py-12 md:px-16 md:py-20">
+    <main className="relative min-h-screen bg-paper flex flex-col px-6 py-12 md:px-16 md:py-20 gap-16">
       {/* Header skeleton */}
       <div className="h-3 w-32 bg-ink-faint/40 animate-pulse" />
 
@@ -20,7 +20,7 @@ export default function Loading() {
       </div>
 
       {/* Footer skeleton */}
-      <div className="flex items-center justify-between animate-pulse">
+      <div className="mt-auto flex items-center justify-between animate-pulse">
         <div className="h-2 w-24 bg-ink-faint/20" />
         <div className="h-2 w-16 bg-ink-faint/20" />
       </div>

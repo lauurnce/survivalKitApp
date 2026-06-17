@@ -36,8 +36,9 @@ export default async function LandingPage() {
     const yearIds = [...new Set((subjects ?? []).map((s) => s.year_id))];
     const { data: years } = await supabase
       .from("years")
-      .select("id, label")
-      .in("id", yearIds.length > 0 ? yearIds : ["__none__"]);
+      .select("id, label, coming_soon")
+      .in("id", yearIds.length > 0 ? yearIds : ["__none__"])
+      .eq("coming_soon", false);
 
     const moduleMap = new Map((modules ?? []).map((m) => [m.id, m]));
     const subjectMap = new Map((subjects ?? []).map((s) => [s.id, s]));
