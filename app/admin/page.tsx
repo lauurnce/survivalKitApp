@@ -39,9 +39,6 @@ export default async function AdminPage() {
   if (!authed) redirect("/admin/login");
 
   const supabase = createServerClient();
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-  const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
-  const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
 
   const [
     { data: funnelRaw },
@@ -52,18 +49,17 @@ export default async function AdminPage() {
     { data: pendingRaw },
     { data: approvedRaw },
     { data: activeRaw },
-    { data: allEnterRaw },
+    { data: userTotalsRaw },
     { data: waitlistRaw },
   ] = await Promise.all([
-    supabase.from("events").select("device_id, event_type").limit(10000),
-    // DAU = any device that did ANYTHING in the app that day (not just "enter"),
-    // so the bars reflect every active user — new or recurring — for each day.
-    supabase
-      .from("events")
-      .select("device_id, created_at")
-      .gte("created_at", thirtyDaysAgo)
-      .order("created_at", { ascending: true })
-      .limit(50000),
+    // Funnel distinct-device counts per event_type, aggregated in Postgres
+    // (the old raw .limit() was capped at 1000 rows and undercounted).
+    supabase.rpc("admin_funnel_counts"),
+    // DAU = any device that did ANYTHING in the app that day, bucketed by PH
+    // calendar day. Aggregated in Postgres via RPC so we get one row per day
+    // instead of pulling tens of thousands of raw events (which the 1000-row
+    // PostgREST cap would silently truncate, hiding the most recent days).
+    supabase.rpc("admin_dau_30d"),
     // Use pre-aggregated counters (10-min cooldown per device — more accurate than raw event counts)
     supabase
       .from("counters")
@@ -90,19 +86,12 @@ export default async function AdminPage() {
       .order("created_at", { ascending: false })
       .limit(50),
     supabase.from("unlocks").select("id, amount").eq("status", "approved"),
-    // "Active now" = any device with any event in the last 15 min (not just
-    // "enter"), so a user reading a section still counts as currently active.
-    supabase
-      .from("events")
-      .select("device_id")
-      .gte("created_at", fifteenMinutesAgo)
-      .limit(5000),
-    supabase
-      .from("events")
-      .select("device_id, created_at")
-      .eq("event_type", "enter")
-      .order("created_at", { ascending: true })
-      .limit(50000),
+    // "Active now" = distinct devices with any event in the last 15 min,
+    // counted in Postgres (avoids the row cap and counts users still reading).
+    supabase.rpc("admin_active_since", { p_minutes: 15 }),
+    // Total users + new-vs-recurring split, aggregated in Postgres so it
+    // counts all devices (the old raw enter query was capped at 1000 rows).
+    supabase.rpc("admin_user_totals", { p_new_days: 3 }),
     supabase
       .from("waitlist")
       .select("id, email, name, source, device_type, willing_to_pay, needs_capstone, created_at")
@@ -110,26 +99,24 @@ export default async function AdminPage() {
       .limit(500),
   ]);
 
-  const allEvents = funnelRaw ?? [];
+  const funnelCounts = new Map<string, number>();
+  for (const r of (funnelRaw ?? []) as { event_type: string; unique_devices: number }[]) {
+    funnelCounts.set(r.event_type, Number(r.unique_devices));
+  }
   const funnel = FUNNEL_STEPS.map((step) => ({
     type: step.type,
     label: step.label,
     hint: step.hint,
-    unique: new Set(
-      allEvents.filter((e) => e.event_type === step.type).map((e) => e.device_id)
-    ).size,
+    unique: funnelCounts.get(step.type) ?? 0,
   }));
 
-  // Bucket events by PH calendar day (UTC+8) so buckets match the "today"
-  // calculation below and what users in the Philippines actually see.
+  // dauRaw comes pre-aggregated from the admin_dau_30d() RPC: one row per PH
+  // calendar day with its distinct-device count. Index it by date string.
   const PH_OFFSET_MS = 8 * 60 * 60 * 1000;
-  const phDay = (iso: string) => new Date(new Date(iso).getTime() + PH_OFFSET_MS).toISOString().slice(0, 10);
-
-  const dauByDay = new Map<string, Set<string>>();
-  for (const e of dauRaw ?? []) {
-    const day = phDay(e.created_at);
-    if (!dauByDay.has(day)) dauByDay.set(day, new Set());
-    dauByDay.get(day)!.add(e.device_id);
+  const dauByDay = new Map<string, number>();
+  for (const r of (dauRaw ?? []) as { day: string; unique_devices: number }[]) {
+    // r.day is already a 'YYYY-MM-DD' PH date from Postgres
+    dauByDay.set(r.day, Number(r.unique_devices));
   }
 
   // Scaffold a continuous 30-day window ending today (PH time) and fill zeros
@@ -139,7 +126,7 @@ export default async function AdminPage() {
   const dau = Array.from({ length: 30 }, (_, i) => {
     const d = new Date(todayPH.getTime() - (29 - i) * 24 * 60 * 60 * 1000);
     const date = d.toISOString().slice(0, 10);
-    return { date, unique: dauByDay.get(date)?.size ?? 0 };
+    return { date, unique: dauByDay.get(date) ?? 0 };
   });
 
   const subjectIds = (subjectCounters ?? []).map((c) => c.resource_id);
@@ -199,19 +186,18 @@ export default async function AdminPage() {
   const todayUsers = dau.find((d) => d.date === todayStrPH)?.unique ?? 0;
   const last7Sessions = dau.slice(-7).reduce((sum, d) => sum + d.unique, 0);
 
-  const activeNow = new Set((activeRaw ?? []).map((e) => e.device_id)).size;
+  // activeRaw is a single bigint from admin_active_since() (returned as a number)
+  const activeNow = Number(activeRaw ?? 0);
 
-  const firstSeen = new Map<string, string>();
-  for (const e of allEnterRaw ?? []) {
-    if (!firstSeen.has(e.device_id)) firstSeen.set(e.device_id, e.created_at);
-  }
-  const totalUniqueUsers = firstSeen.size;
-  let newUsers = 0;
-  let recurringUsers = 0;
-  for (const date of firstSeen.values()) {
-    if (date >= threeDaysAgo) newUsers++;
-    else recurringUsers++;
-  }
+  // userTotalsRaw is a single row from admin_user_totals(): total / new / recurring
+  const userTotals = ((userTotalsRaw ?? [])[0] ?? {}) as {
+    total_users?: number;
+    new_users?: number;
+    recurring_users?: number;
+  };
+  const totalUniqueUsers = Number(userTotals.total_users ?? 0);
+  const newUsers = Number(userTotals.new_users ?? 0);
+  const recurringUsers = Number(userTotals.recurring_users ?? 0);
 
   const totalRevenue = (approvedRaw ?? []).reduce((sum, u) => sum + (u.amount ?? 0), 0);
 

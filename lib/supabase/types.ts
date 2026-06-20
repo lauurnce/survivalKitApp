@@ -191,6 +191,22 @@ export interface Database {
         };
         Returns: void;
       };
+      admin_dau_30d: {
+        Args: Record<string, never>;
+        Returns: { day: string; unique_devices: number }[];
+      };
+      admin_active_since: {
+        Args: { p_minutes: number };
+        Returns: number;
+      };
+      admin_user_totals: {
+        Args: { p_new_days: number };
+        Returns: { total_users: number; new_users: number; recurring_users: number }[];
+      };
+      admin_funnel_counts: {
+        Args: Record<string, never>;
+        Returns: { event_type: string; unique_devices: number }[];
+      };
     };
     Enums: Record<string, never>;
   };
