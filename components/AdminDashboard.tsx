@@ -124,6 +124,11 @@ function DauChart({ data }: { data: DauDay[] }) {
     </div>
   );
   const max = Math.max(...data.map(d => d.unique), 1);
+  // Square-root scale: compresses big spikes so low-traffic days stay visible
+  // while taller days still read as taller. sqrt handles 0 cleanly (unlike log).
+  const sqrtMax = Math.sqrt(max);
+  const barHeight = (n: number) =>
+    n > 0 ? Math.max((Math.sqrt(n) / sqrtMax) * 96, 6) : 2;
   const showLabels = data.length <= 15;
   return (
     <div>
@@ -137,7 +142,7 @@ function DauChart({ data }: { data: DauDay[] }) {
           >
             <div
               className="w-full bg-ink hover:bg-accent transition-colors cursor-default"
-              style={{ height: `${Math.max((item.unique / max) * 96, 2)}px` }}
+              style={{ height: `${barHeight(item.unique)}px` }}
             />
             {showLabels && (
               <span className="font-mono text-[8px] text-ink-faint" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
