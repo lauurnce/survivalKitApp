@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
   const supabase = createServerClient();
 
-  await supabase.from("waitlist").upsert(
+  const { error } = await supabase.from("waitlist").upsert(
     {
       email,
       name,
@@ -36,6 +36,8 @@ export async function POST(req: NextRequest) {
     },
     { onConflict: "email,source", ignoreDuplicates: true }
   );
+
+  if (error) console.error("[waitlist] upsert error:", error.message);
 
   return NextResponse.json({ success: true });
 }
