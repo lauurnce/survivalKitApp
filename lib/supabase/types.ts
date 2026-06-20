@@ -152,6 +152,34 @@ export interface Database {
         };
         Update: Partial<{ completed_at: string }>;
       };
+      waitlist: {
+        Row: {
+          id: string;
+          email: string;
+          name: string;
+          device_id: string;
+          source: "coming_soon" | "paywall";
+          willing_to_pay: "yes" | "no" | "maybe" | null;
+          needs_capstone: boolean | null;
+          device_type: "mobile" | "desktop";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          name: string;
+          device_id: string;
+          source: "coming_soon" | "paywall";
+          willing_to_pay?: "yes" | "no" | "maybe" | null;
+          needs_capstone?: boolean | null;
+          device_type: "mobile" | "desktop";
+          created_at?: string;
+        };
+        Update: Partial<{
+          willing_to_pay: "yes" | "no" | "maybe" | null;
+          needs_capstone: boolean | null;
+        }>;
+      };
     };
     Views: Record<string, never>;
     Functions: {
