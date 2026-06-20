@@ -173,8 +173,9 @@ export default async function AdminPage() {
     module_title: getTitle((u as { modules: unknown }).modules),
   }));
 
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const todayUsers = dau.find((d) => d.date === todayStr)?.unique ?? 0;
+  // Use PH timezone (UTC+8) so "today" matches what users in the Philippines see
+  const todayStrPH = new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const todayUsers = dau.find((d) => d.date === todayStrPH)?.unique ?? 0;
   const last7Sessions = dau.slice(-7).reduce((sum, d) => sum + d.unique, 0);
 
   const activeNow = new Set((activeRaw ?? []).map((e) => e.device_id)).size;

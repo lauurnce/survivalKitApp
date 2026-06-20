@@ -253,7 +253,7 @@ export function AdminDashboard({
           <Stat value={totalUniqueUsers.toLocaleString()} label="Total Users" />
           <Stat value={newUsers} label="New Users (3 days)" />
           <Stat value={recurringUsers} label="Recurring Users" />
-          <Stat value={todayUsers} label="Today" />
+          <Stat value={todayUsers} label="Active Today (PH)" />
           <Stat value={last7Sessions} label="7-day Sessions" />
           <Stat value={`₱${totalRevenue.toLocaleString()}`} label="Total Revenue" />
           <Stat

@@ -36,7 +36,13 @@ function clearAttempts(ip: string): void {
 }
 
 export async function POST(req: NextRequest) {
-  const ip = (req.headers.get("x-forwarded-for") ?? "unknown").split(",")[0].trim();
+  // x-real-ip is set by Vercel to the verified client IP and is not attacker-controllable.
+  // Fallback to the last x-forwarded-for entry (also Vercel-appended) rather than the first,
+  // which an attacker can spoof to bypass the lockout.
+  const ip =
+    req.headers.get("x-real-ip") ??
+    req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
+    "unknown";
 
   if (isLockedOut(ip)) {
     return NextResponse.json(
