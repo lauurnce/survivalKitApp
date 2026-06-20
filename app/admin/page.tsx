@@ -56,12 +56,14 @@ export default async function AdminPage() {
     { data: waitlistRaw },
   ] = await Promise.all([
     supabase.from("events").select("device_id, event_type").limit(10000),
+    // DAU = any device that did ANYTHING in the app that day (not just "enter"),
+    // so the bars reflect every active user — new or recurring — for each day.
     supabase
       .from("events")
       .select("device_id, created_at")
-      .eq("event_type", "enter")
       .gte("created_at", thirtyDaysAgo)
-      .order("created_at", { ascending: true }),
+      .order("created_at", { ascending: true })
+      .limit(50000),
     // Use pre-aggregated counters (10-min cooldown per device — more accurate than raw event counts)
     supabase
       .from("counters")
@@ -88,12 +90,13 @@ export default async function AdminPage() {
       .order("created_at", { ascending: false })
       .limit(50),
     supabase.from("unlocks").select("id, amount").eq("status", "approved"),
+    // "Active now" = any device with any event in the last 15 min (not just
+    // "enter"), so a user reading a section still counts as currently active.
     supabase
       .from("events")
       .select("device_id")
-      .eq("event_type", "enter")
       .gte("created_at", fifteenMinutesAgo)
-      .limit(1000),
+      .limit(5000),
     supabase
       .from("events")
       .select("device_id, created_at")
