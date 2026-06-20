@@ -34,6 +34,17 @@ interface PendingUnlock {
   module_title: string;
 }
 
+interface WaitlistEntry {
+  id: string;
+  email: string;
+  name: string;
+  source: "coming_soon" | "paywall";
+  device_type: "mobile" | "desktop";
+  willing_to_pay: "yes" | "no" | "maybe" | null;
+  needs_capstone: boolean | null;
+  created_at: string;
+}
+
 interface Props {
   funnel: FunnelStep[];
   dau: DauDay[];
@@ -49,6 +60,7 @@ interface Props {
   newUsers: number;
   recurringUsers: number;
   totalRevenue: number;
+  waitlistEntries: WaitlistEntry[];
 }
 
 function Stat({
@@ -199,10 +211,134 @@ function FunnelChart({ steps }: { steps: FunnelStep[] }) {
   );
 }
 
+function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
+  const total = entries.length;
+  const comingSoon = entries.filter(e => e.source === "coming_soon").length;
+  const paywall = entries.filter(e => e.source === "paywall").length;
+  const mobile = entries.filter(e => e.device_type === "mobile").length;
+  const desktop = entries.filter(e => e.device_type === "desktop").length;
+  const wtp = { yes: 0, no: 0, maybe: 0 };
+  entries.filter(e => e.source === "paywall" && e.willing_to_pay).forEach(e => {
+    if (e.willing_to_pay) wtp[e.willing_to_pay]++;
+  });
+  const capstoneYes = entries.filter(e => e.source === "coming_soon" && e.needs_capstone === true).length;
+  const capstoneNo  = entries.filter(e => e.source === "coming_soon" && e.needs_capstone === false).length;
+
+  function downloadCSV() {
+    const header = "Name,Email,Source,Device,Willing to Pay,Needs Capstone,Date";
+    const rows = entries.map(e =>
+      [
+        `"${e.name}"`,
+        `"${e.email}"`,
+        e.source,
+        e.device_type,
+        e.willing_to_pay ?? "",
+        e.needs_capstone === null ? "" : String(e.needs_capstone),
+        new Date(e.created_at).toLocaleDateString("en-PH"),
+      ].join(",")
+    );
+    const csv = [header, ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "waitlist.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  if (total === 0) {
+    return (
+      <section className="mb-16">
+        <p className="label mb-2">Waitlist</p>
+        <p className="font-sans text-xs text-ink-faint">No signups yet.</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="mb-16">
+      <div className="flex items-baseline gap-4 mb-6">
+        <p className="label">Waitlist</p>
+        <span className="font-mono text-xs text-ink-faint">{total} total</span>
+        <button
+          onClick={downloadCSV}
+          className="font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150"
+        >
+          Download CSV
+        </button>
+      </div>
+
+      {/* Summary stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 max-w-wide">
+        <Stat value={comingSoon} label="Coming Soon Signups" />
+        <Stat value={paywall} label="Paywall Signups" />
+        <Stat value={mobile} label="Mobile" />
+        <Stat value={desktop} label="Desktop" />
+      </div>
+
+      {paywall > 0 && (
+        <div className="mb-6">
+          <p className="label-sm text-ink-muted mb-3">Willing to Pay (paywall group)</p>
+          <div className="flex gap-4">
+            {(["yes", "no", "maybe"] as const).map(k => (
+              <div key={k} className="border border-ink-faint/30 px-5 py-4 text-center min-w-[72px]">
+                <p className="font-serif text-2xl text-ink mb-1">{wtp[k]}</p>
+                <p className="label-sm text-ink-muted capitalize">{k}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {comingSoon > 0 && (
+        <div className="mb-8">
+          <p className="label-sm text-ink-muted mb-3">Needs Capstone Resources (coming-soon group)</p>
+          <div className="flex gap-4">
+            {([["Yes", capstoneYes], ["No", capstoneNo]] as [string, number][]).map(([label, count]) => (
+              <div key={label} className="border border-ink-faint/30 px-5 py-4 text-center min-w-[72px]">
+                <p className="font-serif text-2xl text-ink mb-1">{count}</p>
+                <p className="label-sm text-ink-muted">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Table */}
+      <div className="overflow-x-auto max-w-wide">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="border-b border-ink-faint/30">
+              {["Name", "Email", "Source", "Device", "Date"].map(h => (
+                <th key={h} className="text-left py-2 pr-6 label-sm text-ink-muted font-normal">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {entries.map(e => (
+              <tr key={e.id} className="border-b border-ink-faint/15">
+                <td className="py-3 pr-6 font-sans text-sm text-ink">{e.name}</td>
+                <td className="py-3 pr-6 font-sans text-sm text-ink-muted">{e.email}</td>
+                <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{e.source}</td>
+                <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{e.device_type}</td>
+                <td className="py-3 pr-6 font-sans text-xs text-ink-muted">
+                  {new Date(e.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 export function AdminDashboard({
   funnel, dau, topSubjects, topModules, topSections,
   pendingUnlocks, totalUniqueUsers, todayUsers, last7Sessions,
   approvedUnlocks, activeNow, newUsers, recurringUsers, totalRevenue,
+  waitlistEntries,
 }: Props) {
   const unlockClicks    = funnel.find(s => s.type === "unlock_click")?.unique ?? 0;
   const unlockSubmitted = funnel.find(s => s.type === "unlock_submitted")?.unique ?? 0;
@@ -369,6 +505,8 @@ export function AdminDashboard({
           <p className="font-sans text-xs text-ink-faint">No pending unlock requests.</p>
         </section>
       )}
+
+      <WaitlistSection entries={waitlistEntries} />
 
     </main>
   );

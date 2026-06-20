@@ -53,6 +53,7 @@ export default async function AdminPage() {
     { data: approvedRaw },
     { data: activeRaw },
     { data: allEnterRaw },
+    { data: waitlistRaw },
   ] = await Promise.all([
     supabase.from("events").select("device_id, event_type").limit(10000),
     supabase
@@ -99,6 +100,11 @@ export default async function AdminPage() {
       .eq("event_type", "enter")
       .order("created_at", { ascending: true })
       .limit(50000),
+    supabase
+      .from("waitlist")
+      .select("id, email, name, source, device_type, willing_to_pay, needs_capstone, created_at")
+      .order("created_at", { ascending: false })
+      .limit(500),
   ]);
 
   const allEvents = funnelRaw ?? [];
@@ -194,6 +200,17 @@ export default async function AdminPage() {
 
   const totalRevenue = (approvedRaw ?? []).reduce((sum, u) => sum + (u.amount ?? 0), 0);
 
+  const waitlistEntries = (waitlistRaw ?? []) as {
+    id: string;
+    email: string;
+    name: string;
+    source: "coming_soon" | "paywall";
+    device_type: "mobile" | "desktop";
+    willing_to_pay: "yes" | "no" | "maybe" | null;
+    needs_capstone: boolean | null;
+    created_at: string;
+  }[];
+
   return (
     <AdminDashboard
       funnel={funnel}
@@ -210,6 +227,7 @@ export default async function AdminPage() {
       newUsers={newUsers}
       recurringUsers={recurringUsers}
       totalRevenue={totalRevenue}
+      waitlistEntries={waitlistEntries}
     />
   );
 }
