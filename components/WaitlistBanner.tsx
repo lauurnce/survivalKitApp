@@ -41,7 +41,7 @@ export function WaitlistBanner() {
   if (submitted) {
     return (
       <div className="border border-ink-faint/30 px-6 py-5 mt-4 max-w-sm">
-        <p className="font-sans text-sm text-ink-muted">Thanks! We'll keep you posted.</p>
+        <p className="font-sans text-sm text-ink-muted">Thanks! We&apos;ll keep you posted.</p>
       </div>
     );
   }

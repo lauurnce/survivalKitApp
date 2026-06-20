@@ -62,9 +62,9 @@ export function ComingSoonModal({ yearLabel, onClose }: Props) {
         {submitted ? (
           <>
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe">{yearLabel}</p>
-            <h2 id="coming-soon-title" className="font-serif text-display-md text-paper leading-none">You're in.</h2>
+            <h2 id="coming-soon-title" className="font-serif text-display-md text-paper leading-none">You&apos;re in.</h2>
             <p className="font-sans text-sm text-taupe leading-relaxed">
-              Thanks! We'll let you know when content is ready.
+              Thanks! We&apos;ll let you know when content is ready.
             </p>
           </>
         ) : (
@@ -74,7 +74,7 @@ export function ComingSoonModal({ yearLabel, onClose }: Props) {
               Coming Soon
             </h2>
             <p className="font-sans text-sm text-taupe leading-relaxed">
-              Content for this year is being written. Leave your email and we'll notify you when it's ready.
+              Content for this year is being written. Leave your email and we&apos;ll notify you when it&apos;s ready.
             </p>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
