@@ -103,13 +103,18 @@ export default async function LandingPage() {
       <PopularModules modules={popularModules} />
 
       {/* Footer */}
-      <div className="mt-auto flex items-center justify-between">
-        <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
-          For BSIT students
-        </span>
-        <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent">
-          Free to read
-        </span>
+      <div className="mt-auto flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
+            For BSIT students
+          </span>
+          <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent">
+            Free to read
+          </span>
+        </div>
+        <p className="font-mono text-label-sm text-ink-faint">
+          We collect emails only to notify you when content is ready. We don&apos;t sell or share your data.
+        </p>
       </div>
     </main>
   );
