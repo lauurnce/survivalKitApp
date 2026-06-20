@@ -11,24 +11,31 @@ export function WaitlistBanner() {
   const [willingToPay, setWillingToPay] = useState<WillingToPay | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || !email || !willingToPay) return;
     setLoading(true);
-    await fetch("/api/waitlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        email,
-        device_id: getDeviceId(),
-        source: "paywall",
-        willing_to_pay: willingToPay,
-      }),
-    });
-    setLoading(false);
-    setSubmitted(true);
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          device_id: getDeviceId(),
+          source: "paywall",
+          willing_to_pay: willingToPay,
+        }),
+      });
+      if (!res.ok) throw new Error("Request failed");
+      setSubmitted(true);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (submitted) {
@@ -81,6 +88,10 @@ export function WaitlistBanner() {
           ))}
         </div>
       </div>
+
+      {error && (
+        <p className="font-sans text-xs text-accent">Something went wrong. Please try again.</p>
+      )}
 
       <button
         type="submit"

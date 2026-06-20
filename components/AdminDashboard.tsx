@@ -225,11 +225,16 @@ function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
   const capstoneNo  = entries.filter(e => e.source === "coming_soon" && e.needs_capstone === false).length;
 
   function downloadCSV() {
+    // RFC-4180 quoting + neutralize spreadsheet formula injection (=, +, -, @)
+    const cell = (value: string) => {
+      const safe = /^[=+\-@]/.test(value) ? `'${value}` : value;
+      return `"${safe.replace(/"/g, '""')}"`;
+    };
     const header = "Name,Email,Source,Device,Willing to Pay,Needs Capstone,Date";
     const rows = entries.map(e =>
       [
-        `"${e.name}"`,
-        `"${e.email}"`,
+        cell(e.name),
+        cell(e.email),
         e.source,
         e.device_type,
         e.willing_to_pay ?? "",
