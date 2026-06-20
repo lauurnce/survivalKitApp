@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { WaitlistBanner } from "@/components/WaitlistBanner";
 import { useEffect, useState } from "react";
 import { getDeviceId } from "@/lib/device";
 import type { LanguageId } from "@/lib/ide/types";
@@ -95,9 +96,10 @@ export function LockedSection({ section, index }: Props) {
         <h2 className="font-serif text-2xl md:text-3xl text-ink leading-tight">{section.heading}</h2>
       </div>
       <div className="pl-10 md:pl-12">
-        <div className="inline-flex items-center gap-2 border border-ink-faint/30 px-4 py-2">
+        <div className="inline-flex items-center gap-2 border border-ink-faint/30 px-4 py-2 mb-4">
           <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">Coming soon</span>
         </div>
+        <WaitlistBanner />
       </div>
     </section>
   );
