@@ -117,15 +117,27 @@ export default async function AdminPage() {
     ).size,
   }));
 
+  // Bucket events by PH calendar day (UTC+8) so buckets match the "today"
+  // calculation below and what users in the Philippines actually see.
+  const PH_OFFSET_MS = 8 * 60 * 60 * 1000;
+  const phDay = (iso: string) => new Date(new Date(iso).getTime() + PH_OFFSET_MS).toISOString().slice(0, 10);
+
   const dauByDay = new Map<string, Set<string>>();
   for (const e of dauRaw ?? []) {
-    const day = e.created_at.slice(0, 10);
+    const day = phDay(e.created_at);
     if (!dauByDay.has(day)) dauByDay.set(day, new Set());
     dauByDay.get(day)!.add(e.device_id);
   }
-  const dau = Array.from(dauByDay.entries())
-    .map(([date, devices]) => ({ date, unique: devices.size }))
-    .sort((a, b) => a.date.localeCompare(b.date));
+
+  // Scaffold a continuous 30-day window ending today (PH time) and fill zeros
+  // for days with no activity. This keeps the chart spanning the full range and
+  // makes the latest bar always "today" — it never freezes on the last active day.
+  const todayPH = new Date(Date.now() + PH_OFFSET_MS);
+  const dau = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date(todayPH.getTime() - (29 - i) * 24 * 60 * 60 * 1000);
+    const date = d.toISOString().slice(0, 10);
+    return { date, unique: dauByDay.get(date)?.size ?? 0 };
+  });
 
   const subjectIds = (subjectCounters ?? []).map((c) => c.resource_id);
   const moduleIds = (moduleCounters ?? []).map((c) => c.resource_id);
@@ -179,8 +191,8 @@ export default async function AdminPage() {
     module_title: getTitle((u as { modules: unknown }).modules),
   }));
 
-  // Use PH timezone (UTC+8) so "today" matches what users in the Philippines see
-  const todayStrPH = new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  // "Today" in PH time — last bar in the scaffolded window above
+  const todayStrPH = todayPH.toISOString().slice(0, 10);
   const todayUsers = dau.find((d) => d.date === todayStrPH)?.unique ?? 0;
   const last7Sessions = dau.slice(-7).reduce((sum, d) => sum + d.unique, 0);
 
