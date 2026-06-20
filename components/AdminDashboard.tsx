@@ -117,6 +117,8 @@ function BarChart({ data, label }: { data: TopItem[]; label: string }) {
 }
 
 function DauChart({ data }: { data: DauDay[] }) {
+  const [hover, setHover] = useState<number | null>(null);
+
   if (!data.length) return (
     <div>
       <p className="label mb-4">Daily Active Users — 30 days</p>
@@ -134,14 +136,23 @@ function DauChart({ data }: { data: DauDay[] }) {
     <div>
       <p className="label mb-4">Daily Active Users — 30 days</p>
       <div className="flex items-end gap-0.5 h-28">
-        {data.map(item => (
+        {data.map((item, i) => (
           <div
             key={item.date}
-            className="flex-1 flex flex-col justify-end items-center gap-1"
-            title={`${item.date}: ${item.unique} users`}
+            className="relative flex-1 h-full flex flex-col justify-end items-center gap-1 cursor-default"
+            onMouseEnter={() => setHover(i)}
+            onMouseLeave={() => setHover(null)}
           >
+            {hover === i && (
+              <div className="absolute -top-1 left-1/2 -translate-x-1/2 -translate-y-full z-10 whitespace-nowrap bg-ink text-paper px-2 py-1 shadow-md pointer-events-none">
+                <p className="font-mono text-[10px] leading-tight">{item.date}</p>
+                <p className="font-mono text-[10px] leading-tight">
+                  {item.unique} {item.unique === 1 ? "user" : "users"}
+                </p>
+              </div>
+            )}
             <div
-              className="w-full bg-ink hover:bg-accent transition-colors cursor-default"
+              className={`w-full transition-colors ${hover === i ? "bg-accent" : "bg-ink"}`}
               style={{ height: `${barHeight(item.unique)}px` }}
             />
             {showLabels && (
