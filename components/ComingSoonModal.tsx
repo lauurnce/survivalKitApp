@@ -55,7 +55,7 @@ export function ComingSoonModal({ yearLabel, onClose }: Props) {
         {submitted ? (
           <>
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe">{yearLabel}</p>
-            <h2 className="font-serif text-display-md text-paper leading-none">You're in.</h2>
+            <h2 id="coming-soon-title" className="font-serif text-display-md text-paper leading-none">You're in.</h2>
             <p className="font-sans text-sm text-taupe leading-relaxed">
               Thanks! We'll let you know when content is ready.
             </p>
