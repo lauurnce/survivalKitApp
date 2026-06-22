@@ -5,12 +5,14 @@ import { getDeviceId } from "@/lib/device";
 
 interface Props {
   yearLabel: string;
+  subjects?: { title: string; semester: number }[];
   onClose: () => void;
 }
 
-export function ComingSoonModal({ yearLabel, onClose }: Props) {
+export function ComingSoonModal({ yearLabel, subjects = [], onClose }: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [subjectTitle, setSubjectTitle] = useState("");
   const [needsCapstone, setNeedsCapstone] = useState<boolean | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -30,6 +32,8 @@ export function ComingSoonModal({ yearLabel, onClose }: Props) {
           device_id: getDeviceId(),
           source: "coming_soon",
           needs_capstone: needsCapstone,
+          year_label: yearLabel,
+          subject_title: subjectTitle || null,
         }),
       });
       if (!res.ok) throw new Error("Request failed");
@@ -94,6 +98,35 @@ export function ComingSoonModal({ yearLabel, onClose }: Props) {
                 required
                 className="font-sans text-sm text-paper bg-transparent border-b border-taupe/40 pb-1 outline-none placeholder:text-taupe/60 focus:border-paper transition-colors duration-150"
               />
+
+              {subjects.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="cs-subject" className="font-sans text-xs text-taupe">
+                    Which subject do you want first?
+                  </label>
+                  <select
+                    id="cs-subject"
+                    value={subjectTitle}
+                    onChange={(e) => setSubjectTitle(e.target.value)}
+                    className="font-sans text-sm text-paper bg-navy border-b border-taupe/40 pb-1 outline-none focus:border-paper transition-colors duration-150"
+                  >
+                    <option value="">Any / not sure</option>
+                    {[1, 2].map((sem) => {
+                      const items = subjects.filter((s) => s.semester === sem);
+                      if (items.length === 0) return null;
+                      return (
+                        <optgroup key={sem} label={`${sem === 1 ? "1st" : "2nd"} Semester`}>
+                          {items.map((s) => (
+                            <option key={s.title} value={s.title}>
+                              {s.title}
+                            </option>
+                          ))}
+                        </optgroup>
+                      );
+                    })}
+                  </select>
+                </div>
+              )}
 
               <div className="flex flex-col gap-2">
                 <p className="font-sans text-xs text-taupe">Are you working on a capstone or thesis project?</p>

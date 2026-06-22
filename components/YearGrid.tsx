@@ -10,6 +10,7 @@ export interface YearCardData {
   label: string;
   coming_soon: boolean;
   stats: { total: number; sem1: number; sem2: number; major: number; minor: number };
+  subjects: { title: string; semester: number }[];
   readers: number;
 }
 
@@ -18,7 +19,7 @@ interface Props {
 }
 
 export function YearGrid({ cards }: Props) {
-  const [activeLabel, setActiveLabel] = useState<string | null>(null);
+  const [activeYear, setActiveYear] = useState<YearCardData | null>(null);
 
   return (
     <>
@@ -28,7 +29,7 @@ export function YearGrid({ cards }: Props) {
             return (
               <button
                 key={year.id}
-                onClick={() => setActiveLabel(year.label)}
+                onClick={() => setActiveYear(year)}
                 className="group border border-ink-faint hover:border-navy hover:bg-navy p-8 flex flex-col gap-4 transition-colors duration-200 text-left"
               >
                 <span aria-hidden="true" className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint group-hover:text-taupe transition-colors duration-200">
@@ -86,10 +87,11 @@ export function YearGrid({ cards }: Props) {
         })}
       </div>
 
-      {activeLabel && (
+      {activeYear && (
         <ComingSoonModal
-          yearLabel={activeLabel}
-          onClose={() => setActiveLabel(null)}
+          yearLabel={activeYear.label}
+          subjects={activeYear.subjects}
+          onClose={() => setActiveYear(null)}
         />
       )}
     </>
