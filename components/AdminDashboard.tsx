@@ -42,6 +42,9 @@ interface WaitlistEntry {
   device_type: "mobile" | "desktop";
   willing_to_pay: "yes" | "no" | "maybe" | null;
   needs_capstone: boolean | null;
+  year_label: string | null;
+  subject_title: string | null;
+  module_title: string | null;
   created_at: string;
 }
 
@@ -227,6 +230,55 @@ function FunnelChart({ steps }: { steps: FunnelStep[] }) {
   );
 }
 
+function WaitlistPieChart({ entries }: { entries: WaitlistEntry[] }) {
+  // Group by year_label for paywall entries, fallback to source label
+  const counts = new Map<string, number>();
+  for (const e of entries) {
+    const key = e.year_label ?? (e.source === "coming_soon" ? "Coming Soon" : "Unknown");
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  const total = entries.length;
+  if (total === 0) return null;
+
+  const slices = Array.from(counts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, count]) => ({ label, count, pct: Math.round((count / total) * 100) }));
+
+  // Simple CSS-based donut using conic-gradient
+  const COLORS = ["#1a1a2e", "#4a90a4", "#c9a84c", "#8b5e3c", "#6b8c6b", "#9b6b9b"];
+  let cumPct = 0;
+  const gradientStops = slices.map((s, i) => {
+    const start = cumPct;
+    cumPct += s.pct;
+    return `${COLORS[i % COLORS.length]} ${start}% ${cumPct}%`;
+  });
+
+  return (
+    <div className="mb-8">
+      <p className="label-sm text-ink-muted mb-4">Signups by Year Level</p>
+      <div className="flex flex-col sm:flex-row gap-8 items-start">
+        <div
+          className="shrink-0 w-36 h-36 rounded-full"
+          style={{ background: `conic-gradient(${gradientStops.join(", ")})` }}
+          title="Waitlist source breakdown"
+        />
+        <div className="flex flex-col gap-2">
+          {slices.map((s, i) => (
+            <div key={s.label} className="flex items-center gap-3">
+              <span
+                className="w-3 h-3 shrink-0 inline-block"
+                style={{ background: COLORS[i % COLORS.length] }}
+              />
+              <span className="font-sans text-sm text-ink">{s.label}</span>
+              <span className="font-mono text-xs text-ink-muted">{s.count} ({s.pct}%)</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
   const total = entries.length;
   const comingSoon = entries.filter(e => e.source === "coming_soon").length;
@@ -240,32 +292,50 @@ function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
   const capstoneYes = entries.filter(e => e.source === "coming_soon" && e.needs_capstone === true).length;
   const capstoneNo  = entries.filter(e => e.source === "coming_soon" && e.needs_capstone === false).length;
 
-  function downloadCSV() {
-    // RFC-4180 quoting + neutralize spreadsheet formula injection (=, +, -, @)
+  // Build sorted list of unique "YYYY-MM" months present in the data
+  const months = Array.from(
+    new Set(entries.map(e => e.created_at.slice(0, 7)))
+  ).sort().reverse();
+
+  const [selectedMonth, setSelectedMonth] = useState<string>(months[0] ?? "");
+
+  function buildCSV(rows: WaitlistEntry[]) {
     const cell = (value: string) => {
       const safe = /^[=+\-@]/.test(value) ? `'${value}` : value;
       return `"${safe.replace(/"/g, '""')}"`;
     };
-    const header = "Name,Email,Source,Device,Willing to Pay,Needs Capstone,Date";
-    const rows = entries.map(e =>
+    const header = "Name,Email,Source,Device,Year,Subject,Module,Willing to Pay,Needs Capstone,Date";
+    const lines = rows.map(e =>
       [
         cell(e.name),
         cell(e.email),
         e.source,
         e.device_type,
+        e.year_label ?? "",
+        e.subject_title ?? "",
+        e.module_title ?? "",
         e.willing_to_pay ?? "",
         e.needs_capstone === null ? "" : String(e.needs_capstone),
         new Date(e.created_at).toLocaleDateString("en-PH"),
       ].join(",")
     );
-    const csv = [header, ...rows].join("\n");
+    return [header, ...lines].join("\n");
+  }
+
+  function triggerDownload(csv: string, filename: string) {
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "waitlist.csv";
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  function downloadMonth() {
+    if (!selectedMonth) return;
+    const filtered = entries.filter(e => e.created_at.startsWith(selectedMonth));
+    triggerDownload(buildCSV(filtered), `waitlist-${selectedMonth}.csv`);
   }
 
   if (total === 0) {
@@ -279,15 +349,30 @@ function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
 
   return (
     <section className="mb-16">
-      <div className="flex items-baseline gap-4 mb-6">
+      <div className="flex flex-wrap items-baseline gap-4 mb-6">
         <p className="label">Waitlist</p>
         <span className="font-mono text-xs text-ink-faint">{total} total</span>
-        <button
-          onClick={downloadCSV}
-          className="font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150"
-        >
-          Download CSV
-        </button>
+        <div className="flex items-center gap-2 ml-auto">
+          <select
+            value={selectedMonth}
+            onChange={e => setSelectedMonth(e.target.value)}
+            className="font-mono text-xs text-ink bg-paper border border-ink-faint/30 px-2 py-1 outline-none focus:border-ink transition-colors duration-150"
+          >
+            {months.map(m => {
+              const [y, mo] = m.split("-");
+              const label = new Date(Number(y), Number(mo) - 1).toLocaleString("en-PH", { month: "long", year: "numeric" });
+              const count = entries.filter(e => e.created_at.startsWith(m)).length;
+              return <option key={m} value={m}>{label} ({count})</option>;
+            })}
+          </select>
+          <button
+            onClick={downloadMonth}
+            disabled={!selectedMonth}
+            className="font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150 disabled:opacity-40"
+          >
+            Download CSV
+          </button>
+        </div>
       </div>
 
       {/* Summary stats */}
@@ -297,6 +382,9 @@ function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
         <Stat value={mobile} label="Mobile" />
         <Stat value={desktop} label="Desktop" />
       </div>
+
+      {/* Pie chart — signups by year level */}
+      <WaitlistPieChart entries={entries} />
 
       {paywall > 0 && (
         <div className="mb-6">
@@ -331,7 +419,7 @@ function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b border-ink-faint/30">
-              {["Name", "Email", "Source", "Device", "Date"].map(h => (
+              {["Name", "Email", "Year", "Subject", "Module", "Device", "Date"].map(h => (
                 <th key={h} className="text-left py-2 pr-6 label-sm text-ink-muted font-normal">{h}</th>
               ))}
             </tr>
@@ -341,7 +429,9 @@ function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
               <tr key={e.id} className="border-b border-ink-faint/15">
                 <td className="py-3 pr-6 font-sans text-sm text-ink">{e.name}</td>
                 <td className="py-3 pr-6 font-sans text-sm text-ink-muted">{e.email}</td>
-                <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{e.source}</td>
+                <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{e.year_label ?? "—"}</td>
+                <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{e.subject_title ?? "—"}</td>
+                <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{e.module_title ?? "—"}</td>
                 <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{e.device_type}</td>
                 <td className="py-3 pr-6 font-sans text-xs text-ink-muted">
                   {new Date(e.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}

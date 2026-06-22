@@ -94,7 +94,7 @@ export default async function AdminPage() {
     supabase.rpc("admin_user_totals", { p_new_days: 3 }),
     supabase
       .from("waitlist")
-      .select("id, email, name, source, device_type, willing_to_pay, needs_capstone, created_at")
+      .select("id, email, name, source, device_type, willing_to_pay, needs_capstone, year_label, subject_title, module_title, created_at")
       .order("created_at", { ascending: false })
       .limit(500),
   ]);
@@ -209,6 +209,9 @@ export default async function AdminPage() {
     device_type: "mobile" | "desktop";
     willing_to_pay: "yes" | "no" | "maybe" | null;
     needs_capstone: boolean | null;
+    year_label: string | null;
+    subject_title: string | null;
+    module_title: string | null;
     created_at: string;
   }[];
 

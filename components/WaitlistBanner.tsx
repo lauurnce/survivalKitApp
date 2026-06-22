@@ -5,7 +5,13 @@ import { getDeviceId } from "@/lib/device";
 
 type WillingToPay = "yes" | "no" | "maybe";
 
-export function WaitlistBanner() {
+interface Props {
+  yearLabel?: string;
+  subjectTitle?: string;
+  moduleTitle?: string;
+}
+
+export function WaitlistBanner({ yearLabel, subjectTitle, moduleTitle }: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [willingToPay, setWillingToPay] = useState<WillingToPay | null>(null);
@@ -27,6 +33,9 @@ export function WaitlistBanner() {
           device_id: getDeviceId(),
           source: "paywall",
           willing_to_pay: willingToPay,
+          year_label: yearLabel ?? null,
+          subject_title: subjectTitle ?? null,
+          module_title: moduleTitle ?? null,
         }),
       });
       if (!res.ok) throw new Error("Request failed");

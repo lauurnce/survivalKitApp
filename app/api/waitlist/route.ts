@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { email, name, device_id, source, willing_to_pay, needs_capstone } = body;
+  const { email, name, device_id, source, willing_to_pay, needs_capstone, year_label, subject_title, module_title } = body;
 
   if (!email || !name || !device_id || !source) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -91,6 +91,9 @@ export async function POST(req: NextRequest) {
       willing_to_pay: willing_to_pay ?? null,
       needs_capstone: needs_capstone ?? null,
       device_type,
+      year_label: typeof year_label === "string" ? year_label.slice(0, 100) : null,
+      subject_title: typeof subject_title === "string" ? subject_title.slice(0, 200) : null,
+      module_title: typeof module_title === "string" ? module_title.slice(0, 200) : null,
     },
     { onConflict: "email,source", ignoreDuplicates: true }
   );

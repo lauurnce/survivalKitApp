@@ -95,6 +95,9 @@ export default async function ReaderPage({ params }: Props) {
             index={i}
             moduleId={moduleId}
             unlockAll={unlockAll}
+            yearLabel={year?.label}
+            subjectTitle={subject.title}
+            moduleTitle={mod.title}
           />
         ))}
       </article>

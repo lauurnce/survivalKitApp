@@ -29,9 +29,12 @@ interface Props {
   section: Section;
   index: number;
   moduleId: string;
+  yearLabel?: string;
+  subjectTitle?: string;
+  moduleTitle?: string;
 }
 
-export function LockedSection({ section, index }: Props) {
+export function LockedSection({ section, index, yearLabel, subjectTitle, moduleTitle }: Props) {
   const [activity, setActivity] = useState<ActivityData | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "locked" | "error">("loading");
 
@@ -99,7 +102,7 @@ export function LockedSection({ section, index }: Props) {
         <div className="inline-flex items-center gap-2 border border-ink-faint/30 px-4 py-2 mb-4">
           <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">Coming soon</span>
         </div>
-        <WaitlistBanner />
+        <WaitlistBanner yearLabel={yearLabel} subjectTitle={subjectTitle} moduleTitle={moduleTitle} />
       </div>
     </section>
   );

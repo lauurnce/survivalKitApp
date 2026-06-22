@@ -34,11 +34,14 @@ interface Props {
   index: number;
   moduleId: string;
   unlockAll: boolean;
+  yearLabel?: string;
+  subjectTitle?: string;
+  moduleTitle?: string;
 }
 
-export function SectionRenderer({ section, index, moduleId, unlockAll }: Props) {
+export function SectionRenderer({ section, index, moduleId, unlockAll, yearLabel, subjectTitle, moduleTitle }: Props) {
   if (section.kind === "activity" && !unlockAll) {
-    return <LockedSection section={section} index={index} moduleId={moduleId} />;
+    return <LockedSection section={section} index={index} moduleId={moduleId} yearLabel={yearLabel} subjectTitle={subjectTitle} moduleTitle={moduleTitle} />;
   }
 
   return (
