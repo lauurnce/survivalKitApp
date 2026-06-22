@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Local-only docs
 docs/NEXT_STEPS.md
+
+# Git worktrees
+.worktrees/

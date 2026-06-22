@@ -309,14 +309,14 @@ function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
       [
         cell(e.name),
         cell(e.email),
-        e.source,
-        e.device_type,
-        e.year_label ?? "",
-        e.subject_title ?? "",
-        e.module_title ?? "",
-        e.willing_to_pay ?? "",
-        e.needs_capstone === null ? "" : String(e.needs_capstone),
-        new Date(e.created_at).toLocaleDateString("en-PH"),
+        cell(e.source ?? ""),
+        cell(e.device_type ?? ""),
+        cell(e.year_label ?? ""),
+        cell(e.subject_title ?? ""),
+        cell(e.module_title ?? ""),
+        cell(e.willing_to_pay ?? ""),
+        cell(e.needs_capstone === null ? "" : String(e.needs_capstone)),
+        cell(new Date(e.created_at).toLocaleDateString("en-PH")),
       ].join(",")
     );
     return [header, ...lines].join("\n");

@@ -39,9 +39,14 @@ export default function RootLayout({
       <body className="bg-paper text-ink font-sans min-h-screen flex flex-col">
         <div className="flex-1">{children}</div>
         <footer className="border-t border-ink-faint/20 px-6 py-4 md:px-16">
-          <p className="font-sans text-[11px] text-ink-faint leading-relaxed">
-            Study guide — original explanations. Content covers standard curriculum topics.
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-sans text-[11px] text-ink-faint leading-relaxed">
+              Study guide — original explanations. Content covers standard curriculum topics.
+            </p>
+            <a href="/privacy" className="font-sans text-[11px] text-ink-faint hover:text-ink-muted transition-colors">
+              Privacy Policy
+            </a>
+          </div>
         </footer>
       </body>
     </html>

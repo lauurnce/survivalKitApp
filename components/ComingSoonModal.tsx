@@ -126,6 +126,14 @@ export function ComingSoonModal({ yearLabel, onClose }: Props) {
               >
                 {loading ? "Sending…" : "Notify me"}
               </button>
+
+              <p className="font-sans text-[10px] text-taupe/60 leading-relaxed">
+                By submitting, you agree to our{" "}
+                <a href="/privacy" className="underline hover:text-taupe transition-colors">
+                  Privacy Policy
+                </a>
+                . We collect your name and email solely to notify you when content is ready.
+              </p>
             </form>
 
             <button

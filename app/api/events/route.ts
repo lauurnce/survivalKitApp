@@ -14,9 +14,11 @@ const MAX_PER_WINDOW = 60;
 const MAX_MAP_SIZE = 10_000;
 
 function getRateLimitKey(req: NextRequest): string {
-  const forwarded = req.headers.get("x-forwarded-for");
-  const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-  return ip;
+  return (
+    req.headers.get("x-real-ip") ??
+    req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
+    "unknown"
+  );
 }
 
 function isRateLimited(key: string): boolean {

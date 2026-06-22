@@ -21,8 +21,11 @@ const RUN_MAX_PER_WINDOW = 10;
 const MAX_MAP_SIZE = 5_000;
 
 function getIp(req: NextRequest): string {
-  const forwarded = req.headers.get("x-forwarded-for");
-  return forwarded ? forwarded.split(",")[0].trim() : "unknown";
+  return (
+    req.headers.get("x-real-ip") ??
+    req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
+    "unknown"
+  );
 }
 
 function isRateLimited(ip: string): boolean {

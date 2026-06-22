@@ -109,6 +109,14 @@ export function WaitlistBanner({ yearLabel, subjectTitle, moduleTitle }: Props) 
       >
         {loading ? "Sending…" : "Join waitlist"}
       </button>
+
+      <p className="font-sans text-[10px] text-ink-faint leading-relaxed">
+        By joining, you agree to our{" "}
+        <a href="/privacy" className="underline hover:text-ink-muted transition-colors">
+          Privacy Policy
+        </a>
+        . We collect your name and email to notify you when activities become available. You may request deletion at any time by emailing us.
+      </p>
     </form>
   );
 }
