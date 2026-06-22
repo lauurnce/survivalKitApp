@@ -4,35 +4,26 @@ import {
   createSessionToken,
   SESSION_COOKIE,
 } from "@/lib/auth/adminSession";
+import { createServerClient } from "@/lib/supabase/server";
 
-// Brute-force protection — 5 attempts per 15 minutes per IP
-const loginAttempts = new Map<string, { count: number; resetAt: number }>();
-const MAX_ATTEMPTS = 5;
-const LOCKOUT_MS = 15 * 60 * 1000;
+// Brute-force protection backed by Supabase so state is shared across all
+// Vercel function instances (the old in-process Map reset on every cold start).
+// 5 failed attempts per IP locks out for 15 minutes.
 
-function isLockedOut(ip: string): boolean {
-  const now = Date.now();
-  const entry = loginAttempts.get(ip);
-  if (!entry || now > entry.resetAt) {
-    loginAttempts.set(ip, { count: 0, resetAt: now + LOCKOUT_MS });
-    return false;
-  }
-  return entry.count >= MAX_ATTEMPTS;
+async function isLockedOut(ip: string): Promise<boolean> {
+  const supabase = createServerClient();
+  const { data } = await supabase.rpc("check_login_lockout", { p_ip: ip });
+  return !!data;
 }
 
-function recordFailure(ip: string): void {
-  const now = Date.now();
-  const entry = loginAttempts.get(ip) ?? { count: 0, resetAt: now + LOCKOUT_MS };
-  if (now > entry.resetAt) {
-    entry.count = 0;
-    entry.resetAt = now + LOCKOUT_MS;
-  }
-  entry.count += 1;
-  loginAttempts.set(ip, entry);
+async function recordFailure(ip: string): Promise<void> {
+  const supabase = createServerClient();
+  await supabase.rpc("record_login_attempt", { p_ip: ip });
 }
 
-function clearAttempts(ip: string): void {
-  loginAttempts.delete(ip);
+async function clearAttempts(ip: string): Promise<void> {
+  const supabase = createServerClient();
+  await supabase.rpc("clear_login_attempts", { p_ip: ip });
 }
 
 export async function POST(req: NextRequest) {
@@ -44,7 +35,7 @@ export async function POST(req: NextRequest) {
     req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
     "unknown";
 
-  if (isLockedOut(ip)) {
+  if (await isLockedOut(ip)) {
     return NextResponse.json(
       { error: "Too many failed attempts. Try again in 15 minutes." },
       { status: 429 }
@@ -60,13 +51,13 @@ export async function POST(req: NextRequest) {
   }
 
   if (!checkAdminPassword(password)) {
-    recordFailure(ip);
+    await recordFailure(ip);
     // Uniform delay to resist timing analysis at the network level
     await new Promise((r) => setTimeout(r, 400));
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
 
-  clearAttempts(ip);
+  await clearAttempts(ip);
   const token = createSessionToken();
   const res = NextResponse.json({ ok: true });
   res.cookies.set(SESSION_COOKIE.name, token, SESSION_COOKIE.options);
