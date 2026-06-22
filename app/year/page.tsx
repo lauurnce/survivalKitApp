@@ -10,7 +10,7 @@ export default async function YearPage() {
   const supabase = createServerClient();
   const [{ data: years }, { data: subjects }, { data: yearCounters }] = await Promise.all([
     supabase.from("years").select("*").order("sort_order"),
-    supabase.from("subjects").select("id, year_id, semester, kind, title, sort_order").order("sort_order"),
+    supabase.from("subjects").select("id, year_id, semester, kind"),
     supabase.from("counters").select("resource_id, reader_count").eq("resource_type", "year"),
   ]);
 
@@ -27,8 +27,6 @@ export default async function YearPage() {
         major: rows.filter((s) => s.kind === "major").length,
         minor: rows.filter((s) => s.kind === "minor").length,
       },
-      // Subjects offered for the modal dropdown (only needed for coming-soon years).
-      subjects: rows.map((s) => ({ title: s.title, semester: s.semester })),
       readers: yearCounters?.find((c) => c.resource_id === year.id)?.reader_count ?? 0,
     };
   });
