@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
       subject_title: typeof subject_title === "string" ? subject_title.slice(0, 200) : null,
       module_title: typeof module_title === "string" ? module_title.slice(0, 200) : null,
     },
-    { onConflict: "email,source", ignoreDuplicates: true }
+    { onConflict: "email,source,subject_title", ignoreDuplicates: true }
   );
 
   if (error) console.error("[waitlist] upsert error:", error.message);

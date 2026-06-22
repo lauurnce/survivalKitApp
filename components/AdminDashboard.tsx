@@ -279,6 +279,53 @@ function WaitlistPieChart({ entries }: { entries: WaitlistEntry[] }) {
   );
 }
 
+function WaitlistSubjectDemand({ entries }: { entries: WaitlistEntry[] }) {
+  // Rank subjects by how many people asked to be notified — this is the
+  // signal for which coming-soon subject to build next.
+  const counts = new Map<string, { count: number; year: string }>();
+  for (const e of entries) {
+    if (!e.subject_title) continue;
+    const prev = counts.get(e.subject_title);
+    counts.set(e.subject_title, {
+      count: (prev?.count ?? 0) + 1,
+      year: e.year_label ?? prev?.year ?? "",
+    });
+  }
+
+  const ranked = Array.from(counts.entries())
+    .map(([subject, v]) => ({ subject, ...v }))
+    .sort((a, b) => b.count - a.count);
+
+  if (ranked.length === 0) return null;
+
+  const max = ranked[0].count;
+
+  return (
+    <div className="mb-8 max-w-wide">
+      <p className="label-sm text-ink-muted mb-4">Most Requested Subjects</p>
+      <div className="flex flex-col gap-2">
+        {ranked.map((r) => (
+          <div key={r.subject} className="flex items-center gap-3">
+            <div className="w-48 shrink-0 text-right">
+              <span className="font-sans text-sm text-ink">{r.subject}</span>
+              {r.year && (
+                <span className="font-mono text-[10px] text-ink-faint ml-2">{r.year}</span>
+              )}
+            </div>
+            <div className="flex-1 flex items-center gap-2">
+              <div
+                className="h-4 bg-navy"
+                style={{ width: `${Math.max((r.count / max) * 100, 4)}%` }}
+              />
+              <span className="font-mono text-xs text-ink-muted">{r.count}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
   const total = entries.length;
   const comingSoon = entries.filter(e => e.source === "coming_soon").length;
@@ -385,6 +432,9 @@ function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
 
       {/* Pie chart — signups by year level */}
       <WaitlistPieChart entries={entries} />
+
+      {/* Ranked demand — which subjects to focus on */}
+      <WaitlistSubjectDemand entries={entries} />
 
       {paywall > 0 && (
         <div className="mb-6">

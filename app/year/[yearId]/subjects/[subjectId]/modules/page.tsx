@@ -4,6 +4,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
 import { ModuleDoneToggle } from "@/components/ModuleDoneToggle";
+import { SubjectComingSoon } from "@/components/SubjectComingSoon";
 import { formatCount } from "@/lib/counters";
 
 export const revalidate = 300;
@@ -81,9 +82,10 @@ export default async function ModulesPage({ params }: Props) {
           ))}
 
           {(!modules || modules.length === 0) && (
-            <p className="py-12 font-sans text-ink-muted text-sm">
-              No modules yet. Check back soon.
-            </p>
+            <SubjectComingSoon
+              subjectTitle={subject.title}
+              yearLabel={year?.label ?? ""}
+            />
           )}
         </div>
       </div>
