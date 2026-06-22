@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { email, name, device_id, source, willing_to_pay, needs_capstone, year_label, subject_title, module_title } = body;
+  const { email, name, device_id, source, willing_to_pay, needs_capstone, year_label, subject_title, module_title, screen_width, max_touch_points } = body;
 
   if (!email || !name || !device_id || !source) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -81,7 +81,10 @@ export async function POST(req: NextRequest) {
   }
 
   const ua = req.headers.get("user-agent") ?? "";
-  const device_type = getDeviceType(ua);
+  const device_type = getDeviceType(ua, {
+    screenWidth: typeof screen_width === "number" ? screen_width : null,
+    maxTouchPoints: typeof max_touch_points === "number" ? max_touch_points : null,
+  });
 
   const supabase = createServerClient();
 

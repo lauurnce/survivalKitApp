@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getDeviceId } from "@/lib/device";
+import { getDeviceId, getClientDeviceSignals } from "@/lib/device";
 
 interface Props {
   subjectTitle: string;
@@ -33,6 +33,7 @@ export function SubjectComingSoon({ subjectTitle, yearLabel }: Props) {
           needs_capstone: needsCapstone,
           subject_title: subjectTitle,
           year_label: yearLabel,
+          ...getClientDeviceSignals(),
         }),
       });
       if (!res.ok) throw new Error();

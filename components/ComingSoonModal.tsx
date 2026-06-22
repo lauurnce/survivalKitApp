@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getDeviceId } from "@/lib/device";
+import { getDeviceId, getClientDeviceSignals } from "@/lib/device";
 
 interface Props {
   yearLabel: string;
@@ -30,6 +30,7 @@ export function ComingSoonModal({ yearLabel, onClose }: Props) {
           device_id: getDeviceId(),
           source: "coming_soon",
           needs_capstone: needsCapstone,
+          ...getClientDeviceSignals(),
         }),
       });
       if (!res.ok) throw new Error("Request failed");

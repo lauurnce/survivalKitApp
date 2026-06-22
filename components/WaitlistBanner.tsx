@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getDeviceId } from "@/lib/device";
+import { getDeviceId, getClientDeviceSignals } from "@/lib/device";
 
 type WillingToPay = "yes" | "no" | "maybe";
 
@@ -36,6 +36,7 @@ export function WaitlistBanner({ yearLabel, subjectTitle, moduleTitle }: Props) 
           year_label: yearLabel ?? null,
           subject_title: subjectTitle ?? null,
           module_title: moduleTitle ?? null,
+          ...getClientDeviceSignals(),
         }),
       });
       if (!res.ok) throw new Error("Request failed");
