@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyPaymongoWebhook, SUBSCRIPTION_AMOUNT } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
+import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
@@ -9,7 +10,34 @@ export const runtime = "nodejs";
 // payment (or a misconfigured secret) from unlocking real content.
 const EXPECTED_LIVEMODE = process.env.NODE_ENV === "production";
 
+// Bound unauthenticated flood against the signature-verification work. Real
+// PayMongo deliveries are well under this; it only stops abuse.
+const limiter = createRateLimiter(60);
+
+interface PaymongoEvent {
+  data: {
+    attributes: {
+      type: string;
+      livemode: boolean;
+      data: {
+        id: string;
+        attributes: {
+          remarks: string;
+          amount?: number;
+          status?: string;
+          // Some PayMongo resources also expose the id under attributes.
+          id?: string;
+        };
+      };
+    };
+  };
+}
+
 export async function POST(req: NextRequest) {
+  if (limiter.check(getClientIp(req))) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const rawBody = await req.text();
   const signature = req.headers.get("paymongo-signature") ?? "";
 
@@ -18,24 +46,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
-  const event = JSON.parse(rawBody) as {
-    data: {
-      attributes: {
-        type: string;
-        livemode: boolean;
-        data: {
-          id: string;
-          attributes: {
-            remarks: string;
-            amount?: number;
-            status?: string;
-            // Some PayMongo resources also expose the id under attributes.
-            id?: string;
-          };
-        };
-      };
-    };
-  };
+  // Body is signed at this point, but still guard against malformed JSON so a
+  // bad payload returns 400 instead of an unhandled 500.
+  let event: PaymongoEvent;
+  try {
+    event = JSON.parse(rawBody) as PaymongoEvent;
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
 
   const { type: eventType, livemode } = event.data.attributes;
 
@@ -123,8 +141,10 @@ export async function POST(req: NextRequest) {
   );
 
   if (error) {
+    // Log details server-side; return a generic message so internal DB errors
+    // aren't disclosed to the caller.
     console.error("Subscription upsert failed:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

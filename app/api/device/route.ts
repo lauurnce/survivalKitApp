@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isUuid } from "@/lib/validation";
+import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
 import {
   DEVICE_COOKIE,
   DEVICE_COOKIE_OPTIONS,
@@ -8,10 +9,16 @@ import {
 
 export const runtime = "nodejs";
 
+const limiter = createRateLimiter(20);
+
 // Issues an HttpOnly, signed device cookie. The client posts its existing
 // localStorage UUID (or a freshly generated one); we sign it so the value
 // can't be forged or copied between browsers without the server secret.
 export async function POST(req: NextRequest) {
+  if (limiter.check(getClientIp(req))) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const body = (await req.json().catch(() => null)) as
     | { deviceId?: string }
     | null;

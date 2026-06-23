@@ -1,10 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createPaymongoLink } from "@/lib/paymongo";
+import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
+import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
+
+// Creating payment links calls PayMongo and can incur cost/quota; legitimate
+// users hit this rarely, so keep the per-IP allowance tight.
+const limiter = createRateLimiter(5);
 
 export async function POST(req: NextRequest) {
-  const body = (await req.json()) as { yearId?: string; deviceId?: string };
-  const { yearId, deviceId } = body;
+  if (limiter.check(getClientIp(req))) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
+  const body = (await req.json().catch(() => null)) as
+    | { yearId?: string; deviceId?: string }
+    | null;
+  const yearId = body?.yearId;
+  const deviceId = body?.deviceId;
 
   // Both IDs are interpolated into the PayMongo `remarks` string and later
   // parsed back out by the webhook. Enforcing the UUID shape here prevents
@@ -14,6 +27,19 @@ export async function POST(req: NextRequest) {
       { error: "yearId and deviceId must be valid UUIDs" },
       { status: 400 }
     );
+  }
+
+  // Don't spend a PayMongo API call (or risk a charge) on a year that doesn't
+  // exist. The webhook also enforces the FK, but reject early here.
+  const supabase = createServerClient();
+  const { data: year } = await supabase
+    .from("years")
+    .select("id")
+    .eq("id", yearId)
+    .maybeSingle();
+
+  if (!year) {
+    return NextResponse.json({ error: "Unknown year" }, { status: 404 });
   }
 
   const ALLOWED_ORIGINS = [
@@ -34,8 +60,12 @@ export async function POST(req: NextRequest) {
     );
     return NextResponse.json({ checkoutUrl });
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Payment setup failed";
-    return NextResponse.json({ error: message }, { status: 500 });
+    // Log the real cause (may include PayMongo/API details) server-side only;
+    // return a generic message to avoid leaking internals to the caller.
+    console.error("createPaymongoLink failed:", err);
+    return NextResponse.json(
+      { error: "Payment setup failed" },
+      { status: 500 }
+    );
   }
 }
