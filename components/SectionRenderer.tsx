@@ -1,11 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import { LockedSection } from "./LockedSection";
+import { SubscribeGate } from "./SubscribeGate";
+import { logSectionView } from "@/lib/analytics";
 import type { TopologyData } from "@/lib/topology/types";
 
 const Playground = dynamic(
@@ -33,15 +35,32 @@ interface Props {
   section: Section;
   index: number;
   moduleId: string;
+  yearId: string;
   unlockAll: boolean;
   yearLabel?: string;
   subjectTitle?: string;
   moduleTitle?: string;
 }
 
-export function SectionRenderer({ section, index, moduleId, unlockAll, yearLabel, subjectTitle, moduleTitle }: Props) {
+export function SectionRenderer({ section, index, moduleId, yearId, unlockAll, yearLabel, subjectTitle, moduleTitle }: Props) {
+  useEffect(() => {
+    if (section.kind === "content") {
+      logSectionView(section.id, moduleId);
+    }
+  }, [section.id, section.kind, moduleId]);
+
   if (section.kind === "activity" && !unlockAll) {
-    return <LockedSection section={section} index={index} moduleId={moduleId} yearLabel={yearLabel} subjectTitle={subjectTitle} moduleTitle={moduleTitle} />;
+    return (
+      <section>
+        <div className="flex items-baseline gap-4 mb-6">
+          <span className="label-sm shrink-0">{String(index + 1).padStart(2, "0")}</span>
+          <h2 className="font-serif text-2xl md:text-3xl text-ink leading-tight">{section.heading}</h2>
+        </div>
+        <div className="pl-10 md:pl-12">
+          <SubscribeGate yearId={yearId} yearLabel={yearLabel} />
+        </div>
+      </section>
+    );
   }
 
   return (

@@ -49,7 +49,7 @@ export default async function ReaderPage({ params }: Props) {
     .eq("kind", "activity")
     .order("sort_order");
 
-  const unlockAll = process.env.UNLOCK_ALL === "true";
+  const devUnlockAll = process.env.UNLOCK_ALL === "true";
 
   const allSections = [
     ...(contentSections ?? []),
@@ -94,7 +94,8 @@ export default async function ReaderPage({ params }: Props) {
             section={section}
             index={i}
             moduleId={moduleId}
-            unlockAll={unlockAll}
+            yearId={yearId}
+            unlockAll={devUnlockAll}
             yearLabel={year?.label}
             subjectTitle={subject.title}
             moduleTitle={mod.title}
