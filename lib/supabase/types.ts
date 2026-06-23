@@ -2,12 +2,14 @@ import type { TopologyData } from '@/lib/topology/types';
 
 export type SectionKind = "content" | "activity";
 export type UnlockStatus = "pending" | "approved" | "rejected";
+export type SubscriptionStatus = "active" | "paused" | "cancelled";
 export type EventType =
   | "enter"
   | "year_select"
   | "subject_open"
   | "module_open"
   | "section_view"
+  | "subscribe_click"
   | "unlock_click"
   | "unlock_submitted";
 
@@ -115,6 +117,27 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<{ status: UnlockStatus }>;
+      };
+      subscriptions: {
+        Row: {
+          id: string;
+          device_id: string;
+          year_id: string;
+          paymongo_link_id: string;
+          status: SubscriptionStatus;
+          current_period_end: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          device_id: string;
+          year_id: string;
+          paymongo_link_id: string;
+          status?: SubscriptionStatus;
+          current_period_end: string;
+          created_at?: string;
+        };
+        Update: Partial<{ status: SubscriptionStatus; current_period_end: string }>;
       };
       events: {
         Row: {
