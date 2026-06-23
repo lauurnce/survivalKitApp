@@ -53,7 +53,7 @@ export default async function ReaderPage({ params }: Props) {
 
   const devUnlockAll = process.env.UNLOCK_ALL === "true";
   const cookieStore = await cookies();
-  const deviceId = cookieStore.get("x-device-id")?.value ?? null;
+  const deviceId = cookieStore.get("bsit_device_id")?.value ?? null;
   const subscribed = deviceId ? await isSubscribed(deviceId, yearId) : false;
   const unlockActivities = devUnlockAll || subscribed;
 

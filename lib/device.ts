@@ -1,14 +1,19 @@
 "use client";
 
+const DEVICE_COOKIE = "bsit_device_id";
+const DEVICE_STORAGE_KEY = "bsit_device_id";
+
 export function getDeviceId(): string {
   try {
     if (typeof window === "undefined") return "";
     if (typeof localStorage === "undefined") return "";
-    let id = localStorage.getItem("bsit_device_id");
+    let id = localStorage.getItem(DEVICE_STORAGE_KEY);
     if (!id) {
       id = crypto.randomUUID();
-      localStorage.setItem("bsit_device_id", id);
+      localStorage.setItem(DEVICE_STORAGE_KEY, id);
     }
+    // Mirror to a cookie so server components can read it for subscription checks
+    document.cookie = `${DEVICE_COOKIE}=${id}; path=/; max-age=31536000; SameSite=Lax`;
     return id;
   } catch {
     return "";
