@@ -1,14 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyPaymongoWebhook } from "@/lib/paymongo";
+import { verifyPaymongoWebhook, SUBSCRIPTION_AMOUNT } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 
 export const runtime = "nodejs";
 
+// Process live events in prod, test events otherwise. Prevents a test-mode
+// payment (or a misconfigured secret) from unlocking real content.
+const EXPECTED_LIVEMODE = process.env.NODE_ENV === "production";
+
 export async function POST(req: NextRequest) {
   const rawBody = await req.text();
   const signature = req.headers.get("paymongo-signature") ?? "";
 
+  // Verify signature on the raw body before any parsing.
   if (!verifyPaymongoWebhook(rawBody, signature)) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
@@ -17,24 +22,56 @@ export async function POST(req: NextRequest) {
     data: {
       attributes: {
         type: string;
+        livemode: boolean;
         data: {
+          id: string;
           attributes: {
             remarks: string;
-            id: string;
+            amount?: number;
+            status?: string;
+            // Some PayMongo resources also expose the id under attributes.
+            id?: string;
           };
         };
       };
     };
   };
 
-  const eventType = event.data.attributes.type;
+  const { type: eventType, livemode } = event.data.attributes;
+
+  // livemode mismatch: acknowledge (2xx) so PayMongo stops retrying, but don't act.
+  if (livemode !== EXPECTED_LIVEMODE) {
+    return NextResponse.json({ ok: true, ignored: "livemode" });
+  }
+
   if (eventType !== "link.payment.paid") {
     // Acknowledge non-payment events without action
     return NextResponse.json({ ok: true });
   }
 
-  const remarks = event.data.attributes.data.attributes.remarks ?? "";
-  const linkId = event.data.attributes.data.attributes.id;
+  const resource = event.data.attributes.data;
+  const remarks = resource.attributes.remarks ?? "";
+  // PayMongo nests the resource id at data.attributes.data.id; fall back to the
+  // attributes-level id for resources that expose it there.
+  const linkId = resource.id ?? resource.attributes.id;
+  const paidAmount = resource.attributes.amount;
+  const paidStatus = resource.attributes.status;
+
+  if (!linkId) {
+    return NextResponse.json({ error: "Missing link id" }, { status: 400 });
+  }
+
+  // Defense in depth: if the payload reports an amount/status, it must match
+  // what we expect. Underpayment or a non-paid status must not grant access.
+  if (typeof paidAmount === "number" && paidAmount !== SUBSCRIPTION_AMOUNT) {
+    console.error(
+      `Webhook amount mismatch: got ${paidAmount}, expected ${SUBSCRIPTION_AMOUNT}`
+    );
+    return NextResponse.json({ error: "Amount mismatch" }, { status: 400 });
+  }
+  if (typeof paidStatus === "string" && paidStatus !== "paid") {
+    return NextResponse.json({ ok: true, ignored: "status" });
+  }
 
   // remarks format: "year:<yearId> device:<deviceId>"
   const yearMatch = remarks.match(/year:([^\s]+)/);

@@ -1,5 +1,10 @@
 import crypto from "crypto";
 
+// Single source of truth for the subscription price (centavos). The webhook
+// re-checks the paid amount against this so an altered/underpaid link can't
+// unlock content.
+export const SUBSCRIPTION_AMOUNT = 5000; // ₱50.00
+
 export async function createPaymongoLink(
   yearId: string,
   deviceId: string,
@@ -10,16 +15,24 @@ export async function createPaymongoLink(
 
   const encoded = Buffer.from(`${secretKey}:`).toString("base64");
 
+  // Deterministic idempotency key per (device, year) so a double-click or
+  // client retry returns the same link instead of creating duplicate charges.
+  const idempotencyKey = crypto
+    .createHash("sha256")
+    .update(`subscribe:${deviceId}:${yearId}`)
+    .digest("hex");
+
   const res = await fetch("https://api.paymongo.com/v1/links", {
     method: "POST",
     headers: {
       Authorization: `Basic ${encoded}`,
       "Content-Type": "application/json",
+      "Idempotency-Key": idempotencyKey,
     },
     body: JSON.stringify({
       data: {
         attributes: {
-          amount: 5000, // ₱50.00 in centavos
+          amount: SUBSCRIPTION_AMOUNT, // centavos
           description: "BSIT Survival Kit — Monthly Subscription",
           remarks: `year:${yearId} device:${deviceId}`,
           redirect: { success: successUrl, failed: successUrl },
