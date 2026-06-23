@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyPaymongoWebhook } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 
+export const runtime = "nodejs";
+
 export async function POST(req: NextRequest) {
   const rawBody = await req.text();
   const signature = req.headers.get("paymongo-signature") ?? "";
