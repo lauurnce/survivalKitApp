@@ -198,9 +198,8 @@ export default async function AdminPage() {
   const subscriptions = subscriptionRaw ?? [];
   const activeSubscribers = subscriptions.filter(s => s.status === "active").length;
   const totalRevenue = activeSubscribers * 50; // ₱50/subscriber, simplified
-  const todayStr = new Date().toISOString().slice(0, 10);
   const newSubscribersToday = subscriptions.filter(
-    s => s.created_at.slice(0, 10) === todayStr
+    s => s.created_at.slice(0, 10) === todayStrPH
   ).length;
 
   const waitlistEntries = (waitlistRaw ?? []) as {
