@@ -39,8 +39,8 @@ const SUBJECTS: SubjectDef[] = [
     source: { type: "dir", name: "MAJOR - Data Communication and Networking" },
   },
   {
-    title: "Discrete Structures and Algorithms",
-    slug: "discrete-structures",
+    title: "Data Structures and Algorithms",
+    slug: "data-structures-and-algorithms",
     semester: 1, kind: "major", sortOrder: 2,
     semDir: "1st sem",
     source: { type: "file", name: "MAJOR - Discrete Structures and Algorithm.md" },
