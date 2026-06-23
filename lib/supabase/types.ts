@@ -123,6 +123,7 @@ export interface Database {
           id: string;
           device_id: string;
           year_id: string;
+          subject_id: string | null;
           paymongo_link_id: string;
           status: SubscriptionStatus;
           current_period_end: string;
@@ -132,6 +133,7 @@ export interface Database {
           id?: string;
           device_id: string;
           year_id: string;
+          subject_id?: string | null;
           paymongo_link_id: string;
           status?: SubscriptionStatus;
           current_period_end: string;

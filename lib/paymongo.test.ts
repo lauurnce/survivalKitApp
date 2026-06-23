@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   createPaymongoLink,
   verifyPaymongoWebhook,
-  SUBSCRIPTION_AMOUNT,
+  YEAR_AMOUNT,
 } from "./paymongo";
 import crypto from "crypto";
 
@@ -55,7 +55,7 @@ describe("createPaymongoLink", () => {
     const sentBody = JSON.parse(
       vi.mocked(fetch).mock.calls[0][1]!.body as string
     );
-    expect(sentBody.data.attributes.amount).toBe(SUBSCRIPTION_AMOUNT);
+    expect(sentBody.data.attributes.amount).toBe(YEAR_AMOUNT);
     expect(result.checkoutUrl).toBe("https://checkout.paymongo.com/abc");
     expect(result.linkId).toBe("link_abc123");
   });

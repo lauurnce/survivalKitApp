@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock the supabase server client
 vi.mock("./supabase/server", () => ({
   createServerClient: vi.fn(),
 }));
@@ -16,15 +15,14 @@ describe("isSubscribed", () => {
 
   it("returns true when UNLOCK_ALL=true in non-production", async () => {
     process.env.UNLOCK_ALL = "true";
-    process.env.NODE_ENV = "test";
     const result = await isSubscribed("device-1", "year-1");
     expect(result).toBe(true);
   });
 
-  // Chainable query-builder mock: select → eq → eq → eq → gt → limit → maybeSingle
+  // Chainable query-builder mock: supports all chained methods including .is()
   function mockSupabase(data: unknown) {
     const builder: Record<string, unknown> = {};
-    for (const m of ["select", "eq", "gt", "limit"]) {
+    for (const m of ["select", "eq", "is", "gt", "limit"]) {
       builder[m] = vi.fn().mockReturnValue(builder);
     }
     builder.maybeSingle = vi.fn().mockResolvedValue({ data, error: null });
@@ -34,16 +32,31 @@ describe("isSubscribed", () => {
     return builder;
   }
 
-  it("returns true when an active, unexpired subscription exists", async () => {
+  it("returns true when a year-level active subscription exists", async () => {
     mockSupabase({ id: "sub-1" });
     expect(await isSubscribed("device-1", "year-1")).toBe(true);
   });
 
+  it("returns true when a subject-level active subscription exists", async () => {
+    // First query (year plan) returns null, second (subject plan) returns a row
+    const builder: Record<string, unknown> = {};
+    for (const m of ["select", "eq", "is", "gt", "limit"]) {
+      builder[m] = vi.fn().mockReturnValue(builder);
+    }
+    let call = 0;
+    builder.maybeSingle = vi.fn().mockImplementation(() => {
+      call++;
+      return Promise.resolve({ data: call === 1 ? null : { id: "sub-2" }, error: null });
+    });
+    vi.mocked(createServerClient).mockReturnValue({
+      from: vi.fn().mockReturnValue(builder),
+    } as never);
+    expect(await isSubscribed("device-1", "year-1", "subject-1")).toBe(true);
+  });
+
   it("returns false when no matching subscription", async () => {
-    // An expired subscription is filtered out by the current_period_end > now()
-    // predicate, so the query returns no row — same as the unsubscribed case.
     mockSupabase(null);
-    expect(await isSubscribed("device-1", "year-1")).toBe(false);
+    expect(await isSubscribed("device-1", "year-1", "subject-1")).toBe(false);
   });
 
   it("filters on status=active and current_period_end > now()", async () => {

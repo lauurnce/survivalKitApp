@@ -1,25 +1,31 @@
 import crypto from "crypto";
 
-// Single source of truth for the subscription price (centavos). The webhook
-// re-checks the paid amount against this so an altered/underpaid link can't
-// unlock content.
-export const SUBSCRIPTION_AMOUNT = 5000; // ₱50.00
+export const SUBJECT_AMOUNT = 5000;  // ₱50.00 — one subject
+export const YEAR_AMOUNT = 30000;    // ₱300.00 — all subjects in the year
 
 export async function createPaymongoLink(
   yearId: string,
   deviceId: string,
-  successUrl: string
+  successUrl: string,
+  subjectId: string | null = null
 ): Promise<{ checkoutUrl: string; linkId: string }> {
   const secretKey = process.env.PAYMONGO_SECRET_KEY;
   if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
 
   const encoded = Buffer.from(`${secretKey}:`).toString("base64");
 
-  // Deterministic idempotency key per (device, year) so a double-click or
-  // client retry returns the same link instead of creating duplicate charges.
+  const amount = subjectId ? SUBJECT_AMOUNT : YEAR_AMOUNT;
+  const description = subjectId
+    ? "BSIT Survival Kit — Subject Subscription"
+    : "BSIT Survival Kit — Year Subscription";
+  const remarks = subjectId
+    ? `year:${yearId} subject:${subjectId} device:${deviceId}`
+    : `year:${yearId} device:${deviceId}`;
+
+  // Idempotency key per (device, year, subject) — prevents duplicate charges on double-click
   const idempotencyKey = crypto
     .createHash("sha256")
-    .update(`subscribe:${deviceId}:${yearId}`)
+    .update(`subscribe:${deviceId}:${yearId}:${subjectId ?? "year"}`)
     .digest("hex");
 
   const res = await fetch("https://api.paymongo.com/v1/links", {
@@ -32,9 +38,9 @@ export async function createPaymongoLink(
     body: JSON.stringify({
       data: {
         attributes: {
-          amount: SUBSCRIPTION_AMOUNT, // centavos
-          description: "BSIT Survival Kit — Monthly Subscription",
-          remarks: `year:${yearId} device:${deviceId}`,
+          amount,
+          description,
+          remarks,
           redirect: { success: successUrl, failed: successUrl },
         },
       },

@@ -57,7 +57,7 @@ export default async function ReaderPage({ params }: Props) {
   // Only trust the device ID if its HMAC signature checks out — a forged or
   // copied cookie value verifies to null and grants no access.
   const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
-  const subscribed = deviceId ? await isSubscribed(deviceId, yearId) : false;
+  const subscribed = deviceId ? await isSubscribed(deviceId, yearId, subjectId) : false;
   const unlockActivities = devUnlockAll || subscribed;
 
   const allSections = [
@@ -104,6 +104,7 @@ export default async function ReaderPage({ params }: Props) {
             index={i}
             moduleId={moduleId}
             yearId={yearId}
+            subjectId={subjectId}
             unlockAll={unlockActivities}
             yearLabel={year?.label}
             subjectTitle={subject.title}

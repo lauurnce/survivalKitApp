@@ -4,8 +4,6 @@ import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
 
-// Creating payment links calls PayMongo and can incur cost/quota; legitimate
-// users hit this rarely, so keep the per-IP allowance tight.
 const limiter = createRateLimiter(5);
 
 export async function POST(req: NextRequest) {
@@ -14,14 +12,13 @@ export async function POST(req: NextRequest) {
   }
 
   const body = (await req.json().catch(() => null)) as
-    | { yearId?: string; deviceId?: string }
+    | { yearId?: string; subjectId?: string; deviceId?: string }
     | null;
+
   const yearId = body?.yearId;
+  const subjectId = body?.subjectId ?? null; // null = year plan
   const deviceId = body?.deviceId;
 
-  // Both IDs are interpolated into the PayMongo `remarks` string and later
-  // parsed back out by the webhook. Enforcing the UUID shape here prevents
-  // injecting extra `device:`/`year:` tokens that would redirect the grant.
   if (!isUuid(yearId) || !isUuid(deviceId)) {
     return NextResponse.json(
       { error: "yearId and deviceId must be valid UUIDs" },
@@ -29,8 +26,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Don't spend a PayMongo API call (or risk a charge) on a year that doesn't
-  // exist. The webhook also enforces the FK, but reject early here.
+  if (subjectId !== null && !isUuid(subjectId)) {
+    return NextResponse.json(
+      { error: "subjectId must be a valid UUID" },
+      { status: 400 }
+    );
+  }
+
   const supabase = createServerClient();
   const { data: year } = await supabase
     .from("years")
@@ -40,6 +42,19 @@ export async function POST(req: NextRequest) {
 
   if (!year) {
     return NextResponse.json({ error: "Unknown year" }, { status: 404 });
+  }
+
+  if (subjectId) {
+    const { data: subject } = await supabase
+      .from("subjects")
+      .select("id")
+      .eq("id", subjectId)
+      .eq("year_id", yearId)
+      .maybeSingle();
+
+    if (!subject) {
+      return NextResponse.json({ error: "Unknown subject" }, { status: 404 });
+    }
   }
 
   const ALLOWED_ORIGINS = [
@@ -56,12 +71,11 @@ export async function POST(req: NextRequest) {
     const { checkoutUrl } = await createPaymongoLink(
       yearId,
       deviceId,
-      successUrl
+      successUrl,
+      subjectId
     );
     return NextResponse.json({ checkoutUrl });
   } catch (err) {
-    // Log the real cause (may include PayMongo/API details) server-side only;
-    // return a generic message to avoid leaking internals to the caller.
     console.error("createPaymongoLink failed:", err);
     return NextResponse.json(
       { error: "Payment setup failed" },

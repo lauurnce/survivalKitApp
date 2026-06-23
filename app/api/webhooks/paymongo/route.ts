@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyPaymongoWebhook, SUBSCRIPTION_AMOUNT } from "@/lib/paymongo";
+import { verifyPaymongoWebhook, SUBJECT_AMOUNT, YEAR_AMOUNT } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
@@ -79,20 +79,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing link id" }, { status: 400 });
   }
 
-  // Defense in depth: if the payload reports an amount/status, it must match
-  // what we expect. Underpayment or a non-paid status must not grant access.
-  if (typeof paidAmount === "number" && paidAmount !== SUBSCRIPTION_AMOUNT) {
-    console.error(
-      `Webhook amount mismatch: got ${paidAmount}, expected ${SUBSCRIPTION_AMOUNT}`
-    );
-    return NextResponse.json({ error: "Amount mismatch" }, { status: 400 });
-  }
-  if (typeof paidStatus === "string" && paidStatus !== "paid") {
-    return NextResponse.json({ ok: true, ignored: "status" });
-  }
-
-  // remarks format: "year:<yearId> device:<deviceId>"
+  // remarks format:
+  //   subject plan: "year:<yearId> subject:<subjectId> device:<deviceId>"
+  //   year plan:    "year:<yearId> device:<deviceId>"
   const yearMatch = remarks.match(/year:([^\s]+)/);
+  const subjectMatch = remarks.match(/subject:([^\s]+)/);
   const deviceMatch = remarks.match(/device:([^\s]+)/);
 
   if (!yearMatch || !deviceMatch) {
@@ -100,13 +91,24 @@ export async function POST(req: NextRequest) {
   }
 
   const yearId = yearMatch[1];
+  const subjectId = subjectMatch ? subjectMatch[1] : null;
   const deviceId = deviceMatch[1];
 
-  // remarks is attacker-influenced (set at link creation). Only year_id has to
-  // be a UUID (FK to years); device_id is a client UUID we also enforce. Reject
-  // anything that doesn't match so a malformed/injected value can't be written.
   if (!isUuid(yearId) || !isUuid(deviceId)) {
     return NextResponse.json({ error: "Malformed remarks" }, { status: 400 });
+  }
+  if (subjectId !== null && !isUuid(subjectId)) {
+    return NextResponse.json({ error: "Malformed remarks" }, { status: 400 });
+  }
+
+  // Validate paid amount matches the plan: ₱50 subject, ₱300 year
+  const expectedAmount = subjectId ? SUBJECT_AMOUNT : YEAR_AMOUNT;
+  if (typeof paidAmount === "number" && paidAmount !== expectedAmount) {
+    console.error(`Webhook amount mismatch: got ${paidAmount}, expected ${expectedAmount}`);
+    return NextResponse.json({ error: "Amount mismatch" }, { status: 400 });
+  }
+  if (typeof paidStatus === "string" && paidStatus !== "paid") {
+    return NextResponse.json({ ok: true, ignored: "status" });
   }
 
   const supabase = createServerClient();
@@ -133,11 +135,12 @@ export async function POST(req: NextRequest) {
     {
       device_id: deviceId,
       year_id: yearId,
+      subject_id: subjectId,
       paymongo_link_id: linkId,
       status: "active",
       current_period_end: currentPeriodEnd.toISOString(),
     },
-    { onConflict: "device_id,year_id" }
+    { onConflict: "device_id,year_id,subject_id" }
   );
 
   if (error) {

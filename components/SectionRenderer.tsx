@@ -36,13 +36,14 @@ interface Props {
   index: number;
   moduleId: string;
   yearId: string;
+  subjectId: string;
   unlockAll: boolean;
   yearLabel?: string;
   subjectTitle?: string;
   moduleTitle?: string;
 }
 
-export function SectionRenderer({ section, index, moduleId, yearId, unlockAll, yearLabel, subjectTitle, moduleTitle }: Props) {
+export function SectionRenderer({ section, index, moduleId, yearId, subjectId, unlockAll, yearLabel, subjectTitle, moduleTitle }: Props) {
   useEffect(() => {
     if (section.kind === "content") {
       logSectionView(section.id, moduleId);
@@ -57,7 +58,7 @@ export function SectionRenderer({ section, index, moduleId, yearId, unlockAll, y
           <h2 className="font-serif text-2xl md:text-3xl text-ink leading-tight">{section.heading}</h2>
         </div>
         <div className="pl-10 md:pl-12">
-          <SubscribeGate yearId={yearId} yearLabel={yearLabel} />
+          <SubscribeGate yearId={yearId} subjectId={subjectId} yearLabel={yearLabel} subjectTitle={subjectTitle} />
         </div>
       </section>
     );
