@@ -21,49 +21,38 @@ describe("isSubscribed", () => {
     expect(result).toBe(true);
   });
 
-  it("returns true when active subscription exists", async () => {
-    const mockEq3 = vi.fn().mockReturnValue({
-      limit: vi.fn().mockReturnValue({
-        single: vi.fn().mockResolvedValue({ data: { id: "sub-1" }, error: null }),
-      }),
-    });
-    const mockEq2 = vi.fn().mockReturnValue({
-      eq: mockEq3,
-    });
-    const mockEq1 = vi.fn().mockReturnValue({
-      eq: mockEq2,
-    });
-    const mockSelect = vi.fn().mockReturnValue({
-      eq: mockEq1,
-    });
+  // Chainable query-builder mock: select → eq → eq → eq → gt → limit → maybeSingle
+  function mockSupabase(data: unknown) {
+    const builder: Record<string, unknown> = {};
+    for (const m of ["select", "eq", "gt", "limit"]) {
+      builder[m] = vi.fn().mockReturnValue(builder);
+    }
+    builder.maybeSingle = vi.fn().mockResolvedValue({ data, error: null });
     vi.mocked(createServerClient).mockReturnValue({
-      from: vi.fn().mockReturnValue({ select: mockSelect }),
+      from: vi.fn().mockReturnValue(builder),
     } as never);
+    return builder;
+  }
 
-    const result = await isSubscribed("device-1", "year-1");
-    expect(result).toBe(true);
+  it("returns true when an active, unexpired subscription exists", async () => {
+    mockSupabase({ id: "sub-1" });
+    expect(await isSubscribed("device-1", "year-1")).toBe(true);
   });
 
-  it("returns false when no active subscription", async () => {
-    const mockEq3 = vi.fn().mockReturnValue({
-      limit: vi.fn().mockReturnValue({
-        single: vi.fn().mockResolvedValue({ data: null, error: null }),
-      }),
-    });
-    const mockEq2 = vi.fn().mockReturnValue({
-      eq: mockEq3,
-    });
-    const mockEq1 = vi.fn().mockReturnValue({
-      eq: mockEq2,
-    });
-    const mockSelect = vi.fn().mockReturnValue({
-      eq: mockEq1,
-    });
-    vi.mocked(createServerClient).mockReturnValue({
-      from: vi.fn().mockReturnValue({ select: mockSelect }),
-    } as never);
+  it("returns false when no matching subscription", async () => {
+    // An expired subscription is filtered out by the current_period_end > now()
+    // predicate, so the query returns no row — same as the unsubscribed case.
+    mockSupabase(null);
+    expect(await isSubscribed("device-1", "year-1")).toBe(false);
+  });
 
-    const result = await isSubscribed("device-1", "year-1");
-    expect(result).toBe(false);
+  it("filters on status=active and current_period_end > now()", async () => {
+    const builder = mockSupabase({ id: "sub-1" });
+    await isSubscribed("device-1", "year-1");
+    expect(builder.eq).toHaveBeenCalledWith("status", "active");
+    expect(builder.gt).toHaveBeenCalledWith(
+      "current_period_end",
+      expect.any(String)
+    );
   });
 });

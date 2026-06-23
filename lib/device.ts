@@ -1,7 +1,24 @@
 "use client";
 
-const DEVICE_COOKIE = "bsit_device_id";
 const DEVICE_STORAGE_KEY = "bsit_device_id";
+
+let cookieSynced = false;
+
+// Ask the server to set an HttpOnly, signed device cookie. We can't sign it
+// client-side (the secret is server-only) and a plain JS cookie would be
+// forgeable, so the server mints the trusted value from our UUID.
+function syncDeviceCookie(id: string): void {
+  if (cookieSynced) return;
+  cookieSynced = true;
+  void fetch("/api/device", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ deviceId: id }),
+    keepalive: true,
+  }).catch(() => {
+    cookieSynced = false; // allow a retry on the next call
+  });
+}
 
 export function getDeviceId(): string {
   try {
@@ -12,8 +29,7 @@ export function getDeviceId(): string {
       id = crypto.randomUUID();
       localStorage.setItem(DEVICE_STORAGE_KEY, id);
     }
-    // Mirror to a cookie so server components can read it for subscription checks
-    document.cookie = `${DEVICE_COOKIE}=${id}; path=/; max-age=31536000; SameSite=Lax`;
+    syncDeviceCookie(id);
     return id;
   } catch {
     return "";

@@ -70,29 +70,38 @@ describe("verifyPaymongoWebhook", () => {
     delete process.env.PAYMONGO_WEBHOOK_SECRET;
   });
 
-  it("returns true for a valid signature header", () => {
-    const body = JSON.stringify({ data: { type: "link.payment.paid" } });
-    const timestamp = "1719100000";
-    const payload = `${timestamp}.${body}`;
+  function signHeader(body: string, timestamp: number): string {
     const hmac = crypto
       .createHmac("sha256", FAKE_WEBHOOK_SECRET)
-      .update(payload)
+      .update(`${timestamp}.${body}`)
       .digest("hex");
-    const header = `t=${timestamp},te=${hmac},li=${hmac}`;
+    return `t=${timestamp},te=${hmac},li=${hmac}`;
+  }
 
-    expect(verifyPaymongoWebhook(body, header)).toBe(true);
+  it("returns true for a valid, fresh signature header", () => {
+    const body = JSON.stringify({ data: { type: "link.payment.paid" } });
+    const now = Math.floor(Date.now() / 1000);
+    expect(verifyPaymongoWebhook(body, signHeader(body, now))).toBe(true);
+  });
+
+  it("returns false for a stale signature (replay protection)", () => {
+    const body = JSON.stringify({ data: { type: "link.payment.paid" } });
+    const stale = Math.floor(Date.now() / 1000) - 600; // 10 minutes old
+    // Signature is otherwise valid; only the timestamp is out of tolerance.
+    expect(verifyPaymongoWebhook(body, signHeader(body, stale))).toBe(false);
   });
 
   it("returns false for a tampered signature header", () => {
     const body = JSON.stringify({ data: { type: "link.payment.paid" } });
-    const timestamp = "1719100000";
-    const header = `t=${timestamp},te=badhmac,li=badhmac`;
+    const now = Math.floor(Date.now() / 1000);
+    const header = `t=${now},te=badhmac,li=badhmac`;
     expect(verifyPaymongoWebhook(body, header)).toBe(false);
   });
 
   it("returns false if PAYMONGO_WEBHOOK_SECRET is missing", () => {
     delete process.env.PAYMONGO_WEBHOOK_SECRET;
-    expect(verifyPaymongoWebhook("body", "t=123,te=abc,li=abc")).toBe(false);
+    const now = Math.floor(Date.now() / 1000);
+    expect(verifyPaymongoWebhook("body", `t=${now},te=abc,li=abc`)).toBe(false);
   });
 
   it("returns false for a malformed header with no timestamp", () => {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyPaymongoWebhook } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
+import { isUuid } from "@/lib/validation";
 
 export const runtime = "nodejs";
 
@@ -46,11 +47,33 @@ export async function POST(req: NextRequest) {
   const yearId = yearMatch[1];
   const deviceId = deviceMatch[1];
 
+  // remarks is attacker-influenced (set at link creation). Only year_id has to
+  // be a UUID (FK to years); device_id is a client UUID we also enforce. Reject
+  // anything that doesn't match so a malformed/injected value can't be written.
+  if (!isUuid(yearId) || !isUuid(deviceId)) {
+    return NextResponse.json({ error: "Malformed remarks" }, { status: 400 });
+  }
+
+  const supabase = createServerClient();
+
+  // Idempotency: each PayMongo link is single-use, so a replayed webhook
+  // carries a linkId we've already processed. Skip it rather than resetting
+  // current_period_end (which would silently extend access on every replay).
+  const { data: existingLink } = await supabase
+    .from("subscriptions")
+    .select("id")
+    .eq("paymongo_link_id", linkId)
+    .limit(1)
+    .maybeSingle();
+
+  if (existingLink) {
+    return NextResponse.json({ ok: true, deduped: true });
+  }
+
   // Grant 31 days of access
   const currentPeriodEnd = new Date();
   currentPeriodEnd.setDate(currentPeriodEnd.getDate() + 31);
 
-  const supabase = createServerClient();
   const { error } = await supabase.from("subscriptions").upsert(
     {
       device_id: deviceId,

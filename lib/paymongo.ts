@@ -40,6 +40,10 @@ export async function createPaymongoLink(
   };
 }
 
+// Reject webhooks whose signed timestamp is older/newer than this window to
+// blunt replay attacks (PayMongo's recommended tolerance).
+const WEBHOOK_TOLERANCE_SECONDS = 300;
+
 export function verifyPaymongoWebhook(rawBody: string, signatureHeader: string): boolean {
   const secret = process.env.PAYMONGO_WEBHOOK_SECRET;
   if (!secret) return false;
@@ -52,6 +56,11 @@ export function verifyPaymongoWebhook(rawBody: string, signatureHeader: string):
   const teHmac = parts["te"];
 
   if (!timestamp || !teHmac) return false;
+
+  // Reject stale/replayed signatures before doing the constant-time compare.
+  const ts = Number(timestamp);
+  if (!Number.isFinite(ts)) return false;
+  if (Math.abs(Date.now() / 1000 - ts) > WEBHOOK_TOLERANCE_SECONDS) return false;
 
   const payload = `${timestamp}.${rawBody}`;
   const expected = crypto

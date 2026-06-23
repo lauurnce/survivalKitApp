@@ -15,8 +15,10 @@ export async function isSubscribed(deviceId: string, yearId: string): Promise<bo
     .eq("device_id", deviceId)
     .eq("year_id", yearId)
     .eq("status", "active")
+    // Access lapses once the paid period ends; status alone is not enough.
+    .gt("current_period_end", new Date().toISOString())
     .limit(1)
-    .single();
+    .maybeSingle();
 
   return !!data;
 }

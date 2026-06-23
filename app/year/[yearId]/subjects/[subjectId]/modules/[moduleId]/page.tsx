@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
 import { isSubscribed } from "@/lib/subscriptions";
+import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { BackLink } from "@/components/BackLink";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import { PageTracker } from "@/components/PageTracker";
@@ -53,7 +54,9 @@ export default async function ReaderPage({ params }: Props) {
 
   const devUnlockAll = process.env.UNLOCK_ALL === "true";
   const cookieStore = await cookies();
-  const deviceId = cookieStore.get("bsit_device_id")?.value ?? null;
+  // Only trust the device ID if its HMAC signature checks out — a forged or
+  // copied cookie value verifies to null and grants no access.
+  const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
   const subscribed = deviceId ? await isSubscribed(deviceId, yearId) : false;
   const unlockActivities = devUnlockAll || subscribed;
 
