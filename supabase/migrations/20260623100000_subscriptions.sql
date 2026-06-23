@@ -10,10 +10,9 @@ create table subscriptions (
   created_at     timestamptz not null default now()
 );
 
--- One active subscription per device per year
-create unique index subscriptions_device_year_active_idx
-  on subscriptions (device_id, year_id)
-  where status = 'active';
+-- Unconditional unique constraint so ON CONFLICT works for all rows (active, paused, cancelled)
+create unique index subscriptions_device_year_idx
+  on subscriptions (device_id, year_id);
 
 -- RLS: devices can only read their own subscriptions
 alter table subscriptions enable row level security;

@@ -40,17 +40,27 @@ export async function createPaymongoLink(
   };
 }
 
-export function verifyPaymongoWebhook(rawBody: string, signature: string): boolean {
+export function verifyPaymongoWebhook(rawBody: string, signatureHeader: string): boolean {
   const secret = process.env.PAYMONGO_WEBHOOK_SECRET;
   if (!secret) return false;
 
+  // Header format: "t=<timestamp>,te=<hmac>,li=<hmac>"
+  const parts = Object.fromEntries(
+    signatureHeader.split(",").map(part => part.split("=") as [string, string])
+  );
+  const timestamp = parts["t"];
+  const teHmac = parts["te"];
+
+  if (!timestamp || !teHmac) return false;
+
+  const payload = `${timestamp}.${rawBody}`;
   const expected = crypto
     .createHmac("sha256", secret)
-    .update(rawBody)
+    .update(payload)
     .digest("hex");
 
   try {
-    return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
+    return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(teHmac));
   } catch {
     return false;
   }

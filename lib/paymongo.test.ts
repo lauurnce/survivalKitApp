@@ -70,23 +70,32 @@ describe("verifyPaymongoWebhook", () => {
     delete process.env.PAYMONGO_WEBHOOK_SECRET;
   });
 
-  it("returns true for a valid signature", () => {
+  it("returns true for a valid signature header", () => {
     const body = JSON.stringify({ data: { type: "link.payment.paid" } });
-    const sig = crypto
+    const timestamp = "1719100000";
+    const payload = `${timestamp}.${body}`;
+    const hmac = crypto
       .createHmac("sha256", FAKE_WEBHOOK_SECRET)
-      .update(body)
+      .update(payload)
       .digest("hex");
+    const header = `t=${timestamp},te=${hmac},li=${hmac}`;
 
-    expect(verifyPaymongoWebhook(body, sig)).toBe(true);
+    expect(verifyPaymongoWebhook(body, header)).toBe(true);
   });
 
-  it("returns false for an invalid signature", () => {
+  it("returns false for a tampered signature header", () => {
     const body = JSON.stringify({ data: { type: "link.payment.paid" } });
-    expect(verifyPaymongoWebhook(body, "badsignature")).toBe(false);
+    const timestamp = "1719100000";
+    const header = `t=${timestamp},te=badhmac,li=badhmac`;
+    expect(verifyPaymongoWebhook(body, header)).toBe(false);
   });
 
   it("returns false if PAYMONGO_WEBHOOK_SECRET is missing", () => {
     delete process.env.PAYMONGO_WEBHOOK_SECRET;
-    expect(verifyPaymongoWebhook("body", "sig")).toBe(false);
+    expect(verifyPaymongoWebhook("body", "t=123,te=abc,li=abc")).toBe(false);
+  });
+
+  it("returns false for a malformed header with no timestamp", () => {
+    expect(verifyPaymongoWebhook("body", "te=abc")).toBe(false);
   });
 });

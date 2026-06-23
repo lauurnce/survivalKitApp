@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
+import { isSubscribed } from "@/lib/subscriptions";
 import { BackLink } from "@/components/BackLink";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import { PageTracker } from "@/components/PageTracker";
@@ -50,6 +52,10 @@ export default async function ReaderPage({ params }: Props) {
     .order("sort_order");
 
   const devUnlockAll = process.env.UNLOCK_ALL === "true";
+  const cookieStore = await cookies();
+  const deviceId = cookieStore.get("x-device-id")?.value ?? null;
+  const subscribed = deviceId ? await isSubscribed(deviceId, yearId) : false;
+  const unlockActivities = devUnlockAll || subscribed;
 
   const allSections = [
     ...(contentSections ?? []),
@@ -95,7 +101,7 @@ export default async function ReaderPage({ params }: Props) {
             index={i}
             moduleId={moduleId}
             yearId={yearId}
-            unlockAll={devUnlockAll}
+            unlockAll={unlockActivities}
             yearLabel={year?.label}
             subjectTitle={subject.title}
             moduleTitle={mod.title}
