@@ -46,11 +46,12 @@ export default async function AdminPage() {
     { data: subjectCounters },
     { data: moduleCounters },
     { data: sectionEventRaw },
-    { data: pendingRaw },
+    { data: _pendingRaw },
     { data: approvedRaw },
     { data: activeRaw },
     { data: userTotalsRaw },
     { data: waitlistRaw },
+    { data: subscriptionRaw },
   ] = await Promise.all([
     // Funnel distinct-device counts per event_type, aggregated in Postgres
     // (the old raw .limit() was capped at 1000 rows and undercounted).
@@ -97,6 +98,10 @@ export default async function AdminPage() {
       .select("id, email, name, source, device_type, willing_to_pay, needs_capstone, year_label, subject_title, module_title, created_at")
       .order("created_at", { ascending: false })
       .limit(500),
+    supabase
+      .from("subscriptions")
+      .select("id, created_at, status")
+      .order("created_at", { ascending: false }),
   ]);
 
   const funnelCounts = new Map<string, number>();
@@ -172,15 +177,6 @@ export default async function AdminPage() {
     };
   });
 
-  const pendingUnlocks = (pendingRaw ?? []).map((u) => ({
-    id: u.id,
-    device_id: u.device_id,
-    gcash_ref: u.gcash_ref,
-    amount: u.amount,
-    created_at: u.created_at,
-    module_title: getTitle((u as { modules: unknown }).modules),
-  }));
-
   // "Today" in PH time — last bar in the scaffolded window above
   const todayStrPH = todayPH.toISOString().slice(0, 10);
   const todayUsers = dau.find((d) => d.date === todayStrPH)?.unique ?? 0;
@@ -199,7 +195,13 @@ export default async function AdminPage() {
   const newUsers = Number(userTotals.new_users ?? 0);
   const recurringUsers = Number(userTotals.recurring_users ?? 0);
 
-  const totalRevenue = (approvedRaw ?? []).reduce((sum, u) => sum + (u.amount ?? 0), 0);
+  const subscriptions = subscriptionRaw ?? [];
+  const activeSubscribers = subscriptions.filter(s => s.status === "active").length;
+  const totalRevenue = activeSubscribers * 50; // ₱50/subscriber, simplified
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const newSubscribersToday = subscriptions.filter(
+    s => s.created_at.slice(0, 10) === todayStr
+  ).length;
 
   const waitlistEntries = (waitlistRaw ?? []) as {
     id: string;
@@ -222,7 +224,6 @@ export default async function AdminPage() {
       topSubjects={topSubjects}
       topModules={topModules}
       topSections={topSections}
-      pendingUnlocks={pendingUnlocks}
       totalUniqueUsers={totalUniqueUsers}
       todayUsers={todayUsers}
       last7Sessions={last7Sessions}
@@ -231,6 +232,8 @@ export default async function AdminPage() {
       newUsers={newUsers}
       recurringUsers={recurringUsers}
       totalRevenue={totalRevenue}
+      activeSubscribers={activeSubscribers}
+      newSubscribersToday={newSubscribersToday}
       waitlistEntries={waitlistEntries}
     />
   );
