@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
+import { getCurrentUserId } from "@/lib/auth/currentUser";
 
 // IP-based rate limiter — bounded map to prevent unbounded memory growth.
 // Mirrors the approach used by app/api/events/route.ts.
@@ -88,6 +89,7 @@ export async function POST(req: NextRequest) {
     }
 
     const supabase = createServerClient();
+    const userId = await getCurrentUserId();
 
     // Determine the desired next state. If `completed` is provided, honour it;
     // otherwise toggle based on whether a row already exists.
@@ -107,7 +109,10 @@ export async function POST(req: NextRequest) {
     if (nextCompleted) {
       await supabase
         .from("module_progress")
-        .upsert({ device_id, module_id }, { onConflict: "device_id,module_id" });
+        .upsert(
+          { device_id, module_id, ...(userId ? { user_id: userId } : {}) },
+          { onConflict: "device_id,module_id" },
+        );
     } else {
       await supabase
         .from("module_progress")
