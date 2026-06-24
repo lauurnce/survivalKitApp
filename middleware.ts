@@ -1,3 +1,4 @@
+import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 
 // Middleware runs in Edge Runtime — use Web Crypto API (not Node's crypto module)
@@ -45,6 +46,24 @@ async function verifyAdminToken(token: string): Promise<boolean> {
 }
 
 export async function middleware(req: NextRequest) {
+  const res = NextResponse.next({ request: req });
+
+  // Refresh the Supabase auth session cookie on every request.
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    {
+      cookies: {
+        getAll: () => req.cookies.getAll(),
+        setAll: (toSet) =>
+          toSet.forEach(({ name, value, options }) =>
+            res.cookies.set(name, value, options),
+          ),
+      },
+    },
+  );
+  await supabase.auth.getUser();
+
   const { pathname } = req.nextUrl;
 
   // Guard all /admin routes except the login page itself
@@ -58,9 +77,11 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  return res;
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };
