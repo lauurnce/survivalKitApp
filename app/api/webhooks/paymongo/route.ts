@@ -3,6 +3,7 @@ import { verifyPaymongoWebhook, SUBJECT_AMOUNT, YEAR_AMOUNT } from "@/lib/paymon
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
+import { recordPayment } from "@/lib/payments";
 
 export const runtime = "nodejs";
 
@@ -27,6 +28,9 @@ interface PaymongoEvent {
           status?: string;
           // Some PayMongo resources also expose the id under attributes.
           id?: string;
+          // PayMongo emits paid_at as Unix seconds on payment resources.
+          // Untrusted display metadata only — never gates access.
+          paid_at?: number;
         };
       };
     };
@@ -113,40 +117,25 @@ export async function POST(req: NextRequest) {
 
   const supabase = createServerClient();
 
-  // Idempotency: each PayMongo link is single-use, so a replayed webhook
-  // carries a linkId we've already processed. Skip it rather than resetting
-  // current_period_end (which would silently extend access on every replay).
-  const { data: existingLink } = await supabase
-    .from("subscriptions")
-    .select("id")
-    .eq("paymongo_link_id", linkId)
-    .limit(1)
-    .maybeSingle();
+  const paidAtSeconds = resource.attributes.paid_at;
+  const paidAt =
+    typeof paidAtSeconds === "number"
+      ? new Date(paidAtSeconds * 1000)
+      : new Date();
 
-  if (existingLink) {
-    return NextResponse.json({ ok: true, deduped: true });
-  }
-
-  // Grant 31 days of access
-  const currentPeriodEnd = new Date();
-  currentPeriodEnd.setDate(currentPeriodEnd.getDate() + 31);
-
-  const { error } = await supabase.from("subscriptions").upsert(
-    {
-      device_id: deviceId,
-      year_id: yearId,
-      subject_id: subjectId,
-      paymongo_link_id: linkId,
-      status: "active",
-      current_period_end: currentPeriodEnd.toISOString(),
-    },
-    { onConflict: "device_id,year_id,subject_id" }
-  );
-
-  if (error) {
+  try {
+    const { deduped } = await recordPayment(supabase, {
+      linkId,
+      deviceId,
+      yearId,
+      amount: typeof paidAmount === "number" ? paidAmount : expectedAmount,
+      paidAt,
+    });
+    if (deduped) return NextResponse.json({ ok: true, deduped: true });
+  } catch (err) {
     // Log details server-side; return a generic message so internal DB errors
     // aren't disclosed to the caller.
-    console.error("Subscription upsert failed:", error.message);
+    console.error("recordPayment failed:", err instanceof Error ? err.message : err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 
