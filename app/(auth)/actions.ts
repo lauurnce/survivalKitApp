@@ -4,14 +4,7 @@ import { cookies } from "next/headers";
 import { createSSRServerClient } from "@/lib/supabase/ssrServer";
 import { claimDeviceRows } from "@/lib/auth/claim";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-export function validateCredentials(email: string, password: string): string | null {
-  if (!EMAIL_RE.test(email)) return "Please enter a valid email address.";
-  if (password.length < 8) return "Password must be at least 8 characters.";
-  return null;
-}
+import { validateCredentials } from "@/lib/auth/validateCredentials";
 
 async function claimForUser(userId: string) {
   const jar = await cookies();

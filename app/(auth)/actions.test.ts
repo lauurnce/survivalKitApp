@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validateCredentials } from "./actions";
+import { validateCredentials } from "@/lib/auth/validateCredentials";
 
 describe("validateCredentials", () => {
   it("rejects a malformed email", () => {
