@@ -44,7 +44,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-paper text-ink font-sans min-h-screen flex flex-col">
+      <body className="font-sans min-h-screen flex flex-col">
         <ThemeToggle />
         <div className="flex-1">{children}</div>
         <footer className="border-t border-ink-faint/20 px-6 py-4 md:px-16">
