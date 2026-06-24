@@ -9,12 +9,13 @@ interface Props {
   subjectId: string;
   yearLabel?: string;
   subjectTitle?: string;
+  loggedIn: boolean;
 }
 
 const MAX_POLLS = 10;
 const POLL_INTERVAL_MS = 3000;
 
-export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Props) {
+export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, loggedIn }: Props) {
   const [loading, setLoading] = useState<"subject" | "year" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -164,6 +165,19 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
         <p className="font-sans text-base text-ink-muted">
           Access unlocked! Refresh the page to continue.
         </p>
+      </div>
+    );
+  }
+
+  // ── render: login wall (only for anon users who aren't already subscribed) ─
+
+  if (!loggedIn) {
+    const next = typeof window !== "undefined" ? window.location.pathname : "/";
+    return (
+      <div className="border border-ink-faint/30 p-6 mt-4">
+        <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-2">Activity — Subscribers Only</p>
+        <p className="font-sans text-base text-ink-muted mb-6">Log in to your account to unlock activities.</p>
+        <a href={`/login?next=${encodeURIComponent(next)}`} className="inline-block bg-accent px-4 py-2 text-paper">Log in to subscribe</a>
       </div>
     );
   }
