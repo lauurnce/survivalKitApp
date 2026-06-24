@@ -1,7 +1,26 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 
-type Action = (fd: FormData) => Promise<{ error?: string }>;
+// The server action returns { error?: string } on failure, or redirects on
+// success. useActionState wires it directly to the form, so submission works
+// via native form POST even before/without client hydration (progressive
+// enhancement) — no fragile client-side onClick wrapper.
+type State = { error?: string };
+type Action = (state: State, formData: FormData) => Promise<State>;
+
+function SubmitButton({ label }: { label: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="w-full rounded bg-accent px-4 py-2 font-medium text-paper transition-opacity disabled:opacity-60"
+    >
+      {pending ? "…" : label}
+    </button>
+  );
+}
 
 export function AuthForm({
   mode,
@@ -12,21 +31,12 @@ export function AuthForm({
   action: Action;
   next: string;
 }) {
-  const [error, setError] = useState<string | null>(null);
-  const [pending, start] = useTransition();
+  const [state, formAction] = useActionState(action, {});
   const title = mode === "login" ? "Log in" : "Create account";
 
   return (
-    <form
-      className="mx-auto mt-24 max-w-sm space-y-4 px-6"
-      action={(fd) =>
-        start(async () => {
-          const r = await action(fd);
-          if (r?.error) setError(r.error);
-        })
-      }
-    >
-      <h1 className="font-serif text-3xl text-ink dark:text-ink">{title}</h1>
+    <form className="mx-auto mt-24 max-w-sm space-y-4 px-6" action={formAction}>
+      <h1 className="font-serif text-3xl text-ink">{title}</h1>
       <input type="hidden" name="next" value={next} />
       <label className="block text-sm text-ink-muted">
         Email
@@ -49,18 +59,12 @@ export function AuthForm({
           className="mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-ink"
         />
       </label>
-      {error && (
+      {state?.error && (
         <p role="alert" className="text-sm text-accent">
-          {error}
+          {state.error}
         </p>
       )}
-      <button
-        type="submit"
-        disabled={pending}
-        className="w-full rounded bg-accent px-4 py-2 font-medium text-paper disabled:opacity-60"
-      >
-        {pending ? "…" : title}
-      </button>
+      <SubmitButton label={title} />
       <p className="text-sm text-ink-muted">
         {mode === "login" ? (
           <>

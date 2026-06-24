@@ -12,7 +12,15 @@ async function claimForUser(userId: string) {
   if (deviceId) await claimDeviceRows(userId, deviceId);
 }
 
-export async function signUpAction(formData: FormData): Promise<{ error?: string }> {
+// Signature matches React 19's useActionState: (prevState, formData).
+// On success these call redirect(), which throws NEXT_REDIRECT (normal control
+// flow). On failure they return { error } so the form can render the message.
+type AuthState = { error?: string };
+
+export async function signUpAction(
+  _prevState: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "/account");
@@ -26,7 +34,10 @@ export async function signUpAction(formData: FormData): Promise<{ error?: string
   redirect(next);
 }
 
-export async function signInAction(formData: FormData): Promise<{ error?: string }> {
+export async function signInAction(
+  _prevState: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "/account");
