@@ -68,4 +68,17 @@ describe("isSubscribed", () => {
       expect.any(String)
     );
   });
+
+  it("queries by user_id when a valid userId is supplied", async () => {
+    const builder = mockSupabase({ id: "sub-1" });
+    await isSubscribed(
+      "device-1",
+      "11111111-1111-1111-1111-111111111111",
+      undefined,
+      "33333333-3333-3333-3333-333333333333"
+    );
+    const eqCalls = (builder.eq as ReturnType<typeof vi.fn>).mock.calls as Array<[string, string]>;
+    expect(eqCalls.some(([c]) => c === "user_id")).toBe(true);
+    expect(eqCalls.some(([c]) => c === "device_id")).toBe(false);
+  });
 });

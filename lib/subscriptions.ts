@@ -1,9 +1,11 @@
 import { createServerClient } from "./supabase/server";
+import { isUuid } from "./validation";
 
 export async function isSubscribed(
   deviceId: string,
   yearId: string,
-  subjectId?: string
+  subjectId?: string,
+  userId?: string,
 ): Promise<boolean> {
   if (process.env.UNLOCK_ALL === "true") {
     if (process.env.NODE_ENV === "production") {
@@ -14,12 +16,15 @@ export async function isSubscribed(
 
   const now = new Date().toISOString();
   const supabase = createServerClient();
+  const useUser = isUuid(userId);
+  const col = useUser ? "user_id" : "device_id";
+  const val = useUser ? (userId as string) : deviceId;
 
   // Year-level plan (subject_id IS NULL) unlocks everything in the year
   const { data: yearPlan } = await supabase
     .from("subscriptions")
     .select("id")
-    .eq("device_id", deviceId)
+    .eq(col, val)
     .eq("year_id", yearId)
     .is("subject_id", null)
     .eq("status", "active")
@@ -35,7 +40,7 @@ export async function isSubscribed(
   const { data: subjectPlan } = await supabase
     .from("subscriptions")
     .select("id")
-    .eq("device_id", deviceId)
+    .eq(col, val)
     .eq("year_id", yearId)
     .eq("subject_id", subjectId)
     .eq("status", "active")
