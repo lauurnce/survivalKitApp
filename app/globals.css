@@ -12,6 +12,23 @@
   --color-taupe: #BDB9B2;
 }
 
+.dark {
+  --color-paper: #1A1F23;
+  --color-ink: #F7F5F3;
+  --color-ink-muted: #A8ADB5;
+  --color-ink-faint: #6B6F75;
+  --color-accent: #E0492B;
+  --color-navy: #F0EDE9;
+  --color-taupe: #4A4740;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1A1F23;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #6B6F75;
+}
+
 html {
   background-color: var(--color-paper);
   color: var(--color-ink);
