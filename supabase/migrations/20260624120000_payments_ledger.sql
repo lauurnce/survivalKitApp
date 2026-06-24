@@ -1,6 +1,8 @@
 -- Append-only ledger: one immutable row per successful link.payment.paid.
 -- subscriptions remains the access-control table; this is the audit record.
-create table payments (
+-- Idempotent so it converges with the already-provisioned live table and is
+-- safe to run on a fresh database.
+create table if not exists payments (
   id                uuid primary key default gen_random_uuid(),
   paymongo_link_id  text not null,
   device_id         text not null,
@@ -16,15 +18,16 @@ create table payments (
 
 -- Single-use link => unique. Makes the replay/dedup check race-safe, mirroring
 -- the existing subscriptions_paymongo_link_id_idx guard.
-create unique index payments_paymongo_link_id_idx on payments (paymongo_link_id);
+create unique index if not exists payments_paymongo_link_id_idx on payments (paymongo_link_id);
 
 -- Dashboard reads by recency.
-create index payments_paid_at_idx on payments (paid_at desc);
+create index if not exists payments_paid_at_idx on payments (paid_at desc);
 
 alter table payments enable row level security;
 
 -- Mirror the subscriptions select policy: a device may read only its own
 -- payments. The webhook writes via the service role, which bypasses RLS.
+drop policy if exists "device reads own payments" on payments;
 create policy "device reads own payments"
   on payments for select
   using (device_id = current_setting('app.device_id', true));
