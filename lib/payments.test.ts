@@ -107,6 +107,34 @@ describe("recordPayment", () => {
     expect(res).toEqual({ recorded: false, deduped: true });
     expect(subsInsert).not.toHaveBeenCalled();
   });
+
+  it("returns {recorded:true,deduped:false} when grant INSERT races and gets 23505 (concurrent delivery)", async () => {
+    // The payments ledger insert succeeds (no insertError), but the subscriptions
+    // INSERT returns 23505 because a concurrent delivery already created the row.
+    // A race on the grant should NOT throw — the payment was recorded; the active
+    // subscription already exists (correct end state).
+    const subsInsert23505 = vi.fn().mockResolvedValue({ error: { code: "23505", message: "duplicate key" } });
+    const paymentsBuilder: Record<string, unknown> = {};
+    paymentsBuilder.select = vi.fn().mockReturnValue(paymentsBuilder);
+    paymentsBuilder.eq = vi.fn().mockReturnValue(paymentsBuilder);
+    paymentsBuilder.limit = vi.fn().mockReturnValue(paymentsBuilder);
+    paymentsBuilder.maybeSingle = vi.fn().mockResolvedValue({ data: null, error: null });
+    paymentsBuilder.insert = vi.fn().mockResolvedValue({ error: null });
+
+    const subsBuilder: Record<string, unknown> = {};
+    subsBuilder.select = vi.fn().mockReturnValue(subsBuilder);
+    subsBuilder.eq = vi.fn().mockReturnValue(subsBuilder);
+    subsBuilder.is = vi.fn().mockReturnValue(subsBuilder);
+    // existingSub = null → INSERT path is taken
+    subsBuilder.maybeSingle = vi.fn().mockResolvedValue({ data: null, error: null });
+    subsBuilder.update = vi.fn().mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) });
+    subsBuilder.insert = subsInsert23505;
+
+    const supabase = { from: vi.fn((t: string) => (t === "payments" ? paymentsBuilder : subsBuilder)) };
+    const res = await recordPayment(supabase as never, input);
+    expect(res).toEqual({ recorded: true, deduped: false });
+    expect(subsInsert23505).toHaveBeenCalledOnce();
+  });
 });
 
 describe("sumRevenueForMonth", () => {

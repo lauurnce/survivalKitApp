@@ -41,6 +41,18 @@ export default async function AdminPage() {
 
   const supabase = createServerClient();
 
+  // Compute PH-month boundaries in UTC for the uncapped revenue query.
+  // paid_at is timestamptz so we must filter using UTC instants that correspond
+  // to the start of the current PH calendar month and the start of the next.
+  // We derive these BEFORE the Promise.all so we can use them in the query.
+  const _todayPHForBounds = new Date(Date.now() + PH_OFFSET_MS);
+  const _phYear = _todayPHForBounds.getUTCFullYear();
+  const _phMonth = _todayPHForBounds.getUTCMonth();
+  const _monthStartUtcMs = Date.UTC(_phYear, _phMonth, 1) - PH_OFFSET_MS;
+  const _nextMonthStartUtcMs = Date.UTC(_phYear, _phMonth + 1, 1) - PH_OFFSET_MS;
+  const _monthStartUtcIso = new Date(_monthStartUtcMs).toISOString();
+  const _nextMonthStartUtcIso = new Date(_nextMonthStartUtcMs).toISOString();
+
   const [
     { data: funnelRaw },
     { data: dauRaw },
@@ -54,6 +66,10 @@ export default async function AdminPage() {
     { data: waitlistRaw },
     { data: subscriptionRaw },
     { data: paymentsRaw },
+    // Revenue query is SEPARATE from paymentsRaw and has NO row cap. The
+    // transactions list (paymentsRaw) is capped at 100 for display; using it
+    // for revenue would silently undercount once lifetime payments exceed 100.
+    { data: revenueRaw },
   ] = await Promise.all([
     // Funnel distinct-device counts per event_type, aggregated in Postgres
     // (the old raw .limit() was capped at 1000 rows and undercounted).
@@ -109,6 +125,13 @@ export default async function AdminPage() {
       .select("id, device_id, year_id, subject_id, amount, paymongo_link_id, paid_at")
       .order("paid_at", { ascending: false })
       .limit(100),
+    // Uncapped current-month fetch for revenue: only amount + paid_at are
+    // needed. No .limit() so all payments in the month are included.
+    supabase
+      .from("payments")
+      .select("amount, paid_at")
+      .gte("paid_at", _monthStartUtcIso)
+      .lt("paid_at", _nextMonthStartUtcIso),
   ]);
 
   const funnelCounts = new Map<string, number>();
@@ -214,15 +237,21 @@ export default async function AdminPage() {
     paid_at: string;
   }[];
 
+  // Revenue rows: uncapped set of all payments in the current PH month.
+  // Using this instead of `payments` (which is capped at 100) ensures the
+  // revenue tile stays accurate once lifetime payments exceed 100.
+  const revenueRows = (revenueRaw ?? []) as { amount: number; paid_at: string }[];
+
   // Real revenue = sum of ledger amounts in the current PH calendar month.
   const totalRevenue = sumRevenueForMonth(
-    payments,
+    revenueRows,
     todayPH.getUTCFullYear(),
     todayPH.getUTCMonth()
   );
 
   // "New Today" counts payments (renewals included), not subscription rows.
-  const newSubscribersToday = payments.filter(
+  // Uses the uncapped revenueRows (today is always within the current month).
+  const newSubscribersToday = revenueRows.filter(
     p => new Date(new Date(p.paid_at).getTime() + PH_OFFSET_MS).toISOString().slice(0, 10) === todayStrPH
   ).length;
 

@@ -87,7 +87,15 @@ export async function recordPayment(
     }));
   }
 
-  if (upsertError) throw new Error(upsertError.message);
+  if (upsertError) {
+    // 23505 = unique_violation on the INSERT path only: a concurrent payment
+    // delivery already created the active subscription row. The ledger row was
+    // written by this call, so this is NOT a dedup — the payment was recorded.
+    if (!existingSub && (upsertError as { code?: string }).code === "23505") {
+      return { recorded: true, deduped: false };
+    }
+    throw new Error(upsertError.message);
+  }
 
   return { recorded: true, deduped: false };
 }
