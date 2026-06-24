@@ -89,6 +89,7 @@ export async function POST(req: NextRequest) {
   const yearMatch = remarks.match(/year:([^\s]+)/);
   const subjectMatch = remarks.match(/subject:([^\s]+)/);
   const deviceMatch = remarks.match(/device:([^\s]+)/);
+  const userMatch = remarks.match(/user:([^\s]+)/);
 
   if (!yearMatch || !deviceMatch) {
     return NextResponse.json({ error: "Missing remarks" }, { status: 400 });
@@ -97,6 +98,7 @@ export async function POST(req: NextRequest) {
   const yearId = yearMatch[1];
   const subjectId = subjectMatch ? subjectMatch[1] : null;
   const deviceId = deviceMatch[1];
+  const userId = userMatch && isUuid(userMatch[1]) ? userMatch[1] : null;
 
   if (!isUuid(yearId) || !isUuid(deviceId)) {
     return NextResponse.json({ error: "Malformed remarks" }, { status: 400 });
@@ -131,6 +133,7 @@ export async function POST(req: NextRequest) {
       subjectId,
       amount: typeof paidAmount === "number" ? paidAmount : expectedAmount,
       paidAt,
+      userId,
     });
     if (deduped) return NextResponse.json({ ok: true, deduped: true });
   } catch (err) {

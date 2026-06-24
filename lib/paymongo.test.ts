@@ -96,6 +96,78 @@ describe("createPaymongoLink", () => {
   });
 });
 
+describe("remarks user: field", () => {
+  it("parses an optional user id from remarks", () => {
+    const remarks =
+      "year:11111111-1111-1111-1111-111111111111 device:22222222-2222-2222-2222-222222222222 user:33333333-3333-3333-3333-333333333333";
+    expect(remarks.match(/user:([^\s]+)/)?.[1]).toBe(
+      "33333333-3333-3333-3333-333333333333"
+    );
+  });
+
+  it("does not match user: when userId is absent from remarks", () => {
+    const remarks =
+      "year:11111111-1111-1111-1111-111111111111 device:22222222-2222-2222-2222-222222222222";
+    expect(remarks.match(/user:([^\s]+)/)?.[1]).toBeUndefined();
+  });
+
+  it("includes user:<id> in remarks when userId is passed to createPaymongoLink", async () => {
+    process.env.PAYMONGO_SECRET_KEY = FAKE_SECRET;
+    vi.stubGlobal("fetch", vi.fn());
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: {
+          id: "link_u1",
+          attributes: { checkout_url: "https://checkout.paymongo.com/u1" },
+        },
+      }),
+    } as Response);
+
+    await createPaymongoLink(
+      "year-1",
+      "device-1",
+      "https://example.com/success",
+      null,
+      "33333333-3333-3333-3333-333333333333"
+    );
+
+    const sentBody = JSON.parse(
+      vi.mocked(fetch).mock.calls[0][1]!.body as string
+    );
+    expect(sentBody.data.attributes.remarks).toContain(
+      "user:33333333-3333-3333-3333-333333333333"
+    );
+
+    vi.unstubAllGlobals();
+    delete process.env.PAYMONGO_SECRET_KEY;
+  });
+
+  it("omits user: from remarks when userId is not passed to createPaymongoLink", async () => {
+    process.env.PAYMONGO_SECRET_KEY = FAKE_SECRET;
+    vi.stubGlobal("fetch", vi.fn());
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: {
+          id: "link_u2",
+          attributes: { checkout_url: "https://checkout.paymongo.com/u2" },
+        },
+      }),
+    } as Response);
+
+    await createPaymongoLink("year-1", "device-1", "https://example.com/success");
+
+    const sentBody = JSON.parse(
+      vi.mocked(fetch).mock.calls[0][1]!.body as string
+    );
+    expect(sentBody.data.attributes.remarks).not.toContain("user:");
+
+    vi.unstubAllGlobals();
+    delete process.env.PAYMONGO_SECRET_KEY;
+  });
+});
+
 describe("verifyPaymongoWebhook", () => {
   beforeEach(() => {
     process.env.PAYMONGO_WEBHOOK_SECRET = FAKE_WEBHOOK_SECRET;

@@ -12,6 +12,7 @@ export interface RecordPaymentInput {
   subjectId: string | null;
   amount: number; // centavos
   paidAt: Date;
+  userId?: string | null;
 }
 
 // Append-only ledger write + subscription grant. Idempotent on linkId: a
@@ -20,7 +21,7 @@ export async function recordPayment(
   supabase: SupabaseClient,
   input: RecordPaymentInput
 ): Promise<{ recorded: boolean; deduped: boolean }> {
-  const { linkId, deviceId, yearId, subjectId, amount, paidAt } = input;
+  const { linkId, deviceId, yearId, subjectId, amount, paidAt, userId = null } = input;
 
   // Replay check against the ledger.
   const { data: existing } = await supabase
@@ -41,6 +42,7 @@ export async function recordPayment(
     amount,
     currency: "PHP",
     paid_at: paidAt.toISOString(),
+    user_id: userId,
   });
 
   if (insertError) {
@@ -74,7 +76,12 @@ export async function recordPayment(
   if (existingSub) {
     ({ error: upsertError } = await supabase
       .from("subscriptions")
-      .update({ status: "active", current_period_end: currentPeriodEnd.toISOString(), paymongo_link_id: linkId })
+      .update({
+        status: "active",
+        current_period_end: currentPeriodEnd.toISOString(),
+        paymongo_link_id: linkId,
+        ...(userId ? { user_id: userId } : {}),
+      })
       .eq("id", existingSub.id));
   } else {
     ({ error: upsertError } = await supabase.from("subscriptions").insert({
@@ -84,6 +91,7 @@ export async function recordPayment(
       paymongo_link_id: linkId,
       status: "active",
       current_period_end: currentPeriodEnd.toISOString(),
+      user_id: userId,
     }));
   }
 

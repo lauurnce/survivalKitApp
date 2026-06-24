@@ -7,7 +7,8 @@ export async function createPaymongoLink(
   yearId: string,
   deviceId: string,
   successUrl: string,
-  subjectId: string | null = null
+  subjectId: string | null = null,
+  userId?: string
 ): Promise<{ checkoutUrl: string; linkId: string }> {
   const secretKey = process.env.PAYMONGO_SECRET_KEY;
   if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
@@ -18,9 +19,10 @@ export async function createPaymongoLink(
   const description = subjectId
     ? "BSIT Survival Kit — Subject Subscription"
     : "BSIT Survival Kit — Year Subscription";
-  const remarks = subjectId
+  let remarks = subjectId
     ? `year:${yearId} subject:${subjectId} device:${deviceId}`
     : `year:${yearId} device:${deviceId}`;
+  if (userId) remarks += ` user:${userId}`;
 
   // Idempotency key per (device, year, subject) — prevents duplicate charges on double-click
   const idempotencyKey = crypto

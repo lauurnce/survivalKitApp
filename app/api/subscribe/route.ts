@@ -3,6 +3,7 @@ import { createPaymongoLink } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
+import { getCurrentUserId } from "@/lib/auth/currentUser";
 
 const limiter = createRateLimiter(5);
 
@@ -10,6 +11,8 @@ export async function POST(req: NextRequest) {
   if (limiter.check(getClientIp(req))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
+
+  const userId = await getCurrentUserId();
 
   const body = (await req.json().catch(() => null)) as
     | { yearId?: string; subjectId?: string; deviceId?: string }
@@ -72,7 +75,8 @@ export async function POST(req: NextRequest) {
       yearId,
       deviceId,
       successUrl,
-      subjectId
+      subjectId,
+      userId ?? undefined
     );
     return NextResponse.json({ checkoutUrl });
   } catch (err) {

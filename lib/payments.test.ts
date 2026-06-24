@@ -135,6 +135,43 @@ describe("recordPayment", () => {
     expect(res).toEqual({ recorded: true, deduped: false });
     expect(subsInsert23505).toHaveBeenCalledOnce();
   });
+
+  it("writes user_id on payments and subscriptions insert when userId is provided", async () => {
+    const userId = "44444444-4444-4444-4444-444444444444";
+    const { supabase, paymentsBuilder, subsInsert } = makeSupabase({});
+    const res = await recordPayment(supabase as never, { ...input, userId });
+    expect(res).toEqual({ recorded: true, deduped: false });
+    expect(paymentsBuilder.insert).toHaveBeenCalledWith(
+      expect.objectContaining({ user_id: userId })
+    );
+    expect(subsInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ user_id: userId })
+    );
+  });
+
+  it("writes user_id on subscription UPDATE when userId is provided and sub already exists", async () => {
+    const userId = "44444444-4444-4444-4444-444444444444";
+    const { supabase, subsUpdate } = makeSupabase({ existingSub: true });
+    await recordPayment(supabase as never, { ...input, userId });
+    expect(subsUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ user_id: userId })
+    );
+  });
+
+  it("does NOT include user_id on subscription UPDATE when userId is absent", async () => {
+    const { supabase, subsUpdate } = makeSupabase({ existingSub: true });
+    await recordPayment(supabase as never, input); // no userId
+    const updateArg = (subsUpdate as ReturnType<typeof vi.fn>).mock.calls[0][0] as Record<string, unknown>;
+    expect(Object.keys(updateArg)).not.toContain("user_id");
+  });
+
+  it("writes user_id null on payments insert when userId is absent (device-only)", async () => {
+    const { supabase, paymentsBuilder } = makeSupabase({});
+    await recordPayment(supabase as never, input); // no userId
+    expect(paymentsBuilder.insert).toHaveBeenCalledWith(
+      expect.objectContaining({ user_id: null })
+    );
+  });
 });
 
 describe("sumRevenueForMonth", () => {
