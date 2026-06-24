@@ -141,6 +141,30 @@ export interface Database {
         };
         Update: Partial<{ status: SubscriptionStatus; current_period_end: string }>;
       };
+      payments: {
+        Row: {
+          id: string;
+          paymongo_link_id: string;
+          device_id: string;
+          year_id: string;
+          amount: number;
+          currency: string;
+          paid_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          paymongo_link_id: string;
+          device_id: string;
+          year_id: string;
+          amount: number;
+          currency?: string;
+          paid_at: string;
+          created_at?: string;
+        };
+        // Append-only ledger: no updates.
+        Update: Record<string, never>;
+      };
       events: {
         Row: {
           id: string;
