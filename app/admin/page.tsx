@@ -3,6 +3,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { getAdminSession } from "@/lib/auth/adminSession";
 import { AdminDashboard } from "@/components/AdminDashboard";
 import type { EventType } from "@/lib/supabase/types";
+import { sumRevenueForMonth, PH_OFFSET_MS } from "@/lib/payments";
 
 export const dynamic = "force-dynamic";
 
@@ -52,6 +53,7 @@ export default async function AdminPage() {
     { data: userTotalsRaw },
     { data: waitlistRaw },
     { data: subscriptionRaw },
+    { data: paymentsRaw },
   ] = await Promise.all([
     // Funnel distinct-device counts per event_type, aggregated in Postgres
     // (the old raw .limit() was capped at 1000 rows and undercounted).
@@ -102,6 +104,11 @@ export default async function AdminPage() {
       .from("subscriptions")
       .select("id, created_at, status")
       .order("created_at", { ascending: false }),
+    supabase
+      .from("payments")
+      .select("id, device_id, year_id, subject_id, amount, paymongo_link_id, paid_at")
+      .order("paid_at", { ascending: false })
+      .limit(100),
   ]);
 
   const funnelCounts = new Map<string, number>();
@@ -117,7 +124,6 @@ export default async function AdminPage() {
 
   // dauRaw comes pre-aggregated from the admin_dau_30d() RPC: one row per PH
   // calendar day with its distinct-device count. Index it by date string.
-  const PH_OFFSET_MS = 8 * 60 * 60 * 1000;
   const dauByDay = new Map<string, number>();
   for (const r of (dauRaw ?? []) as { day: string; unique_devices: number }[]) {
     // r.day is already a 'YYYY-MM-DD' PH date from Postgres
@@ -197,10 +203,51 @@ export default async function AdminPage() {
 
   const subscriptions = subscriptionRaw ?? [];
   const activeSubscribers = subscriptions.filter(s => s.status === "active").length;
-  const totalRevenue = activeSubscribers * 50; // ₱50/subscriber, simplified
-  const newSubscribersToday = subscriptions.filter(
-    s => s.created_at.slice(0, 10) === todayStrPH
+
+  const payments = (paymentsRaw ?? []) as {
+    id: string;
+    device_id: string;
+    year_id: string;
+    subject_id: string | null;
+    amount: number;
+    paymongo_link_id: string;
+    paid_at: string;
+  }[];
+
+  // Real revenue = sum of ledger amounts in the current PH calendar month.
+  const totalRevenue = sumRevenueForMonth(
+    payments,
+    todayPH.getUTCFullYear(),
+    todayPH.getUTCMonth()
+  );
+
+  // "New Today" counts payments (renewals included), not subscription rows.
+  const newSubscribersToday = payments.filter(
+    p => new Date(new Date(p.paid_at).getTime() + PH_OFFSET_MS).toISOString().slice(0, 10) === todayStrPH
   ).length;
+
+  // Build transactions rows — resolve year labels and subject scope.
+  const txYearIds = Array.from(new Set(payments.map(p => p.year_id)));
+  const { data: txYears } = txYearIds.length
+    ? await supabase.from("years").select("id, label").in("id", txYearIds)
+    : { data: [] as { id: string; label: string }[] };
+
+  const txSubjectIds = Array.from(new Set(payments.map(p => p.subject_id).filter((id): id is string => id !== null)));
+  const { data: txSubjects } = txSubjectIds.length
+    ? await supabase.from("subjects").select("id, title").in("id", txSubjectIds)
+    : { data: [] as { id: string; title: string }[] };
+
+  const transactions = payments.map(p => ({
+    id: p.id,
+    paid_at: p.paid_at,
+    device_id: p.device_id,
+    year_label: txYears?.find(y => y.id === p.year_id)?.label ?? "—",
+    scope: p.subject_id
+      ? (txSubjects?.find(s => s.id === p.subject_id)?.title ?? "—")
+      : "Whole year",
+    amount: p.amount,
+    paymongo_link_id: p.paymongo_link_id,
+  }));
 
   const waitlistEntries = (waitlistRaw ?? []) as {
     id: string;
@@ -234,6 +281,7 @@ export default async function AdminPage() {
       activeSubscribers={activeSubscribers}
       newSubscribersToday={newSubscribersToday}
       waitlistEntries={waitlistEntries}
+      transactions={transactions}
     />
   );
 }
