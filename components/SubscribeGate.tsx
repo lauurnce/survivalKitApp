@@ -69,7 +69,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, logg
       if (pollCountRef.current >= MAX_POLLS) {
         clearPoll();
         setPolling(false);
-        setError("We couldn't confirm your payment yet. Please refresh the page in a moment.");
+        setError("Almost there — your payment is still processing. Refresh this page in a moment to unlock.");
       }
     }, POLL_INTERVAL_MS);
   }
@@ -129,10 +129,12 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, logg
     setError(null);
 
     try {
+      const returnPath =
+        typeof window !== "undefined" ? window.location.pathname : undefined;
       const body =
         plan === "subject"
-          ? { yearId, subjectId, deviceId }
-          : { yearId, deviceId };
+          ? { yearId, subjectId, deviceId, returnPath }
+          : { yearId, deviceId, returnPath };
 
       const res = await fetch("/api/subscribe", {
         method: "POST",
@@ -286,19 +288,6 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, logg
         <p className="font-sans text-xs text-ink-faint">
           Paid via GCash, Maya, or card. Cancel anytime.
         </p>
-
-        {/* Manual trigger for QR code payers */}
-        {!polling && (
-          <button
-            onClick={() => {
-              setError(null);
-              startPolling();
-            }}
-            className="font-sans text-xs text-ink-faint underline underline-offset-2 hover:text-ink transition-colors duration-150 text-left w-fit"
-          >
-            I already paid
-          </button>
-        )}
       </div>
     </div>
   );
