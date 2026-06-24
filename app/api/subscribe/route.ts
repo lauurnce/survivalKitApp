@@ -58,13 +58,13 @@ export async function POST(req: NextRequest) {
   }
 
   const ALLOWED_ORIGINS = [
-    "https://bsitsurvivalkit.vercel.app",
+    "https://survival-kit-app.vercel.app",
     "http://localhost:3000",
   ];
   const requestOrigin = req.headers.get("origin") ?? "";
   const origin = ALLOWED_ORIGINS.includes(requestOrigin)
     ? requestOrigin
-    : "https://bsitsurvivalkit.vercel.app";
+    : "https://survival-kit-app.vercel.app";
   const successUrl = `${origin}/year/${yearId}/subjects`;
 
   try {
