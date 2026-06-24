@@ -25,6 +25,16 @@ interface TopSection {
   count: number;
 }
 
+interface TransactionRow {
+  id: string;
+  paid_at: string;
+  device_id: string;
+  year_label: string;
+  scope: string;
+  amount: number;            // centavos
+  paymongo_link_id: string;
+}
+
 interface WaitlistEntry {
   id: string;
   email: string;
@@ -56,6 +66,7 @@ interface Props {
   activeSubscribers: number;
   newSubscribersToday: number;
   waitlistEntries: WaitlistEntry[];
+  transactions: TransactionRow[];
 }
 
 function Stat({
@@ -318,6 +329,46 @@ function WaitlistSubjectDemand({ entries }: { entries: WaitlistEntry[] }) {
   );
 }
 
+function TransactionsSection({ rows }: { rows: TransactionRow[] }) {
+  return (
+    <section className="mb-16 max-w-wide">
+      <div className="flex items-baseline gap-3 mb-6">
+        <p className="label">Transactions</p>
+        <span className="font-mono text-xs text-ink-faint">{rows.length} recorded</span>
+      </div>
+      {rows.length === 0 ? (
+        <p className="font-sans text-xs text-ink-faint">No transactions yet.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="border-b border-ink-faint/30">
+                {["Date", "Device", "Year", "Plan", "Amount", "Ref"].map(h => (
+                  <th key={h} className="text-left py-2 pr-6 label-sm text-ink-muted font-normal">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(t => (
+                <tr key={t.id} className="border-b border-ink-faint/15">
+                  <td className="py-3 pr-6 font-sans text-xs text-ink-muted">
+                    {new Date(t.paid_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
+                  </td>
+                  <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{t.device_id.slice(0, 8)}…</td>
+                  <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{t.year_label}</td>
+                  <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{t.scope}</td>
+                  <td className="py-3 pr-6 font-mono text-xs text-ink">₱{(t.amount / 100).toFixed(2)}</td>
+                  <td className="py-3 pr-6 font-mono text-xs text-ink-faint">{t.paymongo_link_id.slice(0, 12)}…</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
   const total = entries.length;
   const comingSoon = entries.filter(e => e.source === "coming_soon").length;
@@ -492,7 +543,7 @@ export function AdminDashboard({
   totalUniqueUsers, todayUsers, last7Sessions,
   approvedUnlocks, activeNow, newUsers, recurringUsers, totalRevenue,
   activeSubscribers, newSubscribersToday,
-  waitlistEntries,
+  waitlistEntries, transactions,
 }: Props) {
   const unlockClicks    = funnel.find(s => s.type === "unlock_click")?.unique ?? 0;
   const unlockSubmitted = funnel.find(s => s.type === "unlock_submitted")?.unique ?? 0;
@@ -522,7 +573,7 @@ export function AdminDashboard({
       <section className="mb-8">
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
           <Stat value={activeSubscribers} label="Active Subscribers" accent />
-          <Stat value={`₱${totalRevenue}`} label="Est. Monthly Revenue" />
+          <Stat value={`₱${totalRevenue}`} label="Monthly Revenue" />
           <Stat value={newSubscribersToday} label="New Today" />
         </div>
       </section>
@@ -586,6 +637,8 @@ export function AdminDashboard({
           </p>
         )}
       </section>
+
+      <TransactionsSection rows={transactions} />
 
       <WaitlistSection entries={waitlistEntries} />
 
