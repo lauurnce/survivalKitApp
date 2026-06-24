@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -36,7 +37,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${interTight.variable} ${jetbrainsMono.variable}`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');}})();`,
+          }}
+        />
+      </head>
       <body className="bg-paper text-ink font-sans min-h-screen flex flex-col">
+        <ThemeToggle />
         <div className="flex-1">{children}</div>
         <footer className="border-t border-ink-faint/20 px-6 py-4 md:px-16">
           <div className="flex flex-wrap items-center justify-between gap-2">
