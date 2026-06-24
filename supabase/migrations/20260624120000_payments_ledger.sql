@@ -5,7 +5,10 @@ create table payments (
   paymongo_link_id  text not null,
   device_id         text not null,
   year_id           uuid not null references years(id),
-  amount            integer not null,            -- centavos; 5000 = ₱50.00
+  -- null = whole-year plan (₱300); set = single-subject plan (₱50). Mirrors
+  -- subscriptions.subject_id so the ledger records exactly what was bought.
+  subject_id        uuid references subjects(id),
+  amount            integer not null,            -- centavos; 5000 = ₱50, 30000 = ₱300
   currency          text not null default 'PHP',
   paid_at           timestamptz not null,
   created_at        timestamptz not null default now()

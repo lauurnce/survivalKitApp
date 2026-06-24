@@ -8,6 +8,8 @@ export interface RecordPaymentInput {
   linkId: string;
   deviceId: string;
   yearId: string;
+  // null = whole-year plan (₱300); set = single-subject plan (₱50).
+  subjectId: string | null;
   amount: number; // centavos
   paidAt: Date;
 }
@@ -18,7 +20,7 @@ export async function recordPayment(
   supabase: SupabaseClient,
   input: RecordPaymentInput
 ): Promise<{ recorded: boolean; deduped: boolean }> {
-  const { linkId, deviceId, yearId, amount, paidAt } = input;
+  const { linkId, deviceId, yearId, subjectId, amount, paidAt } = input;
 
   // Replay check against the ledger.
   const { data: existing } = await supabase
@@ -35,6 +37,7 @@ export async function recordPayment(
     paymongo_link_id: linkId,
     device_id: deviceId,
     year_id: yearId,
+    subject_id: subjectId,
     amount,
     currency: "PHP",
     paid_at: paidAt.toISOString(),
@@ -52,16 +55,37 @@ export async function recordPayment(
   const currentPeriodEnd = new Date();
   currentPeriodEnd.setDate(currentPeriodEnd.getDate() + PERIOD_DAYS);
 
-  const { error: upsertError } = await supabase.from("subscriptions").upsert(
-    {
+  // Use a manual upsert because the unique indexes are partial (one for
+  // year plans where subject_id IS NULL, one where it IS NOT NULL).
+  // Supabase's onConflict helper requires a single non-partial index.
+  let subQuery = supabase
+    .from("subscriptions")
+    .select("id")
+    .eq("device_id", deviceId)
+    .eq("year_id", yearId);
+  if (subjectId === null) {
+    subQuery = subQuery.is("subject_id", null);
+  } else {
+    subQuery = subQuery.eq("subject_id", subjectId);
+  }
+  const { data: existingSub } = await subQuery.maybeSingle();
+
+  let upsertError;
+  if (existingSub) {
+    ({ error: upsertError } = await supabase
+      .from("subscriptions")
+      .update({ status: "active", current_period_end: currentPeriodEnd.toISOString(), paymongo_link_id: linkId })
+      .eq("id", existingSub.id));
+  } else {
+    ({ error: upsertError } = await supabase.from("subscriptions").insert({
       device_id: deviceId,
       year_id: yearId,
+      subject_id: subjectId,
       paymongo_link_id: linkId,
       status: "active",
       current_period_end: currentPeriodEnd.toISOString(),
-    },
-    { onConflict: "device_id,year_id" }
-  );
+    }));
+  }
 
   if (upsertError) throw new Error(upsertError.message);
 

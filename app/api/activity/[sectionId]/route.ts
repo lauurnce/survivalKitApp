@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
+import { isSubscribed } from "@/lib/subscriptions";
 import { isUnlocked } from "@/lib/unlocks";
 
 interface Params {
@@ -11,10 +12,12 @@ export async function GET(req: NextRequest, { params }: Params) {
   const deviceId = req.headers.get("x-device-id") ?? "";
   const supabase = createServerClient();
 
-  // Look up section to get module_id
+  // Fetch section + walk up to subject/year in one query so we can check subscription.
   const { data: section } = await supabase
     .from("sections")
-    .select("id, module_id, kind, heading, body_md, ide_language, starter_code")
+    .select(
+      "id, module_id, kind, heading, body_md, ide_language, starter_code, modules(subject_id, subjects(year_id))"
+    )
     .eq("id", sectionId)
     .single();
 
@@ -26,8 +29,21 @@ export async function GET(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "Not an activity" }, { status: 400 });
   }
 
-  const unlocked = await isUnlocked(deviceId, section.module_id);
-  if (!unlocked) {
+  const mod = Array.isArray(section.modules) ? section.modules[0] : section.modules;
+  const subjectId: string | null = mod?.subject_id ?? null;
+  const sub = mod ? (Array.isArray(mod.subjects) ? mod.subjects[0] : mod.subjects) : null;
+  const yearId: string | null = sub?.year_id ?? null;
+
+  // Access is granted if the device has an active subscription (paid path) OR
+  // an admin-approved manual unlock (legacy GCash path).
+  const hasSubscription =
+    yearId && subjectId
+      ? await isSubscribed(deviceId, yearId, subjectId)
+      : false;
+
+  const hasUnlock = hasSubscription ? false : await isUnlocked(deviceId, section.module_id);
+
+  if (!hasSubscription && !hasUnlock) {
     return NextResponse.json({ error: "Locked" }, { status: 403 });
   }
 

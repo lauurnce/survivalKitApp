@@ -128,6 +128,7 @@ export async function POST(req: NextRequest) {
       linkId,
       deviceId,
       yearId,
+      subjectId,
       amount: typeof paidAmount === "number" ? paidAmount : expectedAmount,
       paidAt,
     });

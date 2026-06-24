@@ -147,6 +147,7 @@ export interface Database {
           paymongo_link_id: string;
           device_id: string;
           year_id: string;
+          subject_id: string | null;
           amount: number;
           currency: string;
           paid_at: string;
@@ -157,6 +158,7 @@ export interface Database {
           paymongo_link_id: string;
           device_id: string;
           year_id: string;
+          subject_id?: string | null;
           amount: number;
           currency?: string;
           paid_at: string;
