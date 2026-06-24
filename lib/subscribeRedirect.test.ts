@@ -68,4 +68,42 @@ describe("buildSuccessUrl", () => {
       buildSuccessUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: path })
     ).toBe(fallback);
   });
+
+  // ── adversarial inputs: the open-redirect defense rests on the validator,
+  // so lock in the nastiest cases against a future refactor reintroducing a hole.
+
+  it("falls back for a backslash host-injection suffix", () => {
+    const path = `${validPath}\\@evil.com`;
+    expect(
+      buildSuccessUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: path })
+    ).toBe(fallback);
+  });
+
+  it("falls back when returnPath carries a query string", () => {
+    const path = `${validPath}?x=1`;
+    expect(
+      buildSuccessUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: path })
+    ).toBe(fallback);
+  });
+
+  it("falls back when returnPath carries a fragment", () => {
+    const path = `${validPath}#x`;
+    expect(
+      buildSuccessUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: path })
+    ).toBe(fallback);
+  });
+
+  it("falls back for a leading-whitespace path", () => {
+    const path = `  ${validPath}`;
+    expect(
+      buildSuccessUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: path })
+    ).toBe(fallback);
+  });
+
+  it("falls back for a path-traversal attempt", () => {
+    const path = `${validPath}/../../../evil`;
+    expect(
+      buildSuccessUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: path })
+    ).toBe(fallback);
+  });
 });
