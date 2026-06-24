@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
 import { isSubscribed } from "@/lib/subscriptions";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
+import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { BackLink } from "@/components/BackLink";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import { PageTracker } from "@/components/PageTracker";
@@ -57,7 +58,8 @@ export default async function ReaderPage({ params }: Props) {
   // Only trust the device ID if its HMAC signature checks out — a forged or
   // copied cookie value verifies to null and grants no access.
   const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
-  const subscribed = deviceId ? await isSubscribed(deviceId, yearId, subjectId) : false;
+  const userId = await getCurrentUserId();
+  const subscribed = (userId || deviceId) ? await isSubscribed(deviceId ?? "", yearId, subjectId, userId ?? undefined) : false;
   const unlockActivities = devUnlockAll || subscribed;
 
   const allSections = [

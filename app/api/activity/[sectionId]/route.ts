@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { isSubscribed } from "@/lib/subscriptions";
 import { isUnlocked } from "@/lib/unlocks";
+import { getCurrentUserId } from "@/lib/auth/currentUser";
 
 interface Params {
   params: Promise<{ sectionId: string }>;
@@ -10,6 +11,7 @@ interface Params {
 export async function GET(req: NextRequest, { params }: Params) {
   const { sectionId } = await params;
   const deviceId = req.headers.get("x-device-id") ?? "";
+  const userId = await getCurrentUserId();
   const supabase = createServerClient();
 
   // Fetch section + walk up to subject/year in one query so we can check subscription.
@@ -38,10 +40,10 @@ export async function GET(req: NextRequest, { params }: Params) {
   // an admin-approved manual unlock (legacy GCash path).
   const hasSubscription =
     yearId && subjectId
-      ? await isSubscribed(deviceId, yearId, subjectId)
+      ? await isSubscribed(deviceId, yearId, subjectId, userId ?? undefined)
       : false;
 
-  const hasUnlock = hasSubscription ? false : await isUnlocked(deviceId, section.module_id);
+  const hasUnlock = hasSubscription ? false : await isUnlocked(deviceId, section.module_id, userId ?? undefined);
 
   if (!hasSubscription && !hasUnlock) {
     return NextResponse.json({ error: "Locked" }, { status: 403 });
