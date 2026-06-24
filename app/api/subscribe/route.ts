@@ -4,6 +4,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
+import { buildSuccessUrl } from "@/lib/subscribeRedirect";
 
 const limiter = createRateLimiter(5);
 
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
   const userId = await getCurrentUserId();
 
   const body = (await req.json().catch(() => null)) as
-    | { yearId?: string; subjectId?: string; deviceId?: string }
+    | { yearId?: string; subjectId?: string; deviceId?: string; returnPath?: string }
     | null;
 
   const yearId = body?.yearId;
@@ -68,7 +69,14 @@ export async function POST(req: NextRequest) {
   const origin = ALLOWED_ORIGINS.includes(requestOrigin)
     ? requestOrigin
     : "https://survival-kit-app.vercel.app";
-  const successUrl = `${origin}/year/${yearId}/subjects`;
+  // Return the payer to the exact module page they came from (validated), with
+  // ?payment=success so the SubscribeGate there auto-polls and unlocks in place.
+  const successUrl = buildSuccessUrl({
+    origin,
+    yearId,
+    subjectId,
+    returnPath: body?.returnPath ?? null,
+  });
 
   try {
     const { checkoutUrl } = await createPaymongoLink(
