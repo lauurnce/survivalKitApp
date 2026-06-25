@@ -6,13 +6,28 @@ export function pct(done: number, total: number): number {
   return Math.min(100, Math.round((done / total) * 100));
 }
 
+export interface ModuleSummary {
+  id: string;
+  title: string;
+  done: boolean;
+}
+
 export interface SubjectSummary {
   id: string; title: string; yearId: string;
   unlocked: boolean; doneCount: number; totalCount: number;
+  modules: ModuleSummary[];
 }
+
+export interface YearGroup {
+  yearId: string;
+  label: string;
+  subjects: SubjectSummary[];
+}
+
 export interface AccountOverview {
   yearLabel: string | null;
   subjects: SubjectSummary[];
+  years: YearGroup[];
   overallDone: number; overallTotal: number;
 }
 
@@ -21,7 +36,7 @@ export async function getAccountOverview(userId: string): Promise<AccountOvervie
 
   const { data: subjects } = await supabase
     .from("subjects")
-    .select("id, title, year_id, years(label, sort_order)")
+    .select("id, title, year_id, years(id, label, sort_order)")
     .order("sort_order");
 
   const { data: progressRows } = await supabase
@@ -29,23 +44,40 @@ export async function getAccountOverview(userId: string): Promise<AccountOvervie
   const doneModuleIds = new Set((progressRows ?? []).map((r) => r.module_id));
 
   const summaries: SubjectSummary[] = [];
+  const yearMap = new Map<string, YearGroup>();
   let overallDone = 0, overallTotal = 0;
   let yearLabel: string | null = null;
 
   for (const s of subjects ?? []) {
     const { data: mods } = await supabase
-      .from("modules").select("id").eq("subject_id", s.id);
-    const moduleIds = (mods ?? []).map((m) => m.id);
-    const doneCount = moduleIds.filter((id) => doneModuleIds.has(id)).length;
+      .from("modules").select("id, title").eq("subject_id", s.id).order("sort_order");
+    const moduleSummaries: ModuleSummary[] = (mods ?? []).map((m) => ({
+      id: m.id, title: m.title, done: doneModuleIds.has(m.id),
+    }));
+    const doneCount = moduleSummaries.filter((m) => m.done).length;
+    const totalCount = moduleSummaries.length;
     const unlocked = await isSubscribed("", s.year_id, s.id, userId);
-    if (unlocked) { overallDone += doneCount; overallTotal += moduleIds.length; }
+    if (unlocked) { overallDone += doneCount; overallTotal += totalCount; }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    yearLabel = yearLabel ?? (s as any).years?.label ?? null;
-    summaries.push({
+    const yr = (s as any).years;
+    yearLabel = yearLabel ?? yr?.label ?? null;
+    const summary: SubjectSummary = {
       id: s.id, title: s.title, yearId: s.year_id,
-      unlocked, doneCount, totalCount: moduleIds.length,
-    });
+      unlocked, doneCount, totalCount, modules: moduleSummaries,
+    };
+    summaries.push(summary);
+
+    // Group by year
+    if (yr) {
+      if (!yearMap.has(yr.id)) {
+        yearMap.set(yr.id, { yearId: yr.id, label: yr.label, subjects: [] });
+      }
+      yearMap.get(yr.id)!.subjects.push(summary);
+    }
   }
 
-  return { yearLabel, subjects: summaries, overallDone, overallTotal };
+  // Sort years by sort_order (already ordered from DB via subjects join)
+  const years = Array.from(yearMap.values());
+
+  return { yearLabel, subjects: summaries, years, overallDone, overallTotal };
 }

@@ -7,5 +7,6 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string }>;
 }) {
   const { next } = await searchParams;
-  return <AuthForm mode="login" action={signInAction} next={next ?? "/account"} />;
+  const safe = next && next.startsWith("/") && !next.startsWith("//") ? next : "/account";
+  return <AuthForm mode="login" action={signInAction} next={safe} />;
 }

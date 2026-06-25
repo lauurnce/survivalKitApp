@@ -7,5 +7,6 @@ export default async function SignupPage({
   searchParams: Promise<{ next?: string }>;
 }) {
   const { next } = await searchParams;
-  return <AuthForm mode="signup" action={signUpAction} next={next ?? "/account"} />;
+  const safe = next && next.startsWith("/") && !next.startsWith("//") ? next : "/account";
+  return <AuthForm mode="signup" action={signUpAction} next={safe} />;
 }

@@ -1,5 +1,11 @@
 import type { NextConfig } from "next";
 
+// Next.js dev mode (react-refresh / HMR) evaluates code via eval(), which the
+// hardened production CSP forbids. Allow 'unsafe-eval' ONLY in development so
+// the dev server hydrates; production keeps the strict policy (no eval).
+const isDev = process.env.NODE_ENV !== "production";
+const devEval = isDev ? " 'unsafe-eval'" : "";
+
 const securityHeaders = [
   { key: "X-Content-Type-Options",    value: "nosniff" },
   { key: "X-Frame-Options",           value: "DENY" },
@@ -22,7 +28,7 @@ const securityHeaders = [
       // here — the only code that still needs it (the Pyodide worker on Safari, which
       // lacks wasm-unsafe-eval support) gets a narrowly-scoped policy on
       // /pyodideWorker.js below, so no page document permits JS eval.
-      "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net",
+      `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${devEval} https://cdn.jsdelivr.net`,
       "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
       "font-src 'self' https://cdn.jsdelivr.net",
       // Pyodide runs in a Web Worker; sql.js loads its wasm from its CDN.

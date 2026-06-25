@@ -12,6 +12,17 @@ async function claimForUser(userId: string) {
   if (deviceId) await claimDeviceRows(userId, deviceId);
 }
 
+// Only allow redirects to an internal path. Rejects "null"/"undefined" strings
+// (which break new URL()) and absolute URLs / protocol-relative paths (open
+// redirect). Falls back to the dashboard.
+function safeNext(raw: FormDataEntryValue | null): string {
+  const v = typeof raw === "string" ? raw : "";
+  if (!v || v === "null" || v === "undefined") return "/account";
+  // must be a single-leading-slash internal path, not "//host" or "/\evil"
+  if (!v.startsWith("/") || v.startsWith("//") || v.startsWith("/\\")) return "/account";
+  return v;
+}
+
 // Signature matches React 19's useActionState: (prevState, formData).
 // On success these call redirect(), which throws NEXT_REDIRECT (normal control
 // flow). On failure they return { error } so the form can render the message.
@@ -23,7 +34,7 @@ export async function signUpAction(
 ): Promise<AuthState> {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  const next = String(formData.get("next") ?? "/account");
+  const next = safeNext(formData.get("next"));
   const invalid = validateCredentials(email, password);
   if (invalid) return { error: invalid };
 
@@ -40,7 +51,7 @@ export async function signInAction(
 ): Promise<AuthState> {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  const next = String(formData.get("next") ?? "/account");
+  const next = safeNext(formData.get("next"));
   const invalid = validateCredentials(email, password);
   if (invalid) return { error: invalid };
 
