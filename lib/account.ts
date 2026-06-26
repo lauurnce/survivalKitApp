@@ -21,6 +21,7 @@ export interface SubjectSummary {
 export interface YearGroup {
   yearId: string;
   label: string;
+  sortOrder: number;
   subjects: SubjectSummary[];
 }
 
@@ -70,14 +71,13 @@ export async function getAccountOverview(userId: string): Promise<AccountOvervie
     // Group by year
     if (yr) {
       if (!yearMap.has(yr.id)) {
-        yearMap.set(yr.id, { yearId: yr.id, label: yr.label, subjects: [] });
+        yearMap.set(yr.id, { yearId: yr.id, label: yr.label, sortOrder: yr.sort_order ?? 0, subjects: [] });
       }
       yearMap.get(yr.id)!.subjects.push(summary);
     }
   }
 
-  // Sort years by sort_order (already ordered from DB via subjects join)
-  const years = Array.from(yearMap.values());
+  const years = Array.from(yearMap.values()).sort((a, b) => a.sortOrder - b.sortOrder);
 
   return { yearLabel, subjects: summaries, years, overallDone, overallTotal };
 }

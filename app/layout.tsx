@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { AccountNav } from "@/components/AccountNav";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -46,8 +44,6 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans min-h-screen flex flex-col">
-        <ThemeToggle />
-        <AccountNav />
         <div className="flex-1">{children}</div>
         <footer className="border-t border-ink-faint/20 px-6 py-4 md:px-16">
           <div className="flex flex-wrap items-center justify-between gap-2">
