@@ -69,6 +69,36 @@ interface Props {
   transactions: TransactionRow[];
 }
 
+/**
+ * Outlined card header that introduces each major section of the dashboard.
+ * A thin ink-outlined bar on the paper background — frames the section as a
+ * zone rather than sitting on top of it like a colored strip. The numbered
+ * eyebrow + serif title sit on the left; an optional summary string (a count
+ * or headline metric) sits on the right. Sticky so the current section stays
+ * labelled as you scroll through a long page.
+ */
+function SectionBand({
+  eyebrow,
+  title,
+  summary,
+}: {
+  eyebrow: string;
+  title: string;
+  summary?: string;
+}) {
+  return (
+    <div className="sticky top-4 z-20 mb-8">
+      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border border-ink/30 bg-paper px-5 py-4 shadow-sm">
+        <span className="label-sm text-ink-faint font-mono">{eyebrow}</span>
+        <h2 className="font-serif text-2xl md:text-3xl text-ink leading-none">{title}</h2>
+        {summary && (
+          <span className="ml-auto font-mono text-xs text-ink-muted">{summary}</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function Stat({
   value,
   label,
@@ -81,7 +111,13 @@ function Stat({
   dot?: boolean;
 }) {
   return (
-    <div className={`border p-6 ${accent ? "border-accent/40 bg-accent/5" : "border-ink-faint/30"}`}>
+    <div
+      className={`border p-6 transition-colors duration-150 ${
+        accent
+          ? "border-accent/40 bg-accent/5 hover:border-accent/70"
+          : "border-ink-faint/30 hover:border-ink/40"
+      }`}
+    >
       <div className="flex items-baseline gap-2 mb-1">
         {dot && (
           <span
@@ -109,10 +145,10 @@ function BarChart({ data, label }: { data: TopItem[]; label: string }) {
       <p className="label mb-4">{label}</p>
       <div className="space-y-2">
         {data.map(item => (
-          <div key={item.label} className="flex items-center gap-3">
+          <div key={item.label} className="group flex items-center gap-3">
             <span className="font-sans text-xs text-ink-muted w-28 sm:w-40 truncate shrink-0" title={item.label}>{item.label}</span>
             <div className="flex-1 bg-ink-faint/20 h-4">
-              <div className="h-4 bg-accent" style={{ width: `${(item.count / max) * 100}%` }} />
+              <div className="h-4 bg-accent transition-all duration-300 group-hover:bg-accent-dark" style={{ width: `${(item.count / max) * 100}%` }} />
             </div>
             <span className="font-mono text-xs text-ink-muted w-8 text-right">{item.count}</span>
           </div>
@@ -136,12 +172,15 @@ function DauChart({ data }: { data: DauDay[] }) {
   // while taller days still read as taller. sqrt handles 0 cleanly (unlike log).
   const sqrtMax = Math.sqrt(max);
   const barHeight = (n: number) =>
-    n > 0 ? Math.max((Math.sqrt(n) / sqrtMax) * 96, 6) : 2;
+    n > 0 ? Math.max((Math.sqrt(n) / sqrtMax) * 140, 8) : 2;
   const showLabels = data.length <= 15;
   return (
     <div>
-      <p className="label mb-4">Daily Active Users — 30 days</p>
-      <div className="flex items-end gap-0.5 h-28">
+      <div className="flex items-baseline gap-3 mb-4">
+        <p className="label">Daily Active Users</p>
+        <span className="font-sans text-[10px] text-ink-faint">30 days · hover a bar for detail</span>
+      </div>
+      <div className="flex items-end gap-0.5 h-40">
         {data.map((item, i) => (
           <div
             key={item.date}
@@ -208,7 +247,7 @@ function FunnelChart({ steps }: { steps: FunnelStep[] }) {
                     )}
                   </div>
                 )}
-                <div className="flex items-center gap-3" title={step.hint}>
+                <div className="flex items-center gap-3 py-1 px-2 -mx-2 rounded-sm hover:bg-ink-faint/10 transition-colors" title={step.hint}>
                   <span className="font-sans text-xs text-ink w-28 sm:w-44 shrink-0">{step.label}</span>
                   <div className="flex-1 bg-ink-faint/15 h-7 relative">
                     <div
@@ -310,7 +349,7 @@ function WaitlistSubjectDemand({ entries }: { entries: WaitlistEntry[] }) {
       <p className="label-sm text-ink-muted mb-4">Most Requested Subjects</p>
       <div className="flex flex-col gap-2">
         {visible.map((r) => (
-          <div key={r.subject} className="flex items-center gap-3">
+          <div key={r.subject} className="group flex items-center gap-3">
             <div className="w-48 shrink-0 text-right">
               <span className="font-sans text-sm text-ink">{r.subject}</span>
               {r.year && (
@@ -319,7 +358,7 @@ function WaitlistSubjectDemand({ entries }: { entries: WaitlistEntry[] }) {
             </div>
             <div className="flex-1 flex items-center gap-2">
               <div
-                className="h-4 bg-navy"
+                className="h-4 bg-navy transition-all duration-300 group-hover:bg-accent"
                 style={{ width: `${Math.max((r.count / max) * 100, 4)}%` }}
               />
               <span className="font-mono text-xs text-ink-muted">{r.count}</span>
@@ -340,42 +379,49 @@ function WaitlistSubjectDemand({ entries }: { entries: WaitlistEntry[] }) {
 }
 
 function TransactionsSection({ rows }: { rows: TransactionRow[] }) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? rows : rows.slice(0, 5);
+  const hasMore = rows.length > 5;
+
+  if (rows.length === 0) {
+    return <p className="font-sans text-xs text-ink-faint">No transactions yet.</p>;
+  }
   return (
-    <section className="mb-16 max-w-wide">
-      <div className="flex items-baseline gap-3 mb-6">
-        <p className="label">Transactions</p>
-        <span className="font-mono text-xs text-ink-faint">{rows.length} recorded</span>
-      </div>
-      {rows.length === 0 ? (
-        <p className="font-sans text-xs text-ink-faint">No transactions yet.</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="border-b border-ink-faint/30">
-                {["Date", "Device", "Year", "Plan", "Amount", "Ref"].map(h => (
-                  <th key={h} className="text-left py-2 pr-6 label-sm text-ink-muted font-normal">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(t => (
-                <tr key={t.id} className="border-b border-ink-faint/15">
-                  <td className="py-3 pr-6 font-sans text-xs text-ink-muted">
-                    {new Date(t.paid_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
-                  </td>
-                  <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{t.device_id.slice(0, 8)}…</td>
-                  <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{t.year_label}</td>
-                  <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{t.scope}</td>
-                  <td className="py-3 pr-6 font-mono text-xs text-ink">₱{(t.amount / 100).toFixed(2)}</td>
-                  <td className="py-3 pr-6 font-mono text-xs text-ink-faint">{t.paymongo_link_id.slice(0, 12)}…</td>
-                </tr>
+    <div className="max-w-wide">
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="border-b border-ink-faint/30">
+              {["Date", "Device", "Year", "Plan", "Amount", "Ref"].map(h => (
+                <th key={h} className="text-left py-2 pr-6 label-sm text-ink-muted font-normal">{h}</th>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </tr>
+          </thead>
+          <tbody>
+            {visible.map(t => (
+              <tr key={t.id} className="border-b border-ink-faint/15 hover:bg-ink-faint/5 transition-colors">
+                <td className="py-3 pr-6 font-sans text-xs text-ink-muted">
+                  {new Date(t.paid_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
+                </td>
+                <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{t.device_id.slice(0, 8)}…</td>
+                <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{t.year_label}</td>
+                <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{t.scope}</td>
+                <td className="py-3 pr-6 font-mono text-xs text-ink">₱{(t.amount / 100).toFixed(2)}</td>
+                <td className="py-3 pr-6 font-mono text-xs text-ink-faint">{t.paymongo_link_id.slice(0, 12)}…</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {hasMore && (
+        <button
+          onClick={() => setExpanded(v => !v)}
+          className="mt-4 font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150"
+        >
+          {expanded ? `Show less ↑` : `Show all ${rows.length} transactions ↓`}
+        </button>
       )}
-    </section>
+    </div>
   );
 }
 
@@ -396,7 +442,7 @@ function WaitlistTable({ entries }: { entries: WaitlistEntry[] }) {
         </thead>
         <tbody>
           {visible.map(e => (
-            <tr key={e.id} className="border-b border-ink-faint/15">
+            <tr key={e.id} className="border-b border-ink-faint/15 hover:bg-ink-faint/5 transition-colors">
               <td className="py-3 pr-6 font-sans text-sm text-ink">{e.name}</td>
               <td className="py-3 pr-6 font-sans text-sm text-ink-muted">{e.email}</td>
               <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{e.year_label ?? "—"}</td>
@@ -482,19 +528,12 @@ function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
   }
 
   if (total === 0) {
-    return (
-      <section className="mb-16">
-        <p className="label mb-2">Waitlist</p>
-        <p className="font-sans text-xs text-ink-faint">No signups yet.</p>
-      </section>
-    );
+    return <p className="font-sans text-xs text-ink-faint">No signups yet.</p>;
   }
 
   return (
-    <section className="mb-16">
+    <div>
       <div className="flex flex-wrap items-baseline gap-4 mb-6">
-        <p className="label">Waitlist</p>
-        <span className="font-mono text-xs text-ink-faint">{total} total</span>
         <div className="flex items-center gap-2 ml-auto">
           <select
             value={selectedMonth}
@@ -562,7 +601,7 @@ function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
 
       {/* Table */}
       <WaitlistTable entries={entries} />
-    </section>
+    </div>
   );
 }
 
@@ -597,19 +636,28 @@ export function AdminDashboard({
         </div>
       </div>
 
-      {/* Subscription metrics */}
-      <section className="mb-8">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+      {/* ── Revenue & subscribers ───────────────────────────── */}
+      <section className="mb-20">
+        <SectionBand
+          eyebrow="01"
+          title="Revenue & Subscribers"
+          summary={`₱${totalRevenue} this month`}
+        />
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           <Stat value={activeSubscribers} label="Active Subscribers" accent />
           <Stat value={`₱${totalRevenue}`} label="Monthly Revenue" />
           <Stat value={newSubscribersToday} label="New Today" />
         </div>
       </section>
 
-      {/* Key stats */}
-      <section className="mb-16">
-        <p className="label mb-4">Overview</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {/* ── Activity ────────────────────────────────────────── */}
+      <section className="mb-20">
+        <SectionBand
+          eyebrow="02"
+          title="Activity"
+          summary={`${activeNow} active now`}
+        />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
           <Stat value={activeNow} label="Active Now (15 min)" dot />
           <Stat value={totalUniqueUsers.toLocaleString()} label="Total Users" />
           <Stat value={newUsers} label="New Users (3 days)" />
@@ -618,21 +666,26 @@ export function AdminDashboard({
           <Stat value={last7Sessions} label="7-day Sessions" />
           <Stat value={approvedUnlocks} label="Approved Unlocks" />
         </div>
+        <div className="max-w-wide">
+          <DauChart data={dau} />
+        </div>
       </section>
 
-      {/* Onboarding funnel */}
-      <section className="mb-16 max-w-wide">
-        <FunnelChart steps={funnel} />
+      {/* ── Onboarding ──────────────────────────────────────── */}
+      <section className="mb-20">
+        <SectionBand
+          eyebrow="03"
+          title="Onboarding"
+          summary={`${funnel[0]?.unique.toLocaleString() ?? 0} opened the app`}
+        />
+        <div className="max-w-wide">
+          <FunnelChart steps={funnel} />
+        </div>
       </section>
 
-      {/* DAU chart */}
-      <section className="mb-16 max-w-wide">
-        <DauChart data={dau} />
-      </section>
-
-      {/* Content engagement */}
-      <section className="mb-16">
-        <p className="label mb-6">Content Engagement</p>
+      {/* ── Content engagement ──────────────────────────────── */}
+      <section className="mb-20">
+        <SectionBand eyebrow="04" title="Content Engagement" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-wide">
           <BarChart data={topSubjects} label="Top Subjects" />
           <BarChart data={topModules} label="Top Modules" />
@@ -643,32 +696,47 @@ export function AdminDashboard({
         </div>
       </section>
 
-      {/* Unlock funnel */}
-      <section className="mb-16">
-        <p className="label mb-6">Unlock Funnel</p>
-        <div className="grid grid-cols-3 gap-3 max-w-sm">
-          {[
-            { label: "Tapped Unlock", value: unlockClicks },
-            { label: "Submitted Payment", value: unlockSubmitted },
-            { label: "Approved", value: approvedUnlocks },
-          ].map(item => (
-            <div key={item.label} className="border border-ink-faint/30 p-5 text-center">
-              <p className="font-serif text-3xl text-ink mb-1">{item.value}</p>
-              <p className="label-sm text-ink-muted">{item.label}</p>
-            </div>
-          ))}
+      {/* ── Payments ────────────────────────────────────────── */}
+      <section className="mb-20">
+        <SectionBand
+          eyebrow="05"
+          title="Payments"
+          summary={`${transactions.length} transactions`}
+        />
+        <div className="mb-12">
+          <p className="label mb-6">Unlock Funnel</p>
+          <div className="grid grid-cols-3 gap-3 max-w-sm">
+            {[
+              { label: "Tapped Unlock", value: unlockClicks },
+              { label: "Submitted Payment", value: unlockSubmitted },
+              { label: "Approved", value: approvedUnlocks },
+            ].map(item => (
+              <div key={item.label} className="border border-ink-faint/30 p-5 text-center hover:border-ink/40 transition-colors">
+                <p className="font-serif text-3xl text-ink mb-1">{item.value}</p>
+                <p className="label-sm text-ink-muted">{item.label}</p>
+              </div>
+            ))}
+          </div>
+          {unlockClicks > 0 && (
+            <p className="font-sans text-xs text-ink-faint mt-3">
+              Conversion: {unlockSubmitted}/{unlockClicks} who tapped submitted
+              {approvedUnlocks > 0 && ` · ${approvedUnlocks}/${unlockSubmitted} approved`}
+            </p>
+          )}
         </div>
-        {unlockClicks > 0 && (
-          <p className="font-sans text-xs text-ink-faint mt-3">
-            Conversion: {unlockSubmitted}/{unlockClicks} who tapped submitted
-            {approvedUnlocks > 0 && ` · ${approvedUnlocks}/${unlockSubmitted} approved`}
-          </p>
-        )}
+        <p className="label mb-6">Transactions</p>
+        <TransactionsSection rows={transactions} />
       </section>
 
-      <TransactionsSection rows={transactions} />
-
-      <WaitlistSection entries={waitlistEntries} />
+      {/* ── Waitlist ────────────────────────────────────────── */}
+      <section className="mb-12">
+        <SectionBand
+          eyebrow="06"
+          title="Waitlist"
+          summary={`${waitlistEntries.length} total signups`}
+        />
+        <WaitlistSection entries={waitlistEntries} />
+      </section>
 
     </main>
   );
