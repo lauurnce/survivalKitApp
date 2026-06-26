@@ -283,8 +283,8 @@ function WaitlistPieChart({ entries }: { entries: WaitlistEntry[] }) {
 }
 
 function WaitlistSubjectDemand({ entries }: { entries: WaitlistEntry[] }) {
-  // Rank subjects by how many people asked to be notified — this is the
-  // signal for which coming-soon subject to build next.
+  const [expanded, setExpanded] = useState(false);
+
   const counts = new Map<string, { count: number; year: string }>();
   for (const e of entries) {
     if (!e.subject_title) continue;
@@ -302,12 +302,14 @@ function WaitlistSubjectDemand({ entries }: { entries: WaitlistEntry[] }) {
   if (ranked.length === 0) return null;
 
   const max = ranked[0].count;
+  const visible = expanded ? ranked : ranked.slice(0, 5);
+  const hasMore = ranked.length > 5;
 
   return (
     <div className="mb-8 max-w-wide">
       <p className="label-sm text-ink-muted mb-4">Most Requested Subjects</p>
       <div className="flex flex-col gap-2">
-        {ranked.map((r) => (
+        {visible.map((r) => (
           <div key={r.subject} className="flex items-center gap-3">
             <div className="w-48 shrink-0 text-right">
               <span className="font-sans text-sm text-ink">{r.subject}</span>
@@ -325,6 +327,14 @@ function WaitlistSubjectDemand({ entries }: { entries: WaitlistEntry[] }) {
           </div>
         ))}
       </div>
+      {hasMore && (
+        <button
+          onClick={() => setExpanded(v => !v)}
+          className="mt-4 font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150"
+        >
+          {expanded ? `Minimize ↑` : `Reveal all (${ranked.length - 5} more) ↓`}
+        </button>
+      )}
     </div>
   );
 }
@@ -366,6 +376,49 @@ function TransactionsSection({ rows }: { rows: TransactionRow[] }) {
         </div>
       )}
     </section>
+  );
+}
+
+function WaitlistTable({ entries }: { entries: WaitlistEntry[] }) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? entries : entries.slice(0, 5);
+  const hasMore = entries.length > 5;
+
+  return (
+    <div className="overflow-x-auto max-w-wide">
+      <table className="w-full border-collapse">
+        <thead>
+          <tr className="border-b border-ink-faint/30">
+            {["Name", "Email", "Year", "Subject", "Module", "Device", "Date"].map(h => (
+              <th key={h} className="text-left py-2 pr-6 label-sm text-ink-muted font-normal">{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {visible.map(e => (
+            <tr key={e.id} className="border-b border-ink-faint/15">
+              <td className="py-3 pr-6 font-sans text-sm text-ink">{e.name}</td>
+              <td className="py-3 pr-6 font-sans text-sm text-ink-muted">{e.email}</td>
+              <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{e.year_label ?? "—"}</td>
+              <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{e.subject_title ?? "—"}</td>
+              <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{e.module_title ?? "—"}</td>
+              <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{e.device_type}</td>
+              <td className="py-3 pr-6 font-sans text-xs text-ink-muted">
+                {new Date(e.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {hasMore && (
+        <button
+          onClick={() => setExpanded(v => !v)}
+          className="mt-4 font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150"
+        >
+          {expanded ? `Show less ↑` : `Show all ${entries.length} entries ↓`}
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -508,32 +561,7 @@ function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto max-w-wide">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b border-ink-faint/30">
-              {["Name", "Email", "Year", "Subject", "Module", "Device", "Date"].map(h => (
-                <th key={h} className="text-left py-2 pr-6 label-sm text-ink-muted font-normal">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {entries.map(e => (
-              <tr key={e.id} className="border-b border-ink-faint/15">
-                <td className="py-3 pr-6 font-sans text-sm text-ink">{e.name}</td>
-                <td className="py-3 pr-6 font-sans text-sm text-ink-muted">{e.email}</td>
-                <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{e.year_label ?? "—"}</td>
-                <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{e.subject_title ?? "—"}</td>
-                <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{e.module_title ?? "—"}</td>
-                <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{e.device_type}</td>
-                <td className="py-3 pr-6 font-sans text-xs text-ink-muted">
-                  {new Date(e.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <WaitlistTable entries={entries} />
     </section>
   );
 }
