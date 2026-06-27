@@ -800,3 +800,134 @@ $md$, 3),
 - Even in text-only exams, score well by listing actors, relationships, and message flow clearly.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 6: Systems Design
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('7793b931-b0db-57bf-adc8-31729fc28bde','content','From Analysis to Design and Architectural Decisions',$md$
+Once requirements are clear, the next question is: How should the system be built? That is the job of design.
+
+System design translates analysis outputs into implementable decisions. It covers architecture, data storage, interface design, controls, validation, module structure, and integration.
+
+A sound design should be:
+
+- correct with respect to requirements
+- simple enough to understand and maintain
+- modular so parts can change without breaking everything
+- secure enough for the risk level
+- usable for the target users
+- scalable enough for expected growth
+
+### Architectural choices
+
+At the classroom level, you usually compare broad architectures:
+
+| Design choice | Typical use |
+|---|---|
+| Standalone desktop | single office or local use |
+| Client-server | controlled institutional environment |
+| Web-based | browser access across many users |
+| Mobile-supported | field access, convenience, notifications |
+| Cloud-hosted | scalability and remote accessibility |
+
+A practical design answer should justify architecture using context. For example:
+
+- A barangay office with multiple service windows may prefer a web-based local network system.
+- A student appointment system may prefer a web-based platform with mobile-friendly screens.
+- A small office with one workstation may still use a standalone desktop system if the scope is limited.
+
+Do not choose architecture only because it sounds modern. Choose it because it fits the project's users, environment, and constraints.
+$md$, 1),
+('7793b931-b0db-57bf-adc8-31729fc28bde','content','Database, File, Component, and Interface Design',$md$
+Design also decides how information will be stored and how modules will be separated.
+
+### Database design
+
+This usually comes from the ERD and normalization work done earlier. At design stage, you now think about tables and keys, constraints, indexes, transaction integrity, and archival/backup needs. A weak database design can cause duplicate records, slow queries, broken reports, and inconsistent updates.
+
+### File and record considerations
+
+Some systems still export or import files such as CSV, PDF reports, spreadsheet uploads, and official printable forms. A complete design states which outputs are on-screen only, printable, downloadable, or sent through email/SMS integration.
+
+### Component or module design
+
+A system is rarely one giant block. It is usually divided into modules — for example: user management, transaction processing, reporting, notification, inventory, audit log. Name components by major responsibilities. Example for a clinic system: Appointment Module, Patient Record Module, Medicine Inventory Module, Reporting Module, Access Control Module. The design should also decide which modules interact and what data they exchange.
+
+### Input and output design
+
+**Input design** focuses on correct, efficient data entry: ask only for needed data, use clear labels, group related fields, reduce repetitive encoding, validate early, use appropriate controls (dropdowns, date pickers, checkboxes). Good examples: restricting dates to valid ranges, requiring a reference number format, auto-filling known details, confirming destructive actions.
+
+**Output design** includes receipts, reports, dashboards, notifications, approval slips, history logs. Managers usually want summarized reports; front-line staff often need transaction-level detail.
+
+A useful interface is consistent, readable, efficient, forgiving of mistakes, and accessible to beginners. In many BSIT courses, UI design connects closely with HCI — consider learnability, feedback, and error prevention, not only appearance.
+$md$, 2),
+('7793b931-b0db-57bf-adc8-31729fc28bde','activity','Controls, Security, and Design Quality',$md$
+System design must include controls. A system that looks polished but lacks controls will fail in real operations.
+
+### Common controls
+
+| Control type | Example |
+|---|---|
+| Validation control | required field, type check, range check |
+| Access control | role-based permissions |
+| Audit control | timestamps and action logs |
+| Recovery control | backup and restore procedures |
+| Concurrency control | preventing conflicting updates |
+| Error handling | meaningful error messages and retry logic |
+
+### Security design questions
+
+- Who can view which records?
+- Who can approve, edit, or delete?
+- Are sensitive fields encrypted or protected?
+- Are user actions logged?
+- How are passwords managed?
+- How is backup handled?
+
+For Philippine academic and organizational settings, this is especially important when dealing with student data, medical information, payroll records, citizen requests, and financial transactions.
+
+### Design quality reminder
+
+If asked to evaluate a design, comment on correctness, usability, maintainability, performance, security, and scalability. A good design is not only attractive. It is also defensible.
+$md$, 3),
+('7793b931-b0db-57bf-adc8-31729fc28bde','activity','Practice & Exam Drills — Lesson 6',$md$
+**Review Questions**
+
+1. What is the difference between analysis and design?
+2. Give three factors in choosing system architecture.
+3. Why is modular design important?
+4. State three principles of good input design.
+5. How does output design differ for managers and front-line staff?
+6. What is role-based access control?
+7. Give examples of validation controls.
+8. Why are audit trails important?
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Choose a suitable architecture.** A university clinic needs access from the nurse station, doctor room, and student devices for booking; it should support notifications and reporting.
+*Step-by-step:* multiple locations + students need access + centralized reporting. Standalone is too limited; client-server is less convenient for students.
+*Answer:* a **web-based architecture with a mobile-friendly interface** — centralized data, multiple clinic users, student self-service, easier remote access.
+
+**Problem 2: Critique the form design.** An employee-submitted leave-request form asks for Employee Name, Employee ID, Department, Date Filed, Leave Start, Leave End, Reason, Approver Name, Approval Date, Approval Signature Upload.
+*Two poor choices:* (1) **Approver Name** should not be entered by the employee — it is system-selected or role-assigned. (2) **Approval Date** and **Approval Signature Upload** belong to the approval stage, not the employee's initial submission. The form mixes applicant inputs with approver-side data.
+
+**Problem 3: Recommend controls.** A cashiering system lets staff edit payment entries.
+*Controls:* role-based access (only authorized staff can edit); audit log (who changed what and when); confirmation prompt before saving; reason-for-change field; optional supervisor approval for high-value edits.
+
+**Hands-On Practice — Cooperative Membership System.**
+1. Recommend an architecture and justify it.
+2. List five system modules.
+3. Design a text-based input form with field labels and validation notes.
+4. List three reports and their target users.
+5. Recommend five controls for security and reliability.
+
+**How to Pass This Topic**
+
+- Justify every design choice with users, scale, and constraints.
+- Input/output questions are practical — think like a real user.
+- If the case involves sensitive data, always mention access control, logging, and backup.
+- Use the words modular, maintainable, consistent, validated in design evaluations.
+- Explain *why* a design choice is better, not just *what* you chose.
+$md$, 4);
+
