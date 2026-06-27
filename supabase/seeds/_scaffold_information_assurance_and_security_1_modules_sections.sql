@@ -503,3 +503,150 @@ If the service is rarely used, expensive to secure, internet-facing, and not bus
 - Use short but precise wording in tables. Long vague answers lose points.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 3: Identity, Authentication, Authorization, and Access Control
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('6d38cc43-8053-5840-830b-9a3af3115ea4','content','Identity and the AAA Model',$md$
+Security starts by answering a simple question: Who is using the system, and what are they allowed to do?
+
+A user's digital identity may be represented by a username, employee number, email account, certificate, token, or other credential. Security systems then apply the **AAA model**:
+
+- **Authentication** — proving identity
+- **Authorization** — determining permissions after identity is proven
+- **Accounting** — recording actions for auditing and review
+
+Example:
+
+- A student logs into the university portal using a username and password.
+- The portal verifies the student's identity — **authentication**.
+- The student can view subjects but cannot edit grades — **authorization**.
+- The system stores login history and activity logs — **accounting**.
+
+Many exam questions ask students to separate these three clearly. The easiest way is:
+
+> Authentication asks who you are. Authorization asks what you can do. Accounting records what you did.
+$md$, 1),
+('6d38cc43-8053-5840-830b-9a3af3115ea4','content','Authentication Methods',$md$
+Authentication factors are usually grouped into categories:
+
+- **Something you know** — password, PIN, security answer
+- **Something you have** — token, phone, smart card, OTP app
+- **Something you are** — fingerprint, face, iris, voice
+- **Somewhere you are** — location-based checks
+- **Something you do** — behavioral patterns such as typing rhythm
+
+Using more than one factor gives **multi-factor authentication** or MFA. For example, password + OTP is stronger than password alone.
+
+Good authentication design also considers:
+
+- password length and complexity,
+- account lockout or throttling,
+- credential storage,
+- reset procedures,
+- session timeout,
+- protection against phishing.
+
+A weak reset process can ruin a strong login system. If an attacker can easily reset a password through social engineering, the system remains vulnerable.
+$md$, 2),
+('6d38cc43-8053-5840-830b-9a3af3115ea4','activity','Authorization and Access Control Models',$md$
+After authentication, a system decides what the subject is allowed to access. This is **authorization**.
+
+Common access control ideas include:
+
+- **Least privilege** — users get only the access they need
+- **Need to know** — sensitive information is shared only when necessary
+- **Separation of duties** — critical tasks are split so one person cannot abuse the whole process
+- **Default deny** — deny access unless explicitly allowed
+
+Common access control models:
+
+| Model | Core Idea | Example |
+|---|---|---|
+| DAC | Owner can decide access | A file owner shares a folder with selected users |
+| MAC | Access follows labels and rules | Government-classified records |
+| RBAC | Access depends on role | Registrar staff, faculty, cashier, student |
+| ABAC | Access depends on attributes | Access only if department = HR and time = office hours |
+
+In many organizations, RBAC is practical because institutions already assign jobs by role. It is easier to manage than giving every user custom permissions one by one.
+$md$, 3),
+('6d38cc43-8053-5840-830b-9a3af3115ea4','activity','Account Management and Common Access Mistakes',$md$
+Even a good access model can fail if accounts are poorly managed.
+
+Common mistakes include:
+
+- shared accounts,
+- default passwords,
+- orphaned accounts of resigned employees,
+- excessive admin privileges,
+- no periodic access review,
+- letting users keep rights from old positions.
+
+Suppose a former intern still has access to a cloud drive. That is an account management problem. If a finance employee can both create and approve payments, that is a separation-of-duties problem.
+
+A simple secure account life cycle includes:
+
+1. Create account based on approved request
+2. Assign minimum required access
+3. Review access regularly
+4. Adjust access when role changes
+5. Disable or remove access when no longer needed
+
+For introductory security, remember this principle: most access problems are management problems before they become technical incidents.
+$md$, 4),
+('6d38cc43-8053-5840-830b-9a3af3115ea4','activity','Practice & Exam Drills — Lesson 3',$md$
+### Review Questions
+
+1. What does the AAA model stand for?
+2. Differentiate authentication from authorization.
+3. Give three examples of authentication factors.
+4. What is multi-factor authentication?
+5. Define least privilege.
+6. Compare DAC and RBAC.
+7. Why are shared accounts risky?
+8. What is separation of duties?
+
+### Worked Exam-Style Problems
+
+**Problem A: AAA Identification** — For each statement, identify Authentication, Authorization, or Accounting.
+
+1. The system checks whether the entered OTP is correct → **Authentication** — identity is being verified.
+2. A faculty member can encode grades but cannot release payroll → **Authorization** — access rights are defined.
+3. The system stores the timestamp and IP address of a login → **Accounting** — activity is recorded.
+4. A user presents a fingerprint to access a secure workstation → **Authentication** — biometric factor verifies identity.
+
+**Problem B: Choose the Access Control Model**
+
+A university wants: students view only their own grades; instructors edit grades only for subjects they handle; the registrar finalizes records; permissions depend mainly on job function. Which model is most appropriate?
+
+*Step-by-Step Solution*
+
+Key clue: permissions depend mainly on job function. Student, Instructor, Registrar are **roles**. Therefore the most appropriate model is **RBAC**. DAC lets individual owners decide access (messy); MAC is more label-driven and rigid; ABAC is possible but role-based control is the most direct and manageable here.
+
+**Problem C: Access Review Case**
+
+A staff member transferred from admissions to procurement but still retains admissions access. What principle is violated, and what should be done?
+
+*Step-by-Step Solution*
+
+This violates **least privilege** because the staff member keeps more access than required. It also shows weak account management and poor access review. Correct action: revoke old admissions permissions; assign only procurement-related permissions; review whether similar excess access exists for others; improve role-change procedures.
+
+### Hands-On Exercises
+
+**Exercise A: Create an RBAC Table** — Design an RBAC matrix. Roles: Student, Faculty, Registrar, Cashier, IT Admin. Resources: Grades, Enrollment Records, Payment Records, User Accounts, Course Schedule. Use the format: Role | View Grades | Edit Grades | View Payments | Manage Accounts | Edit Schedule.
+
+**Exercise B: Access Control Critique** — Evaluate this setup: all department staff use one shared account; the password is changed only once per year; logs do not show which individual edited a file. Write a one-paragraph security critique.
+
+**Exercise C: Authentication Upgrade Plan** — A small business currently uses only passwords. Recommend a better authentication setup and explain why it improves security.
+
+### How to Pass This Topic
+
+- Professors love asking AAA identification. Practice fast recognition.
+- For access control models, memorize the strongest keyword for each: DAC = owner decision; MAC = labels/rules; RBAC = roles; ABAC = attributes.
+- In case studies, mention least privilege and separation of duties whenever relevant.
+- If you see shared accounts in a problem, mention loss of accountability immediately.
+- When in doubt, explain how access should change across the account life cycle.
+- Keep answers practical. Faculty often reward students who think like future system administrators.
+$md$, 5);
+
