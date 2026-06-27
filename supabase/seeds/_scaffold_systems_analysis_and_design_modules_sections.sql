@@ -374,3 +374,148 @@ $md$, 3),
 - Connect the project to a real organizational goal, not just "automation."
 $md$, 4);
 
+-- ============================================================
+-- LESSON 3: Requirements Engineering and Fact-Finding
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('dee0e51b-5c73-5378-b28e-4f9bd998cbf2','content','Functional and Nonfunctional Requirements',$md$
+A requirement is a condition or capability needed by users or the organization. Requirements must be clear enough that the team can design, build, and test the system correctly.
+
+Two major categories appear often in exams.
+
+### Functional requirements
+
+These describe **what the system should do**. Examples:
+
+- The system shall allow students to book clinic appointments.
+- The system shall generate daily inventory reports.
+- The system shall send an approval notification to the applicant.
+
+Functional requirements are about services, tasks, and behavior.
+
+### Nonfunctional requirements
+
+These describe **how well** the system should perform or under what conditions it should operate. Examples:
+
+- The system shall respond to search queries within 3 seconds.
+- The system shall be available from 7:00 AM to 7:00 PM on weekdays.
+- The system shall restrict access using role-based permissions.
+- The system shall support mobile viewing on standard smartphone browsers.
+
+Nonfunctional requirements often cover:
+
+| Area | Sample focus |
+|---|---|
+| Performance | speed, throughput, response time |
+| Security | authentication, authorization, logging |
+| Reliability | uptime, fault tolerance, backup |
+| Usability | ease of learning, accessibility |
+| Maintainability | modularity, ease of update |
+| Compatibility | browser, OS, device support |
+| Legal and policy | privacy, retention, audit trails |
+
+Another important item is the **business rule** — a policy or condition that shapes the system. Examples:
+
+- A student cannot enroll with an unsettled balance.
+- Only the department head can approve bulk inventory adjustments.
+- A loan request above ₱50,000 requires two levels of approval.
+
+Business rules are not optional details. They often decide whether the system is acceptable in real operations.
+$md$, 1),
+('dee0e51b-5c73-5378-b28e-4f9bd998cbf2','content','Fact-Finding Techniques for Eliciting Requirements',$md$
+Requirements do not appear by magic. They are gathered through fact-finding, also called elicitation.
+
+### Interview
+Direct conversation with users or managers. **Best for:** deep understanding, clarifying exceptions, learning pain points and priorities. **Tips:** prepare questions, ask about actual work (not only desired features), confirm understanding before ending.
+
+### Observation
+Watch how work is actually performed. **Best for:** detecting real behavior, exposing hidden workarounds, identifying delays. Users sometimes forget steps they do automatically; observation catches those.
+
+### Questionnaire or survey
+Useful when many respondents are involved. **Best for:** quick gathering of preferences, measuring common issues, structured responses.
+
+### Document analysis
+Review forms, reports, manuals, spreadsheets, logs, and policies. **Best for:** understanding data fields, identifying current outputs, finding compliance rules.
+
+### Workshop or JAD-style session
+A structured meeting with users, managers, and analysts. **Best for:** resolving conflicts, speeding up requirement agreement, producing shared understanding.
+
+### Prototyping
+Show a draft screen or workflow and collect reactions. **Best for:** interface-heavy systems; users who find it easier to react than to describe.
+
+A strong analyst usually combines methods. For example, interviews plus document review plus observation often produce more reliable requirements than any single method alone.
+$md$, 2),
+('dee0e51b-5c73-5378-b28e-4f9bd998cbf2','activity','Writing, Organizing, and Validating Requirements',$md$
+Good requirements should be clear, necessary, testable, and consistent.
+
+Avoid vague statements like: *the system should be user-friendly; the system should be fast; the system should be secure.* These are too weak unless made measurable or more specific.
+
+Better versions:
+
+- New users shall complete appointment booking in no more than 4 screens.
+- The system shall return search results within 3 seconds for up to 5,000 active records.
+- The system shall log failed login attempts and lock the account after 5 consecutive failures.
+
+A practical checklist for requirement quality:
+
+| Question | Why it matters |
+|---|---|
+| Is it clear? | avoids multiple interpretations |
+| Is it testable? | lets QA verify compliance |
+| Is it necessary? | removes useless features |
+| Is it feasible? | respects constraints |
+| Is it consistent? | avoids contradiction |
+| Is it traceable? | links back to stakeholder needs |
+
+Requirements are often organized in a document such as an **SRS (Software Requirements Specification)**. Even if your class does not require a formal SRS, your output usually includes: system overview, stakeholder list, functional requirements, nonfunctional requirements, business rules, assumptions and constraints, acceptance criteria.
+
+Validation means checking whether the requirements are truly correct. Typical validation actions: review with users, walkthroughs, prototype review, conflict resolution meetings, checking against policy or law, checking completeness against process steps.
+$md$, 3),
+('dee0e51b-5c73-5378-b28e-4f9bd998cbf2','activity','Practice & Exam Drills — Lesson 3',$md$
+**Prioritization, traceability & change control reminder.** Prioritize with MoSCoW: Must-have (core), Should-have (important), Could-have (if time allows), Won't-have-for-now (deferred). Traceability connects a requirement back to its source and forward to design, implementation, and test (stakeholder complaint → requirement → design element → test case). Change is normal; *uncontrolled* change is the problem — a healthy process asks what changed, why, who requested it, the impact, and whether to approve now or defer.
+
+**Review Questions**
+
+1. What is the difference between functional and nonfunctional requirements?
+2. Give three examples of business rules.
+3. When is observation better than interview?
+4. Why is document analysis useful during fact-finding?
+5. What makes a requirement testable?
+6. What is traceability?
+7. Why do teams prioritize requirements?
+8. What is uncontrolled change in requirements?
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Classify each statement** as Functional Requirement, Nonfunctional Requirement, or Business Rule.
+- "allow librarians to record book returns" → **Functional Requirement**
+- "support up to 200 concurrent users during enrollment week" → **Nonfunctional Requirement** (capacity/performance)
+- "a student with an active disciplinary hold cannot generate clearance" → **Business Rule**
+- "back up transaction data every night at 10:00 PM" → **Nonfunctional Requirement** (operational reliability/control)
+- "only accounting staff can reverse payment entries" → **Business Rule**
+
+**Problem 2: Improve vague requirements.**
+- "The system should be fast." → *The system shall display search results within 3 seconds for common queries.*
+- "The system should be secure." → *The system shall require authenticated login and shall record all failed login attempts.*
+- "The system should be easy to use." → *New users shall complete reservation submission using no more than 5 screens and without technical assistance.*
+
+**Problem 3: Select elicitation techniques.** A school clinic wants a new patient logging system. The nurse performs undocumented shortcuts during busy days; the doctor wants better reports.
+*Answer:* prioritize **Observation** (capture undocumented shortcuts), **Interview** with nurse and doctor (pain points and report needs), **Document analysis** of current forms/logs, and an optional prototype review later. The case mixes hidden actual practice with stated managerial needs.
+
+**Hands-On Practice — Dormitory maintenance request system.**
+1. Write five interview questions for students.
+2. Write five interview questions for the maintenance supervisor.
+3. List six functional requirements.
+4. List four nonfunctional requirements.
+5. Mark each functional requirement as Must-have, Should-have, or Could-have.
+
+**How to Pass This Topic**
+
+- Permissions and policy restrictions are often business rules.
+- Do not write nonfunctional requirements as vague adjectives.
+- In interview questions, avoid yes/no questions unless confirming facts.
+- Use verbs such as record, generate, validate, notify, approve, restrict, display.
+- If a requirement cannot be checked by a tester, improve it.
+$md$, 4);
+
