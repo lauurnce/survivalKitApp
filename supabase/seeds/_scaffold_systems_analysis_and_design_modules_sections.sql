@@ -1062,3 +1062,114 @@ $md$, 3),
 - In maintenance questions, focus on the reason for the change, not just the activity.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 8: Project Management, Documentation, and Capstone Readiness
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('00f881d4-f722-51d4-baf5-184966a95b17','content','Estimation, Scheduling, and Team Coordination',$md$
+Systems projects fail not only because of technical problems but also because of weak management. That is why many curricula connect SAD with project management.
+
+At student level, project management means planning tasks, roles, schedule, deliverables, and monitoring.
+
+### Work breakdown
+
+A large project becomes manageable when divided into smaller tasks. Example: problem definition; fact-finding; requirement analysis; process modeling; data modeling; interface design; testing plan; documentation; presentation. This is similar to a simple Work Breakdown Structure.
+
+### Scheduling
+
+A schedule identifies what task will be done, by whom, when it starts, when it ends, and what it depends on. In class this may be shown through task lists, timelines, Gantt charts, or milestone tables. Simple dependency logic matters: you cannot fully finalize testing before requirements and design exist.
+
+### Team coordination
+
+Usual student roles: project leader, analyst/documenter, UI designer, developer, tester, presenter. Even in small teams, define who owns each deliverable. "Everyone will do everything" often ends in confusion.
+$md$, 1),
+('00f881d4-f722-51d4-baf5-184966a95b17','content','Professional, Legal, and Ethical Concerns',$md$
+Systems Analysis and Design also includes professional judgment. A technically possible system may still be unacceptable if it violates ethics, law, or organizational trust.
+
+### Privacy and confidentiality
+
+Personal, academic, medical, and financial records must be handled carefully. Teams should ask: Do we really need this data? Who should see it? How long should we keep it? How is it protected?
+
+### Accuracy and accountability
+
+A system should not hide who did what. Audit trails matter, especially when money is involved, approvals exist, or records may be disputed.
+
+### Professional conduct
+
+Project teams should avoid plagiarism in documents and diagrams, report limitations honestly, avoid fake evaluation claims, and communicate risks clearly.
+
+### Social and organizational impact
+
+A new system may change work distribution, affect staff routines, or require policy changes. Analysts should anticipate these effects, not treat them as someone else's problem.
+
+A mature project answer always considers both technical feasibility and responsible use.
+$md$, 2),
+('00f881d4-f722-51d4-baf5-184966a95b17','activity','Organizing the SAD Document, Presentation, and Capstone Readiness',$md$
+A common output in this subject is a formal SAD document or analysis-and-design chapter set. A typical structure includes: Introduction; Background and problem statement; Objectives; Scope and limitations; Review of current process; Requirements analysis; Process and data models; Proposed system design; Security and controls; Testing and implementation plan; Summary and recommendation.
+
+Professors often look for these qualities:
+
+| Quality | What it means |
+|---|---|
+| Logical flow | sections connect naturally |
+| Consistency | terms and diagram names match |
+| Traceability | design links back to requirements |
+| Defensibility | choices are justified |
+| Professional formatting | readable tables, captions, labels |
+
+### Oral presentation tips
+
+Start with the problem, not the software features; explain who the users are; show current pain points clearly; present models in a logical order; justify design choices; be ready to answer "Why this and not another option?" A strong presentation shows that the system is a response to a defined need, not just a collection of features.
+
+### Pulling the subject together for capstone readiness
+
+By the end of this subject you should be able to: define a real organizational problem; study the current process; gather and validate requirements; model process, data, and interaction; propose a suitable design; plan testing and implementation; explain business value and feasibility; and document the whole solution professionally. That is already the backbone of a capstone proposal.
+
+> Every claim in the document should be supported by a requirement, a model, a design decision, or a test plan.
+
+If you cannot explain why a feature exists, it is probably not well analyzed. If you cannot test a requirement, it is probably too vague. If you cannot justify a design choice, it is probably premature or weak.
+$md$, 3),
+('00f881d4-f722-51d4-baf5-184966a95b17','activity','Practice & Exam Drills — Lesson 8',$md$
+**Review Questions**
+
+1. Why is work breakdown useful in systems projects?
+2. What is a task dependency?
+3. Why should team roles be assigned clearly?
+4. Give three professional or ethical concerns in system projects.
+5. Why are audit trails important?
+6. What sections commonly appear in an SAD document?
+7. Why should a presentation begin with the problem instead of the feature list?
+8. How does SAD prepare students for capstone work?
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Build a simple task sequence.** Tasks: A Interview users; B Draft requirements; C Prepare DFD and ERD; D Design interfaces; E Prepare test plan; F Final presentation.
+*Step-by-step:* A first (gather info) → B (turn findings into requirements) → C (models from requirements) → D (interfaces from requirements, improved by C) → E (test plan depends on requirements + design) → F (presentation after outputs ready).
+*One acceptable sequence:* A → B → C → D → E → F.
+
+**Problem 2: Spot the documentation weakness.** A team presents screen mockups and database tables, but no problem statement, no stakeholder list, and no requirements section.
+*Answer:* the report jumps to design without analysis — the problem basis is unclear, stakeholders undefined, requirements not traceable, and the design cannot be properly justified. The main weakness is the **absence of analysis foundation and traceability.**
+
+**Problem 3: Oral defense practice.** "Why did your team choose a web-based design instead of a desktop-only system?"
+*Model answer:* "We chose web-based because the target users work from multiple offices and need shared real-time records. A desktop-only setup would make synchronization harder and reduce visibility across units. Our requirements also included browser access for management monitoring and easier deployment without installing client software on every workstation."
+
+**Hands-On Practice — Internship Placement Monitoring System.**
+1. A task breakdown of at least eight project tasks.
+2. A milestone schedule for six weeks.
+3. A list of team roles and responsibilities.
+4. A table of contents for the SAD document.
+5. Three possible oral defense questions and your model answers.
+
+**How to Pass This Topic**
+
+- In planning questions, show order and dependency clearly.
+- In documentation questions, connect problem → requirements → models → design → test.
+- In oral-defense items, justify choices using needs, constraints, users, and risk.
+- Mention ethics when the case includes personal, medical, academic, or financial data.
+- Strong final answers sound professional, specific, and grounded in the case — not generic.
+$md$, 4);
+
+-- SOURCES (metadata, not inserted):
+-- UP Baguio BSCS / CMSC 128; PUP BSIT & MSIT; FEU/FEU Tech BSAM-IT; Adamson BSIT 2022;
+-- Ateneo BS MIS / QMIT; DLSU BSIS ISANDE1/ISANDE2; CHED CMO 25 s. 2015.
