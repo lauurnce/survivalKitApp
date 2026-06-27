@@ -1,9 +1,34 @@
 import { createServerClient } from "./supabase/server";
-import { isSubscribed } from "./subscriptions";
+import { isUuid } from "./validation";
 
 export function pct(done: number, total: number): number {
   if (total <= 0) return 0;
   return Math.min(100, Math.round((done / total) * 100));
+}
+
+// An active subscription row, narrowed to the fields that decide unlocking.
+export interface ActiveSub {
+  year_id: string;
+  subject_id: string | null;
+}
+
+/**
+ * In-memory equivalent of isSubscribed(): given a user's active, unexpired
+ * subscriptions, is (yearId, subjectId) unlocked? A year-level plan
+ * (subject_id IS NULL) unlocks every subject in that year; a subject-level
+ * plan unlocks only its own subject. Pre-filter `subs` to status='active'
+ * and current_period_end > now before calling.
+ */
+export function isUnlockedBy(
+  subs: ActiveSub[],
+  yearId: string,
+  subjectId: string,
+): boolean {
+  return subs.some(
+    (s) =>
+      s.year_id === yearId &&
+      (s.subject_id === null || s.subject_id === subjectId),
+  );
 }
 
 export interface ModuleSummary {
@@ -34,30 +59,50 @@ export interface AccountOverview {
 
 export async function getAccountOverview(userId: string): Promise<AccountOverview> {
   const supabase = createServerClient();
+  const now = new Date().toISOString();
 
-  const { data: subjects } = await supabase
-    .from("subjects")
-    .select("id, title, year_id, years(id, label, sort_order)")
-    .order("sort_order");
+  // Four bulk queries, run in parallel — no per-subject loop. This replaces an
+  // N+1 waterfall (1 modules query + up to 2 subscription queries per subject)
+  // that made the account page take ~10-15s with dozens of subjects.
+  const [subjectsRes, progressRes, modulesRes, subsRes] = await Promise.all([
+    supabase
+      .from("subjects")
+      .select("id, title, year_id, years(id, label, sort_order)")
+      .order("sort_order"),
+    supabase.from("module_progress").select("module_id").eq("user_id", userId),
+    supabase.from("modules").select("id, title, subject_id").order("sort_order"),
+    isUuid(userId)
+      ? supabase
+          .from("subscriptions")
+          .select("year_id, subject_id")
+          .eq("user_id", userId)
+          .eq("status", "active")
+          .gt("current_period_end", now)
+      : { data: [] as ActiveSub[] },
+  ]);
 
-  const { data: progressRows } = await supabase
-    .from("module_progress").select("module_id").eq("user_id", userId);
-  const doneModuleIds = new Set((progressRows ?? []).map((r) => r.module_id));
+  const subjects = subjectsRes.data ?? [];
+  const doneModuleIds = new Set((progressRes.data ?? []).map((r) => r.module_id));
+  const activeSubs = (subsRes.data ?? []) as ActiveSub[];
+
+  // Group modules by subject once, preserving the sort_order from the query.
+  const modulesBySubject = new Map<string, ModuleSummary[]>();
+  for (const m of modulesRes.data ?? []) {
+    const list = modulesBySubject.get(m.subject_id) ?? [];
+    list.push({ id: m.id, title: m.title, done: doneModuleIds.has(m.id) });
+    modulesBySubject.set(m.subject_id, list);
+  }
 
   const summaries: SubjectSummary[] = [];
   const yearMap = new Map<string, YearGroup>();
   let overallDone = 0, overallTotal = 0;
   let yearLabel: string | null = null;
 
-  for (const s of subjects ?? []) {
-    const { data: mods } = await supabase
-      .from("modules").select("id, title").eq("subject_id", s.id).order("sort_order");
-    const moduleSummaries: ModuleSummary[] = (mods ?? []).map((m) => ({
-      id: m.id, title: m.title, done: doneModuleIds.has(m.id),
-    }));
+  for (const s of subjects) {
+    const moduleSummaries = modulesBySubject.get(s.id) ?? [];
     const doneCount = moduleSummaries.filter((m) => m.done).length;
     const totalCount = moduleSummaries.length;
-    const unlocked = await isSubscribed("", s.year_id, s.id, userId);
+    const unlocked = isUnlockedBy(activeSubs, s.year_id, s.id);
     if (unlocked) { overallDone += doneCount; overallTotal += totalCount; }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const yr = (s as any).years;
