@@ -363,3 +363,98 @@ $md$, 3),
 - If you recommend background music, say how you will keep it from competing with narration.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 4: Video Production and Compression
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('e6c18ed9-ec62-51fd-9dac-30d64c50555d','content','Planning Video for Multimedia',$md$
+Video is one of the strongest multimedia elements because it combines image, motion, and sound. But strong video output begins before recording.
+
+Useful planning tools include:
+
+- **Script** — defines what will be said or shown.
+- **Shot list** — lists the planned shots, such as wide shot, medium shot, close-up, screen recording, cutaway.
+- **Storyboard** — maps the visual sequence frame by frame or scene by scene.
+- **Production plan** — includes location, equipment, speakers, schedule, and permissions.
+
+A video for a university event recap and a video for a software tutorial are not planned the same way. The first may focus on emotional highlights. The second must focus on screen clarity, sequence, and readability.
+
+Good planning also prevents continuity errors. If a speaker suddenly changes position or a process step is skipped, viewers notice.
+$md$, 1),
+('e6c18ed9-ec62-51fd-9dac-30d64c50555d','content','Video Fundamentals',$md$
+To make good decisions, understand these core terms.
+
+### Resolution
+Examples: 1280 × 720, 1920 × 1080, 3840 × 2160. Higher resolution increases detail but also increases processing and storage needs.
+
+### Frame rate
+Frame rate is measured in frames per second (fps), such as 24 fps, 30 fps, 60 fps. Higher frame rate gives smoother motion, especially for games, sports, or UI demos.
+
+### Codec
+A codec compresses and decompresses video data. It affects quality, compatibility, and file size.
+
+### Container
+A container is the file wrapper, such as MP4, MOV, MKV.
+
+Many students confuse codec and container. Remember: **codec = how the data is compressed; container = how the data is packaged.** Bitrate also matters — higher bitrate usually means higher quality and larger files.
+$md$, 2),
+('e6c18ed9-ec62-51fd-9dac-30d64c50555d','activity','Editing, Post-Production, and Delivery',$md$
+After recording, post-production usually includes trimming unusable footage, arranging clips, correcting color, adjusting audio, adding titles, inserting transitions, and exporting for target use.
+
+Transitions should be purposeful. Overusing flashy transitions can make academic or professional outputs look weak — simple cuts and dissolves are often enough. For instructional or institutional videos, readability matters: titles must stay on screen long enough, screen captures must be legible, narration must match the sequence. Effective video editing means clarity, pacing, continuity, synchronization, and consistency of visual style.
+
+### Delivery and streaming considerations
+
+A video that looks excellent on a lab computer may perform poorly on a low-bandwidth connection. Export settings should match the actual use case:
+
+- **For classroom projection:** clarity and legibility matter most.
+- **For mobile viewing:** smaller file size and subtitle readability matter.
+- **For LMS or web upload:** compatibility and streaming efficiency matter.
+
+A practical delivery checklist: Is the resolution appropriate? Is the bitrate too high for the audience? Is the text readable on small screens? Are captions available? Does the file play on common devices? A technically correct video is not always an effective video — delivery decisions should be based on audience, platform, and network conditions.
+$md$, 3),
+('e6c18ed9-ec62-51fd-9dac-30d64c50555d','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. What is the purpose of a storyboard?
+2. Differentiate codec and container.
+3. Why does frame rate matter?
+4. Give one situation where 60 fps is more useful than 24 fps.
+5. Why is bitrate important in export decisions?
+6. What editing issues make a tutorial video ineffective?
+7. Why should mobile viewers be considered during export?
+8. What is a continuity error?
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Estimating Video Size from Bitrate.** Exported at 8 Mbps, duration 120 seconds.
+
+*Step-by-step solution*
+- $8$ Mbps $= 8{,}000{,}000$ bits/sec
+- Bits: $8{,}000{,}000 \times 120 = 960{,}000{,}000$
+- Bytes: $960{,}000{,}000 \div 8 = 120{,}000{,}000$
+- $\approx 120$ MB
+
+*Final answer:* about **120 MB.**
+
+**Problem 2: Export Decision.** A software-demo video for students who mostly watch on phones with unstable internet — 4K at very high bitrate, or 1080p at moderate bitrate?
+
+*Step-by-step solution*
+1. Use case: mobile viewing, unstable internet, instructional purpose.
+2. What matters most: readable interface, smooth playback, manageable file size.
+3. Compare: 4K high bitrate gives more detail but is heavier and harder to stream; 1080p moderate bitrate is usually clear enough and more practical.
+
+*Final answer:* use **1080p at a moderate bitrate** — it balances readability and accessibility for the target audience.
+
+**Hands-On Exercise.** Create a mini pre-production set for a 1-minute tutorial video on how to submit a file to an LMS: objective, audience, script outline, 6-shot storyboard, recommended export settings, subtitle plan.
+
+**How to Pass This Topic**
+
+- Always define resolution, frame rate, bitrate, codec, and container correctly.
+- In export questions, answer based on platform constraints, not just "best quality."
+- For tutorial videos, mention screen readability and audio sync.
+- Practice matching technical settings to real use cases.
+- When in doubt, justify your choice with clarity + compatibility + file size.
+$md$, 4);
+
