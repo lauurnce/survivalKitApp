@@ -107,14 +107,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Malformed remarks" }, { status: 400 });
   }
 
-  // Validate paid amount matches the plan: ₱50 subject, ₱300 year
+  // Fail closed: require an explicit "paid" status. A missing/non-string status
+  // must never unlock content.
+  if (typeof paidStatus !== "string" || paidStatus !== "paid") {
+    return NextResponse.json({ ok: true, ignored: "status" });
+  }
+
+  // Validate paid amount matches the plan: ₱50 subject, ₱300 year. Require a
+  // numeric amount — never substitute the expected amount for a missing field.
   const expectedAmount = subjectId ? SUBJECT_AMOUNT : YEAR_AMOUNT;
-  if (typeof paidAmount === "number" && paidAmount !== expectedAmount) {
+  if (typeof paidAmount !== "number" || paidAmount !== expectedAmount) {
     console.error(`Webhook amount mismatch: got ${paidAmount}, expected ${expectedAmount}`);
     return NextResponse.json({ error: "Amount mismatch" }, { status: 400 });
-  }
-  if (typeof paidStatus === "string" && paidStatus !== "paid") {
-    return NextResponse.json({ ok: true, ignored: "status" });
   }
 
   const supabase = createServerClient();
@@ -131,7 +135,7 @@ export async function POST(req: NextRequest) {
       deviceId,
       yearId,
       subjectId,
-      amount: typeof paidAmount === "number" ? paidAmount : expectedAmount,
+      amount: paidAmount,
       paidAt,
       userId,
     });
