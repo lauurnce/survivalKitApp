@@ -772,3 +772,160 @@ INSERT INTO students VALUES
 (2, 'Marco Reyes', 'BSIT', 'marco@school.edu'),
 (3, 'Lia Santos', 'BSCS', NULL);$code$);
 
+-- ============================================================
+-- LESSON 5: Transactions, Concurrency Control, and Recovery Basics
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('32c49f63-b4f0-50b1-8297-4a4c762514fd','content','Why Transactions Matter',$md$
+A transaction is a logical unit of work that should either complete properly or not take effect at all.
+
+Example: during enrollment, the system may need to:
+
+- add the student's subject record
+- update available slots
+- record assessment data
+
+If the first two steps succeed but the third fails, the database may become inconsistent. Transactions prevent this by grouping related operations.
+
+The classic properties of transactions are called **ACID**:
+
+- **Atomicity** — all or nothing
+- **Consistency** — valid state before and after
+- **Isolation** — concurrent work should not interfere improperly
+- **Durability** — committed work survives failures
+
+For DBAs, transactions are essential because they connect application behavior to correctness, locking, logging, and recovery.
+$md$, 1),
+
+('32c49f63-b4f0-50b1-8297-4a4c762514fd','content','Concurrency Problems and Isolation',$md$
+In real systems, many users act at the same time. This is called concurrency. Without proper control, one user's action can interfere with another's.
+
+Common anomalies include:
+
+**Lost update** — Two users read the same row, both modify it, and one update overwrites the other.
+
+**Dirty read** — A transaction reads data written by another transaction that has not yet committed.
+
+**Non-repeatable read** — A transaction reads the same row twice and gets different values because another transaction changed it in between.
+
+**Phantom read** — A transaction reruns a query and finds new rows added by another transaction.
+
+DBMSs manage these issues through locking, timestamps, or other concurrency methods, and expose different isolation levels. Higher isolation can increase correctness but may reduce concurrency and speed.
+
+A DBA must understand that performance tuning is not only about speed. Sometimes the correct question is:
+
+> "What level of isolation does this business process really need?"
+$md$, 2),
+
+('32c49f63-b4f0-50b1-8297-4a4c762514fd','activity','Logging, Checkpoints, and Recovery Concepts',$md$
+Databases recover from failure using logs and recovery mechanisms.
+
+A transaction log records important changes. If a crash occurs, the DBMS can use the log to decide:
+
+- which committed changes must be redone
+- which incomplete changes must be undone
+
+A checkpoint helps mark a known recovery position so the system does not need to scan the entire history unnecessarily.
+
+Basic recovery situations include:
+
+- transaction failure
+- system crash
+- media failure
+- user error
+
+The DBA's role is to understand recovery logic well enough to support backup strategy, restore procedures, and incident response. Recovery is not magic. It depends on planned logging and tested procedures.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('32c49f63-b4f0-50b1-8297-4a4c762514fd','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. What is a transaction?
+2. What does atomicity mean?
+3. Give one example of consistency in a school or payroll system.
+4. What is a dirty read?
+5. What is a lost update?
+6. Why can higher isolation reduce performance?
+7. What is the purpose of the transaction log?
+8. What is a checkpoint?
+
+**Worked Exam-Style Problems**
+
+**Problem 1.** Transfer ₱5,000 from Registrar Collections to Scholarship Fund. Explain why the update must be inside one transaction.
+
+*Step-by-step solution*
+1. The transfer has two dependent actions: subtract from account 1, add to account 2.
+2. If only one action succeeds, balances become incorrect.
+3. A transaction ensures both succeed together or both are cancelled.
+
+*Example SQL*
+```sql
+BEGIN;
+
+UPDATE account_balance
+SET balance = balance - 5000
+WHERE account_id = 1;
+
+UPDATE account_balance
+SET balance = balance + 5000
+WHERE account_id = 2;
+
+COMMIT;
+```
+
+*Final answer:* The two updates must be in one transaction so the transfer is atomic and the balances remain consistent.
+
+**Problem 2.** Transaction T1 updates a grade but has not committed yet. Transaction T2 reads that updated grade. What anomaly occurred, and why is it dangerous?
+
+*Step-by-step solution*
+1. T2 read uncommitted data from T1.
+2. That is a dirty read.
+3. If T1 later rolls back, then T2 acted on a value that never really became valid.
+4. This can cause wrong reports or incorrect business decisions.
+
+**Hands-on Exercise**
+
+1. Display all account balances.
+2. Simulate a transfer of ₱2,000 from account 1 to account 2 using `BEGIN` and `COMMIT`.
+3. Write the same transfer again, but think about what should happen if the second update fails.
+4. Compute the total balance before and after the transfer.
+
+*Suggested solution path*
+```sql
+SELECT * FROM account_balance;
+
+BEGIN;
+
+UPDATE account_balance
+SET balance = balance - 2000
+WHERE account_id = 1;
+
+UPDATE account_balance
+SET balance = balance + 2000
+WHERE account_id = 2;
+
+COMMIT;
+
+SELECT SUM(balance) AS total_balance
+FROM account_balance;
+```
+
+**How to Pass This Topic**
+
+- Always connect ACID to real scenarios, not memorized words alone.
+- Many exams ask for anomaly identification. Practice the terms: dirty read, lost update, non-repeatable read, phantom read.
+- When asked why logs matter, say *redo committed work and undo incomplete work*.
+- If a process has multiple dependent updates, your answer should mention transaction boundaries.
+- A common error is confusing durability with backup. Durability is about committed data surviving ordinary failure; backup is a broader protection strategy.
+$md$, 4, 'sql', $code$CREATE TABLE account_balance (
+    account_id INTEGER PRIMARY KEY,
+    account_name VARCHAR(50),
+    balance DECIMAL(10,2)
+);
+
+INSERT INTO account_balance VALUES
+(1, 'Registrar Collections', 50000.00),
+(2, 'Scholarship Fund', 30000.00);$code$);
+
