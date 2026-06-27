@@ -1076,3 +1076,144 @@ The system lacks proper input handling and safe query design. An attacker may su
 - Use phrases like least privilege, secure configuration, and monitoring where appropriate.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 7: Security Governance, Policies, Ethics, and the Philippine Legal Environment
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('2f4923a6-20df-5b29-bdf1-a8e7ad5a8f6f','content','Why Governance and Policy Matter',$md$
+Technology alone cannot secure an organization. Systems need rules, responsibilities, and decision-making structures. That is the role of **security governance**.
+
+Governance answers questions such as:
+
+- Who approves security policies?
+- Who owns which assets?
+- What controls are mandatory?
+- How are exceptions handled?
+- How are incidents reported?
+- How is compliance checked?
+
+A **policy** is a formal statement of expectations and rules. A **standard** gives required specifications. A **procedure** gives step-by-step instructions. A **guideline** gives recommended practice.
+
+Example:
+
+- Policy: all sensitive data must be protected
+- Standard: passwords must meet minimum requirements
+- Procedure: how new accounts are requested and approved
+- Guideline: tips for secure remote work
+$md$, 1),
+('2f4923a6-20df-5b29-bdf1-a8e7ad5a8f6f','content','Core Security Policies Students Should Recognize',$md$
+Introductory security courses commonly discuss policies such as:
+
+- acceptable use policy,
+- password policy,
+- access control policy,
+- backup and recovery policy,
+- incident reporting policy,
+- remote access policy,
+- email and internet use policy,
+- data classification and retention policy.
+
+A good policy is clear, enforceable, aligned to business needs, and supported by management. A policy that nobody follows is not effective governance.
+
+Security governance also links to awareness training. Many incidents involve human error, phishing, weak handling of data, or policy violations. This is why awareness is not optional.
+$md$, 2),
+('2f4923a6-20df-5b29-bdf1-a8e7ad5a8f6f','activity','Ethics, Professional Responsibility, and User Trust',$md$
+Security work involves power. IT professionals may manage privileged accounts, confidential records, logs, and infrastructure. Because of that, **ethics** is central.
+
+An ethical IT practitioner should:
+
+- respect privacy,
+- avoid unauthorized access,
+- handle data only for legitimate purposes,
+- protect confidentiality,
+- report weaknesses responsibly,
+- follow legal and institutional rules,
+- document actions honestly.
+
+Being technically capable does not make an action ethically acceptable. For example, reading confidential data without authorization "just to test" is still improper if done outside approved scope.
+
+A useful classroom distinction:
+
+- *Can you do it?* is a technical question.
+- *Should you do it?* is an ethical and legal question.
+$md$, 3),
+('2f4923a6-20df-5b29-bdf1-a8e7ad5a8f6f','activity','Philippine Legal and Regulatory Context',$md$
+In Philippine IT environments, introductory security study usually includes legal awareness. Students should know that organizations handling data and digital systems operate under laws and policies that shape responsible practice.
+
+Important themes include:
+
+- protection of personal information,
+- cybercrime-related offenses,
+- lawful access and evidence handling,
+- institutional accountability for poor data practices,
+- documentation and reporting responsibilities.
+
+For practical study, remember these legal angles:
+
+- personal data must be handled carefully,
+- unauthorized access and misuse of systems can have criminal consequences,
+- organizations may face liability for weak protection of sensitive information,
+- security teams must work within legal and organizational authority.
+
+In exam answers, do not try to act like a lawyer. Instead, show that you understand the principle: security work must be technically sound, ethically responsible, and legally aware.
+$md$, 4),
+('2f4923a6-20df-5b29-bdf1-a8e7ad5a8f6f','activity','Practice & Exam Drills — Lesson 7',$md$
+### Review Questions
+
+1. What is security governance?
+2. Differentiate policy, standard, procedure, and guideline.
+3. Why are security policies important?
+4. Why is user awareness training necessary?
+5. Give three examples of common organizational security policies.
+6. Why is ethics central to information security work?
+7. What is the difference between technical ability and ethical permission?
+8. Why must IT security practice be legally aware in the Philippines?
+
+### Worked Exam-Style Problems
+
+**Problem A: Policy Classification** — Classify each statement as policy, standard, procedure, or guideline.
+
+1. "All employees must use company-approved channels for reporting incidents." → **Policy** — broad rule statement
+2. "Passwords must be at least 12 characters long." → **Standard** — specific required rule
+3. "To request an account, fill out Form A, secure approval, then submit to IT." → **Procedure** — step-by-step instruction
+4. "When working from home, avoid public Wi-Fi when possible." → **Guideline** — recommended good practice
+
+**Problem B: Ethics Case**
+
+An IT intern discovers that they can access confidential employee files because of a permission error. Out of curiosity, the intern opens a few files without approval but does not change anything. Was this acceptable?
+
+*Step-by-Step Solution*
+
+No, it was not acceptable. Access was not authorized for that purpose; confidential files were viewed without legitimate business need; ethical responsibility includes respecting privacy and reporting weaknesses properly. Correct action: stop, document the issue responsibly, and report the permission problem through the proper channel.
+
+**Problem C: Short Legal Awareness Response**
+
+Why should a company handling customer personal data take security controls seriously even if it has never been attacked before?
+
+*Suggested Answer Structure*
+
+- Handling personal data creates protection responsibilities.
+- Weak controls may lead to unauthorized disclosure, misuse, or loss.
+- Legal and regulatory consequences may follow from poor protection.
+- Trust and reputation can also be damaged.
+- Therefore, security is a proactive duty, not only a reaction after an incident.
+
+### Hands-On Exercises
+
+**Exercise A: Draft a Mini Password Policy** — Write a short password and authentication policy for a student organization managing member records. Include password basics, account responsibility, reset handling, and an MFA recommendation.
+
+**Exercise B: Ethical Reflection** — Write one paragraph answering: If you accidentally discover a weakness in your school's system, what is the ethical way to respond?
+
+**Exercise C: Policy Audit Check** — Take any everyday process such as email use, shared drive access, or student record handling. List one missing policy, one missing standard, one missing procedure, and one missing awareness point.
+
+### How to Pass This Topic
+
+- Most exams here are definition + case analysis.
+- Memorize the difference among policy, standard, procedure, and guideline.
+- In ethics questions, mention authorization, privacy, responsibility, and proper reporting.
+- In legal-awareness questions, avoid overclaiming legal details unless required. Focus on principle and responsibility.
+- Many students answer too abstractly. Use realistic organizational context.
+- Professors often reward answers that connect technology to people, process, and accountability.
+$md$, 5);
+
