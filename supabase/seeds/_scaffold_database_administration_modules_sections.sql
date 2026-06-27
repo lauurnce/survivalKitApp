@@ -1086,3 +1086,162 @@ INSERT INTO backup_inventory VALUES
 (3, '2026-06-22', 'INCREMENTAL', 'Cloud Storage', 'NO'),
 (4, '2026-06-23', 'FULL', 'Cloud Storage', 'YES');$code$);
 
+-- ============================================================
+-- LESSON 7: Security, Access Control, Auditing, and Data Privacy
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('8e3f6912-f3d9-5fe2-919e-13fd37628889','content','Security Principles for Database Administration',$md$
+Database security is the protection of data against unauthorized access, misuse, disclosure, alteration, or destruction.
+
+A DBA supports security using practical principles such as:
+
+- **least privilege** — users get only the access they need
+- **separation of duties** — sensitive powers are not concentrated unnecessarily
+- **accountability** — actions can be traced
+- **defense in depth** — combine controls, do not rely on only one
+
+In actual environments, not every staff member should see complete records. For example:
+
+- a cashier may see payment status
+- a registrar may manage enrollment records
+- a faculty member may view grades for assigned classes only
+- a system operator may manage service status without seeing confidential student details
+
+The DBA implements these boundaries through users, roles, permissions, and carefully designed views.
+$md$, 1),
+
+('8e3f6912-f3d9-5fe2-919e-13fd37628889','content','Authentication, Authorization, and Least Privilege',$md$
+Two terms should be clear:
+
+- **Authentication** — proving identity
+- **Authorization** — deciding what that identity is allowed to do
+
+After login, the DBMS checks permissions such as:
+
+- `SELECT`
+- `INSERT`
+- `UPDATE`
+- `DELETE`
+- object creation rights
+- administrative privileges
+
+The safest practice is to assign permissions through roles, then assign roles to users. This is easier to maintain than granting rights one person at a time.
+
+Examples of poor practice:
+
+- shared admin accounts
+- giving all users full access because it is "faster"
+- allowing the application to connect as a superuser
+- leaving old employee accounts active
+
+A DBA should also protect service accounts, rotate credentials where required, and review access regularly.
+$md$, 2),
+
+('8e3f6912-f3d9-5fe2-919e-13fd37628889','activity','Auditing, Logging, and the Philippine Data Privacy Mindset',$md$
+Security is not complete without visibility. A database should support auditing and logging so administrators can answer questions like:
+
+- Who accessed this data?
+- Who changed this record?
+- When did the action happen?
+- Was the attempt authorized?
+
+Audit information may include:
+
+- login attempts
+- failed access attempts
+- schema changes
+- sensitive data access
+- update/delete activity on critical tables
+
+For Philippine IT practice, database administration should also respect the mindset of the **Data Privacy Act**: collect and use personal information responsibly, protect it with appropriate safeguards, and avoid unnecessary exposure.
+
+In practical terms, that means:
+
+- do not expose full data when only partial data is needed
+- protect backups because backups also contain personal data
+- avoid copying production data carelessly into development
+- mask or limit access to sensitive information when appropriate
+
+A DBA does not become a lawyer in this course, but the DBA must act as a careful custodian of institutional data.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('8e3f6912-f3d9-5fe2-919e-13fd37628889','activity','Practice & Exam Drills — Lesson 7',$md$
+**Review Questions**
+
+1. What is least privilege?
+2. Differentiate authentication and authorization.
+3. Why are roles better than individually granting every permission?
+4. Why are shared admin accounts risky?
+5. What is the purpose of auditing?
+6. Why is a backup also a security concern?
+7. Why should production data not be copied casually to development?
+8. Give one example of using a view for security.
+
+**Worked Exam-Style Problems**
+
+**Problem 1.** A faculty user only needs `student_id`, `student_name`, and `program_code` for advising. Should the user receive access to the full table containing email and mobile number?
+
+*Step-by-step solution*
+1. The faculty need is limited.
+2. The full table contains more personal data than required.
+3. Least privilege says provide only necessary access.
+4. A restricted view is better than exposing the complete table.
+
+*Final answer:* No. The safer design is to grant access to a restricted view such as `student_public_directory`.
+
+**Problem 2.** Why is it bad practice for an application to connect using a superuser account?
+
+*Step-by-step solution*
+1. A superuser can do far more than the application normally needs.
+2. If the application is compromised, the attacker gains excessive power.
+3. This violates least privilege.
+4. It also makes auditing and risk containment harder.
+
+*Final answer:* Applications should use limited service accounts, not superuser accounts, because excessive privilege increases security risk.
+
+**Hands-on Exercise**
+
+1. Query the `student_public_directory` view.
+2. Explain which columns are hidden compared with `student_records`.
+3. Write a query that returns only program counts, not personal identifiers.
+4. Add one more student and verify that the view reflects the new row.
+
+*Suggested solution path*
+```sql
+SELECT * FROM student_public_directory;
+
+SELECT program_code, COUNT(*) AS total_students
+FROM student_records
+GROUP BY program_code;
+
+INSERT INTO student_records VALUES
+(3, 'Lia Santos', 'BSCS', 'lia@school.edu', '09191234567');
+
+SELECT * FROM student_public_directory;
+```
+
+**How to Pass This Topic**
+
+- In security questions, your safest keywords are: least privilege, role-based access, audit trail, accountability.
+- Always compare business need versus data exposure.
+- If a question mentions personal data, mention restricted access, masking, or limited views.
+- Professors often test whether you can distinguish authentication from authorization.
+- Common mistake: treating security as only "having a password." In database admin, security also includes permissions, audit, backup protection, and environment control.
+$md$, 4, 'sql', $code$CREATE TABLE student_records (
+    student_id INTEGER PRIMARY KEY,
+    student_name VARCHAR(50),
+    program_code VARCHAR(10),
+    email VARCHAR(60),
+    mobile_no VARCHAR(20)
+);
+
+INSERT INTO student_records VALUES
+(1, 'Ana Cruz', 'BSIT', 'ana@school.edu', '09171234567'),
+(2, 'Marco Reyes', 'BSIT', 'marco@school.edu', '09181234567');
+
+CREATE VIEW student_public_directory AS
+SELECT student_id, student_name, program_code
+FROM student_records;$code$);
+
