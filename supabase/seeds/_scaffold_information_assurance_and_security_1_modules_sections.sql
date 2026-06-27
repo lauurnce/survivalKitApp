@@ -1358,3 +1358,7 @@ If ransomware is suspected, immediate isolation becomes a priority.
 - If a question involves operations during disasters, connect technical recovery to business impact.
 $md$, 5);
 
+-- SOURCES (metadata — not inserted): UP Diliman CS 153 Intro to Computer
+-- Security; PUP BSIT/CS; FEU Institute of Technology BSIT Cybersecurity; Adamson
+-- University BSIT 2022; Ateneo de Manila CSCI 61; DLSU ITSECUR; CHED CMO 25
+-- s. 2015 (IAS101/IAS102 outcomes).
