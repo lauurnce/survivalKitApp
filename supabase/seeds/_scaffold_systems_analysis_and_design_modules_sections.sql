@@ -519,3 +519,155 @@ $md$, 3),
 - If a requirement cannot be checked by a tester, improve it.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 4: Structured Analysis and Data Modeling
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('82df723c-7208-515c-81a2-3c46bc4bd44b','content','Context Diagrams and Data Flow Diagrams',$md$
+Structured analysis focuses on representing how data moves through a system and how processes transform that data.
+
+A **context diagram** shows the system as a single process and identifies external entities, major data inputs, and major data outputs. It gives the highest-level view.
+
+Example for a clearance system:
+
+- External entities: Student, Registrar, Cashier, Department Office
+- Inputs: clearance request, payment confirmation, approval decision
+- Outputs: status update, clearance result
+
+A **Data Flow Diagram (DFD)** breaks the system into smaller processes. It usually contains:
+
+| Symbol idea | Meaning |
+|---|---|
+| Process | transforms input data into output data |
+| Data flow | movement of data between components |
+| Data store | saved data |
+| External entity | outside actor interacting with the system |
+
+### Levels of DFD
+
+- **Context diagram:** whole system as one process
+- **Level 0 DFD:** major subprocesses
+- **Lower-level DFDs:** more detailed decomposition of one process
+
+Example Level 0 processes for a clinic system: Manage patient records; Schedule appointments; Issue medicines; Generate reports.
+
+### Rules to remember
+
+- Every process should have at least one input and one output.
+- Data should not move directly from one external entity to another inside the model.
+- Data should not move directly from one data store to another without a process.
+- Lower-level DFDs should remain consistent with higher-level ones. This is called **balancing**.
+
+DFDs are useful because they force you to think about the actual movement of information, not just screens.
+$md$, 1),
+('82df723c-7208-515c-81a2-3c46bc4bd44b','content','Data Dictionary and Process Specifications',$md$
+A DFD shows movement, but it does not fully define each data item. That is why analysts also prepare a **data dictionary** — a description of the meaning of data elements, records, and structures.
+
+Example:
+
+| Data element | Meaning |
+|---|---|
+| Student_ID | unique identifier of enrolled student |
+| Clearance_Status | current stage of approval |
+| Request_Date | date when request was submitted |
+| Approved_By | officer who finalized the action |
+
+A stronger dictionary may also include type, format, allowed values, source, destination, and validation rule.
+
+### Process specification
+
+Some DFD processes are simple enough to understand from the title alone. Others need more explanation. A **process specification** describes the internal logic of a process, written using structured English, decision tables, decision trees, or simple algorithmic steps.
+
+Example using structured English:
+
+1. Receive clearance request.
+2. Verify student identity.
+3. Retrieve balance and disciplinary records.
+4. If all units are clear, mark as approved.
+5. Otherwise, return pending requirements list.
+
+This helps developers and testers understand what the process is supposed to do before code is written.
+$md$, 2),
+('82df723c-7208-515c-81a2-3c46bc4bd44b','activity','Entity Relationship Diagrams and Normalization',$md$
+Where DFDs focus on process and data movement, an **Entity Relationship Diagram (ERD)** focuses on data structure.
+
+An ERD usually identifies:
+
+- **entities** such as Student, Payment, Appointment, Item
+- **attributes** such as StudentName, DatePaid, Quantity
+- **relationships** such as Student requests Clearance
+
+A good entity is something the organization needs to store information about repeatedly.
+
+### Example — clinic appointment system
+
+Entities: Student, Appointment, Nurse, Medicine, Medicine_Issue.
+
+Possible relationships:
+
+- A Student can have many Appointments.
+- A Nurse handles many Appointments.
+- An Appointment may result in many Medicine_Issue records.
+
+### Normalization
+
+Normalization organizes data to reduce redundancy and update problems. At a basic level:
+
+- **First Normal Form:** atomic values, no repeating groups
+- **Second Normal Form:** non-key attributes depend on the whole key
+- **Third Normal Form:** non-key attributes do not depend on other non-key attributes
+
+Simple exam reminder: if one table mixes student info, course info, and instructor info repeatedly, it may need decomposition. The goal is to reduce anomalies in insertion, update, and deletion.
+
+ERDs are especially important because many professors connect Systems Analysis and Design with earlier database subjects. They expect you to show that a process model and a data model agree with each other.
+$md$, 3),
+('82df723c-7208-515c-81a2-3c46bc4bd44b','activity','Practice & Exam Drills — Lesson 4',$md$
+**Model quality & balancing reminder.** Common DFD errors: process with inputs but no outputs (or vice versa); vague data-flow names like "information"; data store with no process interaction; lower-level DFD not matching higher-level flow names; actor/process names confused. Common ERD errors: an "entity" that is really a report; attributes mixed across entities; missing/unreasonable cardinality; carelessly stored derived values; unclear key. **Balancing** means the data flows entering/leaving a process at a higher level stay consistent when that process is decomposed.
+
+**Review Questions**
+
+1. What is the purpose of a context diagram?
+2. Differentiate a context diagram from a Level 0 DFD.
+3. What is a data dictionary?
+4. Why are process specifications needed?
+5. What is an ERD used for?
+6. State the purpose of normalization.
+7. What does balancing mean in DFDs?
+8. Give two common errors in ERD construction.
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Build a textual context diagram.** A library borrowing system: students borrow books; the librarian records borrowing and return transactions; the system sends due-date info to students and produces inventory updates for the librarian.
+*Answer:*
+- External entities: Student, Librarian
+- Inputs: borrow request, return details, transaction entry
+- Outputs: due-date information, inventory update, confirmation
+
+**Problem 2: Convert requirements into a Level 0 DFD structure.** Given: users submit maintenance requests; staff review and assign; technicians update repair status; management receives summary reports.
+*Possible processes:* Receive Maintenance Request; Review and Assign Request; Update Repair Status; Generate Management Reports.
+*Possible data stores:* Request Records; Technician Records; Status History.
+
+**Problem 3: Spot the normalization issue.** Table: `RequestID, StudentName, Course, AdviserName, AdviserEmail` (a student may submit many requests).
+*Problem:* StudentName/Course repeat across requests; AdviserName/AdviserEmail repeat for the same adviser.
+*Better decomposition:*
+- Student(StudentID, StudentName, Course, AdviserID)
+- Adviser(AdviserID, AdviserName, AdviserEmail)
+- Request(RequestID, StudentID, RequestDate, Status)
+
+**Hands-On Practice — Student Clearance System.**
+1. A context diagram in words (entities + data flows).
+2. A Level 0 DFD as numbered processes and data stores.
+3. A mini data dictionary with at least eight fields.
+4. A text-based ERD (entities, keys, relationships).
+5. Identify one possible normalization problem in the current manual record.
+
+**How to Pass This Topic**
+
+- Name data flows precisely: Request Form, Approval Result, Payment Record — not vague "data."
+- Processes should start with verbs: Validate Request, Generate Report, Update Status.
+- In ERD questions, identify entities before drawing relationships.
+- If unsure about full normalization, at least explain the redundancy clearly.
+- Many professors give partial credit for logically consistent textual models even if the diagram is not artistically perfect.
+$md$, 4);
+
