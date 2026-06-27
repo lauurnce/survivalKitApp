@@ -931,3 +931,134 @@ $md$, 3),
 - Explain *why* a design choice is better, not just *what* you chose.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 7: Testing, Implementation, and Maintenance
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('d7748ee4-cb0a-5696-b40d-f7bd5dec9ae7','content','Testing Strategy and Test Case Design',$md$
+A system is not ready just because it is coded. It must be tested against requirements.
+
+Testing aims to answer: Does the system do what it should do? Does it handle wrong input properly? Does it behave correctly under expected conditions? Does it protect data and maintain integrity?
+
+Common testing levels include:
+
+| Testing level | Focus |
+|---|---|
+| Unit testing | individual functions or components |
+| Integration testing | modules working together |
+| System testing | full system behavior |
+| User acceptance testing | whether users accept the solution for real use |
+
+### What makes a good test case
+
+A test case usually includes: test case ID, requirement reference, purpose, input data, steps, expected result, actual result, pass/fail status.
+
+Example:
+
+| Item | Example |
+|---|---|
+| Test ID | TC-APPT-01 |
+| Requirement | appointment booking |
+| Input | valid student ID and available date |
+| Expected result | appointment saved and confirmation shown |
+
+Strong test cases cover valid inputs, invalid inputs, boundary values, exceptions, and role restrictions. If your requirement is not clear, your testing will also be weak — that is why testing is closely tied to analysis quality.
+$md$, 1),
+('d7748ee4-cb0a-5696-b40d-f7bd5dec9ae7','content','Implementation and Conversion Strategies',$md$
+Implementation is the stage where the proposed system is introduced into actual use. This often includes installation/deployment, configuration, data migration, user account setup, training, pilot run, and official go-live.
+
+A major implementation concern is the **conversion strategy** — how the old system is replaced.
+
+| Strategy | Meaning | Main advantage | Main risk |
+|---|---|---|---|
+| Direct cutover | old system stops, new system starts immediately | fast | risky if failure occurs |
+| Parallel run | old and new systems run together | safer verification | more work and cost |
+| Pilot | new system starts in one unit first | limited risk | slower full rollout |
+| Phased | modules are introduced gradually | manageable transition | coordination complexity |
+
+The best conversion method depends on system criticality, user readiness, cost tolerance, available time, and rollback needs. For example:
+
+- Payroll systems often prefer parallel or pilot due to risk.
+- A low-risk internal tracking tool may use direct cutover.
+- Complex institutional systems often benefit from phased implementation.
+$md$, 2),
+('d7748ee4-cb0a-5696-b40d-f7bd5dec9ae7','activity','Documentation, Training, Support, and Maintenance',$md$
+A system does not succeed only because it is accurate. Users must also understand how to use it.
+
+### Types of documentation
+
+- **User documentation:** how to perform tasks
+- **Technical documentation:** architecture, database, code/module notes
+- **Operational documentation:** deployment, backup, troubleshooting
+- **Project documentation:** requirements, diagrams, test results, approvals
+
+### Training and user support
+
+Training should match user roles: end users need task-based practice; supervisors need report and control training; technical staff need maintenance and troubleshooting guidance. Delivery can be live demonstration, guided practice, video/quick reference, FAQ sheet, or helpdesk orientation. After deployment, users need support for forgotten passwords, data correction, feature clarification, issue reporting, and bug escalation. A common student-project mistake is focusing too much on building and too little on preparing users.
+
+### Maintenance and post-implementation review
+
+Once deployed, a system enters the maintenance period. Maintenance is not failure — it is part of normal system life.
+
+| Type | Meaning |
+|---|---|
+| Corrective | fixes defects |
+| Adaptive | adjusts to new environment or policy |
+| Perfective | improves performance or usability |
+| Preventive | reduces future risk |
+
+A **post-implementation review** asks: Were objectives met? Did processing time improve? Were error rates reduced? Are users satisfied? What issues remain? What should be improved next? Metrics may include average processing time, rejected transactions, system availability, user satisfaction, and issue turnaround time. This review closes the loop between planning and actual results.
+$md$, 3),
+('d7748ee4-cb0a-5696-b40d-f7bd5dec9ae7','activity','Practice & Exam Drills — Lesson 7',$md$
+**Review Questions**
+
+1. Why is testing needed even after coding is finished?
+2. Differentiate unit, integration, system, and acceptance testing.
+3. What parts should a test case contain?
+4. What is the main difference between parallel and direct conversion?
+5. When is pilot conversion useful?
+6. Why is user training critical during implementation?
+7. Name the four common maintenance types.
+8. What is the purpose of a post-implementation review?
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Choose the conversion strategy.** A hospital pharmacy is replacing a medicine inventory system; wrong stock balances can affect patient treatment.
+*Step-by-step:* pharmacy data is critical; direct cutover is too risky; parallel/pilot reduces risk; parallel gives side-by-side verification.
+*Answer:* **parallel conversion** — compare new and old before full trust.
+
+**Problem 2: Write a test case.** Requirement: "The system shall reject login after 5 consecutive failed attempts."
+
+| Field | Answer |
+|---|---|
+| Test ID | TC-LOGIN-05 |
+| Purpose | verify account lock after repeated failed logins |
+| Preconditions | valid user account exists |
+| Input | same username, wrong password entered 5 times |
+| Steps | attempt login 5 consecutive times with wrong password |
+| Expected result | account is locked; further login denied until reset |
+| Pass condition | system locks account exactly after the 5th failed attempt |
+
+**Problem 3: Identify maintenance type.**
+- Fixing a report that computes totals incorrectly → **Corrective**
+- Updating the system because the office changed approval policy → **Adaptive**
+- Improving slow dashboard loading → **Perfective**
+- Reorganizing backup routines before any failure → **Preventive**
+
+**Hands-On Practice — Enrollment Support System.**
+1. Write three test cases for input validation.
+2. Recommend one conversion strategy and justify it.
+3. Prepare a one-day training outline for end users.
+4. List five support issues that may appear after go-live.
+5. Propose three metrics for post-implementation review.
+
+**How to Pass This Topic**
+
+- Conversion strategy questions are about risk level — mention it.
+- Test cases should always include the expected result.
+- If the requirement mentions limits, use boundary testing logic.
+- For implementation essays, include deployment, migration, training, and support.
+- In maintenance questions, focus on the reason for the change, not just the activity.
+$md$, 4);
+
