@@ -929,3 +929,150 @@ Allow inbound HTTPS traffic to the public web server; deny unnecessary inbound s
 - Simple, well-structured network reasoning earns points.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 6: Host, Endpoint, and Application Security
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('7c237496-0d80-5409-a25c-133364679759','content','Host and Endpoint Security Basics',$md$
+A **host** is a computer or server connected to a network. An **endpoint** includes laptops, desktops, phones, tablets, and other user devices. Host and endpoint security focuses on making these systems resistant to misuse and compromise.
+
+Common host risks include:
+
+- missing patches,
+- weak local accounts,
+- unnecessary services,
+- malware infection,
+- poor device configuration,
+- unsafe downloads,
+- unauthorized software.
+
+A device with strong network protection can still be compromised if the local system itself is weak. That is why endpoint security matters.
+$md$, 1),
+('7c237496-0d80-5409-a25c-133364679759','content','System Hardening and Patch Management',$md$
+**Hardening** means reducing unnecessary exposure by securely configuring a system.
+
+Examples of hardening:
+
+- remove unused services,
+- change default settings,
+- disable unnecessary accounts,
+- apply secure permissions,
+- enable logging,
+- keep software updated.
+
+**Patch management** is one of the most basic and most frequently tested controls. Vulnerabilities in operating systems, browsers, databases, and apps are often addressed through updates. Delayed patching increases exposure.
+
+A simple memory tip:
+
+> Unnecessary services create unnecessary attack surfaces.
+
+This is why a secure build is preferred over installing everything and hoping nothing is abused.
+$md$, 2),
+('7c237496-0d80-5409-a25c-133364679759','activity','Malware, Safe Use, and Monitoring',$md$
+**Malware** includes malicious software such as viruses, worms, ransomware, trojans, spyware, and keyloggers.
+
+Common infection paths:
+
+- malicious downloads,
+- phishing attachments,
+- unsafe websites,
+- infected removable media,
+- vulnerable services.
+
+Basic host defenses include:
+
+- endpoint protection tools,
+- patching,
+- user awareness,
+- application control,
+- backups,
+- restricted privileges,
+- logging and monitoring.
+
+Monitoring matters because prevention is never perfect. Logs can reveal failed logins, privilege misuse, suspicious processes, or unusual activity patterns.
+$md$, 3),
+('7c237496-0d80-5409-a25c-133364679759','activity','Application Security and Secure Development Thinking',$md$
+Applications must also be secure by design. Introductory application security covers common weaknesses such as:
+
+- poor input validation,
+- weak authentication,
+- insecure session handling,
+- improper access checks,
+- careless error exposure,
+- insecure storage of secrets,
+- unsafe database queries.
+
+The big idea is **secure SDLC thinking**: security should be considered during requirements, design, coding, testing, deployment, and maintenance — not only after release.
+
+When students hear "application security," they should think of this question:
+
+> What could a user or attacker do that the system designer failed to expect or restrict?
+
+That mindset is more valuable than memorizing long vulnerability lists without understanding the logic behind them.
+$md$, 4),
+('7c237496-0d80-5409-a25c-133364679759','activity','Practice & Exam Drills — Lesson 6',$md$
+### Review Questions
+
+1. What is host security?
+2. What is endpoint security?
+3. Why is patch management important?
+4. What does system hardening mean?
+5. Give three common malware infection paths.
+6. Why are logs important in host security?
+7. Give three examples of application security weaknesses.
+8. What is the main idea behind secure SDLC?
+
+### Worked Exam-Style Problems
+
+**Problem A: Hardening Identification**
+
+A server has: an unused remote service left enabled; a default admin account still active; no recent updates; broad file permissions for all users. Identify four host security weaknesses.
+
+*Step-by-Step Solution*
+
+1. Unused remote service left enabled → unnecessary service expands attack surface
+2. Default admin account still active → predictable or high-risk account exposure
+3. No recent updates → missing patches may leave known vulnerabilities
+4. Broad file permissions for all users → poor access control and least privilege violation
+
+**Problem B: Malware Response Case**
+
+A staff laptop suddenly shows encrypted files and a ransom note. What immediate actions should the IT team take first?
+
+*Step-by-Step Solution*
+
+1. Isolate the laptop from the network — prevent spread
+2. Report the incident according to procedure — ensure coordinated response
+3. Preserve relevant evidence such as logs and timestamps when possible — support investigation
+4. Check backups and scope — determine recoverability and whether more systems are affected
+5. Do not casually use the device further — avoid worsening the damage
+
+This is introductory incident thinking connected to host security.
+
+**Problem C: Application Scenario**
+
+A web form accepts any text entered by the user and sends it directly into a database query. Why is this dangerous?
+
+*Step-by-Step Solution*
+
+The system lacks proper input handling and safe query design. An attacker may submit crafted input that changes query behavior. This can lead to unauthorized data access or modification. The problem reflects poor input validation and insecure application logic.
+
+### Hands-On Exercises
+
+**Exercise A: Hardening Checklist** — Write a 10-point hardening checklist for a newly installed office workstation.
+
+**Exercise B: Malware Prevention Plan** — A small school computer lab has frequent infections from USB drives. Propose a practical prevention plan using technical controls, user rules, and administrative actions.
+
+**Exercise C: Secure App Reflection** — Choose a simple application such as an online registration form or inventory system. List one authentication risk, one authorization risk, one data handling risk, and one logging/auditing need.
+
+### How to Pass This Topic
+
+- Expect questions that ask you to spot weaknesses in a scenario.
+- If a case mentions outdated software, answer with patch management immediately.
+- If a case mentions unused services, answer with hardening and attack surface reduction.
+- For app security questions, stay logical: input, access, session, storage, logging.
+- Do not answer only with "install antivirus." Faculty usually want layered controls.
+- Use phrases like least privilege, secure configuration, and monitoring where appropriate.
+$md$, 5);
+
