@@ -194,3 +194,164 @@ INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
 -- Per module: S1/S2 = free content, S3/S4 = content gated as activity,
 -- S5 = the Practice & Exam Drills activity. 2 free + 3 paid.
 
+-- ============================================================
+-- LESSON 1: Foundations of Information Assurance and Security
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('5ccb51da-75cd-5814-af37-e74b8452fe4e','content','Why Security Matters in Information Technology',$md$
+Information assurance and security is the discipline of protecting information and the systems that store, process, and transmit it. In BSIT, this is not just a "special topic." It is part of responsible system design, network administration, systems analysis, database work, web development, and IT operations.
+
+When we say **information assurance**, we are talking about keeping information trustworthy, available, and properly handled throughout its life cycle. When we say **information security**, we focus on protecting information and systems from unauthorized access, misuse, disruption, modification, or destruction.
+
+A practical way to remember the heart of the subject is the **CIA triad**:
+
+- **Confidentiality** means information is seen only by authorized people.
+- **Integrity** means information remains accurate, complete, and unaltered unless a valid change is made.
+- **Availability** means information and services are accessible when needed.
+
+A registrar database is a good local example. Student grades should not be readable by random users, so confidentiality matters. Grades must not change without proper authorization, so integrity matters. During enrollment, the system should stay online and usable, so availability matters.
+
+Modern organizations also care about these supporting ideas:
+
+- **Authenticity** — proving that a user, message, or system is genuine.
+- **Accountability** — making actions traceable to a user or process.
+- **Non-repudiation** — preventing a sender or actor from denying an action they actually performed.
+- **Privacy** — protecting personal and sensitive information from improper collection, use, or disclosure.
+
+Security is not only about stopping hackers. It also addresses careless behavior, weak passwords, missing backups, poor network design, unpatched software, and weak policies. In other words, many security failures start with ordinary IT mistakes.
+$md$, 1),
+('5ccb51da-75cd-5814-af37-e74b8452fe4e','content','Assets, Threats, Vulnerabilities, and Risk',$md$
+Before you can protect anything, you must know what is being protected and what can go wrong.
+
+An **asset** is anything valuable to an organization. In IT, assets usually include:
+
+- Data such as grades, payroll records, customer information, and source code
+- Hardware such as servers, routers, laptops, and backup drives
+- Software such as databases, ERP systems, web apps, and operating systems
+- Services such as internet connectivity, email, cloud storage, and online enrollment
+- People, processes, and reputation
+
+A **threat** is a possible cause of harm. A **vulnerability** is a weakness that a threat can exploit. An **attack** is the actual attempt to exploit that weakness.
+
+Here is a simple chain:
+
+| Element | Example |
+|---|---|
+| Asset | LGU permit database |
+| Threat | Malicious outsider |
+| Vulnerability | Weak admin password |
+| Attack | Password guessing or credential stuffing |
+| Impact | Data exposure or service disruption |
+
+This leads to **risk**. In basic terms, risk is the chance that a threat will exploit a vulnerability and cause harm to an asset. Security work is therefore about reducing risk to an acceptable level, not magically removing all risk.
+
+A useful class reminder is this:
+
+> No vulnerability, no exploit. No valuable asset, no meaningful loss. Security analysis connects both.
+$md$, 2),
+('5ccb51da-75cd-5814-af37-e74b8452fe4e','activity','The Security Goals of an Organization',$md$
+Organizations do not apply security controls randomly. They usually protect systems for business and mission reasons.
+
+Common organizational security goals include:
+
+- Protecting confidential records
+- Maintaining continuous operations
+- Complying with laws and regulations
+- Preventing fraud and abuse
+- Preserving customer trust and institutional reputation
+- Recovering quickly from incidents
+
+In a Philippine setting, think of a small hospital information system. It must protect patient data, prevent unauthorized edits, keep records available to doctors, and recover from brownouts, ransomware, or accidental deletion. Security is therefore both a technical and management concern.
+
+Security also works best when it is **proportional**. A public school website announcing events does not need the same protection level as a payment gateway or student health record system. Good security means using the right controls for the right assets.
+$md$, 3),
+('5ccb51da-75cd-5814-af37-e74b8452fe4e','activity','Security as a Continuous Process',$md$
+One of the biggest misconceptions in IT is that security is a one-time setup. In reality, security is a **continuous process** because systems, users, threats, and technologies keep changing.
+
+A simple security life cycle looks like this:
+
+1. Identify assets and requirements
+2. Analyze threats and vulnerabilities
+3. Choose and implement controls
+4. Monitor and review results
+5. Respond to incidents
+6. Improve the system
+
+This is why organizations patch systems, rotate credentials, review logs, revisit policies, retrain users, and audit controls. Security must evolve with the environment.
+
+For students, the key exam idea is this: security is not a product you buy once; it is a discipline you maintain over time.
+$md$, 4),
+('5ccb51da-75cd-5814-af37-e74b8452fe4e','activity','Practice & Exam Drills — Lesson 1',$md$
+### Review Questions
+
+1. Differentiate information assurance from information security.
+2. Define the CIA triad and give one practical example for each component.
+3. What is an asset in information security? Give three examples.
+4. Distinguish among threat, vulnerability, and attack.
+5. Why is availability as important as confidentiality in many organizations?
+6. What is the difference between privacy and confidentiality?
+7. Why is security considered a continuous process instead of a one-time activity?
+8. Give one example where a non-technical issue creates a security problem.
+
+### Worked Exam-Style Problems
+
+**Problem A: Classify the Security Concern**
+
+A state university stores: final grades, faculty login accounts, enrollment schedules, online payment records. For each situation below, identify the primary security goal affected.
+
+1. A student website becomes unreachable during enrollment.
+2. An employee changes a grade without authorization.
+3. A shared file with payment records is left accessible to all staff.
+4. A user denies submitting an approval even though the system says they did.
+
+*Step-by-Step Solution*
+
+1. Unreachable website during enrollment → **Availability** — the service is not accessible when needed.
+2. Unauthorized grade change → **Integrity** — data was altered improperly.
+3. Payment records accessible to all staff → **Confidentiality** — sensitive data is exposed to unauthorized persons.
+4. User denies approving a transaction → **Non-repudiation** (with accountability related) — the system must prove who performed the action.
+
+**Problem B: Identify the Security Chain**
+
+A company payroll server has outdated software. A ransomware group discovers the weakness and encrypts the payroll files, delaying salary release. Identify the asset, vulnerability, threat, attack, impact, and risk statement.
+
+*Step-by-Step Solution*
+
+- **Asset:** Payroll server and payroll files
+- **Vulnerability:** Outdated software / missing patch
+- **Threat:** Ransomware group
+- **Attack:** Exploitation followed by file encryption
+- **Impact:** Payroll processing delay, possible financial and reputational damage
+- **Risk statement:** There is a risk that attackers may exploit outdated payroll server software to encrypt payroll data, causing operational disruption and delayed salary release.
+
+**Problem C: Short Essay Question**
+
+Why can a system be considered insecure even if it has a firewall?
+
+*Suggested Answer Structure*
+
+- Security is broader than a single device.
+- The firewall protects only some traffic paths.
+- Weak passwords, poor permissions, unpatched hosts, insider misuse, and missing backups can still cause compromise.
+- Therefore, security must combine technical controls, procedures, and people awareness.
+
+### Hands-On Exercises
+
+**Exercise A: Asset Inventory Starter** — Create a mini asset inventory for one of: school LMS, barangay records system, small online shop, student organization website. Use the format: Asset | Why valuable | Main threat | Possible vulnerability | Possible impact. Write at least five assets.
+
+**Exercise B: CIA Analysis Drill** — Choose one Philippine-context system such as a hospital record system, e-commerce delivery app, BPO attendance system, or university enrollment portal. Write one paragraph each for why confidentiality, integrity, and availability matter.
+
+**Exercise C: Security Process Reflection** — Describe one real or imagined incident where a system was initially secure but later became vulnerable because of change. Explain what changed and why continuous review was necessary.
+
+### How to Pass This Topic
+
+- Memorize the core terms exactly: asset, threat, vulnerability, attack, risk, confidentiality, integrity, availability.
+- Professors often ask scenario-based identification, not just definitions.
+- When answering, always connect the problem to the business effect or organizational impact.
+- Do not confuse integrity with confidentiality. If data is changed incorrectly, that is integrity, not confidentiality.
+- Do not say "security means secrecy only." Availability is heavily tested.
+- In essay questions, write in a clear chain: asset → threat → vulnerability → attack → impact.
+- For long tests, short definitions may be worth few points, but case analysis usually carries more weight.
+$md$, 5);
+
