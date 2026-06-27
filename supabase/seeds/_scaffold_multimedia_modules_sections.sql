@@ -154,3 +154,112 @@ $md$, 3),
 - Professors often reward students who distinguish planning issues from production issues.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 2: Visual Design and Digital Imaging
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('75730f01-6f88-56d6-95fd-4b4ede5fcbce','content','Principles of Visual Communication',$md$
+Good multimedia is not only functional. It must also be visually understandable. Four basic design principles are often used in screen-based outputs.
+
+### Contrast
+
+Contrast helps users notice what matters. You can create it through size, color, shape, weight, and spacing. If everything looks equally strong, nothing stands out.
+
+### Alignment
+
+Objects should look intentionally placed. Alignment creates order and professionalism. Poor alignment makes a layout feel unfinished even when the content is correct.
+
+### Repetition
+
+Repeated styles build consistency. Repeating colors, button shapes, heading styles, and icon rules helps users learn the interface faster.
+
+### Proximity
+
+Related items should stay close together. If a label is too far from the image or button it describes, users may misread the screen.
+
+You should also remember **visual hierarchy** — arranging parts so the user sees the most important item first, then the next, then the supporting details. Typical hierarchy tools include bigger headings, stronger color contrast, placement near the top, whitespace, and bold emphasis.
+
+In exam situations, if you are asked why a design is confusing, look for weak hierarchy, poor alignment, low contrast, and inconsistent grouping.
+$md$, 1),
+('75730f01-6f88-56d6-95fd-4b4ede5fcbce','content','Raster, Vector, Resolution, and Color',$md$
+Digital images are commonly divided into raster and vector graphics.
+
+### Raster graphics
+
+Raster images are made of pixels. They are ideal for photographs, detailed textures, and realistic visuals. Common formats: JPG/JPEG, PNG, GIF, WebP. Their weakness is scaling — when enlarged too much, they become blurry or pixelated.
+
+### Vector graphics
+
+Vector images are based on mathematical paths. They are ideal for logos, icons, diagrams, and illustrations with clean shapes. Common formats: SVG, AI, EPS, PDF. Their strength is scalability — they can be resized without losing sharpness.
+
+### Resolution
+
+Resolution refers to the amount of image detail, usually described by pixel dimensions such as 1280 × 720, 1920 × 1080, 3840 × 2160. For screen use, pixel dimensions matter more than print-oriented terms.
+
+### Color models
+
+Two color models are important: **RGB** for screens and **CMYK** for print. Since multimedia outputs are often screen-based, RGB is the default in many IT projects.
+
+A practical rule: use JPG for photos with small file size; use PNG for transparent graphics; use SVG for scalable icons and logos.
+$md$, 2),
+('75730f01-6f88-56d6-95fd-4b4ede5fcbce','activity','File Formats, Optimization, and Typography',$md$
+Choosing the wrong format can cause poor quality or unnecessarily large files.
+
+| Format | Best Use | Strength | Limitation |
+|---|---|---|---|
+| JPG/JPEG | photos | small size | no transparency; lossy |
+| PNG | logos, UI elements, transparent graphics | clean edges; transparency | larger size |
+| GIF | simple looping graphics | animation support | limited color |
+| SVG | icons, logos, diagrams | scalable; light for simple art | not ideal for detailed photos |
+| WebP | web images | good compression | compatibility should still be checked |
+
+When optimizing images, think about three things: **quality** (readable and visually acceptable), **size** (large files slow loading), and **purpose** (a hero banner, thumbnail, icon, and full-screen photo do not need the same export settings). A common workflow: crop → adjust color/brightness → resize for actual display → export in the appropriate format → test in the final environment. Optimization is not "making the file as small as possible" — it is the best balance between clarity and efficiency.
+
+### Typography and layout for screen media
+
+Good screen typography usually follows these rules: use readable font sizes; avoid too many font families; maintain strong text/background contrast; keep line length comfortable; use spacing to separate ideas; reserve all caps for short emphasis only. A simple, effective pattern is one style for headings, one for body text, and one accent style only when necessary.
+
+For layout, think in grids and zones — users should predict where to find the title, navigation, content, and actions. A common Filipino student-project mistake is overdecorating with too many colors, outlines, effects, and fonts; a cleaner layout usually communicates better.
+$md$, 3),
+('75730f01-6f88-56d6-95fd-4b4ede5fcbce','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions**
+
+1. What is contrast, and why is it important?
+2. Differentiate raster and vector graphics.
+3. Why does a raster image lose quality when enlarged too much?
+4. When should you use PNG instead of JPG?
+5. What is visual hierarchy?
+6. Why is RGB the usual color model for screen-based multimedia?
+7. Give two reasons why poor typography harms usability.
+8. What is the difference between optimization and compression alone?
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Computing Uncompressed Image Size.** An image is 1920 × 1080 with 24 bits per pixel. Estimate the uncompressed size in bytes.
+
+*Step-by-step solution*
+- Pixels: $1920 \times 1080 = 2{,}073{,}600$
+- Bits: $2{,}073{,}600 \times 24 = 49{,}766{,}400$
+- Bytes: $49{,}766{,}400 \div 8 = 6{,}220{,}800$
+
+*Final answer:* about **6,220,800 bytes (~6.2 MB)** before compression.
+
+**Problem 2: Choosing the Correct Format.** A school website needs a student-organization logo, a graduation photo, and a transparent button icon.
+
+*Step-by-step solution*
+- Logo: sharp edges + scalable → **SVG** (or PNG if a raster export is required)
+- Graduation photo: photographic, load fast → **JPG/JPEG**
+- Transparent icon: transparency + clean edges → **PNG**
+
+**Hands-On Exercise.** Take any existing poster, slide, or landing-page mockup and improve it using stronger contrast, better alignment, clearer grouping, and simpler typography. Then write a short justification: What was wrong before? Which principle did you apply? Why is the revised version easier to use?
+
+**How to Pass This Topic**
+
+- Memorize format choices: JPG for photos, PNG for transparency, SVG for scalable graphics.
+- "Justify your format choice" appears often — never answer with the file type alone.
+- Review the image-size formula: $\text{Size} = \dfrac{\text{width} \times \text{height} \times \text{bit depth}}{8}$
+- In design critiques, use formal terms: contrast, alignment, hierarchy, readability, consistency.
+- Avoid vague answers such as "make it nicer." Be specific.
+$md$, 4);
+
