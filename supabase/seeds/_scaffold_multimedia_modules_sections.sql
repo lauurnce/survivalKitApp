@@ -558,3 +558,94 @@ $md$, 3),
 - Short, purposeful motion is usually stronger than flashy motion.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 6: Interaction Design, UI, and Storyboarding
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('93abdd94-028d-5497-a29d-ea981ecbed93','content','Interactivity and User-Centered Design',$md$
+Interactivity means the user is not just watching. The user can choose, click, navigate, respond, control sequence, and receive feedback.
+
+Examples: menus, quiz buttons, interactive timelines, clickable maps, simulation controls.
+
+In IT, interactivity must be designed around user goals. This is the heart of **user-centered design**. Instead of asking "What features can we add?" ask:
+
+- What does the user need to do?
+- What might confuse the user?
+- What supports fast completion?
+
+An interactive project fails if users cannot predict what to do next.
+$md$, 1),
+('93abdd94-028d-5497-a29d-ea981ecbed93','content','Navigation, Information Architecture, and Wireframes',$md$
+**Information architecture** is the organization of content. It answers: What sections exist? Which items belong together? How does a user move from one part to another?
+
+Common navigation structures include:
+
+- linear,
+- hierarchical,
+- hub-and-spoke,
+- non-linear exploratory.
+
+A **wireframe** is a simple structural layout of screens. It does not need final colors or polished graphics. It shows the title area, menu placement, content blocks, buttons, and search or input fields.
+
+Wireframes are useful because problems are easier to fix early than after full visual design.
+$md$, 2),
+('93abdd94-028d-5497-a29d-ea981ecbed93','activity','Usability Principles, Storyboards, and Prototypes',$md$
+A usable multimedia interface usually has these qualities:
+
+- **Consistency** — buttons, labels, and screen patterns behave similarly.
+- **Feedback** — the system tells the user what happened (clicked, loading, saved, error).
+- **Simplicity** — the interface avoids unnecessary complexity.
+- **Visibility** — important actions should be easy to find.
+- **Error prevention** — the design reduces common mistakes.
+- **Accessibility awareness** — the design considers users with different needs.
+
+For example, if an e-learning module uses a speaker icon for audio on one screen, it should not suddenly use a different symbol elsewhere without reason.
+
+### Storyboards and low-fidelity prototypes
+
+A storyboard helps plan the user experience over time. Unlike a film storyboard, an interactive storyboard may include screen state, user action, resulting system response, and next possible paths. A **low-fidelity prototype** is a rough version used for testing flow and logic before final production — paper sketches, slide-based click simulation, or grayscale digital mockups. Testing early reveals major issues like unclear labels, confusing menus, too many steps, missing feedback, and weak hierarchy. In many multimedia courses, storyboarding is where good projects start becoming organized instead of random.
+$md$, 3),
+('93abdd94-028d-5497-a29d-ea981ecbed93','activity','Practice & Exam Drills — Lesson 6',$md$
+**Review Questions**
+
+1. What is interactivity?
+2. What is user-centered design?
+3. Differentiate information architecture and wireframing.
+4. Why is consistency important in an interface?
+5. What is system feedback?
+6. What makes a low-fidelity prototype useful?
+7. Give one example of error prevention in interface design.
+8. Why should a menu structure be planned early?
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Critiquing a Kiosk Interface.** A museum kiosk: home screen shows 12 equal-sized buttons; the "Back" button changes position on every screen; some buttons have text while others use unclear icons only; users do not know whether a video has started loading.
+
+*Step-by-step solution*
+1. Too many equal buttons → weak hierarchy. *Fix:* group into fewer categories; make high-priority actions larger.
+2. Back button changes position → inconsistency. *Fix:* keep navigation controls in fixed locations.
+3. Mixed labeling style → recognition problem. *Fix:* use text labels consistently; combine with icons if needed.
+4. No loading feedback → lack of feedback. *Fix:* add a loading indicator or status message.
+
+*Final answer:* the interface has hierarchy, consistency, labeling, and feedback problems; each should be corrected.
+
+**Problem 2: Choosing a Navigation Structure.** A school's interactive orientation guide has four sections (admissions, fees, campus map, student services). Students enter for quick answers and return to the home screen often.
+
+*Step-by-step solution*
+1. User behavior: fast access to one topic; frequent return to main menu.
+2. Compare: linear is poor (users may not need all sections in order); deep hierarchy needs too many clicks; hub-and-spoke fits (enter one section, return to a central home).
+
+*Final answer:* a **hub-and-spoke structure.**
+
+**Hands-On Exercise.** Create a 4-screen wireframe for an interactive campus help desk (Home, FAQs, Building Map, Contact Support). For each screen list: main action, navigation options, feedback message, possible user mistake and prevention method.
+
+**How to Pass This Topic**
+
+- Use proper terms: hierarchy, consistency, feedback, usability, wireframe, information architecture.
+- In critiques, do not only say what is wrong — always say how to improve it.
+- Professors often value logic of navigation more than artistic styling here.
+- If a question asks for a design choice, justify it through user goal and task flow.
+- Storyboards are not just drawings; they show sequence and response.
+$md$, 4);
+
