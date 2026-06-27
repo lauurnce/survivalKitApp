@@ -1217,3 +1217,144 @@ Why should a company handling customer personal data take security controls seri
 - Professors often reward answers that connect technology to people, process, and accountability.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 8: Incident Response, Business Continuity, and Disaster Recovery
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('d633a3b4-38a6-5dee-9d0e-d65b489ae3dc','content','What an Incident Is',$md$
+A security event becomes an **incident** when it threatens confidentiality, integrity, availability, or normal operations and requires response.
+
+Examples:
+
+- malware infection,
+- unauthorized account use,
+- lost laptop with sensitive files,
+- website defacement,
+- insider misuse,
+- ransomware,
+- major data leak,
+- denial-of-service disruption.
+
+Not every unusual event is a confirmed breach, but suspicious events must still be assessed. Good security operations depend on recognizing and escalating incidents quickly.
+$md$, 1),
+('d633a3b4-38a6-5dee-9d0e-d65b489ae3dc','content','Basic Incident Response Process',$md$
+An introductory incident response flow often includes:
+
+1. **Preparation** — policies, roles, tools, contacts, backups, training
+2. **Identification** — determine whether an incident is occurring
+3. **Containment** — limit spread and damage
+4. **Eradication** — remove the cause
+5. **Recovery** — restore normal service safely
+6. **Lessons learned** — improve after the incident
+
+A practical example:
+
+- suspicious endpoint behavior is detected,
+- IT confirms malware,
+- affected host is isolated,
+- malicious files are removed,
+- system is restored from a clean state,
+- controls are improved to prevent recurrence.
+$md$, 2),
+('d633a3b4-38a6-5dee-9d0e-d65b489ae3dc','activity','Evidence, Documentation, and Communication',$md$
+During incidents, technical skill is not enough. Teams must also document actions and communicate clearly.
+
+Important response habits:
+
+- record time, actions, and observations,
+- preserve relevant logs and evidence,
+- avoid unnecessary alteration of affected systems,
+- notify the correct internal contacts,
+- escalate according to severity,
+- communicate carefully to avoid confusion or leaks.
+
+In introductory courses, students are not expected to become digital forensic experts yet. But they should understand that sloppy handling of incidents can destroy useful evidence and make recovery harder.
+$md$, 3),
+('d633a3b4-38a6-5dee-9d0e-d65b489ae3dc','activity','Business Continuity and Disaster Recovery',$md$
+**Business Continuity Planning (BCP)** keeps critical operations going during disruption. **Disaster Recovery (DR)** focuses on restoring IT systems and data after disruption.
+
+Two common metrics:
+
+- **RTO — Recovery Time Objective** — how quickly a service should be restored
+- **RPO — Recovery Point Objective** — how much data loss is tolerable in time terms
+
+Example:
+
+- If payroll has an RTO of 4 hours, it should be restored within 4 hours.
+- If it has an RPO of 30 minutes, losing more than 30 minutes of data is unacceptable.
+
+BCP and DR matter in the Philippines because organizations may face brownouts, connectivity problems, typhoons, floods, device theft, and ransomware. Good planning reduces panic and downtime.
+
+A simple exam summary:
+
+- Incident response handles the event now.
+- Business continuity keeps essential functions running.
+- Disaster recovery restores systems after serious disruption.
+$md$, 4),
+('d633a3b4-38a6-5dee-9d0e-d65b489ae3dc','activity','Practice & Exam Drills — Lesson 8',$md$
+### Review Questions
+
+1. What makes an event a security incident?
+2. List the major phases of incident response.
+3. Why is containment important?
+4. Why should actions during an incident be documented?
+5. What is the difference between BCP and DR?
+6. Define RTO.
+7. Define RPO.
+8. Why are lessons learned important after an incident?
+
+### Worked Exam-Style Problems
+
+**Problem A: Identify the Incident Response Phase** — For each action, identify the phase.
+
+1. The team disconnects an infected PC from the network → **Containment**
+2. The company prepares contact lists and response playbooks in advance → **Preparation**
+3. The malware is removed and the root cause is fixed → **Eradication**
+4. Systems are restored from clean backups → **Recovery**
+5. The team holds a post-incident review → **Lessons learned**
+
+**Problem B: RTO and RPO Interpretation**
+
+A university enrollment system has RTO = 6 hours and RPO = 1 hour. Explain both.
+
+*Step-by-Step Solution*
+
+- **RTO = 6 hours** — the enrollment system should be restored within 6 hours after disruption.
+- **RPO = 1 hour** — the organization should not lose more than 1 hour of enrollment data.
+
+Interpretation: recovery planning must support restoration within 6 hours, and backups or replication must be frequent enough that data loss stays within 1 hour.
+
+**Problem C: Incident Scenario Analysis**
+
+A staff member reports that several shared folders have strange file extensions and cannot be opened. What should happen first?
+
+*Step-by-Step Solution*
+
+1. Treat the issue as a possible security incident
+2. Identify and assess the scope quickly
+3. Contain affected systems or shares to prevent spread
+4. Notify the proper response contacts
+5. Preserve relevant evidence and logs
+6. Review backups for recovery planning
+
+If ransomware is suspected, immediate isolation becomes a priority.
+
+### Hands-On Exercises
+
+**Exercise A: Mini Incident Response Plan** — Write a one-page response outline for a phishing-based account compromise in a school office. Include who reports, who receives the report, immediate steps, containment ideas, recovery actions, and documentation needs.
+
+**Exercise B: Continuity Ranking** — A small organization has these services: payroll, company website, internal chat, CCTV archive, online ordering, HR records. Rank them from most to least critical for recovery and briefly justify.
+
+**Exercise C: BCP/DR Reflection** — Assume a regional office loses power and internet during a typhoon. Write a short paragraph describing one business continuity action, one disaster recovery action, and one long-term lesson learned.
+
+### How to Pass This Topic
+
+- Memorize the incident response phases in order.
+- Distinguish clearly among containment, eradication, and recovery.
+- In incident cases, do not jump straight to "reformat everything." Think controlled response first.
+- For RTO/RPO, define each in plain language before applying it.
+- Examiners often want practical sequence, so answer step-by-step.
+- If a question involves operations during disasters, connect technical recovery to business impact.
+$md$, 5);
+
