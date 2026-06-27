@@ -649,3 +649,103 @@ $md$, 3),
 - Storyboards are not just drawings; they show sequence and response.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 7: Authoring, Integration, and Delivery
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('c5025b6a-9043-54d5-81a7-78ae458f52f8','content','Bringing Assets Together',$md$
+A multimedia project becomes usable only when separate assets are integrated into one working package.
+
+Typical assets include text files, image files, audio clips, video clips, animation exports, interface layouts, subtitle files, and icons/navigation states.
+
+Integration means combining them in a way that preserves quality, naming consistency, timing, layout, and version control.
+
+A practical team rule is to use organized folders such as:
+
+```
+/images
+/audio
+/video
+/ui
+/exports
+/docs
+```
+
+Consistent naming prevents confusion, for example:
+
+```
+homepage_banner_v2.png
+voiceover_intro_final.wav
+tutorial_cut03.mp4
+```
+
+Poor naming and messy folders are common reasons why group projects become difficult to maintain.
+$md$, 1),
+('c5025b6a-9043-54d5-81a7-78ae458f52f8','content','Authoring Environments and Packaging',$md$
+An authoring environment is the tool or platform used to combine assets into a final interactive or presentational output. Depending on the project, multimedia may be packaged as a presentation, a web page, an LMS module, a kiosk app, a mobile interface, or a video package.
+
+Regardless of platform, the same authoring concerns appear:
+
+- how content is structured,
+- how navigation works,
+- how assets are linked,
+- how large the final package becomes,
+- how updates are managed.
+
+A multimedia author should think in systems, not just files. If one image is updated, which screens are affected? If audio is revised, which timings have to change? Integration is partly a technical task and partly an organizational one.
+$md$, 2),
+('c5025b6a-9043-54d5-81a7-78ae458f52f8','activity','Optimization, Testing, and Documentation',$md$
+Optimization at the integration stage includes compressing large assets when appropriate, removing unused files, resizing visuals for target screens, balancing quality and performance, and reducing loading delays.
+
+In practical IT settings, optimization is affected by storage limits, bandwidth, device memory, browser or app compatibility, and user patience. An animation that looks excellent on a workstation may feel laggy on an older mobile phone; a high-resolution background video may be unnecessary if the main content is instructional text. Optimization is strongest when done with evidence: actual device testing, download speed checks, preview on small screens, playback testing.
+
+### Testing, debugging, and documentation
+
+Before release, test the project carefully. A basic checklist: Do all buttons work? Do files load correctly? Are image and video sizes appropriate? Are captions synced? Is audio audible but not overpowering? Are there spelling errors? Is the project usable on more than one device?
+
+Documentation matters too. At minimum, teams should keep asset lists, version notes, source attributions, export settings, and revision logs. Documentation helps during grading, maintenance, and handoff.
+$md$, 3),
+('c5025b6a-9043-54d5-81a7-78ae458f52f8','activity','Practice & Exam Drills — Lesson 7',$md$
+**Review Questions**
+
+1. Why is consistent file naming important?
+2. What is asset integration?
+3. Give two examples of multimedia packaging.
+4. Why should optimization be based on target platform?
+5. What is version control in a simple project context?
+6. Why are unused files a problem?
+7. What should be documented before submission?
+8. Why is cross-device testing important?
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Fixing a Project Organization Problem.** A team submits a folder with `final.mp4`, `final2.mp4`, `finalnew.mp4`, `image1.png`, `newlogo.png`, `audioeditedlatest.wav`, and no document explaining the final version.
+
+*Step-by-step solution*
+1. Issues: unclear naming, no version pattern, no folder grouping, no documentation.
+2. Propose structure: folders `/video`, `/images`, `/audio`, `/docs`, `/exports`; consistent names like `promo_video_v01.mp4`, `promo_video_v02.mp4`, `promo_video_final.mp4`.
+3. Add documentation: changelog, export settings, final approved file name.
+
+*Final answer:* the project lacks naming standards, structure, and version documentation — reorganize with folders, readable names, and a simple revision log.
+
+**Problem 2: Choosing an Optimization Strategy.** A multimedia lesson has 5 full-resolution DSLR photos, 2 short MP4 videos, 1 voice-over, 1 interactive menu. Students complain it loads slowly on phones.
+
+*Step-by-step solution*
+1. Likely heavy assets: full-resolution DSLR photos (often much larger than needed); video may also contribute.
+2. Prioritize easy, high-impact actions: resize photos to actual display dimensions; compress photos appropriately; review video bitrate and resolution.
+3. Voice-over and menu are likely not the main problem.
+
+*Final answer:* optimize the **large photos first**, then check video export settings — those usually give the biggest performance gains.
+
+**Hands-On Exercise.** Prepare a delivery and test plan for an interactive multimedia lesson: folder structure, naming convention, export formats, device test list, a 10-point QA checklist, and a short revision-log template.
+
+**How to Pass This Topic**
+
+- In integration questions, show both technical assembly and project organization.
+- Do not treat documentation as optional — students often lose points here.
+- Use concrete terms: asset manifest, versioning, QA, deployment, compatibility.
+- When optimizing, prioritize assets with the biggest performance impact.
+- A "final" file name alone is not a workflow.
+$md$, 4);
+
