@@ -207,3 +207,170 @@ $md$, 3),
 - Be specific. "To improve the system" is weak; "To reduce duplicate records and shorten approval time" is better.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 2: Systems Planning, Business Processes, and Feasibility
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('5772a6c6-ea95-5361-8e8e-54b5af556c47','content','Project Initiation and the Business Case',$md$
+A systems project should begin with a clear reason for existing. This is called the business case. It explains why the organization should spend time, money, and effort on the project.
+
+Project initiation usually starts when someone notices:
+
+- delays in service
+- repeated data errors
+- weak reporting
+- high operating cost
+- poor user experience
+- security or compliance issues
+- lost opportunities for growth
+
+At this point, the analyst should avoid jumping directly to a software feature list. The first job is to define the problem, the people affected, the impact, and the desired improvement.
+
+A useful problem statement answers four questions:
+
+1. What is happening now?
+2. Why is it a problem?
+3. Who is affected?
+4. What improvement is expected?
+
+Example:
+
+> The current permit renewal process of the municipal office relies on manual encoding and separate spreadsheets per unit. This causes repeated data entry, delayed approvals, and inconsistent records seen by applicants and staff. The problem affects front-desk clerks, reviewers, and business owners, especially during peak renewal periods. The project aims to standardize records, reduce turnaround time, and improve status visibility.
+
+A business case becomes stronger when it links the project to organizational goals, such as better public service, improved productivity, lower operational cost, stronger decision support, and improved compliance and auditability.
+
+Managers often approve projects not because the system is "modern," but because the project is justified.
+$md$, 1),
+('5772a6c6-ea95-5361-8e8e-54b5af556c47','content','Business Processes and Process Improvement',$md$
+A business process is a related set of activities that transforms inputs into outputs. In plain terms, it is the series of steps people follow to do work.
+
+Examples:
+
+- an enrollment process receives student data and outputs enrollment confirmation
+- a clinic inventory process receives stock entries and outputs updated balances and alerts
+- a loan approval process receives an application and outputs approval or rejection
+
+Before designing a new system, you must understand the current process, sometimes called the **as-is** process. After improvements are proposed, you describe the **to-be** process.
+
+When examining a process, ask:
+
+- What starts the process?
+- What steps happen?
+- Who performs each step?
+- What documents or data are used?
+- Where do delays happen?
+- Where do errors, duplicates, or rework happen?
+- Which steps add value and which steps only consume time?
+
+Common process problems include:
+
+| Problem | Example |
+|---|---|
+| Redundancy | Same applicant data encoded in three offices |
+| Bottleneck | Only one officer can approve every request |
+| Lack of visibility | Staff cannot see the current status |
+| Poor control | Transactions can be altered without trace |
+| Unclear ownership | No one knows who should act next |
+| Manual dependency | Many signatures and paper handoffs |
+
+Sometimes the goal is not just automation but process improvement or even business process reengineering. Reengineering means redesigning the workflow more fundamentally instead of merely computerizing old inefficiencies.
+
+For example:
+
+- Bad idea: convert a six-signature paper flow into a six-screen digital flow
+- Better idea: question whether all six approvals are really necessary
+
+This is why analysts must study operations, not only screens and forms.
+$md$, 2),
+('5772a6c6-ea95-5361-8e8e-54b5af556c47','activity','Feasibility Analysis and Basic Financial Evaluation',$md$
+A promising idea still needs to be checked for feasibility. Feasibility analysis asks whether the proposed project is realistic and worthwhile.
+
+A common framework is **TELOS**:
+
+| Type | Key Question |
+|---|---|
+| Technical | Can the needed technology be built, acquired, and supported? |
+| Economic | Are the benefits worth the costs? |
+| Legal | Does the project comply with law, policy, contracts, and regulations? |
+| Operational | Will users and managers accept and use the system? |
+| Schedule | Can it be delivered on time? |
+
+You may also see organizational, social, or security feasibility discussed depending on the course.
+
+### Economic feasibility
+
+Economic feasibility compares costs and benefits.
+
+**Possible costs:** software development or purchase, cloud hosting or hardware, training, maintenance, migration, project management effort.
+
+**Possible benefits:** reduced clerical hours, fewer errors and rework, faster service, more accurate reporting, better customer satisfaction, reduced paper and storage cost.
+
+Two basic computations are commonly used:
+
+$$ \text{Net Benefit} = \text{Total Benefits} - \text{Total Costs} $$
+
+$$ \text{ROI} = \frac{\text{Net Benefit}}{\text{Total Costs}} \times 100\% $$
+
+If a project costs ₱500,000 and produces ₱650,000 worth of measurable benefits in a period, then:
+
+$$ \text{Net Benefit} = 650{,}000 - 500{,}000 = 150{,}000 $$
+
+$$ \text{ROI} = \frac{150{,}000}{500{,}000} \times 100\% = 30\% $$
+
+A simple payback estimate is:
+
+$$ \text{Payback Period} = \frac{\text{Project Cost}}{\text{Annual Net Benefit}} $$
+
+A project may still be approved even if some benefits are intangible, such as stronger public trust or easier compliance. The key is to state them honestly.
+$md$, 3),
+('5772a6c6-ea95-5361-8e8e-54b5af556c47','activity','Practice & Exam Drills — Lesson 2',$md$
+**Scope & Project Charter reminder.** Scope defines what is included and excluded; without scope control a project suffers **scope creep**. A scope statement should identify the business area, user groups, included/excluded functions, interfaces, assumptions, and constraints. A project charter usually contains title, sponsor, problem statement, objectives, scope, stakeholders, risks, schedule, and a high-level budget note.
+
+**Review Questions**
+
+1. What is a business case?
+2. Differentiate an as-is process from a to-be process.
+3. What is the purpose of feasibility analysis?
+4. What does TELOS stand for?
+5. Give two examples of tangible benefits and two examples of intangible benefits.
+6. What is scope creep?
+7. Why is it dangerous to automate a bad process without redesigning it?
+8. What are common contents of a project charter?
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Feasibility computation.** A cooperative wants a loan tracking system. Project cost: ₱420,000. Annual measurable benefit: ₱240,000. Annual operating cost after deployment: ₱40,000. Compute annual net benefit, ROI, and payback period.
+
+*Step-by-step solution*
+- Annual net benefit = 240,000 − 40,000 = **₱200,000**
+- ROI (simple annual return ratio) = 200,000 / 420,000 × 100% ≈ **47.62%**. (If your professor defines ROI as net gain after recovering total cost in the same period, clarify the class formula; most classroom drills accept the simpler ratio.)
+- Payback period = 420,000 / 200,000 = **2.1 years**
+
+**Problem 2: Identify feasibility concerns.** For each issue, name the main feasibility category:
+- Only three months before renewal season → **Schedule**
+- Users refuse to give up their handwritten logbook → **Operational**
+- Project needs server capacity the office lacks → **Technical**
+- System must comply with privacy rules → **Legal**
+- Estimated savings too small vs. cost → **Economic**
+
+**Problem 3: Scope correction.** Weak scope: "The proposed resort management system will improve all operations... complete automation for all offices and all future expansion plans."
+*Weaknesses:* "all operations" too broad; "complete automation" unrealistic; "all future expansion" undefined; no boundary, user group, or exclusion.
+*Improved:* "The proposed resort management system will cover room reservation, guest check-in/check-out, payment recording, and occupancy reports for front-desk staff and management. It will exclude kitchen inventory, payroll, and online travel agency integration in Phase 1."
+
+**Hands-On Practice — Municipal Permit Renewal.**
+1. Write one problem statement.
+2. List three tangible and three intangible benefits.
+3. Perform a TELOS analysis in bullet form.
+4. Write one scope statement with at least one exclusion.
+5. State two major risks.
+
+**How to Pass This Topic**
+
+- Answer feasibility using the exact category name: technical, economic, legal, operational, schedule.
+- When computing, show the formula first before substitution.
+- In scope questions, include at least one sentence about what is not included.
+- If the case mentions redesigning a workflow, mention business process improvement or reengineering.
+- Connect the project to a real organizational goal, not just "automation."
+$md$, 4);
+
