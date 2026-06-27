@@ -458,3 +458,103 @@ $md$, 3),
 - When in doubt, justify your choice with clarity + compatibility + file size.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 5: Animation and Motion Graphics
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('28157b75-a9ed-5da2-bbe6-ee0447ed76ae','content','What Animation Adds to Multimedia',$md$
+Animation shows change over time. It is useful when static images are not enough.
+
+In multimedia, animation can explain a process, direct attention, simulate motion, improve feedback, and support storytelling.
+
+Examples: a loading icon, an animated process diagram, a title reveal, an onboarding character, a moving interface cue.
+
+Animation is most effective when it answers a question like:
+
+- What changes?
+- In what order?
+- At what speed?
+- What should the user notice?
+
+If a process has multiple steps, animation can reduce explanation time by making the sequence visible.
+$md$, 1),
+('28157b75-a9ed-5da2-bbe6-ee0447ed76ae','content','Principles of Animation',$md$
+Even simple digital animation becomes better when it follows core principles such as:
+
+### Timing
+How long an action takes. Fast timing feels sudden; slow timing feels gentle or heavy.
+
+### Spacing
+How movement is distributed between positions. Equal spacing creates mechanical motion. Uneven spacing creates more natural motion.
+
+### Anticipation
+A small movement before the main action prepares the viewer.
+
+### Follow-through
+Parts of an object may continue moving briefly after the main action stops.
+
+### Easing
+Objects often accelerate and decelerate instead of moving at one constant speed.
+
+In motion graphics and interface animation, these principles make motion feel intentional rather than awkward.
+$md$, 2),
+('28157b75-a9ed-5da2-bbe6-ee0447ed76ae','activity','Types of Animation and Responsible Motion Use',$md$
+Different multimedia tasks use different kinds of animation.
+
+| Type | Typical Use |
+|---|---|
+| Frame-by-frame | artistic or character motion |
+| Keyframe/tween animation | motion graphics and UI transitions |
+| 2D animation | explainer content, icons, educational visuals |
+| 3D animation | product visualization, simulation, games |
+| Motion graphics | titles, charts, branding, infographics |
+
+In many IT and academic projects, keyframe-based 2D animation and motion graphics are the most practical because they are easier to manage and fit instructional or promotional work well. Animation should not be added just to "make it look high-tech" — if motion delays access, overloads the screen, or distracts from reading, it reduces usability.
+
+### Asset preparation and responsible motion use
+
+Before animating, prepare assets carefully: separate layers clearly, name files consistently, decide canvas size, confirm export destination, and simplify unnecessary detail. You should also decide duration, frame rate, target format, and whether sound is needed.
+
+Responsible animation means short transition times, motion that supports understanding, avoiding excessive flashing or rapid movement, and respecting accessibility concerns. A useful design question is: *Does this motion help the user understand, navigate, or feel feedback?* If the answer is no, the motion may be unnecessary.
+$md$, 3),
+('28157b75-a9ed-5da2-bbe6-ee0447ed76ae','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. What is the purpose of animation in multimedia?
+2. Differentiate timing and spacing.
+3. What is anticipation?
+4. Why is easing important?
+5. Which kind of animation is commonly practical for instructional multimedia?
+6. Why can too much animation hurt usability?
+7. What is the difference between 2D animation and motion graphics?
+8. Why is asset preparation important before animating?
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Keyframe Timing.** An icon animation starts at frame 0 and ends at frame 36 in a 24 fps composition. How many seconds?
+
+*Step-by-step solution*
+- $\text{Time} = \dfrac{\text{frames}}{\text{fps}} = \dfrac{36}{24} = 1.5$ seconds
+
+*Final answer:* **1.5 seconds.**
+
+**Problem 2: Choosing Animation for a Process Explanation.** A faculty member wants to explain how data flows from input to processing to output. Static poster, short motion graphic, or full live-action video?
+
+*Step-by-step solution*
+1. Communication need: sequence, transformation, process understanding.
+2. Evaluate: static poster shows stages but not motion; live-action is unnecessary for abstract data flow; motion graphic animates arrows, labels, and transitions clearly.
+
+*Final answer:* a **short motion graphic** — it clearly shows sequence and movement without the overhead of live-action production.
+
+**Hands-On Exercise.** Design a 15-second storyboard for an animated explainer on "Strong Password Creation": opening frame, 3–5 key visual moments, text cues, motion notes, audio cue if needed. Then explain which animation principles are used.
+
+**How to Pass This Topic**
+
+- Be ready to define timing, spacing, anticipation, and easing.
+- In application questions, justify animation by its role in explaining change over time.
+- If asked whether animation is appropriate, consider clarity, speed, and accessibility.
+- Remember that animation has to be planned like any other media asset.
+- Short, purposeful motion is usually stronger than flashy motion.
+$md$, 4);
+
