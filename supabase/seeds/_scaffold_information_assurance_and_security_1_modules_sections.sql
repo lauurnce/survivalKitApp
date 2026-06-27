@@ -26,19 +26,15 @@ DELETE FROM modules WHERE subject_id = '30000000-0003-0002-0001-000000000004';
 --   M11: 8fa7ecf2-f7fd-5bd3-8fa7-bda11c29d054
 --   M12: 8499a0d5-eed9-5972-81ea-3508d178fa18
 
--- INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
---   ('5ccb51da-75cd-5814-af37-e74b8452fe4e','30000000-0003-0002-0001-000000000004','Lesson 1: <TITLE>','lesson-1-<slug>',1),
---   ('8b714a41-f183-5465-9aff-8a3287f8c916','30000000-0003-0002-0001-000000000004','Lesson 2: <TITLE>','lesson-2-<slug>',2),
---   ('6d38cc43-8053-5840-830b-9a3af3115ea4','30000000-0003-0002-0001-000000000004','Lesson 3: <TITLE>','lesson-3-<slug>',3),
---   ('965ef740-b656-5b14-88da-3520be07e937','30000000-0003-0002-0001-000000000004','Lesson 4: <TITLE>','lesson-4-<slug>',4),
---   ('b10d9b37-46f8-5eaa-88a6-3c521db59d4b','30000000-0003-0002-0001-000000000004','Lesson 5: <TITLE>','lesson-5-<slug>',5),
---   ('7c237496-0d80-5409-a25c-133364679759','30000000-0003-0002-0001-000000000004','Lesson 6: <TITLE>','lesson-6-<slug>',6),
---   ('2f4923a6-20df-5b29-bdf1-a8e7ad5a8f6f','30000000-0003-0002-0001-000000000004','Lesson 7: <TITLE>','lesson-7-<slug>',7),
---   ('d633a3b4-38a6-5dee-9d0e-d65b489ae3dc','30000000-0003-0002-0001-000000000004','Lesson 8: <TITLE>','lesson-8-<slug>',8),
---   ('9848980d-a500-5801-8653-459d6a5bb7e9','30000000-0003-0002-0001-000000000004','Lesson 9: <TITLE>','lesson-9-<slug>',9),
---   ('b98752be-5c46-59e2-8688-e8ad55be1262','30000000-0003-0002-0001-000000000004','Lesson 10: <TITLE>','lesson-10-<slug>',10),
---   ('8fa7ecf2-f7fd-5bd3-8fa7-bda11c29d054','30000000-0003-0002-0001-000000000004','Lesson 11: <TITLE>','lesson-11-<slug>',11),
---   ('8499a0d5-eed9-5972-81ea-3508d178fa18','30000000-0003-0002-0001-000000000004','Lesson 12: <TITLE>','lesson-12-<slug>',12);
+INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
+  ('5ccb51da-75cd-5814-af37-e74b8452fe4e','30000000-0003-0002-0001-000000000004','Lesson 1: Foundations of Information Assurance and Security','lesson-1-foundations-information-assurance-security',1),
+  ('8b714a41-f183-5465-9aff-8a3287f8c916','30000000-0003-0002-0001-000000000004','Lesson 2: Threats, Vulnerabilities, Controls, and Risk Assessment','lesson-2-threats-vulnerabilities-controls-risk-assessment',2),
+  ('6d38cc43-8053-5840-830b-9a3af3115ea4','30000000-0003-0002-0001-000000000004','Lesson 3: Identity, Authentication, Authorization, and Access Control','lesson-3-identity-authentication-authorization-access-control',3),
+  ('965ef740-b656-5b14-88da-3520be07e937','30000000-0003-0002-0001-000000000004','Lesson 4: Cryptography, Hashing, and Digital Signatures','lesson-4-cryptography-hashing-digital-signatures',4),
+  ('b10d9b37-46f8-5eaa-88a6-3c521db59d4b','30000000-0003-0002-0001-000000000004','Lesson 5: Network Security Fundamentals','lesson-5-network-security-fundamentals',5),
+  ('7c237496-0d80-5409-a25c-133364679759','30000000-0003-0002-0001-000000000004','Lesson 6: Host, Endpoint, and Application Security','lesson-6-host-endpoint-application-security',6),
+  ('2f4923a6-20df-5b29-bdf1-a8e7ad5a8f6f','30000000-0003-0002-0001-000000000004','Lesson 7: Security Governance, Policies, Ethics, and the Philippine Legal Environment','lesson-7-governance-policies-ethics-legal-environment',7),
+  ('d633a3b4-38a6-5dee-9d0e-d65b489ae3dc','30000000-0003-0002-0001-000000000004','Lesson 8: Incident Response, Business Continuity, and Disaster Recovery','lesson-8-incident-response-business-continuity-disaster-recovery',8);
 
 -- ---- Reserved section UUIDs, per module ----
 -- Module 1 (5ccb51da-75cd-5814-af37-e74b8452fe4e):
@@ -194,4 +190,7 @@ DELETE FROM modules WHERE subject_id = '30000000-0003-0002-0001-000000000004';
 -- ('5ccb51da-75cd-5814-af37-e74b8452fe4e','activity','Coding Drill',$md$<task>$md$, 3, 'python', $code$print("hi")$code$);
 
 -- >>>>>>>>>>>>>>>>>>>>  PASTE FILLED-IN INSERTS BELOW  <<<<<<<<<<<<<<<<<<<<
+
+-- Per module: S1/S2 = free content, S3/S4 = content gated as activity,
+-- S5 = the Practice & Exam Drills activity. 2 free + 3 paid.
 
