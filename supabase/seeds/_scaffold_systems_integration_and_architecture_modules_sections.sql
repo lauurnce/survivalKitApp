@@ -1009,3 +1009,268 @@ print(integrate_data(registrar, library))
 $code$);
 
 -- ============================================================
+-- LESSON 7: Secure, Reliable, and Observable Integrated Systems
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('7147968d-c39c-55fe-9ffb-6e666a1e8f21','content','Security in Integrated Environments',$md$
+Integrated systems enlarge the attack surface because more components, interfaces, and users are involved. A secure architecture must protect data in transit, secure service access, and prevent unauthorized actions across connected systems.
+
+At a foundational level, focus on these principles:
+
+| Principle | Practical meaning |
+|---|---|
+| Authentication | Verify who is making the request |
+| Authorization | Verify what that requester is allowed to do |
+| Confidentiality | Protect sensitive data from unauthorized access |
+| Integrity | Prevent unauthorized modification |
+| Availability | Keep systems and services accessible when needed |
+
+A student records integration, for example, should not expose grades, balances, or personal data to services that do not need them. This is the principle of **least privilege**.
+
+Security in integration is not only about login screens. It also includes secure API keys or tokens, validation of incoming payloads, audit logging, proper error messages, and protection against duplicated or malicious requests.
+$md$, 1),
+('7147968d-c39c-55fe-9ffb-6e666a1e8f21','content','Reliability, Resilience, and Failure Handling',$md$
+Integrated systems must survive failure realistically. Network links drop. Services time out. Databases slow down. A downstream system may be unavailable during maintenance. If the architecture assumes everything always works, the design is weak.
+
+A resilient system typically includes:
+
+- **Retries** for temporary failures
+- **Timeouts** so waiting does not continue forever
+- **Fallback behavior** when a noncritical service is unavailable
+- **Queueing** to avoid losing work during temporary downtime
+- **Dead-letter handling** for messages that repeatedly fail
+
+These ideas matter in Philippine deployment environments where connectivity may vary across branches or field offices. A system that handles interruptions gracefully is often more valuable than a system that is elegant only under perfect conditions.
+$md$, 2),
+('7147968d-c39c-55fe-9ffb-6e666a1e8f21','activity','Observability and Basic Performance Awareness',$md$
+Once a solution is deployed, the team must be able to answer: What happened? Where did it fail? How long did it take? Which component caused the delay? This is where **observability** enters.
+
+Three simple pillars help:
+
+- **Logs** – recorded events and errors
+- **Metrics** – measurable values like response time, error rate, queue length
+- **Tracing** – following one request across several services
+
+You do not need deep DevOps theory to understand the core idea: an integrated system that cannot be monitored is difficult to trust and maintain.
+
+Performance awareness is also important. If one service must call five others before completing a request, the total response time can grow quickly. This is why architects try to reduce unnecessary coupling and choose when real-time calls are needed versus when asynchronous messaging is better.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('7147968d-c39c-55fe-9ffb-6e666a1e8f21','activity','Practice & Exam Drills — Lesson 7',$md$
+### Review Questions
+
+1. Differentiate authentication from authorization.
+2. What does least privilege mean?
+3. Why are retries useful?
+4. What is a dead-letter queue or dead-letter handling?
+5. Why are logs important in integrated systems?
+6. Give one reason why availability matters in systems integration.
+
+### Worked Exam-Style Problems
+
+**Problem 1: Security Analysis**
+
+A payment verification API returns very detailed internal error messages, including database table names and server file paths. Why is this a security concern?
+
+*Step-by-step solution*
+
+1. Identify what is exposed. Internal implementation details are being revealed.
+2. Ask what an attacker gains. The attacker learns about the internal structure of the system.
+3. State secure practice. APIs should return safe, controlled error messages while detailed information stays in internal logs.
+
+**Final answer:** This is a security concern because the API exposes internal system details that may help an attacker understand the environment. Public error responses should be limited, while diagnostic detail should remain in protected logs.
+
+**Problem 2: Reliability Scenario**
+
+An enrollment integration sends "activate LMS" immediately after tuition payment. Sometimes the LMS is down for maintenance. What reliability mechanism should be added?
+
+*Step-by-step solution*
+
+1. Identify the failure type. Temporary unavailability of a downstream service.
+2. Choose a suitable mechanism. Retry logic and queueing are appropriate.
+3. Explain why. The request can be stored and retried later without losing the payment event.
+
+**Final answer:** Add queueing plus controlled retries so the activation request is not lost when the LMS is temporarily unavailable.
+
+### Hands-On Exercise
+
+Use the starter code to implement one retry before moving an event to the dead-letter list.
+
+Tasks:
+
+1. Process each event.
+2. Retry once if processing fails.
+3. Print a short log line for every attempt.
+4. Return or print the `dead_letter` list.
+
+**Extension:** Add a simple timestamp field using a plain string or counter if you want better logs.
+
+### How to Pass This Topic
+
+- In security questions, mention authentication, authorization, least privilege, and safe error handling.
+- In reliability questions, look for words such as timeout, temporary failure, downtime, retry, and queue.
+- Professors often ask the difference between a system that is correct and one that is operationally dependable.
+- Do not answer "make it secure" without saying how.
+- Logs are not just for debugging; they also support accountability and monitoring.
+$md$, 4, 'python', $code$# Lesson 7 starter code
+# Goal: process a simple queue with retry logic.
+
+events = [
+    {"id": 1, "type": "payment_confirmed", "retries": 0},
+    {"id": 2, "type": "account_created", "retries": 0},
+]
+
+def handle_event(event):
+    # Simulate failure for payment_confirmed on first try only
+    if event["type"] == "payment_confirmed" and event["retries"] == 0:
+        return False
+    return True
+
+def process_events(queue):
+    dead_letter = []
+    # TODO:
+    # 1. Process each event
+    # 2. If handling fails, increment retries and retry once
+    # 3. If it still fails, place it in dead_letter
+    # 4. Print successful events and dead_letter contents
+    return dead_letter
+
+print(process_events(events))
+$code$);
+
+-- ============================================================
+-- LESSON 8: Testing, Deployment, and Governance of Integration Solutions
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('8fdf6171-ba7e-50c4-9c78-885914e03998','content','Testing Integrated Systems',$md$
+Testing an integrated system is more than checking whether one function works. Because multiple systems are involved, the team must verify interfaces, data correctness, timing, error responses, and behavior under failure.
+
+Important testing layers include:
+
+| Test type | What it checks |
+|---|---|
+| Unit test | Small code-level behavior of one component |
+| Integration test | Whether connected components work together correctly |
+| System test | End-to-end business flow across the solution |
+| Performance test | Response time and load behavior |
+| Security test | Access control, input handling, and exposure risks |
+| User acceptance test | Whether the solution supports real operational needs |
+
+A professor may ask why integration testing is necessary even when unit tests already pass. The answer is simple: interfaces, dependencies, and real data movement can still fail even if each component worked alone.
+$md$, 1),
+('8fdf6171-ba7e-50c4-9c78-885914e03998','content','Deployment and Environment Management',$md$
+Integrated solutions usually move through environments such as development, testing, staging, and production. These environments exist so changes can be verified before they affect real users.
+
+A strong deployment practice includes:
+
+- Clear configuration management
+- Separate credentials per environment
+- Controlled release process
+- Rollback plan in case deployment fails
+- Monitoring immediately after release
+
+Why is this especially important in integration? Because one change can affect several dependent systems. A new API field, changed token rule, or modified message format may break existing consumers if released carelessly.
+
+This is why teams also use documentation, interface contracts, and change coordination. Deployment is not only a technical upload. It is a managed transition in a connected environment.
+$md$, 2),
+('8fdf6171-ba7e-50c4-9c78-885914e03998','activity','Governance, Documentation, and Continuous Improvement',$md$
+**Governance** means the organization has rules and accountability for how systems are designed, integrated, changed, and maintained. Without governance, teams create inconsistent interfaces, undocumented assumptions, and fragile dependencies.
+
+Good integration governance usually covers:
+
+- Naming and versioning standards
+- Data ownership rules
+- Security and access policies
+- Documentation requirements
+- Monitoring and incident response practices
+- Change approval and communication
+
+For BSIT students, governance may sound managerial, but it matters greatly in real operations. A technically working solution can still become a long-term problem if no one knows who owns it, how it is changed, or how incidents are handled.
+
+The final mindset of this course is simple: integration is not finished at deployment. It must be operated, documented, measured, and improved over time.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('8fdf6171-ba7e-50c4-9c78-885914e03998','activity','Practice & Exam Drills — Lesson 8',$md$
+### Review Questions
+
+1. Why is integration testing different from unit testing?
+2. What is the purpose of a staging environment?
+3. Why should credentials differ by environment?
+4. What is rollback?
+5. What is governance in systems integration?
+6. Why is documentation important even if the system already works?
+
+### Worked Exam-Style Problems
+
+**Problem 1: Testing Logic**
+
+A university released a new billing-to-LMS integration. Unit tests passed, but real students with valid payments still could not access the LMS. Why might this happen?
+
+*Step-by-step solution*
+
+1. Unit tests only prove small components behaved correctly in isolation.
+2. The problem may exist in interface contracts, real payload structure, environment configuration, or authentication between systems.
+3. Therefore, end-to-end integration testing was insufficient or incomplete.
+
+**Final answer:** This can happen because passing unit tests does not guarantee that connected systems work correctly together. The defect may be in the interface, deployment configuration, authentication, or real data mapping, which are integration-level concerns.
+
+**Problem 2: Governance Scenario**
+
+Two departments independently changed the same API without versioning. Old consumer applications broke. What governance weakness caused the issue?
+
+*Step-by-step solution*
+
+1. Identify what was missing. Versioning and coordinated change control.
+2. Connect it to governance. Governance should define who approves interface changes and how backward compatibility is handled.
+3. State the consequence. Consumer systems broke because changes were unmanaged.
+
+**Final answer:** The failure resulted from weak integration governance, specifically the absence of API versioning rules and coordinated change management.
+
+### Hands-On Exercise
+
+Complete the starter code and convert it into a tiny validation test.
+
+Tasks:
+
+1. Make `validate_student_record(record)` return `True` only when all required fields are present.
+2. Print whether each sample record passes or fails.
+3. Add one more rule: `balance` must be numeric.
+4. Add a short message that explains the reason if validation fails.
+
+This mirrors the mindset of integration testing: validate contracts, not just code execution.
+
+### How to Pass This Topic
+
+- In testing questions, mention the exact level: unit, integration, system, or acceptance.
+- In deployment questions, remember environment separation, configuration control, and rollback.
+- In governance questions, use terms such as ownership, standards, versioning, documentation, and change management.
+- Professors often appreciate answers that show life-cycle thinking: design, build, test, deploy, monitor, improve.
+- If the question asks "why did the deployment fail," think beyond coding—check contracts, configuration, access, and coordination.
+$md$, 4, 'python', $code$# Lesson 8 starter code
+# Goal: write simple checks for an integrated workflow.
+
+def validate_student_record(record):
+    # TODO:
+    # return True only if record contains:
+    # student_no, name, balance, lms_status
+    required = ["student_no", "name", "balance", "lms_status"]
+    return False
+
+sample_records = [
+    {"student_no": "2023-0001", "name": "Ana Cruz", "balance": 0, "lms_status": "activated"},
+    {"student_no": "2023-0002", "name": "Ben Reyes", "balance": 1500},
+]
+
+for rec in sample_records:
+    print(rec, validate_student_record(rec))
+$code$);
+
+-- SOURCES (metadata — not inserted): CHED CMO 25 s. 2015 (BSIT PSG); UP Diliman
+-- DCS Software Engineering I/II, Database Systems, Computer Networks, Distributed
+-- Systems; PUP INTE 30033 Systems Integration and Architecture 1; FEU Institute
+-- of Technology BSIT; Adamson University BSIT 2022; Ateneo de Manila BS MIS
+-- Enterprise Architecture; DLSU BS IS Enterprise Architecture / governance core.
