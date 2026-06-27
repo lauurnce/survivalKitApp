@@ -1,0 +1,197 @@
+-- ============================================================
+-- Information Management — Modules & Sections (SCAFFOLD)
+-- Subject ID: 20000000-0002-0002-0001-000000000003
+-- 2nd Year, Semester 2 — major
+-- Suggested module count: 6-10
+--
+-- Reserved UUID namespace below is collision-free and deterministic.
+-- Fill module titles/slugs + section headings/bodies from the GPT-5.5
+-- deep-research output, then run this file once. Re-running is safe
+-- (the DELETE clears prior rows for this subject first).
+-- ============================================================
+
+DELETE FROM modules WHERE subject_id = '20000000-0002-0002-0001-000000000003';
+
+-- ---- Reserved module UUIDs (use in order; delete unused rows) ----
+--   M01: 9ae38391-0460-5ea5-a8f2-2401ab1b110e
+--   M02: 458c437f-cf15-591b-8a21-a0899a839158
+--   M03: b0ace7f9-03ae-5c15-b397-b319d705bc24
+--   M04: 44be57f8-adf1-57d2-80cd-39d62aa91636
+--   M05: 21829336-6581-56fb-866e-61c03652d346
+--   M06: b3cfdb35-2b57-59c7-9388-4007215630eb
+--   M07: 40f4d906-7c40-5024-abb5-a5b883c02237
+--   M08: a7ecc400-acc1-5fb4-a3a0-2698e5f59bab
+--   M09: bc4465f2-dd0f-515b-b0e3-6a55a7f04e11
+--   M10: 8886ec70-db30-591b-be11-4085b1169cfd
+--   M11: e0ad8b48-d2af-5bbc-98c4-a9f3b41dcb0e
+--   M12: 10ff2f73-3e46-510e-8499-26d04c6cb3da
+
+-- INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
+--   ('9ae38391-0460-5ea5-a8f2-2401ab1b110e','20000000-0002-0002-0001-000000000003','Lesson 1: <TITLE>','lesson-1-<slug>',1),
+--   ('458c437f-cf15-591b-8a21-a0899a839158','20000000-0002-0002-0001-000000000003','Lesson 2: <TITLE>','lesson-2-<slug>',2),
+--   ('b0ace7f9-03ae-5c15-b397-b319d705bc24','20000000-0002-0002-0001-000000000003','Lesson 3: <TITLE>','lesson-3-<slug>',3),
+--   ('44be57f8-adf1-57d2-80cd-39d62aa91636','20000000-0002-0002-0001-000000000003','Lesson 4: <TITLE>','lesson-4-<slug>',4),
+--   ('21829336-6581-56fb-866e-61c03652d346','20000000-0002-0002-0001-000000000003','Lesson 5: <TITLE>','lesson-5-<slug>',5),
+--   ('b3cfdb35-2b57-59c7-9388-4007215630eb','20000000-0002-0002-0001-000000000003','Lesson 6: <TITLE>','lesson-6-<slug>',6),
+--   ('40f4d906-7c40-5024-abb5-a5b883c02237','20000000-0002-0002-0001-000000000003','Lesson 7: <TITLE>','lesson-7-<slug>',7),
+--   ('a7ecc400-acc1-5fb4-a3a0-2698e5f59bab','20000000-0002-0002-0001-000000000003','Lesson 8: <TITLE>','lesson-8-<slug>',8),
+--   ('bc4465f2-dd0f-515b-b0e3-6a55a7f04e11','20000000-0002-0002-0001-000000000003','Lesson 9: <TITLE>','lesson-9-<slug>',9),
+--   ('8886ec70-db30-591b-be11-4085b1169cfd','20000000-0002-0002-0001-000000000003','Lesson 10: <TITLE>','lesson-10-<slug>',10),
+--   ('e0ad8b48-d2af-5bbc-98c4-a9f3b41dcb0e','20000000-0002-0002-0001-000000000003','Lesson 11: <TITLE>','lesson-11-<slug>',11),
+--   ('10ff2f73-3e46-510e-8499-26d04c6cb3da','20000000-0002-0002-0001-000000000003','Lesson 12: <TITLE>','lesson-12-<slug>',12);
+
+-- ---- Reserved section UUIDs, per module ----
+-- Module 1 (9ae38391-0460-5ea5-a8f2-2401ab1b110e):
+--   S1: 1640cc4a-beb4-50d1-833a-40c47cf761dd
+--   S2: f2caea9e-c0c0-52d0-ae4d-575364f3810d
+--   S3: 52bbf29a-5cff-5310-af6c-d9d89b1422c6
+--   S4: 81d545e9-dc61-5e46-9340-eb260565f1e5
+--   S5: e516e4c1-cfbc-5a68-9544-ee8e82cb4a5f
+--   S6: a86a48a2-32b9-55a9-8244-a3debc1c5e2d
+--   S7: 19b83911-b5ba-51c8-b1b1-fb29b16dbad8
+--   S8: 23591c8e-be0e-5bec-aa24-bad12e5ff7a0
+--   S9: c08f16a7-d73f-5ca3-b41e-021adf603768
+--   S10: adcc91f6-279c-5ee3-824d-f765144df13f  <- reserve last for kind='activity'
+-- Module 2 (458c437f-cf15-591b-8a21-a0899a839158):
+--   S1: b85f41ba-4a35-5ed0-bc90-ffa22e60a30e
+--   S2: 211f6b5f-d7fa-5ad1-b05b-07dbf24a2eb4
+--   S3: 77d09ecb-b9ef-59d0-bb7d-19ddf552ec82
+--   S4: 8c60138b-d1c7-5440-ad96-0c513db1d64a
+--   S5: fe9d6cc5-194c-5d5b-b442-6670638945ee
+--   S6: 83369782-7f1e-5f9a-acf2-7980bb50b231
+--   S7: 75129f33-39f5-5ed2-aa3c-5665e121e356
+--   S8: 81fc5c82-506c-5a6c-9ce5-b19080aea0b8
+--   S9: 1cae9b43-531f-5326-8adb-b76e9dc72246
+--   S10: 159c5480-23ea-5039-9d29-5d8411be6992  <- reserve last for kind='activity'
+-- Module 3 (b0ace7f9-03ae-5c15-b397-b319d705bc24):
+--   S1: 2cb8fc45-9ab5-5ca2-b70a-4112e9adb542
+--   S2: c25adebc-7afc-54d9-afe0-e1f595751a1c
+--   S3: 6a6ade05-a248-5207-914b-af7d5a0a5691
+--   S4: 92d0831c-d71d-5717-ac54-1fb4194f06ba
+--   S5: 27554969-659d-5ef2-9884-7b5d4e6353a1
+--   S6: 66f2d9b1-3141-57a8-9b1f-c44b59e0d30f
+--   S7: fc1e3539-acb9-5e5d-a469-16a6c6d3a16c
+--   S8: c77c0a8e-cc7e-5542-ab77-e5de60f136f7
+--   S9: 8811786c-acf7-5460-b131-e29aae2d7f37
+--   S10: 1a9511de-d977-5c0f-a850-1fafe63177fa  <- reserve last for kind='activity'
+-- Module 4 (44be57f8-adf1-57d2-80cd-39d62aa91636):
+--   S1: 27eb05af-c4f8-5d28-b271-6d28f8201b14
+--   S2: 45c8d8be-ef3c-50fd-8ff3-592ea5469d75
+--   S3: 89d0ab0c-daa9-5914-b8dd-1b6f4b08a77e
+--   S4: ebf2cffd-a4ab-55e2-a218-83cdc5524c2c
+--   S5: 0603a36a-f5a0-50e3-b1ca-7f5ec4ca993f
+--   S6: e37ea3bd-8489-5579-b582-615b370d85eb
+--   S7: f3c3a7c2-5cec-5e5c-bba8-ce86998be8f0
+--   S8: 0c85c267-63c7-5d5b-b645-08153dde0884
+--   S9: f76431c6-b9ed-5cf8-929b-a89a7e97374d
+--   S10: b5494192-561d-5e22-8d19-8093b49c9fb5  <- reserve last for kind='activity'
+-- Module 5 (21829336-6581-56fb-866e-61c03652d346):
+--   S1: c7fa7f8c-5b58-5fad-8f31-145fadf74dd2
+--   S2: 4ba2b9a1-9957-543a-8b87-725857216c87
+--   S3: ec927b70-55f1-5078-a0af-23c9ca946d07
+--   S4: c29e561f-08e2-5a4c-9042-9845d768f057
+--   S5: b256e212-b26a-533e-9e12-b81b727f91be
+--   S6: e0e22fd9-87f3-5c07-a64b-cd67e1deeb09
+--   S7: c9c9d7d2-c917-553f-9033-405ac1e11092
+--   S8: 5d2a43b6-74bb-52da-ac46-621ab9081611
+--   S9: 85ffa077-ff5d-5f46-8840-680a9e626a15
+--   S10: afbc8e10-0106-5f1d-8fea-e19d17f7b324  <- reserve last for kind='activity'
+-- Module 6 (b3cfdb35-2b57-59c7-9388-4007215630eb):
+--   S1: 21e30690-affc-5975-8564-4c3aac984549
+--   S2: 367321f2-e891-5f9f-a5c4-d2e58b29e54a
+--   S3: 788ad062-6d67-58e8-af12-cc37ece37a47
+--   S4: 56ca9f26-70fa-51e9-b2dc-b6fad3a6b0f6
+--   S5: 1ea4556e-4a1f-5468-915a-f4607400327c
+--   S6: 2cb2f942-2467-5fbb-bea4-5a052da6f716
+--   S7: 4dbbe97e-6f76-5d29-ac6d-824e764c99d0
+--   S8: f30e2538-ae88-5c34-be6b-a68b98c0c75a
+--   S9: 79b40311-3a8d-5b0a-b8e6-1db2c07b10b4
+--   S10: e30c4f61-1b07-523d-bf7f-5f64f2133e70  <- reserve last for kind='activity'
+-- Module 7 (40f4d906-7c40-5024-abb5-a5b883c02237):
+--   S1: 6d34131c-3552-5c57-9ba9-c3fc9ecfb3fe
+--   S2: efe718b8-b2d8-5a9b-a5a1-9c80cd0f1dc9
+--   S3: 4224a655-c807-5f22-acb4-a52ca993a3c0
+--   S4: ef26cce6-0664-562b-b6e3-ad4764a7f265
+--   S5: d96fb95a-3b7a-5e59-9389-264b8d31a0ee
+--   S6: b4210229-7cc6-5fa0-849a-81c131d44f39
+--   S7: b6ddd383-0035-5328-a657-b7efdfd74e28
+--   S8: ec24050f-56b3-5cf5-a9fd-875ce5bcf00c
+--   S9: 8f932b42-cd7c-5238-be2a-336d9e5f74b0
+--   S10: c2313c50-3790-5064-a64f-d97de717ba49  <- reserve last for kind='activity'
+-- Module 8 (a7ecc400-acc1-5fb4-a3a0-2698e5f59bab):
+--   S1: 63fe6723-d63a-5212-a5d2-215120deccd7
+--   S2: 5fb43990-5b5b-5253-8dac-8d251f536368
+--   S3: 317719d6-11b0-50af-839e-949afc557671
+--   S4: 48b0ebd6-9f69-552c-882e-3b4e356b53f6
+--   S5: 93a04cdc-f251-5336-a364-f4a1ddd67b37
+--   S6: ca9d52c5-34c9-5206-b4c4-c3c7b04ef253
+--   S7: 4ea025a9-e978-5955-af73-a1b3e6f304e0
+--   S8: 19eb9af9-5ed4-54e2-bc94-c9a2d725e94f
+--   S9: 8a78307c-e8b6-5278-863b-a51722625f63
+--   S10: 28aad321-acac-5c99-b5e6-52748c76b247  <- reserve last for kind='activity'
+-- Module 9 (bc4465f2-dd0f-515b-b0e3-6a55a7f04e11):
+--   S1: fa24d91b-23df-5488-b995-80cc780c425b
+--   S2: ddddd897-10e4-5757-9cc2-140d234dcf57
+--   S3: 5480dea1-daa0-5348-bc84-703193232c3c
+--   S4: 7608b0af-3c80-5cf8-9566-918910768496
+--   S5: 240d308d-07d2-585b-8ccb-a92fb184744e
+--   S6: 1b1c108a-0013-5bc6-8071-17cc4a173a6c
+--   S7: 02bee282-93ab-5d73-82d4-44c7565bfeac
+--   S8: 472c7334-9e6f-5e9f-83b6-d9e0d28e150a
+--   S9: cd529014-5564-5441-b3c7-75c34d00c37d
+--   S10: b87189ce-6820-549d-ad1f-3b5ea99ddb7b  <- reserve last for kind='activity'
+-- Module 10 (8886ec70-db30-591b-be11-4085b1169cfd):
+--   S1: 783020e0-e04a-5e4d-abc9-3e7001312390
+--   S2: 9d537273-03c7-5d02-b019-81d58afb63b6
+--   S3: bab9e0e5-7167-5f0d-94e8-518abac048b9
+--   S4: 342f8dd9-d928-524f-b5fc-7e840b83e266
+--   S5: c689b00f-4c0e-5d2d-ad39-77d5ffa471c5
+--   S6: 1025612c-de31-5bb1-a41c-bae316140bdd
+--   S7: e4ff251d-3c67-5074-85d8-606be9bf5f38
+--   S8: ee07280c-886c-5c9d-8cb7-80184970c9fa
+--   S9: 7e031955-02a9-541b-a6f8-184a67e26395
+--   S10: a70067f2-a438-519c-baf6-618d90f04e61  <- reserve last for kind='activity'
+-- Module 11 (e0ad8b48-d2af-5bbc-98c4-a9f3b41dcb0e):
+--   S1: aff20d95-21f1-5051-9140-a5aa8f574882
+--   S2: 2c2c4fd5-7250-51b1-86f6-2c9be245ded2
+--   S3: 67c1ad14-ebdf-5d3a-834e-da9c1494e49e
+--   S4: 0d28ac21-a4dc-592a-92cb-8037d4c07e80
+--   S5: 82ebeae1-0b2b-57b1-bf0c-e7c60b499468
+--   S6: 56eb2208-3816-5166-bcb3-e935b1809622
+--   S7: 39fe63fb-e7f0-5eb3-9d96-eda1411703d3
+--   S8: c79a2aee-8c85-53bc-91ab-7f58b07b5e91
+--   S9: 4cf0d0ce-0e54-5d53-93ec-b703ff43b601
+--   S10: ceff10a8-5ebd-52f5-aa58-390566a8d6f8  <- reserve last for kind='activity'
+-- Module 12 (10ff2f73-3e46-510e-8499-26d04c6cb3da):
+--   S1: 86539bb8-a2da-5e7f-a1c8-6932a9063914
+--   S2: 67ffac6d-a360-534a-b233-d6b5548c2086
+--   S3: af9b6c3f-fc90-5bb3-8273-9b2a3e216efe
+--   S4: bc133af5-2eb8-5f87-bda0-bd0752cc982b
+--   S5: 7140b4e0-7a71-5c64-b5f0-c34ad24b1b92
+--   S6: e6465da6-ec3d-50ba-a254-e9c9292d2d09
+--   S7: 771c8a56-9d8e-53ad-a496-5bff06fbf9af
+--   S8: 3bbecc1f-4a12-55d1-a50c-4f952564c9bc
+--   S9: d4e51290-f461-58c8-8814-813f4171b50f
+--   S10: b17bdfad-dacf-57cc-a980-477f6734e7d0  <- reserve last for kind='activity'
+
+-- ============================================================
+-- IMPORT TEMPLATE — one INSERT per module. Replace placeholders.
+-- content sections are FREE; the final activity section is PAID.
+-- ide_language (python|sql|java|c), starter_code, topology_data are
+-- all OPTIONAL columns — include only when the section needs them.
+-- ============================================================
+--
+-- INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+-- ('9ae38391-0460-5ea5-a8f2-2401ab1b110e','content','<Heading>',$md$
+-- <full markdown teaching body — free tier>
+-- $md$, 1),
+-- ('9ae38391-0460-5ea5-a8f2-2401ab1b110e','activity','Practice & Exam Drills — Lesson 1',$md$
+-- <review questions, worked exam problems w/ solutions, how-to-pass tips — paid tier>
+-- $md$, 2);
+--
+-- With an interactive playground, use the 5-column form instead:
+-- INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+-- ('9ae38391-0460-5ea5-a8f2-2401ab1b110e','activity','Coding Drill',$md$<task>$md$, 3, 'python', $code$print("hi")$code$);
+
+-- >>>>>>>>>>>>>>>>>>>>  PASTE FILLED-IN INSERTS BELOW  <<<<<<<<<<<<<<<<<<<<
+
