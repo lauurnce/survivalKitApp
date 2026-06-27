@@ -248,7 +248,7 @@ The request-response model is central to web development. A browser does not "gu
 
 If the server cannot find a page, the browser may receive a **404** response. If login fails because of wrong credentials, the application must decide how to respond clearly and securely.
 $md$, 2),
-('2f237d87-4d3f-509a-962b-470987099daf','content','Core Technologies in a Basic Web Stack',$md$
+('2f237d87-4d3f-509a-962b-470987099daf','activity','Core Technologies in a Basic Web Stack',$md$
 A beginner-friendly web stack usually starts with three browser technologies:
 
 - **HTML** for structure
@@ -278,7 +278,7 @@ Even at the foundation level, it is important to distinguish between a static si
 - A **static site** serves mostly fixed content
 - A **dynamic application** generates responses based on user input, stored data, or business rules
 $md$, 3),
-('2f237d87-4d3f-509a-962b-470987099daf','content','The Development Workflow and Professional Mindset',$md$
+('2f237d87-4d3f-509a-962b-470987099daf','activity','The Development Workflow and Professional Mindset',$md$
 Good web development follows a process. Students often rush into coding, but real projects usually begin earlier and end later than code itself.
 
 A practical workflow looks like this:
@@ -480,7 +480,7 @@ Example of an image with useful alternative text:
 
 If the image fails to load, the alt text still communicates its meaning. More importantly, screen readers rely on this text.
 $md$, 2),
-('f53e3b6c-d5d2-5797-8346-f6ce10f3b9a1','content','Forms as a Core Web Feature',$md$
+('f53e3b6c-d5d2-5797-8346-f6ce10f3b9a1','activity','Forms as a Core Web Feature',$md$
 Forms are one of the most important HTML features because they collect user input. In real systems, forms power:
 
 - login pages,
@@ -517,7 +517,7 @@ A `label` must be clearly associated with an `input`. This improves usability an
 
 Notice that HTML alone can already provide basic constraints through input types like `email`, `number`, and `date`. Later lessons will connect this to validation and server processing.
 $md$, 3),
-('f53e3b6c-d5d2-5797-8346-f6ce10f3b9a1','content','Information Architecture and Content Quality',$md$
+('f53e3b6c-d5d2-5797-8346-f6ce10f3b9a1','activity','Information Architecture and Content Quality',$md$
 A web page should not only be valid. It should also be easy to understand and navigate. This is where **information architecture** comes in. Information architecture is the way content is grouped, labeled, and organized so users can find what they need quickly.
 
 Good content structure usually answers:
@@ -738,7 +738,7 @@ Use Flexbox when arranging items in a row or column, such as navigation links or
 
 This creates a far cleaner layout than manually forcing positions.
 $md$, 2),
-('7268fad6-cfca-5a22-ab66-4ca8b277c587','content','Responsive Design and Mobile-First Thinking',$md$
+('7268fad6-cfca-5a22-ab66-4ca8b277c587','activity','Responsive Design and Mobile-First Thinking',$md$
 A web page should work on phones, tablets, laptops, and desktops. This is the idea behind **responsive web design**.
 
 Three core ideas support responsiveness:
@@ -763,7 +763,7 @@ A practical rule is **mobile first**. Start with styles for smaller screens, the
 
 Responsive design is not just about shrinking things. It is about deciding what users need first. On a mobile device, a student checking grades may need the most important information immediately, without excessive banners or large visual blocks.
 $md$, 3),
-('7268fad6-cfca-5a22-ab66-4ca8b277c587','content','Visual Consistency and Basic UI Decisions',$md$
+('7268fad6-cfca-5a22-ab66-4ca8b277c587','activity','Visual Consistency and Basic UI Decisions',$md$
 CSS also supports usability through consistency. A good interface repeats patterns so users do not have to relearn the page every time.
 
 Watch for these design concerns:
@@ -967,7 +967,7 @@ Common selectors:
 
 This bridge between JS and HTML is why interactive pages can update without being fully reloaded.
 $md$, 2),
-('34915f48-136f-577a-a00f-a1749b629849','content','Events, Functions, and User Interaction',$md$
+('34915f48-136f-577a-a00f-a1749b629849','activity','Events, Functions, and User Interaction',$md$
 An **event** is something that happens in the browser:
 
 - a click,
@@ -996,7 +996,7 @@ This is why interface logic should be clear and predictable. For example:
 - submitting a blank form should show a useful message,
 - selecting a filter should update the visible data.
 $md$, 3),
-('34915f48-136f-577a-a00f-a1749b629849','content','Arrays, Objects, and Rendering Data',$md$
+('34915f48-136f-577a-a00f-a1749b629849','activity','Arrays, Objects, and Rendering Data',$md$
 Real web applications usually handle collections of data. In JavaScript, these often appear as arrays of objects.
 
 ```javascript
@@ -1192,7 +1192,7 @@ HTTP responses also include status codes. The most common ones in web developmen
 
 When answering exam items, do not only memorize the number. Understand the scenario that causes it.
 $md$, 2),
-('0912525f-5b59-5496-84ad-64faec6545c8','content','JSON, Fetching Data, and Asynchronous Behavior',$md$
+('0912525f-5b59-5496-84ad-64faec6545c8','activity','JSON, Fetching Data, and Asynchronous Behavior',$md$
 Modern web pages often fetch data without reloading the whole page. This is where **asynchronous web behavior** comes in.
 
 A common data format is JSON:
@@ -1223,7 +1223,7 @@ This means:
 
 The page does not stop and wait in a blocking way. It continues running, then reacts when the response arrives. That is why async programming is important in interactive systems like dashboards, search suggestions, and live status panels.
 $md$, 3),
-('0912525f-5b59-5496-84ad-64faec6545c8','content','Client-Side State and Practical User Experience',$md$
+('0912525f-5b59-5496-84ad-64faec6545c8','activity','Client-Side State and Practical User Experience',$md$
 A web page may need to remember temporary information, such as:
 
 - selected filters,
@@ -1397,7 +1397,7 @@ Entities might include:
 
 Once you identify the entities, CRUD becomes much easier to design.
 $md$, 2),
-('cf6350e6-340f-5cb5-ae98-8111fa5c1586','content','Relational Data and Database Thinking',$md$
+('cf6350e6-340f-5cb5-ae98-8111fa5c1586','activity','Relational Data and Database Thinking',$md$
 Most BSIT students are also expected to connect applications to a database. Even when the interface looks simple, the data behind it often requires careful structure.
 
 A common relational model uses tables such as:
@@ -1421,7 +1421,7 @@ Good database-backed web development requires:
 - consistent naming,
 - and protection against invalid or duplicate records.
 $md$, 3),
-('cf6350e6-340f-5cb5-ae98-8111fa5c1586','content','Authentication, Sessions, and Integration Flow',$md$
+('cf6350e6-340f-5cb5-ae98-8111fa5c1586','activity','Authentication, Sessions, and Integration Flow',$md$
 Many web applications need to know who the user is. This leads to **authentication** and **session management**.
 
 A basic flow looks like this:
@@ -1589,7 +1589,7 @@ Accessibility is not "extra polish." It directly affects usability and fairness.
 
 In many cases, semantic HTML already improves accessibility. That is why the earlier lessons matter.
 $md$, 2),
-('1e807c61-eed0-562d-8df1-53eb6c9094ba','content','Performance and Efficient Delivery',$md$
+('1e807c61-eed0-562d-8df1-53eb6c9094ba','activity','Performance and Efficient Delivery',$md$
 Performance affects both user satisfaction and system credibility. Slow pages can discourage users before they finish a task.
 
 Common performance concerns include:
@@ -1609,7 +1609,7 @@ A few practical improvements:
 
 In the Philippine context, performance matters even more because not all users have stable or fast internet. A well-designed page should still remain usable under modest network conditions.
 $md$, 3),
-('1e807c61-eed0-562d-8df1-53eb6c9094ba','content','Testing and Quality Assurance',$md$
+('1e807c61-eed0-562d-8df1-53eb6c9094ba','activity','Testing and Quality Assurance',$md$
 Testing checks whether the system behaves as intended. At the web application level, testing may include:
 
 - functional testing,
@@ -1764,7 +1764,7 @@ Even if the tool varies, the underlying habits are important:
 
 For capstone-style projects, poor collaboration can destroy good technical work. Clear role assignment, documentation, and file discipline matter almost as much as coding.
 $md$, 2),
-('22034d95-8aae-51bf-a5f7-09dcc3f9ca8d','content','Maintenance, Documentation, and Real-World Responsibility',$md$
+('22034d95-8aae-51bf-a5f7-09dcc3f9ca8d','activity','Maintenance, Documentation, and Real-World Responsibility',$md$
 Publishing a site is not the end. Systems need maintenance because users, requirements, and technology change.
 
 Maintenance may involve:
@@ -1785,7 +1785,7 @@ Documentation helps future maintenance. At minimum, a team should be able to ans
 
 If a project is turned over to another developer or to a client organization, poor documentation creates risk.
 $md$, 3),
-('22034d95-8aae-51bf-a5f7-09dcc3f9ca8d','content','Integrating Everything into a Semester-Level Web Project',$md$
+('22034d95-8aae-51bf-a5f7-09dcc3f9ca8d','activity','Integrating Everything into a Semester-Level Web Project',$md$
 By this point, web development should feel like an integrated subject rather than isolated topics. A typical semester project combines:
 
 - semantic HTML,
