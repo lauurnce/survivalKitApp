@@ -263,3 +263,103 @@ $md$, 3),
 - Avoid vague answers such as "make it nicer." Be specific.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 3: Audio Design and Production
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('2c1d5b05-ca76-578e-9580-570309e5cf8a','content','Audio Fundamentals',$md$
+Audio adds clarity, realism, emotion, and feedback to multimedia. To use it well, you need a few core concepts.
+
+### Frequency
+Frequency relates to pitch. Higher frequency sounds are perceived as higher in pitch.
+
+### Amplitude
+Amplitude relates to loudness. Stronger amplitude means louder sound.
+
+### Sample rate
+In digital audio, sample rate means how many times per second the sound is measured. It is often expressed in hertz, such as 44,100 Hz or 48,000 Hz. A higher sample rate can capture more detail, but it also increases file size.
+
+### Bit depth
+Bit depth affects how precisely each sample is stored. Common values include 16-bit and 24-bit. Higher bit depth provides more detail and dynamic range.
+
+### Channels
+Mono uses one channel; stereo uses two channels. For many voice-based materials, mono may be enough. For music and immersive content, stereo is more common.
+
+Audio in multimedia is not just about recording something. It is about recording the right sound at the right quality for the intended use.
+$md$, 1),
+('2c1d5b05-ca76-578e-9580-570309e5cf8a','content','Recording and Editing Workflow',$md$
+A simple audio workflow looks like this:
+
+1. **Plan the content** — script, speaker, tone, duration.
+2. **Prepare the recording environment** — quiet room, reduced echo, proper microphone distance, test recording first.
+3. **Record cleanly** — stable speaking volume, minimal background noise, clear pronunciation.
+4. **Edit** — trim silence, remove obvious mistakes, reduce noise, normalize levels, add fades where needed.
+5. **Export** — choose the right format, test playback on target devices.
+
+For instructional projects, poor audio can damage the whole experience more than students expect. Users will often tolerate average visuals, but unclear narration quickly becomes frustrating.
+
+Good sound design also includes silence. Not every second needs music or effects. Clean pauses can improve comprehension.
+$md$, 2),
+('2c1d5b05-ca76-578e-9580-570309e5cf8a','activity','Audio Formats, Compression, and Sound Design',$md$
+Common audio formats include:
+
+| Format | Best Use | Notes |
+|---|---|---|
+| WAV | editing, archival, high quality | large file size |
+| MP3 | general listening, web delivery | lossy compression |
+| AAC/M4A | streaming and mobile delivery | efficient compression |
+| OGG | some web and open-source contexts | compatibility varies |
+
+Two broad concepts matter: **uncompressed or lightly compressed audio** is better during editing because quality is preserved; **compressed audio** is better for delivery because file sizes are smaller. A classroom rule of thumb: use WAV while processing, export to MP3 or AAC for distribution depending on the platform. Compression reduces size by removing or simplifying audio data — that helps delivery, but too much compression can make audio sound thin or distorted.
+
+### Sound design in multimedia
+
+Audio has several practical functions: narration for teaching, background music for mood, sound effects for realism or feedback, alerts for interface events, and ambient sound for immersion. Sound should support the purpose, not overpower it — a training module should prioritize speech clarity; a promotional video may use music more strongly; an app interface should use very subtle effects.
+
+When syncing sound with visuals, timing matters: a delayed click sound or mismatched voice-over feels unprofessional. Also remember user context — some learners use phones in noisy jeepney rides; some work in libraries with sound off. That is why subtitles, captions, and visual cues are still important even when audio is present.
+$md$, 3),
+('2c1d5b05-ca76-578e-9580-570309e5cf8a','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions**
+
+1. What is sample rate?
+2. What is bit depth?
+3. Differentiate mono and stereo.
+4. Why is a test recording important?
+5. When would WAV be preferred over MP3?
+6. What happens if audio is compressed too aggressively?
+7. Why should narration be prioritized in instructional multimedia?
+8. Give two roles of sound effects in interactive media.
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Calculating PCM Audio Bitrate.** Stereo recording: sample rate = 44,100 Hz; bit depth = 16 bits; channels = 2.
+
+*Step-by-step solution*
+- $\text{Bitrate} = \text{sample rate} \times \text{bit depth} \times \text{channels}$
+- $44{,}100 \times 16 \times 2 = 1{,}411{,}200$ bits/sec
+- In kbps: $1{,}411{,}200 \div 1000 = 1411.2$ kbps
+
+*Final answer:* **1,411,200 bps (1411.2 kbps).**
+
+**Problem 2: Estimating Audio File Size.** Same settings, 210-second recording.
+
+*Step-by-step solution*
+- Bitrate: $1{,}411{,}200$ bits/sec
+- Bits: $1{,}411{,}200 \times 210 = 296{,}352{,}000$
+- Bytes: $296{,}352{,}000 \div 8 = 37{,}044{,}000$
+- $\approx 37.0$ MB
+
+*Final answer:* about **37 MB** before compression.
+
+**Hands-On Exercise.** Prepare a voice-over plan for a 2-minute educational piece on online safety (target audience, script outline, recording setup, noise risks, export format for editing, export format for final delivery). Then record a short 20–30 second sample and evaluate: Is the voice clear? Is the pace appropriate? Is there background noise? Is the volume stable? Would captions still be needed?
+
+**How to Pass This Topic**
+
+- Memorize the bitrate formula for PCM audio.
+- Do not confuse sample rate with bit depth.
+- In situational questions, mention both quality and file size.
+- For voice-heavy content, professors expect you to prioritize clarity over effects.
+- If you recommend background music, say how you will keep it from competing with narration.
+$md$, 4);
+
