@@ -481,3 +481,277 @@ for item in components:
 $code$);
 
 -- ============================================================
+-- LESSON 3: Architecture Styles and Quality Attributes
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('fb99eb69-56e4-5383-a04a-4bb95b7de567','content','Common Architecture Styles in Integrated Systems',$md$
+Architecture **style** is the general way a system is organized. Different styles solve different problems, and no single style is always best.
+
+A **layered architecture** separates presentation, business logic, and data access. It is common in academic examples because it is easy to understand and maintain. A **client-server architecture** separates service providers from service consumers. A **service-oriented or microservice-based architecture** splits functionality into services that communicate through interfaces. An **event-driven architecture** reacts to events such as "payment received" or "order shipped."
+
+Here is a practical comparison:
+
+| Style | Best for | Watch out for |
+|---|---|---|
+| Layered | Clear separation, maintainability | Can become rigid or slow if too many layers |
+| Client-server | Centralized services | Server bottlenecks or a single point of failure |
+| SOA / Services | Reuse across many systems | Governance and versioning complexity |
+| Microservices | Fast team autonomy, independent deployment | Operational complexity, monitoring difficulty |
+| Event-driven | Real-time reactions, loose coupling | Harder debugging and eventual consistency issues |
+
+In a BSIT exam, you are often not asked to define styles only. You are asked to select an appropriate style for a scenario. That selection should always depend on requirements.
+$md$, 1),
+('fb99eb69-56e4-5383-a04a-4bb95b7de567','content','Quality Attributes and Trade-Offs',$md$
+A system should not only "work." It should also work in a way that fits organizational expectations. These expectations are called **quality attributes** or **non-functional requirements**.
+
+Common attributes in systems integration include:
+
+- **Performance** – How fast the system responds
+- **Scalability** – How well it handles growth
+- **Reliability** – How consistently it works
+- **Availability** – How often it is operational
+- **Security** – How well it protects data and services
+- **Maintainability** – How easy it is to update and fix
+- **Interoperability** – How well it works with other systems
+
+These attributes often compete with one another. A very secure system may add more steps and slow access. A highly distributed microservice design may improve scalability but make monitoring harder. A simple direct connection may be fast to build but difficult to maintain later.
+
+This is why architecture involves **trade-offs**. Good designers do not claim to maximize everything. They decide which qualities matter most for the given case.
+
+For example, an online payment integration may prioritize security and reliability first. A data dashboard may prioritize timeliness and usability. A university enrollment system during peak registration may prioritize availability and scalability.
+$md$, 2),
+('fb99eb69-56e4-5383-a04a-4bb95b7de567','activity','Choosing a Style from Requirements',$md$
+The correct architecture starts from the problem, not from what is trendy. If a professor gives you a case, identify these first:
+
+- Who are the users?
+- What business process is being supported?
+- What systems must connect?
+- How often does data move?
+- Which quality attributes matter most?
+- What constraints exist? (old software, limited budget, weak network links, limited staff skills)
+
+Then match the solution style to the case.
+
+If the organization has only a few systems and stable requirements, a simpler layered or client-server design may be enough. If several applications must independently use shared services, service orientation is more suitable. If the organization reacts to frequent business events and needs loose coupling, event-driven design may fit better.
+
+In short, architecture selection means translating requirements into structure. That is the thinking pattern your professor wants to see.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('fb99eb69-56e4-5383-a04a-4bb95b7de567','activity','Practice & Exam Drills — Lesson 3',$md$
+### Review Questions
+
+1. What is an architecture style?
+2. Differentiate layered architecture from event-driven architecture.
+3. What are quality attributes?
+4. Why do architects make trade-offs?
+5. Give one scenario where microservices may be appropriate.
+6. Give one scenario where a simpler layered design may be better.
+
+### Worked Exam-Style Problems
+
+**Problem 1: Architecture Selection**
+
+A logistics company has inventory, delivery, billing, and customer tracking systems. New updates such as "parcel received," "parcel out for delivery," and "parcel delivered" must trigger notifications automatically across multiple systems. Which architecture style is most appropriate?
+
+*Step-by-step solution*
+
+1. Look for words that indicate the nature of interaction. The key word is *trigger* from business events.
+2. Infer the communication pattern. Multiple systems react to the same event.
+3. Compare architecture styles. Layered architecture does not focus on distributed event reactions; event-driven architecture is designed for this.
+4. State the choice with reason. Event-driven architecture is appropriate because it supports loose coupling and automatic reactions to business events.
+
+**Final answer:** Event-driven architecture is the best fit because parcel status changes are events that must trigger actions across several connected systems without tightly coupling every system to every other system.
+
+**Problem 2: Trade-Off Analysis**
+
+A small school wants to modernize its enrollment portal. The school has one developer, limited budget, and a modest number of users. Should the school adopt microservices immediately?
+
+*Step-by-step solution*
+
+1. Identify constraints: small team, limited budget, modest scale.
+2. Identify likely priority: maintainability and simplicity.
+3. Compare with microservices: microservices add deployment, tracing, and coordination complexity.
+4. Recommend a simpler solution: layered or modular monolith first.
+
+**Final answer:** No. A microservices-first approach is not ideal because the organization has a small team and limited scale. A layered or modular monolithic design is more practical, cheaper to maintain, and easier to deploy.
+
+### Hands-On Exercise
+
+Use the starter code to compute weighted scores for each architecture style.
+
+Tasks:
+
+1. Implement the weighted scoring formula.
+2. Print the architecture with the highest score.
+3. Change the weights so that maintainability becomes the highest priority.
+4. Observe how the recommended architecture changes.
+
+This exercise mirrors exam questions where you must justify why one architecture is better under a certain set of requirements.
+
+### How to Pass This Topic
+
+- Do not memorize style names only; memorize when each style is suitable.
+- In scenario questions, circle keywords like real-time, many systems, small team, legacy, high traffic, and tight security.
+- Professors often award points for mentioning trade-offs explicitly.
+- Avoid saying one architecture is "best" without conditions.
+- Use this sentence pattern in essays: "Given the requirements of ___, the most suitable architecture is ___ because it prioritizes ___ while accepting the trade-off of ___."
+$md$, 4, 'python', $code$# Lesson 3 starter code
+# Goal: rank architecture options using weighted quality attributes.
+
+architectures = {
+    "layered": {"security": 7, "scalability": 5, "maintainability": 8},
+    "microservices": {"security": 7, "scalability": 9, "maintainability": 6},
+    "event_driven": {"security": 6, "scalability": 8, "maintainability": 6},
+}
+
+weights = {
+    "security": 0.4,
+    "scalability": 0.4,
+    "maintainability": 0.2,
+}
+
+def score_architecture(ratings, weights):
+    # TODO: return weighted score
+    return 0
+
+for name, ratings in architectures.items():
+    print(name, score_architecture(ratings, weights))
+$code$);
+
+-- ============================================================
+-- LESSON 4: Middleware and Integration Patterns
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('5bd78697-327f-5e9a-bc27-ed46b93e8137','content','Why Middleware Exists',$md$
+When many systems must communicate, direct one-to-one connections quickly become messy. If System A connects directly to B, C, D, and E, and each of those systems also connects to each other, maintenance becomes difficult. This is called a **point-to-point problem**.
+
+**Middleware** helps solve that problem. Middleware is software that sits between systems and supports communication, coordination, routing, transformation, and sometimes security. Instead of every application solving integration alone, middleware provides shared integration services.
+
+Common middleware tasks include:
+
+- Transporting messages
+- Routing data to the correct destination
+- Converting one message format into another
+- Handling retries when a destination is unavailable
+- Logging and monitoring message flow
+
+A useful way to imagine middleware is as a traffic manager. Applications focus on their own business logic, while middleware manages movement between them.
+
+In practice, middleware can appear as a message broker, an enterprise service bus, an API gateway, or a lighter integration platform. The exact product matters less in this lesson than the role it plays.
+$md$, 1),
+('5bd78697-327f-5e9a-bc27-ed46b93e8137','content','Classic Integration Patterns',$md$
+An **integration pattern** is a common solution structure for a repeating integration problem. These patterns appear in many exam questions because they help students reason clearly.
+
+A few highly important patterns are:
+
+| Pattern | Purpose |
+|---|---|
+| Adapter | Makes one system's interface usable by another |
+| Translator / Transformer | Converts data from one format to another |
+| Router | Sends messages to the correct destination |
+| Broker | Coordinates delivery between senders and receivers |
+| Orchestrator | Controls a multi-step process across services |
+| Mediator | Reduces direct dependency between components |
+
+Example: a school's old accounting system produces fixed-width text files, while a newer analytics system expects JSON. A transformer converts the file. If multiple branch campuses send messages to one central platform, a broker can receive and distribute them. If one user action must trigger billing, notification, and reporting in sequence, an orchestrator may coordinate the steps.
+
+The reason patterns matter is that they turn vague design into repeatable logic. You are not just saying "connect the systems." You are saying how the connection problem is being solved.
+$md$, 2),
+('5bd78697-327f-5e9a-bc27-ed46b93e8137','activity','Topologies for Integrated Environments',$md$
+A **topology** is the overall connection arrangement among systems.
+
+A **point-to-point topology** directly connects systems. It is easy at first but becomes hard to maintain as the number of systems grows. A **hub-and-spoke topology** sends messages through a central hub. It improves control, but the hub becomes critical infrastructure. A **bus-oriented setup** emphasizes shared integration channels and reusable services. A **brokered topology** uses a central broker to manage messages between producers and consumers.
+
+A simple comparison:
+
+| Topology | Strength | Weakness |
+|---|---|---|
+| Point-to-point | Fast to start | Hard to scale and maintain |
+| Hub-and-spoke | Central control | Hub can be a bottleneck |
+| Bus / service bus | Reuse and standardization | Can become complex or over-engineered |
+| Broker-based | Good for decoupling | Requires sound message management |
+
+In a midterm or final, if the case mentions many systems with repeated transformations and routing rules, a central integration mechanism is usually better than unmanaged point-to-point links.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('5bd78697-327f-5e9a-bc27-ed46b93e8137','activity','Practice & Exam Drills — Lesson 4',$md$
+### Review Questions
+
+1. What is middleware?
+2. Why does point-to-point integration become difficult over time?
+3. What does an adapter pattern do?
+4. What is the difference between a router and a transformer?
+5. When is a hub-and-spoke topology useful?
+6. What is the role of an orchestrator?
+
+### Worked Exam-Style Problems
+
+**Problem 1: Pattern Matching**
+
+A cooperative has an old membership system that exports files in CSV, while the new mobile app expects JSON through an API. Which integration pattern is most directly needed?
+
+*Step-by-step solution*
+
+1. Identify the mismatch. The mismatch is in data format.
+2. Recall the pattern that solves format mismatch. A translator/transformer converts one format to another.
+3. Check if another pattern is also involved. If the old interface is structurally incompatible, an adapter may also help.
+
+**Final answer:** The most direct pattern needed is a transformer, because the system must convert CSV output into the JSON structure expected by the mobile app.
+
+**Problem 2: Topology Choice**
+
+A university has separate systems for admissions, enrollment, accounting, HR, and LMS. Each year, more systems are added and direct connections are becoming hard to trace. Why is point-to-point no longer ideal, and what topology is safer?
+
+*Step-by-step solution*
+
+1. Point-to-point means many direct links.
+2. As systems increase, the number of links grows rapidly.
+3. This causes difficult maintenance, version mismatch, and weak visibility.
+4. A central integration approach like hub-and-spoke or broker-based topology improves control and traceability.
+
+**Final answer:** Point-to-point is no longer ideal because the number of direct connections grows and becomes difficult to maintain. A hub-and-spoke or broker-based topology is safer because it centralizes routing and management.
+
+### Hands-On Exercise
+
+Finish the adapter function in the starter code.
+
+Tasks:
+
+1. Split the legacy record by `|`.
+2. Convert `"Cruz, Ana"` into `"Ana Cruz"` if you want an extended challenge.
+3. Return a clean dictionary.
+4. Add a second function that transforms the adapted dictionary into a JSON-like Python dictionary for a target system.
+
+This models a very common real-world task: taking legacy output and making it usable for a modern interface.
+
+### How to Pass This Topic
+
+- Learn the difference among pattern, topology, and tool.
+- In exam answers, avoid saying "middleware connects systems" only. Explain whether it handles routing, transformation, coordination, or delivery.
+- A classic mistake is confusing adapter with transformer. Adapter fixes interface compatibility; transformer fixes data format/content representation.
+- If the case says "too many direct links," immediately think of topology.
+- Use labeled diagrams when allowed; even simple boxes and arrows earn clarity points.
+$md$, 4, 'python', $code$# Lesson 4 starter code
+# Goal: adapt a legacy record format into a modern one.
+
+legacy_record = "2023-0001|Cruz, Ana|BSIT|ACTIVE"
+
+def adapt_legacy_record(raw):
+    # TODO:
+    # Convert the pipe-delimited record into:
+    # {
+    #   "student_no": ...,
+    #   "full_name": ...,
+    #   "program": ...,
+    #   "status": ...
+    # }
+    return {}
+
+print(adapt_legacy_record(legacy_record))
+$code$);
+
+-- ============================================================
