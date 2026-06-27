@@ -203,3 +203,219 @@ INSERT INTO systems VALUES
 (3, 'ClinicDB', 'Health Services', 'testing', 'active'),
 (4, 'LibraryDB', 'Library', 'development', 'active');$code$);
 
+-- ============================================================
+-- LESSON 2: Logical Design, Normalization, and Metadata Control
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('db58ec7e-702f-569a-96e8-0bb0740187a3','content','From Business Rules to Relational Design',$md$
+Good administration starts before performance tuning. It starts with a schema that reflects business rules clearly.
+
+Suppose a school says:
+
+- one student can enroll in many subjects
+- one subject can have many students
+- each enrollment has a grade
+- each student belongs to one program
+
+These statements become part of the logical design. In a relational database, we usually represent them with tables, keys, and constraints.
+
+A simple design may look like this:
+
+```
+students(student_id, student_name, program_code)
+subjects(subject_code, subject_title, units)
+enrollments(student_id, subject_code, term_code, grade)
+```
+
+The `enrollments` table resolves the many-to-many relationship between students and subjects.
+
+A DBA does not always create the business model from scratch, but the DBA must be able to read and evaluate the model. Weak design creates long-term operational problems such as:
+
+- duplicate data
+- inconsistent updates
+- difficult reporting
+- wasted storage
+- unclear constraints
+
+That is why logical design and administration are connected. A badly designed table may still work at first, but it becomes harder to secure, index, and maintain as the database grows.
+$md$, 1),
+
+('db58ec7e-702f-569a-96e8-0bb0740187a3','content','Functional Dependence and Normalization',$md$
+Normalization is the process of organizing tables so that data is stored with fewer unnecessary duplicates and clearer dependencies.
+
+The core idea is this: a fact should be stored in the table where it naturally belongs.
+
+Look at this bad table:
+
+```
+student_id  student_name  program_name  subject_code  subject_title  instructor_name
+```
+
+This mixes student facts, subject facts, and teaching facts in one place. The result is repetition. If `subject_title` changes, many rows must be updated. If one update is missed, the database becomes inconsistent.
+
+Normalization addresses this using forms such as:
+
+- **First Normal Form (1NF)** — values are atomic; no repeating groups
+- **Second Normal Form (2NF)** — non-key attributes depend on the whole key
+- **Third Normal Form (3NF)** — non-key attributes do not depend on other non-key attributes
+
+A practical DBA should know the symptoms of poor normalization:
+
+- same descriptive values repeated in many rows
+- update anomalies
+- insert anomalies
+- delete anomalies
+
+Normalization is not about making unlimited small tables. It is about choosing a structure that protects integrity while still supporting performance and reporting.
+$md$, 2),
+
+('db58ec7e-702f-569a-96e8-0bb0740187a3','activity','Constraints, Naming Standards, and the Data Dictionary',$md$
+A schema becomes administratively strong when it is not only normalized but also well controlled. Three control tools are especially important.
+
+### Constraints
+
+Constraints turn business rules into enforceable rules. Examples:
+
+- `PRIMARY KEY` — each row has a unique identifier
+- `FOREIGN KEY` — references only valid parent rows
+- `NOT NULL` — value is required
+- `UNIQUE` — duplicates not allowed
+- `CHECK` — values must satisfy a condition
+
+Without constraints, applications may insert invalid data and the database stops being trustworthy.
+
+### Naming standards
+
+A database should use consistent names. For example:
+
+- table names in plural or singular, but one style only
+- key names like `student_id`, `subject_code`
+- junction tables named clearly, such as `enrollments`
+- no vague column names like `data1`, `desc`, or `misc`
+
+Consistent naming helps administration, debugging, and onboarding.
+
+### Data dictionary and metadata
+
+The data dictionary is documentation about the data:
+
+- table meanings
+- column meanings
+- data types
+- constraints
+- owners
+- allowed values
+- dependencies
+
+Metadata matters because administration is not just about storing data; it is about understanding what the data means. In larger systems, undocumented structures become a serious maintenance risk.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('db58ec7e-702f-569a-96e8-0bb0740187a3','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions**
+
+1. Why is normalization relevant to database administration?
+2. What problem does a junction table solve?
+3. Differentiate 1NF, 2NF, and 3NF in simple terms.
+4. What is an update anomaly?
+5. Why are foreign keys important?
+6. What is metadata?
+7. Give two examples of poor naming practice.
+8. Why is documentation important even if the SQL already exists?
+
+**Worked Exam-Style Problems**
+
+**Problem 1.** A table stores: `student_id, student_name, subject_code, subject_title, instructor_name, instructor_office`. Explain why this design is problematic and give a better decomposition.
+
+*Step-by-step solution*
+1. Student information and subject information are mixed in one table.
+2. Instructor information repeats every time the subject appears.
+3. If an instructor changes office, many rows must be updated.
+4. Better design separates entities.
+
+*Better decomposition*
+```
+students(student_id, student_name)
+subjects(subject_code, subject_title, instructor_id)
+instructors(instructor_id, instructor_name, instructor_office)
+enrollments(student_id, subject_code, term_code)
+```
+
+*Final answer:* The original design causes redundancy and update anomalies. Breaking it into students, subjects, instructors, and enrollments reduces duplication and improves control.
+
+**Problem 2.** Why is `grade` acceptable in `enrollments`, but `student_name` is not?
+
+*Step-by-step solution*
+1. The purpose of `enrollments` is to record the relationship between a student and a subject in a term.
+2. `grade` belongs to that relationship.
+3. `student_name` belongs to the student entity, not to the enrollment event.
+4. Therefore, `grade` should stay in `enrollments`, while `student_name` should stay in `students`.
+
+**Hands-on Exercise**
+
+1. List all enrolled students with their subject titles.
+2. Show all students who took Database Administration.
+3. Attempt to insert an enrollment for a nonexistent student. Observe why the foreign key matters.
+4. Add a new subject called Systems Administration with 3 units.
+
+*Suggested solution path*
+```sql
+SELECT s.student_name, sub.subject_title, e.term_code, e.grade
+FROM enrollments e
+JOIN students s ON e.student_id = s.student_id
+JOIN subjects sub ON e.subject_code = sub.subject_code;
+
+SELECT s.student_name
+FROM enrollments e
+JOIN students s ON e.student_id = s.student_id
+WHERE e.subject_code = 'IT331';
+
+-- This should fail if foreign keys are enforced:
+INSERT INTO enrollments VALUES (99, 'IT331', '2026-1', 2.00);
+
+INSERT INTO subjects VALUES ('IT333', 'Systems Administration', 3);
+```
+
+**How to Pass This Topic**
+
+- In design questions, always ask: Where does this fact naturally belong?
+- Professors often reward students who mention anomalies correctly.
+- Do not memorize normalization as abstract theory only. Apply it to a messy table.
+- If asked to justify decomposition, use the language of redundancy, integrity, and maintainability.
+- Many exams include one item on keys and constraints. Identify PK, FK, and probable CHECK rules confidently.
+$md$, 4, 'sql', $code$CREATE TABLE students (
+    student_id INTEGER PRIMARY KEY,
+    student_name VARCHAR(50) NOT NULL,
+    program_code VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE subjects (
+    subject_code VARCHAR(10) PRIMARY KEY,
+    subject_title VARCHAR(50) NOT NULL,
+    units INTEGER NOT NULL CHECK (units > 0)
+);
+
+CREATE TABLE enrollments (
+    student_id INTEGER,
+    subject_code VARCHAR(10),
+    term_code VARCHAR(10),
+    grade DECIMAL(4,2),
+    PRIMARY KEY (student_id, subject_code, term_code),
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (subject_code) REFERENCES subjects(subject_code)
+);
+
+INSERT INTO students VALUES
+(1, 'Ana Cruz', 'BSIT'),
+(2, 'Marco Reyes', 'BSIT');
+
+INSERT INTO subjects VALUES
+('IT331', 'Database Administration', 3),
+('IT332', 'Networking 2', 3);
+
+INSERT INTO enrollments VALUES
+(1, 'IT331', '2026-1', 1.75),
+(2, 'IT331', '2026-1', 2.25),
+(1, 'IT332', '2026-1', 2.00);$code$);
+
