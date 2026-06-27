@@ -929,3 +929,160 @@ INSERT INTO account_balance VALUES
 (1, 'Registrar Collections', 50000.00),
 (2, 'Scholarship Fund', 30000.00);$code$);
 
+-- ============================================================
+-- LESSON 6: Backup, Restore, Availability, and Disaster Recovery
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('eeadbcc4-8c57-57c5-ae6c-e645a339b44f','content','Backup Is Not the Same as Recovery',$md$
+Students often use "backup" and "recovery" as if they mean the same thing. They are related, but not identical.
+
+- A **backup** is a copy used for restoration.
+- **Recovery** is the process of bringing the database back to a required state after failure.
+
+A good DBA asks not only, "Do we have backups?" but also:
+
+- Can we actually restore them?
+- How long will restore take?
+- How much data can we afford to lose?
+- Are logs available for point-in-time recovery?
+
+Important backup ideas include:
+
+- **full backup** — complete copy of the database
+- **incremental backup** — captures changes since a baseline
+- **differential backup** — captures changes since the last full backup
+- **logical backup** — exports schema/data as logical statements or dumps
+- **physical backup** — copies physical database files or blocks, depending on DBMS support
+
+A backup that has never been tested is only a promise, not proof.
+$md$, 1),
+
+('eeadbcc4-8c57-57c5-ae6c-e645a339b44f','content','Restore Planning, RPO, and RTO',$md$
+When organizations recover from failure, two measures are very important:
+
+| Term | Meaning |
+|---|---|
+| RPO | Recovery Point Objective — how much data loss is acceptable |
+| RTO | Recovery Time Objective — how long downtime can last |
+
+Example:
+
+- If an enrollment system has RPO = 15 minutes, the institution can tolerate at most 15 minutes of lost data.
+- If it has RTO = 2 hours, the system must be restored within 2 hours.
+
+These values shape the backup plan. A weekly backup alone is not enough for a system with strict RPO and RTO.
+
+Restore planning should include:
+
+- where backup files are stored
+- who is authorized to restore
+- what order steps must happen
+- how to verify a successful restore
+- how to communicate during incident response
+
+DBAs are expected to think in service terms, not just file terms.
+$md$, 2),
+
+('eeadbcc4-8c57-57c5-ae6c-e645a339b44f','activity','High Availability and Disaster Recovery',$md$
+**High availability (HA)** aims to reduce downtime. **Disaster recovery (DR)** prepares for serious failures such as site loss, major corruption, or infrastructure disaster.
+
+Common HA/DR ideas include:
+
+- standby servers
+- replication
+- failover systems
+- offsite backups
+- geographically separate recovery sites
+- documented incident procedures
+
+Do not confuse replication with backup. Replication copies current changes to another system, but if bad data or accidental deletes are replicated, the error may spread too. That is why backups are still required.
+
+For a DBA, a mature protection plan usually combines:
+
+- backups
+- logs
+- restore testing
+- HA where needed
+- DR procedures for worst-case events
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('eeadbcc4-8c57-57c5-ae6c-e645a339b44f','activity','Practice & Exam Drills — Lesson 6',$md$
+**Review Questions**
+
+1. Differentiate backup and recovery.
+2. What is a full backup?
+3. What is an incremental backup?
+4. Why must backups be verified?
+5. What does RPO measure?
+6. What does RTO measure?
+7. Why is replication not a substitute for backup?
+8. Why should backups be stored offsite or in the cloud?
+
+**Worked Exam-Style Problems**
+
+**Problem 1.** A school database can tolerate at most 30 minutes of data loss, and must be restored within 1 hour. State the RPO and RTO.
+
+*Step-by-step solution*
+1. "At most 30 minutes of data loss" refers to RPO.
+2. "Must be restored within 1 hour" refers to RTO.
+
+*Final answer:* RPO = 30 minutes; RTO = 1 hour.
+
+**Problem 2.** A DBA says, "We replicate to another server, so we no longer need backups." Why is this incorrect?
+
+*Step-by-step solution*
+1. Replication copies current data changes.
+2. If a user accidentally deletes rows, that delete may also replicate.
+3. If corruption spreads, the standby may also become corrupted.
+4. Backups are still needed for older restorable states and true recovery options.
+
+*Final answer:* Replication improves availability, but it does not replace backup because bad changes can also be replicated.
+
+**Hands-on Exercise**
+
+1. Show all unverified backups.
+2. Count backups by type.
+3. List all backups stored in cloud storage.
+4. Write a query that shows the latest backup date in the inventory.
+
+*Suggested solution path*
+```sql
+SELECT *
+FROM backup_inventory
+WHERE verified = 'NO';
+
+SELECT backup_type, COUNT(*) AS total
+FROM backup_inventory
+GROUP BY backup_type;
+
+SELECT *
+FROM backup_inventory
+WHERE storage_location = 'Cloud Storage';
+
+SELECT MAX(backup_date) AS latest_backup
+FROM backup_inventory;
+```
+
+**How to Pass This Topic**
+
+- Professors love asking RPO vs RTO. Master the distinction.
+- In essay questions, write: *backup without restore testing is incomplete*.
+- If asked to evaluate a protection strategy, mention both onsite and offsite copies.
+- Do not say replication and backup are the same.
+- In practical exams, expect inventory or reporting queries related to backup records.
+$md$, 4, 'sql', $code$CREATE TABLE backup_inventory (
+    backup_id INTEGER PRIMARY KEY,
+    backup_date DATE,
+    backup_type VARCHAR(20),
+    storage_location VARCHAR(50),
+    verified VARCHAR(5)
+);
+
+INSERT INTO backup_inventory VALUES
+(1, '2026-06-20', 'FULL', 'Onsite NAS', 'YES'),
+(2, '2026-06-21', 'INCREMENTAL', 'Onsite NAS', 'YES'),
+(3, '2026-06-22', 'INCREMENTAL', 'Cloud Storage', 'NO'),
+(4, '2026-06-23', 'FULL', 'Cloud Storage', 'YES');$code$);
+
