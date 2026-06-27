@@ -1,13 +1,11 @@
 -- ============================================================
--- Information Assurance and Security 1 — Modules & Sections (SCAFFOLD)
+-- Information Assurance and Security 1 — Modules & Sections
 -- Subject ID: 30000000-0003-0002-0001-000000000004
 -- 3rd Year, Semester 2 — major
--- Suggested module count: 6-10
 --
--- Reserved UUID namespace below is collision-free and deterministic.
--- Fill module titles/slugs + section headings/bodies from the GPT-5.5
--- deep-research output, then run this file once. Re-running is safe
--- (the DELETE clears prior rows for this subject first).
+-- Free/paid split: per lesson, sections 1-2 are FREE (kind='content'),
+-- sections 3-4 plus the practice drills are PAID (kind='activity').
+-- Re-running is safe (the DELETE clears prior rows for this subject).
 -- ============================================================
 
 DELETE FROM modules WHERE subject_id = '30000000-0003-0002-0001-000000000004';
