@@ -196,3 +196,288 @@ INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
 -- S4 = Practice & Exam Drills activity with a Python playground.
 -- 2 free + 2 paid. The S4 drills use the 7-column form, so each lesson
 -- splits into one 5-column INSERT (S1-S3) and one 7-column INSERT (S4).
+
+-- ============================================================
+-- LESSON 1: The Role of Systems Integration in Organizations
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('55c215f7-4e39-5eed-9bdb-744e7eb24547','content','Why Systems Integration Matters',$md$
+Systems integration is the disciplined process of making separate information systems work together as one useful environment. In a real organization, systems rarely exist in isolation. A registrar uses a student information system, an accounting office uses a billing system, HR uses a payroll system, and management relies on reports drawn from many of them. If these systems are disconnected, data must be re-encoded, approvals become slow, and errors multiply.
+
+A good integration solution aims to achieve **interoperability**, which means different applications can exchange data and cooperate correctly even if they were built by different teams, at different times, or with different technologies. This is why integration is not just a programming task. It is also a business problem, a process problem, and a design problem.
+
+When schools and companies talk about "architecture," they mean the high-level structure of the solution: the major components, the data flows, the rules of interaction, and the quality goals the design must meet. A strong architecture answers questions such as:
+
+- Which systems talk directly to each other?
+- Which system is the source of truth for a piece of data?
+- How are failures handled?
+- How do we keep the solution secure, maintainable, and scalable?
+
+For BSIT students, the subject is important because it sits at the intersection of programming, databases, networking, systems administration, security, and project planning. It trains you to think beyond one application and to design whole environments that serve organizational needs.
+$md$, 1),
+('55c215f7-4e39-5eed-9bdb-744e7eb24547','content','Common Integration Problems and Core Terms',$md$
+Many integration failures come from simple but repeated problems. One system may store dates as YYYY-MM-DD, while another uses MM/DD/YYYY. A legacy program may identify a customer by account number, while a mobile app uses email address. An HR system may update every night, but payroll may require immediate data. These differences create mismatches in format, meaning, and timing.
+
+To discuss these clearly, you need a few core terms:
+
+| Term | Plain meaning |
+|---|---|
+| System | A set of components that work together for a purpose |
+| Subsystem | A smaller system inside a larger one |
+| Interface | The point where two systems interact |
+| Component | A major building block of a system |
+| Integration | Connecting systems so they exchange data or services correctly |
+| Architecture | The overall structure and rules of the solution |
+| Legacy system | An older system still in use |
+| Source of truth | The system officially responsible for the correct value of a data item |
+
+You should also separate integration from replacement. Sometimes a company does not replace an old system because it is expensive, risky, or deeply embedded in operations. Instead, the organization builds adapters or services around it so that newer systems can still use its data. This is a common Philippine reality in schools, hospitals, banks, cooperatives, and local government offices.
+
+The goal, then, is not always "build a brand-new system." Often, the smarter goal is "make the existing environment work reliably as one."
+$md$, 2),
+('55c215f7-4e39-5eed-9bdb-744e7eb24547','activity','The Integration Life Cycle and the People Involved',$md$
+A systems integration effort usually follows a life cycle, even if the project is small. It begins with understanding the business need. After that, the team identifies the systems involved, the data that must move, the timing of updates, the risks, and the constraints. Only then should the team choose tools and integration styles.
+
+A simple integration life cycle looks like this:
+
+1. **Problem definition** – What business gap are we solving?
+2. **Requirements gathering** – What data, services, users, and rules are involved?
+3. **Architecture design** – What components and connections will be used?
+4. **Implementation** – Build interfaces, transformations, APIs, or middleware logic
+5. **Testing** – Verify correctness, performance, and failure handling
+6. **Deployment** – Move the solution into a real environment
+7. **Monitoring and maintenance** – Watch logs, fix issues, and improve the design
+
+Several roles usually appear in the process. A **business stakeholder** explains the organizational need. A **systems analyst** translates that need into requirements. A **developer** implements services and connectors. A **database specialist** handles schema and data quality issues. A **network or systems administrator** supports infrastructure, access, and deployment. A **project manager** keeps scope, schedule, and communication under control.
+
+In exams, professors often check whether you can connect technology choices to business needs. Do not study integration as a list of tools only. Study it as a structured response to organizational problems.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('55c215f7-4e39-5eed-9bdb-744e7eb24547','activity','Practice & Exam Drills — Lesson 1',$md$
+### Review Questions
+
+1. What is systems integration in your own words?
+2. Differentiate system integration from system replacement.
+3. Why is architecture needed before implementation?
+4. What is meant by source of truth?
+5. Give two common causes of integration failure.
+6. Why do organizations keep legacy systems instead of replacing them immediately?
+
+### Worked Exam-Style Problems
+
+**Problem 1: Concept Identification**
+
+A state university uses three separate systems: enrollment, accounting, and LMS. Students must manually submit screenshots of paid tuition before their LMS access is activated. Identify the integration problem and propose a basic architectural response.
+
+*Step-by-step solution*
+
+1. **State the problem clearly.** The systems are functionally related but operationally disconnected. Payment status is not flowing from accounting to the LMS.
+2. **Identify the effect on users and operations.** Students experience delays, staff manually verify proof, and encoding errors may happen.
+3. **Name the type of need.** This is an organizational systems integration problem involving data exchange and process automation.
+4. **Propose a basic response.** Create an interface or service that allows the accounting system to send verified payment status to the enrollment system or directly to the LMS.
+5. **State the expected result.** Once payment is confirmed, access can be activated automatically, reducing delay and manual work.
+
+**Final answer:** The main issue is the lack of integration among the enrollment, accounting, and LMS systems. A suitable response is to design an interface or service that automatically transfers verified payment status from accounting to the LMS workflow so student access is updated without manual screenshots.
+
+**Problem 2: Short Essay**
+
+Explain why systems integration is both a technical and organizational concern.
+
+*Step-by-step solution*
+
+- Technical side: systems differ in language, database design, interfaces, and timing.
+- Organizational side: departments have different policies, approval flows, priorities, and data ownership.
+- Connection: even if two systems can technically exchange data, the integration may still fail if ownership, rules, or process timing are unclear.
+- Conclusion: good integration requires both correct technology and clear coordination.
+
+**Final answer:** Systems integration is technical because it deals with interfaces, data formats, networks, and implementation. It is also organizational because systems belong to different offices with different rules, owners, and workflows. A successful solution must align both the technology and the business process.
+
+### Hands-On Exercise
+
+Use the starter code to build a small "student profile integration" script.
+
+Tasks:
+
+1. Match records from `portal_users` and `lms_users`.
+2. Produce a unified list with these fields: `student_no`, `name`, `email`, `course_count`, `status`.
+3. If a portal user has no LMS record, still include that user.
+4. Print the final integrated list neatly.
+
+**Expected learning:** You are practicing the core idea of integration: reconciling identifiers, handling missing records, and producing a single usable output from two systems.
+
+### How to Pass This Topic
+
+- Memorize the difference between integration, architecture, interface, and source of truth.
+- In essay questions, always connect the technical answer to a business consequence.
+- Professors often reward answers that mention manual encoding, duplicate data, delays, inconsistency, and legacy constraints.
+- Do not answer "use an API" immediately without first stating the actual organizational problem.
+- If a question asks for architecture, give the high-level structure, not raw code.
+$md$, 4, 'python', $code$# Lesson 1 starter code
+# Goal: combine records from two small systems into one unified view.
+
+portal_users = [
+    {"student_no": "2023-0001", "name": "Ana Cruz", "email": "ana@school.edu.ph"},
+    {"student_no": "2023-0002", "name": "Ben Reyes", "email": "ben@school.edu.ph"},
+]
+
+lms_users = [
+    {"id": "2023-0001", "course_count": 5, "status": "active"},
+    {"id": "2023-0003", "course_count": 2, "status": "active"},
+]
+
+def integrate_users(portal, lms):
+    # TODO:
+    # 1. Match records using student_no from portal and id from lms
+    # 2. Produce one list of unified dictionaries
+    # 3. If a student exists in portal but not in lms, set course_count to 0 and status to "not_found"
+    # 4. Print the final integrated list
+    integrated = []
+    return integrated
+
+print(integrate_users(portal_users, lms_users))
+$code$);
+
+-- ============================================================
+-- LESSON 2: Enterprise Architecture and Architectural Views
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('82da7460-0642-5961-b7af-26e3514d34ab','content','What Enterprise Architecture Covers',$md$
+Enterprise architecture looks at an organization as a whole and asks how business goals, processes, applications, data, and technology should fit together. In simple terms, it prevents IT from becoming a random collection of disconnected tools.
+
+A practical way to understand enterprise architecture is through four common domains:
+
+| Domain | Main question |
+|---|---|
+| Business architecture | What does the organization do, and how does work flow? |
+| Application architecture | What systems and software support that work? |
+| Data architecture | What information is needed, and where is it stored? |
+| Technology architecture | What infrastructure, networks, platforms, and devices run everything? |
+
+Suppose a Philippine hospital wants to connect patient registration, laboratory results, and billing. The business architecture describes patient intake and discharge workflows. The application architecture lists the hospital information system, lab system, and billing platform. The data architecture defines patient IDs, records, and result formats. The technology architecture covers servers, networks, cloud services, and endpoint devices.
+
+Systems integration becomes easier when these four views are aligned. If they are not aligned, the team may connect software that does not support the real process or moves data with unclear ownership.
+
+Enterprise architecture is therefore not "only for large corporations." Even a medium-sized school, cooperative, clinic, or retail chain benefits from clear architectural thinking.
+$md$, 1),
+('82da7460-0642-5961-b7af-26e3514d34ab','content','Architectural Views and Documentation',$md$
+No single diagram can explain a whole system to everyone. Managers care about workflows and impact. Developers care about modules, APIs, and dependencies. Database staff care about structures and quality rules. This is why architects produce different **views** of the same solution.
+
+Common architectural documents include:
+
+- **Context diagram** – shows the system and its external actors or connected systems
+- **Component diagram** – shows major internal building blocks
+- **Data flow diagram** – shows how information moves
+- **Deployment diagram** – shows where components run
+- **Interface specification** – explains how one system calls or exchanges data with another
+
+A good architectural document is not just "nice-looking." It should answer design questions. For example, a context diagram should reveal whether a payment gateway is external. A deployment view should reveal whether a database and an application server are separated. An interface specification should define request and response structures, errors, and timing.
+
+For exams, remember this rule: views are stakeholder-based. You do not create a diagram just because a tool can draw it. You create it because a stakeholder needs a certain perspective.
+$md$, 2),
+('82da7460-0642-5961-b7af-26e3514d34ab','activity','As-Is, To-Be, and Gap Analysis',$md$
+A common way to teach architecture in BSIT is by comparing the current environment with the desired future environment.
+
+The **as-is architecture** describes the present state. It includes existing systems, pain points, manual steps, data duplication, unsupported legacy tools, and current infrastructure. The **to-be architecture** describes the intended future state after improvement. The difference between them is the **gap**, and studying that gap is called **gap analysis**.
+
+Example:
+
+| Aspect | As-is | To-be |
+|---|---|---|
+| Student payment validation | Manual screenshot checking | Automated accounting-to-LMS status sync |
+| Data entry | Repeated in multiple systems | Shared master student record |
+| Reports | Compiled manually | Generated from integrated data |
+| Availability | Office-hours dependent | Near real-time status updates |
+
+Gap analysis helps a team decide what must be built, replaced, retained, or wrapped with adapters. This step also reveals risks. Maybe the legacy system cannot expose an API. Maybe the data is incomplete. Maybe network capacity is weak in branch campuses.
+
+When you answer architecture questions, do not jump from "problem" to "tool." Show the transition from as-is to to-be and explain the gap the integration solution closes.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('82da7460-0642-5961-b7af-26e3514d34ab','activity','Practice & Exam Drills — Lesson 2',$md$
+### Review Questions
+
+1. What are the four common domains of enterprise architecture?
+2. Why do architects prepare different views for different stakeholders?
+3. What is the purpose of an as-is architecture?
+4. What is the purpose of a to-be architecture?
+5. Define gap analysis in one to two sentences.
+6. Give one example each of a business, application, data, and technology component.
+
+### Worked Exam-Style Problems
+
+**Problem 1: Classification**
+
+A city government is modernizing its permit process. The following items are listed: business permit approval workflow, permit portal, applicant database, network firewall. Classify each item into the correct architectural domain.
+
+*Step-by-step solution*
+
+Ask what each item represents. If it represents work or organizational process, place it under Business. If it is software used by people, place it under Application. If it is stored information, place it under Data. If it is infrastructure or technical platform, place it under Technology.
+
+**Answer:**
+
+- Business permit approval workflow → **Business architecture**
+- Permit portal → **Application architecture**
+- Applicant database → **Data architecture**
+- Network firewall → **Technology architecture**
+
+**Problem 2: As-Is to To-Be**
+
+A private college has separate systems for admissions, enrollment, library, and finance. Students use different logins and staff generate reports manually. Write one as-is statement, one to-be statement, and one gap statement.
+
+*Step-by-step solution*
+
+Describe the current pain point plainly; describe the desired future state plainly; state the specific missing capability between them.
+
+**Sample answer:**
+
+- **As-is:** The college uses separate systems with different logins and manually consolidated reports.
+- **To-be:** The college will use integrated services with single sign-on and centralized reporting.
+- **Gap:** The current environment lacks shared identity management and integrated data exchange across systems.
+
+### Hands-On Exercise
+
+Complete the starter code so that each component is mapped correctly to one of the four architecture domains.
+
+**Extension task:** Create a second list called `future_changes` and print a simple report like:
+
+```
+Enrollment Process -> Business -> Keep/Improve
+Student Information System -> Application -> Replace
+Student Master Record -> Data -> Standardize
+Cloud VM -> Technology -> Scale
+```
+
+This helps you think in as-is / to-be / action form.
+
+### How to Pass This Topic
+
+- Memorize the four architecture domains and be ready to classify examples quickly.
+- When a problem mentions workflow, think business; software, think application; records, think data; server/network, think technology.
+- A common mistake is mixing data architecture with database software. Data architecture is about the information itself, not only the DBMS.
+- In essay answers, use the phrase "align business goals with IT solutions" when relevant.
+- If the question asks for a view, mention who the view is for.
+$md$, 4, 'python', $code$# Lesson 2 starter code
+# Goal: classify components into architecture domains.
+
+components = [
+    {"name": "Enrollment Process", "type": "workflow"},
+    {"name": "Student Information System", "type": "application"},
+    {"name": "Student Master Record", "type": "data"},
+    {"name": "Cloud VM", "type": "infrastructure"},
+]
+
+def classify_component(component_type):
+    # TODO:
+    # return one of: "Business", "Application", "Data", "Technology"
+    return "Unknown"
+
+for item in components:
+    layer = classify_component(item["type"])
+    print(f'{item["name"]} -> {layer}')
+$code$);
+
+-- ============================================================
