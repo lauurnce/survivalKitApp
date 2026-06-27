@@ -749,3 +749,118 @@ $md$, 3),
 - A "final" file name alone is not a workflow.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 8: Accessibility, Ethics, and Multimedia Evaluation
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('871cd8ff-4850-522a-84be-335f2af192c9','content','Accessibility in Multimedia',$md$
+Accessible multimedia can be used by more people, including users with hearing impairments, visual impairments, motor limitations, and cognitive or attention challenges.
+
+Basic accessibility practices include:
+
+- captions for video,
+- transcripts for audio,
+- high text-background contrast,
+- readable font sizes,
+- descriptive labels,
+- keyboard-friendly interaction where applicable,
+- avoiding excessive flashing motion.
+
+Accessibility is not just a legal or policy issue. It is also a design-quality issue. A project that excludes users is a weaker project.
+
+A useful test question is: *Can the message still be understood if one media channel is unavailable?* If audio is muted, captions should help. If images fail to load, labels or alt text should still support meaning.
+$md$, 1),
+('871cd8ff-4850-522a-84be-335f2af192c9','content','Ethical and Legal Responsibilities',$md$
+Multimedia work involves responsibilities beyond design and technology.
+
+### Copyright
+Do not assume online images, music, or clips are free to use. You must check ownership, license, or permission.
+
+### Attribution
+When a source must be credited, the credit should be accurate and clear.
+
+### Privacy and consent
+If you record people, especially in school or community settings, secure proper permission.
+
+### Accuracy
+Multimedia can spread misinformation quickly because visuals and audio feel convincing. Always verify facts.
+
+### Cultural sensitivity
+Images, language, sound choices, and representation should avoid disrespectful or harmful assumptions.
+
+For Filipino IT students, this matters in real projects involving schools, LGUs, communities, or campus organizations. Technical skill is not enough if media use is careless or unethical.
+$md$, 2),
+('871cd8ff-4850-522a-84be-335f2af192c9','activity','Evaluating Multimedia Quality and Exam Mindset',$md$
+A multimedia output can be evaluated using several dimensions:
+
+| Criterion | Key Question |
+|---|---|
+| Content quality | Is the message correct and complete? |
+| Design quality | Is the layout readable and visually coherent? |
+| Technical quality | Do audio, video, and interactions work well? |
+| Usability | Can users finish tasks easily? |
+| Accessibility | Can more users access the content? |
+| Efficiency | Does it load and perform acceptably? |
+| Professionalism | Is the output polished and organized? |
+
+Evaluation can happen through self-checks, peer review, user testing, instructor rubric, and revision cycles. Strong students do not only create — they also evaluate and improve.
+
+### Integrative review and exam mindset
+
+By this point, multimedia should feel like a connected subject rather than a list of isolated tools. The common thread:
+
+> A multimedia product succeeds when it combines correct media choices, sound design principles, technical efficiency, and user-centered delivery.
+
+For exam preparation, review these recurring themes: choosing appropriate media; comparing file formats; computing basic storage or bitrate; explaining workflow; critiquing usability; recommending export settings; and identifying ethical or accessibility issues. If you remember only one habit, remember this: **always justify choices using purpose, audience, and platform.** That approach works across visual design, audio, video, interaction, optimization, and evaluation.
+$md$, 3),
+('871cd8ff-4850-522a-84be-335f2af192c9','activity','Practice & Exam Drills — Lesson 8',$md$
+**Review Questions**
+
+1. Why are captions important?
+2. What is the difference between copyright and attribution?
+3. Why is consent important in multimedia production?
+4. Give two accessibility improvements for a video lesson.
+5. What makes a multimedia evaluation rubric useful?
+6. Why is technical quality only one part of overall quality?
+7. What is one risk of using unverified visual content?
+8. Why should multimedia still work when one media channel fails?
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Accessibility Audit.** A 3-minute instructional video has small white subtitles on a bright background, fast flashing transitions, no transcript, and background music louder than narration.
+
+*Step-by-step solution*
+1. Small low-contrast subtitles → hard to read. *Fix:* increase font size and improve contrast.
+2. Fast flashing transitions → distracting and potentially harmful. *Fix:* slower, simpler transitions.
+3. No transcript → limited access for users who cannot rely on audio. *Fix:* provide a transcript.
+4. Music louder than narration → weak speech intelligibility. *Fix:* reduce music level; prioritize voice clarity.
+
+*Final answer:* the video has subtitle readability, motion safety, transcript availability, and audio-balance issues — all must be corrected.
+
+**Problem 2: Integrative Case Question.** A cyber-safety campaign for senior high school plans to use random stock images, one long autoplay homepage video, text-heavy slides, no captions, and large PNG photos for every page.
+
+*Step-by-step solution*
+1. Random stock images → possible copyright issues. *Fix:* licensed or original assets, document sources.
+2. Long autoplay video → intrusive and bandwidth-heavy. *Fix:* make it optional and shorter.
+3. Text-heavy slides → weak readability/engagement. *Fix:* break into smaller visual sections.
+4. No captions → inaccessible. *Fix:* add captions and transcript.
+5. Large PNGs everywhere → inefficient. *Fix:* use optimized formats; JPG for photos where transparency is unnecessary.
+
+*Final answer:* the project has legal, accessibility, usability, and optimization problems — a better design uses licensed assets, optional short videos, segmented content, captions, and properly optimized image formats.
+
+**Hands-On Exercise.** Perform a mini-evaluation of any multimedia output you can inspect (slide deck, short video, infographic, mockup, LMS page). Score it 1–5 in: content accuracy, visual clarity, technical execution, usability, accessibility, ethical/legal readiness. Then write a short improvement plan with the top three fixes.
+
+**How to Pass This Topic**
+
+- Always mention accessibility and ethics when evaluating a multimedia system.
+- Professors often ask "what is wrong and how will you fix it?" — prepare both parts.
+- Memorize the difference between copyright, attribution, consent, and accuracy.
+- Integrative case questions reward answers that combine design, technical reasoning, user needs, and professional responsibility.
+- If you can justify a decision through clarity, inclusivity, legality, and efficiency, you are usually on strong ground.
+$md$, 4);
+
+-- SOURCES (metadata, not inserted):
+-- CHED CMO 25 s. 2015; UP Diliman CRS (CS 240/255/287/289); PUP BSIT/MIT Multimedia Systems;
+-- FEU BSAM-IT Multimedia 1-3 & FEU Tech AGD; Adamson BSIT 2022 Multimedia Technology;
+-- Ateneo DISCS Interactive Multimedia minor; DLSU CCS Game Art & Design.
