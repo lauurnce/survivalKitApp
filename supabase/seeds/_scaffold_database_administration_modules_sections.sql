@@ -1245,3 +1245,175 @@ CREATE VIEW student_public_directory AS
 SELECT student_id, student_name, program_code
 FROM student_records;$code$);
 
+-- ============================================================
+-- LESSON 8: Monitoring, Performance Tuning, and Capacity Planning
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('369553ac-ecd5-5dc7-8a94-3538e96c8e0c','content','What DBAs Monitor',$md$
+A database should not be tuned blindly. Good tuning starts with observation.
+
+A DBA commonly monitors:
+
+- response time of important queries
+- CPU and memory usage
+- disk I/O and storage growth
+- active sessions and locks
+- long-running transactions
+- deadlocks or blocking
+- backup success/failure
+- replication or standby health
+- unusual access patterns
+
+The main goal is not to collect every possible metric. The goal is to identify what affects service quality most.
+
+For example, if an enrollment system slows down during peak registration, the DBA must determine whether the cause is:
+
+- poor query design
+- missing indexes
+- locking contention
+- insufficient hardware
+- oversized reports running during peak hours
+
+Monitoring gives evidence for decisions.
+$md$, 1),
+
+('369553ac-ecd5-5dc7-8a94-3538e96c8e0c','content','A Practical Tuning Workflow',$md$
+A good tuning workflow is usually:
+
+1. **Identify the symptom** — Example: "Student ledger query takes 18 seconds."
+2. **Measure the current behavior** — Which query? How often? At what time? On which tables?
+3. **Find probable causes** — Missing indexes? Too many joins? Old statistics? Blocking? Large scans?
+4. **Apply one change at a time** — Add or revise index, rewrite query, archive data, adjust schedule.
+5. **Measure again** — Did the change actually help? Did it create side effects?
+
+This method is better than random tweaking.
+
+Typical tuning actions include:
+
+- indexing the right columns
+- reducing unnecessary `SELECT *`
+- filtering earlier
+- simplifying joins
+- updating statistics where applicable
+- archiving old records
+- moving heavy reports outside peak hours
+
+A DBA also needs discipline: performance is not permanent. A query that was fast last semester may become slow after table growth or workload change.
+$md$, 2),
+
+('369553ac-ecd5-5dc7-8a94-3538e96c8e0c','activity','Capacity Planning and the Mature DBA Mindset',$md$
+Capacity planning means preparing for future demand.
+
+Questions include:
+
+- How much storage growth is expected each month?
+- When will the current server become insufficient?
+- Which tables are growing fastest?
+- Are backup windows becoming too long?
+- Will more concurrent users appear next term?
+
+This matters in real institutions. A system designed for one campus may become inadequate after new departments, online services, or analytics features are added.
+
+A mature DBA also keeps operational routines such as:
+
+- maintenance schedules
+- index review
+- backup verification
+- access review
+- incident documentation
+- change logs
+- service checklists
+
+At this point, you can see the full picture of the course: database administration is really the art of making data systems dependable under pressure.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('369553ac-ecd5-5dc7-8a94-3538e96c8e0c','activity','Practice & Exam Drills — Lesson 8',$md$
+**Review Questions**
+
+1. Why should tuning begin with monitoring?
+2. Give four examples of metrics DBAs monitor.
+3. What is capacity planning?
+4. Why should DBAs avoid random tuning changes?
+5. What is blocking?
+6. Why can old data affect performance?
+7. Why is storage growth part of DBA work?
+8. Give one reason a previously fast query may become slow later.
+
+**Worked Exam-Style Problems**
+
+**Problem 1.** A report becomes slow every enrollment week. Give a structured tuning approach.
+
+*Step-by-step solution*
+1. Identify the exact slow report and execution time.
+2. Measure when it becomes slow and under what workload.
+3. Check query design, join conditions, and filters.
+4. Review indexes on commonly filtered/joined columns.
+5. Check whether locks or hardware bottlenecks contribute.
+6. Apply one change at a time.
+7. Re-measure performance after each change.
+
+*Final answer:* Use a measured tuning workflow: identify, measure, diagnose, change carefully, then verify.
+
+**Problem 2.** Why is "add more hardware" not always the best first answer?
+
+*Step-by-step solution*
+1. Slow performance may be caused by poor schema design, missing indexes, blocking, or bad SQL.
+2. Hardware can hide some issues temporarily but not fix the root cause.
+3. Efficient tuning usually starts with workload analysis and better design choices.
+
+*Final answer:* Hardware may help, but the DBA should first diagnose the real cause of slowness.
+
+**Hands-on Exercise**
+
+1. Show all queries taking more than 10 seconds.
+2. Compute the average execution time per module.
+3. Find the slowest query in the log.
+4. Count how many query runs were recorded.
+
+*Suggested solution path*
+```sql
+SELECT *
+FROM query_log
+WHERE execution_seconds > 10;
+
+SELECT module_name, AVG(execution_seconds) AS avg_seconds
+FROM query_log
+GROUP BY module_name;
+
+SELECT *
+FROM query_log
+WHERE execution_seconds = (
+    SELECT MAX(execution_seconds) FROM query_log
+);
+
+SELECT COUNT(*) AS total_runs
+FROM query_log;
+```
+
+**How to Pass This Topic**
+
+- Use the phrase *measure before and after tuning*.
+- In scenario questions, give a workflow, not just a guess.
+- Mention both technical metrics and operational habits.
+- For essay items, connect performance to growth, peak periods, and changing workloads.
+- Common mistake: assuming query slowness always means indexing. Sometimes the problem is locking, oversized reports, or weak scheduling.
+$md$, 4, 'sql', $code$CREATE TABLE query_log (
+    query_id INTEGER PRIMARY KEY,
+    module_name VARCHAR(50),
+    execution_seconds DECIMAL(6,2),
+    run_time VARCHAR(20),
+    status VARCHAR(20)
+);
+
+INSERT INTO query_log VALUES
+(1, 'Enrollment Report', 12.50, '08:00', 'SUCCESS'),
+(2, 'Ledger Report', 18.20, '09:15', 'SUCCESS'),
+(3, 'Subject Load Query', 1.10, '09:20', 'SUCCESS'),
+(4, 'Enrollment Report', 15.00, '10:30', 'SUCCESS'),
+(5, 'Audit Summary', 22.00, '11:00', 'SUCCESS');$code$);
+
+-- SOURCES (metadata, not inserted):
+-- CHED CMO 25 s. 2015; UP Mindanao BSCS; PUP CCIS BSIT; FEU/FEU Tech BSIT;
+-- Adamson University BSIT 2022; Ateneo BS ITE/MIS; DLSU STADVDB.
