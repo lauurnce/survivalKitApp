@@ -355,3 +355,151 @@ Why can a system be considered insecure even if it has a firewall?
 - For long tests, short definitions may be worth few points, but case analysis usually carries more weight.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 2: Threats, Vulnerabilities, Controls, and Risk Assessment
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('8b714a41-f183-5465-9aff-8a3287f8c916','content','Common Threat Sources',$md$
+Threats come from many directions. A good IT professional avoids the mistake of thinking that all security problems come from anonymous outsiders.
+
+Threat sources usually include:
+
+- **External attackers** such as cybercriminals, hacktivists, and opportunistic intruders
+- **Insiders** such as careless employees, disgruntled users, or over-privileged staff
+- **Environmental events** such as fire, flood, power loss, and hardware failure
+- **Human error** such as accidental deletion, wrong configuration, and lost devices
+- **Supply chain issues** such as insecure third-party services, compromised updates, or weak vendor practices
+
+Some threats are intentional, while others are accidental. Both matter. A user who mistakenly posts a spreadsheet with personal data can cause damage almost as serious as a deliberate attacker.
+$md$, 1),
+('8b714a41-f183-5465-9aff-8a3287f8c916','content','Types of Vulnerabilities',$md$
+A vulnerability is a weakness that makes a system easier to compromise. Vulnerabilities often appear in these categories:
+
+- **Technical vulnerabilities** — unpatched software, insecure services, misconfigured firewalls
+- **Human vulnerabilities** — weak passwords, lack of awareness, social engineering susceptibility
+- **Physical vulnerabilities** — unlocked server rooms, exposed network ports, stolen devices
+- **Process vulnerabilities** — no backup plan, no change approval, unclear incident reporting
+- **Design vulnerabilities** — systems built without security requirements from the start
+
+A strong exam point here is that a vulnerability does not automatically mean a breach has happened. It means the system is susceptible. Once exploited, it becomes part of an attack.
+$md$, 2),
+('8b714a41-f183-5465-9aff-8a3287f8c916','activity','Security Controls and Their Categories',$md$
+A **security control** is a safeguard that reduces risk. Controls are often grouped by function.
+
+**By nature**
+
+- **Administrative controls** — policies, training, procedures, standards, job separation
+- **Technical controls** — firewalls, encryption, MFA, antivirus, access control lists
+- **Physical controls** — locks, CCTV, guards, ID checks, equipment cages
+
+**By purpose**
+
+- **Preventive** controls stop incidents before they happen.
+- **Detective** controls discover incidents or suspicious activity.
+- **Corrective** controls restore systems or reduce damage after an incident.
+- **Deterrent** controls discourage bad behavior.
+- **Compensating** controls provide an alternative when a preferred control is not possible.
+
+Examples:
+
+| Situation | Control | Category |
+|---|---|---|
+| Users choose weak passwords | Password policy + MFA | Administrative + Technical |
+| Office PCs are stolen | Door lock + device encryption | Physical + Technical |
+| Malware infection occurs | EDR alert + reimaging + restore | Detective + Corrective |
+$md$, 3),
+('8b714a41-f183-5465-9aff-8a3287f8c916','activity','Basic Risk Assessment',$md$
+Risk assessment is one of the most common topics in introductory security courses because it helps organizations decide what to protect first.
+
+A simple formula often used in class is:
+
+$$ \text{Risk Level} \approx \text{Likelihood} \times \text{Impact} $$
+
+This is not the only method, but it helps beginners prioritize.
+
+A basic risk assessment process:
+
+1. Identify the asset
+2. Identify threats
+3. Identify vulnerabilities
+4. Estimate likelihood
+5. Estimate impact
+6. Assign a risk level
+7. Select a treatment decision
+
+Typical treatment choices are:
+
+- **Mitigate** — reduce the risk using controls
+- **Transfer** — shift part of the financial burden, for example through contracts or insurance
+- **Avoid** — stop the risky activity
+- **Accept** — tolerate the risk if it is low or unavoidable
+
+A school may decide that a public announcement kiosk can operate with moderate risk, but student records cannot. Risk assessment helps justify that decision.
+$md$, 4),
+('8b714a41-f183-5465-9aff-8a3287f8c916','activity','Practice & Exam Drills — Lesson 2',$md$
+### Review Questions
+
+1. Name four major sources of security threats.
+2. How is a vulnerability different from a threat?
+3. Give one example each of an administrative, technical, and physical control.
+4. Distinguish preventive, detective, and corrective controls.
+5. Why are accidental threats still important in security planning?
+6. What are the four common risk treatment options?
+7. What variables are usually considered in a simple risk calculation?
+8. Why should organizations prioritize risks instead of trying to fix everything at once?
+
+### Worked Exam-Style Problems
+
+**Problem A: Classify Each Item** — Classify each item as threat, vulnerability, control, or asset.
+
+1. Unpatched web server → **Vulnerability** — weakness that can be exploited.
+2. Customer database → **Asset** — valuable information resource.
+3. Security awareness training → **Control** — administrative safeguard.
+4. Flood affecting the data center → **Threat** — potential cause of harm.
+5. Shared admin password → **Vulnerability** — weak practice that increases exposure.
+6. CCTV at the server room entrance → **Control** — physical and detective safeguard.
+
+**Problem B: Risk Matrix Computation**
+
+A university portal has: Vulnerability — no MFA for administrator accounts; Likelihood — 4 of 5; Impact — 5 of 5. Compute the risk score and interpret it using this scale:
+
+| Score | Interpretation |
+|---|---|
+| 1–5 | Low |
+| 6–10 | Moderate |
+| 11–15 | High |
+| 16–25 | Critical |
+
+*Step-by-Step Solution*
+
+$$ \text{Risk Score} = \text{Likelihood} \times \text{Impact} = 4 \times 5 = 20 $$
+
+20 falls under **Critical**. The organization should mitigate immediately — enable MFA, limit admin exposure, and review logs.
+
+**Problem C: Choose the Best Treatment**
+
+A small startup uses an old internet-facing service that is expensive to secure and rarely used. What is the most reasonable treatment option?
+
+*Step-by-Step Solution*
+
+If the service is rarely used, expensive to secure, internet-facing, and not business-critical, the sensible choice is **avoidance** by discontinuing the service. Acceptance leaves a serious entry point; transfer does not remove the technical weakness; mitigation is possible but not always cost-effective.
+
+### Hands-On Exercises
+
+**Exercise A: Build a Risk Register** — Create a risk register with five entries for a fictional university system using the template: Asset | Threat | Vulnerability | Likelihood | Impact | Risk Score | Suggested Control.
+
+**Exercise B: Control Mapping** — For each incident (stolen laptop, phishing email, accidental data deletion, power interruption in a server room), assign one preventive, one detective, and one corrective control.
+
+**Exercise C: Short Case Analysis** — A BPO company stores attendance data in a shared spreadsheet accessible through a public link. Discuss the asset, the vulnerability, the likely threat, the impact, and one appropriate treatment decision.
+
+### How to Pass This Topic
+
+- Expect classification questions. Faculty often test if you can distinguish threat vs vulnerability vs control.
+- In risk problems, always show the formula and the given values.
+- Do not give random controls. Match the control to the actual weakness.
+- If likelihood is low but impact is severe, explain both. Professors reward balanced answers.
+- Risk treatment terms are often memorization-heavy, but still explain why you chose one.
+- Use short but precise wording in tables. Long vague answers lose points.
+$md$, 5);
+
