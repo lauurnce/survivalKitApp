@@ -793,3 +793,139 @@ Successful verification suggests: the message matches the signed digest → **in
 - When comparing methods, a simple table-based answer is often the cleanest.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 5: Network Security Fundamentals
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('b10d9b37-46f8-5eaa-88a6-3c521db59d4b','content','Security in a Networked Environment',$md$
+Once systems are connected, the attack surface expands. Network security focuses on protecting data in transit, network services, connected devices, and the paths through which users and attackers communicate.
+
+Basic security concerns in networks include:
+
+- unauthorized access,
+- eavesdropping,
+- spoofing,
+- service disruption,
+- malware spread,
+- weak remote access,
+- insecure wireless connections.
+
+Network security is especially important because a single weak point can affect many systems at once.
+$md$, 1),
+('b10d9b37-46f8-5eaa-88a6-3c521db59d4b','content','Network Devices and Security Functions',$md$
+Several network components contribute to security.
+
+| Device or Concept | Security Purpose |
+|---|---|
+| Firewall | Filters traffic according to rules |
+| Router | Connects networks and can enforce some traffic policies |
+| Switch | Connects devices in a local network; can support VLAN separation |
+| IDS | Detects suspicious activity |
+| IPS | Detects and can block suspicious activity |
+| VPN | Protects remote communications over untrusted networks |
+| Proxy | Intermediates requests and can filter content |
+
+A firewall is important, but it is not enough by itself. Secure network design often includes segmentation, rule review, host hardening, secure services, and monitoring.
+$md$, 2),
+('b10d9b37-46f8-5eaa-88a6-3c521db59d4b','activity','Segmentation, Secure Protocols, and Design Basics',$md$
+A common security principle is **segmentation**. Instead of putting every device in one flat network, organizations divide systems into zones.
+
+Examples:
+
+- office users in one segment,
+- servers in another,
+- guest Wi-Fi separate from internal resources,
+- public web servers placed in a DMZ-style area rather than the internal core.
+
+This limits the spread of incidents and makes access control cleaner.
+
+Protocol choice also matters. Secure practice usually favors protected options over insecure legacy ones. For example, secure remote administration should avoid exposed weak services and should use better-protected approaches, proper credentials, and restricted access.
+
+Good introductory network security design asks:
+
+- What should be public?
+- What should remain internal?
+- Which systems need to talk to each other?
+- What traffic should be blocked by default?
+$md$, 3),
+('b10d9b37-46f8-5eaa-88a6-3c521db59d4b','activity','Wireless and Remote Access Security',$md$
+Wireless networks and remote work introduce convenience and risk at the same time.
+
+Common wireless and remote access issues:
+
+- weak Wi-Fi credentials,
+- rogue access points,
+- unsecured public Wi-Fi usage,
+- reused passwords,
+- exposed remote desktop services,
+- unmanaged personal devices.
+
+Practical protections include:
+
+- strong Wi-Fi security settings,
+- separate guest networks,
+- VPN for remote users,
+- MFA for remote login,
+- device policy enforcement,
+- logging and review of remote sessions.
+
+For Philippine environments where staff may work from homes, cafés, or shared spaces, remote access security becomes part of everyday IT operations rather than an optional extra.
+
+A simple office topology diagram would help here: an internet edge, firewall, DMZ/public server zone, internal office LAN, server LAN, and guest Wi-Fi separated from the internal network.
+$md$, 4),
+('b10d9b37-46f8-5eaa-88a6-3c521db59d4b','activity','Practice & Exam Drills — Lesson 5',$md$
+### Review Questions
+
+1. Why does networking increase the attack surface?
+2. What is the main job of a firewall?
+3. Differentiate IDS and IPS.
+4. Why is network segmentation important?
+5. What is a DMZ in simple terms?
+6. Why should guest Wi-Fi be separated from internal office systems?
+7. What is the purpose of a VPN?
+8. Why is remote access security critical today?
+
+### Worked Exam-Style Problems
+
+**Problem A: Choose the Best Device** — Match each need with the most suitable component.
+
+1. Detect suspicious scanning behavior on a network → **IDS**
+2. Filter inbound and outbound traffic using rules → **Firewall**
+3. Securely connect remote employees to internal services → **VPN**
+4. Separate visitors from internal administrative systems → **Segmentation / guest network separation**
+
+**Problem B: Network Design Case**
+
+A school has: a public website, faculty computers, student lab PCs, a registrar database server, and guest Wi-Fi for visitors. Describe a safer arrangement.
+
+*Step-by-Step Solution*
+
+A safer design should: put the public website in a public-facing server zone or DMZ-like segment; place faculty computers on an internal staff network; put student lab PCs on a separate academic/lab segment; place the registrar database server in a restricted internal server segment; keep guest Wi-Fi fully separated from internal systems; control traffic between zones using firewall rules; allow only required connections, such as web traffic to the website and authorized application traffic to the registrar server. Key principle: do not place everything on one flat network.
+
+**Problem C: Firewall Rule Reasoning**
+
+A company wants only HTTPS traffic from the internet to reach its public website. What should the high-level rule be?
+
+*Step-by-Step Solution*
+
+Allow inbound HTTPS traffic to the public web server; deny unnecessary inbound services by default; permit only required administrative traffic from trusted internal or VPN-based sources; log relevant events. This demonstrates least exposure and default deny thinking.
+
+### Hands-On Exercises
+
+**Exercise A: Segment a Small Network** — Draw or describe a secure layout for: one internet connection, one firewall, one web server, one file server, 20 office PCs, guest Wi-Fi, and one admin workstation. Explain which parts should communicate and which should not.
+
+**Exercise B: Remote Access Policy Draft** — Write five basic rules for employees accessing company systems from home or public networks.
+
+**Exercise C: Protocol Risk Reflection** — List three examples of risky networking behavior and one safer alternative for each.
+
+### How to Pass This Topic
+
+- Focus on function, not product names. Exams ask what the control does.
+- Segmentation, DMZ, firewalls, VPNs, and IDS/IPS are very common test topics.
+- When given a network case, answer with separate zones and limit communication.
+- If an item asks how to protect public-facing services, mention least exposure and default deny.
+- Do not overcomplicate answers with vendor-specific jargon unless required.
+- Simple, well-structured network reasoning earns points.
+$md$, 5);
+
