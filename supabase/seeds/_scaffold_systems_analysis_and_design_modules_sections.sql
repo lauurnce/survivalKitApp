@@ -671,3 +671,132 @@ $md$, 3),
 - Many professors give partial credit for logically consistent textual models even if the diagram is not artistically perfect.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 5: Object-Oriented Analysis and UML
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('d71a716c-2be0-5dd8-9175-8a9e8e741e4a','content','From Structured Analysis to Object-Oriented Thinking',$md$
+Structured analysis models processes and data flows. Object-oriented analysis models the system as a set of objects, responsibilities, and interactions.
+
+In object-oriented thinking, we focus on things such as users, records, transactions, services, and items handled by the system. These become **classes** or **objects** with attributes, operations (methods), and relationships to other classes.
+
+Core object-oriented ideas include:
+
+| Concept | Meaning |
+|---|---|
+| Class | blueprint for similar objects |
+| Object | actual instance of a class |
+| Attribute | data owned by an object |
+| Method | action performed by an object |
+| Encapsulation | bundling data and behavior together |
+| Inheritance | one class extends another |
+| Association | classes are related |
+| Polymorphism | one interface, different implementations |
+
+In Systems Analysis and Design, you do not need to code every class. What matters first is learning how to describe the problem domain in an organized, reusable way.
+
+Example: in an appointment system, common classes may include Student, Appointment, ClinicStaff, and Prescription. Instead of thinking only about "Process Appointment," OO analysis asks:
+
+- What does an Appointment know?
+- What actions can an Appointment perform or trigger?
+- Which class owns reschedule logic?
+- What is the relationship between Student and Appointment?
+
+This helps when the project will later be implemented using object-oriented programming.
+$md$, 1),
+('d71a716c-2be0-5dd8-9175-8a9e8e741e4a','content','Use Case Modeling',$md$
+A use case describes how an actor interacts with the system to achieve a goal.
+
+Common parts of a use case: Actor, Goal, Precondition, Main flow, Alternative flow, Postcondition.
+
+Example use case title: **Submit Maintenance Request**
+
+- **Actor:** Student Resident
+- **Goal:** report a maintenance issue
+- **Precondition:** resident account is active
+- **Main flow:** logs in → enters issue details → submits request → system records request
+- **Alternative flow:** required field missing → system prompts correction
+- **Postcondition:** request is saved and reference number is generated
+
+### Use case diagram basics
+
+A use case diagram usually shows actors outside the system, use cases inside the system boundary, and relationships between them.
+
+Sample use cases in a permit renewal system: Submit Renewal Application; Verify Documents; Assess Fees; Approve Application; View Application Status; Generate Daily Report.
+
+Use case modeling is especially helpful because it translates stakeholder needs into system behavior without jumping too quickly into database or code details.
+$md$, 2),
+('d71a716c-2be0-5dd8-9175-8a9e8e741e4a','activity','Class, Sequence, and Activity Modeling',$md$
+A **class diagram** shows the structure of classes and their relationships. A class may include name, attributes, and operations.
+
+Example:
+
+- **Applicant:** applicantID, name, contactNumber, submitApplication()
+- **Application:** applicationID, dateSubmitted, status, computeFees()
+
+### Identifying candidate classes
+
+Read the case and mark important nouns, then screen them. Candidates: person roles, business records, transactions, resources, documents. But not every noun becomes a class — "screen," "button," or "office" may not belong in the core model unless central. Ask: Does the system need to remember information about it? Does it have distinct attributes? Does it participate in important relationships? Does it perform meaningful responsibilities?
+
+### Sequence diagram
+
+Shows how objects interact in time order (actor, participating objects, messages, top-to-bottom order). Example for online booking: Student sends bookAppointment() → AppointmentController validates data → ScheduleService checks slot → Database saves appointment → ConfirmationService sends notice. Good for analyzing message flow and validating logic.
+
+### Activity diagram
+
+Shows workflow, decisions, and alternative paths. Useful for step-by-step process logic, decisions/branching, parallel activities, and approval flow. Example: Receive request → Check completeness → if incomplete, return to applicant → if complete, route for approval → Record decision → Notify applicant.
+
+### Choosing the right model
+
+- **Use case diagram** for user goals
+- **Class diagram** for structure
+- **Sequence diagram** for interactions
+- **Activity diagram** for workflow logic
+
+A good analysis output does not use every diagram possible. It chooses the diagrams that best clarify the case.
+$md$, 3),
+('d71a716c-2be0-5dd8-9175-8a9e8e741e4a','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. What is the difference between an object and a class?
+2. What is encapsulation?
+3. What is the purpose of a use case?
+4. What parts are normally included in a basic use case description?
+5. How does a class diagram differ from a sequence diagram?
+6. When is an activity diagram useful?
+7. Give one example of inheritance and one example of association.
+8. Why is object-oriented analysis useful before implementation?
+
+**Worked Exam-Style Problems**
+
+**Problem 1: Identify actors and use cases.** A food delivery startup: customers place orders, riders accept deliveries, administrators manage the menu and monitor completed transactions.
+*Actors:* Customer, Rider, Administrator.
+*Likely use cases:* Place Order; Track Order; Accept Delivery Job; Update Delivery Status; Manage Menu; View Completed Transactions.
+
+**Problem 2: Identify candidate classes** from the same case. Important nouns that carry data and participate in relationships: **Customer, Order, Rider, MenuItem, Payment, Delivery.**
+
+**Problem 3: Choose the correct UML diagram.**
+| Task | Best UML diagram |
+|---|---|
+| interaction during checkout | Sequence Diagram |
+| workflow for approval | Activity Diagram |
+| classes and relationships | Class Diagram |
+| user goals | Use Case Diagram |
+
+**Hands-On Practice — Dormitory Visitor Pass System.**
+1. List three actors.
+2. Write four use cases.
+3. Draft one fully dressed mini use case (precondition, main flow, postcondition).
+4. Identify five candidate classes.
+5. Describe in words one sequence flow for "Issue Visitor Pass."
+
+**How to Pass This Topic**
+
+- Use verbs for use case names: Register User, Generate Report, Approve Request.
+- Use nouns for class names: Student, Invoice, Reservation.
+- Do not confuse a process step with a class.
+- To justify a diagram choice, say what it shows: goal, structure, interaction, or workflow.
+- Even in text-only exams, score well by listing actors, relationships, and message flow clearly.
+$md$, 4);
+
