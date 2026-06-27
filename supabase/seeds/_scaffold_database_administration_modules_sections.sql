@@ -419,3 +419,187 @@ INSERT INTO enrollments VALUES
 (2, 'IT331', '2026-1', 2.25),
 (1, 'IT332', '2026-1', 2.00);$code$);
 
+-- ============================================================
+-- LESSON 3: Physical Storage, File Organization, and Indexing
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('13310768-cc33-5dfc-9388-2e853ba6766c','content','Why Physical Design Matters',$md$
+Logical design answers *what* data should exist. Physical design answers *how* that data is stored and accessed efficiently.
+
+A database may have correct tables and still perform poorly if the physical design is weak. This is where a DBA starts thinking about:
+
+- data pages and blocks
+- file organization
+- storage allocation
+- access paths
+- indexes
+
+At a simple level, when the DBMS stores table data, it places rows into storage structures. Reading the needed rows may involve scanning many pages or using shortcuts such as indexes.
+
+A full table scan is sometimes acceptable, especially for small tables. But for large operational tables like payments, admissions, or transactions, repeated full scans can overload the system.
+
+Physical design is a trade-off:
+
+- more indexes may improve reads
+- but extra indexes usually slow inserts, updates, and deletes
+- wide rows may reduce joins
+- but also increase storage and I/O cost
+
+The DBA's job is not to "add indexes everywhere." The DBA studies workload patterns first.
+$md$, 1),
+
+('13310768-cc33-5dfc-9388-2e853ba6766c','content','Indexes and Access Paths',$md$
+An index is a structure that helps the DBMS locate rows faster for certain search conditions.
+
+A common analogy is a book index. Instead of reading every page to find a topic, you check the index and jump closer to the target.
+
+Indexes are especially useful for:
+
+- equality filters such as `WHERE student_id = 101`
+- range filters such as `WHERE payment_date >= '2026-06-01'`
+- join columns
+- columns used in sorting or grouping
+
+But indexes are not magic. They work best when:
+
+- the column is selective enough
+- the query actually uses that column in a searchable way
+- the workload justifies the maintenance cost
+
+Example:
+
+```sql
+SELECT *
+FROM payments
+WHERE student_id = 101;
+```
+
+An index on `student_id` is often useful here.
+
+But if you write:
+
+```sql
+WHERE UPPER(student_name) = 'ANA CRUZ'
+```
+
+the DBMS may not use a basic index on `student_name` efficiently, depending on the system and index type.
+
+DBAs also consider composite indexes, where multiple columns are indexed together. These can be powerful, but the column order matters.
+$md$, 2),
+
+('13310768-cc33-5dfc-9388-2e853ba6766c','activity','Choosing a Good Physical Design',$md$
+A good physical design starts from workload questions:
+
+- Which queries run most often?
+- Which reports take too long?
+- Which tables receive heavy inserts?
+- Which columns appear repeatedly in joins and filters?
+- Which data is historical and which is high-traffic?
+
+Some practical guidelines:
+
+**Index columns often used for joins and lookups.** Foreign keys and search fields are common index candidates.
+
+**Avoid unnecessary indexes.** Every extra index adds maintenance overhead.
+
+**Keep row size reasonable.** Very wide tables waste storage and increase I/O.
+
+**Archive old data when needed.** Huge transactional tables may need partitioning or archiving strategies.
+
+**Revisit design after workload changes.** A good design for 5,000 rows may fail at 5 million rows.
+
+DBA work becomes stronger when physical design decisions are based on evidence, not guesses. That is why monitoring and query analysis are important later in the course.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('13310768-cc33-5dfc-9388-2e853ba6766c','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions**
+
+1. Why is physical design different from logical design?
+2. What problem does an index solve?
+3. Why can too many indexes be harmful?
+4. Give two kinds of queries that usually benefit from indexing.
+5. What is a composite index?
+6. Why should a DBA study workload before adding indexes?
+7. What is archiving?
+8. Why can a full scan still be acceptable sometimes?
+
+**Worked Exam-Style Problems**
+
+**Problem 1.** A table `payments` is queried heavily by `student_id`, but inserts happen all day. Should you create an index on `student_id`? Explain.
+
+*Step-by-step solution*
+1. The column is frequently used in lookups.
+2. That makes it a strong index candidate.
+3. However, inserts happen all day, and every insert also updates the index.
+4. So the DBA should compare the read benefit against the write overhead.
+5. If lookups are frequent and important, the index is usually justified.
+
+*Final answer:* Yes, an index on `student_id` is usually justified if the system frequently searches payments by student ID. The DBA must still consider insert overhead and test the workload.
+
+**Problem 2.** Choose the more appropriate index for this query:
+```sql
+SELECT *
+FROM payments
+WHERE payment_date BETWEEN '2026-06-01' AND '2026-06-30';
+```
+
+*Step-by-step solution*
+1. The filter uses a date range.
+2. A date index supports range access better than an unrelated column.
+3. Therefore an index on `payment_date` is the better fit.
+
+*Final answer:* Use an index on `payment_date`.
+
+**Hands-on Exercise**
+
+1. List all payments of student 101.
+2. Show all June payments with amount greater than 2000.
+3. Count payments by status.
+4. Create a composite index on `(status, payment_date)` and explain what kind of query it may help.
+
+*Suggested solution path*
+```sql
+SELECT *
+FROM payments
+WHERE student_id = 101;
+
+SELECT *
+FROM payments
+WHERE payment_date BETWEEN '2026-06-01' AND '2026-06-30'
+  AND amount > 2000;
+
+SELECT status, COUNT(*) AS total
+FROM payments
+GROUP BY status;
+
+CREATE INDEX idx_payments_status_date
+ON payments(status, payment_date);
+```
+
+**How to Pass This Topic**
+
+- In exams, always connect indexes to specific queries.
+- Avoid the common mistake: "More indexes always mean better performance." That is false.
+- When asked to recommend an index, mention the filter, join, or sort column.
+- Many professors give scenario questions. Use the phrase *read performance vs write overhead*.
+- Be ready to distinguish logical design errors from physical tuning issues.
+$md$, 4, 'sql', $code$CREATE TABLE payments (
+    payment_id INTEGER PRIMARY KEY,
+    student_id INTEGER,
+    payment_date DATE,
+    amount DECIMAL(10,2),
+    status VARCHAR(20)
+);
+
+INSERT INTO payments VALUES
+(1, 101, '2026-06-01', 3500.00, 'PAID'),
+(2, 102, '2026-06-02', 4200.00, 'PAID'),
+(3, 101, '2026-06-15', 1500.00, 'PARTIAL'),
+(4, 103, '2026-06-20', 5000.00, 'PAID'),
+(5, 104, '2026-06-25', 2800.00, 'UNPAID');
+
+CREATE INDEX idx_payments_student_id ON payments(student_id);
+CREATE INDEX idx_payments_payment_date ON payments(payment_date);$code$);
+
