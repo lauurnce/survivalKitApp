@@ -1,13 +1,13 @@
 -- ============================================================
--- Systems Integration and Architecture — Modules & Sections (SCAFFOLD)
+-- Systems Integration and Architecture — Modules & Sections
 -- Subject ID: 30000000-0003-0001-0001-000000000002
 -- 3rd Year, Semester 1 — major
--- Suggested module count: 6-10
 --
--- Reserved UUID namespace below is collision-free and deterministic.
--- Fill module titles/slugs + section headings/bodies from the GPT-5.5
--- deep-research output, then run this file once. Re-running is safe
--- (the DELETE clears prior rows for this subject first).
+-- Free/paid split: per lesson, sections 1-2 are FREE (kind='content'),
+-- section 3 + the practice drills are PAID (kind='activity'). Each
+-- lesson's drills activity carries a Python IDE playground, so it uses
+-- the 7-column form and lives in its own INSERT (a VALUES list cannot
+-- mix column counts). Re-running is safe (the DELETE clears prior rows).
 -- ============================================================
 
 DELETE FROM modules WHERE subject_id = '30000000-0003-0001-0001-000000000002';
@@ -26,19 +26,15 @@ DELETE FROM modules WHERE subject_id = '30000000-0003-0001-0001-000000000002';
 --   M11: ad22607a-0d60-5c62-96f0-82329ad2cc1b
 --   M12: 6ba7a33a-4f4e-58c8-bd3d-39ae703db677
 
--- INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
---   ('55c215f7-4e39-5eed-9bdb-744e7eb24547','30000000-0003-0001-0001-000000000002','Lesson 1: <TITLE>','lesson-1-<slug>',1),
---   ('82da7460-0642-5961-b7af-26e3514d34ab','30000000-0003-0001-0001-000000000002','Lesson 2: <TITLE>','lesson-2-<slug>',2),
---   ('fb99eb69-56e4-5383-a04a-4bb95b7de567','30000000-0003-0001-0001-000000000002','Lesson 3: <TITLE>','lesson-3-<slug>',3),
---   ('5bd78697-327f-5e9a-bc27-ed46b93e8137','30000000-0003-0001-0001-000000000002','Lesson 4: <TITLE>','lesson-4-<slug>',4),
---   ('22dba449-b892-5d94-aa42-0e07c8a216d2','30000000-0003-0001-0001-000000000002','Lesson 5: <TITLE>','lesson-5-<slug>',5),
---   ('df0c9643-382d-519a-812b-3c6ff679d92f','30000000-0003-0001-0001-000000000002','Lesson 6: <TITLE>','lesson-6-<slug>',6),
---   ('7147968d-c39c-55fe-9ffb-6e666a1e8f21','30000000-0003-0001-0001-000000000002','Lesson 7: <TITLE>','lesson-7-<slug>',7),
---   ('8fdf6171-ba7e-50c4-9c78-885914e03998','30000000-0003-0001-0001-000000000002','Lesson 8: <TITLE>','lesson-8-<slug>',8),
---   ('62d61104-2fa2-577f-85f7-9f07010948ba','30000000-0003-0001-0001-000000000002','Lesson 9: <TITLE>','lesson-9-<slug>',9),
---   ('3d250545-81f1-5a0c-9625-cdba89716c6e','30000000-0003-0001-0001-000000000002','Lesson 10: <TITLE>','lesson-10-<slug>',10),
---   ('ad22607a-0d60-5c62-96f0-82329ad2cc1b','30000000-0003-0001-0001-000000000002','Lesson 11: <TITLE>','lesson-11-<slug>',11),
---   ('6ba7a33a-4f4e-58c8-bd3d-39ae703db677','30000000-0003-0001-0001-000000000002','Lesson 12: <TITLE>','lesson-12-<slug>',12);
+INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
+  ('55c215f7-4e39-5eed-9bdb-744e7eb24547','30000000-0003-0001-0001-000000000002','Lesson 1: The Role of Systems Integration in Organizations','lesson-1-role-of-systems-integration',1),
+  ('82da7460-0642-5961-b7af-26e3514d34ab','30000000-0003-0001-0001-000000000002','Lesson 2: Enterprise Architecture and Architectural Views','lesson-2-enterprise-architecture-views',2),
+  ('fb99eb69-56e4-5383-a04a-4bb95b7de567','30000000-0003-0001-0001-000000000002','Lesson 3: Architecture Styles and Quality Attributes','lesson-3-architecture-styles-quality-attributes',3),
+  ('5bd78697-327f-5e9a-bc27-ed46b93e8137','30000000-0003-0001-0001-000000000002','Lesson 4: Middleware and Integration Patterns','lesson-4-middleware-integration-patterns',4),
+  ('22dba449-b892-5d94-aa42-0e07c8a216d2','30000000-0003-0001-0001-000000000002','Lesson 5: APIs, Services, and Microservice Integration','lesson-5-apis-services-microservice-integration',5),
+  ('df0c9643-382d-519a-812b-3c6ff679d92f','30000000-0003-0001-0001-000000000002','Lesson 6: Data Integration and Interoperability','lesson-6-data-integration-interoperability',6),
+  ('7147968d-c39c-55fe-9ffb-6e666a1e8f21','30000000-0003-0001-0001-000000000002','Lesson 7: Secure, Reliable, and Observable Integrated Systems','lesson-7-secure-reliable-observable-systems',7),
+  ('8fdf6171-ba7e-50c4-9c78-885914e03998','30000000-0003-0001-0001-000000000002','Lesson 8: Testing, Deployment, and Governance of Integration Solutions','lesson-8-testing-deployment-governance',8);
 
 -- ---- Reserved section UUIDs, per module ----
 -- Module 1 (55c215f7-4e39-5eed-9bdb-744e7eb24547):
@@ -195,3 +191,8 @@ DELETE FROM modules WHERE subject_id = '30000000-0003-0001-0001-000000000002';
 
 -- >>>>>>>>>>>>>>>>>>>>  PASTE FILLED-IN INSERTS BELOW  <<<<<<<<<<<<<<<<<<<<
 
+
+-- Per lesson: S1/S2 = free content, S3 = content gated as activity,
+-- S4 = Practice & Exam Drills activity with a Python playground.
+-- 2 free + 2 paid. The S4 drills use the 7-column form, so each lesson
+-- splits into one 5-column INSERT (S1-S3) and one 7-column INSERT (S4).
