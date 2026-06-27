@@ -47,7 +47,14 @@ export default async function AccountPage() {
             </div>
           ) : (
             <div className="space-y-10">
-              {unlockedSubjects.map((s) => (
+              {unlockedSubjects.map((s) => {
+                // "Continue" jumps to the first unfinished lesson; if every
+                // module is done, fall back to the subject's module list.
+                const nextModule = s.modules.find((m) => !m.done);
+                const continueHref = nextModule
+                  ? `/year/${s.yearId}/subjects/${s.id}/modules/${nextModule.id}`
+                  : `/year/${s.yearId}/subjects/${s.id}/modules`;
+                return (
                 <div key={s.id}>
                   <div className="flex items-baseline justify-between mb-4">
                     <h2 className="font-serif text-xl text-ink">{s.title}</h2>
@@ -55,42 +62,45 @@ export default async function AccountPage() {
                   </div>
                   <ol className="space-y-2">
                     {s.modules.map((m, idx) => (
-                      <li
-                        key={m.id}
-                        className={`flex items-center gap-3 rounded-lg px-4 py-3 border ${
-                          m.done
-                            ? "border-accent/30 bg-accent/5"
-                            : "border-taupe/30 bg-paper"
-                        }`}
-                      >
-                        <span
-                          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium ${
+                      <li key={m.id}>
+                        <Link
+                          href={`/year/${s.yearId}/subjects/${s.id}/modules/${m.id}`}
+                          className={`flex items-center gap-3 rounded-lg px-4 py-3 border transition-colors hover:border-accent/50 ${
                             m.done
-                              ? "bg-accent text-paper"
-                              : "border border-taupe/60 text-ink-faint"
+                              ? "border-accent/30 bg-accent/5 hover:bg-accent/10"
+                              : "border-taupe/30 bg-paper hover:bg-taupe/5"
                           }`}
                         >
-                          {m.done ? "✓" : idx + 1}
-                        </span>
-                        <span className={`text-sm ${m.done ? "text-ink" : "text-ink-muted"}`}>
-                          {m.title}
-                        </span>
-                        {!m.done && s.modules.slice(0, idx).every((prev) => prev.done) && (
-                          <span className="ml-auto rounded bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
-                            Next up
+                          <span
+                            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium ${
+                              m.done
+                                ? "bg-accent text-paper"
+                                : "border border-taupe/60 text-ink-faint"
+                            }`}
+                          >
+                            {m.done ? "✓" : idx + 1}
                           </span>
-                        )}
+                          <span className={`text-sm ${m.done ? "text-ink" : "text-ink-muted"}`}>
+                            {m.title}
+                          </span>
+                          {!m.done && s.modules.slice(0, idx).every((prev) => prev.done) && (
+                            <span className="ml-auto rounded bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
+                              Next up
+                            </span>
+                          )}
+                        </Link>
                       </li>
                     ))}
                   </ol>
                   <Link
-                    href={`/year/${s.yearId}/subjects/${s.id}`}
+                    href={continueHref}
                     className="mt-4 inline-block rounded-lg bg-accent px-5 py-2 text-sm font-medium text-paper"
                   >
                     Continue {s.title} →
                   </Link>
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </section>
