@@ -755,3 +755,257 @@ print(adapt_legacy_record(legacy_record))
 $code$);
 
 -- ============================================================
+-- LESSON 5: APIs, Services, and Microservice Integration
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('22dba449-b892-5d94-aa42-0e07c8a216d2','content','API Fundamentals',$md$
+An **Application Programming Interface** or API is a defined way for one software component to request data or actions from another. In modern integration work, APIs are one of the most common connection mechanisms because they are explicit, reusable, and easy to document compared with ad hoc file exchange.
+
+A typical API interaction includes:
+
+- An endpoint or address
+- A request with parameters or payload
+- A response with data or status
+- Rules for authentication, errors, and versioning
+
+In many BSIT courses, students first encounter APIs through web systems. For example, a payment service may expose an endpoint to verify a transaction, while an LMS may expose an endpoint to create user access. When these APIs are well-designed, integration becomes more predictable.
+
+Good API design values clarity. A consumer should know what a service does, what it expects, and what it returns. Unclear or inconsistent APIs create integration defects even when the backend logic is correct.
+$md$, 1),
+('22dba449-b892-5d94-aa42-0e07c8a216d2','content','Service Orientation and Microservices',$md$
+In service-oriented design, a system exposes functionality as **services** that other systems can use. Examples include a student profile service, payment validation service, or inventory lookup service. The idea is to encapsulate a capability and make it reusable.
+
+**Microservices** are a more fine-grained style where applications are split into small services that can be deployed independently. This can improve agility when teams are large and systems change often. However, it also introduces complexity in deployment, monitoring, data ownership, and communication.
+
+For students, the important lesson is this: microservices are not automatically the mature solution. They are useful only when justified by the scale and operational reality of the organization.
+
+A practical design principle here is **loose coupling**. Each service should expose a stable contract and avoid knowing too much about the internal design of another service.
+$md$, 2),
+('22dba449-b892-5d94-aa42-0e07c8a216d2','activity','Contracts, Versioning, and Error Handling',$md$
+API integrations fail when contracts are unclear. A **contract** defines the structure of requests and responses, required fields, valid values, and possible errors.
+
+Three exam-heavy concepts are worth remembering:
+
+| Concept | Why it matters |
+|---|---|
+| Versioning | Prevents old clients from breaking when the API changes |
+| Idempotency | Prevents duplicate effects when a request is retried |
+| Error handling | Makes failures visible, consistent, and debuggable |
+
+Suppose a payment confirmation request is sent twice because of a timeout. If the endpoint is idempotent, the second request does not create a duplicate charge or duplicate enrollment. That is a major reliability feature in integration design.
+
+Use this mindset: a service is not complete when it only handles the happy path. It must also handle invalid input, unavailable dependent services, duplicate requests, and partial failure. This is especially important in financial, health, academic, and government workflows.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('22dba449-b892-5d94-aa42-0e07c8a216d2','activity','Practice & Exam Drills — Lesson 5',$md$
+### Review Questions
+
+1. What is an API?
+2. Why are APIs useful in systems integration?
+3. What is loose coupling?
+4. Differentiate service-oriented design from microservices.
+5. What is versioning?
+6. What is idempotency, and why is it important?
+
+### Worked Exam-Style Problems
+
+**Problem 1: API Design Logic**
+
+A college portal needs to check if a student has no outstanding balance before activating LMS access. What sequence of service calls is reasonable?
+
+*Step-by-step solution*
+
+1. Identify the required decision. LMS activation depends on payment status.
+2. Identify the minimum services involved. A student/account service and an LMS activation service.
+3. Define the order. First retrieve student/account status, then decide whether conditions are met, then call LMS activation only if allowed.
+4. State the benefit. This avoids invalid activation and keeps the business rule explicit.
+
+**Final answer:** A reasonable sequence is: Get student/account record → verify outstanding balance → if balance is zero, call LMS activation service → return final status to the portal.
+
+**Problem 2: Idempotency Scenario**
+
+A payment service receives the same "confirm payment" request twice because the client retried after a timeout. Why should this API be idempotent?
+
+*Step-by-step solution*
+
+1. A retry may happen even though the first request succeeded.
+2. If the API is not idempotent, the second request may repeat side effects.
+3. In payment-related flows, duplicate effects are dangerous.
+4. Therefore, the service should recognize repeated requests safely.
+
+**Final answer:** The API should be idempotent so that retrying the same confirmation does not create duplicate payments, duplicate state changes, or duplicate downstream actions.
+
+### Hands-On Exercise
+
+Use the starter code to build a very small service orchestration flow.
+
+Tasks:
+
+1. Implement `process_enrollment(student_no)`.
+2. Return results such as: `{"status": "error", "message": "student not found"}`, `{"status": "blocked", "message": "outstanding balance"}`, `{"status": "success", "lms_status": "activated"}`.
+3. Add a field named `request_id` to simulate better integration practice.
+
+This activity trains you to think in terms of service contracts, conditions, and safe orchestration.
+
+### How to Pass This Topic
+
+- In API questions, always name both the request and the response.
+- Remember that microservices solve some scaling and team problems but create operational complexity.
+- Professors often test idempotency through payment or enrollment examples.
+- When asked for "best practice," mention clear contracts, versioning, authentication, and consistent error responses.
+- Do not confuse an API with a UI. An API is for software-to-software interaction.
+$md$, 4, 'python', $code$# Lesson 5 starter code
+# Goal: simulate simple service orchestration using functions.
+
+def get_student(student_no):
+    data = {
+        "2023-0001": {"student_no": "2023-0001", "name": "Ana Cruz", "balance": 0},
+        "2023-0002": {"student_no": "2023-0002", "name": "Ben Reyes", "balance": 1500},
+    }
+    return data.get(student_no)
+
+def activate_lms(student_no):
+    return {"student_no": student_no, "lms_status": "activated"}
+
+def process_enrollment(student_no):
+    # TODO:
+    # 1. Get the student record
+    # 2. If not found, return an error dictionary
+    # 3. If balance > 0, do not activate LMS
+    # 4. If balance == 0, activate LMS
+    # 5. Return a final result dictionary
+    return {}
+
+print(process_enrollment("2023-0001"))
+print(process_enrollment("2023-0002"))
+$code$);
+
+-- ============================================================
+-- LESSON 6: Data Integration and Interoperability
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('df0c9643-382d-519a-812b-3c6ff679d92f','content','Why Data Integration Is Difficult',$md$
+Many system integration projects fail not because applications cannot connect, but because their **data** does not match. Two systems may use different field names, different identifiers, different validation rules, or different meanings for the same label.
+
+For example, one system may store `course`, another `program`. One may use `Student No.`, another `Learner_ID`. One system may record province names in full, another may use abbreviations. If these are merged carelessly, reports become inaccurate.
+
+Data integration usually involves three important tasks:
+
+- **Mapping** – deciding which fields correspond to each other
+- **Transformation** – converting structure, type, or format
+- **Validation** – checking completeness, correctness, and consistency
+
+In practice, data integration is where architecture becomes very concrete. If the team does not define data ownership, unique identifiers, and quality rules, the integrated environment will behave unpredictably.
+$md$, 1),
+('df0c9643-382d-519a-812b-3c6ff679d92f','content','Interoperability and Common Data Formats',$md$
+**Interoperability** means systems can exchange and correctly use information. It is not enough that a message is received; the receiving system must also understand it correctly.
+
+Common interoperability concerns include:
+
+- **Syntactic interoperability** – Do the systems use compatible formats such as CSV, JSON, or XML?
+- **Semantic interoperability** – Do they mean the same thing by the same field?
+- **Technical interoperability** – Can systems exchange data over compatible protocols and platforms?
+
+A useful example is health or education data. Two systems may both send a field called `status`, but one means active/inactive while the other means enrolled/graduated. That is a semantic problem, not a transport problem.
+
+Because of this, integration teams often create canonical data models, shared dictionaries, or mapping tables. These do not remove differences, but they give the team a controlled way to manage them.
+$md$, 2),
+('df0c9643-382d-519a-812b-3c6ff679d92f','activity','Master Data and Legacy Modernization',$md$
+Some data items are so important that the organization must define an official master source. Examples include customer records, employee IDs, product codes, or student profiles. This is the idea behind **master data**.
+
+If no master source is defined, different systems may all claim to be correct. That creates conflict and reconciliation problems. One system may say a student is active, another may say inactive, and a third may store an outdated program code.
+
+Legacy modernization often starts by stabilizing these data responsibilities. Instead of rewriting everything, the organization first decides:
+
+- Which system owns the official value?
+- Which systems consume that value?
+- How often should synchronization happen?
+- What happens when conflicts appear?
+
+This is a very practical area for BSIT students because it combines data design, process thinking, and operational realism.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('df0c9643-382d-519a-812b-3c6ff679d92f','activity','Practice & Exam Drills — Lesson 6',$md$
+### Review Questions
+
+1. Differentiate data mapping from data transformation.
+2. What is interoperability?
+3. What is semantic interoperability?
+4. Why is a master data source important?
+5. Give one example of a field mismatch problem.
+6. Why can "received successfully" still lead to wrong integration?
+
+### Worked Exam-Style Problems
+
+**Problem 1: Data Ownership**
+
+A university has both an enrollment system and an LMS storing student email addresses. Students update their emails in one system but not in the other. What data integration issue exists, and what should be done?
+
+*Step-by-step solution*
+
+1. Identify the issue. There is unclear ownership of a shared data item.
+2. State the risk. Inconsistent email addresses lead to failed notifications and identity confusion.
+3. Recommend the fix. Assign a master source of truth for official student contact details and synchronize dependent systems from it.
+
+**Final answer:** The issue is duplicate ownership of the same data without a master source. The organization should designate one authoritative system for official student contact details and synchronize the other systems from it.
+
+**Problem 2: Interoperability Analysis**
+
+System A sends `status = ACTIVE`. System B expects `status = ENROLLED`. Is this a syntactic or semantic interoperability problem?
+
+*Step-by-step solution*
+
+1. Check the format. Both values are valid strings, so syntax is fine.
+2. Check the meaning. The systems interpret the status field differently.
+3. Therefore, this is semantic interoperability.
+
+**Final answer:** It is a semantic interoperability problem because the field is technically exchangeable but its meaning differs across systems.
+
+### Hands-On Exercise
+
+Complete the starter code and then extend it.
+
+Tasks:
+
+1. Merge `registrar` and `library` records using the student identifier.
+2. If no library record exists, set `borrowed_books` to 0.
+3. Add a validation rule that ensures `year_level` is numeric.
+4. Print the unified records.
+
+**Challenge extension:** Create a field called `library_hold` set to `True` if `borrowed_books > 3`, otherwise `False`.
+
+### How to Pass This Topic
+
+- In case studies, always ask: Who owns the official data?
+- Professors like asking about data inconsistency, duplicate records, and different meanings of the same field.
+- Use the words mapping, transformation, validation, and source of truth correctly.
+- Do not say "data integration is just merging tables." It is broader than that.
+- When answering interoperability questions, separate format, meaning, and transport.
+$md$, 4, 'python', $code$# Lesson 6 starter code
+# Goal: map and transform records from two systems.
+
+registrar = [
+    {"student_no": "2023-0001", "program": "BSIT", "year_level": "3"},
+    {"student_no": "2023-0002", "program": "BSCS", "year_level": "2"},
+]
+
+library = [
+    {"id": "2023-0001", "borrowed_books": 1},
+    {"id": "2023-0002", "borrowed_books": 0},
+]
+
+def integrate_data(registrar_records, library_records):
+    # TODO:
+    # Match student_no with id
+    # Return unified records with:
+    # student_no, program, year_level, borrowed_books
+    return []
+
+print(integrate_data(registrar, library))
+$code$);
+
+-- ============================================================
