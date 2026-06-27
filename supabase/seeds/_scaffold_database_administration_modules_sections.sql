@@ -603,3 +603,172 @@ INSERT INTO payments VALUES
 CREATE INDEX idx_payments_student_id ON payments(student_id);
 CREATE INDEX idx_payments_payment_date ON payments(payment_date);$code$);
 
+-- ============================================================
+-- LESSON 4: Administrative SQL and Schema Objects
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('59f57eb3-cab9-5bbe-bd26-7880e4e43763','content','DDL, DML, and Administrative Control',$md$
+A DBA must know SQL not only for querying data, but also for controlling database structures.
+
+Three categories are especially important:
+
+| Category | Meaning | Common commands |
+|---|---|---|
+| DDL | Data Definition Language | `CREATE`, `ALTER`, `DROP` |
+| DML | Data Manipulation Language | `INSERT`, `UPDATE`, `DELETE`, `SELECT` |
+| TCL | Transaction Control Language | `COMMIT`, `ROLLBACK`, `SAVEPOINT` |
+
+For database administration, DDL is central because schema changes affect the whole system. Creating a table is easy in class. In production, it requires more care:
+
+- Is the table name consistent?
+- Are constraints included?
+- Will it affect existing applications?
+- Is there a rollback plan?
+
+A careless `ALTER TABLE` can break reports, increase downtime, or invalidate application code. That is why DBAs prefer controlled changes, documented versions, and test validation before production release.
+$md$, 1),
+
+('59f57eb3-cab9-5bbe-bd26-7880e4e43763','content','Views, Stored Routines, and Triggers',$md$
+Schema objects help organize logic and control access.
+
+### Views
+
+A view is a saved query presented like a table. Views are useful when:
+
+- you want users to see only selected columns
+- you want to simplify repeated joins
+- you want to enforce a more stable interface for reports
+
+Example idea: a cashier may need student balances, but not confidential profile details.
+
+### Stored routines
+
+Depending on the DBMS, you may create stored procedures or functions. These package SQL logic on the server side. DBAs care about them because they affect:
+
+- maintainability
+- consistency
+- permissions
+- performance patterns
+
+### Triggers
+
+A trigger runs automatically when an event occurs, such as an insert or update. Triggers can support:
+
+- audit logging
+- automatic timestamps
+- rule enforcement
+
+But triggers should be used carefully. Hidden automatic behavior can make systems harder to debug. A DBA should ask whether the logic is truly best placed in the database.
+$md$, 2),
+
+('59f57eb3-cab9-5bbe-bd26-7880e4e43763','activity','Change Management and Data Quality Checks',$md$
+Administration SQL is not only about creating new objects. It is also about changing them safely and verifying data quality.
+
+Good schema change practice includes:
+
+- write the change script clearly
+- test it in a non-production environment
+- back up the affected database or objects
+- schedule deployment carefully
+- validate the result after execution
+- prepare rollback steps if possible
+
+A DBA also writes SQL for validation tasks such as:
+
+- finding nulls in required columns
+- checking orphan child rows
+- detecting duplicate values
+- verifying totals before and after a migration
+
+Example data-quality query:
+
+```sql
+SELECT student_id, COUNT(*)
+FROM students
+GROUP BY student_id
+HAVING COUNT(*) > 1;
+```
+
+Even when applications already validate input, DBAs should still check the database directly. Trust is important, but verification is better.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('59f57eb3-cab9-5bbe-bd26-7880e4e43763','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. Why is DDL especially important for DBAs?
+2. What is the difference between DDL and DML?
+3. What is a view?
+4. Give one advantage and one risk of triggers.
+5. Why should schema changes be tested first?
+6. What is rollback in change management?
+7. Why do DBAs run data-quality queries?
+8. When might a view be better than giving direct table access?
+
+**Worked Exam-Style Problems**
+
+**Problem 1.** A professor asks: "Why is `ALTER TABLE` in production riskier than `SELECT` in production?"
+
+*Step-by-step solution*
+1. `SELECT` reads data without changing structure.
+2. `ALTER TABLE` changes structure shared by applications and users.
+3. Structural changes may fail, lock objects, or break compatibility.
+4. Therefore, `ALTER TABLE` carries wider operational risk.
+
+*Final answer:* `ALTER TABLE` is riskier because it changes the schema itself, which can affect applications, performance, locking, and compatibility, while `SELECT` is usually read-only.
+
+**Problem 2.** A report user only needs `student_id`, `student_name`, and `program_code`. Should you give direct full-table access or create a view?
+
+*Step-by-step solution*
+1. The user needs limited data only.
+2. Direct table access exposes unnecessary columns like email or future sensitive fields.
+3. A view can restrict the visible columns.
+4. This supports least privilege and cleaner reporting.
+
+*Final answer:* Create a view that exposes only the required columns.
+
+**Hands-on Exercise**
+
+1. Add a `created_at` column to students.
+2. Create a view named `student_directory` showing only `student_id`, `student_name`, and `program_code`.
+3. Find all students with missing email addresses.
+4. Update the missing email of Lia Santos.
+
+*Suggested solution path*
+```sql
+ALTER TABLE students
+ADD COLUMN created_at DATE;
+
+CREATE VIEW student_directory AS
+SELECT student_id, student_name, program_code
+FROM students;
+
+SELECT *
+FROM students
+WHERE email IS NULL;
+
+UPDATE students
+SET email = 'lia@school.edu'
+WHERE student_id = 3;
+```
+
+**How to Pass This Topic**
+
+- Memorize command classes: DDL, DML, TCL.
+- In practical exams, read the requirement carefully before writing `ALTER` statements.
+- For essay questions, emphasize controlled change, testing, and rollback planning.
+- Use views in answers when the scenario involves limited access or simplified reporting.
+- Common mistake: forgetting constraints and documentation when creating new objects.
+$md$, 4, 'sql', $code$CREATE TABLE students (
+    student_id INTEGER PRIMARY KEY,
+    student_name VARCHAR(50),
+    program_code VARCHAR(10),
+    email VARCHAR(60)
+);
+
+INSERT INTO students VALUES
+(1, 'Ana Cruz', 'BSIT', 'ana@school.edu'),
+(2, 'Marco Reyes', 'BSIT', 'marco@school.edu'),
+(3, 'Lia Santos', 'BSCS', NULL);$code$);
+
