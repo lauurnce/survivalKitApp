@@ -650,3 +650,146 @@ This violates **least privilege** because the staff member keeps more access tha
 - Keep answers practical. Faculty often reward students who think like future system administrators.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 4: Cryptography, Hashing, and Digital Signatures
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('965ef740-b656-5b14-88da-3520be07e937','content','Why Cryptography Exists',$md$
+Cryptography protects information by transforming it so that unauthorized users cannot meaningfully read or alter it. In security, cryptography supports confidentiality, integrity, authentication, and non-repudiation.
+
+Important terms:
+
+- **Plaintext** — original readable data
+- **Ciphertext** — encrypted unreadable output
+- **Encryption** — converting plaintext to ciphertext
+- **Decryption** — restoring ciphertext to plaintext
+- **Key** — secret or controlled value used by an algorithm
+
+Cryptography is not magic. If keys are poorly managed, even strong algorithms can fail in practice.
+$md$, 1),
+('965ef740-b656-5b14-88da-3520be07e937','content','Symmetric and Asymmetric Encryption',$md$
+There are two broad encryption approaches.
+
+**Symmetric encryption** — the same key is used to encrypt and decrypt.
+
+- Advantages: fast, efficient for large amounts of data.
+- Challenge: both parties must protect and share the same secret key securely.
+
+**Asymmetric encryption** — a pair of keys is used: a **public key** for sharing and a **private key** kept secret.
+
+- Advantages: supports secure key exchange, helps with digital signatures.
+- Challenge: slower than symmetric methods.
+
+A simple exam comparison:
+
+| Property | Symmetric | Asymmetric |
+|---|---|---|
+| Number of keys | One shared key | Public/private pair |
+| Speed | Faster | Slower |
+| Typical use | Bulk data encryption | Key exchange, signatures |
+
+In real systems, both are often used together. For example, a secure connection may use asymmetric methods to establish trust and exchange secrets, then use symmetric encryption for efficient communication.
+$md$, 2),
+('965ef740-b656-5b14-88da-3520be07e937','activity','Hashing and Integrity',$md$
+A **hash function** takes an input and produces a fixed-size output called a hash value or digest. Hashing is not the same as encryption.
+
+Key idea:
+
+- Encryption is reversible with the right key
+- Hashing is designed to be one-way
+
+Uses of hashing include:
+
+- password storage,
+- file integrity checking,
+- digital signatures,
+- detecting unauthorized modification.
+
+If two files produce different hashes, they are different. If a file's stored expected hash no longer matches its current hash, integrity may have been compromised.
+
+In introductory exams, students are often asked why passwords should not be stored in plain text. The expected answer is that systems should store hashed passwords, ideally with stronger storage practices such as salting and slow password-hashing mechanisms.
+$md$, 3),
+('965ef740-b656-5b14-88da-3520be07e937','activity','Digital Signatures and Practical Data Protection',$md$
+A **digital signature** is used to prove origin and protect integrity. Conceptually:
+
+1. The sender creates a digest of the message.
+2. The digest is signed using the sender's private key.
+3. The receiver verifies using the sender's public key.
+
+If verification succeeds, the receiver gains confidence that:
+
+- the message was not altered,
+- the signature came from the holder of the private key.
+
+This supports integrity, authentication, and non-repudiation.
+
+In daily IT practice, cryptography also appears in:
+
+- secure websites,
+- VPNs,
+- encrypted storage,
+- secure email,
+- database protection,
+- digital certificates.
+
+For beginners, the safest summary is this: encryption hides data, hashing checks data, signatures prove trusted origin and integrity.
+$md$, 4),
+('965ef740-b656-5b14-88da-3520be07e937','activity','Practice & Exam Drills — Lesson 4',$md$
+### Review Questions
+
+1. Define plaintext, ciphertext, encryption, and key.
+2. What is the difference between symmetric and asymmetric encryption?
+3. Why is symmetric encryption faster?
+4. Why is hashing not the same as encryption?
+5. What security properties can digital signatures provide?
+6. Why should passwords not be stored in plain text?
+7. What is a public key used for?
+8. What is a private key used for?
+
+### Worked Exam-Style Problems
+
+**Problem A: Identify the Correct Technique** — Match each need to the most appropriate concept.
+
+1. Hide the contents of a confidential file → **Encryption**
+2. Check whether a downloaded file was modified → **Hashing**
+3. Prove that a message came from a particular sender → **Digital signature**
+4. Store passwords more safely than plain text → **Hashing** (with proper password hashing methods)
+
+**Problem B: Symmetric vs Asymmetric Choice**
+
+A company wants to encrypt a very large archive quickly, but the key exchange between partners is a challenge. Which method fits each part?
+
+*Step-by-Step Solution*
+
+- Encrypting a very large archive quickly → **Symmetric encryption**
+- Handling secure key exchange between partners → **Asymmetric encryption**
+
+Best practical explanation: use asymmetric techniques to exchange or protect the symmetric key, then use symmetric encryption for the bulk file. This hybrid approach is common because it combines speed and secure key handling.
+
+**Problem C: Signature Reasoning**
+
+A sender signs a message digest using a private key. The receiver verifies using the public key. What does successful verification tell the receiver?
+
+*Step-by-Step Solution*
+
+Successful verification suggests: the message matches the signed digest → **integrity**; the signer likely possessed the private key → **authentication of origin**; the sender cannot easily deny the action later → **non-repudiation** in the intended model. It does not automatically guarantee **confidentiality**, unless encryption is also used.
+
+### Hands-On Exercises
+
+**Exercise A: Crypto Comparison Table** — Create a summary table with columns: Technique | Reversible? | Main Purpose | Typical Use. Fill in rows for symmetric encryption, asymmetric encryption, hashing, and digital signatures.
+
+**Exercise B: Integrity Check Scenario** — A school distributes a software installer to multiple computer labs. Explain how hashing can help verify that the installer in every lab is the correct and untampered copy.
+
+**Exercise C: Password Storage Reflection** — Write a short explanation to a non-technical office manager on why storing passwords in an Excel file or plain database column is dangerous.
+
+### How to Pass This Topic
+
+- Many students confuse hashing with encryption. Fix that early.
+- Memorize the phrase: encryption for secrecy, hashing for integrity check, signatures for proof of origin.
+- If a question mentions public key/private key, think asymmetric encryption or digital signatures.
+- If a question asks about password storage, do not answer "encrypt passwords" unless the class specifically discussed the nuance. Intro courses usually expect "hash passwords."
+- In long answers, connect the tool to the security property it supports.
+- When comparing methods, a simple table-based answer is often the cleanest.
+$md$, 5);
+
