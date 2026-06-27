@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { isSubscribed } from "@/lib/subscriptions";
 import { isUuid } from "@/lib/validation";
+import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 
 export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
-  const deviceId = req.headers.get("x-device-id") ?? "";
+  // Trust only the signed device cookie, never a raw x-device-id header.
+  const cookieStore = await cookies();
+  const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value) ?? "";
   const yearId = req.nextUrl.searchParams.get("yearId") ?? "";
   const subjectId = req.nextUrl.searchParams.get("subjectId");
   const userId = await getCurrentUserId();

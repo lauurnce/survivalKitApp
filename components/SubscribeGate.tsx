@@ -37,11 +37,11 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, logg
   }
 
   async function checkSubscription(): Promise<boolean> {
-    const deviceId = getDeviceId();
+    // Mint the signed device cookie if needed; the server reads identity from
+    // that cookie, not from a client-supplied header.
+    getDeviceId();
     const params = new URLSearchParams({ yearId, subjectId });
-    const res = await fetch(`/api/subscription-status?${params.toString()}`, {
-      headers: deviceId ? { "x-device-id": deviceId } : {},
-    });
+    const res = await fetch(`/api/subscription-status?${params.toString()}`);
     if (!res.ok) return false;
     const data = await res.json() as { subscribed?: boolean };
     return data.subscribed === true;

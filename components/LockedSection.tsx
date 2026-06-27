@@ -39,10 +39,10 @@ export function LockedSection({ section, index, yearLabel, subjectTitle, moduleT
   const [status, setStatus] = useState<"idle" | "loading" | "locked" | "error">("loading");
 
   useEffect(() => {
-    const deviceId = getDeviceId();
-    fetch(`/api/activity/${section.id}`, {
-      headers: { "x-device-id": deviceId },
-    })
+    // Ensure the signed device cookie is minted; access is keyed off that cookie
+    // server-side, not a forgeable header.
+    getDeviceId();
+    fetch(`/api/activity/${section.id}`)
       .then(async (res) => {
         if (res.status === 403) { setStatus("locked"); return; }
         if (!res.ok) { setStatus("error"); return; }

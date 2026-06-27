@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
 import { isSubscribed } from "@/lib/subscriptions";
 import { isUnlocked } from "@/lib/unlocks";
+import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 
 interface Params {
@@ -10,7 +12,10 @@ interface Params {
 
 export async function GET(req: NextRequest, { params }: Params) {
   const { sectionId } = await params;
-  const deviceId = req.headers.get("x-device-id") ?? "";
+  // Derive the device identity from the HMAC-signed cookie, not a client-supplied
+  // header — a forged or copied value verifies to null and grants no access.
+  const cookieStore = await cookies();
+  const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value) ?? "";
   const userId = await getCurrentUserId();
   const supabase = createServerClient();
 
