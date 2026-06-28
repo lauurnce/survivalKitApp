@@ -92,6 +92,9 @@ export async function POST(req: NextRequest) {
       if (event_type === "module_open" && module_id) {
         return { type: "module" as const, id: module_id };
       }
+      if (event_type === "section_view" && section_id) {
+        return { type: "section" as const, id: section_id };
+      }
       return null;
     })();
 
