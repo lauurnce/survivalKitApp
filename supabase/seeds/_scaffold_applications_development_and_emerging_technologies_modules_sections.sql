@@ -265,3 +265,65 @@ They might host their app on a cloud platform (so it can scale if many users joi
 - Mention any local examples (like e-services running on cloud or smart agriculture sensors) to relate tech to the Philippine context.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 6: Testing, Deployment, and Security
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('3e810057-cdfd-5424-8d29-5af3b0a80efa','content','Software Testing Strategies',$md$
+Testing ensures an application works as intended. Common types include unit testing (checking individual functions or components) and integration testing (checking combined parts). For example, a unit test might verify that a function correctly adds two numbers. Automated tests (written in code) are standard practice. In exams, you might have to identify which type of testing is needed or explain how testing catches bugs before release.
+$md$, 1),
+('3e810057-cdfd-5424-8d29-5af3b0a80efa','content','Deployment and DevOps Basics',$md$
+Deployment is releasing an application to users (for example, uploading a website or submitting an app to a store). DevOps is the practice of combining development and operations, often using continuous integration/continuous deployment (CI/CD) tools. This means whenever new code is written, automated processes test and deploy it. For instance, after committing code, a CI/CD system can run tests and update the live app without manual steps. Questions may cover the concept of a deployment pipeline or why automated deployment reduces errors.
+$md$, 2),
+('3e810057-cdfd-5424-8d29-5af3b0a80efa','activity','Security Best Practices',$md$
+Security is crucial in development. Always validate user inputs (to prevent attacks like SQL injection) and encrypt or hash sensitive data. For example, do not store passwords in plain text—always hash them first. In the Philippines, the Data Privacy Act (RA 10173) requires protecting personal data (e.g., use secure connections, ask user consent). Professors may present a scenario (like a data breach or suspicious input) and ask how to secure the app (e.g., input validation, encryption, software updates).
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('3e810057-cdfd-5424-8d29-5af3b0a80efa','activity','Practice & Exam Drills — Lesson 6',$md$
+**Review Questions:**
+
+1. What is unit testing? Give one example.
+2. Why are passwords typically stored as hashes instead of plain text?
+3. What does CI/CD stand for? Why is it useful in deployment?
+4. Name one method to prevent SQL injection attacks.
+5. Explain what "continuous integration" means in simple terms.
+
+**Worked Problem:**
+
+Consider the function `is_even(n)`. What does `is_even(5)` return, and why? Write a Python assertion to test that `is_even(10)` returns `True`.
+
+**Solution:**
+
+`is_even(5)` returns `False` because 5 is not divisible by 2. A test for `is_even(10)` could be:
+
+```python
+assert is_even(10) == True
+```
+
+This passes if `is_even(10)` returns `True`.
+
+**Hands-on Exercise:**
+
+Add another test to the code: check that `is_even(7)` returns `False`, using an `assert` statement. For example:
+
+```python
+assert is_even(7) == False
+```
+
+This reinforces writing unit tests in Python.
+
+**How to Pass Tips:**
+
+- Learn basic security terms (encryption vs. hashing, OWASP top risks).
+- Understand why testing is done: mention catching bugs early and ensuring quality.
+- Remember CI/CD concepts (automated build/test/deploy); practice describing them simply.
+- In code snippets, practice spotting logic errors and writing small tests (assert statements).
+$md$, 4, 'python', $code$def is_even(n):
+    # returns True if n is an even number, False otherwise
+    return n % 2 == 0
+
+# TODO: write a simple test that checks is_even(4) returns True
+assert is_even(4) == True
+print("test passed")$code$);
+
