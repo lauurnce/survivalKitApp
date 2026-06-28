@@ -203,3 +203,48 @@ Think of a research question for an IT topic (for example, "Does using mobile ap
 - **Justify your choice.** When asked why a method is appropriate, explain how it fits the goal (e.g., "A survey is suitable to gather data from many users, whereas an interview is chosen to explore user experiences in depth.").
 $md$, 4);
 
+-- ============================================================
+-- LESSON 5: Data Collection and Analysis
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('ac389336-c0b6-51db-9b1e-53542f2bbc78','content','Sampling and Data Collection',$md$
+The population is the entire group you want to study (for example, all BSIT students in your university). A sample is a smaller group selected from the population. Common sampling methods include simple random sampling (everyone has an equal chance), stratified sampling (divide population into subgroups like year level, then sample each), and convenience sampling (using whoever is available). The sample should represent the population well. When collecting data, use methods like surveys, interviews, or observations. For a survey, write clear questions and decide on an appropriate scale. It's good practice to pilot-test your questionnaire on a few people to make sure questions are understood.
+$md$, 1),
+('ac389336-c0b6-51db-9b1e-53542f2bbc78','content','Questionnaire Design and Instruments',$md$
+Design your data collection tools carefully. For example, a questionnaire might include multiple-choice, yes/no, or rating-scale questions (such as Likert scales). Open-ended questions let respondents answer in their own words but are harder to analyze. Ensure each question is clear and not leading. Check that your instrument is valid (it measures what you intend to measure) and reliable (it would give similar results if repeated). For instance, if asking about "internet speed," make sure all respondents understand what speed ranges or terms you mean. Plan how you will distribute the instrument (paper, online, interview) and how to record the responses.
+$md$, 2),
+('ac389336-c0b6-51db-9b1e-53542f2bbc78','activity','Data Analysis: Descriptive Statistics',$md$
+After collecting data, organize and summarize it. If you have numerical data, calculate descriptive statistics: the mean (average), median (middle value), and mode (most frequent value). For example, if students studied 3, 5, 2, 6, and 4 hours, the mean is (3+5+2+6+4)/5 = 4, and the median (middle when sorted 2,3,4,5,6) is 4. Use tables and graphs to present findings: bar charts or pie charts for categories, histograms for distributions, etc. If your data is categorical (like yes/no responses), use counts and percentages. Even without advanced statistics, presenting clear summaries of your data is a crucial part of analysis.
+$md$, 3),
+('ac389336-c0b6-51db-9b1e-53542f2bbc78','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. What is the difference between a population and a sample?
+2. Name two ways to select a sample (sampling methods).
+3. Why is it important for a sample to be representative of the population?
+4. What do validity and reliability mean in the context of a survey question?
+5. When would you use a bar graph versus a pie chart?
+
+**Worked Problems**
+
+**Exam Problem:** Given the data on hours studied by 5 students: 3, 5, 2, 6, 4. Calculate the mean and median study hours.
+
+**Solution:** First, sort the data: 2, 3, 4, 5, 6. The mean is (2+3+4+5+6)/5 = 20/5 = 4. The median (the middle value) is 4 (the third number in the sorted list). So both the mean and median are 4 hours.
+
+**Exam Problem:** You need to survey 50 employees in a large company to know their preferred programming language. Which sampling method would ensure each employee has a fair chance of being selected? Explain why.
+
+**Solution:** A simple random sample is best. For example, list all employees and randomly pick 50 names (using random numbers or a lottery). This way, every employee has an equal chance of selection, reducing bias. A method like convenience sampling (surveying only those who volunteer) might skew results if volunteers differ from others.
+
+**Hands-On Exercise**
+
+Write two survey questions (with answer choices) about a computer technology topic, such as internet usage or software preferences. For example: "How many hours do you use a computer on a typical day?" (answer choices: 0–1, 2–4, 5–8, 9+ hours) and "Which operating system do you primarily use?" (choices: Windows, macOS, Linux, Other).
+
+**How to Pass Tips**
+
+- **Show your calculations.** When solving for mean or other statistics, write out your math clearly (list the numbers, then divide). This can earn partial credit.
+- **Check median carefully.** Remember: for an odd number of values, the median is the middle one; for an even number, it's the average of the two middle values.
+- **Use sampling terms.** Include terms like random sample, stratified, or convenience sample. Professors look for these keywords.
+- **Choose the right graph.** Bar charts are used for comparing categories (like favorite apps), while pie charts show a part-to-whole distribution (like percentage share). Always label your axes or legend clearly.
+- **Pilot test note.** Mention that you would test questions for clarity before full data collection. This shows thoroughness (even if you don't actually do it in an exam).
+$md$, 4);
+
