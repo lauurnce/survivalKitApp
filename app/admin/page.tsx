@@ -229,9 +229,9 @@ export default async function AdminPage() {
     todayPH.getUTCMonth()
   );
 
-  // "New Today" counts payments (renewals included), not subscription rows.
+  // "Payments Today" counts payments (renewals included), not subscription rows.
   // Uses the uncapped revenueRows (today is always within the current month).
-  const newSubscribersToday = revenueRows.filter(
+  const paymentsToday = revenueRows.filter(
     p => new Date(new Date(p.paid_at).getTime() + PH_OFFSET_MS).toISOString().slice(0, 10) === todayStrPH
   ).length;
 
@@ -288,7 +288,7 @@ export default async function AdminPage() {
       recurringUsers={recurringUsers}
       totalRevenue={totalRevenue}
       activeSubscribers={activeSubscribers}
-      newSubscribersToday={newSubscribersToday}
+      newSubscribersToday={paymentsToday}
       waitlistEntries={waitlistEntries}
       transactions={transactions}
     />

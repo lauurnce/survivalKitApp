@@ -646,7 +646,7 @@ export function AdminDashboard({
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           <Stat value={activeSubscribers} label="Active Subscribers" accent />
           <Stat value={`₱${totalRevenue}`} label="Monthly Revenue" />
-          <Stat value={newSubscribersToday} label="New Today" />
+          <Stat value={newSubscribersToday} label="Payments Today" />
         </div>
       </section>
 
