@@ -8,10 +8,16 @@ import { AccountSidebar } from "@/components/account/AccountSidebar";
 
 export const dynamic = "force-dynamic";
 
-export default async function AccountPage() {
+interface Props {
+  searchParams: Promise<{ payment?: string }>;
+}
+
+export default async function AccountPage({ searchParams }: Props) {
   const userId = await getCurrentUserId();
   if (!userId) redirect("/login?next=/account");
   const overview = await getAccountOverview(userId);
+  const { payment } = await searchParams;
+  const paymentSuccess = payment === "success";
 
   const unlockedSubjects = overview.subjects.filter((s) => s.unlocked);
 
@@ -30,6 +36,16 @@ export default async function AccountPage() {
           </form>
         </div>
       </div>
+
+      {paymentSuccess && (
+        <div className="bg-accent/10 border-b border-accent/30 px-6 py-3 flex items-center gap-3">
+          <span className="text-accent text-lg">✓</span>
+          <div>
+            <p className="font-sans text-sm font-medium text-ink">Payment received — your subject is now unlocked.</p>
+            <p className="font-sans text-xs text-ink-muted">It may take a few seconds to appear below. Refresh if needed.</p>
+          </div>
+        </div>
+      )}
 
       <div className="flex min-h-[calc(100vh-57px)]">
         {/* LEFT — Timeline (client component for dropdowns + subscribe modals) */}

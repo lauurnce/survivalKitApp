@@ -19,7 +19,7 @@ export function buildSuccessUrl({
   subjectId,
   returnPath,
 }: BuildSuccessUrlParams): string {
-  const fallback = `${origin}/year/${yearId}/subjects?payment=success`;
+  const fallback = `${origin}/account?payment=success`;
   if (typeof returnPath !== "string") return fallback;
 
   // Expect exactly: ["", "year", <uuid>, "subjects", <uuid>, "modules", <uuid>]
