@@ -266,6 +266,14 @@ export interface Database {
         Args: Record<string, never>;
         Returns: number;
       };
+      admin_waitlist_agg: {
+        Args: Record<string, never>;
+        Returns: {
+          total: number;
+          by_year: { year_label: string; count: number }[] | null;
+          by_subject: { subject_title: string; year_label: string; count: number }[] | null;
+        };
+      };
     };
     Enums: Record<string, never>;
   };

@@ -60,6 +60,7 @@ export default async function AdminPage() {
     // transactions list (paymentsRaw) is capped at 100 for display; using it
     // for revenue would silently undercount once lifetime payments exceed 100.
     { data: revenueRaw },
+    { data: waitlistAggRaw },
   ] = await Promise.all([
     // Funnel distinct-device counts per event_type, aggregated in Postgres
     // (the old raw .limit() was capped at 1000 rows and undercounted).
@@ -114,6 +115,9 @@ export default async function AdminPage() {
       .select("amount, paid_at")
       .gte("paid_at", _monthStartUtcIso)
       .lt("paid_at", _nextMonthStartUtcIso),
+    // Aggregated waitlist stats: total + breakdowns by year and subject.
+    // Runs entirely in Postgres so charts are never limited to the 500-row display cap.
+    supabase.rpc("admin_waitlist_agg"),
   ]);
 
   const funnelCounts = new Map<string, number>();
@@ -258,6 +262,12 @@ export default async function AdminPage() {
     paymongo_link_id: p.paymongo_link_id,
   }));
 
+  const waitlistAgg = (waitlistAggRaw ?? { total: 0, by_year: [], by_subject: [] }) as {
+    total: number;
+    by_year: { year_label: string; count: number }[] | null;
+    by_subject: { subject_title: string; year_label: string; count: number }[] | null;
+  };
+
   const waitlistEntries = (waitlistRaw ?? []) as {
     id: string;
     email: string;
@@ -290,6 +300,7 @@ export default async function AdminPage() {
       activeSubscribers={activeSubscribers}
       newSubscribersToday={paymentsToday}
       waitlistEntries={waitlistEntries}
+      waitlistAgg={waitlistAgg}
       transactions={transactions}
     />
   );

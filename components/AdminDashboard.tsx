@@ -49,6 +49,12 @@ interface WaitlistEntry {
   created_at: string;
 }
 
+interface WaitlistAgg {
+  total: number;
+  by_year: { year_label: string; count: number }[] | null;
+  by_subject: { subject_title: string; year_label: string; count: number }[] | null;
+}
+
 interface Props {
   funnel: FunnelStep[];
   dau: DauDay[];
@@ -66,6 +72,7 @@ interface Props {
   activeSubscribers: number;
   newSubscribersToday: number;
   waitlistEntries: WaitlistEntry[];
+  waitlistAgg: WaitlistAgg;
   transactions: TransactionRow[];
 }
 
@@ -272,21 +279,15 @@ function FunnelChart({ steps }: { steps: FunnelStep[] }) {
   );
 }
 
-function WaitlistPieChart({ entries }: { entries: WaitlistEntry[] }) {
-  // Group by year_label for paywall entries, fallback to source label
-  const counts = new Map<string, number>();
-  for (const e of entries) {
-    const key = e.year_label ?? (e.source === "coming_soon" ? "Coming Soon" : "Unknown");
-    counts.set(key, (counts.get(key) ?? 0) + 1);
-  }
-  const total = entries.length;
-  if (total === 0) return null;
+function WaitlistPieChart({ byYear, total }: { byYear: { year_label: string; count: number }[]; total: number }) {
+  if (total === 0 || byYear.length === 0) return null;
 
-  const slices = Array.from(counts.entries())
-    .sort((a, b) => b[1] - a[1])
-    .map(([label, count]) => ({ label, count, pct: Math.round((count / total) * 100) }));
+  const slices = byYear.map((r) => ({
+    label: r.year_label,
+    count: r.count,
+    pct: Math.round((r.count / total) * 100),
+  }));
 
-  // Simple CSS-based donut using conic-gradient
   const COLORS = ["#1a1a2e", "#4a90a4", "#c9a84c", "#8b5e3c", "#6b8c6b", "#9b6b9b"];
   let cumPct = 0;
   const gradientStops = slices.map((s, i) => {
@@ -321,39 +322,25 @@ function WaitlistPieChart({ entries }: { entries: WaitlistEntry[] }) {
   );
 }
 
-function WaitlistSubjectDemand({ entries }: { entries: WaitlistEntry[] }) {
+function WaitlistSubjectDemand({ bySubject }: { bySubject: { subject_title: string; year_label: string; count: number }[] }) {
   const [expanded, setExpanded] = useState(false);
 
-  const counts = new Map<string, { count: number; year: string }>();
-  for (const e of entries) {
-    if (!e.subject_title) continue;
-    const prev = counts.get(e.subject_title);
-    counts.set(e.subject_title, {
-      count: (prev?.count ?? 0) + 1,
-      year: e.year_label ?? prev?.year ?? "",
-    });
-  }
+  if (bySubject.length === 0) return null;
 
-  const ranked = Array.from(counts.entries())
-    .map(([subject, v]) => ({ subject, ...v }))
-    .sort((a, b) => b.count - a.count);
-
-  if (ranked.length === 0) return null;
-
-  const max = ranked[0].count;
-  const visible = expanded ? ranked : ranked.slice(0, 5);
-  const hasMore = ranked.length > 5;
+  const max = bySubject[0].count;
+  const visible = expanded ? bySubject : bySubject.slice(0, 5);
+  const hasMore = bySubject.length > 5;
 
   return (
     <div className="mb-8 max-w-wide">
       <p className="label-sm text-ink-muted mb-4">Most Requested Subjects</p>
       <div className="flex flex-col gap-2">
         {visible.map((r) => (
-          <div key={r.subject} className="group flex items-center gap-3">
+          <div key={r.subject_title} className="group flex items-center gap-3">
             <div className="w-48 shrink-0 text-right">
-              <span className="font-sans text-sm text-ink">{r.subject}</span>
-              {r.year && (
-                <span className="font-mono text-[10px] text-ink-faint ml-2">{r.year}</span>
+              <span className="font-sans text-sm text-ink">{r.subject_title}</span>
+              {r.year_label && (
+                <span className="font-mono text-[10px] text-ink-faint ml-2">{r.year_label}</span>
               )}
             </div>
             <div className="flex-1 flex items-center gap-2">
@@ -371,7 +358,7 @@ function WaitlistSubjectDemand({ entries }: { entries: WaitlistEntry[] }) {
           onClick={() => setExpanded(v => !v)}
           className="mt-4 font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150"
         >
-          {expanded ? `Minimize ↑` : `Reveal all (${ranked.length - 5} more) ↓`}
+          {expanded ? `Minimize ↑` : `Reveal all (${bySubject.length - 5} more) ↓`}
         </button>
       )}
     </div>
@@ -468,7 +455,7 @@ function WaitlistTable({ entries }: { entries: WaitlistEntry[] }) {
   );
 }
 
-function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
+function WaitlistSection({ entries, agg }: { entries: WaitlistEntry[]; agg: WaitlistAgg }) {
   const total = entries.length;
   const comingSoon = entries.filter(e => e.source === "coming_soon").length;
   const paywall = entries.filter(e => e.source === "paywall").length;
@@ -566,10 +553,10 @@ function WaitlistSection({ entries }: { entries: WaitlistEntry[] }) {
       </div>
 
       {/* Pie chart — signups by year level */}
-      <WaitlistPieChart entries={entries} />
+      <WaitlistPieChart byYear={agg.by_year ?? []} total={agg.total} />
 
       {/* Ranked demand — which subjects to focus on */}
-      <WaitlistSubjectDemand entries={entries} />
+      <WaitlistSubjectDemand bySubject={agg.by_subject ?? []} />
 
       {paywall > 0 && (
         <div className="mb-6">
@@ -610,7 +597,7 @@ export function AdminDashboard({
   totalUniqueUsers, todayUsers, last7Sessions,
   approvedUnlocks, activeNow, newUsers, recurringUsers, totalRevenue,
   activeSubscribers, newSubscribersToday,
-  waitlistEntries, transactions,
+  waitlistEntries, waitlistAgg, transactions,
 }: Props) {
   const unlockClicks    = funnel.find(s => s.type === "unlock_click")?.unique ?? 0;
   const unlockSubmitted = funnel.find(s => s.type === "unlock_submitted")?.unique ?? 0;
@@ -733,9 +720,9 @@ export function AdminDashboard({
         <SectionBand
           eyebrow="06"
           title="Waitlist"
-          summary={`${waitlistEntries.length} total signups`}
+          summary={`${waitlistAgg.total} total signups`}
         />
-        <WaitlistSection entries={waitlistEntries} />
+        <WaitlistSection entries={waitlistEntries} agg={waitlistAgg} />
       </section>
 
     </main>
