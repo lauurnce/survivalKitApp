@@ -258,6 +258,14 @@ export interface Database {
         Args: Record<string, never>;
         Returns: { event_type: string; unique_devices: number }[];
       };
+      admin_top_sections: {
+        Args: { p_limit: number };
+        Returns: { section_id: string; event_count: number }[];
+      };
+      admin_active_subscribers: {
+        Args: Record<string, never>;
+        Returns: number;
+      };
     };
     Enums: Record<string, never>;
   };
