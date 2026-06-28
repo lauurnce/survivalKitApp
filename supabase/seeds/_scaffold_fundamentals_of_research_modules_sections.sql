@@ -111,3 +111,48 @@ Think of a technical issue or challenge you've observed (it could be at your sch
 - **Use your knowledge.** Think about what professors emphasize: clarity and focus. Show that you can take a broad idea and break it into clear, answerable questions.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 3: Literature Review & Writing
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('9911257f-768f-5c34-898e-35bd469c7eff','content','The Literature Review',$md$
+A literature review surveys existing research on your topic to show what is already known and what gaps your study can fill. It summarizes key findings and puts them in the context of your research. For example, you might write: "Prior studies in the Philippines have found that mobile apps greatly increase student engagement in online learning (De la Cruz & Santos, 2021), suggesting that improving app design could further boost learning outcomes." This demonstrates you understand past work and sets the stage for your research.
+$md$, 1),
+('9911257f-768f-5c34-898e-35bd469c7eff','content','Finding and Evaluating Sources',$md$
+Use reliable academic sources such as peer-reviewed journals, books, and official reports. Search tools like Google Scholar, university library databases, or government repositories are helpful. For example, you might find useful papers in the DOST or CHED archives or at tech conferences (IEEE, ACM). Check a source's credibility by considering the author's expertise and the publication venue. Also look at the date: since technology changes fast, prefer recent studies (ideally within the last 5–10 years). Always note how each source's findings relate to your own research question.
+$md$, 2),
+('9911257f-768f-5c34-898e-35bd469c7eff','activity','Citing Sources and Avoiding Plagiarism',$md$
+Always give credit when you use someone else's ideas or words. Use a standard citation style like APA. For instance, you might write: According to Garcia (2022), e-learning improves students' performance. If you quote directly, use quotation marks and a page number (for example, Garcia (2022) found that "e-learning improves performance" (p. 45).). Even when you paraphrase (put information in your own words), include a citation like (Garcia, 2022). Plagiarism (copying without credit) is a serious academic offense. A good rule is: if an idea or fact is not your own, cite it. For example: "AI can improve local disaster warnings" (Ramos, 2020) clearly attributes the idea to Ramos.
+$md$, 3),
+('9911257f-768f-5c34-898e-35bd469c7eff','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions**
+
+1. What is the purpose of a literature review in a research project?
+2. Name two online tools or databases you could use to find academic sources.
+3. What information should you check to judge if a source is reliable?
+4. How do you correctly cite a source in APA style when paraphrasing versus quoting?
+5. Why is it wrong to copy exact text from a source without quotation marks or citation?
+
+**Worked Problems**
+
+**Exam Problem:** Rewrite the following plagiarized sentence by paraphrasing and adding a citation. Plagiarized: "Mobile learning increases student performance significantly (Santos, 2021)."
+
+**Solution:** A correct way is: Mobile learning has been shown to greatly improve student performance (Santos, 2021). This restates the idea in new words and cites Santos, 2021.
+
+**Exam Problem:** You have the following references in your notes: (Garcia, 2020), (Lopez, 2018, p. 45). Which one is correctly formatted for an in-text APA citation of a paraphrased idea? Explain why.
+
+**Solution:** (Garcia, 2020) is correct for a paraphrase, because it includes the author and year. The (Lopez, 2018, p. 45) format is used when quoting directly (note the page number). When paraphrasing, we include only author and year, so use (Garcia, 2020) for a paraphrase.
+
+**Hands-On Exercise**
+
+Find one scholarly article related to your research topic (you may use Google Scholar). Write a one-sentence summary of its main finding and include a proper APA citation (author, year) in parentheses.
+
+**How to Pass Tips**
+
+- **Consistently cite sources.** Whenever you use a fact or idea from a text, add a citation. Professors check for any uncited information.
+- **Remember APA format.** Typically write (Author, Year) after a statement from a source. If quoting directly, also add page numbers (e.g., (Author, Year, p. 123)).
+- **Rephrase in your own words.** Don't just change a word or two; fully restate the idea in a new way, then cite it. This avoids plagiarism.
+- **Use a reference list.** If allowed, listing all cited works (title, author, year) in a bibliography shows you have done thorough research.
+- **Use quotation marks for quotes.** Only put text in quotes if it's exactly from the source, and always cite it. If you forget quotes, even with a citation it's still plagiarism.
+$md$, 4);
+
