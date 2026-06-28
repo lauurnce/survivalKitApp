@@ -223,3 +223,45 @@ def get_user_by_name(name):
 
 print(get_user_by_name("Bob"))$code$);
 
+-- ============================================================
+-- LESSON 5: Emerging Technologies
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('c98ee9ff-ba9f-5a82-8283-35d95951f53d','content','Cloud Computing and Deployment Models',$md$
+Cloud computing means using remote servers (over the internet) to host apps and data. Services like AWS, Google Cloud, or local providers let developers deploy apps without owning physical hardware. Models include Infrastructure-as-a-Service (virtual machines), Platform-as-a-Service (managed app platforms), and Software-as-a-Service (hosted software). For example, storing files on Google Drive is SaaS. Understanding cloud models is useful: exam questions might ask you to compare IaaS vs. PaaS or identify benefits like scalability (handling many users) and cost savings.
+$md$, 1),
+('c98ee9ff-ba9f-5a82-8283-35d95951f53d','content','Artificial Intelligence and Machine Learning',$md$
+AI (Artificial Intelligence) and ML (Machine Learning) refer to systems that learn from data. In application development, AI/ML can power features like recommendation engines or image recognition. For instance, a food delivery app could use ML to suggest restaurants based on past orders. You don't need to build models from scratch, but know basic concepts: training vs. inference, datasets, algorithms. Key idea: AI means programs can perform intelligent tasks, and ML is how they learn from data. In exams, use simple examples (spam filters, chatbots) to explain how AI/ML adds value.
+$md$, 2),
+('c98ee9ff-ba9f-5a82-8283-35d95951f53d','activity','Internet of Things (IoT) and Other Trends',$md$
+The Internet of Things (IoT) connects everyday devices (sensors, appliances) to the internet, enabling smart applications. An example is traffic sensors that adjust light timings automatically. IoT raises security and privacy issues (like protecting device data). Other emerging trends include AR/VR (augmented/virtual reality) and blockchain. You may not be asked in detail about these, but mentioning a Philippine example (like smart farming sensors or e-agriculture devices) shows you're aware of local tech trends.
+$md$, 3),
+('c98ee9ff-ba9f-5a82-8283-35d95951f53d','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions:**
+
+1. What is cloud computing? Give one advantage and one disadvantage of using a cloud service.
+2. Explain the difference between AI and ML in simple terms.
+3. Describe an example of how IoT could improve life in a Philippine city.
+4. What is scalability in the context of web applications?
+5. Name one potential security risk with IoT devices and a way to mitigate it.
+
+**Worked Problem:**
+
+A startup wants to build an app that recommends dishes to users based on their past orders (like a recommendation engine). Outline which emerging technologies (cloud, AI, IoT, etc.) they might use and how. For example, they could use a cloud database for storage and a machine learning library to analyze order history.
+
+**Solution:**
+
+They might host their app on a cloud platform (so it can scale if many users join). They could use an ML library (like Python's scikit-learn) to find patterns in past orders and suggest dishes. If connected to IoT (like smart refrigerators), the app could even factor in ingredient availability. The key is: cloud for hosting/data, and ML algorithms for recommendations.
+
+**Hands-on Exercise:**
+
+(This section is conceptual.) Write a short plan (2–3 sentences) explaining cloud computing to a layperson. For instance: "Cloud computing is like renting storage and computers over the internet instead of buying them. This allows apps to work fast and lets anyone access their data from anywhere." This helps practice explaining technical ideas simply.
+
+**How to Pass Tips:**
+
+- For cloud topics, remember major providers (AWS, Azure) but focus on concepts (scaling, reliability).
+- For AI/ML, note that these need data to learn patterns; use simple examples (like movie recommendation).
+- Use everyday examples (smartphones, smart homes) to illustrate emerging tech.
+- Mention any local examples (like e-services running on cloud or smart agriculture sensors) to relate tech to the Philippine context.
+$md$, 4);
+
