@@ -125,3 +125,44 @@ def add_user_story(stories, story):
 add_user_story(stories, "As a student, I want to enroll online")
 print(stories)$code$);
 
+-- ============================================================
+-- LESSON 3: Design Principles and User Interfaces
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('52c67d2e-5ca0-568c-b7c8-ca2c0f5d5473','content','UI/UX Design Fundamentals',$md$
+User Interface (UI) and User Experience (UX) design focus on how an app looks and feels. A good interface is clean, consistent, and easy to use. For example, a banking app should clearly label buttons like "Transfer" or "Pay Bill," and use colors and layouts that make sense to users. Key UI principles include contrast (readable text), alignment (organized layout), and accessibility (usable by people with disabilities). Professors may show a sample screen and ask you to identify UI problems or improvements.
+$md$, 1),
+('52c67d2e-5ca0-568c-b7c8-ca2c0f5d5473','content','Design Patterns and Principles',$md$
+Software design patterns are reusable solutions to common problems. A popular pattern in app development is MVC (Model-View-Controller): it separates data (Model), the user interface (View), and the logic (Controller). This makes large applications easier to manage. Other principles include DRY ("Don't Repeat Yourself") and KISS ("Keep It Simple, Stupid!"). In exams, you might explain a pattern or suggest a simple UI improvement (like moving a critical button to a more visible position).
+$md$, 2),
+('52c67d2e-5ca0-568c-b7c8-ca2c0f5d5473','activity','Front-End Technologies Overview',$md$
+Front-end development uses languages like HTML, CSS, and JavaScript to build what users see. For example, HTML defines page structure, CSS styles it, and JavaScript adds interactivity (buttons, form validation). Modern frameworks (React, Angular, Vue) speed up development by providing reusable components and templates. You don't need to code these in this course, but know they exist: understanding the roles of HTML/CSS/JS helps in questions about web-based applications.
+$md$, 3),
+('52c67d2e-5ca0-568c-b7c8-ca2c0f5d5473','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions:**
+
+1. List two key principles of good UI design and why each matters.
+2. What does MVC stand for, and what is the role of the Controller?
+3. Name one advantage of using a front-end framework like React.
+4. Explain why consistency in design (colors, fonts, buttons) is important in an app.
+5. Give an example of a web technology used for structure, one for style, and one for behavior (HTML, CSS, JS respectively).
+
+**Worked Problem:**
+
+An online shopping app's product page has the "Add to Cart" button at the bottom and small font for prices. Identify two issues from a UI/UX perspective and suggest fixes.
+
+**Solution:**
+
+Issues: (1) The "Add to Cart" button is too far from product details; users might miss it. (2) The small font is hard to read. Fixes: Move the button closer to the top near the product description, and increase font size or contrast for better readability.
+
+**Hands-on Exercise:**
+
+(This exercise is conceptual—no code block needed.) Imagine a simple login page. Describe one improvement to its design to enhance usability. For example: making the "Login" button larger and a bright color so users find it easily, or aligning the "Username" and "Password" fields for a cleaner look. Write your answer in a few sentences.
+
+**How to Pass Tips:**
+
+- In UI questions, mention practical improvements (e.g. change color or size of buttons, align input fields).
+- Be ready to explain *why* a design choice helps users (like accessibility or clarity).
+- Recall basic design terms (contrast, hierarchy, responsive). Professors often like examples: relate to local apps or websites (e.g. ease of use in a mobile banking app).
+$md$, 4);
+
