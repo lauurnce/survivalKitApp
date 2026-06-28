@@ -13,16 +13,6 @@ function getTitle(rel: unknown): string {
   return (rel as { title?: string }).title ?? "unknown";
 }
 
-function countById(ids: (string | null)[]): { id: string; count: number }[] {
-  const map = new Map<string, number>();
-  for (const id of ids) {
-    if (!id) continue;
-    map.set(id, (map.get(id) ?? 0) + 1);
-  }
-  return Array.from(map.entries())
-    .map(([id, count]) => ({ id, count }))
-    .sort((a, b) => b.count - a.count);
-}
 
 const FUNNEL_STEPS: { type: EventType; label: string; hint: string }[] = [
   { type: "enter",            label: "Opened App",        hint: "Unique devices that launched the app" },
@@ -58,13 +48,13 @@ export default async function AdminPage() {
     { data: dauRaw },
     { data: subjectCounters },
     { data: moduleCounters },
-    { data: sectionEventRaw },
+    { data: topSectionsRaw },
     { data: _pendingRaw },
     { data: approvedRaw },
     { data: activeRaw },
     { data: userTotalsRaw },
     { data: waitlistRaw },
-    { data: subscriptionRaw },
+    { data: activeSubscribersRaw },
     { data: paymentsRaw },
     // Revenue query is SEPARATE from paymentsRaw and has NO row cap. The
     // transactions list (paymentsRaw) is capped at 100 for display; using it
@@ -92,12 +82,7 @@ export default async function AdminPage() {
       .eq("resource_type", "module")
       .order("read_count", { ascending: false })
       .limit(8),
-    supabase
-      .from("events")
-      .select("section_id")
-      .eq("event_type", "section_view")
-      .not("section_id", "is", null)
-      .limit(3000),
+    supabase.rpc("admin_top_sections", { p_limit: 8 }),
     supabase
       .from("unlocks")
       .select("id, device_id, gcash_ref, amount, created_at, modules(title)")
@@ -116,10 +101,7 @@ export default async function AdminPage() {
       .select("id, email, name, source, device_type, willing_to_pay, needs_capstone, year_label, subject_title, module_title, created_at")
       .order("created_at", { ascending: false })
       .limit(500),
-    supabase
-      .from("subscriptions")
-      .select("id, created_at, status")
-      .order("created_at", { ascending: false }),
+    supabase.rpc("admin_active_subscribers"),
     supabase
       .from("payments")
       .select("id, device_id, year_id, subject_id, amount, paymongo_link_id, paid_at")
@@ -185,10 +167,8 @@ export default async function AdminPage() {
     count: c.read_count,
   }));
 
-  const sectionCounts = countById(
-    (sectionEventRaw ?? []).map((e) => (e as { section_id: string | null }).section_id)
-  );
-  const topSectionIds = sectionCounts.slice(0, 8).map((s) => s.id);
+  const topSectionIds = ((topSectionsRaw ?? []) as { section_id: string; event_count: number }[])
+    .map((r) => r.section_id);
   let sectionDetails: { id: string; heading: string; modules: unknown }[] = [];
   if (topSectionIds.length > 0) {
     const { data } = await supabase
@@ -197,12 +177,13 @@ export default async function AdminPage() {
       .in("id", topSectionIds);
     sectionDetails = (data ?? []) as typeof sectionDetails;
   }
-  const topSections = sectionCounts.slice(0, 8).map((s) => {
-    const detail = sectionDetails.find((d) => d.id === s.id);
+  const sectionRpcRows = (topSectionsRaw ?? []) as { section_id: string; event_count: number }[];
+  const topSections = sectionRpcRows.map((r) => {
+    const detail = sectionDetails.find((d) => d.id === r.section_id);
     return {
-      heading: detail?.heading ?? s.id.slice(0, 8),
+      heading: detail?.heading ?? r.section_id.slice(0, 8),
       module_title: getTitle(detail?.modules),
-      count: s.count,
+      count: Number(r.event_count),
     };
   });
 
@@ -224,8 +205,7 @@ export default async function AdminPage() {
   const newUsers = Number(userTotals.new_users ?? 0);
   const recurringUsers = Number(userTotals.recurring_users ?? 0);
 
-  const subscriptions = subscriptionRaw ?? [];
-  const activeSubscribers = subscriptions.filter(s => s.status === "active").length;
+  const activeSubscribers = Number(activeSubscribersRaw ?? 0);
 
   const payments = (paymentsRaw ?? []) as {
     id: string;
