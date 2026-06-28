@@ -70,8 +70,12 @@ export function verifyPaymongoWebhook(rawBody: string, signatureHeader: string):
   if (!secret) return false;
 
   // Header format: "t=<timestamp>,te=<hmac>,li=<hmac>"
+  // Split only on the FIRST "=" so HMAC values containing "=" aren't truncated.
   const parts = Object.fromEntries(
-    signatureHeader.split(",").map(part => part.split("=") as [string, string])
+    signatureHeader.split(",").map(part => {
+      const idx = part.indexOf("=");
+      return [part.slice(0, idx), part.slice(idx + 1)] as [string, string];
+    })
   );
   const timestamp = parts["t"];
   const teHmac = parts["te"];
