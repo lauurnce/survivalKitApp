@@ -456,7 +456,7 @@ function WaitlistTable({ entries }: { entries: WaitlistEntry[] }) {
 }
 
 function WaitlistSection({ entries, agg }: { entries: WaitlistEntry[]; agg: WaitlistAgg }) {
-  const total = entries.length;
+  const displayCount = entries.length;
   const comingSoon = entries.filter(e => e.source === "coming_soon").length;
   const paywall = entries.filter(e => e.source === "paywall").length;
   const mobile = entries.filter(e => e.device_type === "mobile").length;
@@ -514,7 +514,7 @@ function WaitlistSection({ entries, agg }: { entries: WaitlistEntry[]; agg: Wait
     triggerDownload(buildCSV(filtered), `waitlist-${selectedMonth}.csv`);
   }
 
-  if (total === 0) {
+  if (displayCount === 0) {
     return <p className="font-sans text-xs text-ink-faint">No signups yet.</p>;
   }
 
