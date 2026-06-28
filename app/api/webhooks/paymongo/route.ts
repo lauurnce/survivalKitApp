@@ -7,9 +7,9 @@ import { recordPayment } from "@/lib/payments";
 
 export const runtime = "nodejs";
 
-// Process live events in prod, test events otherwise. Prevents a test-mode
-// payment (or a misconfigured secret) from unlocking real content.
-const EXPECTED_LIVEMODE = process.env.NODE_ENV === "production";
+// PAYMONGO_LIVEMODE=true → only accept live payments; false/unset → only test.
+// Decoupled from NODE_ENV so preview/staging can still receive test webhooks.
+const EXPECTED_LIVEMODE = process.env.PAYMONGO_LIVEMODE === "true";
 
 // Bound unauthenticated flood against the signature-verification work. Real
 // PayMongo deliveries are well under this; it only stops abuse.

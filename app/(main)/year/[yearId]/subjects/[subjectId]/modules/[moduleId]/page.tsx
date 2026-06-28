@@ -111,7 +111,7 @@ export default async function ReaderPage({ params }: Props) {
             yearLabel={year?.label}
             subjectTitle={subject.title}
             moduleTitle={mod.title}
-            loggedIn={!!userId}
+
           />
         ))}
       </article>
