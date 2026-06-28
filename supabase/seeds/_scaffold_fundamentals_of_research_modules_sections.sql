@@ -248,3 +248,66 @@ Write two survey questions (with answer choices) about a computer technology top
 - **Pilot test note.** Mention that you would test questions for clarity before full data collection. This shows thoroughness (even if you don't actually do it in an exam).
 $md$, 4);
 
+-- ============================================================
+-- LESSON 6: Ethics and Proposal Writing
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('396fb7c8-3e88-510e-91a0-e3be427e2e7e','content','Ethical Guidelines in Research',$md$
+Research must respect participants and follow laws. Always obtain informed consent: explain the study's purpose and procedures, and get agreement from participants (or guardians, if minors). Ensure confidentiality: protect personal information (for example, the Philippine Data Privacy Act of 2012 requires secure handling of data). If your study involves people, seek approval from an ethics review board (like a university IRB). Avoid harming participants physically, emotionally, or legally. For instance, if asking sensitive questions, allow participants to skip them. Always be honest and transparent about your research.
+$md$, 1),
+('396fb7c8-3e88-510e-91a0-e3be427e2e7e','content','Responsible Research Conduct',$md$
+Be honest and fair throughout your research process. Do not fabricate or falsify data, and never plagiarize others' work. Keep raw data secure and use it only for the stated purpose. If working with collaborators, give proper credit and discuss author order beforehand. If you make a mistake, report it. Avoid conflicts of interest (for example, disclose if a sponsor could benefit from your results). Essentially, do what you say you will do in your research plan, and report results truthfully—even if they don't support your hypothesis.
+$md$, 2),
+('396fb7c8-3e88-510e-91a0-e3be427e2e7e','activity','Writing a Research Proposal',$md$
+A research proposal is a detailed plan for a study. It typically includes:
+
+- **Title:** a concise description of your study's topic.
+- **Introduction:** background, problem statement, and objectives.
+- **Literature Review:** summary of related studies (see Module 3).
+- **Methodology:** how you will collect and analyze data (sampling, instruments, procedures).
+- **Timeline:** a schedule of activities (sometimes shown as a Gantt chart or table).
+- **Budget:** resources needed (if applicable).
+- **References:** list of sources in proper format (often APA).
+
+Write in clear, formal language. Follow any guidelines your school provides for length or format. A well-organized proposal (with clear headings and realistic plans) shows that your research can be done successfully.
+$md$, 3),
+('396fb7c8-3e88-510e-91a0-e3be427e2e7e','activity','Practice & Exam Drills — Lesson 6',$md$
+**Review Questions**
+
+1. What is informed consent and why is it important in research?
+2. Name two principles of research ethics (for example, respect for persons, beneficence).
+3. Give an example of research misconduct (e.g., data fabrication or plagiarism).
+4. What steps should a researcher take to protect participants' confidentiality?
+5. What is the purpose of an Institutional Review Board (IRB) in research?
+
+**Worked Problems**
+
+**Exam Problem:** Evaluate this scenario: A student surveys her classmates about study habits, but does not tell them the results are for a graded assignment and collects names. Is this ethical? Explain.
+
+**Solution:** This is unethical. The classmates did not give informed consent (they didn't know it was for a graded research project). Also, collecting names without permission violates confidentiality. The student should have clearly explained the research purpose and allowed anonymity. Transparency and respect for participants' rights are required in ethical research.
+
+**Exam Problem:** Match each research proposal section to its content:
+
+A. Problem Statement and Objectives
+B. Methodology
+C. Literature Review
+
+Sections: 1. Describes how data will be collected and analyzed. 2. Lists what previous studies found and their authors. 3. States the research question and goals.
+
+**Solution:** A-3 (Problem statement & objectives corresponds to stating the question and goals), B-1 (Methodology describes data collection and analysis), C-2 (Literature Review summarizes previous studies and sources).
+
+**Hands-On Exercise**
+
+Write a sample consent statement for a survey where participants answer questions anonymously. For example: "Your participation is voluntary and anonymous. You may skip any question. The data will be used only for this study." Then list two methods you will use to keep the data confidential (e.g., secure storage, no names collected).
+
+**How to Pass Tips**
+
+- **Use key terms.** Include words like informed consent, anonymity, IRB, plagiarism, etc. This shows the grader you know the ethical concepts.
+- **Be specific in scenarios.** If given an example, point out exactly what is wrong (e.g., "No consent was obtained," "Data were not kept anonymous"). Don't just recite principles; apply them to the situation.
+- **Proposal details.** If asked about writing proposals, mention sections like methodology and timeline. Clear headings and a structured format will earn points.
+- **Cite local laws if relevant.** For example, mentioning the Philippine Data Privacy Act (RA 10173, 2012) or university guidelines can demonstrate awareness of local context.
+$md$, 4);
+
+-- SOURCES:
+--   Polytechnic University of the Philippines (DIP-IT) — COMP 015: Fundamentals of Research course syllabus (BSIT program)
+--   CHED CMO No. 25, s. 2015 — Revised policies, standards, and guidelines for BSIT programs
