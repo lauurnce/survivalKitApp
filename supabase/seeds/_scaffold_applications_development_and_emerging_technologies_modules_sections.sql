@@ -73,3 +73,55 @@ def count_open_issues(issue_list):
 
 print(count_open_issues(issues))$code$);
 
+-- ============================================================
+-- LESSON 2: Requirements Analysis and Planning
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a8bed4f2-250b-5cf7-bbf9-50fc755f2fa6','content','Gathering User Requirements',$md$
+The first step in any project is understanding what users need. This can involve interviews, surveys, or observing tasks to gather functional and non-functional requirements. For example, if building a mobile banking app, requirements might include "allow users to view account balance" or "send notifications for transactions." Clear requirements prevent misunderstandings later on. Always document requirements carefully in words (like user stories) or simple diagrams.
+$md$, 1),
+('a8bed4f2-250b-5cf7-bbf9-50fc755f2fa6','content','Documenting Requirements',$md$
+After gathering information, developers write it down in a formal way. Common tools include use-case diagrams (showing how users interact with the system) or user stories ("As a user, I want…"). A software specification might list all functions in detail. This plan acts like a contract: everyone (clients, developers) reviews it before coding. In exams, you may need to draft a small use-case or explain the purpose of a requirements document.
+$md$, 2),
+('a8bed4f2-250b-5cf7-bbf9-50fc755f2fa6','activity','Project Planning Essentials',$md$
+Once requirements are set, planning begins. This involves setting timelines, assigning roles, and choosing development methodologies. In a student project, this could mean dividing tasks (one person designs the interface, another writes code, etc.). In professional settings, teams use tools like Git for collaboration and project trackers (like Jira). Professors expect you to know common planning practices, such as estimating tasks or creating project milestones.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a8bed4f2-250b-5cf7-bbf9-50fc755f2fa6','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions:**
+
+1. What is the difference between functional and non-functional requirements? Give one example of each.
+2. What is a user story? Write a short user story for a student enrollment system.
+3. Name a tool or diagram commonly used to document requirements.
+4. Why is clear documentation important before programming starts?
+5. Describe one method to gather requirements from stakeholders.
+
+**Worked Problem:**
+
+A university wants an app for scheduling study group sessions. Identify two functional requirements and one non-functional requirement. Then describe a simple use-case: who the actor is and what they do.
+
+**Solution:**
+
+Functional requirements: (1) allow students to create study group sessions (enter date/time and subject); (2) let students join or leave existing sessions. Non-functional requirement: the app should load session lists within 2 seconds (performance). Use-case: Actor = Student. Use case = "Join Study Group": The student selects a session from a list and taps "Join", then the system adds them to the session.
+
+**How to Pass Tips:**
+
+- Learn the purpose of requirement documents (what the system must do).
+- Practice writing clear user stories ("As a ___, I want ___ so that ___.").
+- Understand examples of functional vs. non-functional (e.g. reliability, response time).
+- Use real-life examples (like planning an app for your community) to frame answers.
+
+**Coding Drill:** Complete `add_user_story` so it appends the new story to the list.
+$md$, 4, 'python', $code$stories = [
+    "As a voter, I want to register online so I can vote",
+    "As an admin, I want to delete old events"
+]
+
+def add_user_story(stories, story):
+    # TODO: add the story to the stories list
+    pass
+
+add_user_story(stories, "As a student, I want to enroll online")
+print(stories)$code$);
+
