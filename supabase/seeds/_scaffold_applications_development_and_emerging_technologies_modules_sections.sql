@@ -327,3 +327,49 @@ $md$, 4, 'python', $code$def is_even(n):
 assert is_even(4) == True
 print("test passed")$code$);
 
+-- ============================================================
+-- LESSON 7: Ethics, Legal, and Professional Issues
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('12489fd2-3e14-5ba6-bbb8-9d2ac50e843e','content','Ethical Considerations in IT',$md$
+As developers, we must follow ethical standards. This includes respecting user privacy (not misusing personal data) and avoiding plagiarism (writing original code or properly citing sources). In the Philippines, the DOST Code of Ethics for IT Professionals says we should "perform our duties with honesty." An exam question might describe a scenario (like finding a bug in a competitor's software) and ask what the ethical action is (for example, do not exploit it and report it instead).
+$md$, 1),
+('12489fd2-3e14-5ba6-bbb8-9d2ac50e843e','content','Intellectual Property and Licensing',$md$
+Software licenses determine how code can be used or shared. Open-source licenses (GPL, MIT, Apache) allow copying and modification under certain conditions (e.g., sharing improvements). Proprietary software requires purchasing or permission to use. In class, know basic terms: copyright, patent, and software piracy. For example, copying a paid program without permission is illegal under the IP Code (RA 8293). Questions may ask you to identify a license type from terms (e.g., "You must release source code" indicates a GPL-like license) or explain the consequence of piracy under Philippine law.
+$md$, 2),
+('12489fd2-3e14-5ba6-bbb8-9d2ac50e843e','activity','Professional Conduct and Legal Compliance',$md$
+Professional behavior means following laws and organizational policies. This includes protecting user data (complying with the Data Privacy Act) and doing honest work (no cheating on exams or projects). For instance, if your college requires original projects, copying code is unethical and likely violates academic rules. Professors often expect answers like "report the issue" or "use licensed resources." Key laws: RA 10173 (Data Privacy Act of 2012) and RA 8293 (Intellectual Property Code of 1997). These highlight the importance of ethical and legal practice in IT.
+$md$, 3),
+('12489fd2-3e14-5ba6-bbb8-9d2ac50e843e','activity','Practice & Exam Drills — Lesson 7',$md$
+**Review Questions:**
+
+1. What is one ethical practice an IT professional should always follow?
+2. Name one open-source software license and one condition it imposes.
+3. Why is it unethical to copy code from peers or the internet without permission?
+4. What does the Data Privacy Act protect?
+5. Give an example of a professional misconduct scenario in software development.
+
+**Worked Problem:**
+
+Suppose a classmate asks you to share your licensed software tool login so they can use it. What should you do and why? Explain in terms of ethics and licensing.
+
+**Solution:**
+
+You should refuse to share your login because it violates the software licensing terms and academic integrity. Ethically, enabling piracy of paid software is wrong. Legally, sharing a license may breach the software's terms of service and copyright law. A good alternative is to suggest they use free or properly licensed software instead.
+
+**Hands-on Exercise:**
+
+(Reflection) Write a brief answer: Why is it important to follow a code of ethics in IT, both in college and in industry? Discuss how ethical behavior builds trust with users, colleagues, and society.
+
+**How to Pass Tips:**
+
+- Memorize key Philippine laws: RA 10173 (Data Privacy Act), RA 8293 (IP Code).
+- In ethical scenarios, always choose honesty and legality: professors look for answers like "report the issue" or "use licensed resources."
+- Understand different licenses: know the difference between "free software" and "open source" (e.g., freedom vs. cost).
+- Use real cases (news or experiences) as examples in answers (e.g., data breaches, piracy cases) to make explanations concrete.
+$md$, 4);
+
+-- SOURCES:
+--   De La Salle University — BSIT program core subjects listing (includes Applications Development and Emerging Technologies)
+--   CHED CMO No. 25, s.2015 — Revised PSGs for BSCS/BSIS/BSIT (course specification)
+--   CHED CMO No. 02, s.2014 — PSGs for Entertainment and Multimedia (Annex C sample syllabus)
