@@ -156,3 +156,50 @@ Find one scholarly article related to your research topic (you may use Google Sc
 - **Use quotation marks for quotes.** Only put text in quotes if it's exactly from the source, and always cite it. If you forget quotes, even with a citation it's still plagiarism.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 4: Research Methods and Design
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('529e7ab3-78b0-5ae0-9b4f-7957d4fad674','content','Types of Research Methods',$md$
+Research in IT can use various methods. Surveys and questionnaires collect numerical data from many people (quantitative). Experiments test a hypothesis by changing one factor and comparing results (for example, testing if a new software feature improves productivity by comparing two user groups). Case studies or interviews are qualitative: they give detailed insight into a specific situation (like in-depth interviews with developers about how they use a tool). Descriptive research simply observes or measures things (e.g., counting how many students use a study app). Each method serves different purposes.
+$md$, 1),
+('529e7ab3-78b0-5ae0-9b4f-7957d4fad674','content','Quantitative vs. Qualitative Approaches',$md$
+Quantitative research deals with numbers and measurable data. You design instruments (like online surveys with rating scales) and use statistics to analyze results (calculating averages, correlations, etc.). For example, you might survey 100 users about the number of hours they spend coding per week. Qualitative research deals with words and meanings. You might conduct interviews or focus groups to understand experiences. For instance, you might interview developers about why they prefer one programming language over another. Qualitative data are analyzed by identifying themes or patterns. Both approaches can be combined (mixed methods) for a richer understanding.
+$md$, 2),
+('529e7ab3-78b0-5ae0-9b4f-7957d4fad674','activity','Choosing a Research Design',$md$
+Your research question determines the design. If you want to test cause-and-effect (for example, "Does using a coding app improve students' grades?"), you might use an experimental design with a control group. If you want to describe a situation ("How many students use the library's computers?"), a descriptive survey is enough. Other designs include correlational studies (examining relationships, like stress vs. screen time) and case studies (deep dive into one example, such as developing a prototype). Always consider how you will collect data ethically. A clear plan for methods and analysis ensures your study can answer the research questions.
+$md$, 3),
+('529e7ab3-78b0-5ae0-9b4f-7957d4fad674','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. What is the main difference between quantitative and qualitative research?
+2. Give one example of a research question best answered by a quantitative method.
+3. What is an independent variable and a dependent variable in an experiment?
+4. Why might a researcher choose a survey over interviews, or vice versa?
+5. What is a case study design, and when is it useful?
+
+**Worked Problems**
+
+**Exam Problem:** You want to test if a new scheduling app reduces customer wait times in an internet cafe. Outline a simple experimental design for this study.
+
+**Solution:** Divide customers or time periods into two groups (control vs. treatment). The control group uses the old scheduling method, and the treatment group uses the new app. The independent variable is the type of scheduling method (old vs. new), and the dependent variable is the average wait time. Measure and compare the wait times: if the group using the new app has significantly lower wait times, it suggests the app helped reduce wait times.
+
+**Exam Problem:** Determine whether each scenario calls for a qualitative or quantitative method, and explain why.
+a. Studying engineers' opinions about a new programming tool through open-ended interviews.
+b. Counting how many people in a community have access to high-speed internet.
+
+**Solution:** a. This is qualitative because it uses interviews to explore opinions and experiences in depth. Data would be thematic rather than numerical. b. This is quantitative because it involves measuring a number (how many people). A survey or official data would give numeric results that you can summarize statistically.
+
+**Hands-On Exercise**
+
+Think of a research question for an IT topic (for example, "Does using mobile apps increase productivity?"). Write one quantitative question you could answer with a survey (e.g., "On average, how many hours per week do you save by using X app?") and one qualitative question you could answer with an interview (e.g., "How has using X app affected your daily work routine?").
+
+**How to Pass Tips**
+
+- **Match method to question.** If you need numerical data (counts, averages, frequencies), use quantitative methods (surveys, experiments). If you need opinions or detailed descriptions, use qualitative methods (interviews, focus groups).
+- **Remember variables.** In an experiment, clearly identify the independent variable (what you change) and the dependent variable (what you measure).
+- **Outline your design.** In answers, it helps to list steps or sketch a plan (e.g., "1. Randomly assign participants to groups; 2. Apply treatment; 3. Measure outcomes"). This shows clear thinking.
+- **Use key terms.** Words like random assignment, control group, rating scale, theme analysis, etc., indicate understanding of research design.
+- **Justify your choice.** When asked why a method is appropriate, explain how it fits the goal (e.g., "A survey is suitable to gather data from many users, whereas an interview is chosen to explore user experiences in depth.").
+$md$, 4);
+
