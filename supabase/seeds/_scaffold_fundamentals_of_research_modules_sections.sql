@@ -66,3 +66,48 @@ Choose a real-world IT topic (such as online shopping habits, use of e-learning 
 - **Check clarity.** When writing definitions or processes, ensure your reasoning is explicit. Avoid leaving logic gaps (for instance, explain why each step leads to the next).
 $md$, 5);
 
+-- ============================================================
+-- LESSON 2: Research Problems and Questions
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('2bdab8a7-b762-566a-ab7c-8328a1de5b94','content','Selecting a Research Topic',$md$
+To begin research, you need a good topic that interests you and is relevant to IT. Look for real problems or trends you notice around you, like an app or system that doesn't work well. Your topic should be focused and feasible to study in one semester, and enough data or resources should be available. For example, instead of studying "social media in the Philippines" (too broad), you might narrow it to something like "how high school students in Manila use online learning apps." A specific topic helps you stay focused and find useful information.
+$md$, 1),
+('2bdab8a7-b762-566a-ab7c-8328a1de5b94','content','Formulating a Problem Statement',$md$
+A problem statement is a concise description of the issue your research will address. It clearly explains what is wrong or what gap exists, and why it matters. For example: "Local software developers lack a standard task management tool, causing inefficiency in team collaboration." This tells us who (local developers), what (lack a tool), and why it matters (inefficiency). A clear problem statement guides your research direction and helps readers immediately understand the purpose of your study.
+$md$, 2),
+('2bdab8a7-b762-566a-ab7c-8328a1de5b94','activity','Research Questions and Objectives',$md$
+After defining the problem, break it into specific research questions and objectives. A research question focuses on one part of the problem (often phrased with "What" or "How"). From the example above, a question might be "What task management tools do local software teams currently use, and how satisfied are they with these tools?" Objectives are the goals or steps of your study (like "to survey the most common tools among Filipino developers"). If your study is quantitative, you might also form a hypothesis—a prediction you will test. Well-formulated questions and objectives keep your research focused and make it easier to plan the study.
+$md$, 3),
+('2bdab8a7-b762-566a-ab7c-8328a1de5b94','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions**
+
+1. What factors make a good research topic? List two and explain.
+2. How would you narrow the broad topic "social media usage" into a more specific research question for IT students?
+3. What is a research problem statement? Why is it important?
+4. How is a research question different from an objective or hypothesis?
+5. Provide an example of a clear, concise problem statement on any IT issue (in one sentence).
+
+**Worked Problems**
+
+**Exam Problem:** You are interested in studying e-learning platforms. Write a specific research problem statement and one research question related to this topic.
+
+**Solution:** One possible problem statement is: "High school students at Manila Science High School report low engagement during online classes due to poorly designed e-learning platforms." A matching research question could be: "What features of the current e-learning platform are most commonly associated with student disengagement?" This question targets the problem by asking which platform features impact engagement.
+
+**Exam Problem:** Given the problem statement: "Local internet cafe owners lack an efficient system to manage customer queues, leading to long wait times." Propose two research questions that could guide a study on this issue.
+
+**Solution:** For this problem, research questions could include: 1) "What methods do internet cafe owners currently use to manage customer queues, if any?" and 2) "How do queue management practices affect customer satisfaction or wait times in these cafes?" These questions directly address the identified problem and set the stage for finding practical solutions.
+
+**Hands-On Exercise**
+
+Think of a technical issue or challenge you've observed (it could be at your school, job, or community). Write a one-sentence problem statement for that issue and formulate two related research questions.
+
+**How to Pass Tips**
+
+- **Be specific.** Avoid vague terms in your problem statement and questions. Instead of "social media," specify which platform and which user group (e.g., "Facebook usage among college freshmen").
+- **Match questions to problems.** Every research question should relate directly to part of your problem statement. If the problem mentions time, one question can focus on timing issues.
+- **Check clarity.** Read your problem statement and questions: are they understandable to someone not in the class? If not, simplify the wording.
+- **Avoid yes/no questions.** Good research questions usually begin with "What," "How," or "Why" rather than yes/no. This ensures you gather detailed information.
+- **Use your knowledge.** Think about what professors emphasize: clarity and focus. Show that you can take a broad idea and break it into clear, answerable questions.
+$md$, 4);
+
