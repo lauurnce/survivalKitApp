@@ -166,3 +166,60 @@ Issues: (1) The "Add to Cart" button is too far from product details; users migh
 - Recall basic design terms (contrast, hierarchy, responsive). Professors often like examples: relate to local apps or websites (e.g. ease of use in a mobile banking app).
 $md$, 4);
 
+-- ============================================================
+-- LESSON 4: Server-side Development and Databases
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('6482f159-acca-57be-b95f-7a3242217995','content','Server-side Languages and Frameworks',$md$
+Server-side development involves code running on a server (behind the scenes). Languages include Python, Java, C#, and frameworks like Django (Python) or Spring (Java). These handle business logic, database operations, and security. For example, when you submit a web form, the server processes it (saving data or performing computations). In exams, you may be asked to name a server-side language and explain its use (e.g. Java for enterprise apps, Python for web APIs).
+$md$, 1),
+('6482f159-acca-57be-b95f-7a3242217995','content','Database Basics and Integration',$md$
+Applications often use databases to store information. Common databases include MySQL, PostgreSQL, or cloud-based options like Firebase. Key ideas: data is organized into tables (e.g., a table of student records), and SQL queries retrieve or update it. For instance, a student portal might have a Students table with columns (ID, name, grade). Knowing basic SQL commands (SELECT, INSERT, UPDATE) can be useful. Even if you don't write SQL in an exam, understand that data storage and retrieval are core to many applications.
+$md$, 2),
+('6482f159-acca-57be-b95f-7a3242217995','activity','APIs and Data Storage',$md$
+APIs (Application Programming Interfaces) allow different software systems to communicate. For example, a web app might call a weather API to get current conditions. Data must be handled securely: passwords should be hashed, and database connections protected. Many modern apps use RESTful APIs or cloud services for data. If personal data is involved (e.g., a system for students), remember the Data Privacy Act (RA 10173) that requires protecting such information. Questions may involve describing a request flow: user action → server processing → database → response.
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('6482f159-acca-57be-b95f-7a3242217995','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions:**
+
+1. What is a database table? Give a real-world example (like a table of books or students).
+2. Why do server-side frameworks (like Flask or Spring) help developers?
+3. What does SQL stand for? Name one SQL command and its purpose.
+4. Explain what an API is, in simple terms.
+5. What security measure should be taken when storing user passwords?
+
+**Worked Problem:**
+
+Suppose you have a database table `Products(id, name, price)`. Write a pseudo-SQL query to find all products priced above ₱500. Then explain how a Python server program might retrieve and display these products on a webpage.
+
+**Solution:**
+
+The SQL query: `SELECT * FROM Products WHERE price > 500;`. A Python server (e.g. using Flask) would connect to the database, execute this query, fetch the results, and then pass them to an HTML template or API response. The webpage could then loop through these records and show each product's name and price in a list or table.
+
+**Hands-on Exercise:**
+
+Using the starter Python code, complete the `get_user_by_name` function so it returns the matching user or `None`. For example, `get_user_by_name("Bob")` should return `{"id": 2, "name": "Bob", "age": 30}`.
+
+**How to Pass Tips:**
+
+- Memorize basic SQL keywords (SELECT, INSERT, WHERE).
+- Understand the client-server flow: user action → server code → database → server response.
+- Be ready to describe what happens when data is saved or retrieved (forms, API calls).
+- Practice simple coding tasks (searching a list or filtering data in Python) as exam drills.
+$md$, 4, 'python', $code$# Assume we have a list of user records (like a simple database)
+users = [
+    {"id": 1, "name": "Alice", "age": 25},
+    {"id": 2, "name": "Bob",   "age": 30}
+]
+
+def get_user_by_name(name):
+    # TODO: return the user record whose name matches (case-sensitive), or None if not found
+    for user in users:
+        if user["name"] == name:
+            return user
+    return None
+
+print(get_user_by_name("Bob"))$code$);
+
