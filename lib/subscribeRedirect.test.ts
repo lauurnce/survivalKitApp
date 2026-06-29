@@ -6,7 +6,7 @@ const YEAR = "11111111-1111-1111-1111-111111111111";
 const SUBJECT = "22222222-2222-2222-2222-222222222222";
 const MODULE = "33333333-3333-3333-3333-333333333333";
 const validPath = `/year/${YEAR}/subjects/${SUBJECT}/modules/${MODULE}`;
-const fallback = `${ORIGIN}/year/${YEAR}/subjects?payment=success`;
+const fallback = `${ORIGIN}/account?payment=success`;
 
 describe("buildSuccessUrl", () => {
   it("returns the module path with ?payment=success for a valid matching subject-plan path", () => {
