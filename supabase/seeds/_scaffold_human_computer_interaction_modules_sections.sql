@@ -215,3 +215,42 @@ Draw two versions of the same smartphone app screen. Version A: randomly place 1
 - A common error is using too many fonts or colors – stick to one font family and 2–3 colors for readability.
 $md$, 3);
 
+-- ============================================================
+-- LESSON 6: Usability Testing and Evaluation
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('7114db28-6196-5bf7-b061-46940060698b','content','Evaluation Methods',$md$
+HCI evaluation ensures the design works for users. Two main approaches are **formative** (ongoing testing during design) and **summative** (final testing after design). Popular methods include **heuristic evaluation** (experts check the interface against established heuristics) and **user testing** (watching real people use the interface). You might learn to plan a usability test: define tasks, recruit 5–10 representative users, observe them performing tasks, and record issues. Philippine coursework often has students do guerrilla testing with classmates or deploy surveys for feedback.
+$md$, 1),
+('7114db28-6196-5bf7-b061-46940060698b','content','Metrics and Feedback',$md$
+During tests, we measure metrics like **time on task**, **error rate**, and **satisfaction scores**. For example, the **System Usability Scale (SUS)** is a quick survey giving a score from 0–100. If your app scores below ~68, it's generally considered below average. You should also gather qualitative feedback: ask users how they felt about the interface. A common tip is the **"think aloud"** protocol, where users say their thoughts while using the system. After testing, analyze results: find patterns (e.g. all users stumbled on one button), then fix those issues. This cycle of "test, learn, iterate" is at the heart of the HCI curriculum.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a usability evaluation plan.*
+$md$, 2),
+('7114db28-6196-5bf7-b061-46940060698b','activity','Practice & Exam Drills — Lesson 6',$md$
+**Review Questions**
+
+1. What is the difference between formative and summative evaluation?
+2. Describe how a usability test is conducted in simple steps.
+3. What is the purpose of a heuristic evaluation?
+4. Name one metric used in usability testing and explain it.
+5. Why might we use "think aloud" during user testing?
+
+**Worked Problem**
+
+You have designed a new menu interface for a popular Filipino delivery app. You conduct a usability test with 5 users doing the task "Place an order for fried chicken." All users complain that finding the "Checkout" button is confusing. Based on this feedback, what change would you make to the design?
+
+*Solution:* Since all users had trouble with the "Checkout" button, it likely isn't visible enough. We should make it more prominent: maybe a larger button, with high-contrast color, placed in a consistent location (e.g. bottom right). We might also label it clearly (e.g. "Confirm Order"). Then re-test to ensure users can find it. This is applying the test feedback to fix usability.
+
+**Hands-On Exercise**
+
+Pick a website (e.g. a local government site) and do a quick "heuristic review." Check it against two heuristics, like visibility of status (does it show loading?) and match between system and real world (language). Jot down any violations you find.
+
+**How to Pass Tips**
+
+- Remember key terms (formative/summative, SUS). Exams love asking about steps in a usability test ("how many users is ideal?" or "why measure time on task?").
+- One trick: 5 users usually find ~75% of problems (Nielsen's rule of thumb) — common exam knowledge.
+- Mistake to avoid: saying testing is optional — in HCI, it's mandatory. Emphasize the iterative nature (test–fix–test again).
+- Always connect findings to design improvements in your answers ("We will improve X because users had issues with Y.").
+$md$, 3);
+
