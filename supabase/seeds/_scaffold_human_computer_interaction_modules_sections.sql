@@ -98,3 +98,42 @@ Conduct a simple test with a friend or classmate: show them a cluttered and a si
 - Always justify design choices by citing human capabilities (e.g. "I made text large because older users struggle with small fonts.").
 $md$, 3);
 
+-- ============================================================
+-- LESSON 3: Interaction Design Principles
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('f69a8ee9-ecc8-594b-a29b-4c3601f7240c','content','Usability and Heuristics',$md$
+Interaction design relies on established rules called **heuristics**. For instance, Nielsen's 10 usability heuristics or Shneiderman's 8 golden rules are widely taught. These include principles like **consistency and standards** (keep your menus and labels uniform) and **feedback** (show progress bars or confirmations when users act). Another key principle is **error prevention**: design forms with constraints or confirmations to reduce mistakes (e.g. requiring confirmation before deleting a record). These guidelines come from decades of HCI research and are tested in many countries, including the Philippines (e.g. improving government website forms).
+$md$, 1),
+('f69a8ee9-ecc8-594b-a29b-4c3601f7240c','content','Practical Guidelines',$md$
+Apply design principles to layout and flow. For example, "place the most important information above the fold" so users see it right away. Use **grouping** and **alignment** to show relationships (buttons for navigation on left, content on right). Visual **affordances** should hint at functionality: e.g. buttons look 3D, links change color on hover. Standard UI elements (like a trash icon for delete) leverage users' existing mental models, which is easier than inventing new symbols. Familiarity matters: if all Filipino apps use a 'hamburger menu' icon, you probably should too.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a checklist of design heuristics.*
+$md$, 2),
+('f69a8ee9-ecc8-594b-a29b-4c3601f7240c','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions**
+
+1. List any three of Nielsen's usability heuristics or Shneiderman's rules.
+2. What does "visibility of system status" mean? Give an example.
+3. Why is consistency important in interface design?
+4. Explain "error prevention" and give a common UI example.
+5. What is an affordance in HCI?
+
+**Worked Problem**
+
+Examine this scenario: A mobile app has two buttons, "Submit" and "Submit123", side by side, looking almost identical. Users often tap the wrong one by mistake. Identify at least two heuristic violations and propose fixes.
+
+*Solution:* The interface violates **Consistency** (two similar buttons doing different things is confusing) and **Error Prevention** (unclear labels lead to mistakes). Fixes: Make button labels clear (e.g. "Send" vs "Draft") and far apart. Use different colors or icons to distinguish them. Possibly add a confirmation dialog for "Submit" to prevent accidental taps. These changes follow HCI guidelines (clear labels, distinct affordances).
+
+**Hands-On Exercise**
+
+Take a screenshot of a messy app screen (e.g. lots of text and buttons) and highlight issues like small text or unclear icons. Rewrite or draw a corrected version applying one of Nielsen's principles. Compare with classmates.
+
+**How to Pass Tips**
+
+- Memorize key terms: "visibility," "feedback," "affordance," "constraints." Professors often phrase questions like "Which rule says you should use familiar icons?" or "What principle applies to error messages?"
+- Practice by reviewing example interfaces and identifying which heuristic each supports or breaks.
+- A common exam trap is confusing "important" with "relevant"; focus on usability goals (effectiveness, efficiency, satisfaction) rather than vague terms.
+- Always tie your answers to real examples ("For instance, adding a loading spinner shows system status.").
+$md$, 3);
+
