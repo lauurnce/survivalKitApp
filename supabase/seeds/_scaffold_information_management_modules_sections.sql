@@ -155,3 +155,83 @@ INSERT INTO Enrollment VALUES
 (1007, 4, 102, 'First', 2026, 'B'),
 (1008, 4, 201, 'First', 2026, 'A');$code$);
 
+-- ============================================================
+-- LESSON 2: Data Modeling with ER Diagrams
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('458c437f-cf15-591b-8a21-a0899a839158','content','Conceptual Data Modeling',$md$
+Data modeling is the process of defining how real-world entities (people, places, things) and their relationships are represented in a database. The goal is to create a conceptual blueprint of the data. At this level, we identify **entities** (for example, Student, Course, Instructor), **attributes** of those entities (a student's name, ID, program), and **relationships** between entities (a student enrolls in a course). We use diagrams to map out these ideas before writing any SQL. A conceptual model is independent of the database system – it focuses on business rules (e.g. each student can enroll in many courses).
+$md$, 1),
+('458c437f-cf15-591b-8a21-a0899a839158','content','Entity-Relationship Diagrams (ERD)',$md$
+An Entity-Relationship Diagram (ERD) visually shows entities as boxes and relationships as lines (often with diamonds). Attributes are listed in or near the entity boxes, with a **primary key** underlined (it uniquely identifies each entity). **Cardinality** (one-to-one, one-to-many, many-to-many) is marked on relationship lines. For example, in a school database, Student and Course might be entities, and the relationship "enrolls in" connects them. Each course can have many students (one-to-many) and each student can take many courses (so the relationship is many-to-many, usually implemented via an Enrollment table).
+
+A typical ERD for this would model three tables:
+
+- **STUDENT** — `student_id` (PK), `name`, `program`, `year`
+- **ENROLLMENT** — `enrollment_id` (PK), `student_id` (FK), `course_id` (FK), `semester`, `year`, `grade`
+- **COURSE** — `course_id` (PK), `course_name`, `credits`
+
+A student can enroll in many courses, and each course can have many students; the ENROLLMENT table breaks the many-to-many relationship into two one-to-many links.
+$md$, 2),
+('458c437f-cf15-591b-8a21-a0899a839158','activity','Converting ERD to Relational Schema',$md$
+After drawing an ERD, we translate it into tables (relational schema). Each entity becomes a table, and each relationship is handled via keys. In the example above, we created tables `Student`, `Course`, and a junction table `Enrollment` with foreign keys referencing both. For one-to-many relationships, the many-side table simply has a foreign key to the one-side table. For many-to-many, we introduce an extra table (as shown) to break it into two one-to-many relationships. This ensures no duplicate data. The attributes of each entity become columns in that table.
+$md$, 3),
+('458c437f-cf15-591b-8a21-a0899a839158','activity','Keys and Constraints',$md$
+In the relational model, a **primary key** uniquely identifies each record in a table (e.g. `student_id` in Student). A **foreign key** is a column in one table that refers to a primary key in another table, enforcing relationships (e.g. `course_id` in Enrollment refers to `Course(course_id)`). By defining keys, the database ensures that data stays consistent: you cannot enroll a student in a course that doesn't exist (the foreign key will fail). Other constraints include **NOT NULL** (a column must have a value) and **UNIQUE** (values must be distinct). Properly setting keys and constraints is crucial for reliable data models.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('458c437f-cf15-591b-8a21-a0899a839158','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions**
+
+1. Define an entity and a relationship in data modeling. Give an example of each.
+2. What does it mean when a relationship is many-to-many? How is that implemented in a relational database?
+3. What is the difference between a primary key and a foreign key?
+
+**Worked Problems (Exam-Style)**
+
+**[ERD Design]** A bookstore keeps track of Books and Authors. Each book can have multiple authors, and each author can write multiple books. Draw an ER diagram for this situation.
+
+*Solution:* Entities: BOOK, AUTHOR; relationship WRITES; cardinality many-to-many, implemented via a BOOK_AUTHOR table with foreign keys to both.
+
+**[Translation]** Given the ERD: STUDENT —(enrolls)— COURSE (many-to-many). Write the CREATE TABLE statements for the relational schema (Student, Course, Enrollment) including primary/foreign keys.
+
+*Solution:* `CREATE TABLE Student(student_id PRIMARY KEY, name, ...);` `Course(course_id PRIMARY KEY, ...);` `Enrollment(enrollment_id PRIMARY KEY, student_id, course_id, ... FOREIGN KEY references Student, FOREIGN KEY references Course)`.
+
+**[Identification]** Consider a table that stores student grades in an exam (columns: ExamID, StudentID, StudentName, Score):
+
+| ExamID | StudentID | StudentName | Score |
+|--------|-----------|-------------|-------|
+| 2001 | 1 | Juan Cruz | 85 |
+| 2001 | 2 | Maria Santos | 90 |
+
+Identify the flaw in this design. How would you fix it?
+
+*Solution:* Redundancy — StudentName repeats for each Exam. Fix by separating STUDENT into its own table (StudentID, StudentName), and have the grade table reference StudentID only.
+
+**Hands-On Exercises** (using the SQL playground)
+
+1. Create a new table `Professor(prof_id INT PRIMARY KEY, name VARCHAR(50), dept_id INT REFERENCES Department(dept_id));`
+2. Insert a professor (e.g. `(10, 'Liza dela Cruz', 1)`) and run `SELECT * FROM Professor;` to confirm.
+3. Try adding an enrollment for a non-existent student (e.g. `INSERT INTO Enrollment VALUES (2001, 99, 101, 'First', 2026, 'A');`). Explain why the DBMS prevents this. (Hint: foreign key constraint.)
+
+**How to Pass Data Modeling Topics**
+
+- Practice drawing ER diagrams on paper. Label entities and relationship cardinalities clearly (1:N, N:M, etc.). Professors often give scenarios to diagram first.
+- Memorize the rules for converting ER diagrams to tables (one table per entity, add junction table for M:N relationships).
+- When writing CREATE TABLE in exams, always show primary key (PK) and foreign key (FK) with correct references. Use uppercase keywords to avoid syntax errors.
+- Check for correctness: after drawing or coding, ask "Would this prevent storing invalid data?" (e.g., can a student enroll in a non-existent course?). Good modeling answers these checks.
+$md$, 5, 'sql', $code$-- Uses the same sample database as Lesson 1 (Department, Student, Course, Enrollment).
+-- Recreate it here if your session is fresh:
+CREATE TABLE Department (dept_id INT PRIMARY KEY, dept_name VARCHAR(100));
+CREATE TABLE Student (student_id INT PRIMARY KEY, name VARCHAR(50), program VARCHAR(50), year INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Course (course_id INT PRIMARY KEY, course_name VARCHAR(100), credits INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Enrollment (enrollment_id INT PRIMARY KEY, student_id INT REFERENCES Student(student_id), course_id INT REFERENCES Course(course_id), semester VARCHAR(10), year INT, grade CHAR(2));
+
+INSERT INTO Department VALUES (1,'Computer Science'),(2,'Information Technology'),(3,'Mathematics');
+INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BSCS',2,1),(3,'Jose Rizal','BSCS',4,1),(4,'Anna Reyes','BSIT',2,2);
+INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
+INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
+
