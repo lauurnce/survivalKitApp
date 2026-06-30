@@ -52,7 +52,7 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
 
   if (section.kind === "activity" && !unlockAll) {
     return (
-      <section>
+      <section id="subscribe" className="scroll-mt-24">
         <div className="flex items-baseline gap-4 mb-6">
           <span className="label-sm shrink-0">{String(index + 1).padStart(2, "0")}</span>
           <h2 className="font-serif text-2xl md:text-3xl text-ink leading-tight">{section.heading}</h2>

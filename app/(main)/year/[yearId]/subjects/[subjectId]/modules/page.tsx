@@ -5,6 +5,7 @@ import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
 import { ModuleDoneToggle } from "@/components/ModuleDoneToggle";
 import { SubjectComingSoon } from "@/components/SubjectComingSoon";
+import { PaywallTeaser } from "@/components/PaywallTeaser";
 import { formatCount } from "@/lib/counters";
 
 export const revalidate = 300;
@@ -56,6 +57,17 @@ export default async function ModulesPage({ params }: Props) {
 
       {/* Module list — cream */}
       <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
+        <div className="max-w-wide">
+          {modules && modules.length > 0 && (
+            <PaywallTeaser
+              yearId={yearId}
+              subjectId={subjectId}
+              yearLabel={year?.label}
+              subjectTitle={subject.title}
+              ctaHref={`/year/${yearId}/subjects/${subjectId}/modules/${modules[0].id}#subscribe`}
+            />
+          )}
+        </div>
         <div className="flex flex-col divide-y divide-ink-faint/30 max-w-wide">
           {modules?.map((mod, i) => (
             <Link

@@ -10,6 +10,8 @@ export type EventType =
   | "module_open"
   | "section_view"
   | "subscribe_click"
+  | "paywall_teaser_view"
+  | "paywall_teaser_click"
   | "unlock_click"
   | "unlock_submitted";
 

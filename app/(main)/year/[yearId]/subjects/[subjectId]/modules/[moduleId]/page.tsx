@@ -9,6 +9,7 @@ import { BackLink } from "@/components/BackLink";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import { PageTracker } from "@/components/PageTracker";
 import { LastModuleTracker } from "@/components/LastModuleTracker";
+import { PaywallTeaser } from "@/components/PaywallTeaser";
 
 export const revalidate = 300;
 
@@ -99,6 +100,17 @@ export default async function ReaderPage({ params }: Props) {
 
       {/* Article content — cream */}
       <article className="px-6 py-12 md:px-16 max-w-wide space-y-16">
+        {/* Surface the offer at the top when this module has gated activities
+            and the user hasn't unlocked them. Scrolls to the gate below. */}
+        {!unlockActivities && (activityMeta?.length ?? 0) > 0 && (
+          <PaywallTeaser
+            yearId={yearId}
+            subjectId={subjectId}
+            yearLabel={year?.label}
+            subjectTitle={subject.title}
+            ctaHref="#subscribe"
+          />
+        )}
         {allSections.map((section, i) => (
           <SectionRenderer
             key={section.id}
