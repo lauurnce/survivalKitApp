@@ -442,3 +442,158 @@ INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BS
 INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
 INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
 
+-- ============================================================
+-- LESSON 5: SQL Queries (SELECT, Joins, and Aggregates)
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('21829336-6581-56fb-866e-61c03652d346','content','Basic SELECT Queries',$md$
+The `SELECT` statement retrieves data from tables. Basic syntax:
+
+```sql
+SELECT column1, column2
+FROM table_name
+WHERE condition;
+```
+
+For example, `SELECT name, program FROM Student WHERE year = 3;` lists names and programs of all 3rd-year students. The `WHERE` clause filters rows (using `=`, `<`, `>`, `LIKE`, etc.). You can select all columns with `SELECT *`, but in exams it's better to list needed columns. Always test your WHERE conditions.
+$md$, 1),
+('21829336-6581-56fb-866e-61c03652d346','content','JOIN Operations',$md$
+To query multiple tables, use JOINs. The most common is **INNER JOIN**, which combines rows with matching keys. Example:
+
+```sql
+SELECT s.name, c.course_name
+FROM Student s
+JOIN Enrollment e ON s.student_id = e.student_id
+JOIN Course c ON e.course_id = c.course_id;
+```
+
+This lists each student with each course they are enrolled in. There are also **LEFT JOIN** (includes all left-table rows even if no match) and **RIGHT/FULL JOIN** (right or both sides). In exams, INNER JOIN is most common. Use table aliases (like `s`, `e`, `c`) for brevity. Ensure you join on the correct key columns.
+$md$, 2),
+('21829336-6581-56fb-866e-61c03652d346','activity','Aggregation and GROUP BY',$md$
+SQL provides functions to summarize data: `COUNT()`, `SUM()`, `AVG()`, `MIN()`, `MAX()`. To apply these to groups, use `GROUP BY`. For example, to count students per program:
+
+```sql
+SELECT program, COUNT(*) AS num_students
+FROM Student
+GROUP BY program;
+```
+
+This shows one row per program. If you want a condition on groups, use `HAVING`, e.g. to show programs with more than 1 student:
+
+```sql
+SELECT program, COUNT(*)
+FROM Student
+GROUP BY program
+HAVING COUNT(*) > 1;
+```
+$md$, 3),
+('21829336-6581-56fb-866e-61c03652d346','activity','Subqueries (Nested Queries)',$md$
+A **subquery** is a query inside another. For example, to find students taking the same courses as student 1:
+
+```sql
+SELECT name
+FROM Student
+WHERE student_id IN (
+  SELECT student_id
+  FROM Enrollment
+  WHERE course_id IN (
+    SELECT course_id FROM Enrollment WHERE student_id = 1
+  )
+);
+```
+
+Subqueries can be used in `WHERE`, `FROM`, or `SELECT` clauses. A **correlated subquery** refers to columns from the outer query (like a loop). If unfamiliar, focus on simple ones, e.g. "students above the average year":
+
+```sql
+SELECT name
+FROM Student
+WHERE year > (SELECT AVG(year) FROM Student);
+```
+
+*Exam tip:* Subqueries are often written using `IN` (for multiple values) or `=` (for a single value).
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('21829336-6581-56fb-866e-61c03652d346','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. What does JOIN do in SQL? What is the difference between INNER JOIN and LEFT JOIN?
+2. Explain the purpose of GROUP BY and HAVING. Can you use HAVING without GROUP BY?
+3. Give an example of a subquery in a WHERE clause (written in English).
+
+**Worked Problems (Exam-Style)**
+
+**[Join Query]** Write a query to list each student name along with their department name.
+
+*Solution:*
+```sql
+SELECT s.name, d.dept_name
+FROM Student s
+JOIN Department d ON s.dept_id = d.dept_id;
+```
+*Explanation:* We join Student with Department on the matching `dept_id`.
+
+**[Aggregation]** How many courses has each student enrolled in? (columns: student_id, total_courses)
+
+*Solution:*
+```sql
+SELECT student_id, COUNT(*) AS total_courses
+FROM Enrollment
+GROUP BY student_id;
+```
+*Explanation:* Count the number of enrollment records per student.
+
+**[Subquery]** List the students who are not enrolled in any course.
+
+*Solution:*
+```sql
+SELECT name
+FROM Student
+WHERE student_id NOT IN (SELECT student_id FROM Enrollment);
+```
+*Explanation:* The subquery finds students with enrollments; the outer query picks those not in that list.
+
+**[Query Result]** What is the result of:
+```sql
+SELECT program, AVG(year)
+FROM Student
+GROUP BY program;
+```
+*Solution:* The average year level for each program (e.g. BSIT, BSCS) from the sample data.
+
+**Hands-On Exercises** (using the SQL playground)
+
+1. Find the names of all courses offered by the 'Computer Science' department. (Hint: join Course with Department on dept_id where dept_name = 'Computer Science'.)
+2. Count how many enrollments each course has:
+```sql
+SELECT c.course_name, COUNT(*) AS num_enrolled
+FROM Course c
+JOIN Enrollment e ON c.course_id = e.course_id
+GROUP BY c.course_name;
+```
+3. Try a subquery: find the student(s) with the highest student_id:
+```sql
+SELECT name
+FROM Student
+WHERE student_id = (SELECT MAX(student_id) FROM Student);
+```
+
+**How to Pass Complex SQL Topics**
+
+- For joins, qualify column names with table aliases to avoid ambiguity. Professors might give multiple tables, so always write `table.column`.
+- Practice grouping queries: every column in SELECT must be either aggregated or in GROUP BY.
+- For subqueries, ensure your logic is clear. A common exam pattern is "find X not in Y" or "find X greater than average of Y." Write it out step by step.
+- Know functions like COUNT, SUM, AVG, MIN, MAX by memory — they often appear in questions.
+$md$, 5, 'sql', $code$-- Same sample database as Lesson 1 (Department, Student, Course, Enrollment).
+CREATE TABLE Department (dept_id INT PRIMARY KEY, dept_name VARCHAR(100));
+CREATE TABLE Student (student_id INT PRIMARY KEY, name VARCHAR(50), program VARCHAR(50), year INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Course (course_id INT PRIMARY KEY, course_name VARCHAR(100), credits INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Enrollment (enrollment_id INT PRIMARY KEY, student_id INT REFERENCES Student(student_id), course_id INT REFERENCES Course(course_id), semester VARCHAR(10), year INT, grade CHAR(2));
+
+INSERT INTO Department VALUES (1,'Computer Science'),(2,'Information Technology'),(3,'Mathematics');
+INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BSCS',2,1),(3,'Jose Rizal','BSCS',4,1),(4,'Anna Reyes','BSIT',2,2);
+INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
+INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
+
