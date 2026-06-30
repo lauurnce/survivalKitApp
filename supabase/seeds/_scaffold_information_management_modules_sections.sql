@@ -324,3 +324,121 @@ INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BS
 INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
 INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
 
+-- ============================================================
+-- LESSON 4: SQL – Data Definition and Data Manipulation
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('44be57f8-adf1-57d2-80cd-39d62aa91636','content','SQL Data Definition Language (DDL)',$md$
+SQL DDL statements let us create and modify database structures. The main commands are **CREATE**, **ALTER**, and **DROP**. For example, to create a table you write:
+
+```sql
+CREATE TABLE Student (
+  student_id INT PRIMARY KEY,
+  name VARCHAR(50),
+  program VARCHAR(20)
+);
+```
+
+This creates a Student table with a primary key. Common data types include `INT` for integers, `VARCHAR(n)` for text up to n characters, `DATE` for dates, etc. You can also add constraints: `NOT NULL` (column must have a value), `UNIQUE` (no duplicates), and `FOREIGN KEY` (to link tables). For example, adding a foreign key to Enrollment might look like:
+
+```sql
+ALTER TABLE Enrollment
+ADD FOREIGN KEY (student_id) REFERENCES Student(student_id);
+```
+
+DDL changes the schema but does not handle table rows (data).
+$md$, 1),
+('44be57f8-adf1-57d2-80cd-39d62aa91636','content','SQL Data Manipulation Language (DML)',$md$
+DML statements let us manage the data inside tables. The main commands are **INSERT**, **UPDATE**, **DELETE**, and **SELECT** (SELECT is technically a query but used in DML context to retrieve data). Examples:
+
+**INSERT** — Add new rows:
+```sql
+INSERT INTO Student VALUES (1, 'Ana Lopez', 'BSIT');
+```
+
+**UPDATE** — Change existing rows:
+```sql
+UPDATE Student SET program = 'BSCS' WHERE student_id = 1;
+```
+
+**DELETE** — Remove rows:
+```sql
+DELETE FROM Student WHERE student_id = 1;
+```
+
+Always use `WHERE` to specify which rows to update/delete; omitting it affects **all** rows!
+$md$, 2),
+('44be57f8-adf1-57d2-80cd-39d62aa91636','activity','Altering and Dropping Tables',$md$
+To modify table structure after creation, use `ALTER TABLE`. You can add or drop columns. For example:
+
+```sql
+ALTER TABLE Course ADD COLUMN description VARCHAR(100);
+ALTER TABLE Course DROP COLUMN credits;
+```
+
+Dropping an entire table is done with `DROP TABLE table_name;`. Use these with caution, as dropping a table or column cannot be undone easily (unless you have a backup). For exams, showing correct `ALTER` syntax can earn points.
+$md$, 3),
+('44be57f8-adf1-57d2-80cd-39d62aa91636','activity','Example DDL/DML Workflow',$md$
+A typical workflow is: first design the table (DDL), then insert data (DML), and later update or delete as needed. For example, after creating the Student table, you might run multiple INSERT statements for each student. If you realize you need a new field later, you `ALTER TABLE` to add it. Remember to always test your SQL (exam tip: check syntax and remember commas, parentheses). Writing clean, syntactically correct SQL in exams is crucial – one missing comma or quote is a common mistake.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('44be57f8-adf1-57d2-80cd-39d62aa91636','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. What is the difference between DDL and DML in SQL? Give an example of each.
+2. What SQL statement would you use to prevent null values in a column? (e.g., making a column mandatory)
+3. True or False: `TRUNCATE TABLE Student;` deletes all rows without logging individual row deletions. *(Answer: True.)*
+
+**Worked Problems (Exam-Style)**
+
+**[CREATE TABLE]** Write a SQL statement to create a table `Professor` with columns: `prof_id` (integer primary key), `name` (text), and `dept_id` (integer, foreign key to Department).
+
+*Solution:* `CREATE TABLE Professor (prof_id INT PRIMARY KEY, name VARCHAR(50), dept_id INT, FOREIGN KEY(dept_id) REFERENCES Department(dept_id));`
+
+**[ALTER TABLE]** Given table `Student(id, name, age)`, write a command to add a column `email` (varchar).
+
+*Solution:* `ALTER TABLE Student ADD COLUMN email VARCHAR(100);`
+
+**[INSERT]** You have table `Course(course_id, course_name)`. Show how to insert a new course with ID=501 and name='Data Science'.
+
+*Solution:* `INSERT INTO Course (course_id, course_name) VALUES (501, 'Data Science');`
+
+**[UPDATE]** If you need to change student 4's year to 3, write the SQL.
+
+*Solution:* `UPDATE Student SET year = 3 WHERE student_id = 4;`
+
+**[Error Checking]** What is wrong with this statement? `CREATE TABLE Student (id INT PRIMARY KEY, name VARCHAR(50) UNIQUE, program);`
+
+*Solution:* Missing a data type for `program`; it should be like `program VARCHAR(20)`. Also watch for missing commas if more columns follow.
+
+**Hands-On Exercises** (using the SQL playground)
+
+1. Try creating a new table and inserting some data:
+```sql
+CREATE TABLE Test (x INT PRIMARY KEY, y VARCHAR(10));
+INSERT INTO Test VALUES (1, 'Hello'), (2, 'World');
+SELECT * FROM Test;
+```
+2. Attempt an illegal DDL change (e.g., `ALTER TABLE Enrollment DROP student_id;`) and note the error. Why does the DBMS complain?
+3. Update a row and then delete it. (E.g., `UPDATE Student SET program='BSCS' WHERE student_id=2;` then `DELETE FROM Student WHERE student_id=2;`)
+
+**How to Pass SQL DDL/DML Topics**
+
+- Memorize the basic SQL statements and their syntax. In exams you may be asked to write or correct them.
+- Remember commas between columns, matching parentheses, and semicolons at the end. Many mistakes are simple typos.
+- Pay attention to the order: `CREATE TABLE name (cols, constraints)`, `INSERT INTO table(cols) VALUES(...)`.
+- For `ALTER TABLE`, know `ADD COLUMN` vs `DROP COLUMN`. Practice these in the playground so you spot syntax issues quickly.
+$md$, 5, 'sql', $code$-- Same sample database as Lesson 1 (Department, Student, Course, Enrollment).
+CREATE TABLE Department (dept_id INT PRIMARY KEY, dept_name VARCHAR(100));
+CREATE TABLE Student (student_id INT PRIMARY KEY, name VARCHAR(50), program VARCHAR(50), year INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Course (course_id INT PRIMARY KEY, course_name VARCHAR(100), credits INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Enrollment (enrollment_id INT PRIMARY KEY, student_id INT REFERENCES Student(student_id), course_id INT REFERENCES Course(course_id), semester VARCHAR(10), year INT, grade CHAR(2));
+
+INSERT INTO Department VALUES (1,'Computer Science'),(2,'Information Technology'),(3,'Mathematics');
+INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BSCS',2,1),(3,'Jose Rizal','BSCS',4,1),(4,'Anna Reyes','BSIT',2,2);
+INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
+INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
+
