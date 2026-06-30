@@ -597,3 +597,95 @@ INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BS
 INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
 INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
 
+-- ============================================================
+-- LESSON 6: Transactions and Concurrency Control
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('b3cfdb35-2b57-59c7-9388-4007215630eb','content','Transactions and ACID Properties',$md$
+A **transaction** is a sequence of database operations (inserts, updates, deletes) that must all succeed as a unit. The **ACID** properties ensure transaction reliability: **Atomicity** (all or nothing – if any part fails, the whole transaction rolls back), **Consistency** (the database moves from one valid state to another, respecting all rules), **Isolation** (transactions do not interfere – interim changes are not visible to others until commit), and **Durability** (once committed, changes survive system crashes). For example, transferring ₱1000 from Account A to B involves two updates; ACID ensures that either both updates happen or neither does, so money is never lost or created. In SQL, transactions are demarcated by `BEGIN`/`COMMIT`/`ROLLBACK` (e.g. `BEGIN TRANSACTION; UPDATE ...; COMMIT;`).
+$md$, 1),
+('b3cfdb35-2b57-59c7-9388-4007215630eb','content','Concurrency Control (Locks, Isolation)',$md$
+When multiple users access the database, concurrency issues can arise (like lost updates, dirty reads). DBMSs use **locking** and **isolation levels** to prevent these anomalies. Basic isolation levels include:
+
+- **Read Uncommitted:** Lowest level, transactions see others' uncommitted changes (allows dirty reads).
+- **Read Committed:** A transaction only sees data committed by others (prevents dirty reads).
+- **Repeatable Read:** Ensures that if you read the same row twice in one transaction, you get the same value (prevents non-repeatable reads).
+- **Serializable:** Highest isolation, transactions are fully isolated (no anomalies).
+
+In practice, the PostgreSQL/MySQL default is usually Read Committed. Exams may describe scenarios like two students trying to register at the same time; discuss how locks prevent duplicate seats.
+$md$, 2),
+('b3cfdb35-2b57-59c7-9388-4007215630eb','activity','Recovery and Backups',$md$
+If a crash occurs, databases must recover to a consistent state. The DBMS uses **logs** (a history of changes) to undo or redo transactions. Regular **backups** are essential: a full backup copies the entire database; incremental backups copy only changes since the last backup. In the Philippines, critical systems (e.g. bank databases, government records) perform nightly backups and keep copies offsite. For exams, know terms like **checkpoint**, **rollforward/rollback**, and the differences between types of backups.
+$md$, 3),
+('b3cfdb35-2b57-59c7-9388-4007215630eb','activity','Example Transaction Scenario',$md$
+Consider transferring funds:
+
+```sql
+BEGIN TRANSACTION;
+UPDATE Account SET balance = balance - 1000 WHERE account_id = 123;
+UPDATE Account SET balance = balance + 1000 WHERE account_id = 456;
+COMMIT;
+```
+
+If the second update fails (e.g. account 456 doesn't exist), the DBMS will `ROLLBACK`, leaving both balances unchanged (atomicity). Without transactions, one update might succeed and the other fail, causing inconsistency. Always wrap related updates in a transaction to maintain integrity.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('b3cfdb35-2b57-59c7-9388-4007215630eb','activity','Practice & Exam Drills — Lesson 6',$md$
+**Review Questions**
+
+1. What are the four ACID properties of transactions? Why is each important?
+2. Explain the difference between a dirty read and a non-repeatable read. Give an example of each.
+3. What SQL statements mark the start and end of a transaction?
+
+**Worked Problems (Exam-Style)**
+
+**[Scenario]** Two transactions run concurrently: T1 reads Account A balance and then updates it; T2 updates Account A balance at the same time. What problem could occur if isolation is at Read Uncommitted?
+
+*Solution:* Dirty read — T1 might see T2's uncommitted change and use it, even if T2 later rolls back.
+
+**[ACID]** In your own words, what does Durability ensure after a transaction commits?
+
+*Solution:* Once a transaction is committed, its changes remain in the database permanently, even if the system crashes immediately afterwards.
+
+**[Rollback]** You run these statements:
+```sql
+BEGIN;
+INSERT INTO Course VALUES (999, 'TempCourse', 1, 1);
+ROLLBACK;
+SELECT * FROM Course WHERE course_id = 999;
+```
+What is the result of the SELECT? Explain.
+
+*Solution:* No rows returned, because the INSERT was undone by ROLLBACK.
+
+**Hands-On Exercises** (using the SQL playground)
+
+1. Simulate a simple transaction:
+```sql
+BEGIN;
+INSERT INTO Student VALUES (5, 'Mark Reyes', 'BSIT', 1, 2);
+DELETE FROM Student WHERE student_id = 5;
+ROLLBACK;
+```
+After running, check `SELECT * FROM Student;` to confirm that Mark Reyes is not added (both operations were rolled back).
+2. (Conceptual) Try setting two sessions to UPDATE the same row at the same time. Observe that one must wait or causes an error.
+
+**How to Pass Transactions Topics**
+
+- Remember definitions: ACID terms are frequently asked. A small mnemonic (A: All or Nothing, C: Consistent, I: Isolated, D: Durable) helps.
+- Understand common anomalies (lost update, dirty/non-repeatable read) and which isolation level fixes them. Professors may give a scenario and ask "Which level is needed?"
+- Mention SQL syntax: practice writing `BEGIN`, `COMMIT`, `ROLLBACK`. Even though not all professors expect exact commands, it shows your understanding of how transactions work.
+$md$, 5, 'sql', $code$-- Same sample database as Lesson 1 (Department, Student, Course, Enrollment).
+CREATE TABLE Department (dept_id INT PRIMARY KEY, dept_name VARCHAR(100));
+CREATE TABLE Student (student_id INT PRIMARY KEY, name VARCHAR(50), program VARCHAR(50), year INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Course (course_id INT PRIMARY KEY, course_name VARCHAR(100), credits INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Enrollment (enrollment_id INT PRIMARY KEY, student_id INT REFERENCES Student(student_id), course_id INT REFERENCES Course(course_id), semester VARCHAR(10), year INT, grade CHAR(2));
+
+INSERT INTO Department VALUES (1,'Computer Science'),(2,'Information Technology'),(3,'Mathematics');
+INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BSCS',2,1),(3,'Jose Rizal','BSCS',4,1),(4,'Anna Reyes','BSIT',2,2);
+INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
+INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
+
