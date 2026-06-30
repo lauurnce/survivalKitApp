@@ -689,3 +689,80 @@ INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BS
 INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
 INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
 
+-- ============================================================
+-- LESSON 7: Database Administration
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('40f4d906-7c40-5024-abb5-a5b883c02237','content','Security and Access Control',$md$
+Database administration includes managing who can do what. A **DBA** (Database Admin) creates user accounts and assigns privileges (e.g. SELECT, INSERT, UPDATE) on tables. In SQL, `GRANT SELECT ON Student TO user1;` gives permission to view the Student table. **Roles** (groups of privileges) are often used. Strong passwords and encrypting sensitive columns (like citizens' personal identifiers under PH law) are part of security too. In exams, you may list common grants or be asked how to prevent unauthorized data access.
+$md$, 1),
+('40f4d906-7c40-5024-abb5-a5b883c02237','content','Indexing and Performance',$md$
+An **index** is like a book's index: it speeds up data retrieval. Creating an index on a column (e.g. `CREATE INDEX idx_name ON Student(name);`) helps queries that search by name. However, indexes take storage space and slow down updates/inserts (every change must update the index). Use indexes on columns that are often searched or joined. In database admin questions, know that a `PRIMARY KEY` automatically creates a unique index. You might be asked the effect of an index or how it helps a query run faster (lower search time).
+$md$, 2),
+('40f4d906-7c40-5024-abb5-a5b883c02237','activity','Backup and Recovery',$md$
+A DBA must ensure data isn't lost. **Full backups** (copy the whole database) and **incremental backups** (just changes since the last backup) are scheduled regularly. In critical PH systems (e.g. Bangko Sentral ng Pilipinas), backups are done nightly. Also understand **point-in-time recovery**: logs allow restoring to just before a failure. Exam tips: distinguish **hot backup** (while DB is running) vs **cold backup** (when offline). A common question is describing a backup strategy or why backups are necessary.
+$md$, 3),
+('40f4d906-7c40-5024-abb5-a5b883c02237','activity','Views and Other Administration Tasks',$md$
+A **view** is a virtual table defined by a query (e.g. `CREATE VIEW Sophomores AS SELECT * FROM Student WHERE year=2;`). It can simplify data access or restrict sensitive columns. Views help in security (users see only what they should). Other DBA tasks include performance tuning (monitoring slow queries), and possibly defining stored procedures or triggers. Knowing terminology (view vs table, index types) and basic commands (`DROP INDEX`, `CREATE VIEW`) can earn marks.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('40f4d906-7c40-5024-abb5-a5b883c02237','activity','Practice & Exam Drills — Lesson 7',$md$
+**Review Questions**
+
+1. Why are indexes used in databases? What is a potential downside?
+2. How would you back up a database before performing a risky operation? List two methods.
+3. What SQL command gives a user permission to insert rows into the Student table? *(Answer: `GRANT INSERT ON Student TO userX;`)*
+
+**Worked Problems (Exam-Style)**
+
+**[Index]** Many queries search by name in Student. Write the SQL to create an index on that column. Explain when this index is used.
+
+*Solution:* `CREATE INDEX idx_student_name ON Student(name);` It will speed up queries like `WHERE name = '...'`.
+
+**[Backup Strategy]** Describe a backup strategy for a university registration database so that it can be recovered after a corruption during finals week.
+
+*Solution:* Take nightly full backups and hourly incremental backups. Keep backups offsite. Use transaction logs for point-in-time recovery.
+
+**[GRANT]** A new analyst, Anna, needs to run SELECT queries only on the Enrollment table. What commands would you use?
+
+*Solution:*
+```sql
+CREATE USER anna;
+GRANT SELECT ON Enrollment TO anna;
+```
+*Explanation:* We grant only the SELECT privilege on Enrollment.
+
+**Hands-On Exercises** (using the SQL playground)
+
+1. Create an index on `Course(course_name)` and run `EXPLAIN SELECT * FROM Course WHERE course_name = 'Algorithms';` to see how the index is used.
+2. Create a view of 3rd-year IT students:
+```sql
+CREATE VIEW ThirdYearIT AS
+  SELECT name, program, year
+  FROM Student
+  WHERE program='BSIT' AND year=3;
+SELECT * FROM ThirdYearIT;
+```
+Check that it shows the expected rows.
+3. (Conceptual) List the steps to recover data if the database accidentally dropped the Student table (assume a backup exists).
+
+**How to Pass Admin Topics**
+
+- Memorize common SQL commands for security and management (`CREATE INDEX`, `CREATE VIEW`, `GRANT`, `BACKUP`). These often appear in short-answer form.
+- Understand when to use each tool: e.g., "Use an index to speed a query, but drop it if writing speed matters."
+- For backup questions, mention things like "cold vs hot backup," "offsite storage," and "test restores." Real-world detail earns points.
+- In answers, be clear about consequences (e.g., "Without a backup, data cannot be recovered.").
+$md$, 5, 'sql', $code$-- Same sample database as Lesson 1 (Department, Student, Course, Enrollment).
+CREATE TABLE Department (dept_id INT PRIMARY KEY, dept_name VARCHAR(100));
+CREATE TABLE Student (student_id INT PRIMARY KEY, name VARCHAR(50), program VARCHAR(50), year INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Course (course_id INT PRIMARY KEY, course_name VARCHAR(100), credits INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Enrollment (enrollment_id INT PRIMARY KEY, student_id INT REFERENCES Student(student_id), course_id INT REFERENCES Course(course_id), semester VARCHAR(10), year INT, grade CHAR(2));
+
+INSERT INTO Department VALUES (1,'Computer Science'),(2,'Information Technology'),(3,'Mathematics');
+INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BSCS',2,1),(3,'Jose Rizal','BSCS',4,1),(4,'Anna Reyes','BSIT',2,2);
+INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
+INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
+
