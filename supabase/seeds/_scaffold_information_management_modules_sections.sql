@@ -235,3 +235,92 @@ INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BS
 INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
 INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
 
+-- ============================================================
+-- LESSON 3: Relational Design and Normalization
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('b0ace7f9-03ae-5c15-b397-b319d705bc24','content','Relational Model Basics',$md$
+In the relational model, data are stored in **tables** (relations) made up of **rows** (tuples) and **columns** (attributes). Each table has a **primary key** column (or set of columns) whose value uniquely identifies each row. Other columns are fields like name or date. Tables can be related by keys: a **foreign key** in one table points to the primary key of another. For example, a `Student(student_id, name, program)` table might have `student_id` as primary key. An `Enrollment(enrollment_id, student_id, course_id)` table would have `student_id` as a foreign key linking to `Student.student_id`. The DBMS enforces these relationships to prevent, say, enrolling a student ID that doesn't exist.
+$md$, 1),
+('b0ace7f9-03ae-5c15-b397-b319d705bc24','content','Functional Dependencies (FD)',$md$
+A **functional dependency** describes a relationship between columns: "X → Y" means that for any two rows, if X is the same then Y must also be the same. For example, in a Student table, `student_id → name, program` (student ID determines the student's name and program). Understanding FDs helps in designing tables without redundancy. If part of a composite primary key determines a column, that's a **partial dependency**. If a non-key column depends on another non-key column, that's a **transitive dependency**. These situations can cause data anomalies (like updates and insertions failing to correctly propagate).
+$md$, 2),
+('b0ace7f9-03ae-5c15-b397-b319d705bc24','activity','Normal Forms (1NF, 2NF, 3NF)',$md$
+Normalization is the process of organizing tables to reduce redundancy. Key normal forms are:
+
+- **1NF (First Normal Form):** Each column holds atomic (indivisible) values, and each row-column intersection has exactly one value. (E.g., do not store "Course1,Course2" in one field.)
+- **2NF (Second NF):** It is in 1NF and no partial dependency exists. That means if the primary key is composite, no subset of it should determine any column. (E.g., in table (StudentID, CourseID, Grade), neither StudentID nor CourseID alone should determine something about Grade.)
+- **3NF (Third NF):** It is in 2NF and no transitive dependency exists. No non-key attribute depends on another non-key attribute. (E.g., if StudentID determines AdvisorName, and AdvisorName determines AdvisorOffice, then splitting AdvisorOffice into a separate table might be needed.)
+
+By enforcing these forms, we ensure tables store each fact in only one place. This prevents update anomalies and keeps the database consistent.
+$md$, 3),
+('b0ace7f9-03ae-5c15-b397-b319d705bc24','activity','Normalization Example',$md$
+Consider this unnormalized table `EnrollmentRaw`:
+
+| StudentID | Name | Course | Instructor | Location |
+|-----------|------|--------|------------|----------|
+| 1 | Juan Cruz | Math101 | Dr. Santos | QC Campus |
+| 2 | Maria Santos | Math101 | Dr. Santos | QC Campus |
+| 3 | Joe Dela Cruz | Eng202 | Ms. Reyes | Makati |
+
+Here, the instructor and location repeat for each course, causing redundancy. Applying normalization:
+
+1. **Convert to 1NF:** ensure atomic values. (Already atomic in this example.)
+2. **Convert to 2NF:** Remove partial dependencies. For instance, (Course, Instructor, Location) depends only on Course, not on the full key (StudentID, Course). Split into a `Course` table and a `StudentCourse` table.
+3. **Convert to 3NF:** If any non-key columns depended on other non-key columns, split them (not needed in this simple example).
+
+After splitting, the schema might be:
+
+- `Student(student_id PK, name)`
+- `Course(course_id PK, instructor, location)`
+- `Enrollment(student_id FK, course_id FK, PRIMARY KEY(student_id, course_id))`
+
+This design eliminates the repeated instructor and location values, and ensures each fact appears only once.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('b0ace7f9-03ae-5c15-b397-b319d705bc24','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions**
+
+1. What is a functional dependency? Give an example using student records.
+2. Explain 1NF, 2NF, and 3NF in your own words. Why does a database need normalization?
+3. In a table with composite key (A, B), what is a partial dependency? How does 2NF address it?
+
+**Worked Problems (Exam-Style)**
+
+**[Normalization]** The table `OrderRaw(order_id, product_id, product_name, quantity)` is given, where each order has one product. Identify any normalization issue. Rewrite it into proper normalized tables.
+
+*Solution:* `Order(order_id, product_id, quantity)`, `Product(product_id, product_name)`. We separated product details into their own table.
+
+**[Functional Dependency]** If a table `Book(book_id, title, author, price)` has primary key `book_id`, list the non-trivial FDs.
+
+*Solution:* `book_id → title, author, price`. The key is a single column, so there is no partial dependency.
+
+**[Given Table]** Consider a table `Employee(emp_id, name, dept, dept_head)` with primary key `emp_id`. Is this in 3NF? If not, how would you fix it?
+
+*Solution:* No, because `dept_head` depends on `dept` (a non-key column) instead of `emp_id`. Fix by creating a separate `Department(dept, dept_head)` table, and referencing `dept` from Employee.
+
+**Hands-On Exercises** (using the SQL playground)
+
+1. Check normalization: query the sample tables and see if any redundancy is obvious. (For example, in Course, the dept_id repeats — but we already have a Department table.)
+2. (Bonus) Try inserting a duplicate primary key row into any table (e.g. `INSERT INTO Course VALUES (101, 'Algo2', 3, 1);` twice) and observe the error. Why is this important?
+
+**How to Pass Normalization Topics**
+
+- Always remember the definition of each normal form. Professors often ask "Explain 2NF/3NF."
+- Practice simple normalization exercises on paper (breaking one table into two). Understand why each dependency is broken.
+- Note that answer tables should have PKs and all FKs labeled. Show that no unwanted duplication remains.
+- Use abbreviations carefully: 1NF means atomic values, 2NF means no partial FD, etc. Exact terminology can earn points.
+$md$, 5, 'sql', $code$-- Same sample database as Lesson 1 (Department, Student, Course, Enrollment).
+CREATE TABLE Department (dept_id INT PRIMARY KEY, dept_name VARCHAR(100));
+CREATE TABLE Student (student_id INT PRIMARY KEY, name VARCHAR(50), program VARCHAR(50), year INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Course (course_id INT PRIMARY KEY, course_name VARCHAR(100), credits INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Enrollment (enrollment_id INT PRIMARY KEY, student_id INT REFERENCES Student(student_id), course_id INT REFERENCES Course(course_id), semester VARCHAR(10), year INT, grade CHAR(2));
+
+INSERT INTO Department VALUES (1,'Computer Science'),(2,'Information Technology'),(3,'Mathematics');
+INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BSCS',2,1),(3,'Jose Rizal','BSCS',4,1),(4,'Anna Reyes','BSIT',2,2);
+INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
+INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
+
