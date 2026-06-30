@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import type { EventType } from "@/lib/supabase/types";
+import { isUuid } from "@/lib/validation";
 
 const VALID_EVENT_TYPES = new Set<EventType>([
   "enter", "year_select", "subject_open", "module_open",
-  "section_view", "unlock_click", "unlock_submitted",
+  "section_view", "subscribe_click", "paywall_teaser_view",
+  "paywall_teaser_click", "unlock_click", "unlock_submitted",
 ]);
 
 // IP-based rate limiter — bounded map to prevent unbounded memory growth
@@ -65,6 +67,18 @@ export async function POST(req: NextRequest) {
     // Validate event_type at runtime — TS types are erased
     if (!VALID_EVENT_TYPES.has(event_type)) {
       return NextResponse.json({ error: "Invalid event_type" }, { status: 400 });
+    }
+
+    // device_id is required; resource ids are optional. Reject anything that
+    // isn't a well-formed UUID so unvalidated strings never reach the events
+    // insert or the SECURITY DEFINER record_visit RPC.
+    if (!isUuid(device_id)) {
+      return NextResponse.json({ error: "Invalid device_id" }, { status: 400 });
+    }
+    for (const id of [year_id, subject_id, module_id, section_id]) {
+      if (id !== null && !isUuid(id)) {
+        return NextResponse.json({ error: "Invalid resource id" }, { status: 400 });
+      }
     }
 
     if (isRateLimited(getRateLimitKey(req))) {
