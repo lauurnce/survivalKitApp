@@ -59,3 +59,42 @@ Imagine you are tasked to improve the design of a busy Barangay services website
 - Be able to compare good vs bad interfaces with reasons.
 $md$, 3);
 
+-- ============================================================
+-- LESSON 2: Human Abilities and Cognition
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('85677651-8ff2-5ab6-aaac-d357bacec61e','content','Human Memory and Perception',$md$
+Human abilities impose limits on interface design. For example, short-term memory can only hold about **7±2 chunks** of information. An overloaded screen forces users to remember too much, causing errors. HCI teaches techniques like **"recognition rather than recall"** – for instance, using menus or icons so users don't have to memorize commands. Human perception is also limited: small fonts or low contrast are hard to read. Designers must use clear fonts, sufficient color contrast, and simple layouts. Understanding perception (color vision, attention) helps you predict how users perceive your interface.
+$md$, 1),
+('85677651-8ff2-5ab6-aaac-d357bacec61e','content','Attention and Load',$md$
+**Cognitive load** refers to how much mental effort a user needs. High load causes frustration. Good interfaces break tasks into steps and use **progressive disclosure** (show only what's needed). For example, in an online form, grouping related fields and using checkboxes instead of asking users to list items helps reduce cognitive load. HCI also addresses physical factors: **Fitts' Law** tells us that the time to tap a target is based on its size and distance. This means smartphone buttons should be large enough and placed within easy thumb reach. Keeping mental and physical loads low is a key design principle.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and an interactive quiz.*
+$md$, 2),
+('85677651-8ff2-5ab6-aaac-d357bacec61e','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions**
+
+1. What is the typical limit of items a person can remember in short-term memory?
+2. Explain "recognition rather than recall" in HCI.
+3. How does Fitts' Law relate to button size and target selection?
+4. Why should an interface avoid using more than a few colors or fonts?
+5. Give one example of how an interface can reduce cognitive load for users.
+
+**Worked Problem**
+
+A teacher shows you two versions of a menu page: Version A has 12 tiny links in one column; Version B has 4 large, clearly labeled buttons in two rows (in Filipino). Which version is better and why?
+
+*Solution:* Version B is better. It has fewer choices visible at once and larger targets, reducing cognitive load (fewer items to scan) and physical effort (larger clickable area). The Filipino labels in Version B match user preference, reducing the mental load of understanding English. Overall, Version B aligns with HCI principles (recognition, Fitts' Law) and would be easier for students to use.
+
+**Hands-On Exercise**
+
+Conduct a simple test with a friend or classmate: show them a cluttered and a simplified app interface, and ask which one they can navigate faster and why. Note their feedback. Try to relate their answers to memory limits or attention.
+
+**How to Pass Tips**
+
+- Remember key HCI "laws": Miller's Law (7±2 items), Fitts' Law, Hick's Law (time increases with choices). Professors may ask you to calculate index of difficulty or identify these principles in a question.
+- Draw quick sketches: for example, draw two button layouts and compare.
+- Avoid the mistake of ignoring context (Philippine users, like older relatives with weak eyesight).
+- Always justify design choices by citing human capabilities (e.g. "I made text large because older users struggle with small fonts.").
+$md$, 3);
+
