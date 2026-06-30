@@ -830,3 +830,79 @@ INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BS
 
 -- Try: SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'student';$code$);
 
+-- ============================================================
+-- LESSON 9: Data Warehousing and Business Intelligence
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('bc4465f2-dd0f-515b-b0e3-6a55a7f04e11','content','Data Warehouses vs Transactional Databases',$md$
+A **data warehouse** is a specialized database designed for analysis and reporting (**OLAP**), unlike an operational (**OLTP**) database which handles day-to-day transactions. A warehouse consolidates data from multiple sources (sales, inventory, finance) into a unified schema, often using a **star schema**: a central fact table linked to dimension tables (e.g. FactSales with dimensions Date, Product, Store). This design allows fast queries on large datasets. For example, a retailer's data warehouse can quickly compute total sales per region per quarter. In contrast, an OLTP system (like a point-of-sale) is optimized for fast inserts/updates.
+$md$, 1),
+('bc4465f2-dd0f-515b-b0e3-6a55a7f04e11','content','ETL Process (Extract, Transform, Load)',$md$
+Building a data warehouse involves **ETL**:
+
+1. **Extract** data from source systems (databases, spreadsheets).
+2. **Transform** data by cleaning (fixing errors), aggregating, and converting formats.
+3. **Load** the cleaned data into the warehouse.
+
+For instance, if different hospital branches use varied codes for departments, the ETL process would map them to a common standard before loading. Philippine companies often use ETL tools (like Pentaho or Informatica) to automate this nightly or weekly. In exams, you might outline ETL steps or explain its purpose (ensuring consistent, analysis-ready data).
+$md$, 2),
+('bc4465f2-dd0f-515b-b0e3-6a55a7f04e11','activity','Business Intelligence Concepts',$md$
+**Business Intelligence (BI)** refers to the tools and techniques for analyzing warehouse data (charts, dashboards, OLAP cubes). It includes reporting (pre-defined reports), ad-hoc querying, and **data mining** (finding patterns). For example, an airline might use BI to analyze booking trends, producing graphs of sales over time. Key terms to know: **OLAP cube** (multidimensional view of data), **slice and dice** (filtering pivot tables), **KPIs** (Key Performance Indicators). Even if you haven't used BI software, knowing these concepts can help answer questions about how businesses turn data into decisions.
+$md$, 3),
+('bc4465f2-dd0f-515b-b0e3-6a55a7f04e11','activity','Data Visualization and Reporting',$md$
+**Visualization** is a part of BI: turning numbers into charts (bar, line, pie) or maps. Tools like Excel PivotTables, Tableau, or Power BI are common (in the Philippines, even government agencies publish dashboards for public statistics). When answering exam questions, you could mention how charts make trends obvious (e.g. a line graph showing rising sales). Understanding simple charts (histogram vs pie, etc.) may be asked. Also note that data warehouses often include **aggregate tables** or **materialized views** to speed up frequent reports.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('bc4465f2-dd0f-515b-b0e3-6a55a7f04e11','activity','Practice & Exam Drills — Lesson 9',$md$
+**Review Questions**
+
+1. What is the difference between an OLTP database and an OLAP (data warehouse) system?
+2. Briefly describe the ETL process. Why is it necessary for a data warehouse?
+3. What is a star schema in data warehousing? Give an example of fact and dimension tables.
+
+**Worked Problems (Exam-Style)**
+
+**[ETL]** An online retailer collects sales data in multiple regional databases. Outline the steps you would take to consolidate this into a single analysis database.
+
+*Solution:* Use ETL — Extract daily sales from each region, Transform currency/units to a common format, Load into a central data warehouse with dimensions like Product, Region.
+
+**[Star Schema]** A company's sales fact table includes (SaleID, ProductID, StoreID, Date, Quantity, Amount). List what dimension tables you might create.
+
+*Solution:* Dimensions — Product (ProductID, Name, Category), Store (StoreID, Location, Manager), Date (Date, Month, Quarter, Year), etc.
+
+**[Cube Query]** Explain how you would use an OLAP cube to find total sales per month.
+
+*Solution:* An OLAP cube with dimension Date and a Sales measure can be "sliced" by year and "diced" by month to aggregate sales for each month.
+
+**Hands-On Exercises** (using the SQL playground)
+
+1. (Case Study) Using the sample data, write a SQL query to get total enrollments per course. Then, to optimize this report monthly, create a summary view:
+```sql
+CREATE VIEW CourseCounts AS
+  SELECT course_id, COUNT(*) AS num_enrolled
+  FROM Enrollment
+  GROUP BY course_id;
+SELECT * FROM CourseCounts;
+```
+2. (Conceptual) Sketch a simple table of your own design and list how it might fit into a data warehouse (identify fact vs dimension).
+
+**How to Pass BI/Data Warehouse Topics**
+
+- Learn key terms (star schema, ETL, OLAP) and be able to explain them simply. Definitions often come up.
+- Relate to real scenarios: e.g., "BIR uses BI to detect tax trends" or "a telecom uses data warehousing to analyze usage." Specific examples help.
+- Remember that BI is about analysis: be ready to say how charts or cubes help decision-makers.
+- If asked to design, clearly list fact vs dimension attributes, and ensure the granularity is consistent (e.g., one row per sale in the fact table).
+$md$, 5, 'sql', $code$-- Same sample database as Lesson 1 (Department, Student, Course, Enrollment).
+CREATE TABLE Department (dept_id INT PRIMARY KEY, dept_name VARCHAR(100));
+CREATE TABLE Student (student_id INT PRIMARY KEY, name VARCHAR(50), program VARCHAR(50), year INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Course (course_id INT PRIMARY KEY, course_name VARCHAR(100), credits INT, dept_id INT REFERENCES Department(dept_id));
+CREATE TABLE Enrollment (enrollment_id INT PRIMARY KEY, student_id INT REFERENCES Student(student_id), course_id INT REFERENCES Course(course_id), semester VARCHAR(10), year INT, grade CHAR(2));
+
+INSERT INTO Department VALUES (1,'Computer Science'),(2,'Information Technology'),(3,'Mathematics');
+INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BSCS',2,1),(3,'Jose Rizal','BSCS',4,1),(4,'Anna Reyes','BSIT',2,2);
+INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
+INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
+
