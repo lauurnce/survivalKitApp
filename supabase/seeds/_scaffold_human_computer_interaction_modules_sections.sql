@@ -293,3 +293,48 @@ Check a local government website or an app on your phone for accessibility. For 
 - In exams, listing recognized guidelines or acts (WCAG, Republic Act 7277) can score points.
 $md$, 3);
 
+-- ============================================================
+-- LESSON 8: Mobile and Emerging Interfaces
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('5474918a-c771-51ce-9db7-daac8c7a71d0','content','Designing for Mobile',$md$
+Mobile interfaces have smaller screens and touch input. This means **minimalism** is key: one big headline or primary action per screen, big touch targets (minimum 48×48 points per Material Design guidelines). The **"thumb zone"** is a concept: common buttons should be where thumbs can easily reach (bottom area). Philippine apps must also consider connectivity (ensure the UI indicates loading) and local language settings. **Responsive design** is important: the layout should adapt if someone switches from portrait to landscape. In HCI theory, we learn to prioritize content (e.g. show text and main button first) and use **progressive disclosure** (collapse advanced options under menus).
+$md$, 1),
+('5474918a-c771-51ce-9db7-daac8c7a71d0','content','Emerging Interfaces (VR, Voice, AR)',$md$
+Beyond mobile, HCI also explores new modalities. **Voice interfaces** (like Siri or Alexa) rely on spoken commands: principles include simple grammar and clear prompts (for example, speaking Taglish commands in the Philippine context). **AR** (augmented reality) overlays digital info on the real world (think Pokémon Go). When teaching AR, courses focus on aligning virtual elements accurately (so objects appear fixed in space). **VR** (virtual reality) creates immersion; designers must prevent motion sickness by optimizing frame rate. Collaborative or social tech (like online group chats or games) is also covered: HCI looks at how people interact remotely, such as supporting group decisions (groupware). These topics are often at the end of the syllabus as "special issues."
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a design sketch exercise for mobile layouts.*
+$md$, 2),
+('5474918a-c771-51ce-9db7-daac8c7a71d0','activity','Practice & Exam Drills — Lesson 8',$md$
+**Review Questions**
+
+1. Why must mobile buttons be large enough for touch?
+2. What is responsive design?
+3. Give one example of a voice interface design guideline.
+4. What usability issue is unique to AR/VR interfaces?
+5. How do you test if a mobile design adapts to different screen sizes?
+
+**Worked Problem**
+
+You have a form that works well on desktop, but on a smartphone it feels cramped. How would you adapt the form design for mobile users?
+
+*Solution:* Stack fields vertically in a single column to fit the narrow width. Increase spacing and font size for readability. Use input types that bring up the appropriate keyboard (e.g. email type for email fields). Possibly break the form into multiple steps or screens so each screen has only a few fields. These changes use responsive design and mobile UI best practices.
+
+**Hands-On Exercise**
+
+Take a desktop website and view it on your phone (or shrink your browser). Identify one major usability problem (e.g. text too small, elements overlapping). Sketch how you would lay out the top part of that page for mobile (maybe the navigation and heading).
+
+**How to Pass Tips**
+
+- Know differences: e.g. desktop can use hover effects, mobile cannot. Exams may ask: "Name two mobile design constraints."
+- A common error is thinking desktop knowledge works the same on mobile — always mention touch, orientation, limited screen.
+- Remember hot topics: voice UX (e.g. clarity in voice prompts) and VR usability (like avoiding fast camera movement).
+- Use Philippine examples (e.g. mobile-first for rural users with cheap phones). Professors appreciate it if you mention technical terms (e.g. media queries in responsive design) when relevant.
+$md$, 3);
+
+-- ============================================================
+-- SOURCES
+-- Polytechnic University of the Philippines — Course syllabus for Human-Computer Interaction
+-- Far Eastern University – Institute of Technology, BSIT program outcomes (includes HCI knowledge)
+-- CHED CMO No. 25 s.2015 — BSIT program standards (mentions HCI topics such as usability)
+-- ============================================================
