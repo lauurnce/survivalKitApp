@@ -766,3 +766,67 @@ INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BS
 INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
 INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
 
+-- ============================================================
+-- LESSON 8: Data Governance and Information Lifecycle
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a7ecc400-acc1-5fb4-a3a0-2698e5f59bab','content','Information Life Cycle Management',$md$
+Data goes through a life cycle: from creation/acquisition to use, storage, archiving, and eventually disposal. For example, a patient's medical record is created at first visit (creation), then updated with each visit (use), stored in a hospital database (storage), moved to long-term archives after a certain time (archiving), and finally deleted when legally allowed (disposal). Good information management policies define how long data must be kept (**records retention**) and how to dispose of it securely. In the Philippines, laws like RA 9470 (National Archives) require some documents to be kept for many years.
+
+The simplified life cycle flow is: **Data Creation → Storage & Maintenance → Use & Sharing → Archiving → Disposition.** After disposition (secure deletion or shredding), the cycle ends.
+$md$, 1),
+('a7ecc400-acc1-5fb4-a3a0-2698e5f59bab','content','Data Quality and Governance',$md$
+**Data governance** is the framework of rules and responsibilities ensuring data is accurate, consistent, and used properly. Key aspects include: **data ownership** (who is responsible for data), **data quality** (correctness, completeness), and **security policies**. For instance, a government agency might assign a **Data Steward** to ensure all addresses are correctly formatted. **Master Data Management (MDM)** is a practice to maintain a single source of truth for core entities (customers, products). Good governance means fewer errors: if a province records student info wrong, it affects planning and resource allocation.
+$md$, 2),
+('a7ecc400-acc1-5fb4-a3a0-2698e5f59bab','activity','Metadata and Catalogs',$md$
+**Metadata** is "data about data": e.g., a **data dictionary** describing each column's meaning and type. **Catalogs** list all datasets and their schemas. In a university, a data catalog might describe the Enrollment table's columns, who can access it, and what it's used for. Well-documented metadata helps developers and analysts understand the data context. In exams, you might be asked why metadata matters – for instance, to prevent misuse (e.g. not confusing year level with a calendar year).
+$md$, 3),
+('a7ecc400-acc1-5fb4-a3a0-2698e5f59bab','activity','Compliance and Legal Considerations',$md$
+Managing information also involves legal rules. The Philippines' **Data Privacy Act (RA 10173)** protects personal data: only authorized use is allowed, and data subjects (citizens) have rights (access, correction). Databases storing personal info (e.g. school, health records) must ensure data is kept secure and only used for declared purposes. Non-compliance can lead to fines. Other laws, like the e-Commerce Act and intellectual property laws, may also affect how electronic data is handled. In exams, mention of RA 10173 and related policies shows understanding of the Filipino context.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a7ecc400-acc1-5fb4-a3a0-2698e5f59bab','activity','Practice & Exam Drills — Lesson 8',$md$
+**Review Questions**
+
+1. Describe the stages of the information life cycle. Why is archiving important?
+2. What is metadata? Give two examples of metadata for a database table.
+3. Name one Philippine law related to information management and its key requirement.
+
+**Worked Problems (Exam-Style)**
+
+**[Life Cycle]** A school stores student records. Outline a policy for how long the records should be kept, archived, and disposed, citing any relevant laws.
+
+*Solution (example):* Keep active student data for 10 years after graduation for audit purposes; then move to archive. Retain archived records for 50 years (following National Archives guidelines, RA 9470), then securely delete personal data per RA 10173.
+
+**[Data Quality]** Explain how data governance can prevent errors in a customer database.
+
+*Solution:* By establishing rules (e.g., mandatory fields, format checks) and assigning owners, governance ensures each customer entry is valid. For example, enforcing a rule that email addresses contain "@" prevents faulty data entry.
+
+**[Metadata Use]** If you see a column `amount` in a database without context, how could metadata help you?
+
+*Solution:* Metadata (like a table comment or data dictionary) would tell you `amount` is in Philippine pesos, representing a payment or fine, and possibly its currency format. This prevents guessing.
+
+**Hands-On Exercises** (using the SQL playground)
+
+1. (Conceptual) Create a simple data catalog entry for the Student table: list its columns and a short description (e.g., `student_id`: unique student number, `year`: current year level). This could be a markdown list or comment.
+2. (Analysis) Pick any column from the sample DB (e.g. `year`) and write a metadata description: what values it holds and constraints (e.g. year level 1–4).
+
+**How to Pass Governance Topics**
+
+- Always mention the Data Privacy Act (RA 10173) when talking about legal rules in PH. Professors expect it.
+- Know the difference between data (content) and metadata (documentation). Clear examples get you credit.
+- Emphasize "why" policies exist (e.g. preventing data loss, ensuring accuracy). Generic answers may lose marks.
+- If given a policy question (e.g. retention period), tie it to standards or laws if you can.
+$md$, 5, 'sql', $code$-- This lesson is conceptual — no SQL is strictly required.
+-- You may still explore the sample database to practice describing metadata:
+CREATE TABLE Department (dept_id INT PRIMARY KEY, dept_name VARCHAR(100));
+CREATE TABLE Student (student_id INT PRIMARY KEY, name VARCHAR(50), program VARCHAR(50), year INT, dept_id INT REFERENCES Department(dept_id));
+
+INSERT INTO Department VALUES (1,'Computer Science'),(2,'Information Technology'),(3,'Mathematics');
+INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BSCS',2,1),(3,'Jose Rizal','BSCS',4,1),(4,'Anna Reyes','BSIT',2,2);
+
+-- Try: SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'student';$code$);
+
