@@ -61,6 +61,107 @@ export async function createPaymongoLink(
   };
 }
 
+// ── Reconciliation: list paid links from PayMongo to catch payments that never
+//    reflected (webhook dropped/rejected). Used by the admin reconcile view. ──
+
+export interface PaidLink {
+  linkId: string;
+  amount: number;        // centavos, as PayMongo reports it on the link
+  description: string;
+  reference: string;     // human-friendly reference_number for support lookups
+  paidAt: Date | null;
+  remarks: string;
+  // Parsed from remarks (same format the webhook parses). null when absent.
+  yearId: string | null;
+  subjectId: string | null;
+  deviceId: string | null;
+  userId: string | null;
+}
+
+// Parse the remarks string we attach at checkout. Mirrors the webhook's regexes
+// so reconcile and live-grant agree on what a link is for.
+export function parseLinkRemarks(remarks: string): {
+  yearId: string | null;
+  subjectId: string | null;
+  deviceId: string | null;
+  userId: string | null;
+} {
+  const year = remarks.match(/year:([^\s]+)/);
+  const subject = remarks.match(/subject:([^\s]+)/);
+  const device = remarks.match(/device:([^\s]+)/);
+  const user = remarks.match(/user:([^\s]+)/);
+  return {
+    yearId: year ? year[1] : null,
+    subjectId: subject ? subject[1] : null,
+    deviceId: device ? device[1] : null,
+    userId: user ? user[1] : null,
+  };
+}
+
+// Fetch recent links from PayMongo and return only the PAID ones. PayMongo's
+// links list is paginated (before/after cursors); we walk up to `maxPages`
+// pages so the reconcile view sees a meaningful recent window without unbounded
+// API calls. Live secret key only — never expose this to the client.
+export async function listRecentPaidLinks(maxPages = 4): Promise<PaidLink[]> {
+  const secretKey = process.env.PAYMONGO_SECRET_KEY;
+  if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
+  const encoded = Buffer.from(`${secretKey}:`).toString("base64");
+
+  const paid: PaidLink[] = [];
+  let after: string | null = null;
+
+  for (let page = 0; page < maxPages; page++) {
+    const url = new URL("https://api.paymongo.com/v1/links");
+    url.searchParams.set("limit", "100");
+    if (after) url.searchParams.set("after", after);
+
+    const res = await fetch(url.toString(), {
+      headers: { Authorization: `Basic ${encoded}` },
+    });
+    if (!res.ok) {
+      const json = await res.json().catch(() => null);
+      const detail = json?.errors?.[0]?.detail ?? `HTTP ${res.status}`;
+      throw new Error(`PayMongo links list error: ${detail}`);
+    }
+    const json = await res.json();
+    const rows = (json?.data ?? []) as Array<{
+      id: string;
+      attributes: {
+        status?: string;
+        amount?: number;
+        description?: string;
+        remarks?: string;
+        reference_number?: string;
+        payments?: Array<{ data?: { attributes?: { paid_at?: number } } }>;
+      };
+    }>;
+
+    if (rows.length === 0) break;
+
+    for (const row of rows) {
+      const a = row.attributes;
+      if (a.status !== "paid") continue;
+      const remarks = a.remarks ?? "";
+      const parsed = parseLinkRemarks(remarks);
+      const paidAtSec = a.payments?.[0]?.data?.attributes?.paid_at;
+      paid.push({
+        linkId: row.id,
+        amount: typeof a.amount === "number" ? a.amount : 0,
+        description: a.description ?? "",
+        reference: a.reference_number ?? "",
+        paidAt: typeof paidAtSec === "number" ? new Date(paidAtSec * 1000) : null,
+        remarks,
+        ...parsed,
+      });
+    }
+
+    after = rows[rows.length - 1]?.id ?? null;
+    if (!after || rows.length < 100) break; // last page
+  }
+
+  return paid;
+}
+
 // Reject webhooks whose signed timestamp is older/newer than this window to
 // blunt replay attacks (PayMongo's recommended tolerance).
 const WEBHOOK_TOLERANCE_SECONDS = 300;

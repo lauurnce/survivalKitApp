@@ -4,6 +4,7 @@ import { getAdminSession } from "@/lib/auth/adminSession";
 import { AdminDashboard } from "@/components/AdminDashboard";
 import type { EventType } from "@/lib/supabase/types";
 import { sumRevenueForMonth, PH_OFFSET_MS } from "@/lib/payments";
+import { findUnreflectedPayments, type UnreflectedPayment } from "@/lib/reconcile";
 
 export const dynamic = "force-dynamic";
 
@@ -282,6 +283,18 @@ export default async function AdminPage() {
     created_at: string;
   }[];
 
+  // Reconcile: paid PayMongo links with no matching active subscription
+  // ("paid but not reflected"). Calls the PayMongo API; if it fails (network,
+  // rate limit, key issue) we degrade gracefully so the rest of the dashboard
+  // still renders, and surface the error in the section instead.
+  let unreflectedPayments: UnreflectedPayment[] = [];
+  let reconcileError: string | null = null;
+  try {
+    unreflectedPayments = await findUnreflectedPayments(supabase);
+  } catch (err) {
+    reconcileError = err instanceof Error ? err.message : "Failed to load reconcile data";
+  }
+
   return (
     <AdminDashboard
       funnel={funnel}
@@ -302,6 +315,8 @@ export default async function AdminPage() {
       waitlistEntries={waitlistEntries}
       waitlistAgg={waitlistAgg}
       transactions={transactions}
+      unreflectedPayments={unreflectedPayments}
+      reconcileError={reconcileError}
     />
   );
 }

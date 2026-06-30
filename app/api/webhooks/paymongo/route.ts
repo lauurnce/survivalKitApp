@@ -113,12 +113,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, ignored: "status" });
   }
 
-  // Validate paid amount matches the plan: ₱49 subject, ₱299 year. Require a
-  // numeric amount — never substitute the expected amount for a missing field.
+  // Validate paid amount covers the plan: ₱49 subject, ₱299 year. Reject only
+  // UNDERpayments (e.g. a tampered ₱1 link trying to unlock ₱299 of content) —
+  // a payer who paid the correct amount or more must always be granted access,
+  // so a price change, promo, or manually-created link never strands a real
+  // payment. Still require a numeric amount; never grant on a missing field.
   const expectedAmount = subjectId ? SUBJECT_AMOUNT : YEAR_AMOUNT;
-  if (typeof paidAmount !== "number" || paidAmount !== expectedAmount) {
-    console.error(`Webhook amount mismatch: got ${paidAmount}, expected ${expectedAmount}`);
-    return NextResponse.json({ error: "Amount mismatch" }, { status: 400 });
+  if (typeof paidAmount !== "number" || paidAmount < expectedAmount) {
+    console.error(`Webhook underpayment: got ${paidAmount}, expected >= ${expectedAmount}`);
+    return NextResponse.json({ error: "Amount too low" }, { status: 400 });
   }
 
   const supabase = createServerClient();

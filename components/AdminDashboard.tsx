@@ -55,6 +55,20 @@ interface WaitlistAgg {
   by_subject: { subject_title: string; year_label: string; count: number }[] | null;
 }
 
+interface UnreflectedPayment {
+  linkId: string;
+  reference: string;
+  amount: number;          // centavos
+  description: string;
+  paidAt: string | null;
+  yearId: string | null;
+  subjectId: string | null;
+  deviceId: string | null;
+  userId: string | null;
+  reason: "no_subscription" | "malformed_remarks";
+  hasLedgerRow: boolean;
+}
+
 interface Props {
   funnel: FunnelStep[];
   dau: DauDay[];
@@ -74,6 +88,8 @@ interface Props {
   waitlistEntries: WaitlistEntry[];
   waitlistAgg: WaitlistAgg;
   transactions: TransactionRow[];
+  unreflectedPayments: UnreflectedPayment[];
+  reconcileError: string | null;
 }
 
 /**
@@ -412,6 +428,128 @@ function TransactionsSection({ rows }: { rows: TransactionRow[] }) {
   );
 }
 
+function ReconcileSection({
+  rows,
+  error,
+}: {
+  rows: UnreflectedPayment[];
+  error: string | null;
+}) {
+  // Track per-link grant state so each row's button reflects its own status.
+  const [state, setState] = useState<Record<string, "idle" | "granting" | "done" | "error">>({});
+  const [msg, setMsg] = useState<Record<string, string>>({});
+
+  async function grant(linkId: string) {
+    setState(s => ({ ...s, [linkId]: "granting" }));
+    setMsg(m => ({ ...m, [linkId]: "" }));
+    try {
+      const res = await fetch("/api/admin/reconcile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ linkId }),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        deduped?: boolean;
+        error?: string;
+      };
+      if (!res.ok || !data.ok) {
+        setState(s => ({ ...s, [linkId]: "error" }));
+        setMsg(m => ({ ...m, [linkId]: data.error ?? "Grant failed" }));
+        return;
+      }
+      setState(s => ({ ...s, [linkId]: "done" }));
+      setMsg(m => ({
+        ...m,
+        [linkId]: data.deduped ? "Already recorded — access ensured" : "Access granted",
+      }));
+    } catch {
+      setState(s => ({ ...s, [linkId]: "error" }));
+      setMsg(m => ({ ...m, [linkId]: "Network error" }));
+    }
+  }
+
+  if (error) {
+    return (
+      <p className="font-sans text-xs text-red-500">
+        Couldn&apos;t reach PayMongo to reconcile: {error}
+      </p>
+    );
+  }
+
+  if (rows.length === 0) {
+    return (
+      <p className="font-sans text-xs text-ink-faint">
+        All recent paid payments are reflected. No stranded payments. ✓
+      </p>
+    );
+  }
+
+  return (
+    <div className="max-w-wide">
+      <p className="font-sans text-xs text-ink-muted mb-4">
+        These PayMongo payments are <span className="text-ink font-semibold">paid</span> but
+        have no matching active subscription. Click <span className="font-mono">Grant access</span> to
+        record the payment and unlock it for the buyer.
+      </p>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="border-b border-ink-faint/30">
+              {["Paid", "Reference", "Plan", "Amount", "Device", "Why", ""].map(h => (
+                <th key={h} className="text-left py-2 pr-6 label-sm text-ink-muted font-normal">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(r => {
+              const st = state[r.linkId] ?? "idle";
+              return (
+                <tr key={r.linkId} className="border-b border-ink-faint/15 hover:bg-ink-faint/5 transition-colors">
+                  <td className="py-3 pr-6 font-sans text-xs text-ink-muted">
+                    {r.paidAt
+                      ? new Date(r.paidAt).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })
+                      : "—"}
+                  </td>
+                  <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{r.reference || r.linkId.slice(0, 12)}</td>
+                  <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{r.subjectId ? "Subject" : "Whole year"}</td>
+                  <td className="py-3 pr-6 font-mono text-xs text-ink">₱{(r.amount / 100).toFixed(2)}</td>
+                  <td className="py-3 pr-6 font-mono text-xs text-ink-faint">
+                    {r.deviceId ? `${r.deviceId.slice(0, 8)}…` : "—"}
+                  </td>
+                  <td className="py-3 pr-6 font-sans text-xs text-ink-faint">
+                    {r.reason === "malformed_remarks" ? "Bad remarks" : r.hasLedgerRow ? "Sub missing" : "Not reflected"}
+                  </td>
+                  <td className="py-3 pr-6">
+                    {st === "done" ? (
+                      <span className="font-mono text-xs text-green-600">{msg[r.linkId] ?? "Done"}</span>
+                    ) : r.reason === "malformed_remarks" ? (
+                      <span className="font-mono text-xs text-ink-faint">Manual — bad remarks</span>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => grant(r.linkId)}
+                          disabled={st === "granting"}
+                          className="font-mono text-xs border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150 disabled:opacity-50"
+                        >
+                          {st === "granting" ? "Granting…" : "Grant access"}
+                        </button>
+                        {st === "error" && (
+                          <span className="font-mono text-xs text-red-500">{msg[r.linkId]}</span>
+                        )}
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 function WaitlistTable({ entries }: { entries: WaitlistEntry[] }) {
   const [expanded, setExpanded] = useState(false);
   const visible = expanded ? entries : entries.slice(0, 5);
@@ -598,6 +736,7 @@ export function AdminDashboard({
   approvedUnlocks, activeNow, newUsers, recurringUsers, totalRevenue,
   activeSubscribers, newSubscribersToday,
   waitlistEntries, waitlistAgg, transactions,
+  unreflectedPayments, reconcileError,
 }: Props) {
   const unlockClicks    = funnel.find(s => s.type === "unlock_click")?.unique ?? 0;
   const unlockSubmitted = funnel.find(s => s.type === "unlock_submitted")?.unique ?? 0;
@@ -713,6 +852,18 @@ export function AdminDashboard({
         </div>
         <p className="label mb-6">Transactions</p>
         <TransactionsSection rows={transactions} />
+
+        <div className="mt-12">
+          <p className="label mb-6">
+            Reconcile — Paid but not reflected
+            {unreflectedPayments.length > 0 && (
+              <span className="ml-2 font-mono text-xs text-red-500">
+                {unreflectedPayments.length} need{unreflectedPayments.length === 1 ? "s" : ""} attention
+              </span>
+            )}
+          </p>
+          <ReconcileSection rows={unreflectedPayments} error={reconcileError} />
+        </div>
       </section>
 
       {/* ── Waitlist ────────────────────────────────────────── */}

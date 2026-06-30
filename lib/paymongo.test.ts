@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   createPaymongoLink,
   verifyPaymongoWebhook,
+  parseLinkRemarks,
   YEAR_AMOUNT,
 } from "./paymongo";
 import crypto from "crypto";
@@ -213,5 +214,34 @@ describe("verifyPaymongoWebhook", () => {
 
   it("returns false for a malformed header with no timestamp", () => {
     expect(verifyPaymongoWebhook("body", "te=abc")).toBe(false);
+  });
+});
+
+describe("parseLinkRemarks", () => {
+  const yearId = "00000000-0000-0000-0000-000000000001";
+  const subjectId = "10000000-0001-0001-0001-000000000001";
+  const deviceId = "50de1efd-6d0f-4bbd-b8db-933df30fe58e";
+  const userId = "18163322-f639-4a28-9eba-b82ae3188088";
+
+  it("parses a full subject-plan remarks string (year+subject+device+user)", () => {
+    const r = `year:${yearId} subject:${subjectId} device:${deviceId} user:${userId}`;
+    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId });
+  });
+
+  it("parses a year-plan remarks string (no subject)", () => {
+    const r = `year:${yearId} device:${deviceId} user:${userId}`;
+    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId: null, deviceId, userId });
+  });
+
+  it("parses a remarks string without a user (anonymous device payment)", () => {
+    const r = `year:${yearId} subject:${subjectId} device:${deviceId}`;
+    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId: null });
+  });
+
+  it("returns all-null for empty or garbage remarks (caller must reject)", () => {
+    expect(parseLinkRemarks("")).toEqual({ yearId: null, subjectId: null, deviceId: null, userId: null });
+    expect(parseLinkRemarks("totally unrelated text")).toEqual({
+      yearId: null, subjectId: null, deviceId: null, userId: null,
+    });
   });
 });
