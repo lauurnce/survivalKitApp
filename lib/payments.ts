@@ -8,7 +8,7 @@ export interface RecordPaymentInput {
   linkId: string;
   deviceId: string;
   yearId: string;
-  // null = whole-year plan (₱300); set = single-subject plan (₱50).
+  // null = whole-year plan (₱299); set = single-subject plan (₱49).
   subjectId: string | null;
   amount: number; // centavos
   paidAt: Date;

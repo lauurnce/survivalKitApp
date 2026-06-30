@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, ignored: "status" });
   }
 
-  // Validate paid amount matches the plan: ₱50 subject, ₱300 year. Require a
+  // Validate paid amount matches the plan: ₱49 subject, ₱299 year. Require a
   // numeric amount — never substitute the expected amount for a missing field.
   const expectedAmount = subjectId ? SUBJECT_AMOUNT : YEAR_AMOUNT;
   if (typeof paidAmount !== "number" || paidAmount !== expectedAmount) {

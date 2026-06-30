@@ -70,9 +70,9 @@ export function PaywallTeaser({ yearId, subjectId, yearLabel, subjectTitle, ctaH
       <p className="font-sans text-base text-ink-muted mb-4">
         Hands-on activities in {subjectTitle ?? "this subject"} are for subscribers.
         Get {subjectTitle ?? "this subject"} for{" "}
-        <span className="text-ink font-semibold">₱50/month</span>, or all of{" "}
+        <span className="text-ink font-semibold">₱49/month</span>, or all of{" "}
         {yearLabel ?? "this year"} for{" "}
-        <span className="text-ink font-semibold">₱300/month</span>.
+        <span className="text-ink font-semibold">₱299/month</span>.
       </p>
       <Link
         href={ctaHref}

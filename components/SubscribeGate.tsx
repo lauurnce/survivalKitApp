@@ -230,7 +230,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
               </p>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="font-serif text-3xl text-ink">₱50</span>
+              <span className="font-serif text-3xl text-ink">₱49</span>
               <span className="font-sans text-sm text-ink-muted">/ month</span>
             </div>
             <button
@@ -238,7 +238,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
               disabled={loading !== null}
               className="bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading === "subject" ? "Redirecting…" : "Subscribe — ₱50/month"}
+              {loading === "subject" ? "Redirecting…" : "Subscribe — ₱49/month"}
             </button>
           </div>
 
@@ -256,7 +256,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
               </p>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="font-serif text-3xl text-ink">₱300</span>
+              <span className="font-serif text-3xl text-ink">₱299</span>
               <span className="font-sans text-sm text-ink-muted">/ month</span>
             </div>
             <button
@@ -264,7 +264,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
               disabled={loading !== null}
               className="bg-ink text-paper font-sans text-sm px-4 py-3 hover:bg-accent transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading === "year" ? "Redirecting…" : "Subscribe — ₱300/month"}
+              {loading === "year" ? "Redirecting…" : "Subscribe — ₱299/month"}
             </button>
           </div>
         </div>

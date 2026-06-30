@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
-export const SUBJECT_AMOUNT = 5000;  // ₱50.00 — one subject
-export const YEAR_AMOUNT = 30000;    // ₱300.00 — all subjects in the year
+export const SUBJECT_AMOUNT = 4900;  // ₱49.00 — one subject
+export const YEAR_AMOUNT = 29900;    // ₱299.00 — all subjects in the year
 
 export async function createPaymongoLink(
   yearId: string,

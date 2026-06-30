@@ -34,7 +34,7 @@ async function startCheckout(
   window.location.href = data.checkoutUrl;
 }
 
-// ── Year subscribe modal (₱50 subject or ₱300 year) ──────────────────────────
+// ── Year subscribe modal (₱49 subject or ₱299 year) ──────────────────────────
 
 function YearSubscribeModal({
   year,
@@ -87,10 +87,10 @@ function YearSubscribeModal({
             >
               <div>
                 <p className="text-sm font-medium text-ink">{subjectTitle ?? "This subject"}</p>
-                <p className="text-xs text-ink-muted">Single subject · ₱50 / month</p>
+                <p className="text-xs text-ink-muted">Single subject · ₱49 / month</p>
               </div>
               <span className="text-sm font-semibold text-accent shrink-0">
-                {loading === "subject" ? "…" : "₱50"}
+                {loading === "subject" ? "…" : "₱49"}
               </span>
             </button>
           )}
@@ -103,11 +103,11 @@ function YearSubscribeModal({
           >
             <div>
               <p className="text-sm font-medium text-ink">All of {year.label}</p>
-              <p className="text-xs text-ink-muted">Every subject in this year · ₱300 / month</p>
+              <p className="text-xs text-ink-muted">Every subject in this year · ₱299 / month</p>
               <span className="inline-block mt-1 text-[10px] font-medium text-accent uppercase tracking-wider">Best value</span>
             </div>
             <span className="text-sm font-semibold text-accent shrink-0">
-              {loading === "year" ? "…" : "₱300"}
+              {loading === "year" ? "…" : "₱299"}
             </span>
           </button>
         </div>
@@ -118,7 +118,7 @@ function YearSubscribeModal({
   );
 }
 
-// ── Subject-only subscribe modal (₱50 only) ───────────────────────────────────
+// ── Subject-only subscribe modal (₱49 only) ───────────────────────────────────
 
 function SubjectSubscribeModal({
   subject,
@@ -160,7 +160,7 @@ function SubjectSubscribeModal({
           disabled={loading}
           className="w-full rounded-lg bg-accent px-4 py-3 text-sm font-medium text-paper hover:bg-accent-dark transition-colors disabled:opacity-50"
         >
-          {loading ? "Redirecting…" : "Subscribe — ₱50 / month"}
+          {loading ? "Redirecting…" : "Subscribe — ₱49 / month"}
         </button>
 
         <p className="text-xs text-ink-faint">Paid via GCash, Maya, or card. Cancel anytime.</p>
@@ -212,7 +212,7 @@ function YearSection({ year }: { year: YearGroup }) {
                     onClick={() => setModal({ kind: "subject", subject: s })}
                     className="shrink-0 text-[10px] text-accent underline underline-offset-2 hover:no-underline"
                   >
-                    ₱50
+                    ₱49
                   </button>
                 </div>
               </li>
