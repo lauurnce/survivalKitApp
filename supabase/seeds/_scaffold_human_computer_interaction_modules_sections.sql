@@ -254,3 +254,42 @@ Pick a website (e.g. a local government site) and do a quick "heuristic review."
 - Always connect findings to design improvements in your answers ("We will improve X because users had issues with Y.").
 $md$, 3);
 
+-- ============================================================
+-- LESSON 7: Accessibility and Inclusive Design
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('1dac1e42-0b66-541d-acec-c9bf65a35c00','content','Principles of Accessibility',$md$
+Accessibility ensures people with disabilities can use software. Key concerns: visual, auditory, motor, and cognitive impairments. For example, color-blind users need sufficient color contrast and should not rely on color alone to convey meaning. Screen-reader users need proper labels (alt text for images). Filipino designers must also consider users with limited literacy: using clear icons and voice prompts can help. **Universal Design** extends accessibility to all users, e.g. using larger clickable areas (good for users with tremors or big fingers). The HCI curriculum covers standards like **WCAG** (Web Content Accessibility Guidelines).
+$md$, 1),
+('1dac1e42-0b66-541d-acec-c9bf65a35c00','content','Designing for Special Users',$md$
+Think about older adults: they may prefer simpler layouts, larger fonts, and clear language. For instance, when designing a health-monitoring app for elderly Filipinos, you'd use high-contrast, large text, and avoid jargon. For users with hearing impairment, ensure any multimedia has captions. For Philippine public systems (like an online gov't form), typical accommodations include skip links (for keyboard navigation) and forms that allow keyboard input. HCI courses often include case studies or tools like colorblind simulators to raise awareness. The goal is to make interfaces usable by everyone.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and an accessibility audit exercise.*
+$md$, 2),
+('1dac1e42-0b66-541d-acec-c9bf65a35c00','activity','Practice & Exam Drills — Lesson 7',$md$
+**Review Questions**
+
+1. What does "universal design" mean in HCI?
+2. Give one example of a change to help color-blind users.
+3. Why are alt texts important?
+4. How might you adapt an interface for senior citizens?
+5. What is WCAG?
+
+**Worked Problem**
+
+A developer builds a photo-sharing app. The "Upload" button is green with a white plus icon, and there is no text. Users with red–green colorblindness can't tell if the button is active or disabled (grayed out looks similar). What are two ways to improve this?
+
+*Solution:* First, add text "Upload" next to or inside the button to not rely on color alone. Second, use shape or outline differences for the disabled state (e.g. thick border or "X" on disabled). Also ensure green and gray have high contrast (check contrast ratio). These changes help color-blind users see the difference and use the app.
+
+**Hands-On Exercise**
+
+Check a local government website or an app on your phone for accessibility. For example, try navigating by keyboard only: can you reach all buttons? Or use a screen reader (or TalkBack) and see if it reads all controls logically. Take note of any major issues.
+
+**How to Pass Tips**
+
+- Key exam points include WCAG levels (A, AA) and specific guidelines (alt text, keyboard access). Often a question will ask for design fixes: e.g. "How to improve this interface for visually impaired users?" Always mention concrete fixes (increase font, use larger contrast buttons).
+- Don't confuse general "design for good UX" with accessibility specifics — they want disability-focused fixes.
+- Familiarize yourself with Philippine laws too: some projects may mention the Magna Carta for Persons with Disability (Republic Act 7277) requiring accessibility.
+- In exams, listing recognized guidelines or acts (WCAG, Republic Act 7277) can score points.
+$md$, 3);
+
