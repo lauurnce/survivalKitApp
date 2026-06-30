@@ -98,20 +98,60 @@ export function parseLinkRemarks(remarks: string): {
   };
 }
 
-// Fetch recent links from PayMongo and return only the PAID ones. PayMongo's
-// links list is paginated (before/after cursors); we walk up to `maxPages`
-// pages so the reconcile view sees a meaningful recent window without unbounded
-// API calls. Live secret key only — never expose this to the client.
-export async function listRecentPaidLinks(maxPages = 4): Promise<PaidLink[]> {
+// PayMongo's Links API has NO "list all links" endpoint — GET /v1/links only
+// resolves a single link by reference_number. So to enumerate paid activity we
+// list PAYMENTS (GET /v1/payments, which IS a real list endpoint), then resolve
+// each paid payment back to its Link (by reference) to read our remarks.
+
+interface PaymentRow {
+  reference: string;       // external_reference_number == the link's reference
+  amount: number;          // centavos
+  description: string;
+  paidAt: Date | null;
+}
+
+// Resolve a single Link by its reference_number. Returns the link id + remarks,
+// or null if PayMongo has no such link. The only supported way to read remarks.
+export async function getLinkByReference(
+  reference: string
+): Promise<{ linkId: string; remarks: string; amount: number; status: string } | null> {
   const secretKey = process.env.PAYMONGO_SECRET_KEY;
   if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
   const encoded = Buffer.from(`${secretKey}:`).toString("base64");
 
-  const paid: PaidLink[] = [];
+  const url = new URL("https://api.paymongo.com/v1/links");
+  url.searchParams.set("reference_number", reference);
+  const res = await fetch(url.toString(), {
+    headers: { Authorization: `Basic ${encoded}` },
+  });
+  if (!res.ok) return null;
+  const json = await res.json();
+  // This endpoint returns an array under data even for a single reference.
+  const row = Array.isArray(json?.data) ? json.data[0] : json?.data;
+  if (!row?.id) return null;
+  return {
+    linkId: row.id as string,
+    remarks: (row.attributes?.remarks ?? "") as string,
+    amount: typeof row.attributes?.amount === "number" ? row.attributes.amount : 0,
+    status: (row.attributes?.status ?? "") as string,
+  };
+}
+
+// List recent PAID payments from PayMongo, then resolve each back to its Link
+// to read our remarks. Returns the same PaidLink shape the reconcile matcher
+// expects. Bounded: lists up to `maxPages` pages of payments and resolves each
+// paid one. Live secret key only — never expose this to the client.
+export async function listRecentPaidLinks(maxPages = 3): Promise<PaidLink[]> {
+  const secretKey = process.env.PAYMONGO_SECRET_KEY;
+  if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
+  const encoded = Buffer.from(`${secretKey}:`).toString("base64");
+
+  // 1. Collect recent paid payments (real list endpoint).
+  const paidPayments: PaymentRow[] = [];
   let after: string | null = null;
 
   for (let page = 0; page < maxPages; page++) {
-    const url = new URL("https://api.paymongo.com/v1/links");
+    const url = new URL("https://api.paymongo.com/v1/payments");
     url.searchParams.set("limit", "100");
     if (after) url.searchParams.set("after", after);
 
@@ -121,7 +161,7 @@ export async function listRecentPaidLinks(maxPages = 4): Promise<PaidLink[]> {
     if (!res.ok) {
       const json = await res.json().catch(() => null);
       const detail = json?.errors?.[0]?.detail ?? `HTTP ${res.status}`;
-      throw new Error(`PayMongo links list error: ${detail}`);
+      throw new Error(`PayMongo payments list error: ${detail}`);
     }
     const json = await res.json();
     const rows = (json?.data ?? []) as Array<{
@@ -130,9 +170,8 @@ export async function listRecentPaidLinks(maxPages = 4): Promise<PaidLink[]> {
         status?: string;
         amount?: number;
         description?: string;
-        remarks?: string;
-        reference_number?: string;
-        payments?: Array<{ data?: { attributes?: { paid_at?: number } } }>;
+        paid_at?: number;
+        external_reference_number?: string;
       };
     }>;
 
@@ -141,22 +180,44 @@ export async function listRecentPaidLinks(maxPages = 4): Promise<PaidLink[]> {
     for (const row of rows) {
       const a = row.attributes;
       if (a.status !== "paid") continue;
-      const remarks = a.remarks ?? "";
-      const parsed = parseLinkRemarks(remarks);
-      const paidAtSec = a.payments?.[0]?.data?.attributes?.paid_at;
-      paid.push({
-        linkId: row.id,
+      const reference = a.external_reference_number ?? "";
+      if (!reference) continue; // can't tie back to a link without it
+      paidPayments.push({
+        reference,
         amount: typeof a.amount === "number" ? a.amount : 0,
         description: a.description ?? "",
-        reference: a.reference_number ?? "",
-        paidAt: typeof paidAtSec === "number" ? new Date(paidAtSec * 1000) : null,
-        remarks,
-        ...parsed,
+        paidAt: typeof a.paid_at === "number" ? new Date(a.paid_at * 1000) : null,
       });
     }
 
     after = rows[rows.length - 1]?.id ?? null;
     if (!after || rows.length < 100) break; // last page
+  }
+
+  // 2. Resolve each unique reference to its Link to read remarks.
+  const seen = new Set<string>();
+  const paid: PaidLink[] = [];
+  for (const p of paidPayments) {
+    if (seen.has(p.reference)) continue;
+    seen.add(p.reference);
+
+    let link: Awaited<ReturnType<typeof getLinkByReference>> = null;
+    try {
+      link = await getLinkByReference(p.reference);
+    } catch {
+      link = null; // network hiccup resolving one link shouldn't fail the batch
+    }
+    const remarks = link?.remarks ?? "";
+    const parsed = parseLinkRemarks(remarks);
+    paid.push({
+      linkId: link?.linkId ?? "",
+      amount: p.amount || link?.amount || 0,
+      description: p.description,
+      reference: p.reference,
+      paidAt: p.paidAt,
+      remarks,
+      ...parsed,
+    });
   }
 
   return paid;

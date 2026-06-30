@@ -435,18 +435,19 @@ function ReconcileSection({
   rows: UnreflectedPayment[];
   error: string | null;
 }) {
-  // Track per-link grant state so each row's button reflects its own status.
+  // Track per-row grant state (keyed by reference) so each button reflects its
+  // own status.
   const [state, setState] = useState<Record<string, "idle" | "granting" | "done" | "error">>({});
   const [msg, setMsg] = useState<Record<string, string>>({});
 
-  async function grant(linkId: string) {
-    setState(s => ({ ...s, [linkId]: "granting" }));
-    setMsg(m => ({ ...m, [linkId]: "" }));
+  async function grant(reference: string) {
+    setState(s => ({ ...s, [reference]: "granting" }));
+    setMsg(m => ({ ...m, [reference]: "" }));
     try {
       const res = await fetch("/api/admin/reconcile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ linkId }),
+        body: JSON.stringify({ reference }),
       });
       const data = (await res.json().catch(() => ({}))) as {
         ok?: boolean;
@@ -454,18 +455,18 @@ function ReconcileSection({
         error?: string;
       };
       if (!res.ok || !data.ok) {
-        setState(s => ({ ...s, [linkId]: "error" }));
-        setMsg(m => ({ ...m, [linkId]: data.error ?? "Grant failed" }));
+        setState(s => ({ ...s, [reference]: "error" }));
+        setMsg(m => ({ ...m, [reference]: data.error ?? "Grant failed" }));
         return;
       }
-      setState(s => ({ ...s, [linkId]: "done" }));
+      setState(s => ({ ...s, [reference]: "done" }));
       setMsg(m => ({
         ...m,
-        [linkId]: data.deduped ? "Already recorded — access ensured" : "Access granted",
+        [reference]: data.deduped ? "Already recorded — access ensured" : "Access granted",
       }));
     } catch {
-      setState(s => ({ ...s, [linkId]: "error" }));
-      setMsg(m => ({ ...m, [linkId]: "Network error" }));
+      setState(s => ({ ...s, [reference]: "error" }));
+      setMsg(m => ({ ...m, [reference]: "Network error" }));
     }
   }
 
@@ -503,9 +504,9 @@ function ReconcileSection({
           </thead>
           <tbody>
             {rows.map(r => {
-              const st = state[r.linkId] ?? "idle";
+              const st = state[r.reference] ?? "idle";
               return (
-                <tr key={r.linkId} className="border-b border-ink-faint/15 hover:bg-ink-faint/5 transition-colors">
+                <tr key={r.reference} className="border-b border-ink-faint/15 hover:bg-ink-faint/5 transition-colors">
                   <td className="py-3 pr-6 font-sans text-xs text-ink-muted">
                     {r.paidAt
                       ? new Date(r.paidAt).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })
@@ -522,20 +523,20 @@ function ReconcileSection({
                   </td>
                   <td className="py-3 pr-6">
                     {st === "done" ? (
-                      <span className="font-mono text-xs text-green-600">{msg[r.linkId] ?? "Done"}</span>
+                      <span className="font-mono text-xs text-green-600">{msg[r.reference] ?? "Done"}</span>
                     ) : r.reason === "malformed_remarks" ? (
                       <span className="font-mono text-xs text-ink-faint">Manual — bad remarks</span>
                     ) : (
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => grant(r.linkId)}
+                          onClick={() => grant(r.reference)}
                           disabled={st === "granting"}
                           className="font-mono text-xs border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150 disabled:opacity-50"
                         >
                           {st === "granting" ? "Granting…" : "Grant access"}
                         </button>
                         {st === "error" && (
-                          <span className="font-mono text-xs text-red-500">{msg[r.linkId]}</span>
+                          <span className="font-mono text-xs text-red-500">{msg[r.reference]}</span>
                         )}
                       </div>
                     )}

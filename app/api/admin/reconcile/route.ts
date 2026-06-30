@@ -1,45 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/auth/adminSession";
 import { createServerClient } from "@/lib/supabase/server";
-import { parseLinkRemarks, SUBJECT_AMOUNT, YEAR_AMOUNT } from "@/lib/paymongo";
+import { getLinkByReference, parseLinkRemarks, SUBJECT_AMOUNT, YEAR_AMOUNT } from "@/lib/paymongo";
 import { recordPayment } from "@/lib/payments";
 import { isUuid } from "@/lib/validation";
 
 // Manually grant access for a paid PayMongo link that never reflected. The
-// admin supplies only the linkId; we re-fetch the link from PayMongo so the
-// grant is driven by PayMongo's truth (status=paid, real amount/remarks), never
-// by client-supplied amounts. recordPayment is idempotent, so re-granting an
-// already-recorded link is a safe no-op.
+// admin supplies only the payment's reference_number; we resolve the link from
+// PayMongo (the only supported lookup) so the grant is driven by PayMongo's
+// truth (status=paid, real amount/remarks), never by client-supplied amounts.
+// recordPayment is idempotent, so re-granting an already-recorded link is a
+// safe no-op.
 export async function POST(req: NextRequest) {
   const authed = await getAdminSession();
   if (!authed) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = (await req.json().catch(() => null)) as { linkId?: string } | null;
-  const linkId = body?.linkId;
-  if (!linkId || typeof linkId !== "string") {
-    return NextResponse.json({ error: "linkId required" }, { status: 400 });
+  const body = (await req.json().catch(() => null)) as { reference?: string } | null;
+  const reference = body?.reference;
+  if (!reference || typeof reference !== "string") {
+    return NextResponse.json({ error: "reference required" }, { status: 400 });
   }
 
-  const secretKey = process.env.PAYMONGO_SECRET_KEY;
-  if (!secretKey) {
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+  let link: Awaited<ReturnType<typeof getLinkByReference>>;
+  try {
+    link = await getLinkByReference(reference);
+  } catch (err) {
+    console.error("reconcile link lookup failed:", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Could not reach PayMongo" }, { status: 502 });
   }
-  const encoded = Buffer.from(`${secretKey}:`).toString("base64");
-
-  // Re-fetch the single link from PayMongo and verify it is genuinely paid.
-  const res = await fetch(`https://api.paymongo.com/v1/links/${encodeURIComponent(linkId)}`, {
-    headers: { Authorization: `Basic ${encoded}` },
-  });
-  if (!res.ok) {
+  if (!link) {
     return NextResponse.json({ error: "Link not found at PayMongo" }, { status: 404 });
   }
-  const json = await res.json();
-  const attrs = json?.data?.attributes ?? {};
-  if (attrs.status !== "paid") {
+  if (link.status !== "paid") {
     return NextResponse.json({ error: "Link is not paid" }, { status: 400 });
   }
 
-  const { yearId, subjectId, deviceId, userId } = parseLinkRemarks(attrs.remarks ?? "");
+  const { yearId, subjectId, deviceId, userId } = parseLinkRemarks(link.remarks);
   if (!yearId || !deviceId || !isUuid(yearId) || !isUuid(deviceId)) {
     return NextResponse.json({ error: "Link remarks are malformed; cannot grant" }, { status: 422 });
   }
@@ -47,7 +43,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Link remarks are malformed; cannot grant" }, { status: 422 });
   }
 
-  const paidAmount = typeof attrs.amount === "number" ? attrs.amount : 0;
+  const paidAmount = link.amount;
   const expected = subjectId ? SUBJECT_AMOUNT : YEAR_AMOUNT;
   if (paidAmount < expected) {
     return NextResponse.json(
@@ -56,18 +52,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const paidAtSec = attrs.payments?.[0]?.data?.attributes?.paid_at;
-  const paidAt = typeof paidAtSec === "number" ? new Date(paidAtSec * 1000) : new Date();
-
   const supabase = createServerClient();
   try {
     const { recorded, deduped } = await recordPayment(supabase, {
-      linkId,
+      linkId: link.linkId,
       deviceId,
       yearId,
       subjectId,
       amount: paidAmount,
-      paidAt,
+      paidAt: new Date(),
       userId: userId && isUuid(userId) ? userId : null,
     });
     return NextResponse.json({ ok: true, recorded, deduped });
