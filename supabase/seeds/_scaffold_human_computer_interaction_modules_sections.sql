@@ -137,3 +137,42 @@ Take a screenshot of a messy app screen (e.g. lots of text and buttons) and high
 - Always tie your answers to real examples ("For instance, adding a loading spinner shows system status.").
 $md$, 3);
 
+-- ============================================================
+-- LESSON 4: The User-Centered Design Process
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('51a681a2-a833-57e5-bda9-10631c7aec61','content','Design Thinking and Analysis',$md$
+User-centered design (UCD) means involving real users from the start. The process often follows **design thinking**: empathize (user research), define (gather requirements), ideate (brainstorm designs), prototype, and test. In UCD, we create **personas** (fictional user profiles) to represent target users. For example, a persona might be "Juan, 45, farmer with limited internet skills," guiding design choices (big buttons, Tagalog language). You'll also learn methods like interviews, surveys, and observation (contextual inquiry) to discover what users really need.
+$md$, 1),
+('51a681a2-a833-57e5-bda9-10631c7aec61','content','Prototyping and Iteration',$md$
+After analysis, design **low-fidelity prototypes**: sketches or paper mock-ups to explore ideas cheaply. Then move to **high-fidelity prototypes** (digital mock-ups or even coded interfaces) for user feedback. Crucially, HCI emphasizes **iteration**: test early and revise. For instance, one might test a wireframe with five users, gather comments, then refine the design. In Philippine schools, students might do group projects where they interview actual local users and present iterations of their interface. Always document feedback and keep improving; this iterative mindset is a core outcome in CHED-aligned curriculum.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a prototyping activity.*
+$md$, 2),
+('51a681a2-a833-57e5-bda9-10631c7aec61','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. What are the main stages of a user-centered design process?
+2. Define "persona" and explain its purpose.
+3. Why is iteration important in interface design?
+4. Name two techniques for gathering user requirements.
+5. What is the difference between a low-fidelity and high-fidelity prototype?
+
+**Worked Problem**
+
+Your team is designing a ticketing kiosk interface. You have two personas: Maria (65, grandmother, needs simple choices) and Kevin (20, tech-savvy student). How would these personas affect your design? Give one concrete design decision for each persona.
+
+*Solution:* For Maria, we would use large text and buttons, a very simple menu (e.g. one-button-per-service), and likely Tagalog translations. We might include a "Help" voice prompt. For Kevin, we could include QR code scanning and more detailed options (like seat selection), trusting him to navigate menus faster. Essentially, Maria's persona pushes for maximum simplicity and accessibility, Kevin's allows more features but still clear layout. This shows adapting design to user needs.
+
+**Hands-On Exercise**
+
+Practice making a persona: list demographic info (age, job, tech comfort), goals, and challenges for someone like a public school teacher using an educational app. Write a short paragraph summary. Then sketch one screen (with 3–4 UI elements) that would suit that persona's needs.
+
+**How to Pass Tips**
+
+- Be ready to outline design steps in order (analysis, design, evaluation). Professors might give you a mini scenario ("You want to improve a banking app; what's your first step?"). Always start with user research, not coding.
+- Remember that surveys, interviews, and persona-building are common term questions.
+- A typical mistake is saying "Ask user what they want" without specifics; instead mention concrete methods (e.g. "conduct focus group of representative users").
+- Emphasize the iterative nature — exams like answers with phases repeated.
+$md$, 3);
+
