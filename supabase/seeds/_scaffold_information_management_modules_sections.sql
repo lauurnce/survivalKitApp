@@ -906,3 +906,69 @@ INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BS
 INSERT INTO Course VALUES (101,'Database Systems',3,1),(102,'Web Programming',3,1),(201,'Network Security',3,2),(202,'Systems Analysis',3,2),(301,'Algorithms',3,1);
 INSERT INTO Enrollment VALUES (1001,1,101,'First',2026,'B'),(1002,1,201,'First',2026,'A'),(1003,2,101,'First',2026,'C'),(1004,2,301,'First',2026,'B'),(1005,3,101,'First',2026,'A'),(1006,3,202,'First',2026,'A'),(1007,4,102,'First',2026,'B'),(1008,4,201,'First',2026,'A');$code$);
 
+-- ============================================================
+-- LESSON 10: Legal and Ethical Issues in Information Management
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('8886ec70-db30-591b-be11-4085b1169cfd','content','Data Privacy and Protection (RA 10173)',$md$
+The Philippine **Data Privacy Act of 2012 (RA 10173)** protects personal data. It requires organizations to secure personal information and notify individuals if their data is breached. Key points: **consent** is needed to collect personal data; **sensitive personal info** (health, biometrics) has stricter rules; individuals have rights to access and correct their data. In an exam, mention **NPC (National Privacy Commission)** guidelines. For example, a school's database of students must be protected; only authorized staff should view grades or personal records. Violating the law can lead to fines or jail, so compliance is a big concern in information management.
+$md$, 1),
+('8886ec70-db30-591b-be11-4085b1169cfd','content','Intellectual Property and Copyright',$md$
+Databases themselves can be copyrighted if there is substantial original content. Copying a proprietary database or its schema without permission can violate copyright laws. In practice, this means you cannot legally copy an entire software vendor's database design, but relying on public standards (like SQL syntax) is fine. Also, be aware of **software licenses** (using Oracle or MySQL under the right license). In exams, this topic might appear as "discuss ethical issues," where you can mention piracy or respecting database ownership.
+$md$, 2),
+('8886ec70-db30-591b-be11-4085b1169cfd','activity','Ethical Data Use and Security',$md$
+Beyond laws, information managers must act ethically. This means not abusing data (e.g. not selling contact lists without consent), and ensuring fairness (avoiding biased algorithms). Security-wise, encrypting sensitive columns (like ID numbers or credit card numbers) is best practice. Some professors ask what *not* to do – common mistakes include insecure default passwords or sharing accounts. Use the **principle of least privilege** (users get only the access they need).
+$md$, 3),
+('8886ec70-db30-591b-be11-4085b1169cfd','activity','Records Management Laws (P.D. 1728, R.A. 9470)',$md$
+Certain records have mandated retention periods. For example, presidential papers and historical documents must go to the National Archives. In business, R.A. 8291 (GSIS) and BIR regulations specify how long payroll, tax returns, etc. are kept. Nowadays, many records are electronic, but even digital files must follow these rules. Information managers should know basic retention rules (e.g., BIR requires 10-year retention of tax books). In exams, a question might list record types and ask how long to keep them according to law.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('8886ec70-db30-591b-be11-4085b1169cfd','activity','Practice & Exam Drills — Lesson 10',$md$
+**Review Questions**
+
+1. What does the Data Privacy Act (RA 10173) require organizations to do with personal data?
+2. Give two examples of sensitive personal information under Philippine law.
+3. Name a type of record and how long it must be retained according to Philippine regulations (e.g., tax records).
+
+**Worked Problems (Exam-Style)**
+
+**[Scenario]** A hospital's patient database was hacked. What steps must the hospital take under RA 10173, and what are the possible penalties for violating the law?
+
+*Solution:* They must inform the NPC and affected patients. Possible penalties include fines (up to ₱5 million) or imprisonment, depending on the offense.
+
+**[Ethical]** If you find a security flaw that exposes student grades, what should you do?
+
+*Solution:* Report it immediately to the responsible authority. It is unethical (and illegal) to exploit or share this vulnerability. Following the responsible disclosure policy is expected.
+
+**[Records Retention]** A university has alumni grades from 1990. Suppose academic records become archival property after 50 years. When can these be transferred to archives?
+
+*Solution:* If 1990 was the graduation year, then in 2040 they may be transferred to archives; disposal only follows the National Archives' approval.
+
+**Hands-On Exercises** (mostly conceptual)
+
+1. (Policy Summary) Write a one-paragraph data privacy policy for a small business that collects customer emails. Include consent and security measures.
+2. (Compliance Check) List the personal data fields (e.g., name, email, birthdate) in a Student table. For each, decide if it's personal information and who can view it under a good privacy policy.
+
+**How to Pass Legal/Ethical Topics**
+
+- Explicitly mention RA 10173 when asked about privacy or security laws in the Philippines. Include key terms (consent, NPC, breach notification).
+- Ethics questions often have "explain what you should do" answers. Show awareness of confidentiality and professional standards.
+- For retention questions, link them to actual laws or regulations if possible. If unsure, say "as per guidelines" to show you recall that such rules exist.
+$md$, 5, 'sql', $code$-- This lesson is conceptual — no SQL is strictly required.
+-- You may still explore the sample Student table to reason about personal data:
+CREATE TABLE Student (student_id INT PRIMARY KEY, name VARCHAR(50), program VARCHAR(50), year INT, dept_id INT);
+INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BSCS',2,1);
+
+-- Which columns count as personal information under RA 10173?
+-- Try: SELECT name FROM Student;  -- 'name' is personal data; restrict who can read it.$code$);
+
+-- ============================================================
+-- SOURCES
+-- CHED CMO 25 s.2015 — revised policies for BSIT/BSIS/BSCS (Information Management course specification)
+-- Polytechnic University of the Philippines — BSIT program description
+-- Cavite State University — Information Management (BSIT 2D) course summary
+-- Isabela State University — IT221 Information Management syllabus (2nd Sem SY 2023–2024)
+-- ============================================================
