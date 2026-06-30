@@ -176,3 +176,42 @@ Practice making a persona: list demographic info (age, job, tech comfort), goals
 - Emphasize the iterative nature — exams like answers with phases repeated.
 $md$, 3);
 
+-- ============================================================
+-- LESSON 5: Prototyping and Interface Layout
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('ae19b157-8db3-5a49-8ae6-5bcee96486d2','content','Wireframes and Mockups',$md$
+Prototyping is where design becomes tangible. A **wireframe** is a simple layout (often black-and-white) showing where elements go. For example, a wireframe for an app login screen would show a logo, two text fields, and a button block. It doesn't need visuals or color. A **mockup** adds visual detail and style, closer to a final look. In class, you might learn tools like Figma or even just pencil sketches. Prototyping early catches design issues (e.g. button placement) before any code is written.
+$md$, 1),
+('ae19b157-8db3-5a49-8ae6-5bcee96486d2','content','Visual Design Basics',$md$
+Interface layout also uses graphic design principles. Key ideas: **Contrast** (make important buttons stand out with color or size), **Alignment** (line up labels and inputs for a clean look), and **Hierarchy** (title big, subtitles smaller). Filipino designers often consider cultural color meanings (e.g. green might imply go/success). Use grids or common layouts (like a header, content area, and footer) so users feel at home. Remember readability: use sufficient font size (≥14px) and spacing. A cluttered interface is a no-no – for example, avoid cramming twenty links at the top of a page.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a visual layout drill.*
+$md$, 2),
+('ae19b157-8db3-5a49-8ae6-5bcee96486d2','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. What is a wireframe, and how is it different from a mockup?
+2. Why is consistency in layout important (e.g. always placing navigation menus in the same place)?
+3. Name two layout principles (e.g. alignment, spacing) and explain them.
+4. How does contrast improve an interface?
+5. What is a common layout for mobile apps?
+
+**Worked Problem**
+
+A signup form currently has labels above each field, but text is small and fields span the full screen width. Suggest two layout changes to improve it.
+
+*Solution:* (1) Increase font size and label–field contrast to improve readability. (2) Use logical spacing: put labels next to or slightly above fields with even padding, so the form is easier to scan. Also, grouping related fields (e.g. personal info vs account info) can reduce the perceived length. These align with layout best practices (readable typography and clear grouping).
+
+**Hands-On Exercise**
+
+Draw two versions of the same smartphone app screen. Version A: randomly place 10 icons. Version B: use a grid with equal spacing, labels below icons, and a search bar at top. Show peers and ask which is easier to understand. Discuss why.
+
+**How to Pass Tips**
+
+- Professors may test you on specific layout terms (e.g. "What does 'visual hierarchy' mean?"). Remember common patterns (cards, lists, forms).
+- Exams often expect you to spot problems: "Identify layout issues with this interface."
+- Always think mobile-first: many Filipino users access via phones, so practice designing for small screens. Note alignment (e.g. center vs left alignment) matters.
+- A common error is using too many fonts or colors – stick to one font family and 2–3 colors for readability.
+$md$, 3);
+
