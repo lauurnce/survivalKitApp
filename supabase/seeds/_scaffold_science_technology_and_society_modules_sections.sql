@@ -224,3 +224,62 @@ $md$, 4),
 - Be aware of Filipino specifics: cite local laws like the Data Privacy Act for privacy questions, or cite PH internet speed statistics for the digital divide.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 5: Science, Technology, and Social Challenges
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('7db57f56-5374-5d53-8d61-b7adad07b83e','content','Environmental Sustainability and Climate Change',$md$
+Science and technology both cause and solve environmental issues. Industrial activities and energy use have led to climate change (rising temperatures, intense typhoons). Technology contributes: car emissions, industrial waste, and deforestation are tech-driven. On the other hand, science provides solutions: climate models predict weather, guiding disaster prep. **Green technologies** are emerging: solar panels, wind turbines, and electric jeepneys reduce carbon footprints. In the Philippines, typhoon-safe shelter designs and reforestation projects use science to adapt to environmental challenges. Sustainability is key: students learn how tech (like wastewater treatment) protects nature, and how policies (like clean air regulations) manage the impact of technology on the environment.
+$md$, 1),
+('7db57f56-5374-5d53-8d61-b7adad07b83e','content','Ethics and Responsible Technology',$md$
+As technology advances, we face new ethical questions. In science: manipulating genes (GMOs, designer babies) raises moral and safety concerns. In technology: issues like data privacy (personal data collected by apps), AI bias, and intellectual property are major debates. For example, face recognition tech can improve security but also risks surveillance overreach. Filipino society grapples with these: the **Data Privacy Act** (Philippines) regulates personal information online. Encourage students to think about questions like "Should there be limits on AI development?" or "How do we balance tech convenience with privacy rights?" This section stresses that responsible citizenship means being aware of the moral dimensions of science and tech in society.
+$md$, 2),
+('7db57f56-5374-5d53-8d61-b7adad07b83e','activity','Disaster Preparedness and Resilience',$md$
+The Philippines is prone to natural hazards (typhoons, earthquakes, volcanic eruptions). Science and technology help mitigate these risks: early warning systems (weather radars, tsunami buoys) give critical time for evacuation. Engineering designs (e.g., quake-resistant buildings, flood control dams) aim to protect lives. Information tech (SMS alerts, hazard maps) informs the public. For instance, **PAGASA's** improved forecasting models and **PHIVOLCS's** earthquake monitoring are scientific achievements with social value. This section combines environmental and technological angles: how society uses science to respond to natural challenges. It underlines a key STS theme: tech solutions are needed, but so is social planning and education (everyone must heed warnings and prepare).
+$md$, 3),
+('7db57f56-5374-5d53-8d61-b7adad07b83e','activity','Science and Health in Society',$md$
+Medical science and health technologies have immense social impact. Vaccination campaigns (science development + public health policy) eradicated diseases. Recent example: the mRNA COVID-19 vaccines (an advanced biotech) helped fight the pandemic in the Philippines. Telemedicine and health apps show technology addressing healthcare access. Students should also consider inequalities: while science yields cures, not all Filipinos access them equally (rural vs. urban health centers). Health crises highlight STS: science invents treatments, but society's structures (insurance, clinics) determine who benefits. This section may overlap with ethics (e.g. prioritizing patients) and environment (pollution's health effects), emphasizing the complex web of STS in social issues.
+
+*Ready to apply this? The practice set below has case studies on climate action and ethical dilemmas, plus disaster response planning scenarios.*
+$md$, 4),
+('7db57f56-5374-5d53-8d61-b7adad07b83e','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. Give one example of how technology can help reduce environmental damage in the Philippines.
+2. What ethical issue arises with collecting user data for social media apps?
+3. How does early warning technology save lives during typhoons?
+4. What is an example of science improving healthcare in rural areas?
+5. Why is it important to consider ethics when developing new technologies?
+
+**Worked Exam-Style Problems**
+
+*Problem:* A proposal is made to build a large hydroelectric dam in a province. Identify two potential benefits and two potential drawbacks of this technology for society.
+
+*Solution:* Benefits: (1) Clean energy generation, reducing fossil fuel use and pollution; (2) Job creation and revenue. Drawbacks: (1) Displacement of communities when the reservoir is filled; (2) Ecosystem impact (fish migration, forest flooding). Answers should balance both sides: mention environmental/social impact and technological advantage.
+
+*Problem:* Describe a plan for educating citizens about preventing cybercrime. What technologies and institutions would be involved?
+
+*Solution:* The plan could include free online workshops (tech: webinar platforms), coordination with the National Privacy Commission (policy) and schools (education). Answers should show integration: use of tech (internet, software), social actors (gov agencies), and expected outcomes (awareness, safer online behavior).
+
+**Hands-On Exercise (scenario)**
+
+- *Case study:* "After a typhoon, cellphone service was down. A new radio communication network was then used to coordinate rescue." Analyze this scenario by listing (a) which technologies were involved, (b) what problems each solved, and (c) a suggestion for improvement in future events.
+- Or: Write a short proposal (bullets) for a tech-based project to help improve farming in your area (e.g. app for market prices, drone for crop spraying). Focus on the social benefits (higher income, less waste).
+
+**How to Pass Tips**
+
+- When discussing environment or disasters, always connect science/tech with policy or community action (e.g., mention community workshops or flood forecasting systems).
+- In ethics questions, look for the core dilemma (risk vs benefit). Phrase answers as arguments (e.g., "On one hand…, on the other hand…").
+- Use real local context: e.g., refer to specific typhoons (Yolanda/Haiyan) to illustrate points.
+- Emphasize sustainability: modern exams appreciate awareness of the Sustainable Development Goals (like clean energy, climate action).
+- Avoid being one-sided; acknowledge potential cons of any tech solution to show critical thinking.
+$md$, 5);
+
+-- ============================================================
+-- SOURCES
+-- City of Malabon University — Science, Technology and Society course syllabus
+-- Polytechnic University of the Philippines — Science and Technology (Enhanced) course outline
+-- Far Eastern University — Science, Technology and Society module facilitation guide (GED0104)
+-- CHED — Science, Technology and Society GE course description (CMO 20, s.2013)
+-- CHED CMO No. 25, s.2015 — PSGs for BSIT programs
+-- ============================================================
