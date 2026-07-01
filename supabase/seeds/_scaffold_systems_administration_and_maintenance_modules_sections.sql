@@ -333,3 +333,71 @@ $md$, 3),
 Learn key service names and ports (DHCP, DNS port 53, HTTP port 80/443). Be able to explain why you need DHCP (to avoid configuring each PC manually) and DNS (so we use names, not hard IPs). Professors like scenario questions: e.g., "You set up a new printer but clients can't find it by name, what service might be misconfigured?" (Answer: DNS). Always mention checking firewalls – it's a common oversight.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 8: Automation with Scripting
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('9597a77e-1d87-5e6c-92c7-637508ef238b','content','Introduction to Scripting for Administration',$md$
+Automation saves time for repetitive tasks. A **script** is a small program (often written in a language like Bash or Python) that runs a series of commands. For example, a sysadmin might script daily backups or log analysis. In exams, you should recognize simple script logic: loops to process many items, or conditionals to check a situation. Even if you don't code often, understanding scripts is useful: at least know basic structures (`for` loop, `if-then`). This lesson focuses on Python, a common admin scripting language, but remember that Windows also has PowerShell (exam topic) and Linux uses shell scripts.
+$md$, 1),
+('9597a77e-1d87-5e6c-92c7-637508ef238b','content','Basic Python Scripting Concepts',$md$
+Python is an easy-to-read language often used in system admin for parsing text or automating web tasks. In a script, you can use loops (`for`, `while`), functions, and libraries. For example, you could write a Python script to read a log file line by line and extract errors. Key Python facts: indentation matters, `print()` outputs text, and `import` lets you use extra tools (like `os` or `sys`). In the context of system admin, remember that Python can automate file operations (via `open()` or `os.listdir()`), network calls, or even server management through modules.
+$md$, 2),
+('9597a77e-1d87-5e6c-92c7-637508ef238b','activity','Task Scheduling (Cron and Task Scheduler)',$md$
+Once you have a script or command, you often want it to run automatically on a schedule. On Linux, this is done with **cron jobs**. For instance, `crontab -e` opens your schedule file where you could add `0 2 * * * /usr/bin/python3 /home/user/backup.py` to run at 2 AM daily. On Windows, the equivalent is the **Task Scheduler**, where you create a basic task and choose triggers (daily, at startup) and actions (run a script or program). Understanding how to set up these scheduled tasks can be exam material. It's also a tip to always test-run scripts manually first, then automate them.
+
+*Ready to apply this? The practice below includes a Python coding exercise to filter log messages, plus review questions on scripting concepts and scheduling.*
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('9597a77e-1d87-5e6c-92c7-637508ef238b','activity','Practice & Exam Drills — Lesson 8',$md$
+**Review Questions**
+
+1. In Python, which keyword starts a loop?
+2. What does the `print()` function do?
+3. Give one example of a Linux scheduling tool.
+4. In a cron job schedule, what does `0 0 * * *` mean (when the job runs)?
+5. Why might a sysadmin use a script instead of manual commands?
+
+**Worked Problems**
+
+*Problem:* Complete the Python snippet in the playground so that it prints only the lines with "ERROR".
+
+*Solution Explanation:* You would split `log_data` into lines (using `.splitlines()` or `.split("\n")`), then loop through each line, check if `"ERROR"` is in it, and if so, print it. The expected output lines are "ERROR: Network down" and "ERROR: Could not connect".
+
+```python
+for line in log_data.splitlines():
+    if "ERROR" in line:
+        print(line)
+```
+
+*Problem:* A student is given a cron entry `30 3 * * 1 /usr/bin/rsync -a /data/ /backup/`. What does this do?
+
+*Solution:* This cron job runs every **Monday at 3:30 AM** (30 minutes past hour 3 on day-of-week 1). It executes the `rsync` command to archive-copy `/data/` to `/backup/`. This likely performs a weekly backup. Explain the time fields and the purpose of `rsync` (syncing files).
+
+**Coding Exercise**
+
+Write Python code that prints only the error lines from `log_data`. When run, it should output:
+```
+ERROR: Network down
+ERROR: Could not connect
+```
+
+**How to Pass**
+
+Practice writing simple scripts or pseudo-code. In exams, they might ask what a loop does or to trace through a given script. Know how to read a cron schedule (5 fields). Mistakes to avoid: mixing up `* * *` syntax in cron, or forgetting Python indentation. In code answers, ensure syntax is correct (e.g. colon after `if` and proper indentation). For scheduling, memorize a couple of examples: daily at midnight (`0 0 * * *`), every hour (`0 * * * *`), etc. Professors often give a broken cron line and ask you to fix it, so watch out for field order.
+$md$, 4, 'python', $code$log_data = """INFO: System running
+WARNING: Disk space low
+ERROR: Network down
+INFO: Backup succeeded
+ERROR: Could not connect
+"""
+# Write code below to extract lines containing "ERROR" from log_data.$code$);
+
+-- ============================================================
+-- SOURCES
+-- Polytechnic University of the Philippines (PUP Unisan) — Systems Administration and Maintenance course outline (CCIS ITPS)
+-- Northern Negros State College of Science and Technology — Systems Administration and Maintenance syllabus overview
+-- Misamis University (BSIT) — Systems Administration and Maintenance (ITP220) course description
+-- CHED CMO No. 25 s.2015 — Revised PSGs for BSIT (sample curriculum listing)
+-- ============================================================
