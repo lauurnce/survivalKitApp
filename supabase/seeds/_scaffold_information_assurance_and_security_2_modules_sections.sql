@@ -351,3 +351,62 @@ Review a security event on your own system. Check the Event Viewer on Windows or
 - Show your thought process: explain both what happened and how you respond. Common mistakes: describing only one phase (like just recovery) without containment or lessons learned.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 7: Security Governance, Risk Management, and Compliance
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('3e006bab-3aad-5280-9094-4b0a7df4ffb4','content','Security Policies, Standards, and Frameworks',$md$
+Organizations rely on policies and standards to guide security practices. Examples include **ISO/IEC 27001** (an international information security management standard) and the **NIST Cybersecurity Framework**. A **security policy** defines roles and responsibilities (for example, an Acceptable Use Policy or Incident Response Policy). Auditors check that organizations follow these standards. For instance, a Philippine company might align with ISO 27001 and the National Privacy Commission's policies to ensure comprehensive coverage of security and privacy requirements.
+$md$, 1),
+('3e006bab-3aad-5280-9094-4b0a7df4ffb4','content','Risk Management and Assessment',$md$
+Risk management involves identifying, analyzing, and mitigating risks. Techniques include **qualitative** analysis (using risk matrices to rate impact and likelihood) and **quantitative** analysis (calculating expected losses). A key formula is **Single Loss Expectancy (SLE) = Asset Value × Exposure Factor** and **Annual Loss Expectancy (ALE) = SLE × Annualized Rate of Occurrence (ARO)**. Controls (like firewalls or encryption) reduce risk by lowering either the likelihood or the impact. A key step is performing risk assessments: listing assets, threats, vulnerabilities, and determining the level of risk. Exams often ask you to perform or interpret simple risk calculations using these formulas.
+$md$, 2),
+('3e006bab-3aad-5280-9094-4b0a7df4ffb4','activity','Legal and Regulatory Compliance',$md$
+Laws and regulations govern security practices. In the Philippines, **Republic Act 10173 (Data Privacy Act)** mandates protecting personal data and reporting breaches to the National Privacy Commission. **Republic Act 11765 (Cybersecurity Act)** establishes the national cybersecurity framework and responsibilities for government and private sectors. Organizations must also comply with sector-specific laws (for example, financial institutions follow guidelines from Bangko Sentral ng Pilipinas). Understanding these regulations is crucial: an exam question might ask about breach notification requirements under RA 10173, for example.
+$md$, 3),
+('3e006bab-3aad-5280-9094-4b0a7df4ffb4','activity','Asset Classification and Data Protection',$md$
+**Asset classification** means categorizing information (such as Public, Internal, Confidential, Secret). For example, customer personal data might be classified as "Confidential." Organizations apply protections based on classification (like encryption and strict access controls for confidential data). Philippine standards often require encryption or other controls for sensitive information. Maintaining an inventory of assets and clear labeling (such as security labels or electronic tags) helps ensure that data is handled appropriately throughout its lifecycle.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a risk-register exercise.*
+$md$, 4),
+('3e006bab-3aad-5280-9094-4b0a7df4ffb4','activity','Practice & Exam Drills — Lesson 7',$md$
+**Review Questions**
+
+1. Why do organizations create an information security policy, and what might it include?
+2. In risk management, what do the terms threat, vulnerability, risk, and impact mean?
+3. How do you calculate Single Loss Expectancy (SLE) and Annual Loss Expectancy (ALE)? Provide the formula.
+4. Name one Philippine law relevant to cybersecurity or data privacy and describe its primary requirement.
+5. Why is asset classification important and how does it affect data protection?
+
+**Worked Examples**
+
+*Problem:* An organization has a server with an asset value of ₱500,000. It estimates that 20% of the value could be lost per incident (Exposure Factor = 20%), and that such incidents may happen once every 5 years. Calculate the SLE and ALE.
+
+*Solution:* SLE = Asset Value × Exposure Factor = ₱500,000 × 0.20 = **₱100,000**. ARO = 1/5 = 0.20. ALE = SLE × ARO = ₱100,000 × 0.20 = **₱20,000 per year**. ALE represents the expected annual cost of this risk.
+
+*Problem:* A hospital classifies patient records as "Confidential." What security measures should be applied according to this classification?
+
+*Solution:* Confidential classification means only authorized personnel can access these records. Measures include strong access controls (unique accounts, strong passwords), encryption of data at rest (so stolen media stays unreadable) and in transit (HTTPS), and strict audit logging of who accessed the data.
+
+*Problem:* A company falls victim to a data breach involving customer personal information. Under RA 10173 (Data Privacy Act), what must the company do?
+
+*Solution:* They must notify the **National Privacy Commission (NPC)** and the affected individuals about the breach, typically within **72 hours** of discovery. Name RA 10173 explicitly and outline these notification requirements.
+
+**Hands-On Exercise**
+
+Create a simple risk register for a small scenario (e.g., personal laptop or home network). List a few assets ("Laptop", "Financial Documents"), possible threats ("Malware", "Theft"), and assign a qualitative risk level (High/Medium/Low). Then propose one or two controls for the highest risks ("Install antivirus software", "Enable drive encryption").
+
+**How to Pass**
+
+- Use correct formulas: write out SLE = AV × EF and ALE = SLE × ARO clearly. If numbers are given, show the arithmetic.
+- Cite real standards or frameworks by name (ISO 27001, NIST). Note that ISO 27001 requires periodic risk assessments.
+- For legal questions, name the law and its key points ("RA 10173 requires breach notification within 72 hours").
+- Clarify terms: distinguish "risk" (potential for loss) from "vulnerability" (a weakness).
+- Be precise about policies/frameworks ("ISO/IEC 27001 is an international standard for Information Security Management Systems"). Vague statements like "follow best practices" are less convincing.
+$md$, 5);
+
+-- ============================================================
+-- SOURCES
+-- Polytechnic University of the Philippines (PUP) — BSIT program and course descriptions
+-- CHED CMO No. 25, series of 2015 — Revised PSGs for BSCS/BSIS/BSIT programs
+-- ============================================================
