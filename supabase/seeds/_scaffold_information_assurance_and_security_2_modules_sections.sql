@@ -180,3 +180,57 @@ On a local machine or VM, enable the host-based firewall (e.g., `iptables` on Li
 - Common oversight: forgetting hardware measures (BIOS password) or not relating hypervisor security to VM isolation.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 4: Identity and Access Management (IAM)
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('44977e92-4e4f-5b35-9f58-2569fe966be1','content','Authentication Methods and Multi-Factor',$md$
+**Authentication** verifies identity before granting access. Common methods include **passwords** (something you know), **smart cards or tokens** (something you have), and **biometrics** (something you are). **Multi-factor Authentication (MFA)** requires two or more of these factors, greatly improving security. For example, accessing a bank account might require a password plus a one-time code sent to a mobile phone. In practice, implementing strong password policies (length and complexity) and adding MFA (like authenticator apps or SMS codes) prevents unauthorized access even if credentials are compromised.
+$md$, 1),
+('44977e92-4e4f-5b35-9f58-2569fe966be1','content','Authorization and Access Control',$md$
+**Authorization** determines what resources a user can access. A common model is **Role-Based Access Control (RBAC)**: users are assigned roles (e.g., "manager", "clerk") and each role has specific permissions. Less commonly, **Attribute-Based Access Control (ABAC)** uses attributes (such as department, clearance level, time of day). The **principle of Least Privilege** means giving users only the permissions they need to do their job. For example, a regular user account should not have administrator rights. Auditing and regular review of permissions ensure that old or unused accounts are disabled to prevent abuse.
+$md$, 2),
+('44977e92-4e4f-5b35-9f58-2569fe966be1','activity','Directory Services and Single Sign-On',$md$
+**Directory services** (like Microsoft Active Directory or OpenLDAP) centralize user accounts, passwords, and permissions. **LDAP** (Lightweight Directory Access Protocol) is commonly used to query these directories. **Single Sign-On (SSO)** lets users authenticate once for multiple systems. **Kerberos** is a common SSO protocol that uses tickets (for example, in a Windows domain login). For instance, logging into a domain-joined computer gives you a Kerberos ticket that you can use to access file shares without re-entering a password. Proper configuration (such as account lockout policies) helps prevent brute-force attacks on these services.
+$md$, 3),
+('44977e92-4e4f-5b35-9f58-2569fe966be1','activity','AAA Protocols (RADIUS, TACACS)',$md$
+**AAA** stands for **Authentication, Authorization, and Accounting**, and these protocols are used by network devices. **RADIUS** is widely used for network access (especially Wi-Fi and VPN); it handles remote authentication (e.g., an employee logging into the wireless network) and can log accounting information. **TACACS+** is similar but often used for administering network devices (like routers and switches). For example, a company might use RADIUS with 802.1X to authenticate laptops on Wi-Fi, requiring central server verification. These protocols ensure that access attempts are checked against a central user database and that logs of access can be audited.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a directory-service exercise.*
+$md$, 4),
+('44977e92-4e4f-5b35-9f58-2569fe966be1','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. Describe what multi-factor authentication (MFA) is and provide an example with at least two factors.
+2. What is Role-Based Access Control (RBAC) and how does it simplify authorization management?
+3. What is the role of a directory service like LDAP or Active Directory in network security?
+4. Briefly explain how Kerberos Single Sign-On authenticates a user.
+5. What is RADIUS and why is it used in network access control?
+
+**Worked Examples**
+
+*Problem:* A company requires employees to use both a password and a fingerprint to log into the secure lab. Identify the type of authentication and explain why it's more secure than just a password.
+
+*Solution:* This is **two-factor authentication** (password = knowledge + fingerprint = biometric). It's more secure because an attacker would need to compromise both factors. Even if the password is stolen, access is blocked without the fingerprint.
+
+*Problem:* A user in the Finance department has a role that allows viewing financial reports but not editing them. Which access control concept is this an example of?
+
+*Solution:* This demonstrates **least privilege** using **RBAC**. The Finance role has read-only permission. Defining roles with limited permissions prevents unauthorized actions (like deleting financial data). Permissions are tied to roles, simplifying management.
+
+*Problem:* Employees connect their devices to Wi-Fi and are prompted for credentials. Behind the scenes, which protocol often handles authentication and accounting for this scenario?
+
+*Solution:* This is typically handled by **RADIUS with 802.1X**. RADIUS checks the credentials against a central server and can log the access attempt. TACACS+ is more often used for device management logins.
+
+**Hands-On Exercise**
+
+On a home or lab network, explore a simple directory service. Install OpenLDAP or use Windows Active Directory on a VM. Create two user accounts (e.g., "user1" and "user2") with different permissions, configure one to have access to a shared folder while the other does not, and test logging in as each user.
+
+**How to Pass**
+
+- Be specific: instead of just "multi-factor", give concrete examples ("password + OTP token" or "password + fingerprint").
+- Use correct terminology: "principle of least privilege" and name protocols (Kerberos, LDAP, 802.1X) accurately.
+- Understand flow: sometimes exam questions ask you to describe steps in a login process (Kerberos ticket exchange). Practice explaining it step-by-step at a high level.
+- Mention real-world applications ("RADIUS server used in secure Wi-Fi setups").
+- Avoid vague answers; also mention management (using a password manager or enforcing complexity via group policy).
+$md$, 5);
+
