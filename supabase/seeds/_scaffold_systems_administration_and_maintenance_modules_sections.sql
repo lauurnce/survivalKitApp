@@ -108,3 +108,46 @@ $md$, 3),
 Remember the core difference between "client" Windows (like Windows 10) and "Server" edition (like Windows Server 2019). In exams, you might get a question like "Which feature is only available on Windows Server?" — look for options like AD or IIS. Also memorize common admin tool names ("Server Manager," "Active Directory Users and Computers") and where they are found. Practice explaining configuration tasks as clear steps.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 3: Installing and Configuring Linux Operating Systems
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('184744d5-a256-573c-a94d-4159ba326ee0','content','Linux Installation Process',$md$
+Installing a Linux server (e.g. Ubuntu or CentOS) starts with booting from a Linux live USB or DVD. You often need to choose a "Server" installation mode. Steps include selecting language, keyboard layout, and creating disk partitions (**ext4** is common for Linux). You then create a root (administrator) password and possibly a regular user account. Many Linux installers ask whether to install a bootloader (**GRUB**) – you usually say yes so the system can boot.
+$md$, 1),
+('184744d5-a256-573c-a94d-4159ba326ee0','content','Basic Linux Configuration after Install',$md$
+After Linux is installed, initial setup is usually done via the command line. You might configure the hostname with `hostnamectl` and network with `nano /etc/network/interfaces` or `nmcli`. On many distros, you update package lists (`sudo apt update`) and install essential tools (`sudo apt install net-tools`, etc.). Setting up an SSH server (`sudo apt install openssh-server`) is common so you can log in remotely. You can also use GUI tools if installed (like Ubuntu's "Software & Updates").
+$md$, 2),
+('184744d5-a256-573c-a94d-4159ba326ee0','activity','Linux Administration Tools and Commands',$md$
+Linux admins rely on the shell (bash) and commands like `ls` (list files), `cp`, `mv`, `chmod` (change permission), and `chown` (change ownership). They edit text files using editors such as `vi`, `nano`, or `gedit`. To install software, they use package managers (`apt` on Debian/Ubuntu, `yum` or `dnf` on CentOS). Monitoring tools include `top` or `htop` for processes, `df -h` for disk usage, and `journalctl` or `dmesg` for logs. Understanding these commands is foundational for Linux administration.
+
+*Ready to apply this? The practice drills below include Linux commands and configuration scenarios with worked solutions.*
+$md$, 3),
+('184744d5-a256-573c-a94d-4159ba326ee0','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions**
+
+1. What command lists files in a directory on Linux?
+2. After installing Ubuntu Server, which command updates the list of software packages?
+3. Where do you set the hostname on a modern Linux distribution?
+4. How do you change a file's permissions using the command line? Give the command.
+5. What does 'SSH' stand for and what is its use?
+
+**Worked Problems**
+
+*Problem:* A newly installed Linux server has no network connectivity. Which configuration file or command would you check to fix this?
+
+*Solution:* Check network interface settings. For example, on Ubuntu, open `/etc/netplan/*.yaml` or `/etc/network/interfaces` and verify IP configuration. Also use `ip addr show` to see the current config. Correct any typos (e.g. wrong IP or gateway).
+
+*Problem:* Explain the difference between the root user and a regular user in Linux. Why shouldn't you regularly log in as root?
+
+*Solution:* **Root** is the superuser with unlimited privileges (can do anything to the system). A **regular user** has limited rights. We avoid using root for daily work to prevent accidental system-wide damage. Instead, use `sudo` to run specific commands as root.
+
+**Hands-On Exercise**
+
+(No code) In a Linux VM, practice creating a new user with `sudo adduser username` and give it sudo privileges by adding it to the "sudo" or "wheel" group. Test switching to that user (`su - username`) and try updating packages. Document each command used.
+
+**How to Pass**
+
+Know key Linux terms and commands by heart. In tests, questions might ask: "Which command shows current disk usage?" (Answer: `df -h`) or "What file type is a Linux terminal script?" (shell script, often with `.sh`). Drill simple commands until you can do them without thinking. Professors like asking about differences (`apt` vs `apt-get`, or Linux file permissions `rwx` = 421). Practice problems where you interpret a line of command output.
+$md$, 4);
+
