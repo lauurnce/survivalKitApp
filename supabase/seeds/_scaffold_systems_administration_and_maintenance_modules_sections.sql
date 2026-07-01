@@ -247,3 +247,46 @@ $md$, 3),
 Know simple subnet math by heart (`/24` = `255.255.255.0`, `/16` = `255.255.0.0`). Practice converting between CIDR (like `/24`) and mask forms. Memorize common private network ranges (e.g. `192.168.x.x`). Professors often test the meaning of IPs like `127.0.0.1` (loopback) or `0.0.0.0`. For commands, recall exactly how to call them: e.g. `ping 127.0.0.1` tests the local TCP/IP stack. Label common port numbers if asked (DNS=53, HTTP=80).
 $md$, 4);
 
+-- ============================================================
+-- LESSON 6: System Updates, Patching, and Maintenance
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('9d505050-c2b5-5ef9-b212-e026f5bff7e0','content','Keeping Systems Updated',$md$
+Both Windows and Linux release updates to fix bugs and vulnerabilities. On Windows, you use **Windows Update** to download patches, security fixes, and drivers. On Linux, you use the package manager (like `sudo apt update && sudo apt upgrade`) to pull updates from the distribution's repositories. Regular patching prevents malware exploits. For example, if a major security flaw is found, installing the patch quickly can stop viruses from exploiting it. Think of updates like safety checks for your car – skipping them leads to breakdowns.
+$md$, 1),
+('9d505050-c2b5-5ef9-b212-e026f5bff7e0','content','Performance Monitoring Basics',$md$
+An admin should regularly check system health. Key metrics include **CPU usage, memory usage, and disk space**. On Windows, Task Manager shows CPU/Memory graphs and which processes are using them. On Linux, tools like `top`, `htop`, or `vmstat` show similar info. Monitoring trends helps catch issues early: e.g., if disk usage is near full, add storage. Also check error logs: Windows has Event Viewer, Linux has `/var/log/syslog` or `dmesg`. These logs give clues to hardware failures or software crashes.
+$md$, 2),
+('9d505050-c2b5-5ef9-b212-e026f5bff7e0','activity','Backup and Recovery Fundamentals',$md$
+Maintenance isn't just fixing problems – it's preventing data loss. **Backups** create copies of important files or system images. A common strategy is nightly backups of user data and weekly full system backups. On Windows, this might use Backup and Restore or tools like Veeam; on Linux, tools like `rsync` or `tar` scripts. Testing recovery is key: a backup is useless if it can't be restored. In exams, a question might describe a server hard disk failure – your answer should outline restoring from a known good backup.
+
+*Ready to apply this? The activity below lets you practice planning update and backup routines, answer review questions, and solve a maintenance case study step by step.*
+$md$, 3),
+('9d505050-c2b5-5ef9-b212-e026f5bff7e0','activity','Practice & Exam Drills — Lesson 6',$md$
+**Review Questions**
+
+1. Why is it important to apply system patches regularly?
+2. What tool on Linux can you use to check real-time memory usage?
+3. What is a full backup versus an incremental backup?
+4. On Windows, where would you look to find recent error or warning messages?
+5. What could happen if you ignore disk space warnings?
+
+**Worked Problems**
+
+*Problem:* A server with a failing hard drive logs I/O errors. Outline a recovery plan, including how to verify the backup before replacing.
+
+*Solution:* First, shut down the server safely to avoid data loss. Next, remove/repair the bad drive and install a new drive. Then restore from backup: insert the latest backup media or connect to the backup server and copy the data to the new drive. Finally, test the system to ensure everything works. Each step has a purpose (prevent damage, replace failed component, recover data). Verify the backup by test-restoring a sample of files before wiping the old drive.
+
+*Problem:* List two tools you would use to find out why a Linux server is running slowly, and what they show.
+
+*Solution:* Use `top` or `htop` to see which processes are consuming CPU or RAM. Also check disk usage with `df -h` to see free space, and `iostat` to check if disk I/O is high. Each tool pinpoints a different bottleneck.
+
+**Hands-On Exercise**
+
+(No code) Set a Linux VM to have one folder backup script. For example, create a bash script that archives `/etc` into `/backup/etc_backup.tar.gz`. Schedule it via cron to run daily. Verify by running `ls /backup` to see the archive. Practice the steps: writing the script, making it executable, and adding a cron job (with `crontab -e`).
+
+**How to Pass**
+
+Remember the names of built-in tools: Task Manager, Event Viewer, `top`, `df`, etc. For backups, know at least one free tool (like `rsync` or Windows Backup). Exams may ask advantages of one backup type over another, so recall that full backups copy everything every time (slow but straightforward) while incremental only saves changes (faster but needs a chain of backups). A common tip: always rehearse your recovery procedure. That exam question often expects "restore from last full backup, then apply incrementals".
+$md$, 4);
+
