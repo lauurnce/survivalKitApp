@@ -77,3 +77,59 @@ $md$, 3),
 - **Avoid Common Pitfalls:** Don't confuse Rizal's views with later revolutionaries (he was not a follower of Bonifacio). Critique the system, not the faith.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 2: Rizal's Early Life and Education
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('d2a72c3b-74c2-5b37-94c2-7c1748823e4e','content','Family Background and Childhood',$md$
+José Rizal was born on **June 19, 1861**, in Calamba, Laguna. He was the seventh of 11 children in a middle-class family. His parents, **Don Francisco Mercado** and **Doña Teodora Alonso**, were educated and taught Rizal the value of learning. From a young age, Rizal showed genius in many fields: he learned to speak Tagalog, Spanish, Latin, and other languages as a child; he was an excellent student in history, science, and the arts; and he loved drawing and sketching his surroundings (even making an eye glass out of coconut when he was only 5!).
+
+Rizal's family was well-connected: his older brother **Paciano** introduced him to Filipino patriots and political ideas. The close-knit Mercado family also faced challenges: under Spanish rule, they had to pay high taxes and risked being accused by unfair authorities. These experiences in childhood—seeing injustice and also being nurtured by a loving family—helped shape Rizal's sense of responsibility to his country.
+$md$, 1),
+('d2a72c3b-74c2-5b37-94c2-7c1748823e4e','content','Education in the Philippines (Ateneo and UST)',$md$
+Rizal's formal education took place in Manila. At age 11, he passed the entrance exam for the **Ateneo Municipal de Manila** (run by Jesuits), where he excelled in Latin, philosophy, and literature, graduating with honors. Later, he enrolled at the **University of Santo Tomas (UST)** to study medicine. Here he first encountered discrimination: Spanish professors often insulted Filipino students and Catholic friars controlled much of campus life. Rizal even wrote a letter protesting unfair fees to the rector of UST.
+
+His time in the Philippines also introduced him to literature and history. He read books on Enlightenment ideas and the history of Spain and Europe, broadening his worldview. However, he grew frustrated by the colonial system and its limits on Filipinos. By 1882, Rizal left UST disillusioned and decided to continue his studies abroad, believing he could gain a better education and perspective in Europe.
+$md$, 2),
+('d2a72c3b-74c2-5b37-94c2-7c1748823e4e','activity','Studies in Europe and La Solidaridad',$md$
+In 1882, Rizal traveled to **Madrid, Spain** to study. In Europe, he completed his medical degree (specializing in ophthalmology) and also studied philosophy. He lived in Madrid and later Paris, where liberal ideas flowed freely. In Europe, Rizal wrote novels, poetry, and essays in Spanish. Crucially, he co-founded the newspaper **La Solidaridad** with other Filipino students and intellectuals (called the **Ilustrados**). Through *La Solidaridad*, Rizal and his friends campaigned for reforms in the Philippines, such as representation in the Spanish Cortes (parliament) and equality before the law.
+
+His exposure to Europe's freedom helped Rizal develop nationalist ideas. He saw how people of different nations fought for their rights. Rizal also mingled with other Asians and writers, comparing the Filipino situation to others. In Europe, he wrote his masterpiece **Noli Me Tangere** (1887) and started **El Filibusterismo**. His time abroad made him a bridge between Western liberal thought and Filipino aspirations.
+
+*Ready to apply this? The practice set below walks through exam-style questions with step-by-step guidance.*
+$md$, 3),
+('d2a72c3b-74c2-5b37-94c2-7c1748823e4e','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions**
+
+1. Name Rizal's parents and describe their influence on him.
+2. Where did Rizal study in Manila, and what challenges did he face there?
+3. What did Rizal study in Spain, and what new perspective did he gain?
+4. What was *La Solidaridad*, and why was it important for Rizal?
+5. List one way Rizal's early experiences in the Philippines influenced his later ideas.
+
+**Worked Exam-Style Problems**
+
+*Problem 1:* Explain how Rizal's family background influenced his patriotism.
+
+*Solution:* Step 1: Mention Rizal's close family (Mercado family) and their educational values. Step 2: Describe Paciano's role in introducing Rizal to Filipino patriots. Step 3: Note how familial love and witnessing injustice (e.g., when Rizal's mother was imprisoned on false charges) shaped his values. Step 4: Conclude that because of his family's support and experiences, Rizal developed empathy for fellow Filipinos and a strong sense of justice.
+
+*Problem 2:* Discuss the significance of Rizal's education abroad. How did it change his views?
+
+*Solution:* Step 1: State what he studied (medicine, liberal arts) and where (Madrid, Paris). Step 2: Explain that in Europe he met reformists and saw freer societies. Step 3: Mention how being exposed to Enlightenment ideas deepened his understanding of rights and nationhood. Step 4: Conclude that his European education gave him the knowledge and perspective to critique Spanish colonialism through his writings and activism.
+
+*Problem 3:* Describe one challenge Rizal faced in the Philippines and how he responded to it.
+
+*Solution:* Step 1: Identify a challenge (e.g., colonial discrimination at UST or unfair accusation against family). Step 2: Explain Rizal's reaction: at UST he protested fees in writing, showing early activism; regarding family, he became determined to fight injustice. Step 3: Show how this challenge pushed him to seek change (studying abroad and writing reform works).
+
+**Hands-On Exercise**
+
+*Project:* Create a timeline of Rizal's education and travels from age 11 to age 30. Highlight the key places (Calamba, Manila, Madrid, Paris, etc.) and what he achieved at each stage (graduated Ateneo, published first essays, wrote novels, etc.).
+
+**How to Pass Tips**
+
+- **Connect Events:** Link Rizal's personal experiences to his later work. For example, explain how an insult he faced at UST motivated his critique of the Church in *Noli*.
+- **Key Dates/Places:** Memorize a few key dates (birth/death years) and places (Ateneo 1877, Madrid 1882, *Noli* published 1887).
+- **Distinguish Facts:** Don't confuse Rizal's timeline (he finished his medical degree in Madrid, not in the Philippines).
+- **Understand, Don't Just List:** Instead of just listing Rizal's stops, explain why each was important (e.g., Paris broadened his nationalist ideas).
+$md$, 4);
+
