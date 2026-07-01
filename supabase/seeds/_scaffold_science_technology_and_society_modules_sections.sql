@@ -71,3 +71,54 @@ $md$, 3),
 - Don't forget the cause-and-effect chain: "scientific research ➔ new tech ➔ societal change." Use local examples (the role of DOST, or Filipino innovators) to strengthen answers.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 2: History of Science and Technology
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('9c0b9c7b-9380-567e-a5d0-f9b993976d69','content','Early Innovations (Prehistory to Middle Ages)',$md$
+Human societies have always used technology. Early on, simple tools like fire, stone tools, and farming techniques appeared (around 10,000–5,000 BC) and transformed nomadic tribes into settled communities. The invention of the wheel and writing (in Mesopotamia and Egypt) around 3000 BC enabled trade and record-keeping. Ancient science began as observations of nature and mathematics (e.g. astronomical calendars in the Philippines and Asia). Medieval innovations include the compass, papermaking, and later, the printing press. In the Philippine context, pre-colonial Filipinos built the **Banaue Rice Terraces** (an engineering marvel) and excelled in shipbuilding (**balangay** boats) to thrive on islands. These achievements show early links between practical needs (like agriculture, navigation) and technological solutions.
+$md$, 1),
+('9c0b9c7b-9380-567e-a5d0-f9b993976d69','content','Scientific and Industrial Revolutions',$md$
+The **Scientific Revolution** (16th–17th centuries) was a period when figures like Copernicus, Galileo, and Newton transformed how people understood nature (astronomy, physics). Science became more systematic. Closely following was the **Industrial Revolution** (late 18th–19th centuries): inventions like the steam engine, textile looms, and electricity dramatically changed production and society. Factories grew, cities expanded, and transportation (railroads, steamships) connected regions. Science (thermodynamics, chemistry) drove these tech advances. This era laid the groundwork for our modern scientific worldview and mechanized economy. For example, Philippine society was affected by steamships and telegraphs introduced in the 19th century, linking it to global trade (e.g., the Manila-Acapulco galleon earlier, and later telegraph lines under colonial rule).
+$md$, 2),
+('9c0b9c7b-9380-567e-a5d0-f9b993976d69','activity','20th Century and Beyond',$md$
+The 20th century saw rapid S&T growth: cars, airplanes, computers, and space travel. World wars accelerated technology (radar, jet engines). The digital revolution began mid-century with computers and the internet. By late 20th–21st century, mobile phones, the web, biotechnology (like vaccines), and satellites have reshaped life. In the Philippines, the first computers appeared in universities in the 1960s–70s; widespread internet arrived in the 1990s. Today, Filipinos use smartphones and social media heavily, reflecting this tech history. Key scientific breakthroughs (DNA structure, semiconductors) led to technologies (genetic testing, electronics) that impact health and industry. Each era's tech built on past science – understanding this timeline helps predict how new technologies might emerge from today's research.
+$md$, 3),
+('9c0b9c7b-9380-567e-a5d0-f9b993976d69','activity','Philippine Science and Technology Milestones',$md$
+The Philippines contributed to S&T history too. Filipino scientists and engineers made breakthroughs: **Dr. Fe del Mundo** pioneered pediatric medicine, becoming Asia's first woman to graduate from Harvard Medical School. Engineer **Gregorio Zara** invented an early videophone (1950s) and a rechargeable dry cell battery. The country also hosted international science: the **IRRI (International Rice Research Institute)** in Los Baños developed high-yield rice varieties that helped the global food supply. Government agencies like DOST and programs like the Philippine Space Agency (**PhilSA**) show the nation's commitment to S&T. Understanding these milestones gives context: for instance, the wide use of remote sensing in disaster management today stems from earlier investments in science and engineering.
+
+*Ready to apply this? The practice set below includes timeline exercises and cause-effect analyses of tech milestones.*
+$md$, 4),
+('9c0b9c7b-9380-567e-a5d0-f9b993976d69','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions**
+
+1. List one major invention from the Industrial Revolution and its effect on society.
+2. What was the Scientific Revolution, and why was it important for technology later on?
+3. Name one ancient Filipino technology or engineering feat and briefly explain its significance.
+4. How did World War II influence scientific research? Give one example.
+5. What global impact did the Internet have on information sharing? (Think 1990s onward.)
+
+**Worked Exam-Style Problems**
+
+*Problem:* The printing press was invented in the 15th century. Describe two broad impacts this technology had on society and science.
+
+*Solution:* (1) Literacy and education: Books became cheaper and more available, increasing literacy and spreading new scientific and philosophical ideas faster. (2) Scientific communication: Scholars could publish and share research widely (e.g., Copernicus's work), accelerating scientific progress. In answers, mention both an educational/cultural effect and a science-driven effect for completeness.
+
+*Problem:* The Philippines adopted electricity in the early 20th century. Explain how the introduction of electric power transformed urban Filipino life.
+
+*Solution:* Electric lighting extended productive hours (studying/working after dark), spurred industries (electric machinery in factories), and modernized cities (streetlights, electrified trams). When solving, tie the tech (electric grid) to concrete changes in daily life and economy.
+
+**Hands-On Exercise (analysis)**
+
+- Create a simple timeline (bulleted list) of 5–6 key science or tech milestones from different eras (e.g., fire discovery, printing press, steam engine, computer, satellite). Next to each, write one sentence about its social impact.
+- Think of a traditional Filipino occupation (e.g. farming, fishing). Research one technological innovation that changed that occupation (e.g. hybrid rice seeds, outboard motor) and prepare a short explanation of how it helped.
+
+**How to Pass Tips**
+
+- When answering history questions, organize chronologically. Use dates/eras to structure essays.
+- Remember context: Linking events to Philippine history will stand out (e.g., note what was happening in the Philippines when the Wright brothers flew or Sputnik launched).
+- Expect "cause and effect" questions. Practice clear cause-effect answers: cause ➔ effect.
+- Memorize a few key names/dates, but focus more on understanding trends (like "electrification led to …").
+- Avoid just listing events; always add why they matter to society or science (exam answers should have reasoning, not just facts).
+$md$, 5);
+
