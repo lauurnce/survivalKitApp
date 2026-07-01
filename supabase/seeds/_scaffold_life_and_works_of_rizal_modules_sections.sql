@@ -324,3 +324,75 @@ $md$, 3),
 - **Understanding Over Memorizing:** Demonstrate that you understand what Rizal was arguing or feeling.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 6: Rizal's Reform Efforts, Martyrdom, and Legacy
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('aa5af8b0-2bec-5dfc-987d-ca07895784ce','content','La Liga Filipina and Reform Movements',$md$
+In July 1892, Rizal founded the **La Liga Filipina** in Manila. Its purpose was to unite Filipinos "for mutual protection" and cooperate for reform. La Liga's goals were peaceful: education for the masses, opportunities for Filipinos in government, and mutual support (like a friendly society). Members included prominent reformists.
+
+However, Spanish authorities soon intervened. Within days, Rizal was arrested (for sedition) and sent to Dapitan in exile. La Liga was dissolved, but it splintered into more radical and more moderate groups: one faction became the **Cuerpo de Compromisarios** supporting the *La Solidaridad* movement in Spain, while another group of radicals formed the **Katipunan** (the underground revolutionary society led by Bonifacio). In this way, Rizal's idea of organizing Filipinos planted seeds for both reform efforts and, indirectly, revolution.
+$md$, 1),
+('aa5af8b0-2bec-5dfc-987d-ca07895784ce','content','Exile in Dapitan (1892–1896)',$md$
+Rizal spent four years in **Dapitan, Mindanao** (1892–1896) under exile. He was 31 to 35 years old. Even in exile, Rizal remained productive and helpful to the community. He built a school and taught many pupils, including writing a primer and teaching agriculture. He established a hospital and helped pay for patient care with his own funds. Rizal also created a water system and improved farming methods for locals.
+
+During this time, Rizal continued writing and studying languages. He kept in touch with the outside world through letters to his family and friends (like Blumentritt). His calm, industrious life in Dapitan showed his commitment to service and learning. At the same time, Rizal followed events in Manila. He was saddened to see mounting tensions leading to revolution.
+$md$, 2),
+('aa5af8b0-2bec-5dfc-987d-ca07895784ce','activity','Trial, Execution, and Mi Último Adiós',$md$
+In 1896, the Philippine Revolution began. The Spanish government, in panic, looked for scapegoats. Rizal was arrested again, this time accused of inciting rebellion (though his stance had always been reform). He was tried by a military court in Manila, with little due process, and found guilty of sedition.
+
+On **December 30, 1896**, Rizal was executed by firing squad at Bagumbayan (now Rizal Park). He chose to wear a dark suit and had written his last poem, **"Mi Último Adiós"**, which spoke of loving the Philippines to the last breath.
+
+Rizal's execution had a profound effect: it turned him into a **martyr**. His death united Filipinos even more. Heroes like Bonifacio and Aguinaldo cited Rizal's sacrifice as inspiration.
+$md$, 3),
+('aa5af8b0-2bec-5dfc-987d-ca07895784ce','activity','Legacy: National Hero and Contemporary Relevance',$md$
+After his death, Rizal's body was reinterred with honor, and he was proclaimed a national hero by the revolutionaries. Today, **Rizal Day (December 30)** is a national holiday. There are statues of Rizal in almost every town plaza and especially in schools. His novels and writings are required reading for Filipino students.
+
+But beyond monuments, Rizal's legacy is in his ideals: love of country, reform through education, peaceful dialogue, and civic virtue. Every year, thousands of Filipinos study Rizal's life on his birthday and death day. He is often quoted on topics like freedom and nationalism.
+
+Rizal's example also reminds citizens to value honesty, benevolence, and critical thinking. Debates on Philippine society often invoke Rizal's quotes and ideas to this day. For IT students, Rizal is an example of how one person's ideas (even in novels and essays) can change a nation.
+
+*Ready to apply this? The final practice set drills key facts and pushes you to analyze Rizal's impact with guided exercises.*
+$md$, 4),
+('aa5af8b0-2bec-5dfc-987d-ca07895784ce','activity','Practice & Exam Drills — Lesson 6',$md$
+**Review Questions**
+
+1. What was La Liga Filipina and what happened to Rizal because of it?
+2. Name two community projects Rizal undertook in Dapitan.
+3. Why was Rizal executed, and on what date?
+4. What is "Mi Último Adiós" and why is it important?
+5. How is Rizal's legacy honored in the Philippines today?
+
+**Worked Exam-Style Problems**
+
+*Problem 1:* Explain the significance of Rizal's exile to Dapitan on his life and work.
+
+*Solution:* Step 1: Describe when and why he was sent to Dapitan (1892, charged with sedition). Step 2: List his activities there (teaching, farming, medicine projects) showing his dedication to service. Step 3: Note that in Dapitan he continued his writing and community work, so exile did not silence him. Step 4: Conclude that the peaceful life in Dapitan demonstrated Rizal's commitment to improving lives and allowed him to impact people directly even while isolated.
+
+*Problem 2:* Discuss the effects of Rizal's execution on the Philippine nationalist movement.
+
+*Solution:* Step 1: Explain that Rizal became a martyr whose death galvanized Filipinos. Step 2: Mention how leaders like Aguinaldo cited Rizal's sacrifice as inspiration for fighting Spanish rule. Step 3: Explain that his execution also highlighted Spanish brutality, making more people join the revolution. Step 4: Conclude that his death accelerated Filipino unity and resolve for independence.
+
+*Problem 3:* How do Filipinos honor Rizal's memory and values today? Provide examples.
+
+*Solution:* Step 1: List examples: Rizal Day holiday, statues in plazas, street names ("Rizal St."), portraits in schools. Step 2: Mention educational aspects: his works are taught, essays or speeches are assigned on Rizal. Step 3: Talk about cultural events at the Rizal Shrine. Step 4: Emphasize that these honors reflect continuing respect for his ideals (patriotism, education, ethics).
+
+**Hands-On Exercise**
+
+*Reflection Essay:* Write a short essay (one page) on "What José Rizal means to me as a Filipino and a student." Use concrete examples: how studying his life inspires you, or how his values apply to modern issues. This exercise practices connecting historical legacy to personal viewpoint.
+
+**How to Pass Tips**
+
+- **Highlight Patriotism:** Professors often expect mention of Rizal's love for country and how it contrasts with heroes who fought with arms.
+- **Key Dates:** Remember Rizal Day (Dec 30) and his birth date (June 19).
+- **Know Projects:** When writing about Dapitan, naming at least two projects (school, hospital, water system) shows concrete knowledge.
+- **Values Over Detail:** Emphasize concepts like "Rizal exemplified Filipino resilience and intellect" rather than listing too many events.
+- **Common Mistakes:** Don't confuse Rizal with Bonifacio or Aguinaldo. Rizal was not a Katipunero; he even tried to prevent bloodshed. His approach was through writing and ideas.
+$md$, 5);
+
+-- ============================================================
+-- SOURCES
+-- Polytechnic University of the Philippines — Instructional Materials for GEED 10013: Life and Works of Rizal
+-- Adamson University — HIST 23 Life and Works of Rizal Course Syllabus
+-- CHED CMO No. 25 s.2015 — Revised PSG (includes Rizal as a mandated general education course)
+-- ============================================================
