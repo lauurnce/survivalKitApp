@@ -257,3 +257,70 @@ $md$, 3),
 - **Personal Insight:** Questions may ask for your interpretation of Rizal's message. Connect his warnings to real consequences of unplanned violence.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 5: Rizal's Essays, Letters, and Other Writings
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('f6fadc56-2224-5b7d-9510-40bc86ccdcd1','content','La Indolencia de los Filipinos (The Indolence of the Filipinos)',$md$
+One of Rizal's famous essays is **"Sobre la Indolencia de los Filipinos"** (The Indolence of the Filipinos), published in 1890. In it, Rizal responds to critics who said Filipinos were lazy and unwilling to work. Rizal argues the opposite: Filipinos' so-called laziness was a consequence of colonial rule. He points out reasons such as:
+
+- **Forced labor** (*polo y servicios*) made people feel exploited and discouraged regular work.
+- **Fear of abuse** by authorities (like harassment by soldiers) made farmers avoid efforts that could backfire.
+- **Lack of fair land ownership and education** left Filipinos with few opportunities to thrive.
+
+In short, Rizal explained that the environment created by Spain made people appear "indolent." He urged Filipinos to take pride in their identity and to work toward improving their situation, and he urged Spaniards to remove obstacles and help Filipinos develop. This essay showed Rizal's analytical side: he took a negative label and turned it into a critique of the colonial system.
+$md$, 1),
+('f6fadc56-2224-5b7d-9510-40bc86ccdcd1','content','Other Key Essays and Writings',$md$
+Rizal wrote many other important pieces, including:
+
+- **"Filipinas Dentro de Cien Años" (The Philippines A Century Hence)**, where he predicted how the Philippines might change 100 years in the future under various scenarios (remaining a colony, becoming part of Asia, or gaining independence). He emphasized that only through education and moral strength would the Philippines thrive.
+- **Annotations to Antonio de Morga's *Sucesos de las Islas Filipinas*** (circa 1889): Rizal translated and added commentary to a 17th-century history book. Through this, he argued Filipinos had a proud pre-colonial past and refuted Spanish claims of Filipino inferiority.
+- **"To the Young Women of Malolos" (1889):** In this open letter, Rizal praised the bravery of 20 young Filipino women who fought for the right to education. He emphasized the role of women in society and the importance of education, indicating his modern views on women's empowerment.
+
+Each of these works reinforces Rizal's vision: education, freedom, and nationalism. He used essays and letters to directly speak to readers and reformers.
+$md$, 2),
+('f6fadc56-2224-5b7d-9510-40bc86ccdcd1','activity','Rizal''s Last Works: Mi Último Adiós and Others',$md$
+In the last months of his life (1896), Rizal wrote his final poem **"Mi Último Adiós"** (My Last Farewell). It was hidden in an oil lamp before his execution. This heartfelt farewell to his country expresses deep love for the Philippines and willingness to die for her freedom. Key lines (translated) include: "I die just when I see the dawn break… That you never tread my unfallen grave." This poem became a symbol of Rizal's martyrdom and is often memorized by students.
+
+Another work from his final days is the **Letter to Blumentritt** (to his Austrian friend Ferdinand Blumentritt), showing Rizal's calm acceptance of fate. In it, he reflects on his life with no bitterness.
+
+These last writings underscore Rizal's unwavering patriotism and sacrifice. They remind us that even at death, he continued to advocate for the Philippines.
+
+*Ready to apply this? The practice set below contains targeted questions and analytical problems to deepen your understanding.*
+$md$, 3),
+('f6fadc56-2224-5b7d-9510-40bc86ccdcd1','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. What was Rizal's argument in "The Indolence of the Filipinos"?
+2. Why did Rizal annotate *Sucesos de las Islas Filipinas* by Antonio de Morga?
+3. What was the significance of the "Letter to the Young Women of Malolos"?
+4. Name one prediction Rizal made in "The Philippines A Century Hence".
+5. What does "Mi Último Adiós" express about Rizal's feelings for the Philippines?
+
+**Worked Exam-Style Problems**
+
+*Problem 1:* Explain how "The Indolence of the Filipinos" essay reflects Rizal's analytical approach to social issues.
+
+*Solution:* Step 1: Point out that Rizal identified root causes rather than blaming Filipinos. Step 2: List some causes he gave (fear of forced labor, tropical climate, unjust laws). Step 3: Explain that by showing these, Rizal shifts blame to colonial policy. Step 4: Conclude that this essay shows Rizal's ability to use facts and logic to challenge stereotypes.
+
+*Problem 2:* Discuss the impact of Rizal's "Mi Último Adiós" on Filipino national consciousness.
+
+*Solution:* Step 1: Note that the poem was read after Rizal's execution and became famous. Step 2: Explain its emotional impact – it humanized the hero (he loved his country dearly). Step 3: Point out that lines about freedom and sacrifice inspired Filipinos to continue the fight. Step 4: Conclude that *Mi Último Adiós* cemented Rizal's image as a martyr and motivated others to value the nation.
+
+*Problem 3:* How did Rizal's writings address the role of education in Philippine society?
+
+*Solution:* Step 1: Mention specific works (his emphasis on building schools in *Noli*, or praising Malolos women for seeking education). Step 2: Explain that Rizal saw education as the key to enlightenment and empowerment. Step 3: Summarize that across his essays/letters, Rizal urged Filipinos to educate themselves as the foundation for future reforms.
+
+**Hands-On Exercise**
+
+*Essay Prompt:* Pick one of Rizal's essays or letters (e.g., "Indolence of the Filipinos" or the "Malolos" letter) and write a one-page reflection. Explain the main message and discuss whether you think its arguments are still relevant today, providing examples if possible.
+
+**How to Pass Tips**
+
+- **Focus on Main Arguments:** Remember the key message of each essay (Indolence: "not lazy, oppressed"; Malolos: "education is important and women play a role"; Morga: pride in history).
+- **Quote Sparingly:** Paraphrase Rizal's ideas clearly. If quoting, choose a short line (like from *Mi Último Adiós*) and explain it.
+- **Contextualize:** Place essays in historical context: why Rizal wrote them (reaction to criticisms, salute to reformists).
+- **Compare and Contrast:** Note similarities (patriotism, call for unity) and differences in medium or style.
+- **Understanding Over Memorizing:** Demonstrate that you understand what Rizal was arguing or feeling.
+$md$, 4);
+
