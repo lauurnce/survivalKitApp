@@ -173,3 +173,54 @@ $md$, 4),
 - Avoid vague terms. If writing about tech, be precise (e.g. "renewable energy" vs just "environment-friendly").
 $md$, 5);
 
+-- ============================================================
+-- LESSON 4: Technology and Society in the Digital Age
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('662a726b-5cd6-5445-80c0-1424d009453d','content','Connectivity and the Internet',$md$
+The rise of the Internet and mobile networks has radically changed society. In the Philippines, text messaging (SMS) and social media (Facebook, Twitter) became immensely popular since the 2000s. This connectivity means Filipinos can communicate instantly across islands. Online communities allow knowledge-sharing (tutorial videos, forums) and overseas workers to stay in touch with family. Importantly, lack of connectivity is still an issue in some rural areas (the **"digital divide"**), so expanding internet access is a government priority (e.g., free WiFi in public spaces). Emphasize: this module covers how digital technologies (smartphones, internet) affect culture, economy, and everyday life in the Philippines and beyond.
+$md$, 1),
+('662a726b-5cd6-5445-80c0-1424d009453d','content','Social Media and Culture',$md$
+Social media platforms are a prime example of technology shaping society. **Positive** impacts include community organizing (hashtags for advocacy, crowdfunding for relief after typhoons) and amplified youth voices (bloggers, YouTubers). They also spread awareness of social issues quickly. However, **negatives** include misinformation (fake news) and cyberbullying. In the Philippines, viral campaigns (like #Resbakuna) have influenced public opinion on COVID vaccines. Studying STS means looking at these double-edged effects: How do we enjoy the benefits (connectivity, activism) while mitigating the harms (privacy invasion, addiction)? This section encourages critical thinking about media tech's role in our cultural life.
+$md$, 2),
+('662a726b-5cd6-5445-80c0-1424d009453d','activity','Digital Economy and Fintech',$md$
+Technology has transformed business and finance in PH society. Online shopping (Lazada, Shopee) lets Filipinos buy goods without visiting stores, changing retail habits. E-payments and mobile wallets (GCash, PayMaya) are tech tools that make transactions easier – especially useful for unbanked communities. Information technology drives BPO (call center) industries, providing jobs. Students should note how these digital innovations rely on earlier tech (internet infrastructure, encryption algorithms) and how they impact society (e.g., more online jobs, convenience). Also discuss challenges like cybersecurity threats and the need for digital literacy (some elders or rural folks struggle with the new tech).
+$md$, 3),
+('662a726b-5cd6-5445-80c0-1424d009453d','activity','Digital Divide and Inclusion',$md$
+Not everyone benefits equally from technology. **"Digital divide"** refers to gaps in tech access due to income, location, or age. In the Philippines, urban students often have laptops and fast internet, while rural areas may have slow connections or none. Programs like DepEd's online classes faced hurdles for students without devices. Society and government can address this: computer donation drives, training programs for seniors to use smartphones, or the DICT's push to improve broadband networks. Understanding STS means recognizing that technology's impact depends on societal factors; students should think about how to make technology inclusive so that national development via STS is fair to all communities.
+
+*Ready to apply this? The practice set below has scenarios on social media ethics and case studies on e-payments.*
+$md$, 4),
+('662a726b-5cd6-5445-80c0-1424d009453d','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. What is the "digital divide"? Give one example from a Philippine context.
+2. List two positive and two negative effects of social media in Filipino society.
+3. How has online shopping or e-commerce changed consumer behavior in the Philippines?
+4. Name one technology that enabled the BPO (call center) industry to grow.
+5. What can individuals do to use technology more responsibly (hint: think of digital citizenship)?
+
+**Worked Exam-Style Problems**
+
+*Problem:* A remote barangay (village) has no internet. As an IT student, propose one technological solution to help them get online, considering cost and infrastructure. Explain why your proposal suits a rural setting.
+
+*Solution:* For example, set up a community WiFi with a long-range antenna connected to the nearest tower, or use a satellite internet service. These leverage known technology and local needs. The answer should justify with factors like "solar-powered equipment" for off-grid areas or local training support.
+
+*Problem:* Describe how cyberbullying via social networks can affect students' learning and mental health. What role can schools and science (technology) play in addressing this issue?
+
+*Solution:* Cyberbullying can cause stress, distraction, or absenteeism. Schools can integrate digital literacy classes (technology education) and policies. Answers should connect technology (internet tools) with education/society responses (counseling programs, awareness campaigns).
+
+**Hands-On Exercise (role-play)**
+
+- In groups, imagine you are community leaders in an ICT workshop. Design a mini campaign (bullet points) to teach responsible social media use to your peers. Include 3 key points (e.g., verify news, respect privacy, manage screen time).
+- Alternatively, map out a simple flowchart of how online payment (like an e-wallet) works: user registration ➔ bank link ➔ sending money ➔ notification. This helps understand the underlying steps.
+
+**How to Pass Tips**
+
+- Stay current: mention recent apps and stats. Professors may ask about recent events (e.g., data breach news, newest social media trends).
+- Use tech vocabulary accurately (e.g. "bandwidth" vs "speed", "cybersecurity"). Precise terms show mastery.
+- In ethics questions (like cyberbullying), balance technology aspects with human factors (state an example and solution).
+- When discussing pros/cons, try to give at least one example of each (examiners look for both sides).
+- Be aware of Filipino specifics: cite local laws like the Data Privacy Act for privacy questions, or cite PH internet speed statistics for the digital divide.
+$md$, 5);
+
