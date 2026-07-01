@@ -298,3 +298,56 @@ def main():
 if __name__ == "__main__":
     main()$code$);
 
+-- ============================================================
+-- LESSON 6: Security Operations and Incident Response
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a4ea525a-c7f6-5e93-a82f-133c554b6228','content','Monitoring and Logging (SIEM)',$md$
+Security Operations involves continuously monitoring systems and networks. Logs from firewalls, servers, and applications are collected to spot anomalies (e.g., repeated failed logins or unusual traffic patterns). A **SIEM (Security Information and Event Management)** tool aggregates logs and uses rules or analytics to alert on suspicious activity. For example, a SIEM can flag if a user suddenly downloads a large amount of data late at night. Regular log review and automated alerts help catch incidents early, before they escalate.
+$md$, 1),
+('a4ea525a-c7f6-5e93-a82f-133c554b6228','content','Incident Response Process',$md$
+When a security incident occurs, following a structured **Incident Response (IR)** plan is crucial. Common phases are: **Preparation** (establishing policies and tools), **Identification** (detecting and confirming an incident), **Containment** (isolating affected systems), **Eradication** (removing the threat, such as deleting malware), **Recovery** (restoring systems to normal operation, e.g., from backups), and **Lessons Learned** (reviewing what happened and improving processes). For example, in a malware outbreak, containment might involve disconnecting infected machines from the network. In answers, list each phase clearly; exam questions often ask you to outline these steps.
+$md$, 2),
+('a4ea525a-c7f6-5e93-a82f-133c554b6228','activity','Digital Forensics and Evidence Handling',$md$
+**Digital forensics** involves collecting and analyzing data from computers or networks after an incident. Key principles include **chain of custody** (documenting who handled evidence and when) and using **write-blocking** tools to avoid altering original data. For instance, creating a bit-for-bit image of a hard drive ensures the original remains unmodified for investigation. Hashing files before analysis verifies they haven't changed. In coursework, know basic forensic terms and tools, and why maintaining evidence integrity is vital for potential legal proceedings.
+$md$, 3),
+('a4ea525a-c7f6-5e93-a82f-133c554b6228','activity','Business Continuity and Disaster Recovery',$md$
+Beyond responding to attacks, organizations plan for continuity of operations. **Business Continuity Planning (BCP)** ensures critical services keep running after incidents (for example, by using redundant servers or alternate locations), while **Disaster Recovery (DR)** focuses on restoring systems (for example, recovering data from backups after ransomware). This includes regular, off-site backups of data and system configurations. Philippine companies often consider local risks (like power outages) in their BCP/DR, and must comply with laws (such as breach notification requirements under RA 10173) as part of their recovery planning.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a log-review exercise.*
+$md$, 4),
+('a4ea525a-c7f6-5e93-a82f-133c554b6228','activity','Practice & Exam Drills — Lesson 6',$md$
+**Review Questions**
+
+1. What is the purpose of a SIEM tool in security operations?
+2. List and briefly describe the main phases of the incident response process.
+3. Why is maintaining a chain of custody important in digital forensics?
+4. What is the difference between Business Continuity Planning (BCP) and Disaster Recovery (DR)?
+5. Give one example of a preventive security measure and one example of a detective security measure.
+
+**Worked Examples**
+
+*Problem:* You notice on the SIEM dashboard that a user account logged in from two different countries within minutes. What might this indicate, and what should you do next?
+
+*Solution:* This likely indicates a **compromised account** (impossible travel or credential sharing). Lock or suspend the account and start an investigation (verify the user's location through out-of-band communication). Treat this as an incident: immediate containment (locking account), then investigation.
+
+*Problem:* A malware outbreak encrypted files on a critical server at 10 PM. According to the incident response plan, what should be done first?
+
+*Solution:* First, follow **containment** procedures (isolate the server from the network to prevent spread). Next: identify and remove the malware (eradication), then recover files from backups (recovery). Contain the incident before recovery.
+
+*Problem:* An organization has critical financial data and falls victim to ransomware with no recent backups. How does this situation relate to business continuity and disaster recovery?
+
+*Solution:* Without recent backups (a DR measure), the organization cannot restore operations, severely disrupting business continuity. Emphasize the need for regular backups and alternate operation plans. Note the legal aspect: under RA 10173 (Data Privacy Act), they must notify the NPC and affected individuals of the breach.
+
+**Hands-On Exercise**
+
+Review a security event on your own system. Check the Event Viewer on Windows or `/var/log/syslog` on Linux for any recent events marked as "error" or "warning." Try to interpret what happened (e.g., a failed login). Write a brief incident report summary: identify the issue, steps taken to resolve it, and lessons learned. This simulates the "Identification" and "Documentation" phases of incident response.
+
+**How to Pass**
+
+- Remember key terms: clearly define containment, eradication, recovery, etc. Mnemonic: "Identify, Contain, Eradicate, Recover, Learn" — but list all phases.
+- Use examples: logging (detective) vs patching (preventive).
+- Mention relevant regulations: in the Philippines, cite the Cybersecurity Act (RA 11765) and the Data Privacy Act (RA 10173) regarding breach handling and notification.
+- Show your thought process: explain both what happened and how you respond. Common mistakes: describing only one phase (like just recovery) without containment or lessons learned.
+$md$, 5);
+
