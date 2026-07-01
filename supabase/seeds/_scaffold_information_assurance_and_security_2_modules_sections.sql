@@ -234,3 +234,67 @@ On a home or lab network, explore a simple directory service. Install OpenLDAP o
 - Avoid vague answers; also mention management (using a password manager or enforcing complexity via group policy).
 $md$, 5);
 
+-- ============================================================
+-- LESSON 5: Cryptography and PKI
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('22f48ad7-d466-5b7c-8f6c-7fec52e01e1a','content','Encryption and Hashing',$md$
+Cryptography transforms data to protect it. **Symmetric encryption** uses the same secret key for encryption and decryption (for example, **AES** is a common symmetric cipher), while **asymmetric encryption** uses a public/private key pair (for example, **RSA**). **Hash functions** (like SHA-256) produce a fixed-size digest of data, used for integrity checks (they are one-way; you can't reverse the hash). For example, passwords are often stored as hashes so the actual password is not kept in the system. In practice, symmetric ciphers are fast for encrypting large data, while asymmetric algorithms are used for secure key exchange or digital signatures. Understanding both types and their purposes is essential for secure system design.
+$md$, 1),
+('22f48ad7-d466-5b7c-8f6c-7fec52e01e1a','content','Public Key Infrastructure (PKI) and Certificates',$md$
+A **Public Key Infrastructure (PKI)** manages keys and digital certificates to bind identities with public keys. **Certificates** are digital documents issued by **Certificate Authorities (CAs)** that vouch for a public key belonging to a specific entity. For instance, an SSL/TLS certificate proves that a website is legitimate. PKI involves a **chain of trust**: a root CA issues certificates to intermediate CAs, which in turn issue certificates to end entities. A key concept is **certificate revocation**, which invalidates a certificate if its key is compromised. It's important to know how CAs verify identities and how web browsers check certificates during HTTPS connections.
+$md$, 2),
+('22f48ad7-d466-5b7c-8f6c-7fec52e01e1a','activity','Secure Protocols (TLS, SSH, VPN Encryption)',$md$
+Many protocols use cryptography to secure communications. **TLS/SSL** (e.g., HTTPS) uses asymmetric encryption (to establish a session key) and then symmetric encryption to protect web traffic. **SSH** secures remote logins by encrypting the entire session with both symmetric and asymmetric techniques. VPN protocols like **IPsec** or **OpenVPN** also rely on encryption and often use PKI (certificates) or pre-shared keys. For example, when you see a padlock icon in a browser's address bar, it's because TLS is encrypting the connection. Knowing the basic steps (handshakes) of these protocols helps in understanding how data remains confidential and tamper-proof in transit.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a live Python hashing playground.*
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('22f48ad7-d466-5b7c-8f6c-7fec52e01e1a','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. Explain the difference between symmetric and asymmetric encryption, and give an example of each (e.g., AES vs RSA).
+2. What is the purpose of a hash function in security (for example, why use SHA-256)?
+3. Describe the general steps of a TLS (SSL) handshake for an HTTPS connection.
+4. What is a Certificate Authority (CA) and why is it needed in PKI?
+5. What happens when a digital certificate expires or is revoked?
+
+**Worked Examples**
+
+*Problem:* Alice wants to send Bob a secret message. Bob gives Alice his public key. How should Alice encrypt the message so that only Bob can read it?
+
+*Solution:* Alice should use **Bob's public key** to encrypt the message. Then only Bob can decrypt it using his **private key**. Public keys encrypt data so that only the corresponding private key can decrypt it, ensuring confidentiality.
+
+*Problem:* A user tries to visit a website and the browser shows a warning that the SSL/TLS certificate is expired. What does this imply and what should the user do?
+
+*Solution:* It implies the certificate is no longer valid, and the site's identity cannot be fully trusted (someone could be impersonating it). The user should be cautious: verify the URL is correct, check with the site administrator, and avoid logging in or entering sensitive information until the certificate is updated. Expired certificates break the trust model of PKI, so browsers warn the user.
+
+**Hands-On Exercise**
+
+Using the Python starter code, complete the script to find which password matches the given hash. (It should find "password123".) Once you find the match, modify the script: prompt the user to enter a password, compute its SHA-256 hash using `hash_password()`, and print the hash. This uses Python's cryptographic library and shows how hashing works in code.
+
+**How to Pass**
+
+- Know common algorithms by name (AES, RSA, SHA-1/2) and typical use-cases ("RSA for key exchange", "AES for fast encryption").
+- When describing SSL/TLS, mention certificates and key exchange explicitly. Use terms like "public key", "private key", and "digital signature" correctly.
+- Understand certificate chains: "root CA vs intermediate CA vs end-entity certificate."
+- Clarify differences: hashing is one-way (for integrity), encryption is reversible with a key (for confidentiality). Don't confuse the two.
+$md$, 4, 'python', $code$import hashlib
+
+def hash_password(password: str) -> str:
+    # Compute SHA-256 hash of the password string.
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def main():
+    # The correct hash for the password "password123"
+    correct_hash = "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f"
+    candidates = ["password", "123456", "password123", "admin"]
+
+    for pw in candidates:
+        # YOUR CODE HERE: Check if pw matches the correct_hash
+        pass
+
+if __name__ == "__main__":
+    main()$code$);
+
