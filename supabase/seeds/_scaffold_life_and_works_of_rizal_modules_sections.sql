@@ -133,3 +133,64 @@ $md$, 3),
 - **Understand, Don't Just List:** Instead of just listing Rizal's stops, explain why each was important (e.g., Paris broadened his nationalist ideas).
 $md$, 4);
 
+-- ============================================================
+-- LESSON 3: Noli Me Tangere – The First Novel
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('8d98f980-8131-52bf-a2c0-09abffc87aa6','content','Background of Noli Me Tangere',$md$
+**Noli Me Tangere** (Touch Me Not) was Rizal's first novel, completed in 1887. He wrote it in Europe (using a German typewriter) under the pen name "Dimasalang." The novel's title (Latin for "touch me not") comes from a Bible phrase but here hints that Philippine society was sensitive and needed healing. Rizal wrote *Noli* to reveal the "social cancers" of Philippine society – abuse of power, corruption in government and Church, and injustice toward the poor.
+
+The context of *Noli*: it was a bold move. Rizal knew that criticizing the Spanish colonial system could bring danger. Indeed, *Noli* was banned by Spanish authorities and Church officials when Filipino students brought copies to the Philippines. *Noli* became famous among the Ilustrados (educated Filipinos) for its critical stance and its call for reform.
+$md$, 1),
+('8d98f980-8131-52bf-a2c0-09abffc87aa6','content','Summary of Noli Me Tangere',$md$
+The novel follows **Crisóstomo Ibarra**, a young, wealthy Filipino who returns to the Philippines from Europe. He discovers that his father, Don Rafael, died wrongly while imprisoned. Ibarra's fiancée, **María Clara**, is raised by the kindly Father Dámaso (a friar). Many characters represent Philippine society: the scheming **Padre Dámaso**, the brave **Elías** (a boatman and rebel), and the generous **Capitán Tiago** (María Clara's father). The story takes place in the fictional town of San Diego but clearly mirrors real places.
+
+Major events: Ibarra plans to build a school for the townspeople but faces opposition. A tragic subplot involves **Sisa**, a poor mother whose sons are abused by soldiers, symbolizing the suffering of common folk. The novel ends with an attempted rebellion and Ibarra fleeing for safety. Through these events, Rizal paints a detailed picture of the injustices (like forced labor, discrimination, and evil clergy) affecting Filipinos.
+$md$, 2),
+('8d98f980-8131-52bf-a2c0-09abffc87aa6','activity','Themes and Impact of Noli Me Tangere',$md$
+*Noli Me Tangere* highlights several themes:
+
+- **Social Injustice:** It exposes how the powerful (friars and officials) exploit the poor.
+- **Identity and Education:** Ibarra's belief in education for reform reflects Rizal's own advocacy.
+- **Religion vs. Faith:** The novel criticizes corrupt clergy but also shows true faith through sympathetic characters like Elías.
+
+The impact was huge. Filipinos who read *Noli* felt a sense of shared suffering and realized the need for change. The novel stirred nationalist ideas, making readers ask "Why must Filipinos endure this?". However, the Spanish authorities saw it as a threat. *Noli* led to stricter censorship. But among Filipinos, it became a symbol of awakening – a reason to start talking about reform and rights openly.
+
+*Ready to apply this? The practice set below walks through exam-style questions with step-by-step solutions and analytical prompts.*
+$md$, 3),
+('8d98f980-8131-52bf-a2c0-09abffc87aa6','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions**
+
+1. In what year was *Noli Me Tangere* published, and why was this significant?
+2. Who is Crisóstomo Ibarra and what is his dream for his hometown?
+3. Name two injustices or abuses depicted in *Noli Me Tangere*.
+4. What happened to Sisa and her sons, and what does this represent?
+5. How did Spanish authorities react to the publication of *Noli Me Tangere*?
+
+**Worked Exam-Style Problems**
+
+*Problem 1:* Explain the significance of Crisóstomo Ibarra's character in *Noli Me Tangere*.
+
+*Solution:* Step 1: Identify Ibarra as the protagonist, a reform-minded Filipino. Step 2: Discuss his ideals – he believes in education and peaceful reform (building a school). Step 3: Contrast him with other characters (like Elías or Padre Dámaso) to show his role as a bridge between oppressed Filipinos and the colonial rulers. Step 4: Conclude that Ibarra's journey (from hope to disillusionment) mirrors the awakening of the Filipino people and their loss of innocence.
+
+*Problem 2:* Discuss two social issues highlighted in *Noli Me Tangere*, providing examples from the novel.
+
+*Solution:* Step 1: Issue 1 – Corruption by clergy (e.g., Padre Dámaso's abuse of power, undermining the church's moral authority). Step 2: Explain how this reveals hypocrisy and cruelty. Step 3: Issue 2 – Oppression of the poor (e.g., Sisa's tragic story where her sons are killed by soldiers). Step 4: Show how this represents the widespread suffering of ordinary Filipinos. Step 5: Conclude that by depicting these issues, Rizal calls readers to notice and fix such injustices.
+
+*Problem 3:* How did *Noli Me Tangere* contribute to the Filipino nationalist movement?
+
+*Solution:* Step 1: Explain that *Noli* raised awareness of shared problems under colonialism. Step 2: Note that the novel was widely read by Ilustrados and reformists, inspiring discussions on equality and rights. Step 3: Mention that the harsh reaction (censorship, book burnings) proved the novel's power. Step 4: Conclude that *Noli* became a catalyst that helped Filipinos feel united against injustice.
+
+**Hands-On Exercise**
+
+*Character Analysis:* Choose one major character from *Noli Me Tangere* (e.g., María Clara, Padre Dámaso, or Elías). Write a paragraph describing how this character represents a part of Philippine society or value. For example, what does your chosen character tell us about colonial Philippines?
+
+**How to Pass Tips**
+
+- **Focus on Key Scenes:** Memorize a few vivid episodes (like the school inauguration or Sisa's madness) to illustrate your answers, but avoid reciting everything.
+- **Themes Over Plot Details:** Professors often ask about themes (injustice, nationalism) rather than expecting a full summary.
+- **Know Characters:** Be able to identify main characters and their roles (María Clara symbolizes innocence, Elías symbolizes revolution).
+- **Don't Memorize as a Story:** If asked, give the answer in your own words focusing on the novel's message.
+- **Language:** Even though the novel was in Spanish, you can answer in Filipino or English. Understanding matters, not quoting Spanish text.
+$md$, 4);
+
