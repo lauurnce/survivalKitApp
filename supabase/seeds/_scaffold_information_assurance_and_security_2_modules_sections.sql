@@ -75,3 +75,57 @@ Try using a basic firewall on your computer. For example, configure Windows Defe
 - Practice analyzing simple scenarios; explain both the attack and how you would fix or prevent it. Common mistakes: neglecting mitigation steps or confusing attack types.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 2: Network Security and Perimeter Defense
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('9f42039f-5ce6-5d59-a4bf-32eac14c991b','content','Firewalls and Network Segmentation',$md$
+A **firewall** is a network security device (software or hardware) that controls incoming and outgoing network traffic based on predefined rules. Basic firewalls operate at the **packet-filtering** level (examining IP addresses and ports), while advanced firewalls track connection state (**stateful**) or inspect application-level data. For example, a firewall rule can block all traffic on port 80 (HTTP) except from certain trusted IP addresses. **Network segmentation** divides a network into subnets or VLANs so that a breach in one segment cannot easily spread to others. By isolating sensitive systems (e.g., financial servers) from general user networks, segmentation limits the scope of an attack.
+$md$, 1),
+('9f42039f-5ce6-5d59-a4bf-32eac14c991b','content','Intrusion Detection and Prevention Systems (IDS/IPS)',$md$
+An **Intrusion Detection System (IDS)** monitors network or system activities for malicious behavior or policy violations and alerts administrators. An **Intrusion Prevention System (IPS)** goes further by actively blocking or preventing detected threats (such as dropping malicious packets). These systems use **signature-based** detection (matching known attack patterns) or **anomaly-based** detection (flagging unusual behavior). For example, an IDS might flag repeated failed login attempts as a possible brute-force attack. Properly tuned IDS/IPS tools help catch attacks that pass through firewalls, as they can identify suspicious patterns inside allowed traffic.
+$md$, 2),
+('9f42039f-5ce6-5d59-a4bf-32eac14c991b','activity','Virtual Private Networks (VPNs) and Tunneling',$md$
+A **VPN** creates a secure tunnel over a public network (like the Internet) so remote users can access a private network securely. It uses encryption (e.g., IPsec or SSL/TLS) to protect data in transit. For example, an organization might allow employees to connect via an IPsec VPN to securely access internal company resources from home. Common VPN types include **site-to-site VPNs** (connecting entire networks) and **SSL VPNs** (often browser-based for individual users). Tunneling protocols encapsulate data packets; think of it as sending sensitive data inside an encrypted "envelope" across the Internet.
+$md$, 3),
+('9f42039f-5ce6-5d59-a4bf-32eac14c991b','activity','Wireless Network Security',$md$
+Wireless networks introduce additional risks because signals can extend beyond physical walls. Wi-Fi encryption protocols are crucial: use at least **WPA2** or newer **WPA3** for strong security (avoid the outdated WEP standard). A strong Wi-Fi password and disabling WPS (Wi-Fi Protected Setup) help prevent unauthorized access. Other measures include hiding the SSID (network name), using MAC address filtering, and setting up a separate guest network for visitors. Always change default router or admin passwords, and keep firmware updated to patch known vulnerabilities in routers and access points.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a hands-on port-scanning exercise.*
+$md$, 4),
+('9f42039f-5ce6-5d59-a4bf-32eac14c991b','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions**
+
+1. What is the main purpose of a network firewall?
+2. How does an IPS differ from an IDS?
+3. Why would a company use a VPN for remote workers?
+4. What is network segmentation and what is its security benefit?
+5. Name two strong security measures for a wireless network.
+
+**Worked Examples**
+
+*Problem:* A firewall rule blocks TCP port 23 (Telnet) from external networks to the corporate LAN. What does this rule prevent, and why is it important?
+
+*Solution:* TCP port 23 is used by **Telnet**, an unencrypted remote login service. Blocking it prevents attackers from accessing internal devices via Telnet. This is important because Telnet is insecure (passwords and data are sent in plaintext); blocking it forces use of a secure alternative like **SSH** (port 22).
+
+*Problem:* A company has two LAN segments: one for employees and one for servers, connected via a router with strict access rules. What is this setup called, and how does it help security?
+
+*Solution:* This is **network segmentation** (often via VLANs or subnets). It limits the damage if one segment is compromised. Even if an employee PC is hacked, the attacker still needs to bypass the router rules to reach servers. Firewalls/routers enforce the separation, improving security.
+
+*Problem:* An employee uses public Wi-Fi in a cafe and connects to company email without a VPN. Describe the risk and how using a VPN would help.
+
+*Solution:* Public Wi-Fi can be monitored by attackers (eavesdropping or MITM). Without a VPN, credentials or emails could be intercepted. A VPN encrypts the connection end-to-end, so even if intercepted, the data remains confidential.
+
+**Hands-On Exercise**
+
+On a test computer or VM, use a port scanning tool such as `nmap` to scan open ports on your own router or local machine (only on networks you own). Observe which services are exposed. Practice closing unnecessary ports on your router or firewall and see how the scan results change.
+
+**How to Pass**
+
+- Remember common port numbers: HTTP (80), HTTPS (443), SSH (22), Telnet (23).
+- When discussing Wi-Fi, cite strong protocols (WPA2 or WPA3) and explain why WEP is weak (crackable in minutes).
+- Distinguish clearly between IDS (detects and alerts) and IPS (can also block traffic).
+- Use specific examples: "IPsec VPN with AES encryption" rather than just "use a VPN."
+- Common pitfalls: forgetting to mention both prevention and detection tools, or ignoring wireless security. Always explain both the measure and why it stops the threat.
+$md$, 5);
+
