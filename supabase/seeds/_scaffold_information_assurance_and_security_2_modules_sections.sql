@@ -129,3 +129,54 @@ On a test computer or VM, use a port scanning tool such as `nmap` to scan open p
 - Common pitfalls: forgetting to mention both prevention and detection tools, or ignoring wireless security. Always explain both the measure and why it stops the threat.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 3: Secure Systems and Virtualization
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('2cb05beb-eda4-500f-9c0a-e69e6709df84','content','Operating System and Application Hardening',$md$
+To secure systems, operating systems (OS) and applications must be **hardened**. Hardening means disabling unnecessary services, closing unused ports, and applying security patches promptly. For example, removing default accounts and ensuring antivirus is active reduces the attack surface. Strong **patch management** ensures that vulnerabilities (like unpatched software flaws) are fixed before attackers can exploit them. Additionally, use host-based firewalls and enable system logging to detect potential intrusions.
+$md$, 1),
+('2cb05beb-eda4-500f-9c0a-e69e6709df84','content','Virtualization and Cloud Security',$md$
+Virtual machines (VMs) and cloud services introduce new security considerations. Each VM should be isolated and given only the necessary resources. **Hypervisor security** is crucial: a breach in the hypervisor could compromise all VMs. Also, follow the **principle of least privilege** for cloud instances and secure API keys. In cloud environments, encrypt data at rest and in transit, and use identity roles (like AWS IAM roles) to control access. Regularly update VM images and use snapshots for rollback in case of issues.
+$md$, 2),
+('2cb05beb-eda4-500f-9c0a-e69e6709df84','activity','Trusted Hardware and Secure Boot',$md$
+Modern systems use trusted hardware to enhance security. **TPM (Trusted Platform Module)** is a chip that can securely store encryption keys and verify system integrity (through measured boot). **Secure Boot** checks digital signatures of firmware and boot loaders to prevent rootkits at startup. For example, a computer with Secure Boot will refuse to load an untrusted operating system. Hardware-based protections—such as BIOS/UEFI passwords and disabling boot from external media—help prevent unauthorized access to the system.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a hands-on hardening exercise.*
+$md$, 3),
+('2cb05beb-eda4-500f-9c0a-e69e6709df84','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions**
+
+1. What does "hardening" an operating system involve?
+2. Why is timely patching of software important for security?
+3. How can virtualization increase security risk, and what is needed to mitigate it?
+4. What is a TPM (Trusted Platform Module) and what role does it play in system security?
+5. Explain what Secure Boot does during system startup.
+
+**Worked Examples**
+
+*Problem:* A server is set up with many default services running (e.g., Telnet, FTP, SMTP), but it will be used only as a web server. What steps should you take to harden this system?
+
+*Solution:* Disable or remove all unnecessary services (turn off Telnet, FTP if not needed). Ensure only the web service (ports 80/443) is active. Apply all security patches and install antivirus. Reduce the attack surface by limiting running services and keeping the system updated.
+
+*Problem:* A company uses virtual machines for different departments. If the hypervisor is not secured, what could be the consequence?
+
+*Solution:* A compromised hypervisor could allow an attacker to control or access all VMs hosted on it. Secure the hypervisor with strong credentials, limit access, and apply patches. VM isolation depends on hypervisor integrity, so the hypervisor itself must be protected.
+
+*Problem:* A laptop uses full disk encryption with TPM (e.g., BitLocker on Windows). Describe how an attacker is prevented from accessing data if the hard drive is stolen.
+
+*Solution:* The TPM stores the encryption key securely and only releases it if the system boot environment is unchanged. If the drive is removed or the boot is tampered with, the key is not released and the disk remains encrypted.
+
+**Hands-On Exercise**
+
+On a local machine or VM, enable the host-based firewall (e.g., `iptables` on Linux or Windows Defender Firewall). Configure it to allow only essential ports (for example, block all incoming traffic except SSH on port 22). Reboot and verify that blocked ports remain closed.
+
+**How to Pass**
+
+- Recall specific steps: "disable default accounts," "close unused ports," and name tools like `iptables` or Windows Firewall.
+- Be clear about patch management: many attacks exploit unpatched vulnerabilities (e.g., the WannaCry exploit).
+- For virtualization, use terms like "hypervisor" (VMware ESXi, Hyper-V) and note that each VM must be as secure as a physical host.
+- Connect TPM and Secure Boot: both ensure integrity of the system at boot. Mention real examples (Intel TXT, BitLocker with TPM).
+- Common oversight: forgetting hardware measures (BIOS password) or not relating hypervisor security to VM isolation.
+$md$, 4);
+
