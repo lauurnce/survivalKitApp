@@ -151,3 +151,49 @@ $md$, 3),
 Know key Linux terms and commands by heart. In tests, questions might ask: "Which command shows current disk usage?" (Answer: `df -h`) or "What file type is a Linux terminal script?" (shell script, often with `.sh`). Drill simple commands until you can do them without thinking. Professors like asking about differences (`apt` vs `apt-get`, or Linux file permissions `rwx` = 421). Practice problems where you interpret a line of command output.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 4: User and Group Account Management
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a8fe3e00-4cab-50cd-83a1-f8ae4358be20','content','Fundamentals of Users and Groups',$md$
+Computers use **user accounts** to control who can log in and access resources. Each user has a username and password, and files they own. **Groups** collect users for easier permission management (for example, putting all HR staff in one group). This system makes it easy to grant or restrict access: instead of setting permissions for each user, you set them for a group. In both Windows and Linux, permissions (read/write/execute) determine what a user or group can do with a file or folder.
+$md$, 1),
+('a8fe3e00-4cab-50cd-83a1-f8ae4358be20','content','Managing Accounts on Windows',$md$
+On Windows, you create users via the Control Panel's "User Accounts" or through "Active Directory Users and Computers" for domain environments. Administrators add or remove accounts, set passwords, and define group memberships (like "Administrators" or "Users"). Windows also has a built-in "Computer Management" console (`compmgmt.msc`) where local users and groups can be managed. Typically, you might create a departmental group (e.g. "Accounting"), then add each accountant user to it, simplifying permissions on shared drives.
+$md$, 2),
+('a8fe3e00-4cab-50cd-83a1-f8ae4358be20','activity','Managing Accounts on Linux',$md$
+In Linux, user and group management is often done via the terminal. Commands include `sudo adduser [username]` or `useradd`, and `sudo groupadd [groupname]`. You can assign a user to a group with `usermod -aG groupname username`. Configuration files like `/etc/passwd` list all user accounts, while `/etc/group` lists groups. For example, creating a "developers" group and adding user `juan` to it can be done with `sudo groupadd developers` and `sudo usermod -aG developers juan`. Files and directories can then give read/write permission to the "developers" group.
+$md$, 3),
+('a8fe3e00-4cab-50cd-83a1-f8ae4358be20','activity','File Permissions and Access Control',$md$
+Permissions define what users and groups can do with files. In Windows, an administrator sets permissions in the file's Properties → Security tab (checking Full Control, Read, Write for a user or group). In Linux, each file has an owner, group, and others, each with read (r), write (w), and execute (x) bits. For example, `chmod 750 file.txt` means the owner can read/write/execute, the group can read/execute, and others have no access. Understanding `chmod` and `chown` is key: `chown user:group file.txt` changes the owner and group.
+
+*Ready to apply this? The practice drills below cover setting permissions and managing accounts, with full solutions and a hands-on exercise.*
+$md$, 4),
+('a8fe3e00-4cab-50cd-83a1-f8ae4358be20','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. In Windows, where do you go to add a new user account on a local machine?
+2. Which Linux command adds a user to a group?
+3. What permission bits does `chmod 755` set for owner, group, others?
+4. Why are groups useful in permission management?
+5. On Windows, what does it mean to give "Full Control" to a user?
+
+**Worked Problems**
+
+*Problem:* A Linux file `report.txt` is owned by user `alice` and group `sales`, with permissions `rw-r-----`. User `bob` (who is in group `sales`) cannot write to it. How can you fix this?
+
+*Solution:* The permissions `rw-r-----` mean owner can read/write, group can only read, others have none. To allow group write, run `chmod g+w report.txt`. Now it becomes `rw-rw----`, so members of `sales` (like `bob`) can write to it.
+
+*Problem:* Describe the steps to create a new user named `marcos` on Windows Server and make him a member of the IT group.
+
+*Solution:* Step 1: In ADUC, right-click the Users folder, choose New → User, enter `marcos` with a password. This creates the account. Step 2: Still in ADUC, find the group "IT", open its properties, go to the Members tab, and add `marcos`. This makes him part of the IT group, inheriting its permissions. This structure saves time managing permissions.
+
+**Hands-On Exercise**
+
+(No code) Using a Windows or Linux VM, create a new group called "ProjectX". Then create a new user (e.g. `juan`) and add him to the "ProjectX" group. Next, make a folder called "ProjectXDocs" and set its permissions so that only members of "ProjectX" can read/write to it. For Windows, use folder Properties → Security; for Linux use `chmod` and `chown`.
+
+**How to Pass**
+
+Focus on the common commands and locations: on Windows, remember "Computer Management → Local Users and Groups"; on Linux, memorize `adduser`, `userdel`, `chmod`, `chown` syntax. Professors often ask about permission notation (`rwx`). Practice translating between symbolic (`rwx`) and numeric (421) formats: e.g. `rwxr-x---` = 750. A common exam trick: a file is not editable because of the wrong group, so watch out for "belongs to root" vs "group permissions."
+$md$, 5);
+
