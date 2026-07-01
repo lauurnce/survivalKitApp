@@ -65,3 +65,46 @@ $md$, 3),
 Memorize the main duties of a sysadmin (installation, backup, troubleshooting). Professors often ask: "Which of these is not a sysadmin task?" — so know the difference between an admin and, say, a programmer. Understand basic tool names (Task Manager, `top`, SSH) and why updates matter. Practice answering in steps ("first do this, then that") as if you're actually fixing an issue.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 2: Installing and Configuring Windows Operating Systems
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('04770e05-bf49-595b-b07c-05a0a61b1cb4','content','Windows Server Installation Overview',$md$
+Installing Windows Server starts by preparing an installation media (DVD or USB) with the Windows setup files. When you boot from this media, you follow on-screen prompts: accept license, choose disk partitions (often **NTFS** file system), and enter a product key. After setup copies files, the server reboots. Key configuration like setting the administrator password and initial network settings comes next. This foundation lets you add roles like Domain Controller or DNS later on.
+$md$, 1),
+('04770e05-bf49-595b-b07c-05a0a61b1cb4','content','Basic Windows Configuration Steps',$md$
+Once Windows Server is installed, some initial setup is done via the Settings or Control Panel. You configure updates (Windows Update settings), install drivers (for network card, etc.), and set the time zone. Many admins add the server to a domain or configure it as a standalone by using the **Server Manager** or "System Properties". Enabling **Remote Desktop** is common, so you can manage it from another computer. These steps are basic but crucial before the server goes live.
+$md$, 2),
+('04770e05-bf49-595b-b07c-05a0a61b1cb4','activity','Managing Windows Settings and Roles',$md$
+Windows Server comes with built-in roles like **Active Directory Domain Services (AD DS)** or **DHCP Server**. You use the Server Manager (a GUI tool) to add features. For example, installing AD DS involves running the "Add Roles and Features Wizard", then promoting the server to a domain controller. Windows also uses the Registry Editor and Group Policy Editor for deeper configuration, but those are advanced. For a quiz, focus on knowing where to find settings: e.g., "Control Panel → Network" or "Server Manager → Add roles".
+
+*Ready to apply this? The practice set below includes exam-style scenarios about Windows server setup and configuration.*
+$md$, 3),
+('04770e05-bf49-595b-b07c-05a0a61b1cb4','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions**
+
+1. What file system does Windows Server typically use on installation?
+2. Why do you set an administrator password during installation?
+3. How do you add a server role, like DNS or AD DS, in Windows Server?
+4. Name one task you perform in Windows Server Manager.
+5. What is the purpose of enabling Remote Desktop on a server?
+
+**Worked Problems**
+
+*Problem:* An exam question shows a screenshot of the Windows Server "Initial Configuration Tasks" window after installation. It asks which three tasks you should complete first for a production server. Identify them and explain why.
+
+*Solution:* Likely tasks: **Configure Networking** (set IP, DNS so the server communicates), **Change Administrator Password** (security), and **Enable Windows Update** (keeping the server up to date with patches). These ensure the server is secure and connected before it's used.
+
+*Problem:* You are asked to install a DHCP server role on Windows Server. Outline the step-by-step process using Server Manager or PowerShell (briefly).
+
+*Solution:* 1) Open Server Manager, go to "Add Roles and Features". 2) Select "DHCP Server" from the roles list. 3) Follow prompts to confirm. 4) Complete installation and then authorize the DHCP server in the DHCP console. (In PowerShell: run `Install-WindowsFeature -Name DHCP`.) Each step adds the DHCP service so it can assign IP addresses on the network.
+
+**Hands-On Exercise**
+
+(No code) In a Windows Server VM or lab machine, practice installing the DHCP Server role. After installation, assign an IP address scope and test with a client VM to ensure it gets an IP from your server.
+
+**How to Pass**
+
+Remember the core difference between "client" Windows (like Windows 10) and "Server" edition (like Windows Server 2019). In exams, you might get a question like "Which feature is only available on Windows Server?" — look for options like AD or IIS. Also memorize common admin tool names ("Server Manager," "Active Directory Users and Computers") and where they are found. Practice explaining configuration tasks as clear steps.
+$md$, 4);
+
