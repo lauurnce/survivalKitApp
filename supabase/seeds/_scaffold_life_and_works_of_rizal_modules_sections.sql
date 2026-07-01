@@ -194,3 +194,66 @@ $md$, 3),
 - **Language:** Even though the novel was in Spanish, you can answer in Filipino or English. Understanding matters, not quoting Spanish text.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 4: El Filibusterismo – The Sequel and Revenge
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('243cbf27-b3bc-5465-9e7b-f391da3184f9','content','Background of El Filibusterismo',$md$
+**El Filibusterismo** (The Reign of Greed) was Rizal's second novel, published in 1891. He worked on it while exiled in Dapitan and finished it earlier through friends abroad. The word "filibuster" means revolt, so the title suggests uprising. Rizal originally planned it as a continuation of *Noli*, a decade later. In mood and tone, *El Filibusterismo* is darker and more cynical than *Noli*. Rizal was frustrated that *Noli* did not spark immediate change, so *El Fili* explores what might happen if some Filipinos take a more desperate, violent path.
+
+The novel is dedicated to three martyr priests (**Gomburza**), indicating Rizal's sympathy with Filipino clergy who were punished for reformist ideas. *El Fili* shows Rizal's shift in thinking: he still doesn't fully join a revolution, but he understands the growing anger.
+$md$, 1),
+('243cbf27-b3bc-5465-9e7b-f391da3184f9','content','Summary of El Filibusterismo',$md$
+In *El Fili*, Crisóstomo Ibarra returns under the alias **Simoun**, a wealthy jeweler. He secretly plots revenge on the corrupt Spanish regime. Key characters include **Basilio** (the studious boy from *Noli*, now grown and studying medicine) and **Isagani** (a passionate student). Simoun befriends these Filipinos while planning to incite an uprising at a grand party he intends to bomb.
+
+Major events: Simoun funds discontent by stirring resentment at the University of Santo Tomas (denying degrees for political reasons) and organizing smugglers with Don Custodio, a corrupt official. During a luxurious banquet, Simoun reveals bombs hidden in lamps, but the plan fails when one lamp is extinguished prematurely. The bomb kills Don Custodio instead of Spanish officials, foiling Simoun's revolution. In the end, Simoun realizes the plan led to more tragedy and confesses himself to authorities.
+
+Through these events, *El Fili* portrays the revolution as matured anger. Simoun's failure suggests that violence without a unified plan is futile.
+$md$, 2),
+('243cbf27-b3bc-5465-9e7b-f391da3184f9','activity','Themes and Impact of El Filibusterismo',$md$
+*El Filibusterismo* explores themes of revenge, revolution, and moral choices. Major themes include:
+
+- **Sacrifice vs. Ambition:** Simoun's pursuit of revenge shows how obsession with justice can consume a person.
+- **Education and Responsibility:** Basilio's journey (he finally confronts the wrongs done to his family) highlights Filipino desire for education and justice.
+- **Nationalism evolving:** The novel reflects the idea that some Filipinos became more radical when peaceful reforms failed.
+
+**Impact:** The novel shocked readers with its critical tone. It confirmed Rizal's fears about the dangers of uncontrolled anger. For Filipino society, *El Fili* intensified the call for change. It showed that true reform would require either a complete overhaul or new leadership. The reaction to *El Fili* was similar to *Noli*: it was feared by colonial authorities but beloved by reformists. Together, *Noli* and *El Fili* laid a literary foundation for revolution, even though Rizal himself was later executed before the revolution succeeded.
+
+*Ready to apply this? The practice set below includes detailed Q&A and scenario analyses.*
+$md$, 3),
+('243cbf27-b3bc-5465-9e7b-f391da3184f9','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. What is the alter ego of Crisóstomo Ibarra in *El Filibusterismo*, and what is his mission?
+2. How does *El Fili* differ in tone from *Noli Me Tangere*?
+3. Describe one key event or plot point from *El Filibusterismo*.
+4. What is the significance of the banquet scene at the end of the novel?
+5. Name two themes explored in *El Filibusterismo*.
+
+**Worked Exam-Style Problems**
+
+*Problem 1:* Compare the characters of Ibarra in *Noli* and Simoun in *El Fili*. What do they represent?
+
+*Solution:* Step 1: Identify Ibarra as the idealistic reformist in *Noli* vs. Simoun as the vengeful revolutionary in *El Fili*. Step 2: Explain Ibarra's goals (education, peaceful reform) and Simoun's goals (violent revolution). Step 3: Discuss that both are the same person, showing Rizal's own inner conflict on how best to help the country. Step 4: Conclude that this transformation represents the frustration of peaceful reform and the lure/danger of violent action.
+
+*Problem 2:* Explain the theme of sacrifice in *El Filibusterismo*, citing an example from the novel.
+
+*Solution:* Step 1: Define "sacrifice" in context (giving up something for a cause). Step 2: One example is the personal sacrifices Basilio makes for his family; another is Simoun himself, who sacrifices his freedom (and life) by accepting the consequences of his plot. Step 3: Explain how these sacrifices highlight the high cost of the fight for justice. Step 4: Conclude that Rizal shows sacrifice is noble but tragic if it comes from destructive ends.
+
+*Problem 3:* Discuss the message Rizal might have intended about revolution by ending *El Filibusterismo* the way he did.
+
+*Solution:* Step 1: Note that Simoun's plan fails and he confesses defeat. Step 2: Suggest Rizal's message: revolution without unity or moral purpose can fail and cause more harm. Step 3: Highlight that Rizal portrays both the impetus for revolution (oppression) and its potential pitfalls. Step 4: Conclude that Rizal seemed to warn that Filipinos must think carefully about how to achieve freedom.
+
+**Hands-On Exercise**
+
+*Compare and Contrast:* Create a two-column chart comparing *Noli Me Tangere* and *El Filibusterismo*. For example, list tone (hopeful vs. dark), main character goals (reform vs. revenge), and outcomes. Use this chart to write a short paragraph on how Rizal's views evolved between the two novels.
+
+**How to Pass Tips**
+
+- **Be Clear on Timeline:** Remember *El Fili* was published after *Noli*, showing progression. Place it in chronology (1891).
+- **Know Key Symbols:** Understand what symbols mean (Simoun's jewels/wealth as the corrupting means; the lamp-bomb as the downfall of Simoun's revenge).
+- **Focus on Motivations:** Why does Simoun do what he does? Why do Basilio and Isagani take certain actions? Understanding motives is key.
+- **Don't Rely on Memory Alone:** You don't need every chapter. Focus on main events and what they mean for Philippine society at that time.
+- **Personal Insight:** Questions may ask for your interpretation of Rizal's message. Connect his warnings to real consequences of unplanned violence.
+$md$, 4);
+
