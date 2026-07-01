@@ -197,3 +197,53 @@ $md$, 4),
 Focus on the common commands and locations: on Windows, remember "Computer Management → Local Users and Groups"; on Linux, memorize `adduser`, `userdel`, `chmod`, `chown` syntax. Professors often ask about permission notation (`rwx`). Practice translating between symbolic (`rwx`) and numeric (421) formats: e.g. `rwxr-x---` = 750. A common exam trick: a file is not editable because of the wrong group, so watch out for "belongs to root" vs "group permissions."
 $md$, 5);
 
+-- ============================================================
+-- LESSON 5: Network Configuration and Troubleshooting
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('adde31d0-fb73-57bf-841d-06791c73f84c','content','IP Addressing and Subnetting Basics',$md$
+Every device on a network needs an **IP address** (like a house number). An IPv4 address looks like `192.168.0.10`, often paired with a **subnet mask** like `255.255.255.0`. The mask defines which part of the address is the network vs host. For example, with `255.255.255.0`, devices `192.168.0.1–254` are on the same LAN. **Subnetting** creates smaller networks (subnets) to organize larger networks efficiently. In practice, sysadmins might encounter both IPv4 and IPv6 addresses, but for most exams, focus on IPv4 and how to calculate simple subnets (e.g. `/24` means `255.255.255.0`).
+$md$, 1),
+('adde31d0-fb73-57bf-841d-06791c73f84c','content','Configuring Network Interfaces',$md$
+To connect to a network, a computer needs an IP, gateway, and DNS servers. On Windows, you use Network Connections settings: IPv4 properties allow you to enter a static IP, mask, gateway, and DNS. On Linux, you might edit a config file (like `/etc/network/interfaces`) or use `nmcli` (NetworkManager) commands. For example, `sudo nano /etc/network/interfaces` could contain `address 10.0.0.10/24` and `gateway 10.0.0.1`. Many networks use **DHCP**, where a router assigns IPs automatically. In that case, the setting is on "Obtain an IP address automatically" (Windows) or `dhclient` on Linux.
+$md$, 2),
+('adde31d0-fb73-57bf-841d-06791c73f84c','activity','Network Troubleshooting Tools',$md$
+Sysadmins use tools to diagnose connectivity:
+
+- **Ping:** Sends a small packet to an IP to test if it's reachable (e.g. `ping 8.8.8.8`). A reply indicates the device is alive.
+- **ipconfig / ifconfig:** On Windows, `ipconfig` (with `/all`) shows your current IP settings. On Linux, `ifconfig` or `ip addr show` does the same.
+- **Traceroute (`tracert` on Windows):** Shows the path packets take to a destination, useful for finding where a connection fails.
+- **netstat:** Lists active network connections and open ports.
+
+Using these, an admin can tell if the computer is on the right subnet, if DNS is resolving names, or if packets are getting blocked by a firewall.
+
+*Ready to apply this? The activity below includes practice problems calculating subnets and interpreting ping results, plus review questions on network fundamentals.*
+$md$, 3),
+('adde31d0-fb73-57bf-841d-06791c73f84c','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. What is the purpose of a subnet mask?
+2. In the IP address `10.1.2.5/24`, what range of addresses is in the same subnet?
+3. Which command shows the current IP address on a Windows machine?
+4. What does a successful ping test indicate?
+5. How do traceroute (or tracert) help in troubleshooting?
+
+**Worked Problems**
+
+*Problem:* You have an IP `192.168.5.18` with a subnet mask `255.255.255.0`. What is the network address and broadcast address of this subnet?
+
+*Solution:* With a mask of `255.255.255.0` (also `/24`), the first three numbers define the network: Network address is `192.168.5.0`. The broadcast address (all 1s in host part) is `192.168.5.255`. Devices on this subnet can have IPs `192.168.5.1` to `192.168.5.254`.
+
+*Problem:* An exam scenario shows a client `ipconfig /all` output with IP `169.254.x.x`. What went wrong?
+
+*Solution:* The IP `169.254.x.x` is an **APIPA** (Automatic Private IP Addressing) address. It means the client failed to get an IP from DHCP, so Windows auto-assigned an address in the `169.254` range. The fix is to check the DHCP server or client network connection.
+
+**Hands-On Exercise**
+
+(No code) On a lab network, configure one computer with a static IP (choose an unused `192.168.x` address). Then try pinging another known device on the same network. Record the ping command and result. Next, unplug the network cable from the pinged device and run ping again; observe how packets fail. Practice using `tracert google.com` (Windows) or `traceroute google.com` (Linux) and note the hops.
+
+**How to Pass**
+
+Know simple subnet math by heart (`/24` = `255.255.255.0`, `/16` = `255.255.0.0`). Practice converting between CIDR (like `/24`) and mask forms. Memorize common private network ranges (e.g. `192.168.x.x`). Professors often test the meaning of IPs like `127.0.0.1` (loopback) or `0.0.0.0`. For commands, recall exactly how to call them: e.g. `ping 127.0.0.1` tests the local TCP/IP stack. Label common port numbers if asked (DNS=53, HTTP=80).
+$md$, 4);
+
