@@ -290,3 +290,46 @@ $md$, 3),
 Remember the names of built-in tools: Task Manager, Event Viewer, `top`, `df`, etc. For backups, know at least one free tool (like `rsync` or Windows Backup). Exams may ask advantages of one backup type over another, so recall that full backups copy everything every time (slow but straightforward) while incremental only saves changes (faster but needs a chain of backups). A common tip: always rehearse your recovery procedure. That exam question often expects "restore from last full backup, then apply incrementals".
 $md$, 4);
 
+-- ============================================================
+-- LESSON 7: Server Services and Network Applications
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('ccc292bd-c576-599e-8493-11c2b172aa90','content','File Sharing and Print Services',$md$
+Servers often provide shared storage and printers. On Windows, administrators share folders via **SMB/CIFS**: right-click a folder, choose "Share", and set permissions (Read or Read/Write for users/groups). On Linux, **Samba** is the equivalent for sharing files with Windows clients. You edit `/etc/samba/smb.conf` to define shares (e.g., `[shared]` pointing to a directory). For printing, Windows uses Print Management; Linux often uses **CUPS** (Common Unix Printing System) to share printers. In a Philippine school or office, students may connect to a shared directory or network printer managed by the sysadmin.
+$md$, 1),
+('ccc292bd-c576-599e-8493-11c2b172aa90','content','DNS and DHCP Services',$md$
+Two critical network services are **DHCP** and **DNS**. DHCP (Dynamic Host Configuration Protocol) automatically gives IP addresses to clients. Admins set up a DHCP scope (range of IPs), and clients get an IP without manual config. DNS (Domain Name System) translates names to IPs (e.g. `www.example.com` to `93.184.216.34`). On Windows Server, you can add the DHCP role or DNS role in Server Manager. On Linux, ISC DHCP server (`isc-dhcp-server`) and BIND are common. A practical point: make sure clients use your DNS (often via DHCP settings) so they can resolve company intranet names or internet sites.
+$md$, 2),
+('ccc292bd-c576-599e-8493-11c2b172aa90','activity','Web Servers and Network Services',$md$
+Many servers host websites or web services. Windows has **IIS** (Internet Information Services) to run websites (.NET or ASP applications). Linux commonly uses **Apache** or **Nginx** for web hosting. To set up a website, you place files in a web directory (`C:\inetpub\wwwroot` on Windows, or `/var/www/html` on Linux). Another example: Email and database servers also run as services (e.g. Postfix for email or MySQL for databases). As an admin, you should know basic web server setup: open ports (80/443), document root, and how to restart the service (`service apache2 restart` or `iisreset`).
+
+*Ready to apply this? The practice section below covers scenarios like configuring a shared drive and setting up DHCP for lab computers, with step-by-step solutions.*
+$md$, 3),
+('ccc292bd-c576-599e-8493-11c2b172aa90','activity','Practice & Exam Drills — Lesson 7',$md$
+**Review Questions**
+
+1. What is the purpose of SMB or Samba in a network?
+2. Which port does HTTP typically use?
+3. What does DHCP stand for, and what does it do?
+4. How do you create a shared folder on Windows? Briefly describe.
+5. Why is it important for DHCP and DNS to work together on a network?
+
+**Worked Problems**
+
+*Problem:* A computer cannot get an IP automatically and shows a yellow triangle in Windows. The DHCP server has 50 addresses (`10.1.1.100–10.1.1.149`) and 60 clients. What is the issue and solution?
+
+*Solution:* There are more clients (60) than available DHCP addresses (50). The last 10 clients get no IP. To fix: increase the DHCP scope (e.g. `10.1.1.100–10.1.1.160`) or reduce reservations. This shows understanding of DHCP scope limits.
+
+*Problem:* How do you set up a website on Linux?
+
+*Solution:* Step 1: Install (e.g. `sudo apt install apache2`). Step 2: Place content (like `index.html`) in `/var/www/html`. Step 3: Check the firewall (e.g. `ufw allow 'Apache'`). Step 4: Restart the service (`sudo systemctl restart apache2`). After this, browsing the server's IP shows your page.
+
+**Hands-On Exercise**
+
+(No code) In a test environment, share a folder from one machine and connect to it from another. For example, on a Windows VM, create a folder `C:\Share`, right-click it, choose "Properties → Sharing → Share". Set "Everyone" to Read/Write. On another computer, map this shared folder (`\\servername\Share`). Verify you can copy files to and from it.
+
+**How to Pass**
+
+Learn key service names and ports (DHCP, DNS port 53, HTTP port 80/443). Be able to explain why you need DHCP (to avoid configuring each PC manually) and DNS (so we use names, not hard IPs). Professors like scenario questions: e.g., "You set up a new printer but clients can't find it by name, what service might be misconfigured?" (Answer: DNS). Always mention checking firewalls – it's a common oversight.
+$md$, 4);
+
