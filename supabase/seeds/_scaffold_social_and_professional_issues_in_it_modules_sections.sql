@@ -128,3 +128,58 @@ You are designing a mobile app that collects location data. Outline in bullet po
 - Study Philippine examples of tech issues (like government data leaks) — they like local context.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 3: Professional Codes of Conduct
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('b1ec0564-da59-5cc2-92ee-d4328c2a626d','content','Why Codes of Ethics Matter',$md$
+A **code of ethics** is a formal set of guidelines for professionals. In IT, major bodies have codes (e.g., the ACM Code of Ethics, IEEE Code). These codes remind IT workers of their commitments, such as prioritizing public good over personal gain, and maintaining competence. For example, the ACM Code begins with "Contribute to society and human well-being" and "Avoid harm." An IT professional in the Philippines should be familiar with these ideals, as they often parallel Philippine values (like community welfare).
+
+Following a code helps in tricky situations. If a cloud service has a known flaw, the code says to notify affected parties rather than hide it. If a friend asks you to cheat on a programming assignment, the code's professionalism clause means you decline. Codes aren't law, but educators expect students to understand main points: confidentiality, honesty, respect for intellectual property, and commitment to quality.
+$md$, 1),
+('b1ec0564-da59-5cc2-92ee-d4328c2a626d','content','Comparing Major Codes (ACM/IEEE/Local)',$md$
+- **ACM (Association for Computing Machinery):** Its code has four sections: Principles (e.g., "avoid harm", "be honest"), Professional Responsibilities, Leadership Responsibilities, and Compliance. It emphasizes "honesty and trustworthiness."
+- **IEEE (Institute of Electrical and Electronics Engineers) Code:** Similar focus on safety, avoiding conflicts of interest, and being truthful. It starts with "to accept responsibility in making decisions consistent with the safety, health, and welfare of the public."
+- **Philippine Codes:** While there isn't a single "PRC IT code," the Philippine Computer Society (PCS) and Philippine Software Industry Association (PSIA) have guidelines encouraging integrity and social responsibility. Academically, PE and SE licenses (Engineers, Software Eng.) include clauses about public welfare.
+
+Students should know that most codes agree on key duties: protect users, improve competence, treat colleagues fairly, and obey laws. In an exam, you might be asked to match a scenario with a relevant code principle (e.g., breach of confidentiality violates code duties).
+$md$, 2),
+('b1ec0564-da59-5cc2-92ee-d4328c2a626d','activity','Applying Codes to Scenarios',$md$
+When faced with a dilemma, one step is to ask: "What would the code of ethics say?" For instance, if a manager wants you to cut corners on security testing to save time, the ACM Code's clause about "ensuring software quality" tells you to push back and insist on proper testing. If a contractor offers a bonus for using cheaper, pirated software, IEEE's emphasis on legality and honesty says you should refuse.
+
+Understanding codes helps answer exam questions about specific cases. Instead of just saying "I do X", tie it to the code: e.g., "Refusing to spread rumors about a colleague upholds the IEEE Code's principle to avoid negative outcomes for others' reputations." This shows you can apply theory to practice.
+$md$, 3),
+('b1ec0564-da59-5cc2-92ee-d4328c2a626d','activity','Professional Responsibility Beyond the Code',$md$
+Remember, codes are guidelines, but professionalism also involves personal responsibility. This means admitting mistakes (like fixing a bug proactively even if not caught), and continuous improvement (attending workshops, earning certifications). It also means mentoring juniors, sharing knowledge openly (yet responsibly), and contributing to the community's betterment (e.g., speaking at a cyber safety seminar in your barangay).
+
+In the Philippines, **"bayanihan"** (helping community) is a cultural value. As IT professionals, embody this by volunteering tech skills or participating in initiatives (e.g., online literacy programs). This goes beyond formal codes, but exam questions sometimes expect this broader view of professional duty: service and altruism in tech fields.
+
+*Ready to apply this? The practice set below includes scenario exercises on code violations and solving them.*
+$md$, 4),
+('b1ec0564-da59-5cc2-92ee-d4328c2a626d','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions**
+
+1. State two principles from the ACM Code of Ethics that relate to IT professionalism.
+2. What is the first duty listed in the IEEE Code of Ethics (hint: it involves public welfare)?
+3. Give one example of a code-of-ethics violation in an IT context.
+4. Why is continuous learning considered part of professional responsibility?
+5. Explain "conflict of interest" and why codes mention it.
+
+**Exam-Style Problem**
+
+*Problem:* A software developer learns that a proprietary library they use has a cheap clone. Their boss asks them to switch to the clone to save costs. According to professional ethics codes, what should the developer consider before switching?
+
+*Solution:* The developer should consider that using an unlicensed or unauthorized clone likely violates intellectual property laws and the professional code (which demands legality and honesty). The ACM Code says to be honest and avoid harm – using a pirated clone could harm the original creators and risk legal trouble for the company. The IEEE Code's emphasis on public welfare also suggests we shouldn't partake in dishonest practices. Thus, the developer should refuse the request or consult higher-ups, adhering to ethical standards.
+
+**Hands-On Exercise (Case Scenario)**
+
+Read this scenario and draft a brief email (2–3 paragraphs) as an IT professional: "Your project manager wants to withhold information about a data breach from the client until the next update, fearing panic. You believe clients have a right to know immediately. How do you handle this situation professionally?" Include references to ethical principles or codes that support your position.
+
+**How to Pass Tips**
+
+- Memorize key terms: professors often mention "ACM Code", "IEEE Code", "duty to employers vs. public," etc. Use these keywords.
+- Practice writing with a professional tone: in scenario responses, imagine you're drafting an email or report. Clarity and respectfulness are graded.
+- Think of real-world examples: maybe a news story of a tech company's ethical lapse, and what codes were relevant.
+- Identify conflicts: When asked about conflict of interest (COI), remember it means personal gain vs professional duty. An example: coding for a friend on company time is a COI.
+$md$, 5);
+
