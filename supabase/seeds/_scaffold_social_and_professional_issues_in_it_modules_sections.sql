@@ -236,3 +236,57 @@ You run a small online store (simulation exercise). You collect customer emails 
 - When answering scenario questions, clearly separate legal obligations (what the law says) from ethical duties (best practices), e.g. "By law, we must… and ethically we should…."
 $md$, 5);
 
+-- ============================================================
+-- LESSON 5: Intellectual Property and Academic Integrity
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('d0a396ec-b8bd-5cd9-9d59-b5d1a544b3d6','content','Understanding Intellectual Property (IP)',$md$
+**Intellectual Property (IP)** refers to creations of the mind: software, books, music, etc. The Philippine **IP Code (RA 8293)** covers patents, trademarks, and copyrights. For IT, copyright is key: software code is automatically copyrighted, and copying it without permission is infringement.
+
+IT professionals must respect IP. This means using licensed software (even if a friend says "it's easy to just download"), and giving credit when reusing code (either through licenses like MIT/BSD or by citing sources). For example, using an open-source library is fine if you follow its license (GPL, Apache, MIT, etc.), but using paid software without a license is illegal. On exams, students might face questions like "What makes software proprietary vs open-source?" or "Is it ethical to share your school project code with others?" The answer should mention licenses and give credit, showing an understanding of IP principles.
+$md$, 1),
+('d0a396ec-b8bd-5cd9-9d59-b5d1a544b3d6','content','Types of Software Licenses',$md$
+There are many licenses, but in BSIT classes know two broad categories: **proprietary vs open-source**. Proprietary (closed-source) software (like Microsoft Office) requires buying a license. Open-source (like Linux, MySQL, Apache) is free to use, modify, and share, often with conditions (GPL requires sharing changes, MIT/BSD are more permissive).
+
+In practice questions, you may be asked to pick a license for a student project. If sharing code and not wanting others to patent it, MIT/BSD are common for student apps. If you want to ensure changes stay open, GPL. Understand the idea: GPL "copyleft" means anyone who distributes your modified code must also share the source. At least memorize that open-source licenses exist and have basic differences.
+$md$, 2),
+('d0a396ec-b8bd-5cd9-9d59-b5d1a544b3d6','activity','Copyright vs. Plagiarism',$md$
+In an academic context, copying code or text without permission or attribution is both an IP violation and unethical **plagiarism**. Filipino universities treat plagiarism seriously (some even have it in honor codes). Always write your own code or properly cite libraries.
+
+Also distinguish **fair use**: quoting a short text in a report is okay, but copying large segments is not. Similarly, for code: if using snippets from StackOverflow or tutorials, be sure to understand them and comment that they are from X source. Exams might ask for examples of plagiarism vs fair use. A tip is to reference actual Philippine rules: some universities mention a maximum percentage of similarity allowed.
+$md$, 3),
+('d0a396ec-b8bd-5cd9-9d59-b5d1a544b3d6','activity','Consequences and Legal Issues',$md$
+Violating IP rights can lead to fines or jail under Philippine law. For example, selling pirated DVDs or software breaches RA 8293, and there have been cases of raids on shops selling illegal copies. As future IT pros, you might also create content (apps, designs) that you should protect (through copyright or trademarks).
+
+Understand also **digital rights management (DRM)** from a consumer perspective: circumventing DRM to copy a DVD can be illegal. If an exam mentions peer-to-peer networks and piracy, remember that even if "everyone does it," it's against the law. As a professional, the ethical stance is to discourage piracy (e.g. advising small businesses to use free open-source tools instead of pirated software).
+
+*Ready to apply this? The practice set below includes exercises on licensing decisions and IP case studies.*
+$md$, 4),
+('d0a396ec-b8bd-5cd9-9d59-b5d1a544b3d6','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. What are the three main categories of intellectual property protected by law?
+2. Explain the difference between open-source and proprietary software.
+3. Give an example of plagiarism in programming.
+4. Which Philippine law covers software piracy, and what does it protect?
+5. Name one advantage and one responsibility when using open-source code.
+
+**Exam-Style Problem**
+
+*Problem:* You found a helpful snippet on a public code repository (shared by someone else) and want to use it in your assignment. What should you do to use it ethically and legally?
+
+*Solution:* First, check the snippet's license. If it's open-source (e.g., MIT license), you can usually use it, but you should still attribute the original author in your code comments or report. If no license is given, the safe approach is to re-implement the idea in your own words/code. In any case, include a comment saying it was adapted from source Y. This avoids plagiarism and respects intellectual property. It follows ethical practice of giving credit and any legal requirements of the license.
+
+**Hands-On Exercise (Case Scenario)**
+
+Imagine your group project is to develop a quiz app. You find a free icon library online for the UI. What steps do you take to ensure you're complying with the license? (List 3 bullet points, e.g., check license type, provide attribution, etc.)
+
+**How to Pass Tips**
+
+- Always answer in terms of laws or formal terms: use "copyright," "license," "permitted use."
+- Remember exam keywords: "piracy," "royalty," "patent."
+- Be precise: say "RA 8293" instead of just "copyright law" if possible.
+- For plagiarism questions, referencing specific examples (like copying code or assignments) shows understanding.
+- When discussing open-source, mention one famous license by name (e.g., GPL, MIT) to illustrate knowledge.
+$md$, 5);
+
