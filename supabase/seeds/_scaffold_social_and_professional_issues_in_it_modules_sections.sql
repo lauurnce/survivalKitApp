@@ -66,3 +66,65 @@ You are a new IT employee at a local business. Your manager asks you to install 
 - Practice scenario questions: explain what you would do and why, citing ethical reasons.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 2: Ethics and Decision-Making in IT
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('254ba5a2-90e0-5a1b-84e2-060dc2f083a6','content','What is Ethics?',$md$
+**Ethics** is the study of moral principles—what is right and wrong. In IT, ethics deals with questions like "Is it right to use data-mining on users without their consent?" Ethics differs from law: something illegal (like stealing data) is also unethical, but not all unethical acts are illegal (e.g., minor plagiarism may not be prosecuted but is still unethical). Applied ethics in IT focuses on real-world dilemmas.
+
+Filipino culture values **"kapwa"** (togetherness) and **"utang na loob"** (debt of gratitude), which inform ethical behavior too. IT ethics may ask: How do our actions affect our kapwa (fellow citizens)? For example, if you design a game that encourages gambling behaviors, is that socially responsible? Considering these cultural values helps make ethical decisions that respect Filipino society.
+$md$, 1),
+('254ba5a2-90e0-5a1b-84e2-060dc2f083a6','content','Ethical Theories and Principles',$md$
+Several philosophical ethical theories help frame decisions:
+
+- **Utilitarianism (Consequentialism):** Choose the action that brings the greatest good to the majority. In IT, this might mean deploying a feature that helps many users even if a few feel inconvenienced.
+- **Deontology (Duty-based ethics):** Follow universal rules or duties (like "do not lie," or "respect privacy") regardless of outcomes. For instance, refuse to falsify records even if no one might notice.
+- **Virtue Ethics:** Focus on one's character (honesty, courage, compassion). Ask, "What would a virtuous IT professional do?"
+
+In practice, IT students should learn a mix: e.g., always protect data (duty), consider overall benefit (utilitarian), and be honest/compassionate in work (virtues). Memorize at least a couple of these terms and their key idea, because exams often reference them by name.
+$md$, 2),
+('254ba5a2-90e0-5a1b-84e2-060dc2f083a6','activity','Decision-Making Frameworks',$md$
+Ethical decision-making usually follows steps: identify the problem, list stakeholders (users, employer, society), and consider options and consequences. One framework is:
+
+1. **Gather facts:** What data or laws apply?
+2. **Consider alternatives:** What can you do? (Report, fix, ignore, etc.)
+3. **Consult codes or policies:** Does an ACM/IEEE code or company policy cover this?
+4. **Make and justify decision:** Explain why the chosen action best follows ethical principles.
+
+For example, faced with a data breach, you would identify affected people (stakeholders), consider notifying them vs. hiding it, refer to the Data Privacy Act (legal/ethical duty), and decide the responsible action (likely notifying authorities and users).
+$md$, 3),
+('254ba5a2-90e0-5a1b-84e2-060dc2f083a6','activity','Privacy, Consent, and Respect',$md$
+A key IT ethical issue is **privacy**: respecting people's personal information. Always get consent before using someone's data (e.g., ask before emailing marketing materials). Under the Philippine **Data Privacy Act (RA 10173)**, organizations must secure personal data. As a professional, never misuse data (like leaking an email list).
+
+Another issue is **freedom of information vs. security**. For example, should you allow encrypted messaging or help law enforcement? Many factors apply, but the principle is to minimize harm while respecting laws. Understanding both the ethical principle (privacy is a value) and the law (what RA 10173 says) is important.
+
+*Ready to apply this? The practice set below shows how to analyze ethical scenarios step-by-step, plus more problem drills.*
+$md$, 4),
+('254ba5a2-90e0-5a1b-84e2-060dc2f083a6','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions**
+
+1. Briefly define utilitarianism and deontological ethics in your own words.
+2. In IT, what is typically considered the "stakeholder group" when discussing social impact?
+3. List two steps in an ethical decision-making process.
+4. Give an example of respecting privacy in a software project.
+5. Explain why obtaining user consent is important under Philippine law.
+
+**Exam-Style Problem**
+
+*Problem:* A university IT staff member finds that a batch of student records (names and grades) will be sent unencrypted over email due to a deadline. Should the staff member proceed or delay sending, and why?
+
+*Solution:* The staff member should **not** send the records unencrypted. This risks students' privacy and violates the duty to protect data. They should use encryption or ask for a secure channel. Philippine RA 10173 requires protection of personal data. By delaying to ensure security, the staff member follows both utilitarian (protecting many students) and deontological (following data protection duties) ethics.
+
+**Hands-On Exercise (Case Scenario)**
+
+You are designing a mobile app that collects location data. Outline in bullet points (~5) the ethical considerations you must address (consider user consent, data usage, disclosure). Explain how you would apply them in your app design.
+
+**How to Pass Tips**
+
+- Ethics questions often require specific theory names. Familiarize yourself with terms: utilitarian, deontology, virtue ethics, duty, outcome.
+- Always relate answers to scenarios: e.g., if asked about privacy, mention RA 10173 (Data Privacy Act) or informed consent.
+- Practice outlining steps: professors like seeing "Step 1: … Step 2: …".
+- Study Philippine examples of tech issues (like government data leaks) — they like local context.
+$md$, 5);
+
