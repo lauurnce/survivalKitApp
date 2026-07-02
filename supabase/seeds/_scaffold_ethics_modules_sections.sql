@@ -174,3 +174,53 @@ $md$, 3),
 - Tip: Relate ethical terms (like justice, virtue) to community stories or national issues (e.g. bayanihan during disasters, voting for clean candidates).
 $md$, 4);
 
+-- ============================================================
+-- LESSON 4: Ethical Theories and Frameworks
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('264ba160-fc4f-5392-ac1f-4c75057ce66b','content','Consequentialist Ethics (Utilitarianism)',$md$
+**Consequentialist** theories judge actions by their outcomes. **Utilitarianism** is the most famous of these. It says an action is right if it produces the greatest good (happiness, well-being) for the greatest number. In practice, a utilitarian would calculate benefits vs. harms. For instance, if inventing a new gadget helps many people but hurts a few, a utilitarian may still support it. In a Philippine context, this might look like a company choosing a cheaper product that employs thousands versus a premium one that employs few. The key is the overall balance of good. Critics worry it can neglect individual rights (e.g. "Why not sacrifice one to save five?"), so utilitarianism must be applied carefully.
+$md$, 1),
+('264ba160-fc4f-5392-ac1f-4c75057ce66b','content','Deontological Ethics and Rights',$md$
+**Deontological ethics** (duty-based) focus on rules and duties, not outcomes. Immanuel Kant's version is well-known: an action is moral if it follows a universal rule or duty. Kant's **Categorical Imperative** says we should only act on maxims that we can will to become universal laws. For example, always telling the truth is a duty, regardless of consequences. This means you respect others as ends in themselves, not means to an end. In practice, someone might refuse to lie even if lying would save them from trouble, because truth-telling is a duty. **Rights-based ethics** (closely related) emphasize respecting people's basic rights (life, privacy, freedom). For example, workers have a right to safe conditions; ignoring that is unethical even if it saves a company money.
+$md$, 2),
+('264ba160-fc4f-5392-ac1f-4c75057ce66b','activity','Virtue Ethics and Justice',$md$
+**Virtue ethics** focuses on the character of the person. Following Aristotle, it says we should cultivate virtues (courage, honesty, generosity) as habits. A virtuous person knows the right thing by having a good character. For instance, a truthful student speaks honestly without needing to think each time. In the Philippines, teaching character (sincerity, *buong-puso*) is a local example of virtue ethics.
+
+**Justice and Fairness:** Another approach emphasizes justice (fair treatment of all). Theories of justice look at how goods and burdens are distributed. For example, **distributive justice** asks: How should society share resources? Should everyone get the same, or should those who need more (like the poor) get more help? This is why topics like taxation come up in ethics: fair tax policies (progressive taxes) are seen as necessary for the common good. In other words, citizens contribute to society by paying taxes on income, so public services and welfare can be shared. Concepts like **equality** (everyone equal) and **equity** (giving more to the less fortunate) are key in justice theories.
+
+*Ready to apply these ideas? The practice set below contains examples, step-by-step solutions, and deeper exercises.*
+$md$, 3),
+('264ba160-fc4f-5392-ac1f-4c75057ce66b','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. Explain utilitarianism and give a simple example. What is a potential problem with it?
+2. What is Kant's Categorical Imperative in one sentence? How does it differ from utilitarianism?
+3. Describe virtue ethics in your own words. Name two virtues and how they might influence behavior.
+4. What does "distributive justice" mean? Why might a government tax the rich at a higher rate?
+5. Which theory would support telling the truth even if it leads to personal loss, and why?
+
+**Worked Exam-Style Problems**
+
+*Problem:* The local barangay considers closing a shortcut road to reduce accidents, even though it makes travel longer for students. Use utilitarianism and deontology to analyze: Is closing the road ethical?
+
+*Solution:* **Utilitarian view:** closing the road reduces accidents (good for community safety) but inconveniences many (harm to convenience). We compare total harm: if serious injuries will be prevented, the net good may be higher by closing. **Deontological view:** if there is a duty to protect life, closing is right despite inconvenience. Even if some get more travel time, the duty to save lives overrides. Conclusion: Both frameworks likely support closing if the safety benefit outweighs the inconvenience. This shows different reasoning but a similar outcome.
+
+*Problem:* A student is the only one with an original answer on a homework answer sheet. The teacher announces that copying will result in no credit for all. Will this student share answers? Apply a rights/responsibility framework.
+
+*Solution:* Rights angle: Each student has a right to the instructor's respect and an education earned honestly. Responsibility: The student has a duty not to harm classmates' grades. Options: share (violates duty) or refuse (upholds honesty). The student should refuse to share. This protects the academic integrity of everyone. A virtue ethicist would say the honest thing is to uphold integrity. The student's action is ethical (being honest and courageous).
+
+**Application Exercise**
+
+- Debate in groups: One side argues from a utilitarian perspective ("What gives the greatest happiness for the most people?") and the other from a rights perspective ("What are people entitled to, no matter what?") on issues like civic duties or environmental rules.
+- Case study: Analyze a news story (e.g. corruption, tech issues, disaster response) and identify ethical issues and which principle they violate.
+
+**How to Pass this Topic**
+
+- Clearly label each theory in answers (e.g. "Under Kant's categorical imperative…"). Compare if needed (e.g. "Unlike utilitarianism, Kantian ethics says…").
+- Memorize key names: Aristotle (virtue), Kant (duty/rights), Bentham/Mill (utilitarian). Professors often expect these.
+- For justice/taxation questions: mention fairness to majority and vulnerable (for utilitarian) and duty of government (for Kantian/social justice).
+- Don't just memorize definitions—apply them. For example, practice identifying which theory an exam question is testing.
+- Common mistakes: mixing up theories or missing any explanation. Structure answers so it's clear which framework you're using.
+$md$, 4);
+
