@@ -70,3 +70,60 @@ $md$, 3),
 - Professors often expect examples. Mention everyday Philippine scenarios (traffic rules, barangay community issues). Simple frameworks (like "Is it fair?" or "Could I defend this publicly?") help in exams.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 2: Moral Agency and Decision-Making
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('f0aff824-e320-5405-9bbe-6e17eddd662d','content','Freedom, Responsibility, and Moral Choice',$md$
+Ethical behavior depends on **free choice**. Only humans have the awareness and freedom to choose their actions. This freedom brings responsibility: each choice has consequences for oneself and others. For example, choosing to cheat on an exam (exercise of freedom) means you might get a higher grade but harm the honest students and yourself (by not really learning). Moral education teaches us to balance freedom with responsibility. We learn that our freedom is best used when guided by reason and respect for others. In other words, we can't blame society if someone refuses to think or care about the consequences of their actions.
+$md$, 1),
+('f0aff824-e320-5405-9bbe-6e17eddd662d','content','Seven-Step Moral Reasoning Model',$md$
+A helpful way to make ethical decisions is to follow a structured process. One common model has seven steps:
+
+1. **State the problem:** Recognize the moral issue clearly (e.g. "Is it right to take this action?").
+2. **Check the facts:** Gather all relevant information (who, what, why, legal rules, personal values involved).
+3. **Identify the stakeholders:** Who will be affected? (family, community, you).
+4. **Develop options:** List possible actions you could take (even tough or creative ones).
+5. **Test the options:** Use simple tests – for example, the **harm test** (which option causes least harm), **publicity test** (would you be okay if everyone knew this choice?), **fairness test** (does it treat everyone justly?).
+6. **Make a choice:** After weighing options and tests, pick the action that best fits your principles.
+7. **Review:** After acting, reflect on the decision. Could anything be learned or changed for future dilemmas?
+
+This process ensures you use reason (not just gut feeling) and think about others before deciding. Practicing these steps on smaller issues builds good decision-making habits.
+$md$, 2),
+('f0aff824-e320-5405-9bbe-6e17eddd662d','activity','Developing Virtue and Character',$md$
+Ethics is not only about decisions in one moment; it's also about what kind of person you become. **Virtue ethics** teaches that good character traits (virtues) like honesty, kindness, and courage are learned by practicing them repeatedly. For example, telling the truth even when it's hard makes honesty a habit. Over time, a person who habitually acts kindly and responsibly develops a moral character. Psychologists also talk about **stages of moral development** (basic rewards/punishments → community values → principled conscience). Philippine culture and education (family teaching, community service) aim to help students move toward "conscience-based" decisions – doing what feels right deep inside, not just what's easy.
+
+*Ready to apply these ideas? The practice set below contains examples, step-by-step solutions, and deeper exercises.*
+$md$, 3),
+('f0aff824-e320-5405-9bbe-6e17eddd662d','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions**
+
+1. Why is freedom important in ethics, and what responsibility comes with it?
+2. List the seven steps of moral reasoning in order (briefly describe each).
+3. What is the purpose of reflecting on an ethical decision after making it?
+4. Explain how practicing a virtue (e.g. honesty) can build a person's character.
+5. Give an example of an ethical decision you or someone you know made and what values were involved.
+
+**Worked Exam-Style Problems**
+
+*Problem:* Marco is caught cheating by his friend Liza during a game contest. Liza feels it's wrong but also doesn't want to get Marco in trouble. Use the seven-step model to reason what Liza should do.
+
+*Solution:* (1) Problem: Friend vs. honesty. (2) Facts: Marco cheated. (3) Stakeholders: Marco, Liza, contest organizers, other players. (4) Options: Confront Marco privately, tell the organizer, say nothing. (5) Tests: Publicity test – would Liza defend not telling anyone? Fairness – keeping silent is unfair to others. (6) Choice: Liza should report or remind Marco of the rules (most fair). (7) Review: Liza learns that honesty protects everyone's trust, including her own integrity.
+
+*Problem:* A new student group pressures Maria to join their "school pranks." Maria is unsure if it's okay. Discuss how Maria could use reason and feelings in her decision.
+
+*Solution:* Feelings might push Maria to fit in (peer pressure). But reason requires thinking: Are these pranks harmless or hurtful? Maria can list the facts (what pranks, consequences) and consider rules (school policy). She may realize a prank could get people hurt or suspended (harm test). Even if it feels fun (instinct), reason suggests choosing a prank that doesn't hurt anyone – or refusing altogether. Thus she balances her feeling ("I want to belong") with reason and empathy (considering others). It is brave (moral courage) to say no if it violates values.
+
+**Application Exercise**
+
+- Write a short reflection on how you have handled a peer pressure situation (e.g. on social media or in a group). Which moral virtues (e.g. honesty, courage) did you need? Would you do anything differently now?
+- Group activity: Role-play a scenario in pairs. One plays a student leader suggesting an unethical action (like skipping class together without permission), and the other practices saying no using logical reasons or virtue arguments.
+
+**How to Pass this Topic**
+
+- Memorize key terms: moral agent, moral reasoning model, virtue. Professors like seeing the 7-step names.
+- Use clear examples: say exactly what you or a hypothetical person would do and why. Tie your answer to concepts like fairness, duty, or consequences.
+- Common pitfalls: jumping to "just do the right thing" without explanation. Always articulate the steps of reasoning or which virtue you're following.
+- Tip: When in doubt, ask if the action respects everyone's rights and whether you'd be comfortable if others knew about it. This aligns with impartiality and fairness.
+$md$, 4);
+
