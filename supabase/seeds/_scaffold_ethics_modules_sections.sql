@@ -224,3 +224,58 @@ $md$, 3),
 - Common mistakes: mixing up theories or missing any explanation. Structure answers so it's clear which framework you're using.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 5: Contemporary Issues and Social Ethics
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('4fb4afbb-c0de-583a-8020-d17130f234d2','content','Social Justice and the Common Good',$md$
+Modern ethics often extends to large-scale issues. **Social justice** means looking after everyone's welfare. For example, a society that provides basic healthcare or education shows justice. In the Philippines, discussions about "inclusive growth" (making sure the rich and poor both benefit from the economy) are ethical at heart. Ethics asks: How do we help the poor? One answer is fair taxation and use of taxes for public services. Citizens have a responsibility to pay taxes that are fair (higher income, higher tax) so that everyone can share in progress. Similarly, caring for the environment is part of ethics now; for instance, reducing pollution respects the rights of future generations. In this way, ethics connects personal behavior (like not littering) with national policies (like environmental laws) for the common good.
+$md$, 1),
+('4fb4afbb-c0de-583a-8020-d17130f234d2','content','Professional and Technology Ethics',$md$
+Even in our jobs and use of technology, ethics applies. As IT or business students, consider issues like privacy, intellectual property, and professional conduct. For example, hacking into someone's account violates their privacy and is unethical, even if there was no law against that specific act. Copying software illegally is unethical because it steals value from creators. In professional settings, ethics means doing your work honestly and competently. If you work on a team, that means not cutting corners on a project. On social media, spreading misinformation or cyberbullying are ethical problems. Philippine law may not cover every new tech dilemma, so personal ethics fill the gap: think about respect and harm to others online. Essentially, we apply the same ethical principles (honesty, respect, responsibility) whether offline or online.
+$md$, 2),
+('4fb4afbb-c0de-583a-8020-d17130f234d2','activity','Globalization, Pluralism, and Religion in Ethics',$md$
+We live in a connected, diverse world. **Globalization** brings different cultures and beliefs together, which can challenge our ethics. On one hand, we look for universal values (like human rights) that apply everywhere. On the other hand, we respect **pluralism**: different cultures may have unique ways of expressing values. Filipino students often find guidance from religion (mostly Catholic teachings) or family traditions. For example, many Filipinos are taught that life and family are sacred; this influences ethical stances on issues like care for the elderly. In pluralist settings (like the internet), we encounter people with different views. Ethics doesn't demand everyone has the same beliefs, but it challenges us to find fair resolutions. For instance, respecting freedom of speech while condemning hate speech is a balancing act. Facing globalization, ethics encourages dialogue and empathy: understanding why someone else values something can help resolve conflicts.
+
+*Ready to apply these ideas? The practice set below contains examples, step-by-step solutions, and deeper exercises.*
+$md$, 3),
+('4fb4afbb-c0de-583a-8020-d17130f234d2','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. What is meant by the "common good" and how do taxes relate to it?
+2. Give an example of an ethical issue in technology (privacy, plagiarism, etc.) and explain why it's important.
+3. How can our actions today affect future generations (hint: environment)?
+4. What does "pluralist" mean in ethics, and why is it a challenge?
+5. Describe a way that religion or personal beliefs can influence ethical decisions (use a Filipino context).
+
+**Worked Exam-Style Problems**
+
+*Problem:* A factory in a barangay dumps chemical waste into a river because it's cheaper. Local fishermen suffer as fish are scarce. Identify the ethical issues and propose what a government official should do.
+
+*Solution:* Issues: harm to the environment and livelihood of people (common good). Ethical values: justice (everyone's health), care for nature, legal responsibility. Government's action: enforce environmental regulations, require the company to clean up (protect community rights). The official should balance economic development with ethics: penalize wrongdoing to uphold justice and public welfare.
+
+*Problem:* Alicia sees a classmate pirating a movie and watching it on their phone. Alicia knows piracy is technically illegal, but says it's okay because no one is harmed. Discuss this from a rights and utilitarian perspective.
+
+*Solution:* **Utilitarian:** Pirating saves money but harms creative industries. The net good is unclear (some benefit, artists lose). **Rights view:** Artists have a right to earn for their work. Illegal downloading violates that right. Conclusion: Ethically wrong, because respecting creators' rights is important and many copies hurt the artist's livelihood. Alicia should refuse to join and explain it's unfair to the people who made the movie.
+
+**Application Exercise**
+
+- Write a brief ethical guideline (3–5 rules) for safe and responsible social media use (in English or Taglish). Include reasons (e.g. privacy, respect) for each rule.
+- Case study: Research a Filipino news story (e.g. online privacy breach, community project). Identify the main ethical conflicts and discuss in a short report what should be done.
+
+**How to Pass this Topic**
+
+- Know current events and relate them to ethics: e.g. how ethics apply in tech (social media issues, data privacy), environment (typhoon response), or societal challenges (election ethics).
+- Remember key terms: common good, rights of future generations, pluralism. Explain them in answers.
+- Philippine context helps: mention local examples like bayanihan in disasters, or responsible use of social media during calamities.
+- Tip: Professors often ask about "principles" behind policies (like why there are speed limits, or why cyberbullying is wrong). Think of ethical principles (justice, empathy) that justify these rules.
+$md$, 4);
+
+-- ============================================================
+-- SOURCES
+-- Far Eastern University Institute of Technology — Ethics course syllabus
+-- Polytechnic University of the Philippines — Ethics instructional materials (course outline and topics)
+-- De La Salle University Manila — GE Ethics course syllabus (outline of course parts)
+-- CHED — National General Education Ethics syllabus (CMO 20 s.2013)
+-- CHED CMO No. 25, s.2015 — Revised PSGs for the BSIT program
+-- ============================================================
