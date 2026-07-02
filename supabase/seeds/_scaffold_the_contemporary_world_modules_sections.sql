@@ -200,3 +200,65 @@ Research one of the United Nations' Sustainable Development Goals (e.g., No Pove
 - Connect to current events: professors appreciate if you mention something like regional hosting or recent summits.
 $md$, 6);
 
+-- ============================================================
+-- LESSON 4: Culture, Media, and Ideas in a Global World
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('d9f734ea-286e-5602-88f2-768603d69c51','content','Global Culture and Local Identity',$md$
+Globalization spreads culture through media, entertainment, and migration, but local identities persist too. This mix is often called **"glocalization."** For example, Filipinos enjoy Hollywood movies and Korean music, but also continue traditions like fiestas and jeepney art. Globalization can lead to cultural blending (think of how fast food chains exist next to carinderias). However, there can be tension: some worry global pop culture might overshadow local arts. In a global world, many cultures borrow from each other. Filipino concepts like "bayanihan" (communal unity) share values with other cultures. Seeing culture globally helps students appreciate diversity: for instance, a Filipino language teacher may use an English novel for lessons, blending cultures in education.
+$md$, 1),
+('d9f734ea-286e-5602-88f2-768603d69c51','content','Media and Information Flows',$md$
+Mass media and social media connect the world's news and entertainment. Satellite TV, streaming platforms, and the Internet let Filipinos see global news instantly (such as following foreign events on Twitter or news sites). Social media platforms (Facebook, Twitter, TikTok) make everyone a content creator, so people across the world share experiences. The **"global village"** metaphor means that news travels fast: a typhoon in the Philippines can be reported worldwide in minutes. This connectivity can educate (learning about world crises) or misinform (fake news spreads easily). In the Philippines, media firms collaborate internationally (like airing foreign shows dubbed in Filipino). Understanding global media teaches students to critically evaluate news sources and be aware of multiple perspectives.
+$md$, 2),
+('d9f734ea-286e-5602-88f2-768603d69c51','activity','Religion, Ideas, and Globalization',$md$
+Religions and ideas also spread globally. Missionaries, migration, and media have taken beliefs around the world. The Philippines is predominantly Catholic (a result of Spanish colonization), but Islam has long histories in Mindanao and continues through connections with Muslims in other countries. New religious movements and philosophies (like Buddhism or global secularism) influence urban youth via education or pop culture. Additionally, ideologies such as democracy, human rights, and environmentalism often spread internationally through NGOs and the Internet. For example, Filipino activists may join global climate marches online or campaigns for human rights. This shows how ideas shape global consciousness: students learn that ethical discussions (like sustainability) are shared by people everywhere, not just in their community.
+$md$, 3),
+('d9f734ea-286e-5602-88f2-768603d69c51','activity','Cultural Imperialism vs. Cultural Exchange',$md$
+Some critics say globalization can be a form of **cultural imperialism**: powerful countries exporting their culture and values to others (like Hollywood dominating film markets). This can concern smaller cultures about losing traditions. Others see it as **mutual exchange**: every country influences and is influenced. For example, Filipino pop culture (like P-Pop music or Filipino cuisine) is gaining fans abroad, while we enjoy international trends. Understanding both views is important. In the Philippines, debates about "brain drain" often also include "cultural brain drain," where overseas workers or media favor foreign tastes. Students should consider whether global culture waters down local identity or enriches it through diversity.
+$md$, 4),
+('d9f734ea-286e-5602-88f2-768603d69c51','activity','Global Issues and Local Responses',$md$
+Global issues like climate change, pandemics, or human rights connect people worldwide. For instance, the COVID-19 pandemic required global cooperation (sharing vaccines, information) and affected Filipinos abroad and at home. Philippine responses to these challenges show **global citizenship**: we follow international health guidelines or contribute to climate goals (like raising the target of renewable energy use). Local actions also have global impacts: choosing sustainable fishing affects ocean health for everyone. In lessons, students might learn about global environmental treaties and compare them to local initiatives (like reforestation projects in Luzon). This perspective helps students see themselves not just as Filipinos, but also as part of a global community facing shared problems.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
+$md$, 5),
+('d9f734ea-286e-5602-88f2-768603d69c51','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. Define "glocalization" and give an example involving the Philippines.
+2. What is one positive and one negative effect of global media on Philippine culture?
+3. Name a major international news platform or social media site and describe its role in globalization.
+4. How has overseas migration affected Filipino religious or cultural practices?
+5. Explain the difference between cultural imperialism and cultural exchange.
+6. Give an example of a Filipino cultural product (music, movie, food) that has global reach.
+7. What global environmental issue is relevant to the Philippines, and what local action addresses it?
+8. How do ideas like human rights spread globally and influence Philippine society?
+9. Describe one way Filipino language or media has adapted foreign content.
+10. Why is media literacy important in a globalized world?
+
+**Worked Exam-Style Problems**
+
+*Problem:* Discuss how social media has changed Filipino youth's awareness of global issues.
+
+*Solution:* Step 1: Describe social media platforms (e.g., Facebook, Twitter) as global networks. Step 2: Explain exposure (Filipino students see news and opinions from around the world on social media). Step 3: Example (a Filipino student might follow #ClimateStrike to learn about global climate action). Step 4: Explain critical thinking needed (it's important to verify sources). Step 5: Conclude that social media raises awareness quickly but also requires media skills to discern reliable information.
+
+*Problem:* Analyze the impact of a popular foreign culture (e.g., K-pop, Hollywood) on Philippine society.
+
+*Solution:* Step 1: Identify one foreign culture phenomenon (e.g., Korean pop music). Step 2: Describe its Philippine presence (Korean dramas and music concerts are widely followed here). Step 3: Positive aspects (exposure to new music styles, increased tourism interest from Filipinos in Korea). Step 4: Negative aspects (some worry it distracts from local arts; can influence fashion and values). Step 5: Provide a Philippine response (local artists collaborating with Korean singers, or government promoting P-pop). Step 6: Conclude that it's a two-way influence, emphasizing understanding rather than outright acceptance or rejection.
+
+*Problem:* Explain why global citizenship is an important concept in today's world.
+
+*Solution:* Step 1: Define global citizenship (feeling responsible for global issues beyond one's own country). Step 2: Tie to examples (Filipinos caring about issues in other countries, like donating to foreign disasters, or supporting global movements like sustainability). Step 3: Relate to education (how students learn global perspectives means thinking beyond borders). Step 4: Conclude that global citizenship encourages cooperation and empathy across nations. Step 5: Emphasize that exam answers should connect to concrete instances, like the Philippines participating in international aid or forums, to show understanding.
+
+**Hands-On Exercise**
+
+Watch a short international news clip or documentary (for example, a UN video or an overseas newsroom report) about a global issue (climate change, technology, culture). Write a brief summary of how the Philippines is mentioned or affected in that story, and one thing local communities could do to engage with the issue.
+
+**How to Pass Tips**
+
+- Use recent examples: professors like it if you mention a current global event (e.g., climate summit, or a popular foreign TV show that made waves in the Philippines).
+- Avoid biases: analyze both positive and negative sides of globalization (e.g., "On one hand… On the other hand…").
+- Memorize key terms ("glocalization," "global village," "cultural homogenization").
+- Write clearly: in essays, structure by defining terms, giving examples, and concluding with insight.
+- Check for understanding: when discussing media or ideas, differentiate between "global" and "local" clearly to avoid confusion.
+$md$, 6);
+
