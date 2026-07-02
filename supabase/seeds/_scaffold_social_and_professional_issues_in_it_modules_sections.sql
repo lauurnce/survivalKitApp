@@ -183,3 +183,56 @@ Read this scenario and draft a brief email (2–3 paragraphs) as an IT professio
 - Identify conflicts: When asked about conflict of interest (COI), remember it means personal gain vs professional duty. An example: coding for a friend on company time is a COI.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 4: Privacy, Security, and Cyber Laws
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('ee50e683-3e46-5f0e-82d6-3e7a7ebb3e47','content','Data Privacy and Personal Information',$md$
+Privacy is a major social issue in IT. In the Philippines, the **Data Privacy Act (RA 10173)** protects personal data. This means businesses and apps must collect consent for data, secure it, and allow access or correction on request. As a student, this translates to everyday practices: never share classmates' personal data without permission, and be careful posting private info on social media.
+
+IT systems should only ask for data that is necessary. For instance, a public Wi-Fi app that tracks your location and web history raises privacy flags. Always think: *Am I respecting the user's rights?* Realize that Filipinos value privacy but also share a lot on social media. Professional IT practice balances these: build opt-in features (users choose to share) and clear privacy notices. In exams, you may be asked what RA 10173 requires – know it's about consent, security, and accountability for personal data.
+$md$, 1),
+('ee50e683-3e46-5f0e-82d6-3e7a7ebb3e47','content','Cybercrime and Security Measures',$md$
+Cybercrime (**RA 10175**) covers offenses like hacking, phishing, cybersex, identity theft, and libel online. As IT professionals, you must secure systems against these crimes. For example, using strong passwords and updates to prevent hacking, educating colleagues about phishing emails, and never engaging in hacking.
+
+One question might describe a scenario (like discovering a colleague used a weak password and got hacked). You should mention security best practices: information **confidentiality** (encrypt important files), **integrity** (check data for tampering), and **availability** (backups). Remember the triad **CIA** (Confidentiality, Integrity, Availability) – many exam questions expect you to mention this for security issues. Also recall local context: the Cybercrime law in the Philippines expanded scope (e.g., includes child pornography, hate speech online) which you can mention if relevant.
+$md$, 2),
+('ee50e683-3e46-5f0e-82d6-3e7a7ebb3e47','activity','Ethical Hacking and Disclosure',$md$
+Sometimes a hacker finds a vulnerability in a system; ethical codes call this **responsible disclosure**. Non-disclosure (keeping it secret) may protect image but risks user security. Responsible disclosure (alerting the vendor and giving time to fix) aligns with ethical duty to prevent harm.
+
+For IT students, know that vulnerability disclosure policies exist. In a professional exam question, you might compare **full disclosure** (publish bug publicly, pressuring a fix quickly) vs **non-disclosure** (keeping quiet). Generally, the ethical middle path is responsible disclosure: work with the vendor discreetly. Citing real hackers who did this (like Google's Project Zero) can earn bonus points if asked for examples.
+$md$, 3),
+('ee50e683-3e46-5f0e-82d6-3e7a7ebb3e47','activity','Social Networking and Online Conduct',$md$
+Social media ethics is a big social issue. As an IT professional, your personal use of social networks reflects on your profession. For example, cyberbullying or posting illegal content can get professionals in trouble. Even in personal contexts, be mindful of **Netiquette** and the privacy of others.
+
+Employers often check social media of candidates, so professionalism extends online. For exams: know that even though writing a tweet isn't "coding," it's often covered under Social & Professional Issues. A classic question: "Is it ethical for a developer to comment negatively about a competitor online?" The answer usually cites respectful communication and not defaming others, as per professional codes. Mentioning cyberbullying laws or company social media policies can show depth.
+
+*Ready to apply this? The practice set below includes problem scenarios on applying laws and best practices in real situations.*
+$md$, 4),
+('ee50e683-3e46-5f0e-82d6-3e7a7ebb3e47','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. What are the three main pillars of information security (the CIA triad)?
+2. Under RA 10173, what rights do data subjects have? (List two.)
+3. Give an example of a cybercrime under RA 10175.
+4. Why is encryption important when transmitting sensitive data?
+5. Describe responsible disclosure in one sentence.
+
+**Exam-Style Problem**
+
+*Problem:* A programmer learns of a bug that could allow unauthorized data access on the university portal. The semester is ending; reporting it now means delaying final grades. What is the ethical action?
+
+*Solution:* The programmer should report the bug immediately. Student data privacy and system security are more important than convenience. By disclosing the issue (preferably following responsible disclosure: telling the admin privately), the programmer prevents potential harm. It aligns with professional duty and legal expectations (keeping systems secure is an obligation under laws like RA 10173, which holds data controllers accountable for breaches).
+
+**Hands-On Exercise (Case Scenario)**
+
+You run a small online store (simulation exercise). You collect customer emails for receipts. Outline a simple privacy policy (3–4 sentences) stating how you will use and protect customer data, according to ethical and legal standards. Include what data you collect, why, and how you secure it.
+
+**How to Pass Tips**
+
+- Laws and acts often come up by name. Remember the exact numbers (RA 10173 Data Privacy Act, RA 10175 Cybercrime Law, RA 8293 IP Code).
+- For the CIA triad: it's a fundamental concept. Show examples (e.g., confidentiality via encryption).
+- Mention encryption, firewalls, anti-virus as part of security solutions.
+- When answering scenario questions, clearly separate legal obligations (what the law says) from ethical duties (best practices), e.g. "By law, we must… and ethically we should…."
+$md$, 5);
+
