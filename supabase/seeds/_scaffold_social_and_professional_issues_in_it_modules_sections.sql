@@ -290,3 +290,68 @@ Imagine your group project is to develop a quiz app. You find a free icon librar
 - When discussing open-source, mention one famous license by name (e.g., GPL, MIT) to illustrate knowledge.
 $md$, 5);
 
+-- ============================================================
+-- LESSON 6: Social and Environmental Impact of IT
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('3822c95b-e919-5f55-95c6-30a2d8c44a07','content','Digital Divide and Access',$md$
+Not everyone has equal access to technology. The **digital divide** is the gap between those who have internet/computers and those who do not. In the Philippines, many rural areas still struggle with connectivity. As future IT professionals, understanding this is important. For example, when building a website or app for all Filipinos, you might make it mobile-friendly and low-bandwidth so people with slower connections can still use it.
+
+Discussing the social impact, one should also note government initiatives (such as the DICT's free Wi-Fi in public areas) and community internet programs. In exams, you might analyze how IT projects can either widen or help bridge this divide. A question might ask for ideas on increasing e-learning access during the pandemic — citing examples like using radio or TV lessons (as the Philippine Department of Education did) shows cultural context.
+$md$, 1),
+('3822c95b-e919-5f55-95c6-30a2d8c44a07','content','E-Waste and Sustainability',$md$
+Technology has an environmental side too. Discarded computers, phones, and servers contribute to **electronic waste (e-waste)**, which can be toxic. A professional issue is to promote sustainable practices: recycling old gadgets, or designing devices that last longer. For instance, as a software engineer, you can optimize code so it runs efficiently on older hardware, extending their usable life.
+
+In broader terms, mention **Green IT**: using energy-efficient servers or cloud services helps the planet. The Philippines, being an archipelago, is vulnerable to climate change, so sustainable tech development is socially responsible. If asked, talk about programs like computer recycling drives or upcycling electronics for classrooms in poor areas.
+$md$, 2),
+('3822c95b-e919-5f55-95c6-30a2d8c44a07','activity','Social Media and Society',$md$
+IT and social media have reshaped Filipino society (playing a big role in recent elections, for example). But there are issues: misinformation spreads fast online, which can harm society. IT pros can help by improving digital literacy (teaching friends how to fact-check) and understanding algorithmic influence (why Facebook or Twitter show certain news more).
+
+Privacy debates also occur: should the government regulate online content to stop fake news? This can clash with free speech. A nuanced stance might be: supporting fact-check laws while guarding civil rights. In the classroom, talk about Philippine cases (like laws against libel or Senate hearings on social media). Highlighting these current events in answers impresses professors.
+$md$, 3),
+('3822c95b-e919-5f55-95c6-30a2d8c44a07','activity','Accessibility and Inclusion',$md$
+Technology should serve everyone, including those with disabilities. Professional IT work includes making software usable for the visually impaired (screen readers, high contrast modes) or hearing impaired (captions on videos). This is a social responsibility. In the Philippines, laws like the **Magna Carta for Disabled Persons** encourage equal access.
+
+In exams, mention the importance of accessibility standards (like alt text for images, keyboard navigation) when discussing software development. It shows awareness that IT impact is not just technical but deeply social—helping fellow Filipinos regardless of ability.
+$md$, 4),
+('3822c95b-e919-5f55-95c6-30a2d8c44a07','activity','Cultural and Ethical Considerations',$md$
+Philippine culture emphasizes **Bayanihan** (community spirit). IT solutions can harness this: e.g., community-driven apps (we often see jeepney route apps or barangay announcement apps built by local devs). On the flip side, there's also concern over **digital colonialism** (large global tech companies dominating local markets). As a professional, consider developing local content and supporting Filipino-language computing.
+
+Also note: some technologies carry cultural bias. For example, AI chatbots might not understand Tagalog well if trained on English data. Raising awareness of these issues shows deep understanding. If possible, cite an example: e.g., a chatbot mistakenly translating a Filipino idiom. Professors like to see local examples.
+
+*Ready to apply this? The practice set below includes exam questions and activities on social impact scenarios.*
+$md$, 5),
+('3822c95b-e919-5f55-95c6-30a2d8c44a07','activity','Practice & Exam Drills — Lesson 6',$md$
+**Review Questions**
+
+1. What is the "digital divide," and why is it important for IT professionals?
+2. Name two practices that help make computing more sustainable (Green IT).
+3. Why should software be made accessible for people with disabilities? Give one specific example.
+4. How can misinformation on social media be an IT-related issue?
+5. What is one cultural factor to consider when developing an app for Filipinos?
+
+**Exam-Style Problem**
+
+*Problem:* You are designing an e-learning platform for elementary students in remote Philippine provinces, many of whom have limited internet. List and explain three design choices you would make to address their needs.
+
+*Solution:* (Possible answers) 1) **Optimize for low bandwidth:** use text and compressed images instead of high-definition video. 2) **Offline capability:** allow downloading lessons so students can study without a constant connection, respecting intermittent electricity. 3) **Local language support:** interface in Filipino or local dialect, making it accessible culturally. These choices address social/technical constraints (digital divide) and show social responsibility.
+
+**Hands-On Exercise (Case Scenario)**
+
+Brainstorm a feature for a smartphone app that could promote social good in a Philippine community (e.g., reporting road hazards, local job postings, etc.). Write a short paragraph describing this feature, its intended social benefit, and one technical requirement to make it inclusive (like "works with older phones" or "has voice narration").
+
+**How to Pass Tips**
+
+- Provide local examples: referring to actual Philippine programs (like DepEd's TV teaching or DOST's internet projects) scores points.
+- For environmental questions, use phrases like "sustainable development" and mention relevant laws.
+- Accessibility buzzwords (like WCAG, alt text, captioning) show depth.
+- Distinguish social vs. technical: when asked about social issues, talk about people first (e.g., job loss from automation). When asked technical, relate it (e.g., "use compression to help remote learners").
+$md$, 6);
+
+-- ============================================================
+-- SOURCES
+-- University of La Salette — Social and Professional Issues 2 course learning plan and outline
+-- Cavite State University — DCIT 65 Social and Professional Issues course syllabus (AY 2022-2023)
+-- Far Eastern University Institute of Technology — BSIT Curriculum Overview (2022-2023)
+-- CHED CMO No. 25 s.2015 — Revised PSGs for BSIT (Social and Professional Issues course specification)
+-- ============================================================
