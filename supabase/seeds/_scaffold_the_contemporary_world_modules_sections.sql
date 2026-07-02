@@ -138,3 +138,65 @@ Examine a chart of Philippine trade balance (exports vs imports) over several ye
 - Don't confuse terms: global governance means international rules/organizations; domestic governance is local government issues.
 $md$, 6);
 
+-- ============================================================
+-- LESSON 3: World Regions and Inequalities
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('f72e1372-aea9-5c3f-915d-3c8b054522cd','content','Global North–South Divide',$md$
+The **"Global North"** and **"Global South"** refer broadly to wealthy, industrialized countries (mostly in Europe, North America, parts of East Asia) versus developing countries (Latin America, Africa, much of Asia). These terms highlight global inequalities: North countries generally have higher incomes, better infrastructure, and more influence, while South countries may struggle with poverty or debt. The Philippines is often considered part of the Global South. This divide shows up in life expectancy, education, and economic output. For example, average income per person is much higher in countries like the United States than in the Philippines. Recognizing this divide helps explain why developing countries seek fairer trade and aid, and why issues like climate change are debated (as richer countries historically emitted more carbon).
+$md$, 1),
+('f72e1372-aea9-5c3f-915d-3c8b054522cd','content','Regionalism and Economic Blocs',$md$
+Countries often group into regions for cooperation. **Regionalism** means working together on common interests. For instance, the **Association of Southeast Asian Nations (ASEAN)** helps the Philippines and neighbors coordinate trade, environmental policies, and security. Another example is the **European Union (EU)**, a bloc with a single market and travel zone. The Philippines also participates in Asia-Pacific forums like APEC. Regional ties can boost local economies: tourism among ASEAN countries or shared development projects. However, they can also create new competition or political obligations. Understanding regions means knowing how geography and culture shape partnerships. In Asia, ASEAN promotes Filipino products and also involves the Philippines in negotiations like the South China Sea disputes.
+$md$, 2),
+('f72e1372-aea9-5c3f-915d-3c8b054522cd','activity','Colonialism and Post-Colonial Development',$md$
+Colonial history has shaped global inequalities. European powers colonized parts of Asia, Africa, and the Americas for centuries. The Philippines was colonized by Spain and later influenced by the US. During colonial times, resources often flowed from colonies to the colonizers. This led to underdevelopment in many colonies. Post-colonial countries like the Philippines have had to build their own economies and institutions after independence. Colonial legacies include language (Filipinos speak English), law (civil law influence), and even social structure. Analyzing contemporary challenges requires understanding this history: for example, land distribution patterns or trade patterns might date back to colonial policies. It also explains why developing countries often appeal for fairer global treatment.
+$md$, 3),
+('f72e1372-aea9-5c3f-915d-3c8b054522cd','activity','Migration and Remittances',$md$
+One major effect of globalization is the movement of people. Millions of Filipinos live and work abroad (**Overseas Filipino Workers, OFWs**), while some foreigners also reside here. This migration has powerful economic effects: Filipinos abroad send **remittances** (money sent back home) that help support families and boost our economy. For example, remittances contribute to Philippine GDP and help maintain the peso's stability. Migration also addresses job gaps: overseas nurses work where they are needed. But it can cause **brain drain** (loss of skilled workers) here. Culturally, migrants bring new ideas back home, and they form a global network (social media keeps them connected). Understanding migration shows how people link our country to the world: our lives can be influenced by global labor demands or immigration policies of other countries.
+$md$, 4),
+('f72e1372-aea9-5c3f-915d-3c8b054522cd','activity','Emerging Economies and Asia''s Rise',$md$
+In recent decades, several **"emerging economies"** (like China, India, Brazil, and ASEAN countries) have grown rapidly. Asian economies in particular have expanded through manufacturing and technology. The Philippines has benefited: for instance, many electronics parts are made in Asia and assembled here; overseas jobs opened up because global companies set up offices in Manila. We are part of this regional growth, though our pace is slower than some neighbors. Seeing Asia's rise helps explain shifts in trade: more goods now flow between Asian countries, and Asian tourists visit Philippine resorts. It also means new economic challenges: as wages rise in some countries, businesses may look to even cheaper labor markets. Keeping up with this trend involves improving education and infrastructure so the Philippines can be competitive.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
+$md$, 5),
+('f72e1372-aea9-5c3f-915d-3c8b054522cd','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions**
+
+1. Explain the terms "Global North" and "Global South." Where does the Philippines fit?
+2. Name three ASEAN member countries. What is one benefit of ASEAN to the Philippines?
+3. How does colonial history still affect the Philippines today? Give one example.
+4. What are remittances and why are they important for the Philippines?
+5. Describe one reason why labor migration happens from the Philippines to other countries.
+6. What is the significance of the South China Sea dispute for regional security? (Briefly)
+7. Name one major emerging economy in Asia and how it interacts with the Philippines.
+8. What is regionalism, and how does it differ from global globalization?
+9. Give one challenge and one advantage for developing countries in a globalized world.
+10. How does uneven economic development create international conflict?
+
+**Worked Exam-Style Problems**
+
+*Problem:* Discuss the impact of overseas Filipino workers (OFWs) on Philippine society and economy.
+
+*Solution:* Step 1: Define OFWs (Filipino workers employed abroad). Step 2: Explain economic impact (remittances provide income for families, raise consumption, and strengthen the currency). Step 3: Mention social impact (families may be separated; sometimes children grow up with only one parent at home). Step 4: Example (many Filipina nurses work in hospitals overseas, boosting local remittance flows). Step 5: Conclude (OFWs help the economy but also pose challenges to family life and require government support programs).
+
+*Problem:* How did colonialism create some of the world's current economic inequalities? Use the Philippines as an example.
+
+*Solution:* Step 1: Define colonialism (one country controlling another's resources and government). Step 2: Explain economic extraction (colonizers often took valuable crops or minerals from colonies). Step 3: Philippine example (Spain and the USA invested more in Manila's port but neglected agriculture outside, leaving rural areas less developed). Step 4: Note consequences (post-independence, the Philippines had to rebuild its economy with limited infrastructure). Step 5: Relate to global inequalities (wealthy countries often grew rich from resources in poorer countries). Step 6: Summarize how this history contributes to today's development gap.
+
+*Problem:* In your opinion, what is one major challenge the Philippines faces as part of the Global South? Outline a thoughtful answer.
+
+*Solution:* Step 1: Identify a challenge (e.g., vulnerability to global market swings). Step 2: Explain it (as a developing country, the Philippines depends on a few export industries; if world prices drop, its economy suffers). Step 3: Provide evidence (recent example: a global demand slump during a crisis reduced remittances or export earnings, affecting GDP). Step 4: Discuss coping strategies (diversifying exports, improving education). Step 5: Emphasize perspective (gaining understanding of such challenges shows empathy with development issues, a trait valued in essay answers).
+
+**Hands-On Exercise**
+
+Research one of the United Nations' Sustainable Development Goals (e.g., No Poverty, Quality Education, or Climate Action). Write a paragraph explaining how this goal relates to the Philippines' status as a developing country (Global South) and how regional cooperation (like ASEAN) might help achieve it.
+
+**How to Pass Tips**
+
+- Understand key terms like "Global South," "emerging economy," and "regionalism." Use them correctly.
+- When discussing history or divides, include Philippine-specific impacts (like how colonization changed our trade patterns).
+- Balance: If asked for advantages/disadvantages, list a couple of each. Philippine examples impress (like ASEAN+3, PH climate vulnerability vs. tourism from neighbors).
+- Don't oversimplify "rich vs poor countries" as just money; mention factors (technology gap, education, healthcare differences).
+- Connect to current events: professors appreciate if you mention something like regional hosting or recent summits.
+$md$, 6);
+
