@@ -262,3 +262,74 @@ Watch a short international news clip or documentary (for example, a UN video or
 - Check for understanding: when discussing media or ideas, differentiate between "global" and "local" clearly to avoid confusion.
 $md$, 6);
 
+-- ============================================================
+-- LESSON 5: Population, Mobility, and Sustainability
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('f28eaacf-7bb3-520b-8de8-9a078649b220','content','Global Population and Demography',$md$
+The world population has grown from a few billion in 1900 to over 7 billion today. Population trends shape global dynamics: more people means higher demand for resources and jobs. The Philippines has a young and growing population (over 110 million people), affecting education, healthcare, and employment. Globalization affects population too: some regions like Japan face aging populations, while others (like parts of Africa and Southeast Asia) see rapid growth. Demography also examines migration (movement of people). Understanding population trends helps explain challenges: for example, high population density in Metro Manila leads to traffic and housing issues. Population education (a mandatory CHED topic) teaches students about fertility rates, family planning, and how governments plan for the future (like the Philippine government's development plans for education and jobs).
+$md$, 1),
+('f28eaacf-7bb3-520b-8de8-9a078649b220','content','Urbanization and Global Cities',$md$
+More people are living in cities worldwide. Manila, Metro Cebu, and Davao City are examples of rapidly growing urban areas. A **"global city"** is an urban center with a major influence on the world economy (like Singapore or New York). While Manila is not on the same scale, it's connected globally through business, finance (Philippine Stock Exchange trading international stocks), and media. Urbanization brings opportunities: education, diverse jobs, and cultural exchange happen in cities. But it also brings challenges: traffic congestion, pollution, and informal settlements. Students studying The Contemporary World learn about sustainable urban planning and how cities can be part of global networks (for example, how Manila ports link to global shipping routes).
+$md$, 2),
+('f28eaacf-7bb3-520b-8de8-9a078649b220','activity','Migration, Remittances, and Diaspora',$md$
+We covered OFWs earlier, but here we focus on global citizen networks. The **Filipino diaspora** (Filipinos living abroad and their descendants) forms a global community. They work in many countries, send money home, and also influence foreign cultures. For instance, Filipino nurses are common in US and Middle East hospitals. This mobility can have benefits: cultural exchange (Filipino festivals abroad), return of skills, and foreign investment (some Filipinos start businesses back home). However, it can also mean family separation and reliance on foreign economies. Students learn that migration is driven by factors like seeking better jobs or education, which is common in many countries.
+$md$, 3),
+('f28eaacf-7bb3-520b-8de8-9a078649b220','activity','Sustainable Development and Global Challenges',$md$
+Global challenges require sustainable solutions. The UN's **Sustainable Development Goals (SDGs)** are a universal framework. The Philippines has pledged to these goals (like reducing poverty, ensuring education). Environmental issues are especially relevant: climate change affects the Philippines through stronger typhoons and sea-level rise. Local actions (reforestation, disaster preparedness) tie into global efforts. Economic sustainability is also important: finding a balance between growth and protecting nature. For example, the Philippines is expanding renewable energy (solar, wind) to meet rising energy needs without as much carbon pollution. This section teaches that local policies (like waste management or public health programs) connect to global standards and goals, and that sustainable development is a shared responsibility.
+$md$, 4),
+('f28eaacf-7bb3-520b-8de8-9a078649b220','activity','Global Citizenship and Future Outlook',$md$
+The culmination of The Contemporary World is understanding one's role as a **global citizen**. This means being aware of international issues (human rights, equality, environment) and considering them in local decisions. For instance, a Filipino student might volunteer in a coastal clean-up, understanding it contributes to global ocean health. It also means respecting diversity and working with people of other backgrounds. Students are encouraged to think globally: what does the future hold with artificial intelligence, pandemics, or renewable technologies? Preparing for the future involves learning from other countries (like education models) and contributing Filipino perspectives. By the end of the course, students should feel connected not only to the Philippines, but to the broader world community.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
+$md$, 5),
+('f28eaacf-7bb3-520b-8de8-9a078649b220','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. What is a "global city"? Name one characteristic and an example.
+2. Explain how population growth in the Philippines compares to world trends.
+3. How do Overseas Filipino Workers (OFWs) affect Philippine development, in terms of remittances? (Short answer)
+4. What are the Sustainable Development Goals (SDGs)? Mention two goals relevant to the Philippines.
+5. Describe one way climate change impacts the Philippines.
+6. Define "global citizenship" in your own words.
+7. Why is urban planning important in a globalized context?
+8. Give an example of a Filipino community abroad and its cultural influence.
+9. How does technology (like the Internet) help manage global challenges?
+10. What is the connection between local actions (like recycling) and global sustainability?
+
+**Worked Exam-Style Problems**
+
+*Problem:* Discuss the role of sustainable energy in the future of the Philippines.
+
+*Solution:* Step 1: Define sustainable (renewable) energy (solar, wind, hydro). Step 2: Explain the current situation (the Philippines still uses coal and oil heavily, causing pollution). Step 3: Benefits of switching (reduced greenhouse gases, sustainable supply since we have many sunny and windy areas). Step 4: Example (a solar farm in Nueva Ecija providing clean power). Step 5: Challenges (high initial cost, technology transfer). Step 6: Conclude that investing in renewable energy aligns with global trends and SDGs, and is important for the Philippines' long-term growth.
+
+*Problem:* Evaluate the effects of rapid urbanization on Philippine society.
+
+*Solution:* Step 1: List effects (positive: job opportunities, better services in cities; negative: overcrowding, slums, traffic). Step 2: Support with specifics (Metro Manila faces traffic that reduces productivity; but cities also have universities and tech hubs). Step 3: Discuss government response (building public transit, promoting regional development to ease metro pressure). Step 4: Conclude that urbanization is a global trend; the Philippines must plan cities to handle growth sustainably to reap benefits.
+
+*Problem:* What does it mean to be a global citizen? Write a short essay outline on how Filipino youth can practice global citizenship.
+
+*Solution:* Step 1: Define global citizenship (awareness and responsibility beyond nationality). Step 2: Points to include: supporting international causes (like climate marches), learning foreign languages/cultures, engaging in international exchanges (study/work abroad), and being informed about world events. Step 3: Philippine context (participating in Model UN, celebrating international festivals, being inclusive of immigrants). Step 4: Conclusion: emphasize empathy and cooperation. Step 5: Tip to student: in the exam, use examples such as an exchange program or online activism to illustrate the outline.
+
+**Hands-On Exercise**
+
+Create a mind map or simple diagram (using paper or digital tools) linking the Philippines to global challenges and actions. For example, start with "Philippines" at center, then branches like "Climate action (sea walls, global CO₂ cuts), Education (adopt international curricula), Economy (OFWs, exports), Health (pandemic response), Culture (K-pop fans, receiving tourists)." This visual should help you see how one local place connects to many global issues.
+
+**How to Pass Tips**
+
+- Memorize a few SDG numbers and names; essays often mention them (e.g., "Goal 13: Climate Action is relevant when discussing typhoon response").
+- When describing future trends, reference things like "increased use of AI or renewable energy" as global patterns.
+- Use local examples: mention Manila's train systems, or Cebu's tech park, to show concrete points.
+- Practice explaining data: if an exam gives a chart (like population growth), describe trends in words ("rapid increase" or "stabilizing growth").
+- Show awareness of global events (e.g., mention world climate conferences if relevant).
+$md$, 6);
+
+-- ============================================================
+-- SOURCES
+-- Ateneo de Manila University — SocSci 12 The Contemporary World (course syllabus)
+-- Polytechnic University of the Philippines — GEED The Contemporary World (course outline)
+-- Far Eastern University — General Education curriculum (The Filipino in the Contemporary World)
+-- Adamson University — The Contemporary World (soc sci course guide)
+-- De La Salle University — GEWORLD The Contemporary World (course syllabus)
+-- CHED CMO No. 25, s.2015 — The Contemporary World (course description and outline)
+-- ============================================================
