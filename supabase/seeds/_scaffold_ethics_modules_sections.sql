@@ -127,3 +127,50 @@ $md$, 3),
 - Tip: When in doubt, ask if the action respects everyone's rights and whether you'd be comfortable if others knew about it. This aligns with impartiality and fairness.
 $md$, 4);
 
+-- ============================================================
+-- LESSON 3: Culture, Society, and Filipino Values
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('5e27e216-70e2-5d8a-beb8-e36d540ddd43','content','Culture and Moral Behavior',$md$
+Our culture shapes what we see as "normal" and can influence values. **Cultural relativism** says each society's morals are valid for its people, but ethics teaches some principles may be universal (like human dignity). For example, showing respect to elders is very important in Filipino culture, but respect is a value shared worldwide. Culture provides context: in the Philippines, concepts like **kapwa** (shared identity) stress community well-being. However, culture is not an excuse for injustice – unjust practices in any culture (like *utang na loob* being used to force favors) can be questioned by ethics. In other words, one should understand cultural influences but also think critically about them.
+$md$, 1),
+('5e27e216-70e2-5d8a-beb8-e36d540ddd43','content','Filipino Cultural Values in Ethics',$md$
+Many Filipino values relate to ethics. For instance, **pakikisama** (harmonious community relations) encourages considering others' needs, which aligns with empathy and cooperation. **Bayanihan** (helping neighbors) teaches generosity. **Pagmamano** and **paggalang** (respect) show how personal behavior affects others' dignity. On the other hand, **hiya** (shame) can deter wrongdoing but may also silence people from reporting issues. Philippine society is also deeply influenced by Christianity: teachings like "love thy neighbor" and the sanctity of life inform moral choices. In short, when making decisions, Filipino students often balance modern ethical principles (fairness, rights) with traditional values like family loyalty and religious beliefs.
+$md$, 2),
+('5e27e216-70e2-5d8a-beb8-e36d540ddd43','activity','Developing Community and Individual Morality',$md$
+Ethics education in society aims to build both social and individual virtue. Classrooms, families, and communities teach moral values through examples and practice. Psychologist **Lawrence Kohlberg** describes how people grow from obeying rules to understanding justice as they mature. In the Philippines, schools use collaborative activities (like group projects) to teach teamwork and fairness. Civic values—like bayanihan—encourage students to think beyond themselves. For example, a student council organizing a tree-planting teaches care for the environment and community. These experiences help students internalize moral principles so they act correctly even without supervision.
+
+*Ready to apply these ideas? The practice set below contains examples, step-by-step solutions, and deeper exercises.*
+$md$, 3),
+('5e27e216-70e2-5d8a-beb8-e36d540ddd43','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions**
+
+1. How can cultural values influence what a person thinks is right or wrong?
+2. Give an example of a Filipino value (e.g. kapwa, bayanihan) and explain its ethical significance.
+3. What is cultural relativism? Why might it be a problem to accept it without question?
+4. How does society help develop a person's moral character (give one example)?
+5. Describe a situation where traditional values might conflict with modern laws or ethics.
+
+**Worked Exam-Style Problems**
+
+*Problem:* In your community, it is customary to give gifts to teachers after exams. A student can afford only a small token, others give expensive items. Is it ethical to give a bigger gift to stand out? Analyze from a cultural vs. ethical perspective.
+
+*Solution:* Cultural view: Gift-giving shows respect. But ethical view: fairness and integrity matter. Using the 7-step model: State problem (pressure vs. fairness), check facts (gift expectations, teacher role), identify options (give equally, give expensive to impress, skip gift). Testing: publicity test – would the student feel ashamed if known? Likely yes (bragging). Best choice: give a modest gift or no gift, because the teacher's duty is independent of gifts. This respects the value of respect (paggalang) without unfairness.
+
+*Problem:* A factory worker family tradition is to help friends and relatives get jobs even if they are less qualified (favor system). How should an HR ethics person evaluate this custom?
+
+*Solution:* Identify values (loyalty/family) vs. merit/fairness. The cultural perspective recognizes *utang na loob* (debt of gratitude), but ethics in work values equal opportunity. The HR person should acknowledge the intention to help others but discourage nepotism. Ethical solution: Suggest following fair hiring rules, maybe mentoring less-qualified relatives instead of giving them an unfair advantage. This balances loyalty and justice.
+
+**Application Exercise**
+
+- Imagine a debate: "Cultural traditions should never be questioned by outside standards." Take turns arguing each side using ethical principles.
+- Interview elders or community leaders about a tradition (like fiesta celebrations). Ask how they would handle a moral issue that breaks a tradition. Summarize how culture and ethics interact in that scenario.
+
+**How to Pass this Topic**
+
+- Show awareness of Filipino context. Mention local values (e.g. pakikisama, kapwa) and how they relate to ethics.
+- Use examples from Philippine life (school, family, barangay issues). In essay questions, acknowledging both sides (culture vs. universal morality) is often expected.
+- Avoid absolute statements like "All traditions are right." Recognize complexity: some customs support ethics, others may clash.
+- Tip: Relate ethical terms (like justice, virtue) to community stories or national issues (e.g. bayanihan during disasters, voting for clean candidates).
+$md$, 4);
+
