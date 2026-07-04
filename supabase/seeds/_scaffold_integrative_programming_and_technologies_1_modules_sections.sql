@@ -73,3 +73,58 @@ def merge_records(a, b):
     return merged
 
 print(merge_records(registrar, library))$code$);
+
+-- ============================================================
+-- LESSON 2: Data Interchange Formats — JSON and XML
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('deb08773-907a-56c6-ae38-5138a34ddb5b','content','Why Systems Need a Common Data Language',$md$
+When two systems exchange data, they must agree on a format both can read — a **data interchange format**. A Java banking system and a Python mobile backend cannot share raw objects in memory; they exchange text that each side can parse. The two formats you must master are **JSON** (JavaScript Object Notation) and **XML** (eXtensible Markup Language). JSON looks like nested key-value pairs: `{"name": "Ana", "course": "BSIT"}`. XML wraps data in tags: `<student><name>Ana</name></student>`. JSON dominates modern web APIs because it is lighter and maps directly to objects in most languages; XML is still everywhere in enterprise and government systems (electronic invoices, bank files, old web services). Being able to read, write, and convert between both is a core exam skill and a daily task in real integration work.
+$md$, 1),
+('deb08773-907a-56c6-ae38-5138a34ddb5b','content','JSON in Depth',$md$
+JSON has only a few building blocks, which is why it is so popular. **Values** can be strings, numbers, booleans (`true`/`false`), `null`, arrays, or objects. **Objects** are unordered collections of key-value pairs in braces `{}`; **arrays** are ordered lists in brackets `[]`. A student record with grades might look like: `{"student_id": "2024-00123", "grades": [{"subject": "IPT1", "grade": 1.75}]}`. Rules to remember for exams: keys must be double-quoted strings; no trailing commas; no comments allowed. In Python, `json.loads()` turns a JSON string into dictionaries and lists, and `json.dumps()` goes the other way — this pair is called **deserialization** and **serialization**. Almost every REST API you will ever call (payment gateways, weather services, government portals) sends and receives JSON, so fluency here pays off in every later lesson.
+$md$, 2),
+('deb08773-907a-56c6-ae38-5138a34ddb5b','activity','XML and Choosing Between Formats',$md$
+XML organizes data as a tree of nested **elements** with opening and closing tags, optional **attributes** (`<grade subject="IPT1">1.75</grade>`), and a single **root element**. It supports schemas (XSD) that formally validate structure — a big reason banks and government agencies still require it (for example, BIR electronic filings and bank payroll files often use XML). Compared to JSON, XML is more verbose but more self-describing and better at document-style data. Exam comparisons usually expect: JSON = lightweight, native to JavaScript, ideal for web/mobile APIs; XML = heavier, supports validation and namespaces, common in enterprise/legacy systems. A frequent scenario question: "A payment partner requires XML but your app uses JSON internally — what do you do?" Answer: build a **transformation layer** that converts between formats at the boundary, keeping your internal model clean.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('deb08773-907a-56c6-ae38-5138a34ddb5b','activity','Practice & Exam Drills — Lesson 2',$md$
+**Review Questions**
+
+1. What is a data interchange format and why is it necessary?
+2. List the six JSON value types.
+3. Write a JSON object representing a subject with a title and a list of three lesson titles.
+4. What are two advantages of XML over JSON, and two of JSON over XML?
+5. What do serialization and deserialization mean?
+6. Why can JSON not contain comments, and what problems can that cause?
+
+**Worked Exam-Style Problem**
+
+*Problem:* Convert this XML into equivalent JSON: `<order id="55"><item qty="2">Ballpen</item><item qty="1">Notebook</item></order>`
+
+*Solution:* Step 1: The root `order` becomes an object; its `id` attribute becomes a key: `"id": "55"`. Step 2: Repeated `<item>` elements become an array. Step 3: Each item has an attribute and text content, so represent both: `{"qty": "2", "name": "Ballpen"}`. Final answer: `{"order": {"id": "55", "items": [{"qty": "2", "name": "Ballpen"}, {"qty": "1", "name": "Notebook"}]}}`. Step 4: Note in your answer that attribute-to-key mapping is a design choice — exams award points for stating the convention you used.
+
+**How to Pass Tips**
+
+- Practice hand-writing small JSON documents without a computer; missing quotes and trailing commas are the top mark-losers.
+- Remember: JSON keys are always double-quoted; single quotes are invalid.
+- For XML, always close every tag and have exactly one root element.
+- When asked "which format should this system use," anchor your answer to the consumer: web/mobile app -> JSON; regulated enterprise partner or document validation -> XML.
+
+**Coding Drill:** Complete `total_units` so it parses the JSON string and returns the sum of the units of all subjects.
+$md$, 4, 'python', $code$import json
+
+payload = '{"student": "Ana Cruz", "subjects": [{"code": "IPT1", "units": 3}, {"code": "HCI", "units": 3}, {"code": "ETHICS", "units": 2}]}'
+
+def total_units(json_string):
+    # TODO: parse the JSON and sum the "units" of every subject
+    data = json.loads(json_string)
+    total = 0
+    for subject in data["subjects"]:
+        total += subject["units"]
+    return total
+
+print(total_units(payload))$code$);
