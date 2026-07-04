@@ -26,10 +26,7 @@ INSERT INTO subjects (id, year_id, semester, kind, title, slug, sort_order) VALU
    1, 'major', 'Systems Integration and Architecture', 'systems-integration-and-architecture', 2),
   ('30000000-0003-0001-0001-000000000003',
    '00000000-0000-0000-0000-000000000003',
-   1, 'major', 'Fundamentals of Research', 'fundamentals-of-research', 3),
-  ('30000000-0003-0001-0001-000000000004',
-   '00000000-0000-0000-0000-000000000003',
-   1, 'major', 'IT Elective 1', 'it-elective-1', 4)
+   1, 'major', 'Fundamentals of Research', 'fundamentals-of-research', 3)
 ON CONFLICT (id) DO NOTHING;
 
 -- 3rd Year, 2nd Semester — major subjects
@@ -45,10 +42,7 @@ INSERT INTO subjects (id, year_id, semester, kind, title, slug, sort_order) VALU
    2, 'major', 'Systems Analysis and Design', 'systems-analysis-and-design', 3),
   ('30000000-0003-0002-0001-000000000004',
    '00000000-0000-0000-0000-000000000003',
-   2, 'major', 'Information Assurance and Security 1', 'information-assurance-and-security-1', 4),
-  ('30000000-0003-0002-0001-000000000005',
-   '00000000-0000-0000-0000-000000000003',
-   2, 'major', 'IT Elective 2', 'it-elective-2', 5)
+   2, 'major', 'Information Assurance and Security 1', 'information-assurance-and-security-1', 4)
 ON CONFLICT (id) DO NOTHING;
 
 -- 4th Year, 1st Semester — major subjects
@@ -61,14 +55,5 @@ INSERT INTO subjects (id, year_id, semester, kind, title, slug, sort_order) VALU
    1, 'major', 'Information Assurance and Security 2', 'information-assurance-and-security-2', 2),
   ('40000000-0004-0001-0001-000000000003',
    '00000000-0000-0000-0000-000000000004',
-   1, 'major', 'Social and Professional Issues in IT', 'social-and-professional-issues-in-it', 3),
-  ('40000000-0004-0001-0001-000000000004',
-   '00000000-0000-0000-0000-000000000004',
-   1, 'major', 'IT Elective 3', 'it-elective-3', 4),
-  ('40000000-0004-0001-0001-000000000005',
-   '00000000-0000-0000-0000-000000000004',
-   1, 'major', 'IT Elective 4', 'it-elective-4', 5),
-  ('40000000-0004-0001-0001-000000000006',
-   '00000000-0000-0000-0000-000000000004',
-   1, 'major', 'Capstone Project', 'capstone-project', 6)
+   1, 'major', 'Social and Professional Issues in IT', 'social-and-professional-issues-in-it', 3)
 ON CONFLICT (id) DO NOTHING;
