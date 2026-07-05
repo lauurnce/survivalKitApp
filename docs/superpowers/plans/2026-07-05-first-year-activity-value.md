@@ -50,6 +50,10 @@ Match or beat the TCW bar: **≥ 15 paid activity sections and ≥ 20,000 paid c
 - Commit cadence: one commit per lesson/unit, message pattern `feat(seeds): <Subject> — <Lesson N> activity upgrade` (baseline commits: `feat(seeds): <Subject> — <what>`). Solo author, no Co-Authored-By.
 - Apply to live DB via Supabase MCP `execute_sql` (project `mpdymglipgzuybtxuvhy`) by running the updated seed file's full contents; verify with the audit query in Task 6 after each subject.
 
+## ⚠️ Live-DB divergence discovered during Task 1 (applies to Tasks 2–4)
+
+CP1's live data contained six "Try It" sections (sort_order 999) that existed **only in the live DB**, not in the seed file — a full re-run of the idempotent seed would have deleted them from production. Resolution: the Try It rows were backported into `cp1_modules_sections.sql`, and the new sections were applied to live as **delta INSERTs** (extracted from git diff) instead of re-running the whole file. **Before applying any other subject's seed file to live, first diff live sections against the file** (`SELECT heading, sort_order FROM sections … ORDER BY …` vs. the file) and backport any live-only rows. Never full-rerun a seed file until it matches live.
+
 ## Order of execution (conversion-driven)
 
 PH school year starts August: incoming first-years hit **Semester 1** subjects first. So: CP1 → Intro to Computing → CP2 → Discrete Structures 1. The free-preview/heading task (5) and live-apply verification (6) close it out.
@@ -147,6 +151,8 @@ git commit -m "feat(seeds): Computer Programming 1 — Lesson 5 activity upgrade
 - [ ] **Repeat Steps 1–5 for Lessons 1, 2, 3, 4, 6, 7** using the per-lesson table above. Each lesson = its own commit. The worked-solutions section must actually answer *that lesson's existing* practice questions (read them from the file first); never write "refer to your notes".
 
 **Done when:** CP1 has 21 activity sections (7 existing + 14 new), 7 of them runnable C drills.
+
+**✅ COMPLETED 2026-07-05.** All 7 lessons upgraded and applied live. Verified: 21 paid activity sections, 7 C code labs, 30,464 paid chars (was 7/0/7,321). All 7 drills compiled with `cc -Wall` and matched their expected outputs; every published trace answer was machine-verified. Bonus: live-only "Try It" sections backported (see divergence warning above).
 
 ---
 
