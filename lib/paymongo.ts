@@ -112,6 +112,8 @@ interface PaymentRow {
 
 // Resolve a single Link by its reference_number. Returns the link id + remarks,
 // or null if PayMongo has no such link. The only supported way to read remarks.
+// PayMongo resolves references at GET /v1/links/{reference}; the query-param
+// form (?reference_number=) is not a real route and 404s.
 export async function getLinkByReference(
   reference: string
 ): Promise<{ linkId: string; remarks: string; amount: number; status: string } | null> {
@@ -119,11 +121,10 @@ export async function getLinkByReference(
   if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
   const encoded = Buffer.from(`${secretKey}:`).toString("base64");
 
-  const url = new URL("https://api.paymongo.com/v1/links");
-  url.searchParams.set("reference_number", reference);
-  const res = await fetch(url.toString(), {
-    headers: { Authorization: `Basic ${encoded}` },
-  });
+  const res = await fetch(
+    `https://api.paymongo.com/v1/links/${encodeURIComponent(reference)}`,
+    { headers: { Authorization: `Basic ${encoded}` } }
+  );
   if (!res.ok) return null;
   const json = await res.json();
   // This endpoint returns an array under data even for a single reference.
@@ -240,9 +241,11 @@ export function verifyPaymongoWebhook(rawBody: string, signatureHeader: string):
     })
   );
   const timestamp = parts["t"];
-  const teHmac = parts["te"];
+  // PayMongo signs TEST events in `te` and LIVE events in `li`; the other
+  // field is not valid for our secret. Accept a match on either.
+  const candidates = [parts["te"], parts["li"]].filter(Boolean);
 
-  if (!timestamp || !teHmac) return false;
+  if (!timestamp || candidates.length === 0) return false;
 
   // Reject stale/replayed signatures before doing the constant-time compare.
   const ts = Number(timestamp);
@@ -255,9 +258,11 @@ export function verifyPaymongoWebhook(rawBody: string, signatureHeader: string):
     .update(payload)
     .digest("hex");
 
-  try {
-    return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(teHmac));
-  } catch {
-    return false;
-  }
+  return candidates.some((candidate) => {
+    try {
+      return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(candidate));
+    } catch {
+      return false;
+    }
+  });
 }

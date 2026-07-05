@@ -3,6 +3,7 @@ import {
   createPaymongoLink,
   verifyPaymongoWebhook,
   parseLinkRemarks,
+  getLinkByReference,
   YEAR_AMOUNT,
 } from "./paymongo";
 import crypto from "crypto";
@@ -214,6 +215,86 @@ describe("verifyPaymongoWebhook", () => {
 
   it("returns false for a malformed header with no timestamp", () => {
     expect(verifyPaymongoWebhook("body", "te=abc")).toBe(false);
+  });
+
+  // PayMongo signs LIVE events in `li` and TEST events in `te` — a live
+  // delivery does NOT carry a valid te. Verification must accept either field.
+  it("accepts a live-mode header where only li carries the valid signature", () => {
+    const body = JSON.stringify({ data: { type: "link.payment.paid" } });
+    const now = Math.floor(Date.now() / 1000);
+    const hmac = crypto
+      .createHmac("sha256", FAKE_WEBHOOK_SECRET)
+      .update(`${now}.${body}`)
+      .digest("hex");
+    expect(verifyPaymongoWebhook(body, `t=${now},te=,li=${hmac}`)).toBe(true);
+  });
+
+  it("accepts a test-mode header where only te carries the valid signature", () => {
+    const body = JSON.stringify({ data: { type: "link.payment.paid" } });
+    const now = Math.floor(Date.now() / 1000);
+    const hmac = crypto
+      .createHmac("sha256", FAKE_WEBHOOK_SECRET)
+      .update(`${now}.${body}`)
+      .digest("hex");
+    expect(verifyPaymongoWebhook(body, `t=${now},te=${hmac},li=`)).toBe(true);
+  });
+
+  it("returns false when neither te nor li matches", () => {
+    const body = JSON.stringify({ data: { type: "link.payment.paid" } });
+    const now = Math.floor(Date.now() / 1000);
+    expect(verifyPaymongoWebhook(body, `t=${now},te=deadbeef,li=deadbeef`)).toBe(false);
+  });
+});
+
+describe("getLinkByReference", () => {
+  beforeEach(() => {
+    process.env.PAYMONGO_SECRET_KEY = FAKE_SECRET;
+    vi.stubGlobal("fetch", vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    delete process.env.PAYMONGO_SECRET_KEY;
+  });
+
+  // PayMongo resolves a link by reference at GET /v1/links/{reference}. The
+  // query-param form (?reference_number=) is NOT a real route and 404s.
+  it("fetches the link by reference in the URL path", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: {
+          id: "link_abc123",
+          attributes: { remarks: "year:y device:d", amount: 4900, status: "paid" },
+        },
+      }),
+    } as Response);
+
+    const result = await getLinkByReference("kktO0LG");
+
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.paymongo.com/v1/links/kktO0LG",
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: expect.stringContaining("Basic"),
+        }),
+      })
+    );
+    expect(result).toEqual({
+      linkId: "link_abc123",
+      remarks: "year:y device:d",
+      amount: 4900,
+      status: "paid",
+    });
+  });
+
+  it("returns null when PayMongo has no such link", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ errors: [{ code: "not_found" }] }),
+    } as Response);
+
+    expect(await getLinkByReference("nope")).toBeNull();
   });
 });
 
