@@ -183,3 +183,58 @@ ok = handle_response(200, '{"fee": 120, "courier": "LBC"}')
 bad = handle_response(404, '{}')
 print(ok)
 print(bad)$code$);
+
+-- ============================================================
+-- LESSON 4: Server-Side Scripting and Backend Integration
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('4f2673dd-9e46-525e-9710-3512a55c0a26','content','The Role of the Server Side',$md$
+Every integrated application has a **server side**: code that runs on a machine you control, sits between users and your data, and talks to other systems. While the browser or mobile app (the **client side**) handles display and input, the server side enforces rules, hides secrets, and coordinates integrations. Why can the client not call a payment gateway directly? Because the gateway's secret API key must never ship inside an app where anyone can extract it. The server holds the key, receives the client's request, calls the gateway, and returns only safe results. Common server-side technologies you will meet: **PHP** (still powering a huge share of Philippine school and business websites), **Node.js** (JavaScript on the server), **Python** (Flask, Django, FastAPI), and **Java** (Spring). The concepts — routing, request handling, responses — are identical across all of them.
+$md$, 1),
+('4f2673dd-9e46-525e-9710-3512a55c0a26','content','Anatomy of a Request Handler',$md$
+Server-side code is organized around **routes**: rules that map a method and URL pattern to a function. A handler for `POST /enroll` might: (1) read and validate the request body; (2) check business rules (is the subject open? does the student have unpaid balances?); (3) call other systems (registrar database, payment API); (4) return a JSON response with the right status code. Two universal rules: **validate every input** (never assume the client sent clean data — check types, ranges, and required fields) and **fail with clear errors** (return `400` with a message like "student_id is required", not a crash). **Environment variables** keep secrets (database passwords, API keys) out of source code — a favorite exam point and a real-world security requirement under the Data Privacy Act, since leaked credentials expose personal data.
+$md$, 2),
+('4f2673dd-9e46-525e-9710-3512a55c0a26','activity','Integrating Third-Party Services Server-Side',$md$
+Real backends are integration hubs. A typical Filipino e-commerce backend calls: a **payment gateway** (PayMongo, Maya) to charge cards or e-wallets, an **SMS/email service** to notify customers, a **courier API** for shipping, and its own **database**. Key patterns to name in exams: the **facade** — your server exposes one clean endpoint (`POST /checkout`) that internally orchestrates several external calls; **webhooks** — instead of you asking the gateway "is it paid yet?" repeatedly, the gateway calls *your* URL when payment completes (push, not poll); and **idempotency** — design handlers so receiving the same webhook twice does not double-process an order (check if the payment id was already recorded). Also mention **graceful degradation**: if the SMS service is down, the order should still succeed and the notification can be retried later.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('4f2673dd-9e46-525e-9710-3512a55c0a26','activity','Practice & Exam Drills — Lesson 4',$md$
+**Review Questions**
+
+1. Give three responsibilities of the server side that the client side must never handle.
+2. Why must API secret keys stay on the server?
+3. What are the four typical steps inside a request handler?
+4. What is a webhook, and how does it differ from polling?
+5. Define idempotency and explain why webhook handlers need it.
+6. What are environment variables used for?
+
+**Worked Exam-Style Problem**
+
+*Problem:* An online store's `POST /checkout` endpoint sometimes charges customers twice when they double-click the "Pay" button. Diagnose the cause and propose a fix.
+
+*Solution:* Step 1: Diagnose — two identical requests arrive; the handler is not idempotent, so each one creates a separate charge. Step 2: Client-side mitigation — disable the button after the first click (helps, but never sufficient; requests can still be retried by the network). Step 3: Server-side fix — require an **idempotency key**: the client generates a unique order token, and the server records it; if a request arrives with a token it has already processed, return the original result instead of charging again. Step 4: Note that major gateways (Stripe, PayMongo) support exactly this header, showing the pattern is industry standard. Step 5: Conclude — correctness must be enforced on the server because only the server is trusted.
+
+**How to Pass Tips**
+
+- "Never trust the client" answers almost every security-flavored question in this lesson.
+- Know the checkout flow by heart: validate -> business rules -> external calls -> response. Professors ask you to order these steps.
+- If a scenario involves "the payment succeeded but the system did not update," the expected answer involves webhooks and retries.
+- Mention environment variables whenever credentials appear in a question — hardcoded secrets are an automatic red flag.
+
+**Coding Drill:** Complete `process_webhook` so a payment id that was already processed is skipped (returns "duplicate") instead of being recorded twice.
+$md$, 4, 'python', $code$processed = {"pay_001", "pay_002"}
+
+def process_webhook(payment_id):
+    # TODO: if payment_id is already in processed, return "duplicate";
+    # otherwise add it and return "recorded"
+    if payment_id in processed:
+        return "duplicate"
+    processed.add(payment_id)
+    return "recorded"
+
+print(process_webhook("pay_003"))
+print(process_webhook("pay_003"))
+print(processed)$code$);
