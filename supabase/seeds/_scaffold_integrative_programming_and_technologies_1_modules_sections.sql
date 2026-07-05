@@ -128,3 +128,58 @@ def total_units(json_string):
     return total
 
 print(total_units(payload))$code$);
+
+-- ============================================================
+-- LESSON 3: Web Services and REST APIs
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('157a631d-cc05-5f89-8ebf-da9a84866c20','content','What Is a Web Service?',$md$
+A **web service** is a program that other programs call over a network using standard web protocols — usually HTTP, the same protocol browsers use. Instead of returning web pages for humans, it returns data (typically JSON) for other software. This matters for integration because HTTP travels everywhere: through firewalls, across the internet, between any languages. Two big styles exist. **SOAP** is the older, XML-heavy standard with strict contracts (WSDL files) — still used by banks and government systems. **REST** (REpresentational State Transfer) is the dominant modern style: simple HTTP requests to URLs that represent resources. When your weather app shows a PAGASA-style forecast, or a delivery app tracks a parcel, a REST API call is happening behind the scenes. In this course, "API" (Application Programming Interface) usually means a REST web service.
+$md$, 1),
+('157a631d-cc05-5f89-8ebf-da9a84866c20','content','REST Fundamentals: Resources, Verbs, and Status Codes',$md$
+REST organizes an API around **resources** identified by URLs, such as `/students` or `/students/2024-00123`. You act on resources with **HTTP methods**: **GET** reads data, **POST** creates something new, **PUT/PATCH** update it, and **DELETE** removes it. The server replies with a **status code**: `200 OK` (success), `201 Created`, `400 Bad Request` (your input was wrong), `401 Unauthorized`, `404 Not Found`, and `500 Internal Server Error` (the server crashed). Request and response bodies are usually JSON, with **headers** carrying metadata like `Content-Type: application/json`. A well-designed REST API is predictable: `GET /subjects` lists subjects, `GET /subjects/ipt1` fetches one, `POST /subjects` adds one. Exams love asking you to match methods to actions and to interpret status codes — memorize the ones above cold.
+$md$, 2),
+('157a631d-cc05-5f89-8ebf-da9a84866c20','activity','Consuming an API in Practice',$md$
+Calling an API from code follows the same recipe in every language: build the request (URL, method, headers, optional body), send it, check the status code, then parse the JSON response. In Python this is typically the `requests` library: `response = requests.get(url)`, then `data = response.json()`. Real-world concerns you must mention in exams: **API keys** identify and authorize your app (sent in a header like `Authorization: Bearer <token>`); **rate limits** cap how many calls you can make per minute; **timeouts** stop your app from hanging when the service is slow; and you must **never trust the response blindly** — check the status code before parsing. A typical Philippine scenario: an e-commerce site calls a courier's REST API to compute shipping fees to different provinces, handling the case where the courier's API is down by showing a fallback flat rate.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('157a631d-cc05-5f89-8ebf-da9a84866c20','activity','Practice & Exam Drills — Lesson 3',$md$
+**Review Questions**
+
+1. What is the difference between a web page and a web service?
+2. Compare SOAP and REST in two sentences.
+3. Match the HTTP methods GET, POST, PUT, DELETE to their actions.
+4. What do status codes 200, 201, 400, 401, 404, and 500 mean?
+5. What is an API key for, and where is it usually placed in a request?
+6. Why should a client always check the status code before parsing the response body?
+
+**Worked Exam-Style Problem**
+
+*Problem:* Design REST endpoints for a barangay clearance system: residents request a clearance, staff view pending requests, staff approve one request.
+
+*Solution:* Step 1: Identify the resource — clearance *requests*. Step 2: Map actions to methods: submit = `POST /requests` (body: resident details; returns `201` with the new request id). Step 3: List pending = `GET /requests?status=pending` (query parameter filters). Step 4: Approve = `PATCH /requests/{id}` with body `{"status": "approved"}` — PATCH because we update one field, not replace the whole record. Step 5: State error handling — `404` if the id does not exist, `400` if the status value is invalid, `401` if a non-staff user tries to approve. Full marks come from correct method choice plus status codes, not just the URLs.
+
+**How to Pass Tips**
+
+- Memorize the method-action table (GET-read, POST-create, PUT/PATCH-update, DELETE-remove) — it appears on nearly every quiz.
+- Status codes group by hundreds: 2xx success, 4xx client error, 5xx server error. If you forget an exact code, stating the correct group still earns partial credit.
+- In design questions, use plural nouns for resources (`/students`, not `/getStudent`) — professors check for this.
+- Always mention timeouts and error handling when asked how to *consume* an API; it separates passing answers from perfect ones.
+
+**Coding Drill:** Complete `handle_response` so it returns the parsed data when the status is 200, or an error message string for anything else.
+$md$, 4, 'python', $code$import json
+
+def handle_response(status_code, body):
+    # TODO: if status_code is 200, parse body as JSON and return it;
+    # otherwise return the string "error: <status_code>"
+    if status_code == 200:
+        return json.loads(body)
+    return "error: " + str(status_code)
+
+ok = handle_response(200, '{"fee": 120, "courier": "LBC"}')
+bad = handle_response(404, '{}')
+print(ok)
+print(bad)$code$);
