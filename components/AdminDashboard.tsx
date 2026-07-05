@@ -348,7 +348,7 @@ function WaitlistSubjectDemand({ bySubject }: { bySubject: { subject_title: stri
   const hasMore = bySubject.length > 5;
 
   return (
-    <div className="mb-8 max-w-wide">
+    <div className="mb-8 max-w-wide mx-auto">
       <p className="label-sm text-ink-muted mb-4">Most Requested Subjects</p>
       <div className="flex flex-col gap-2">
         {visible.map((r) => (
@@ -390,7 +390,7 @@ function TransactionsSection({ rows }: { rows: TransactionRow[] }) {
     return <p className="font-sans text-xs text-ink-faint">No transactions yet.</p>;
   }
   return (
-    <div className="max-w-wide">
+    <div className="max-w-wide mx-auto">
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
@@ -487,7 +487,7 @@ function ReconcileSection({
   }
 
   return (
-    <div className="max-w-wide">
+    <div className="max-w-wide mx-auto">
       <p className="font-sans text-xs text-ink-muted mb-4">
         These PayMongo payments are <span className="text-ink font-semibold">paid</span> but
         have no matching active subscription. Click <span className="font-mono">Grant access</span> to
@@ -557,7 +557,7 @@ function WaitlistTable({ entries }: { entries: WaitlistEntry[] }) {
   const hasMore = entries.length > 5;
 
   return (
-    <div className="overflow-x-auto max-w-wide">
+    <div className="overflow-x-auto max-w-wide mx-auto">
       <table className="w-full border-collapse">
         <thead>
           <tr className="border-b border-ink-faint/30">
@@ -684,7 +684,7 @@ function WaitlistSection({ entries, agg }: { entries: WaitlistEntry[]; agg: Wait
       </div>
 
       {/* Summary stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 max-w-wide">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 max-w-wide mx-auto">
         <Stat value={comingSoon} label="Coming Soon Signups" />
         <Stat value={paywall} label="Paywall Signups" />
         <Stat value={mobile} label="Mobile" />
@@ -793,7 +793,7 @@ export function AdminDashboard({
           <Stat value={last7Sessions} label="Active User-Days (7d)" />
           <Stat value={approvedUnlocks} label="Approved Unlocks" />
         </div>
-        <div className="max-w-wide">
+        <div className="max-w-wide mx-auto">
           <DauChart data={dau} />
         </div>
       </section>
@@ -805,7 +805,7 @@ export function AdminDashboard({
           title="Onboarding"
           summary={`${funnel[0]?.unique.toLocaleString() ?? 0} opened the app`}
         />
-        <div className="max-w-wide">
+        <div className="max-w-wide mx-auto">
           <FunnelChart steps={funnel} />
         </div>
       </section>
@@ -813,7 +813,7 @@ export function AdminDashboard({
       {/* ── Content engagement ──────────────────────────────── */}
       <section className="mb-20">
         <SectionBand eyebrow="04" title="Content Engagement" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-wide">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-wide mx-auto">
           <BarChart data={topSubjects} label="Top Subjects" />
           <BarChart data={topModules} label="Top Modules" />
           <BarChart

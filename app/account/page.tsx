@@ -62,7 +62,7 @@ export default async function AccountPage({ searchParams }: Props) {
               <p className="text-sm text-ink-muted">Unlock a subject to see your module progress here.</p>
             </div>
           ) : (
-            <div className="space-y-10">
+            <div className="space-y-10 max-w-wide">
               {unlockedSubjects.map((s) => {
                 // "Continue" jumps to the first unfinished lesson; if every
                 // module is done, fall back to the subject's module list.
