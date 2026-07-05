@@ -1818,3 +1818,128 @@ int main(void) {
     printf("Vowels in \"%s\": %d\n", text, count_vowels(text));
     return 0;
 }$code$);
+
+-- ============================================================
+-- FREE "Try It" playground teasers (Lessons 2-7, sort_order 999)
+-- Backported 2026-07-05 from the live DB, where they were added
+-- directly and never existed in this file — without these rows a
+-- full re-run of this seed would delete them from production.
+-- ============================================================
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a1000001-0001-0001-0001-000000000002','content','Try It: C Basics',$md$Run the code below. Try changing the values and adding more variables.$md$, 999, 'c', $code$#include <stdio.h>
+
+int main(void) {
+    int age = 20;
+    float gpa = 1.75;
+    char grade = 'A';
+
+    printf("Age: %d\n", age);
+    printf("GPA: %.2f\n", gpa);
+    printf("Grade: %c\n", grade);
+
+    return 0;
+}$code$),
+('a1000001-0001-0001-0001-000000000003','content','Try It: Input/Output',$md$Modify num1 and num2 to simulate different inputs and observe the formatted output.$md$, 999, 'c', $code$#include <stdio.h>
+
+int main(void) {
+    int num1 = 15;
+    int num2 = 7;
+
+    printf("Number 1: %d\n", num1);
+    printf("Number 2: %d\n", num2);
+    printf("Sum:      %d\n", num1 + num2);
+    printf("Product:  %d\n", num1 * num2);
+    printf("Quotient: %.2f\n", (float)num1 / num2);
+
+    return 0;
+}$code$),
+('a1000001-0001-0001-0001-000000000004','content','Try It: Control Structures',$md$Change the grade value and see which branch runs. Then modify the loop limits.$md$, 999, 'c', $code$#include <stdio.h>
+
+int main(void) {
+    int grade = 85;
+
+    if (grade >= 90) {
+        printf("Excellent!\n");
+    } else if (grade >= 75) {
+        printf("Passed\n");
+    } else {
+        printf("Failed\n");
+    }
+
+    printf("\nfor loop:   ");
+    for (int i = 1; i <= 5; i++) printf("%d ", i);
+
+    printf("\nwhile loop: ");
+    int n = 5;
+    while (n > 0) printf("%d ", n--);
+
+    printf("\n");
+    return 0;
+}$code$),
+('a1000001-0001-0001-0001-000000000005','content','Try It: Arrays',$md$Add more scores to the array (update the size too) and watch the average and max update.$md$, 999, 'c', $code$#include <stdio.h>
+
+int main(void) {
+    int scores[] = {85, 90, 78, 92, 88};
+    int size = 5;
+    int sum = 0;
+
+    printf("Scores: ");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", scores[i]);
+        sum += scores[i];
+    }
+    printf("\nSum:     %d\n", sum);
+    printf("Average: %.2f\n", (float)sum / size);
+
+    int max = scores[0];
+    for (int i = 1; i < size; i++)
+        if (scores[i] > max) max = scores[i];
+    printf("Highest: %d\n", max);
+
+    return 0;
+}$code$),
+('a1000001-0001-0001-0001-000000000006','content','Try It: Functions',$md$Try calling add() with different numbers, or write a new function that multiplies two values.$md$, 999, 'c', $code$#include <stdio.h>
+
+int add(int a, int b) {
+    return a + b;
+}
+
+float average(int arr[], int size) {
+    int sum = 0;
+    for (int i = 0; i < size; i++) sum += arr[i];
+    return (float)sum / size;
+}
+
+void greet(char name[]) {
+    printf("Hello, %s!\n", name);
+}
+
+int main(void) {
+    printf("Sum: %d\n", add(10, 20));
+
+    int scores[] = {80, 90, 85};
+    printf("Average: %.2f\n", average(scores, 3));
+
+    greet("BSIT");
+    return 0;
+}$code$),
+('a1000001-0001-0001-0001-000000000007','content','Try It: String, Char & Math',$md$Experiment with other math.h functions like ceil(), floor(), or log(). Try changing the string too.$md$, 999, 'c', $code$#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <ctype.h>
+
+int main(void) {
+    char name[] = "bsit student";
+    printf("Original:  %s\n", name);
+    printf("Length:    %lu\n", strlen(name));
+
+    for (int i = 0; name[i]; i++) name[i] = toupper(name[i]);
+    printf("Uppercase: %s\n", name);
+
+    printf("\nsqrt(144) = %.0f\n", sqrt(144));
+    printf("pow(2, 8) = %.0f\n", pow(2, 8));
+    printf("fabs(-3.14) = %.2f\n", fabs(-3.14));
+
+    return 0;
+}$code$);
