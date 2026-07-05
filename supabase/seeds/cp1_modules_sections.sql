@@ -159,6 +159,98 @@ $md$, 3),
 5. On Mars, a 100-pound Earth person weighs 38 pounds. On Jupiter, 264 pounds. Design an algorithm that takes Earth weight and displays Mars and Jupiter weight.
 $md$, 4);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a1000001-0001-0001-0001-000000000001','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 1',$md$
+**Answer Key — Review Questions**
+
+1. **Hardware vs. software:** Hardware is the physical, touchable part of the computer (CPU, keyboard, monitor); software is the set of instructions that tells the hardware what to do. One sentence to memorize: *hardware is the body, software is the mind.*
+2. **Program vs. programming:** A program is the *product* — the ordered set of instructions the computer follows. Programming is the *process* — writing, testing, and refining those instructions.
+3. **Components of hardware:** input devices (keyboard, mouse), the CPU (control unit + arithmetic/logic unit), memory and storage (RAM, hard drive), and output devices (monitor, printer).
+4. **Five steps of programming:** (1) define the problem, (2) design the solution, (3) code the program, (4) test the program, (5) document the program. Exams love asking these *in order* — memorize the sequence, not just the list.
+5. **Syntax vs. logic error:** a syntax error breaks the language rules and is caught by the compiler before the program runs; a logic error compiles and runs but produces wrong results (e.g., using `+` where you meant `*`). Compiler catches syntax; only testing catches logic.
+
+**Answer Key — Algorithm Exercises (pseudocode)**
+
+1. *Volume of a box:*
+```
+ALGORITHM volume
+  INPUT LENGTH, WIDTH, HEIGHT
+  V → LENGTH * WIDTH * HEIGHT
+  OUTPUT V
+END volume
+```
+2. *Hours to minutes:*
+```
+ALGORITHM hours_to_minutes
+  INPUT HOURS
+  MINUTES → HOURS * 60
+  OUTPUT HOURS, " hours is equal to ", MINUTES, " minutes."
+END hours_to_minutes
+```
+3. *Five results from a, b, c:*
+```
+ALGORITHM five_results
+  INPUT A, B, C
+  SUM → A + B + C
+  DIFF → A - B - C
+  PROD → A * B * C
+  QUOT → A / B / C
+  SUMSQ → A*A + B*B + C*C
+  OUTPUT SUM, DIFF, PROD, QUOT, SUMSQ
+END five_results
+```
+4. *Candy store:*
+```
+ALGORITHM candy_cost
+  INPUT WA, WB, WC, WD          (kilos of each type)
+  TOTAL → WA*35 + WB*45 + WC*56 + WD*57.50
+  OUTPUT TOTAL
+END candy_cost
+```
+
+**Worked Exam-Style Problem**
+
+*Problem:* (Exercise 5) A 100-pound Earth person weighs 38 pounds on Mars and 264 pounds on Jupiter. Design the algorithm.
+
+*Solution:* Step 1: Find the conversion factors — Mars: 38/100 = 0.38, Jupiter: 264/100 = 2.64. Stating this derivation is what separates a full-credit answer from a lucky guess. Step 2: Identify input (Earth weight E) and outputs (Mars weight M, Jupiter weight J). Step 3: Write the pseudocode:
+```
+ALGORITHM planet_weight
+  INPUT E
+  M → E * 0.38
+  J → E * 2.64
+  OUTPUT M, J
+END planet_weight
+```
+Step 4: For the flowchart, draw: oval START → parallelogram INPUT E → rectangle M = E * 0.38 → rectangle J = E * 2.64 → parallelogram OUTPUT M, J → oval STOP. Step 5: Desk-check with the given data: E = 100 → M = 38, J = 264 ✓ — always desk-check with the numbers the problem itself gives you.
+
+**How to Pass Tips**
+
+- Flowchart symbol questions are free points: oval = start/stop, parallelogram = input/output, rectangle = process, diamond = decision. Draw them correctly — wrong shapes lose marks even when the logic is right.
+- Every algorithm needs INPUT, PROCESS, and OUTPUT. If your pseudocode is missing one of the three, you dropped a step.
+- Desk-check every answer with easy numbers before moving on; it takes 30 seconds and catches most logic slips.
+- When a problem states a sample ("100 pounds → 38 pounds"), the conversion factor is hiding in that sentence — divide to find it.
+$md$, 5);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a1000001-0001-0001-0001-000000000001','activity','Code Lab — Lesson 1: Run It Yourself',$md$
+**Coding Drill:** This is Exercise 1 (volume of a box) translated from pseudocode into a real C program. Complete the TODO line, then press Run — you are compiling actual C in your browser, no installation needed.
+
+Expected output:
+```
+Volume: 60
+```
+$md$, 6, 'c', $code$#include <stdio.h>
+
+int main(void) {
+    int length = 5, width = 4, height = 3;
+    int volume = 0;
+
+    /* TODO: compute the volume (V = length x width x height) */
+
+    printf("Volume: %d\n", volume);
+    return 0;
+}$code$);
+
 -- ============================================================
 -- LESSON 2: Introduction to C
 -- ============================================================
