@@ -1510,6 +1510,101 @@ main() {
 4. Write a function `rel_prime` that returns 1 if two integers are relatively prime (no integer > 1 divides both), 0 otherwise.
 $md$, 4);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a1000001-0001-0001-0001-000000000006','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 6',$md$
+**Answer Key — Conceptual Questions**
+
+1. A function is a self-contained block of code that performs one task. Syntax: `return_type name(parameter list) { declarations; statements; return value; }`.
+2. `void` means the function returns **no value** — you call it for its effect (printing, modifying via pointers), not for a result.
+3. Call by value passes a **copy**; whatever the function does to the parameter, the caller's original variable is untouched.
+4. A pointer is a variable that holds a memory **address**. `&x` reads "the address of x"; `*p` reads "the value stored at the address held by p".
+5. Call by reference passes the address (`&x`) so the function can write into the caller's variable through `*`. Call by value cannot change the original; call by reference can.
+
+**Worked Exam-Style Problem — The Mixed Trace**
+
+*Problem:*
+```c
+void trace1(int x, int *y) {
+    x = 5; *y = 2;
+    printf("%2d %2d\n", x, *y);
+}
+main() {
+    int x, y;
+    x = y = 3;
+    trace1(x, &y);
+    printf("%2d %2d\n", x, y);
+}
+```
+
+*Solution:* Step 1: `trace1(x, &y)` — x is passed **by value** (a copy), y **by reference** (its address). Step 2: Inside, the copy becomes 5 and `*y = 2` writes 2 straight into main's y. The function prints ` 5  2`. Step 3: Back in main: x was only copied, so it is still 3; y was written through the pointer, so it is 2. Main prints ` 3  2`. Full output:
+```
+ 5  2
+ 3  2
+```
+One parameter changed, one did not — if you can explain *why* in one sentence ("copy vs. address"), you own this whole lesson.
+
+**Worked Programming Exercise (#1 — factorial)**
+
+```c
+#include <stdio.h>
+
+long factorial(int n) {
+    long result = 1;
+    int i;
+    if (n < 0) return -1;        /* validate: no negative factorials */
+    for (i = 2; i <= n; i++)
+        result = result * i;
+    return result;               /* 0! = 1 falls out naturally: loop never runs */
+}
+
+int main(void) {
+    printf("5! = %ld\n", factorial(5));   /* 120 */
+    printf("0! = %ld\n", factorial(0));   /* 1   */
+    return 0;
+}
+```
+Note how validation returns a sentinel (−1) instead of printing inside the function — keeping input/output in `main` and computation in the function is exactly the "self-contained" design the lesson preaches, and professors award style points for it.
+
+**How to Pass Tips**
+
+- The exam question is almost always some version of: which arguments change after the call? Copies (plain parameters) never change the caller; addresses (`*` parameters passed with `&`) always can.
+- Prototype before `main`, definition after — or define the whole function before `main`. Calling an undeclared function is a compile-time trap question.
+- A `void` function with a `return 5;` inside is invalid; a non-void function missing `return` is the reverse trap.
+- Local variables die when the function returns; if a value must survive, return it or write it through a pointer.
+$md$, 5);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a1000001-0001-0001-0001-000000000006','activity','Code Lab — Lesson 6: Value vs. Reference',$md$
+**Coding Drill:** Complete both functions. `square` returns a value (call by value); `swap` must exchange the caller's variables through pointers (call by reference). If your swap only works inside the function but `main` prints the old order, you have rediscovered why `&` and `*` exist.
+
+Expected output:
+```
+square(7) = 49
+before: x=3 y=8
+after : x=8 y=3
+```
+$md$, 6, 'c', $code$#include <stdio.h>
+
+int square(int n) {
+    /* TODO: return n multiplied by itself */
+    return 0;
+}
+
+void swap(int *a, int *b) {
+    /* TODO: exchange the values at addresses a and b
+       (classic three lines: temp = *a; *a = *b; *b = temp;) */
+}
+
+int main(void) {
+    int x = 3, y = 8;
+
+    printf("square(7) = %d\n", square(7));
+    printf("before: x=%d y=%d\n", x, y);
+    swap(&x, &y);
+    printf("after : x=%d y=%d\n", x, y);
+    return 0;
+}$code$);
+
 -- ============================================================
 -- LESSON 7: String, Character, and Math Functions
 -- ============================================================
