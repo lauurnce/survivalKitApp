@@ -405,3 +405,72 @@ def drain_queue(messages):
     return processed
 
 print(drain_queue(queue))$code$);
+
+-- ============================================================
+-- LESSON 8: Integration Testing, Error Handling, and Best Practices
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a04c9132-3ec8-5f19-b70f-57da3a8bc949','content','Testing Integrated Systems',$md$
+Testing one program is hard; testing several programs talking to each other is harder, so the industry uses a **testing pyramid**. **Unit tests** check single functions in isolation and run in milliseconds. **Integration tests** check that components work together — does the API really write to the database? does the JSON parse into the right fields? **End-to-end tests** drive the whole system like a user would. A key technique for integration work is the **mock** (or stub): a fake stand-in for an external service. You cannot charge a real credit card in every test run, so you mock the payment gateway to return a scripted "success" or "declined" response. Most providers also offer a **sandbox environment** — a fake version of their real API with test credentials — which is why PayMongo, Maya, and similar services give developers test keys separate from live keys.
+$md$, 1),
+('a04c9132-3ec8-5f19-b70f-57da3a8bc949','content','Error Handling Across System Boundaries',$md$
+In an integrated system, failure is normal: networks drop, services time out, partners deploy bugs. Robust integration code plans for this. Patterns to know: **timeouts** on every external call (never wait forever); **retries with exponential backoff** — wait 1s, then 2s, then 4s before retrying, so a struggling service is not hammered; the **circuit breaker** — after repeated failures, stop calling the broken service for a while and fail fast, protecting your own app; and **fallbacks** — degrade gracefully, like showing cached shipping rates when the courier API is down. Equally important is **logging**: record every external call with a correlation id so you can trace one user's request across systems. Exam scenarios often describe a cascade ("the courier API slowed down and the whole store froze") and expect you to prescribe timeouts plus a circuit breaker.
+$md$, 2),
+('a04c9132-3ec8-5f19-b70f-57da3a8bc949','activity','Integration Best Practices — The Checklist',$md$
+This closing section collects the course into one reviewable checklist. **Design**: expose clean, versioned APIs (`/v1/...`) so you can evolve without breaking consumers; document them (OpenAPI/Swagger is the standard). **Data**: validate at every boundary; use standard formats (JSON/XML) and agree on schemas early. **Security**: HTTPS everywhere, secrets in environment variables, authenticate both users and systems, verify webhook signatures. **Reliability**: timeouts, retries with backoff, idempotent handlers, queues for work that can wait. **Operations**: log with correlation ids, monitor error rates, test against sandboxes and mocks before touching production. Walk into the final exam able to expand any checklist line into a paragraph with an example — that skill converts directly into essay points, and later, into the habits employers expect from a junior developer on day one.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a04c9132-3ec8-5f19-b70f-57da3a8bc949','activity','Practice & Exam Drills — Lesson 8',$md$
+**Review Questions**
+
+1. Order the testing pyramid levels and state what each verifies.
+2. What is a mock, and why is it essential when testing payment integrations?
+3. What is a sandbox environment? How does it differ from production?
+4. Explain retries with exponential backoff and why plain rapid retries are harmful.
+5. What does a circuit breaker do, and what failure does it prevent?
+6. What is a correlation id and how does it help debugging across systems?
+
+**Worked Exam-Style Problem**
+
+*Problem:* During a flash sale, a store's checkout calls an inventory service that becomes slow. Requests pile up until the entire website stops responding. Explain the failure and redesign for resilience.
+
+*Solution:* Step 1: Explain the cascade — checkout threads block waiting on the slow service; with no timeout, every web worker ends up stuck, so even non-checkout pages die. Step 2: Immediate fix — add a **timeout** (e.g., 2 seconds) so calls fail fast instead of accumulating. Step 3: Add a **circuit breaker** — after N consecutive failures, skip the call entirely for a cooldown period and return a fallback ("stock level unavailable, order will be confirmed by email"). Step 4: Restructure — move stock reconciliation to a **queue** so checkout does not synchronously depend on inventory during peak load. Step 5: Verify — load-test the redesign in a staging environment with the inventory service artificially slowed, proving the site stays up. Naming timeout, circuit breaker, fallback, and queue in one coherent design is the full-marks answer.
+
+**How to Pass Tips**
+
+- Memorize the pyramid order (unit -> integration -> end-to-end) and that cost/speed rises as you go up.
+- "The whole system froze because one service was slow" always wants: timeout + circuit breaker + fallback.
+- Never say "test in production" — say sandbox, staging, or mocks.
+- For essay finals, reproduce the five-part checklist (design, data, security, reliability, operations) as your outline — it structures a complete answer instantly.
+
+**Coding Drill:** Complete `call_with_retry` so it retries the flaky service up to 3 times and returns the first successful result, or "gave up" if all attempts fail.
+$md$, 4, 'python', $code$attempts = {"count": 0}
+
+def flaky_service():
+    attempts["count"] += 1
+    if attempts["count"] < 3:
+        return None  # failure
+    return "inventory: 42 units"
+
+def call_with_retry(service, max_tries):
+    # TODO: try up to max_tries times; return first non-None result, else "gave up"
+    for _ in range(max_tries):
+        result = service()
+        if result is not None:
+            return result
+    return "gave up"
+
+print(call_with_retry(flaky_service, 3))
+print("attempts made:", attempts["count"])$code$);
+
+-- ============================================================
+-- SOURCES
+-- CHED CMO No. 25, s.2015 — BSIT curriculum (Integrative Programming and Technologies course description)
+-- ACM/IEEE IT2008 and IT2017 curriculum guidelines — Integrative Programming & Technologies knowledge area
+-- Hohpe & Woolf — Enterprise Integration Patterns (file transfer, shared DB, RPC, messaging taxonomy)
+-- OWASP Top 10 — injection, broken access control, and secure integration guidance
+-- MDN Web Docs — HTTP methods, status codes, and REST fundamentals
+-- ============================================================
