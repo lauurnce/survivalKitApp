@@ -207,7 +207,12 @@ function YearSection({ year }: { year: YearGroup }) {
               <li key={s.id} className="relative pb-3 last:pb-0">
                 <span className="absolute -left-[1.35rem] top-1.5 h-2.5 w-2.5 rounded-full bg-taupe/40 border-2 border-paper" />
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs text-ink-muted leading-snug flex-1">{s.title}</p>
+                  <Link
+                    href={`/year/${s.yearId}/subjects/${s.id}/modules`}
+                    className="text-xs text-ink-muted leading-snug flex-1 hover:text-accent transition-colors"
+                  >
+                    {s.title}
+                  </Link>
                   <button
                     onClick={() => setModal({ kind: "subject", subject: s })}
                     className="shrink-0 text-[10px] text-accent underline underline-offset-2 hover:no-underline"
@@ -271,7 +276,12 @@ export function AccountSidebar({ unlockedSubjects, years }: Props) {
                   <li key={s.id} className="relative pb-4 last:pb-0">
                     <span className="absolute -left-[1.35rem] top-1 h-3 w-3 rounded-full bg-accent border-2 border-paper" />
                     <div className="space-y-1">
-                      <p className="text-sm font-medium text-ink leading-snug">{s.title}</p>
+                      <Link
+                        href={`/year/${s.yearId}/subjects/${s.id}/modules`}
+                        className="block text-sm font-medium text-ink leading-snug hover:text-accent transition-colors"
+                      >
+                        {s.title}
+                      </Link>
                       <div className="flex items-center gap-2">
                         <div className="flex-1 h-1 rounded-full bg-taupe/30 overflow-hidden">
                           <div className="h-full bg-accent rounded-full" style={{ width: `${p}%` }} />
@@ -280,7 +290,7 @@ export function AccountSidebar({ unlockedSubjects, years }: Props) {
                       </div>
                       <div className="flex items-center gap-3">
                         <Link
-                          href={`/year/${s.yearId}/subjects/${s.id}`}
+                          href={`/year/${s.yearId}/subjects/${s.id}/modules`}
                           className="text-xs text-accent underline underline-offset-2"
                         >
                           Continue →
