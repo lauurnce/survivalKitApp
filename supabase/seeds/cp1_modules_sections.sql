@@ -1723,3 +1723,98 @@ f. ceil(pow(5, 3))
 4. Read text and replace all four-letter words with asterisks.
 5. Pluralize nouns: ends in "y" → remove y, add "ies"; ends in "s/ch/sh" → add "es"; otherwise → add "s".
 $md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a1000001-0001-0001-0001-000000000007','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 7',$md$
+**Answer Key — String Function Evaluations**
+
+Starting values each time: `third = "God Loves U"`, `fourth = "GOD BLESS U"`.
+
+| Expression | Result | Why |
+|---|---|---|
+| a. `strrev(fourth)` | `"U SSELB DOG"` | reverses in place, spaces included |
+| b. `strupr(third)` | `"GOD LOVES U"` | all letters uppercased |
+| c. `strncat(fourth, third, 5)` | `"GOD BLESS UGod L"` | appends first 5 chars of third: `G`,`o`,`d`,space,`L` |
+| d. `strlwr(fourth)` | `"god bless u"` | all letters lowercased |
+| e. `strncpy(first, fourth, 5)` | `first = "GOD B"` | copies exactly 5 chars — and does NOT add `'\0'`; say so for full credit |
+| f. `strlen(third)` | `11` | count the two spaces, exclude `'\0'`: G-o-d, space, L-o-v-e-s, space, U |
+| g. `strncat(third, fourth, 4)` | `"God Loves UGOD "` | appends `G`,`O`,`D`,space — the 4th char is the space |
+
+**Answer Key — Character Tests** (`c='C'`, `m='?'`, `i='t'`, `b='5'`)
+
+- a. `isdigit(b)` → **TRUE** ('5' is a digit character)
+- b. `isalpha(c)` → **TRUE**
+- c. `isspace(m)` → **FALSE** ('?' is punctuation, not whitespace)
+- d. `isupper(c)` → **TRUE**
+- e. `isalnum(b)` → **TRUE** (digits count as alphanumeric)
+- f. `ispunct(m)` → **TRUE**
+- g. `islower(i)` → **TRUE**
+
+**Answer Key — Math Expressions**
+
+- a. `abs(5)` = **5**
+- b. `floor(5.5)` = **5.0**
+- c. `ceil(5)` = **5.0** (already whole — nothing to round up)
+- d. `sqrt(floor(25.12))` = `sqrt(25.0)` = **5.0** (work inside-out)
+- e. `fabs(-44.98)` = **44.98**
+- f. `ceil(pow(5, 3))` = `ceil(125.0)` = **125.0**
+
+**Worked Programming Exercise (#1 — Palindrome)**
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int is_palindrome(char s[]) {
+    int i = 0, j = strlen(s) - 1;
+    while (i < j) {
+        if (s[i] != s[j]) return 0;  /* mismatch — not a palindrome */
+        i++;
+        j--;
+    }
+    return 1;                        /* pointers met — palindrome */
+}
+
+int main(void) {
+    printf("%d\n", is_palindrome("racecar"));  /* 1 */
+    printf("%d\n", is_palindrome("BSIT"));     /* 0 */
+    return 0;
+}
+```
+Two indexes walk inward from both ends — the same mirror-formula thinking as Lesson 5's REVERSE (`n - 1 - i`). Any mismatch ends it immediately; meeting in the middle proves it.
+
+**How to Pass Tips**
+
+- `strlen` does NOT count `'\0'`; `sizeof` a char array DOES include it. Confusing the two is the top mark-loser here.
+- `strncpy(dest, src, n)` copies exactly n characters and adds no terminator when src is longer — mentioning this earns the bonus point.
+- Character tests take a CHARACTER: `isdigit('5')` is true because '5' is a digit *symbol* — its `char` value 53 has nothing to do with the number 5.
+- Work nested calls inside-out, writing each intermediate result: `sqrt(floor(25.12))` → `sqrt(25.0)` → `5.0`.
+- `strrev`, `strupr`, `strlwr`, `stricmp` are Turbo C extensions, not standard C — on gcc you write your own loop with `toupper`/`tolower`. Professors on modern compilers love this as a bonus question.
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a1000001-0001-0001-0001-000000000007','activity','Code Lab — Lesson 7: Count the Vowels',$md$
+**Coding Drill:** Complete `count_vowels` using `tolower` from `ctype.h` so uppercase and lowercase vowels both count. This combines the whole lesson: walking a string with `strlen`, character functions, and building your own helper the way `strrev` would be built on gcc.
+
+Expected output:
+```
+Vowels in "Bacoor Cavite": 6
+```
+$md$, 5, 'c', $code$#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int count_vowels(char s[]) {
+    int i, count = 0;
+    for (i = 0; i < (int)strlen(s); i++) {
+        char c = tolower(s[i]);
+        /* TODO: if c is 'a', 'e', 'i', 'o', or 'u', add 1 to count */
+    }
+    return count;
+}
+
+int main(void) {
+    char text[] = "Bacoor Cavite";
+    printf("Vowels in \"%s\": %d\n", text, count_vowels(text));
+    return 0;
+}$code$);
