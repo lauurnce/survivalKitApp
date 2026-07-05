@@ -289,3 +289,58 @@ $md$, 4, 'python', $code$def build_safe_query(student_id, semester):
 sql, params = build_safe_query("2024-00123", "2nd")
 print(sql)
 print(params)$code$);
+
+-- ============================================================
+-- LESSON 6: Sessions, Authentication, and Secure Integration
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('b7d098c6-2c95-54a4-8fd7-4e6c081cb6a2','content','Why HTTP Needs Sessions',$md$
+HTTP is **stateless**: every request stands alone, and the server forgets you the moment it responds. Yet applications must remember who is logged in across many requests. The classic solution is the **session**: after login, the server creates a session record and gives the browser a **cookie** holding a random session ID; the browser sends the cookie with every request, and the server looks up who you are. The modern alternative for APIs is the **token**, most commonly a **JWT (JSON Web Token)**: the server signs a small JSON payload (user id, expiry) and hands it to the client, which sends it back in the `Authorization: Bearer` header. Sessions keep state on the server; JWTs keep it on the client with a tamper-proof signature. Know both flows step by step — "trace what happens when a user logs in" is a staple exam question.
+$md$, 1),
+('b7d098c6-2c95-54a4-8fd7-4e6c081cb6a2','content','Authentication vs Authorization',$md$
+These two words are the most confused pair in the course. **Authentication** answers "who are you?" — verifying identity with a password, one-time PIN, or fingerprint. **Authorization** answers "what may you do?" — checking permissions after identity is known. A student and a registrar both authenticate into the school portal, but only the registrar is authorized to edit grades. Standard building blocks: **password hashing** (store bcrypt hashes, never plaintext — if the database leaks, passwords stay secret), **multi-factor authentication** (password + SMS or authenticator code, now common in Philippine banking apps), and **role-based access control (RBAC)** — assign roles like `student`, `cashier`, `admin`, and check the role on every protected endpoint. The check must happen **on the server for every request**; hiding a button in the app is not authorization.
+$md$, 2),
+('b7d098c6-2c95-54a4-8fd7-4e6c081cb6a2','activity','Securing System-to-System Integration',$md$
+Machines authenticate to each other too. When your backend calls a payment gateway, it presents an **API key** or an **OAuth 2.0** access token; when the gateway calls your webhook, you verify its **signature** — a hash of the payload computed with a shared secret, proving the message is genuine and unaltered. Core rules for exams and real life: (1) **always use HTTPS/TLS** so credentials and personal data are encrypted in transit; (2) **never commit secrets to source control** — use environment variables or secret managers; (3) **verify webhook signatures** before trusting the payload, otherwise anyone who discovers your URL can fake a "payment succeeded" event; (4) **scope and rotate keys** — give each integration the minimum permission and replace keys periodically. These map directly to Data Privacy Act compliance: personal data must be protected in transit and at rest.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('b7d098c6-2c95-54a4-8fd7-4e6c081cb6a2','activity','Practice & Exam Drills — Lesson 6',$md$
+**Review Questions**
+
+1. Why is HTTP called stateless, and what problem does that create?
+2. Trace the cookie-session login flow in four steps.
+3. How does a JWT differ from a server-side session? Give one advantage of each.
+4. Define authentication and authorization with a school-portal example.
+5. Why are passwords hashed instead of encrypted or stored as plaintext?
+6. What is a webhook signature and what attack does verifying it prevent?
+
+**Worked Exam-Style Problem**
+
+*Problem:* A food-delivery startup exposes `GET /orders/{id}` and discovers users can view other people's orders by changing the id in the URL. Name the flaw and fix it.
+
+*Solution:* Step 1: Name the flaw — broken authorization, specifically an **IDOR** (Insecure Direct Object Reference): the endpoint authenticates the user but never checks ownership. Step 2: The fix — after loading order `{id}`, compare `order.customer_id` with the authenticated user's id from the session/JWT; return `403 Forbidden` (or `404` to avoid leaking existence) when they differ. Step 3: Generalize — every protected resource needs an ownership or role check on the server; client-side hiding is not security. Step 4: Bonus point — use unguessable UUIDs for ids as defense in depth, while stressing the real fix is the server-side check.
+
+**How to Pass Tips**
+
+- One-line memory hook: authentication = login, authorization = permissions. Write it at the top of your scratch paper.
+- Any question containing "changed the URL/id and saw someone else's data" is IDOR — answer with a server-side ownership check.
+- List the four secret-handling rules (HTTPS, no secrets in code, verify signatures, rotate keys) when asked how systems securely integrate.
+- bcrypt is the expected password-hashing answer; MD5 or SHA-1 alone are marked wrong.
+
+**Coding Drill:** Complete `can_access` so it allows the request only when the user owns the order or has the admin role.
+$md$, 4, 'python', $code$def can_access(user, order):
+    # TODO: return True if user owns the order or user's role is "admin"
+    if user["role"] == "admin":
+        return True
+    return user["id"] == order["customer_id"]
+
+alice = {"id": 7, "role": "customer"}
+admin = {"id": 1, "role": "admin"}
+order = {"id": "ORD-55", "customer_id": 7}
+
+print(can_access(alice, order))
+print(can_access(admin, order))
+print(can_access({"id": 9, "role": "customer"}, order))$code$);
