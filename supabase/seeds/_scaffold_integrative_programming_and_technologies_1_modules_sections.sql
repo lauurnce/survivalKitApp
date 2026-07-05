@@ -238,3 +238,54 @@ def process_webhook(payment_id):
 print(process_webhook("pay_003"))
 print(process_webhook("pay_003"))
 print(processed)$code$);
+
+-- ============================================================
+-- LESSON 5: Database Integration and Data Access
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('3dafe7cf-ca2f-5a13-8ee2-e8a91ee3d001','content','Connecting Applications to Databases',$md$
+Almost every integration eventually touches a **database** — the system of record where data actually lives. Application code connects to a database server (MySQL, PostgreSQL, SQL Server) through a **driver** or connector library, opens a **connection**, sends SQL, and reads results. Key vocabulary: a **connection string** holds the host, port, database name, and credentials (kept in environment variables, never in code); a **connection pool** reuses open connections because opening one is slow — vital when hundreds of users hit a web app at once. The database is a shared integration point: the enrollment web app, the cashier's system, and the dean's reporting dashboard may all read the same student tables. That is powerful but risky — which is why access is usually mediated through an API or a **data access layer** rather than letting every program write tables directly.
+$md$, 1),
+('3dafe7cf-ca2f-5a13-8ee2-e8a91ee3d001','content','The Data Access Layer and ORMs',$md$
+A **data access layer (DAL)** is the part of your code that isolates SQL from business logic. Instead of scattering queries everywhere, you write functions like `get_student(id)` or `save_enrollment(record)` — if the schema changes, only the DAL changes. Many teams go further and use an **ORM (Object-Relational Mapper)** such as Eloquent (PHP/Laravel), SQLAlchemy (Python), or Prisma (Node.js): it maps tables to classes so `Student.find(id)` generates the SQL for you. Trade-offs to cite in exams: ORMs speed up development and reduce SQL mistakes, but can hide inefficient queries; raw SQL gives full control but more room for error. Also know **transactions**: grouping several statements so they all succeed or all roll back — enrolling a student and charging their account must be atomic, or money and records drift apart.
+$md$, 2),
+('3dafe7cf-ca2f-5a13-8ee2-e8a91ee3d001','activity','SQL Injection and Safe Queries',$md$
+The most examined topic in this lesson is **SQL injection** — the classic attack where user input is pasted into a SQL string. If code builds `"SELECT * FROM users WHERE name = '" + input + "'"` and a user types `' OR '1'='1`, the query returns every user; worse payloads can delete tables. The defense is **parameterized queries** (prepared statements): the SQL template and the values travel separately, so input is always treated as data, never as code — `cursor.execute("SELECT * FROM users WHERE name = %s", (input,))`. Every language and ORM supports this; using it is non-negotiable professionally and legally (a breach of personal data violates the Data Privacy Act of 2012). Exam answers should always name the attack, show a vulnerable example, and give the parameterized fix — that three-part structure earns full marks.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('3dafe7cf-ca2f-5a13-8ee2-e8a91ee3d001','activity','Practice & Exam Drills — Lesson 5',$md$
+**Review Questions**
+
+1. What belongs in a connection string, and where should it be stored?
+2. Why do web applications use connection pools?
+3. What is a data access layer and what problem does it solve?
+4. Give one advantage and one disadvantage of using an ORM.
+5. What is a transaction? Give a scenario where skipping it corrupts data.
+6. Show a vulnerable SQL string and rewrite it as a parameterized query.
+
+**Worked Exam-Style Problem**
+
+*Problem:* A login form builds this query: `SELECT * FROM accounts WHERE user='<u>' AND pass='<p>'`. Explain how an attacker logs in without a password, and fix the code.
+
+*Solution:* Step 1: The attack — enter username `admin' --` (the `--` starts a SQL comment). The query becomes `SELECT * FROM accounts WHERE user='admin' --' AND pass=''`, so the password check is commented out and the attacker is logged in as admin. Step 2: Name it — SQL injection via string concatenation. Step 3: The fix — a parameterized query: `SELECT * FROM accounts WHERE user=? AND pass=?` with the two inputs bound as parameters; the quote and comment characters are now just literal text. Step 4: Strengthen the answer — passwords should also be hashed (bcrypt), so the query compares hashes, never plaintext. Mentioning both the injection fix and hashing marks a complete answer.
+
+**How to Pass Tips**
+
+- The phrase "parameterized query / prepared statement" must appear in any injection answer — synonyms like "sanitize input" alone earn partial credit only.
+- Remember ACID for transactions: Atomicity, Consistency, Isolation, Durability — a favorite enumeration question.
+- If asked "ORM or raw SQL?", answer "it depends" with one concrete factor each way — balanced answers score highest.
+- Connection pooling questions usually want two words: "reuse" and "performance."
+
+**Coding Drill:** Complete `build_safe_query` so it returns the parameterized template and the values as a tuple — never concatenating user input into the SQL string.
+$md$, 4, 'python', $code$def build_safe_query(student_id, semester):
+    # TODO: return (sql_template, params) using %s placeholders
+    sql = "SELECT subject, grade FROM grades WHERE student_id = %s AND semester = %s"
+    params = (student_id, semester)
+    return sql, params
+
+sql, params = build_safe_query("2024-00123", "2nd")
+print(sql)
+print(params)$code$);
