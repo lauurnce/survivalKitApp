@@ -485,6 +485,97 @@ f.  (7 == 2) || (7 > 4) && (6 == 5)
 ```
 $md$, 7);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a1000001-0001-0001-0001-000000000002','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 2',$md$
+**Answer Key — Declarations (Q1)**
+
+```c
+int    counter = 7;
+int    length  = 12;
+double offset  = 12.3723;   /* float also accepted; double keeps full precision */
+char   sname[] = "Sonnet";  /* string → char array, double quotes */
+char   group   = 'A';       /* single character → single quotes */
+```
+The two classic traps: strings take **double quotes and a char array**, single characters take **single quotes and plain `char`**.
+
+**Answer Key — Identifier Validity (Q2)**
+
+| Identifier | Verdict | Why |
+|---|---|---|
+| `JETT` | valid | letters only |
+| `gRAde_` | valid | letters + underscore; case is allowed anywhere |
+| `float` | **invalid** | reserved keyword |
+| `qty_sold` | valid | letters, underscore |
+| `_ _` | **invalid** | contains a space (`__` with no space would be valid) |
+| `integer` | **valid** | looks reserved, but `integer` is NOT a C keyword — the keyword is `int`. Favorite trick question. |
+| `x_tra` | valid | letters + underscore |
+| `1311Nov` | **invalid** | starts with a digit |
+| `Rating` | valid | letters only |
+| `@_First!` | **invalid** | `@` and `!` are not allowed characters |
+
+**Answer Key — Data Types (Q3)**
+
+`'A'` → `char` · `32769` → `int` (it exceeds `short`'s max of 32,767 — that is the point of the question) · `32.55` → `float` · `21482.93` → `float` (or `double`) · `-123` → `int` · `632179` → `int` on 4-byte-int compilers; if your professor uses the old Turbo C table where `int` is 2 bytes, answer `long int`. State which table you are using — that sentence earns the point either way.
+
+**Worked Exam-Style Problem — Expression Evaluation**
+
+*Problem (b):* Evaluate `9 * 2 + (8 - 5) / 2 < 1 * (7 + 4) && 6 + 7 * 4 / 5 > 7 * 2 + 5 - 4`
+
+*Solution:* Step 1: Left side of `&&`: `9*2 = 18`; `(8-5)/2 = 3/2 = 1` (**integer division truncates**); `18 + 1 = 19`; `1*(7+4) = 11`; so `19 < 11` → **0** (false). Step 2: Right side: `7*4/5 = 28/5 = 5`; `6 + 5 = 11`; `7*2+5-4 = 15`; so `11 > 15` → **0**. Step 3: `0 && 0` → **0 (FALSE)**. Show the truncation steps — that is where the points are.
+
+Remaining answers, same method:
+- (a) `5*6 + 8 - 4%3` = `30 + 8 - 1` = **37**
+- (c) `6*5/(9-3) = 5`; `(2*3+10)/4 + 1 = 4+1 = 5`; `5 != 5` → 0. `8+2*5 = 18 < 20` → 1. `6 + 18%4 = 8`; `2*3-4 = 2`; `8 == 2` → 0. Final: `0 || (1 && 0)` = **0 (FALSE)** — `&&` binds tighter than `||`.
+- (d) `6*5/2 = 15`; `15 == 15` → true → ternary returns **100**
+- (e) `(15>26) = 0`; `!(7>=8) = !0 = 1`; `(4<=2) = 0`; `0 || (1 && 0)` = **0 (FALSE)**
+
+**Answer Key — TRUE or FALSE**
+
+- (a) `2 - 4 > + 3` → `-2 > 3` → **FALSE**
+- (b) `17 == 35` → **FALSE**
+- (c) `22/3 == 5 + 2*2 - 4` → `7 == 5` → **FALSE** (22/3 truncates to 7)
+- (d) `TRUE && FALSE || TRUE` → `0 || 1` → **TRUE**
+- (e) `(6 > 3) && (7 != 7)` → `1 && 0` → **FALSE**
+- (f) `(7 == 2) || (7 > 4) && (6 == 5)` → `0 || (1 && 0)` → **FALSE**
+
+**How to Pass Tips**
+
+- Integer division truncates: `3/2` is `1`, never `1.5`. Nearly every evaluation item hides one of these.
+- Precedence order that decides most answers: `* / %` before `+ -` before relational (`< >`) before `==`/`!=` before `&&` before `||`. The ternary `? :` comes last.
+- `&&` before `||` — when you see both, bracket the `&&` part first.
+- `integer`, `main`, and `printf` are NOT keywords; `int`, `float`, `if`, `while` are. Trick items rely on you confusing the two.
+$md$, 8);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a1000001-0001-0001-0001-000000000002','activity','Code Lab — Lesson 2: Fix the Five Errors',$md$
+**Debugging Drill:** This program contains the five most common declaration errors from this lesson — exactly the mistakes the identifier-validity exercise is training you to spot. Fix all five so the program compiles and prints the expected output. The compiler messages are your clues; read them from the top.
+
+Expected output:
+```
+counter = 7
+length  = 12
+offset  = 12.3723
+sname   = Sonnet
+group   = A
+```
+$md$, 9, 'c', $code$#include <stdio.h>
+
+int main(void) {
+    int counter = 7;
+    int 1length = 12;          /* error 1: identifier starts with a digit */
+    double offset = 12.3723    /* error 2: something is missing here */
+    char sname[] = 'Sonnet';   /* error 3: wrong quotes for a string */
+    char group = "A";          /* error 4: wrong quotes for a character */
+    int float = 99;            /* error 5: keyword used as identifier — rename or delete */
+
+    printf("counter = %d\n", counter);
+    printf("length  = %d\n", 1length);
+    printf("offset  = %.4f\n", offset);
+    printf("sname   = %s\n", sname);
+    printf("group   = %c\n", group);
+    return 0;
+}$code$);
+
 -- ============================================================
 -- LESSON 3: Input/Output and Program Structure
 -- ============================================================
