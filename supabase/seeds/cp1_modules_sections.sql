@@ -1064,6 +1064,91 @@ do {
 5. Rental late fee: ≤2 days → ₱10, ≤4 days → ₱15, ≤5 days → ₱20, ≥7 days → cost of rental (CD=₱50, VHS=₱35).
 $md$, 5);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a1000001-0001-0001-0001-000000000004','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 4',$md$
+**Answer Key — Conceptual Questions**
+
+1. `break` exits the loop (or `switch`) completely; `continue` skips the rest of the current iteration and jumps to the next loop test. Break = leave the room; continue = skip this round.
+2. Without `break`, execution **falls through** into the next case and keeps running statements until it hits a `break` or the end of the `switch`.
+3. A compound statement is a group of statements wrapped in `{ }` — treated as a single statement wherever one statement is expected.
+4. A `while` body never executes when the condition is false on the very first test (e.g., `while (n > 0)` with `n = 0`).
+5. `do-while` tests the condition **after** the body, so the body always runs at least once; `while` tests **before**, so it may run zero times.
+
+**Worked Exam-Style Problem — Trace (a): the Dangling Else**
+
+*Problem:* `x = 7; y = 8;` then
+```c
+if (x <= y)
+    if (x == y) x++;
+    else y++;
+printf("%d %d\n", x, y);
+```
+
+*Solution:* Step 1: The `else` pairs with the **nearest** `if` — the inner one — regardless of indentation. Step 2: `x <= y` (7 ≤ 8) → true, enter inner if. Step 3: `x == y` (7 == 8) → false → run the `else`: `y++` → y = 9. Step 4: Output: **`7 9`**. The trap answer `8 8` comes from pairing the else with the outer if — indentation lies, braces do not.
+
+**Answer Key — Traces (b) and (c)**
+
+- (b) `%2d` prints each number right-justified in width 2: **` 1 2 3 4 5`** on one line.
+- (c) The `do-while` increments `ctr` from 1 to 10. Odd values hit `continue` (skipped); even values print with `%2d`. Output: **` 2 4 6 810`** — note `10` fills its full width-2 field, so there is no space before it. Loop stops when `ctr != 10` becomes false.
+
+**Worked Programming Exercise (#3 — Three Integers in Descending Order)**
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    int a, b, c, temp;
+
+    printf("Enter three integers: ");
+    scanf("%d %d %d", &a, &b, &c);
+
+    if (a < b) { temp = a; a = b; b = temp; }   /* biggest of a,b into a */
+    if (a < c) { temp = a; a = c; c = temp; }   /* biggest overall into a */
+    if (b < c) { temp = b; b = c; c = temp; }   /* order the last two */
+
+    printf("Descending: %d %d %d\n", a, b, c);
+    return 0;
+}
+```
+Three compare-and-swap steps — the same idea bubble sort scales up in Lesson 5. For Exercise 1 (child/teen/adult), use an `if / else if / else` ladder on age; for Exercise 5 (late fees), a ladder on days works, but a `switch` cannot — the conditions are ranges, and `case` labels must be constants.
+
+**How to Pass Tips**
+
+- Dangling else: `else` always pairs with the nearest unmatched `if`. Any trace with a nested, brace-less if is testing exactly this.
+- In a `switch`, every forgotten `break` means fall-through — when a trace prints "too many" things, that is why.
+- `for (i = 1; i <= 5; i++)` runs 5 times; `for (i = 1; i < 5; i++)` runs 4. Off-by-one boundaries are the most common trace trap.
+- Ranges (`age <= 12`, `days <= 4`) need if/else-if ladders; `switch` only matches exact constant values.
+$md$, 6);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a1000001-0001-0001-0001-000000000004','activity','Code Lab — Lesson 4: Grade Remarks Ladder',$md$
+**Coding Drill:** Complete the if/else-if ladder so each quiz score gets the right remark: 90 and above → A, 80–89 → B, 75–79 → C, below 75 → FAIL. The loop feeds it four test scores — exactly how your professor will test your ladder on the board.
+
+Expected output:
+```
+95: A
+83: B
+76: C
+60: FAIL
+```
+$md$, 7, 'c', $code$#include <stdio.h>
+
+int main(void) {
+    int scores[4] = {95, 83, 76, 60};
+    int i;
+
+    for (i = 0; i < 4; i++) {
+        printf("%d: ", scores[i]);
+
+        if (scores[i] >= 90)
+            printf("A\n");
+        /* TODO: else if 80 to 89 -> print "B" */
+        /* TODO: else if 75 to 79 -> print "C" */
+        /* TODO: else -> print "FAIL" */
+    }
+    return 0;
+}$code$);
+
 -- ============================================================
 -- LESSON 5: Arrays
 -- ============================================================
