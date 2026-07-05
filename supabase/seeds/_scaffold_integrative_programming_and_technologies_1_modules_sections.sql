@@ -344,3 +344,64 @@ order = {"id": "ORD-55", "customer_id": 7}
 print(can_access(alice, order))
 print(can_access(admin, order))
 print(can_access({"id": 9, "role": "customer"}, order))$code$);
+
+-- ============================================================
+-- LESSON 7: Middleware and Message-Based Integration
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('0801bc09-f04e-5794-8d82-59d3f6972ee2','content','What Is Middleware?',$md$
+**Middleware** is software that sits between other software, handling the plumbing so applications do not talk to each other directly. The term appears at two levels, and exams test both. At the **application level**, middleware is a chain of functions that every request passes through before reaching your handler — logging, authentication checks, input parsing, CORS headers. Express (Node.js), Laravel, and Django all use this pattern: a login-required middleware runs once and protects every route behind it. At the **systems level**, middleware means infrastructure that connects whole applications: **message brokers** (RabbitMQ, Kafka), **API gateways** (one entry point that routes, throttles, and secures calls to many backend services), and **enterprise service buses** in older architectures. Both meanings share one idea: put cross-cutting work in the middle so individual programs stay simple.
+$md$, 1),
+('0801bc09-f04e-5794-8d82-59d3f6972ee2','content','Message Queues and Asynchronous Integration',$md$
+A **message queue** decouples systems in time: a **producer** puts a message on the queue and moves on; a **consumer** takes messages off and processes them at its own pace. If the consumer is down, messages simply wait — nothing is lost. This is **asynchronous** integration, in contrast to a REST call where the caller blocks until the answer returns (**synchronous**). Vocabulary to master: **queue** (point-to-point: one consumer gets each message) versus **publish/subscribe** (every subscriber gets a copy); **at-least-once delivery** (messages may repeat, so consumers must be idempotent — the Lesson 4 concept returns); and **dead-letter queue** (where repeatedly failing messages are parked for inspection). Classic scenario: an online store queues "send receipt email" jobs so checkout stays fast even if the email service is slow — the customer never waits for SMTP.
+$md$, 2),
+('0801bc09-f04e-5794-8d82-59d3f6972ee2','activity','Choosing Sync vs Async in Real Designs',$md$
+Exam design questions usually reduce to one decision: call it now (synchronous REST) or queue it (asynchronous messaging)? Use **synchronous** when the caller needs the answer to continue — checking a balance before approving a withdrawal, validating a discount code at checkout. Use **asynchronous** when the work can happen later or must survive outages — sending notifications, generating reports, syncing sales from provincial branches with unstable internet to a head-office server in Manila. Hybrid designs are common and score well: accept the order synchronously (fast `201 Created`), then queue the slow parts (email, inventory sync, analytics). Also name the costs honestly: queues add infrastructure to run, make debugging harder (where is my message?), and only guarantee *eventual* consistency — the dashboard may lag a few seconds behind reality. Trade-off awareness is what separates a memorized answer from an engineer's answer.
+
+*Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
+$md$, 3);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('0801bc09-f04e-5794-8d82-59d3f6972ee2','activity','Practice & Exam Drills — Lesson 7',$md$
+**Review Questions**
+
+1. Define middleware at the application level and at the systems level.
+2. What does an API gateway do? Name three responsibilities.
+3. Differentiate a queue from publish/subscribe.
+4. What is at-least-once delivery, and what must consumers do because of it?
+5. What is a dead-letter queue for?
+6. Give one scenario each where synchronous and asynchronous integration is the right choice, and why.
+
+**Worked Exam-Style Problem**
+
+*Problem:* A chain of pharmacies in different provinces must report sales to head office. Internet at branches is intermittent. Design the integration and justify each choice.
+
+*Solution:* Step 1: Requirements — no lost sales data, tolerate offline periods, head office needs consolidated (not instant) figures. Step 2: Choose asynchronous messaging — each branch POS writes sales to a **local queue/store**; a sync agent forwards messages to the head-office broker whenever connectivity returns. Step 3: Handle duplicates — the broker delivers at-least-once, so the head-office consumer checks each sale's unique id before inserting (idempotency). Step 4: Handle poison messages — malformed records go to a dead-letter queue for manual review instead of blocking the line. Step 5: Justify rejecting REST-only — synchronous calls would fail during outages and lose or delay data; the queue turns unreliable connectivity from a failure into a normal case.
+
+**How to Pass Tips**
+
+- "Unreliable network" or "system may be down" in a scenario = queue-based answer, almost without exception.
+- Draw the boxes: producer -> queue -> consumer. A labeled diagram earns method marks even if wording is thin.
+- Pair "at-least-once" with "idempotent consumer" in the same sentence — professors look for that linkage.
+- Remember the hybrid pattern (respond fast, queue the slow work); it is the model answer for most e-commerce scenarios.
+
+**Coding Drill:** Complete `drain_queue` so it processes messages in FIFO order, skipping ids already seen (duplicate delivery) and returning the list of processed ids.
+$md$, 4, 'python', $code$queue = [
+    {"id": "s1", "amount": 250},
+    {"id": "s2", "amount": 480},
+    {"id": "s1", "amount": 250},
+    {"id": "s3", "amount": 120},
+]
+
+def drain_queue(messages):
+    # TODO: process in order; skip duplicate ids; return processed ids
+    seen = set()
+    processed = []
+    for msg in messages:
+        if msg["id"] in seen:
+            continue
+        seen.add(msg["id"])
+        processed.append(msg["id"])
+    return processed
+
+print(drain_queue(queue))$code$);
