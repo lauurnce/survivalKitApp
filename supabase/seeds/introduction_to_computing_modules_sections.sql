@@ -460,6 +460,74 @@ $md$, 9),
 7. Add even parity to the ASCII code for "roxas".
 $md$, 10);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a1000002-0001-0001-0001-000000000002','activity','Worked Exam Solutions + How-to-Pass Tips — Unit II',$md$
+**Answer Key — Conversion Table**
+
+| Given | Binary | Octal | Decimal | Hexadecimal |
+|---|---|---|---|---|
+| 10110110₂ | 10110110 | 266 | 182 | B6 |
+| 762₈ | 111110010 | 762 | 498 | 1F2 |
+| 785₁₀ | 1100010001 | 1421 | 785 | 311 |
+| BEE₁₆ | 101111101110 | 5756 | 3054 | BEE |
+
+*Worked row (785₁₀):* Divide by 2 repeatedly: 785→392 r1, 392→196 r0, 196→98 r0, 98→49 r0, 49→24 r1, 24→12 r0, 12→6 r0, 6→3 r0, 3→1 r1, 1→0 r1. Read remainders bottom-up: **1100010001₂**. For octal, group in 3s from the right: 1 100 010 001 → **1421₈**. For hex, group in 4s: 11 0001 0001 → **311₁₆**. Grouping from the *right* is the step everyone botches.
+
+**Answer Key — Arithmetic**
+
+1. *756₈ + 345₈:* column by column with base-8 carries: 6+5=11 → write 3 carry 1; 5+4+1=10 → write 2 carry 1; 7+3+1=11 → write 3 carry 1 → **1323₈**.
+2. *ACE₁₆ + BEAD₁₆:* E+D=27 → write B carry 1; C+A+1=23 → write 7 carry 1; A+E+1=25 → write 9 carry 1; B+1=C → **C97B₁₆**. (Convert letters to numbers, add, subtract 16 when you carry.)
+3. *101010 + 111111 + 101:* add the first two: 101010+111111 = 1101001; then +101 = **1101110₂** (decimal check: 42+63+5=110 ✓).
+4. *1111 − 101:* **Direct:** 1111−0101 = **1010**. **1's complement:** comp of 0101 = 1010; 1111+1010 = 1 1001 → end-around carry: 1001+1 = **1010**. **2's complement:** comp of 0101 = 1011; 1111+1011 = 1 1010 → discard carry → **1010**. All three agree (15−5=10 ✓).
+5. *1001 − 1101 (9−13):* **1's complement:** comp of 1101 = 0010; 1001+0010 = 1011; NO carry → answer is negative: complement 1011 → **−0100** (−4). **2's complement:** comp of 1101 = 0011; 1001+0011 = 1100; no carry → result is in 2's-complement form: recomplement → **−0100**. The no-carry-means-negative rule is exactly what this item tests.
+
+**Answer Key — Data Representation**
+
+1. *BCD:* 3421 = `0011 0100 0010 0001`; 7684 = `0111 0110 1000 0100` (each decimal digit → its own 4 bits; never binary-convert the whole number).
+2. *UDF:* +3245 = `11110011 11110010 11110100 11000101` (zone 1111 on every byte except the last, which carries the sign: 1100 = +). −7448 = `11110111 11110100 11110100 11011000` (last zone 1101 = −).
+3. *PDF:* +33485 → digits 3,3,4,8,5 + sign C = `00110011 01001000 01011100`. −7438 → pad to even nibbles: 0,7,4,3,8 + sign D = `00000111 01000011 10001101`.
+4. *−87 in 8 bits:* +87 = `01010111`. **Sign-magnitude:** `11010111` (flip only the sign bit). **1's complement:** `10101000` (flip every bit). **2's complement:** `10101001` (1's comp + 1).
+5. *64.2 → IEEE 754:* see the floating-point lesson above — final answer `0 10000101 00000000110011001100110`. Show all five steps (convert, normalize, bias 6+127=133, mantissa, assemble); each step is usually worth a point.
+6. *ASCII "bSCs":* b=98, S=83, C=67, s=115 → hex `62 53 43 73`. Case matters — that is the whole point of this item.
+7. *Even parity "roxas"* (7-bit ASCII, parity as the 8th/leftmost bit): r=1110010 has four 1s → parity 0 → `01110010`; o=1101111 has six 1s → `01101111`; x=1111000 has four → `01111000`; a=1100001 has three → parity 1 → `11100001`; s=1110011 has five → `11110011`.
+
+**How to Pass Tips**
+
+- Decimal→base-N: divide, keep remainders, read **bottom-up**. Base-N→decimal: multiply by place values. Never mix the two directions.
+- Binary↔octal groups of 3; binary↔hex groups of 4; always group starting from the right (pad the left).
+- Complement subtraction: carry out = positive (add it back for 1's comp, discard for 2's comp); no carry = negative (recomplement and add the minus sign).
+- BCD encodes each digit separately — 4 bits per digit. Converting the whole number to binary is the classic zero-credit mistake.
+- Memorize A=10 … F=15 cold; hex arithmetic is impossible without it.
+$md$, 11);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a1000002-0001-0001-0001-000000000002','activity','Code Lab — Unit II: Base Converter',$md$
+**Coding Drill:** Complete `to_base` using the same divide-and-keep-remainders method you use on paper — no `bin()`/`hex()` shortcuts inside the function. The last line uses Python's built-ins to check your work, exactly like verifying a hand conversion with a calculator.
+
+Expected output:
+```
+785 in binary : 1100010001
+785 in octal  : 1421
+785 in hex    : 311
+self-check    : 1100010001 1421 311
+```
+$md$, 12, 'python', $code$DIGITS = "0123456789ABCDEF"
+
+def to_base(n, base):
+    if n == 0:
+        return "0"
+    result = ""
+    while n > 0:
+        remainder = 0  # TODO: the by-hand step — replace 0 with n % base
+        result = DIGITS[remainder] + result
+        n = n // base
+    return result
+
+print("785 in binary :", to_base(785, 2))
+print("785 in octal  :", to_base(785, 8))
+print("785 in hex    :", to_base(785, 16))
+print("self-check    :", bin(785)[2:], oct(785)[2:], hex(785)[2:].upper())$code$);
+
 -- ============================================================
 -- UNIT III: Hardware
 -- ============================================================
