@@ -15,7 +15,8 @@ export default function Error({
   }, [error]);
 
   return (
-    <main className="min-h-screen bg-paper flex flex-col justify-between px-6 py-12 md:px-16 md:py-20">
+    <main className="min-h-screen bg-paper flex flex-col px-6 py-12 md:px-16 md:py-20">
+      <div className="w-full max-w-wide mx-auto flex-1 flex flex-col justify-between">
       {/* Header */}
       <div>
         <span className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-muted">
@@ -60,6 +61,7 @@ export default function Error({
         <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent">
           Failed to load
         </span>
+      </div>
       </div>
     </main>
   );

@@ -65,8 +65,9 @@ export default async function LandingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-paper flex flex-col px-6 py-12 md:px-16 md:py-20 gap-16">
+    <main className="min-h-screen bg-paper flex flex-col px-6 py-12 md:px-16 md:py-20">
       <PageTracker event="enter" />
+      <div className="w-full max-w-wide mx-auto flex-1 flex flex-col gap-16">
 
       {/* Header label */}
       <div>
@@ -115,6 +116,7 @@ export default async function LandingPage() {
         <p className="font-mono text-label-sm text-ink-faint">
           We collect emails only to notify you when content is ready. We don&apos;t sell or share your data.
         </p>
+      </div>
       </div>
     </main>
   );
