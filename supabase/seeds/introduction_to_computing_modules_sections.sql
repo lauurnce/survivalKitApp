@@ -150,6 +150,32 @@ $md$, 5),
 5. Research one recent hardware or software advancement (from the past two years). Explain what problem it solves and what its impact might be on computing.
 $md$, 6);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a1000002-0001-0001-0001-000000000001','activity','Worked Exam Solutions + How-to-Pass Tips — Unit I',$md$
+**Answer Key — Model Answers**
+
+1. *Hardware/software/peopleware interdependence:* Think of a jeepney: hardware is the vehicle, software is the driver's knowledge of the route, peopleware is the driver and passengers. Remove the vehicle — nothing moves. Remove the route knowledge — the vehicle sits idle or gets lost. Remove the people — nobody builds it, drives it, or needs the trip. In computing terms: hardware without software is idle metal; software without hardware has nothing to run on; and without peopleware neither would exist nor have any purpose. If any one is missing, the *system* stops being a system.
+
+2. *One more type per category (model answers):* **Size** — smartphone/wearable computer (below microcomputer; a full computer on one chip worn on the wrist). **Functionality** — gaming console (a specialized workstation: one user, optimized for graphics workloads). **Data handling** — a hospital ECG machine as a *hybrid* computer: it reads continuous electrical signals from the heart (analog) and digitizes them for analysis and storage (digital). **Purpose** — an ATM as a *special-purpose* computer: hardware and software built solely for cash transactions.
+
+3. *Capabilities/limitations examples:* **Speed** — BIR e-filing processes millions of returns during deadline week; humans doing this manually would take months. **Accuracy** — a payroll system computes SSS/PhilHealth/Pag-IBIG deductions for 10,000 employees without a single arithmetic slip — but only if the rates encoded are correct (garbage in, garbage out). **Cannot think independently** — a grade-computation program will happily average the wrong columns forever if programmed that way; it never notices the mistake. **Cannot make genuine decisions** — a loan-scoring system can rank applicants by encoded rules, but deciding whether the rules themselves are fair requires human judgment.
+
+4. *Generation transitions — the one defining change each:* 1st→2nd: **vacuum tubes replaced by transistors** (size/power/reliability leap). 2nd→3rd: **integrated circuits** put many transistors on one chip (operating systems emerged). 3rd→4th: **the microprocessor** — a whole CPU on one chip (personal computing became possible). 4th→5th: **ULSI + artificial intelligence** — the goal shifted from faster arithmetic to machines that learn and understand natural language.
+
+**Worked Exam-Style Problem**
+
+*Problem:* "Trace the progression from first- to fifth-generation computers" — as a 10-point essay.
+
+*Solution structure that earns full marks:* Step 1: One sentence of framing (each generation is defined by its core electronic component). Step 2: One sentence per generation naming the component, the speed class, and one consequence — e.g., "Second generation (1959–1965): transistors made computers smaller and microsecond-fast, and assembly language replaced raw machine code." Step 3: Close with the pattern: each transition shrank the hardware, raised the speed, and moved programming closer to human language. Professors grade this rubric-style: 5 components named correctly = 5 points, consequences = 4 points, framing/pattern = 1 point. A memorized table without the "consequence" sentences loses nearly half the marks.
+
+**How to Pass Tips**
+
+- Memorize the generation table as **component + years + speed unit**: tubes/milliseconds, transistors/microseconds, ICs/nanoseconds, microprocessors, ULSI+AI. The years matter less than the order.
+- "Differentiate data and information" is near-guaranteed: data = raw facts, information = processed, meaningful data. Give an example (enrollment forms vs. an enrollment summary report).
+- For classification questions, always say the *basis* first ("By size, ..."), then the type — answers without the basis get partial credit only.
+- Inventor-matching items love: Babbage (Difference Engine), Hollerith (punch cards), Morse (telegraph), Eckert & Mauchly (ENIAC), von Neumann (stored program).
+$md$, 7);
+
 -- ============================================================
 -- UNIT II: Data Representation
 -- ============================================================
