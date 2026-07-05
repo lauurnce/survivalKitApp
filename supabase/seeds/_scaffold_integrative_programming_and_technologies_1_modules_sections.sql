@@ -2,8 +2,10 @@
 -- Integrative Programming and Technologies 1 — Modules & Sections
 -- Subject ID: 20000000-0002-0002-0001-000000000005
 -- 2nd Year, Semester 2 — major
--- 8 lessons. Split: S1+S2 = content (FREE); remaining teaching block + drill
---   = activity (PAID). L1-L8 -> 2/2.
+-- 14 lessons. L1-L8 = integration core; L9-L14 = Python refresher appendix
+--   (recovered from a pre-existing live import, renumbered from 1-6).
+-- Split: S1+S2 = content (FREE); remaining teaching blocks + drill
+--   = activity (PAID). L1-L8 -> 2/2; L9-L14 -> 2/3.
 -- Python IDE playgrounds on drills (programming subject).
 -- Re-running is safe (DELETE clears prior rows).
 -- ============================================================
@@ -18,7 +20,13 @@ INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
   ('3dafe7cf-ca2f-5a13-8ee2-e8a91ee3d001','20000000-0002-0002-0001-000000000005','Lesson 5: Database Integration and Data Access','lesson-5-database-integration-and-data-access',5),
   ('b7d098c6-2c95-54a4-8fd7-4e6c081cb6a2','20000000-0002-0002-0001-000000000005','Lesson 6: Sessions, Authentication, and Secure Integration','lesson-6-sessions-authentication-and-secure-integration',6),
   ('0801bc09-f04e-5794-8d82-59d3f6972ee2','20000000-0002-0002-0001-000000000005','Lesson 7: Middleware and Message-Based Integration','lesson-7-middleware-and-message-based-integration',7),
-  ('a04c9132-3ec8-5f19-b70f-57da3a8bc949','20000000-0002-0002-0001-000000000005','Lesson 8: Integration Testing, Error Handling, and Best Practices','lesson-8-integration-testing-error-handling-and-best-practices',8);
+  ('a04c9132-3ec8-5f19-b70f-57da3a8bc949','20000000-0002-0002-0001-000000000005','Lesson 8: Integration Testing, Error Handling, and Best Practices','lesson-8-integration-testing-error-handling-and-best-practices',8),
+  ('de4d65cc-eb46-5f93-9efb-c1fdda789339','20000000-0002-0002-0001-000000000005','Lesson 9: Python Refresher — Programming and Problem Solving','lesson-9-python-refresher-programming-and-problem-solving',9),
+  ('755b434e-4a5b-573b-92b2-c5d148d78140','20000000-0002-0002-0001-000000000005','Lesson 10: Python Refresher — Variables and Data Types','lesson-10-python-refresher-variables-and-data-types',10),
+  ('1f04d8d7-f0a4-538d-a84f-8b82891ffc2d','20000000-0002-0002-0001-000000000005','Lesson 11: Python Refresher — Control Structures and Functions','lesson-11-python-refresher-control-structures-and-functions',11),
+  ('8613f8f8-70ad-54a5-ac44-a60306fa82ee','20000000-0002-0002-0001-000000000005','Lesson 12: Python Refresher — Lists, Tuples, and Dictionaries','lesson-12-python-refresher-lists-tuples-and-dictionaries',12),
+  ('5c22ae1e-342e-40e8-bbbf-d91b825d246f','20000000-0002-0002-0001-000000000005','Lesson 13: Python Refresher — File I/O and Exception Handling','lesson-13-python-refresher-file-io-and-exception-handling',13),
+  ('e97c80ca-1282-4f7e-8033-6a1255c7157b','20000000-0002-0002-0001-000000000005','Lesson 14: Python Refresher — Integrating Python with Technologies','lesson-14-python-refresher-integrating-python-with-technologies',14);
 
 -- ============================================================
 -- LESSON 1: Introduction to Integrative Programming
@@ -466,6 +474,626 @@ def call_with_retry(service, max_tries):
 print(call_with_retry(flaky_service, 3))
 print("attempts made:", attempts["count"])$code$);
 
+
+-- ============================================================
+-- LESSON 9: Python Refresher — Programming and Problem Solving
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('de4d65cc-eb46-5f93-9efb-c1fdda789339','content','What Is Interactive Programming?',$md$
+Interactive programming involves creating programs that respond to user input or events, making applications more engaging. Unlike batch programs that run from start to finish automatically, interactive programs wait for the user and then do something, such as clicking a button or entering text. This course introduces fundamental concepts of programming and shows how technologies (like Python or web interfaces) can be integrated to build simple interactive applications. You will learn basic problem-solving and programming principles, preparing you for building practical projects.
+$md$, 1),
+('de4d65cc-eb46-5f93-9efb-c1fdda789339','content','Programming and Problem Solving',$md$
+Effective programming starts with problem solving. We break a problem into smaller steps before writing code. This often begins with defining the problem, understanding requirements, and then designing a solution algorithmically. An **algorithm** is a step-by-step procedure to solve a task. For example, to compute the sum of two numbers:
+
+1. Input two numbers.
+2. Add them together.
+3. Output the result.
+
+Using tools like **flowcharts** or **pseudocode** helps visualize these steps. A flowchart uses symbols (ovals for start/end, rectangles for actions, diamonds for decisions) to map logic. In this module, you'll learn to read and draw simple flowcharts to plan programs. Effective problem solving sets the foundation: before coding, outline your logic so the program follows a clear plan.
+$md$, 2),
+('de4d65cc-eb46-5f93-9efb-c1fdda789339','activity','Getting Started with Python',$md$
+In this class we will use **Python** as our programming language. Python is easy-to-read and widely used in schools and industry. To start coding in Python, install a Python interpreter (like Python.org or use an online IDE). Writing a simple program can be as easy as:
+
+```python
+print("Hello, Pilipinas!")  # Displays text to the screen
+```
+
+This line uses `print()` to output text. Lines beginning with `#` are comments for humans and are ignored by Python. In class you will set up Python on your computer or use the provided lab computers. By the end of this module, you should be comfortable running a Python script and understanding how your code maps to the problem-solving plan.
+$md$, 3),
+('de4d65cc-eb46-5f93-9efb-c1fdda789339','activity','Module Summary and Next Steps',$md$
+Interactive programming combines logic, coding, and user interaction. In this module we introduced programming and problem solving, and got started with Python. Remember: **always plan your program logic** (flowchart or pseudocode) before writing code. Next, we will learn about the building blocks of Python programs: variables, data types, and how to get input/output from the user.
+
+*Ready to apply these ideas? The practice drills below include programming exercises and debugging tips — with a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('de4d65cc-eb46-5f93-9efb-c1fdda789339','activity','Practice & Exam Drills — Lesson 9',$md$
+**Review Questions**
+
+1. What is an algorithm and why is it useful before coding?
+2. Name three common flowchart symbols and their meanings.
+3. What does the `print()` function do in Python? Give an example.
+4. Why are comments important in code?
+5. Describe the difference between batch (non-interactive) programs and interactive programs.
+
+**Worked Exam Problem**
+
+*Problem:* Write a simple Python program (in pseudocode or flowchart first) that asks the user for their name and then greets them by name.
+
+**Solution Steps**
+
+**Step 1: Plan the Algorithm.** We want to ask for a name and then say hello. The steps: Start → Input the user's name → Output a greeting that includes the name → End.
+
+**Step 2: Write Pseudocode.**
+```
+START
+OUTPUT "Enter your name: "
+INPUT name
+OUTPUT "Hello, " + name + "! Welcome to the class."
+END
+```
+
+**Step 3: Convert to Python.**
+```python
+name = input("Enter your name: ")      # Get name from user
+print("Hello, " + name + "! Welcome to the class.")
+```
+
+**Step 4: Explain the Code.** The `input()` function displays a prompt and reads text into the variable `name`. The `print()` then concatenates strings to greet the user.
+
+**Hands-On Exercise**
+
+Use the starter code to create a program that asks the user for two peso amounts (for example, price of goods), adds them together, and prints the total as a peso amount. Test your program with sample inputs.
+
+**How to Pass Tips**
+
+- **Common Mistake:** Forgetting to convert input to the right type (e.g., `input()` returns text). For numeric addition, ensure you convert to `int` or `float` if needed.
+- **What Professors Look For:** Clear variable names, correct prompt messages, and accurate results. Make sure to include error-free syntax.
+- **Memorize vs. Understand:** It's more important to understand the logic (ask → process → output) than to memorize the exact code. But know that `print()` shows output and `input()` takes user input.
+$md$, 5, 'python', $code$# Write a Python program that asks for two numbers
+# (peso values from user input), adds them, and prints the result with a ₱ sign.
+print("Interactive Sum Program")
+# TODO: Prompt user for two numbers and print their sum.$code$);
+
+-- ============================================================
+-- LESSON 10: Python Refresher — Variables and Data Types
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('755b434e-4a5b-573b-92b2-c5d148d78140','content','Variables and Data Types',$md$
+In Python, a **variable** is like a labeled box that stores a value (such as a number or text). You can name these variables to keep track of data. For example, `score = 85` stores the number 85 in a variable called `score`. Python is **dynamically typed**, meaning you don't declare variable types explicitly; the type (integer, string, etc.) is determined by the value you assign.
+
+Common data types in Python include:
+
+- **Integer (int):** Whole numbers, e.g. `n = 42`.
+- **Float:** Decimal numbers, e.g. `price = 17.50`.
+- **String (str):** Text enclosed in quotes, e.g. `name = "Juan"`.
+- **Boolean (bool):** `True` or `False` values, e.g. `is_raining = False`.
+
+Understanding types is important because you can only perform certain operations on certain types. For example, `5 + 3` gives `8`, but `"5" + "3"` (string addition) gives `"53"` (concatenation).
+$md$, 1),
+('755b434e-4a5b-573b-92b2-c5d148d78140','content','Operators and Expressions',$md$
+**Operators** let us do calculations or comparisons. Key operator types:
+
+- **Arithmetic operators:** `+`, `-`, `*`, `/`, `%` (modulo), `**` (power). Example: `3 * 4` results in `12`.
+- **Relational (comparison) operators:** `==`, `!=`, `<`, `>`, `<=`, `>=`. These produce Boolean results. Example: `5 > 3` is `True`.
+- **Logical operators:** `and`, `or`, `not` (combine Boolean conditions). Example: `True and False` is `False`.
+
+An **expression** is a combination of variables, literals, and operators that evaluates to a value. For instance, `total = price * quantity` uses the arithmetic `*` operator. Remember **operator precedence** (multiplication before addition) when writing expressions, or use parentheses to make your intent clear: `(a + b) * c`.
+$md$, 2),
+('755b434e-4a5b-573b-92b2-c5d148d78140','activity','Input and Output',$md$
+Interactive programs often exchange information with the user. We already saw `print()` for output. To get input, use `input()`:
+
+```python
+age = input("Enter your age: ")  # This reads a string from the user
+```
+
+By default `input()` returns a string. If you need a number, convert it:
+
+```python
+age = int(input("Enter your age: "))
+```
+
+Now `age` is an integer. Always validate user input in real programs (not required here, but good practice). For example, if a user types letters when an integer is expected, the program will error out.
+$md$, 3),
+('755b434e-4a5b-573b-92b2-c5d148d78140','activity','Module Summary',$md$
+In this lesson we explored how to store and work with data in Python. You learned about variables, basic data types (int, float, string, bool), and how to use operators to compute or compare. You also saw how to get input from the user and output results. Next lesson will cover control structures (decision-making and loops) and how to organize code with functions.
+
+*Ready for challenges? The practice drills below include writing small programs using variables and operators — with a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('755b434e-4a5b-573b-92b2-c5d148d78140','activity','Practice & Exam Drills — Lesson 10',$md$
+**Review Questions**
+
+1. What is a variable and how do you assign a value in Python?
+2. Give examples of at least three Python data types and a value for each.
+3. What is the difference between `=` and `==` in Python?
+4. How do you convert a string input to an integer? Why might you do that?
+5. Explain the output of this expression: `5 + 3 * 2`.
+
+**Worked Exam Problem**
+
+*Problem:* Suppose a retail store needs to calculate discounts. If an item costs ₱350.00 and there is a 15% discount, write a Python snippet to compute the discounted price. Show the steps.
+
+**Solution Steps**
+
+- **Step 1: Identify values.** Original price = 350.00 (float), discount rate = 0.15.
+- **Step 2: Compute discount amount.** `discount_amount = original_price * discount_rate` → 350.00 * 0.15 = 52.5.
+- **Step 3: Compute final price.** `final_price = original_price - discount_amount` → 350.00 - 52.5 = 297.5.
+- **Step 4: Show formula.** `final_price = 350.0 - (350.0 * 0.15)`.
+- **Step 5: Write Python code.**
+```python
+original_price = 350.0
+discount_rate = 0.15
+discount_amount = original_price * discount_rate
+final_price = original_price - discount_amount
+print("Discounted price: ₱", final_price)
+```
+- **Step 6: Check the logic.** Ensure operators and type are correct. If using input, ensure conversion: `float(input(...))`.
+
+**Hands-On Exercise**
+
+Use the starter code to convert kilometers to miles. Remember: multiply the km value by 0.621371 to get miles, then print the result, e.g.:
+```python
+miles = km * 0.621371
+print(km, "km is approximately", miles, "miles")
+```
+Test with km = 5, 10, etc.
+
+**How to Pass Tips**
+
+- **Common Mistake:** Confusing integer and float division. In Python 3, `/` is float division. Always test your formulas.
+- **What Professors Look For:** Correct use of types and operators. Show the steps or formula if asked. Use clear print formatting when dealing with currency or units (₱ symbol is a bonus for context).
+- **Memorize vs. Understand:** You don't need to memorize conversion factors; focus on correct arithmetic. But remember basic operators and how to apply them in Python.
+$md$, 5, 'python', $code$# Unit Conversion Exercise:
+# Write a Python program that asks the user for a distance in kilometers
+# and converts it to miles. (1 km ≈ 0.621371 miles)
+km = float(input("Distance in kilometers: "))
+# TODO: Compute distance in miles and print it$code$);
+
+-- ============================================================
+-- LESSON 11: Python Refresher — Control Structures and Functions
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('1f04d8d7-f0a4-538d-a84f-8b82891ffc2d','content','Decision Making (if Statements)',$md$
+Programs often need to make choices. In Python we use `if`, `elif`, and `else` statements for decisions. Example:
+
+```python
+score = int(input("Enter exam score: "))
+if score >= 75:
+    print("You passed!")
+else:
+    print("You failed.")
+```
+
+Here, if `score` is 75 or higher, the program prints "You passed!", otherwise "You failed." Indentation (4 spaces) defines the block inside the `if`. We can chain conditions:
+
+```python
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 75:
+    grade = "C"
+else:
+    grade = "F"
+print("Your grade is", grade)
+```
+
+The conditions are checked in order; the first true branch runs. Use these to make your program adapt to different inputs (e.g., giving feedback, choosing between actions).
+$md$, 1),
+('1f04d8d7-f0a4-538d-a84f-8b82891ffc2d','content','Loops (for and while)',$md$
+Loops let us repeat tasks. The `for` loop iterates over a sequence or range. Example:
+
+```python
+for i in range(1, 6):  # i goes from 1 to 5
+    print("Step", i)
+```
+
+This prints steps 1 through 5. Use `range(start, stop)` or `range(stop)` for numbers. Or loop through items in a list:
+
+```python
+fruits = ["mango", "banana", "apple"]
+for fruit in fruits:
+    print("I like", fruit)
+```
+
+A `while` loop runs as long as a condition holds true. Example:
+
+```python
+count = 0
+while count < 3:
+    print("Count is", count)
+    count += 1  # increment counter
+```
+
+This prints count = 0, 1, 2. Be careful with `while` loops to update the condition (like `count += 1`) or they may never stop (infinite loop).
+$md$, 2),
+('1f04d8d7-f0a4-538d-a84f-8b82891ffc2d','activity','Defining and Calling Functions',$md$
+Functions help organize code into reusable pieces. You define a function with `def` and call it by name. Example:
+
+```python
+def greet(name):
+    print("Hello,", name)
+
+greet("Ana")
+```
+
+This outputs `Hello, Ana`. Functions can take parameters and return values:
+
+```python
+def add(a, b):
+    return a + b
+
+result = add(5, 7)  # result is 12
+print(result)
+```
+
+Using functions improves readability and lets you test smaller parts. For example, you might write a function to compute the area of a circle, then call it with different radii.
+$md$, 3),
+('1f04d8d7-f0a4-538d-a84f-8b82891ffc2d','activity','Module Summary',$md$
+In this lesson we covered decision-making (`if`/`elif`/`else`), looping (`for`, `while`), and functions for structuring code. You now know how to make your programs choose different paths and repeat tasks. These concepts are key to writing any non-trivial program. Next module will dive into data structures in Python such as lists and dictionaries, which let you store collections of data.
+
+*Practice using loops and if-statements below — with a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('1f04d8d7-f0a4-538d-a84f-8b82891ffc2d','activity','Practice & Exam Drills — Lesson 11',$md$
+**Review Questions**
+
+1. What is the difference between `if`, `elif`, and `else` in Python?
+2. Give an example of a `for` loop and explain what it does.
+3. How do you avoid an infinite `while` loop?
+4. Why use functions? List two benefits.
+5. What does the `return` statement do in a function?
+
+**Worked Exam Problem**
+
+*Problem:* A professor wants a program to compute the final grade of a student. Given a score (0–100), assign grades: A (≥90), B (80–89), C (70–79), D (60–69), F (<60). Write a function `compute_grade(score)` that returns the letter grade, then print the result for a sample score.
+
+**Solution Steps**
+
+**Step 1: Define the Function.**
+```python
+def compute_grade(score):
+    if score >= 90:
+        return "A"
+    elif score >= 80:
+        return "B"
+    elif score >= 70:
+        return "C"
+    elif score >= 60:
+        return "D"
+    else:
+        return "F"
+```
+
+**Step 2: Call the Function with Sample Input.**
+```python
+grade = compute_grade(85)
+print("The grade is", grade)
+```
+
+**Step 3: Explain Logic.** The function checks conditions in order. The first true condition's `return` stops the function. For score 85, the `elif score >= 80` is true, so it returns `"B"`.
+
+**Step 4: Edge Cases.** If score = 90, the first `if` is true (A). If score = 59, the last `else` returns "F".
+
+**Hands-On Exercise**
+
+Complete the starter code for the temperature check. For example, if input is 35, output should be `Mainit (Hot)`. If input is 20, output `Tama lang (Moderate)`. Try test values like 15, 25, 31.
+
+**How to Pass Tips**
+
+- **Common Mistake:** Writing separate `if` for each condition instead of `elif` can cause multiple prints. Ensure the logic flows correctly in one `if`–`elif`–`else` chain.
+- **What Professors Look For:** Use of correct relational operators (`<=`, `>=`) and that the ranges don't overlap or leave gaps. Make sure to indent properly.
+- **Memorize vs. Understand:** Understand how loops and conditions control the flow. Memorize syntax for `for` and `while`. Pay attention to off-by-one errors in loops.
+$md$, 5, 'python', $code$# Temperature Check Exercise:
+# Write a program that asks for the current temperature (°C).
+# If the temperature is below 18, print "Malamig (Cold)".
+# If it is between 18 and 30 (inclusive), print "Tama lang (Moderate)".
+# Otherwise, print "Mainit (Hot)".
+temp = float(input("Current temperature in °C: "))
+# TODO: Use if/elif/else to categorize the temperature.$code$);
+
+-- ============================================================
+-- LESSON 12: Python Refresher — Lists, Tuples, and Dictionaries
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('8613f8f8-70ad-54a5-ac44-a60306fa82ee','content','Working with Lists',$md$
+A **list** is an ordered collection of items (which can be of mixed types). Lists are defined with square brackets, e.g. `fruits = ["mango", "banana", "apple"]`. You can access elements by index (starting at 0): `fruits[0]` is `"mango"`. Lists are **mutable**, meaning you can change them:
+
+```python
+numbers = [1, 2, 3]
+numbers.append(4)      # now [1, 2, 3, 4]
+numbers[1] = 5         # changes second element, now [1, 5, 3, 4]
+```
+
+Common list operations include `append()`, `remove()`, `pop()`, and slicing (e.g., `numbers[1:3]` gives `[5, 3]`). Lists are very handy for storing related data, like a list of student names or inventory items.
+$md$, 1),
+('8613f8f8-70ad-54a5-ac44-a60306fa82ee','content','Tuples and Sets',$md$
+A **tuple** is like a list but **immutable** (cannot be changed once created). Defined with parentheses: `coords = (10.0, 5.0)`. Use tuples for fixed collections. You can index and iterate through tuples, but not append or modify items.
+
+A **set** is an unordered collection of unique items, defined with braces: `colors = {"red", "blue", "green"}`. Since sets have no order and no duplicates, use them for membership tests or removing duplicates from a list. Example: `len({"a", "b", "a"})` is `2`.
+$md$, 2),
+('8613f8f8-70ad-54a5-ac44-a60306fa82ee','activity','Dictionaries (key–value pairs)',$md$
+A **dictionary** (or map) stores data in key–value pairs. Defined with `{}`, e.g.:
+
+```python
+student = {"name": "Rica", "age": 21, "course": "BSIT"}
+```
+
+Keys are like labels, and values are the data. Access a value by its key: `student["name"]` gives `"Rica"`. Dictionaries are very useful when you need to look up information. Common operations: `student["grade"] = 88` (to add/update), `del student["age"]`, and methods like `.keys()`, `.values()`, `.items()`.
+
+For example, you might use a dictionary to count how many times each word appears in a text, or to map student IDs to names.
+$md$, 3),
+('8613f8f8-70ad-54a5-ac44-a60306fa82ee','activity','Module Summary',$md$
+This lesson introduced Python's built-in data structures: lists, tuples, sets, and dictionaries. You saw how to organize collections of data efficiently. In practice, you might store a list of quiz scores, a tuple of fixed coordinates, or a dictionary of user profiles. Mastery of these structures will allow you to handle data in your programs. Next, we will learn how to read and write data to files and handle errors.
+
+*Try solving our drills below to manipulate lists and dictionaries — with a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('8613f8f8-70ad-54a5-ac44-a60306fa82ee','activity','Practice & Exam Drills — Lesson 12',$md$
+**Review Questions**
+
+1. What is the difference between a list and a tuple?
+2. How do you access the third element of a list named `items`?
+3. Give an example of when a set is more appropriate than a list.
+4. How do you add a new key–value pair to a dictionary?
+5. What happens if you try to access a dictionary key that does not exist?
+
+**Worked Exam Problem**
+
+*Problem:* A teacher has scores of students stored in a list: `[65, 85, 90, 75, 70]`. She wants to add a new score `80` and then calculate the average score. Show the steps in Python.
+
+**Solution Steps**
+
+- **Step 1: Represent the list.** `scores = [65, 85, 90, 75, 70]`.
+- **Step 2: Append the new score.**
+```python
+scores.append(80)  # scores is now [65, 85, 90, 75, 70, 80]
+```
+- **Step 3: Calculate the average.** Sum the list and divide by count:
+```python
+total = sum(scores)          # sum() adds all elements
+average = total / len(scores)
+```
+- **Step 4: Print the result.**
+```python
+print("Average score:", average)
+```
+- **Step 5: Verify.** `total` is 465, `len(scores)` is 6, so average ≈ 77.5.
+
+**Hands-On Exercise**
+
+Using the starter code, update the inventory dictionary: add 7 to `"pens"` and subtract 3 from `"notebooks"`. Then print the updated dictionary, e.g. `{'pens': 17, 'notebooks': 2, 'erasers': 2}`.
+
+**How to Pass Tips**
+
+- **Common Mistake:** Off-by-one errors with indexing or forgetting that lists start at index 0. Always double-check your indices.
+- **What Professors Look For:** Correct use of methods like `.append()`, proper dictionary syntax (`dict[key] = value`), and correct handling of keys.
+- **Memorize vs. Understand:** Understand what each data structure is best for (ordered vs unordered, mutable vs immutable). You don't need to memorize all methods, but know the main ones (list: `append`, `pop`; dict: add key, delete key).
+$md$, 5, 'python', $code$# Inventory Management Exercise:
+# Given a dictionary of items and quantities, update the stock.
+inventory = {"pens": 10, "notebooks": 5, "erasers": 2}
+# The store received 7 more pens and sold 3 notebooks.
+# TODO: Update the inventory accordingly and print the result.$code$);
+
+-- ============================================================
+-- LESSON 13: Python Refresher — File I/O and Exception Handling
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('5c22ae1e-342e-40e8-bbbf-d91b825d246f','content','Reading and Writing Files',$md$
+Many programs need to save or load data from files (like lists of users, logs, etc.). In Python, you use `open()` to work with files. Example of writing to a file:
+
+```python
+with open("data.txt", "w") as file:
+    file.write("Hello file!\n")
+```
+
+This code opens (or creates) `data.txt` for writing (`"w"` mode) and writes a line. Using `with` ensures the file closes automatically. To read:
+
+```python
+with open("data.txt", "r") as file:
+    content = file.read()
+print(content)  # Displays the file's contents
+```
+
+Or read line by line with `file.readline()`. Common modes: `"r"` (read), `"w"` (write, overwrites), `"a"` (append). Always handle files carefully (closing after done) to avoid data loss. For interactive programs, you might read a CSV of prices, update values, then write the new CSV.
+$md$, 1),
+('5c22ae1e-342e-40e8-bbbf-d91b825d246f','content','Handling Errors with Exceptions',$md$
+User input or file operations can fail. Python uses `try`/`except` to handle errors gracefully. Example:
+
+```python
+try:
+    x = int(input("Enter a number: "))
+    print("Reciprocal is", 1/x)
+except ValueError:
+    print("That is not an integer!")
+except ZeroDivisionError:
+    print("Cannot divide by zero!")
+```
+
+This code handles two error types: if conversion to `int` fails, or if the user enters 0. Without `try`/`except`, the program would crash. Using exceptions, you can catch errors and respond (like reprompt or show a message). In exams, demonstrating that you know to catch errors can boost your solution.
+$md$, 2),
+('5c22ae1e-342e-40e8-bbbf-d91b825d246f','activity','Module Summary',$md$
+In this lesson, you learned how to work with files and handle errors. File I/O lets your programs save and load data (imagine saving student records or logs). Exception handling with `try`/`except` makes your programs more robust against unexpected inputs (like dividing by zero or missing files). These skills integrate programming with real-world needs. In our next lesson, we will look at integrating technologies—such as using libraries or building simple interfaces for your programs.
+
+*Excited to test file operations? The practice section below lets you try coding with files and error handling — with a live coding playground.*
+$md$, 3),
+('5c22ae1e-342e-40e8-bbbf-d91b825d246f','activity','Worked Example: Robust File Sum',$md$
+Here is a robust pattern that ties file I/O and exception handling together. A program must read numbers from a file `data.txt` (one number per line) and compute their sum. If the file is missing or a line is not a number, it handles the error gracefully.
+
+```python
+try:
+    file = open("data.txt", "r")
+except FileNotFoundError:
+    print("File not found.")
+else:
+    total = 0
+    for line in file:
+        try:
+            num = float(line.strip())
+            total += num
+        except ValueError:
+            print("Invalid input")
+    print("Sum is", total)
+    file.close()
+```
+
+We use a `try`/`except` around `open()`. Inside, for each line we use another `try`/`except` to catch conversion errors (`ValueError`). If a line cannot be parsed to `float`, we print "Invalid input" and skip it. Finally, we print the total sum. Nesting the error handling this way means one bad line does not crash the whole program.
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('5c22ae1e-342e-40e8-bbbf-d91b825d246f','activity','Practice & Exam Drills — Lesson 13',$md$
+**Review Questions**
+
+1. What does the `"a"` mode do when opening a file?
+2. How do you write to a file line by line? Give an example.
+3. Explain what happens if you open a file that does not exist in `"r"` mode. How can you prevent a crash?
+4. What is an exception in Python? How is it different from a syntax error?
+5. Write a short code snippet using `try`/`except` to catch a division by zero error.
+
+**Worked Exam Problem**
+
+*Problem:* A program must read numbers from a file `data.txt` (one number per line) and compute their sum. If the file is missing or a line is not a number, handle the error by printing "Invalid input". Show a robust solution.
+
+**Solution Steps**
+
+- **Step 1: Open the file safely.**
+```python
+try:
+    file = open("data.txt", "r")
+except FileNotFoundError:
+    print("File not found.")
+```
+- **Step 2: Read lines with error handling.**
+```python
+else:
+    total = 0
+    for line in file:
+        try:
+            num = float(line.strip())
+            total += num
+        except ValueError:
+            print("Invalid input")
+    print("Sum is", total)
+    file.close()
+```
+- **Step 3: Explanation.** We use a `try`/`except` around `open()`. Inside, for each line we use another `try`/`except` to catch conversion errors. If a line cannot be parsed to `float`, we print "Invalid input" and skip it. Finally, we print the total sum.
+
+**Hands-On Exercise**
+
+Complete the starter code: read each student name, convert it to uppercase with `name.upper()`, and print it. Test by creating a small `students.txt` with names. Verify that if `students.txt` is missing, the program catches `FileNotFoundError` and prints the error message instead of crashing.
+
+**How to Pass Tips**
+
+- **Common Mistake:** Forgetting to close files can corrupt data. Using `with` is safer (it auto-closes). Also, put file operations inside `try`/`except` to handle missing files.
+- **What Professors Look For:** Proper `try`/`except` blocks and file modes. Show handling of at least one common error (e.g. catching `FileNotFoundError`).
+- **Memorize vs. Understand:** Remember the `open(..., mode)` syntax and the basic `try`/`except` form. More important is understanding why exceptions matter (to keep your program from crashing).
+$md$, 5, 'python', $code$# Student Records Exercise:
+# Read a text file "students.txt" where each line has a student's name.
+# Print each name in uppercase. Then, handle the case where the file might not exist.
+try:
+    with open("students.txt", "r") as file:
+        for line in file:
+            name = line.strip()
+            # TODO: Print the uppercase name
+except FileNotFoundError:
+    print("Error: students.txt file not found.")$code$);
+
+-- ============================================================
+-- LESSON 14: Python Refresher — Integrating Python with Technologies
+-- ============================================================
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('e97c80ca-1282-4f7e-8033-6a1255c7157b','content','Using Modules and Libraries',$md$
+One way to integrate technologies is by using Python's built-in modules or external libraries. For example, import the `math` module to access math functions:
+
+```python
+import math
+print(math.sqrt(16))  # prints 4.0
+```
+
+You can install many packages (like `requests`, `numpy`, etc.) for additional features. For instance, using `requests` you could fetch data from a web API:
+
+```python
+import requests
+response = requests.get("https://api.example.com/data")
+print(response.json())
+```
+
+*(This code requires the `requests` library and internet access; just for illustration.)* Integrating such libraries extends Python beyond basic arithmetic and text handling, allowing database access, web requests, or data science tasks.
+$md$, 1),
+('e97c80ca-1282-4f7e-8033-6a1255c7157b','content','Introduction to Simple GUI Programming',$md$
+Interactive applications often have graphical interfaces. Python's `tkinter` is a basic GUI library. For example:
+
+```python
+import tkinter as tk
+
+window = tk.Tk()
+window.title("Sample App")
+label = tk.Label(window, text="Hello GUI!")
+label.pack()
+window.mainloop()
+```
+
+This creates a small window with the text "Hello GUI!". Learning a full GUI framework is advanced, but knowing it exists shows how programming can create desktop apps. The `mainloop()` call is an **event loop** that waits for user interaction (clicks, etc.). In exams, you might only be asked conceptual questions about event-driven programming (e.g. "what is an event loop?"), not full GUI code.
+$md$, 2),
+('e97c80ca-1282-4f7e-8033-6a1255c7157b','activity','Bringing It All Together',$md$
+Throughout this course, you've learned to combine programming logic with tools. For example, you might write a Python program that reads a list of employees from a file (file I/O), processes it (using `for` loops and `if` conditions), and outputs a report or graph (using a module or library like `matplotlib`). Or build a simple interactive quiz using Python console input/output. The key is understanding how each concept fits in building real applications.
+$md$, 3),
+('e97c80ca-1282-4f7e-8033-6a1255c7157b','activity','Module Summary',$md$
+This final module discussed how Python can integrate with various technologies: using modules/libraries (for web, math, data) and even basic GUIs. You saw that with a few lines of code, you can extend your program's capabilities. Remember, interactive programming means your code can respond to user actions or external data. Next steps: practice developing small projects (like a calculator app or simple data processor) to reinforce these concepts.
+
+*Ready to build something cool? The final practice section below includes a mini-project exercise and exam tips — with a live coding playground.*
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('e97c80ca-1282-4f7e-8033-6a1255c7157b','activity','Practice & Exam Drills — Lesson 14',$md$
+**Review Questions**
+
+1. How do you import and use a module in Python? Give an example.
+2. What is event-driven programming (in one sentence)?
+3. Give one example of when you might use a library (module) in a programming project.
+4. Explain the role of `mainloop()` in a GUI application.
+5. Why is it useful to write functions (like `peso_to_usd`) when integrating tasks?
+
+**Worked Exam Problem**
+
+*Problem:* Sketch out a simple program (in words or pseudocode) that reads product prices in pesos from a file, applies a 12% VAT (value-added tax), and writes the new prices to an output file. Assume each line in the input file `prices.txt` is a number (one price per line).
+
+**Solution Outline**
+
+- **Step 1: Open files.** Use `with open("prices.txt", "r") as infile:` and `with open("prices_vat.txt", "w") as outfile:`.
+- **Step 2: Process each price.** For each line in `infile`:
+```python
+price = float(line.strip())
+price_vat = price * 1.12  # add 12% VAT
+outfile.write(f"{price_vat}\n")
+```
+- **Step 3: Explanation.** For each price, we calculate 112% of the original. Using `with` ensures files close automatically. This integrates file I/O, loops, and arithmetic with a real-world application (tax calculation).
+- **Step 4: Error Handling (optional).** If required, add `try`/`except` around file operations or conversions to catch errors.
+
+**Hands-On Exercise**
+
+Complete the `peso_to_usd` function: divide the pesos amount by 55 to convert to USD. For example, 550 pesos should give 10.0 USD. Then run the program, input a peso value, and check the output. For extra challenge, format the result to 2 decimal places (e.g., using `round(dollars, 2)`).
+
+**How to Pass Tips**
+
+- **Common Mistake:** Forgetting to return a value from a function. Check that your `peso_to_usd` function returns the correct calculation.
+- **What Professors Look For:** Proper function definition and call, correct arithmetic (especially the correct exchange rate or VAT factor). Clear comments and readable code.
+- **Memorize vs. Understand:** Understand how to apply a formula in code (`return pesos / 55` for this exercise) and how to structure reading/writing files. Don't just copy examples—make sure the logic fits the problem.
+$md$, 5, 'python', $code$# Currency Converter Exercise:
+# Use the exchange rate 1 USD = ₱55 to convert. Write a function
+# that converts Philippine pesos to USD, then use input/output.
+def peso_to_usd(pesos):
+    # TODO: Compute dollars
+    return None
+
+pesos = float(input("Enter amount in pesos: "))
+dollars = peso_to_usd(pesos)
+print("Equivalent in USD:", dollars)$code$);
+
 -- ============================================================
 -- SOURCES
 -- CHED CMO No. 25, s.2015 — BSIT curriculum (Integrative Programming and Technologies course description)
@@ -473,4 +1101,5 @@ print("attempts made:", attempts["count"])$code$);
 -- Hohpe & Woolf — Enterprise Integration Patterns (file transfer, shared DB, RPC, messaging taxonomy)
 -- OWASP Top 10 — injection, broken access control, and secure integration guidance
 -- MDN Web Docs — HTTP methods, status codes, and REST fundamentals
+-- Lessons 9-14: pre-existing live IPT 1 import (Python fundamentals), preserved and renumbered as refresher track
 -- ============================================================
