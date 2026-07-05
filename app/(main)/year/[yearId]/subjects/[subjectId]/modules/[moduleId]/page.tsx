@@ -47,13 +47,6 @@ export default async function ReaderPage({ params }: Props) {
     .eq("kind", "content")
     .order("sort_order");
 
-  const { data: activityMeta } = await supabase
-    .from("sections")
-    .select("id, kind, heading, sort_order")
-    .eq("module_id", moduleId)
-    .eq("kind", "activity")
-    .order("sort_order");
-
   const devUnlockAll = process.env.UNLOCK_ALL === "true";
   const cookieStore = await cookies();
   // Only trust the device ID if its HMAC signature checks out — a forged or
@@ -63,9 +56,42 @@ export default async function ReaderPage({ params }: Props) {
   const subscribed = (userId || deviceId) ? await isSubscribed(deviceId ?? "", yearId, subjectId, userId ?? undefined) : false;
   const unlockActivities = devUnlockAll || subscribed;
 
-  const allSections = [
-    ...(contentSections ?? []),
-    ...(activityMeta ?? []).map((s) => ({ ...s, body_md: "", ide_language: null, starter_code: null })),
+  // Locked visitors only ever receive activity headings; the full body, drill
+  // markdown, and starter code are fetched solely when this request is unlocked.
+  const { data: activityMeta } = await supabase
+    .from("sections")
+    .select(
+      unlockActivities
+        ? "id, kind, heading, body_md, sort_order, ide_language, starter_code, topology_data"
+        : "id, kind, heading, sort_order"
+    )
+    .eq("module_id", moduleId)
+    .eq("kind", "activity")
+    .order("sort_order");
+
+  type ReaderSection = {
+    id: string;
+    kind: string;
+    heading: string;
+    body_md: string;
+    sort_order: number;
+    ide_language?: "python" | "sql" | "java" | "c" | null;
+    starter_code?: string | null;
+    topology_data?: import("@/lib/topology/types").TopologyData | null;
+  };
+
+  const allSections: ReaderSection[] = [
+    ...((contentSections ?? []) as ReaderSection[]),
+    ...((activityMeta ?? []) as Partial<ReaderSection>[]).map(
+      (s) =>
+        ({
+          body_md: "",
+          ide_language: null,
+          starter_code: null,
+          topology_data: null,
+          ...s,
+        }) as ReaderSection
+    ),
   ].sort((a, b) => a.sort_order - b.sort_order);
 
   const year = subject.years as { label: string; sort_order: number } | null;
