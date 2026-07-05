@@ -1301,6 +1301,82 @@ printf("%d", b);
 4. Store 11 numbers in an array. Store the sum of each successive pair in a second array of 10 elements. Print both arrays.
 $md$, 4);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a1000001-0001-0001-0001-000000000005','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 5',$md$
+**Answer Key — Review Questions**
+
+1. *12-element array 1, 4, 7, …, 34:* `int C[12] = {1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34};` — arithmetic sequence, start 1, step 3. On exams, note the pattern (`1 + 3(n-1)`) so the checker sees you did not just count.
+2. *"NORTH" with null terminator:* `char point[6] = "NORTH";` — 5 letters + `'\0'` = 6 slots. Writing `char point[5]` is the classic mark-loser: it compiles but drops the terminator.
+3. *4-character direction array:* `char letters[4] = {'N', 'S', 'E', 'W'};` — no terminator needed because it is a char *array* used as 4 separate characters, not a string.
+
+**Worked Exam-Style Problem — The Value-vs-Index Twin Traces**
+
+*Problem:* Both traces use `static int c[10] = {1,2,3,4,5,6,7,8,9,10};` and `b = 0`. Why do they print different numbers?
+
+*Trace (a):* `if ((c[a] % 2) == 0) b += c[a];` tests the **VALUE** stored in the array. Even values are 2, 4, 6, 8, 10. Step by step: b = 2 → 6 → 12 → 20 → 30. Output: **30**.
+
+*Trace (b):* `if ((a % 2) == 0) b += c[a];` tests the **INDEX**. Even indexes are 0, 2, 4, 6, 8, holding values 1, 3, 5, 7, 9. Sum: b = 1 → 4 → 9 → 16 → 25. Output: **25**.
+
+This pair is the single most reused CP1 exam question. Before summing anything, ask: is the condition on `c[a]` (the value) or on `a` (the index)?
+
+**Worked Programming Exercise (#2 — REVERSE Copy)**
+
+```c
+#include <stdio.h>
+#define SIZE 5
+
+void reverse(int x[], int y[], int n) {
+    int i;
+    for (i = 0; i < n; i++)
+        y[i] = x[n - 1 - i];   /* last element of x becomes first of y */
+}
+
+int main(void) {
+    int x[SIZE] = {10, 20, 30, 40, 50};
+    int y[SIZE];
+    int i;
+
+    reverse(x, y, SIZE);
+    for (i = 0; i < SIZE; i++)
+        printf("%d ", y[i]);   /* 50 40 30 20 10 */
+    return 0;
+}
+```
+The whole trick is the index formula `n - 1 - i`: when i = 0 it reads x[4], when i = 4 it reads x[0]. Derive it by testing the endpoints — that check works for every "mirror" problem.
+
+**How to Pass Tips**
+
+- Array indices run 0 to *size − 1*; nearly every CP1 exam plants an off-by-one trap on the last element.
+- `int x[10]` initializes nothing — reading `x[3]` before assigning it is garbage. But `static` and global arrays start at zero, and a partial initializer like `{3, 7}` zero-fills the rest.
+- For string questions, count the `'\0'` every single time.
+- When a trace mixes `a` and `c[a]`, slow down — value-vs-index is the intended trap (see the twin traces above).
+$md$, 5);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a1000001-0001-0001-0001-000000000005','activity','Code Lab — Lesson 5: Run It Yourself',$md$
+**Coding Drill:** Complete `sum` and `largest` so the program reports the total and the highest quiz score. Press Run to compile real C right here — then try changing the scores and predicting the output before running again.
+
+Expected output:
+```
+Total: 61
+Highest: 10
+```
+$md$, 6, 'c', $code$#include <stdio.h>
+
+int main(void) {
+    int scores[10] = {7, 5, 9, 3, 8, 6, 10, 4, 2, 7};
+    int i, sum = 0, largest = scores[0];
+
+    for (i = 0; i < 10; i++) {
+        /* TODO: add scores[i] to sum */
+        /* TODO: if scores[i] is greater than largest, update largest */
+    }
+
+    printf("Total: %d\n", sum);
+    printf("Highest: %d\n", largest);
+    return 0;
+}$code$);
+
 -- ============================================================
 -- LESSON 6: Functions
 -- ============================================================
