@@ -65,18 +65,20 @@ export default async function SubjectsPage({ params }: Props) {
 
       {/* Page header — dark navy */}
       <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
-        <BackLink href="/year" label="Select Year" className="text-taupe hover:text-paper" />
-        <div className="mt-10">
-          <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
-            § 0{year.sort_order} — {year.label}
-          </p>
-          <h1 className="font-serif text-display-lg text-paper">Subjects</h1>
+        <div className="max-w-wide mx-auto">
+          <BackLink href="/year" label="Select Year" className="text-taupe hover:text-paper" />
+          <div className="mt-10">
+            <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
+              § 0{year.sort_order} — {year.label}
+            </p>
+            <h1 className="font-serif text-display-lg text-paper">Subjects</h1>
+          </div>
         </div>
       </div>
 
       {/* Subject list — cream */}
       <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
-        <div className="flex flex-col gap-12 max-w-wide">
+        <div className="flex flex-col gap-12 max-w-wide mx-auto">
           {[
             { label: "1st Semester", items: sem1 },
             { label: "2nd Semester", items: sem2 },

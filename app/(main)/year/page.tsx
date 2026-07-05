@@ -37,29 +37,33 @@ export default async function YearPage() {
 
       {/* Page header — dark navy */}
       <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
-        <div className="flex items-center justify-between gap-4">
-          <BackLink href="/" label="Home" className="text-taupe hover:text-paper" />
-          <Link
-            href="/search"
-            className="inline-flex items-center gap-2 font-sans text-sm text-taupe hover:text-paper transition-colors duration-150"
-          >
-            <span className="text-accent">⌕</span>
-            <span>Search</span>
-          </Link>
-        </div>
-        <div className="mt-10">
-          <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
-            § 01 — Select Year
-          </p>
-          <h1 className="font-serif text-display-lg text-paper">
-            Which year are you in?
-          </h1>
+        <div className="max-w-wide mx-auto">
+          <div className="flex items-center justify-between gap-4">
+            <BackLink href="/" label="Home" className="text-taupe hover:text-paper" />
+            <Link
+              href="/search"
+              className="inline-flex items-center gap-2 font-sans text-sm text-taupe hover:text-paper transition-colors duration-150"
+            >
+              <span className="text-accent">⌕</span>
+              <span>Search</span>
+            </Link>
+          </div>
+          <div className="mt-10">
+            <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
+              § 01 — Select Year
+            </p>
+            <h1 className="font-serif text-display-lg text-paper">
+              Which year are you in?
+            </h1>
+          </div>
         </div>
       </div>
 
       {/* Year cards — cream */}
       <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
-        <YearGrid cards={cards} />
+        <div className="max-w-wide mx-auto">
+          <YearGrid cards={cards} />
+        </div>
       </div>
     </main>
   );

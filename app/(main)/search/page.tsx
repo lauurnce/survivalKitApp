@@ -52,18 +52,22 @@ export default async function SearchPage() {
     <main className="min-h-screen bg-paper flex flex-col">
       {/* Page header — dark navy */}
       <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
-        <BackLink href="/year" label="Select Year" className="text-taupe hover:text-paper" />
-        <div className="mt-10">
-          <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
-            § Search
-          </p>
-          <h1 className="font-serif text-display-lg text-paper">Find anything</h1>
+        <div className="max-w-wide mx-auto">
+          <BackLink href="/year" label="Select Year" className="text-taupe hover:text-paper" />
+          <div className="mt-10">
+            <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
+              § Search
+            </p>
+            <h1 className="font-serif text-display-lg text-paper">Find anything</h1>
+          </div>
         </div>
       </div>
 
       {/* Search body — cream */}
       <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
-        <SearchClient items={items} />
+        <div className="max-w-wide mx-auto">
+          <SearchClient items={items} />
+        </div>
       </div>
     </main>
   );
