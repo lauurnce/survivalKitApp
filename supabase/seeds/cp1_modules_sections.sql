@@ -747,6 +747,92 @@ printf("\n %5d %6.2f", 6, 6.5);
 5. Convert Earth weight to Mars (× 0.38) and Jupiter (× 2.64).
 $md$, 6);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a1000001-0001-0001-0001-000000000003','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 3',$md$
+**Answer Key — Conceptual Questions**
+
+1. A **header file** (`.h`) contains declarations that `#include` pastes into your program before compilation. `stdio.h` provides standard input/output (`printf`, `scanf`); `conio.h` provides console functions (`getch`, `clrscr`) — note `conio.h` is Turbo C-only and does not exist on modern compilers.
+2. `printf()` writes formatted output to the screen; `scanf()` reads formatted input from the keyboard into variables.
+3. `%d` = decimal integer, `%c` = single character, `%f` = float, `%lf` = double. Mismatching specifier and type is undefined behavior — and an exam favorite.
+4. `\n` = newline, `\"` = prints a double quote, `\'` = prints a single quote, `\\` = prints one backslash.
+5. `gets()` reads a whole line into a string; `getch()` reads one key silently without waiting for Enter; `getche()` same but echoes the key; `puts()` prints a string plus a newline; `putchar()` prints a single character.
+6. A block begins with `{` and ends with `}`. Every statement inside ends with `;`.
+
+**Worked Exam-Style Problem — Predict the Output**
+
+*Problem:* What exactly does this print?
+```c
+printf("Hello!\n");
+printf("The value of %5d is five.", 5);
+printf("\n\n Do you know the next number? \n");
+printf("\n %5d %6.2f", 6, 6.5);
+```
+
+*Solution:* Step 1: `%5d` right-justifies 5 in a field of width 5 → four spaces then `5`. Step 2: The second `printf` has no `\n`, so line 3's leading `\n` ends that line, and its second `\n` makes a blank line. Step 3: `%6.2f` means width 6, 2 decimals → `6.50` padded to `  6.50`. Final output:
+```
+Hello!
+The value of     5 is five.
+
+ Do you know the next number?
+
+     6   6.50
+```
+Count the spaces in your answer — field-width questions are graded character by character.
+
+**Worked Programming Exercise (#1 — Volume of a Box)**
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    float length, width, height, volume;
+
+    printf("Enter length, width, and height: ");
+    scanf("%f %f %f", &length, &width, &height);
+
+    volume = length * width * height;
+    printf("The volume of the box is %.2f\n", volume);
+    return 0;
+}
+```
+The four-part pattern — declare, prompt + `scanf`, compute, `printf` the result — solves ALL five programming exercises in this set. Exercise 2 is one multiplication (`minutes = hours * 60`), Exercise 5 is two (`* 0.38`, `* 2.64`). Write the pattern once, swap the formula.
+
+**How to Pass Tips**
+
+- `scanf("%d", &num)` — forgetting the `&` is the most common exam and lab mistake in this chapter. Arrays/strings are the exception (`scanf("%s", name)` — no `&`).
+- `%5d` pads a NUMBER to width 5; `%6.2f` = total width 6 including the decimal point, 2 digits after it.
+- `%f` prints floats, but in `scanf` a `double` needs `%lf` — mixing them up corrupts the value.
+- If the expected output has blank lines, count the `\n`s; if it has aligned columns, count the field widths.
+$md$, 7);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a1000001-0001-0001-0001-000000000003','activity','Code Lab — Lesson 3: Format It Right',$md$
+**Coding Drill:** Compute the average of three grades and print it in a clean right-aligned column using the field-width tricks from this lesson. Complete the TODO, run it, and match the expected output exactly — including the alignment.
+
+Expected output:
+```
+Prelim :  85.50
+Midterm:  88.25
+Finals :  90.00
+Average:  87.92
+```
+$md$, 8, 'c', $code$#include <stdio.h>
+
+int main(void) {
+    float prelim = 85.5f, midterm = 88.25f, finals = 90.0f;
+    /* On paper you would read these with:
+       scanf("%f %f %f", &prelim, &midterm, &finals);        */
+    float average = 0.0f;
+
+    /* TODO: compute the average of the three grades */
+
+    printf("Prelim : %6.2f\n", prelim);
+    printf("Midterm: %6.2f\n", midterm);
+    printf("Finals : %6.2f\n", finals);
+    printf("Average: %6.2f\n", average);
+    return 0;
+}$code$);
+
 -- ============================================================
 -- LESSON 4: Program Control Structures
 -- ============================================================
