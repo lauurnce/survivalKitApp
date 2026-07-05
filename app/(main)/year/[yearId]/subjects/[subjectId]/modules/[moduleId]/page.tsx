@@ -109,23 +109,28 @@ export default async function ReaderPage({ params }: Props) {
 
       {/* Top nav — dark navy */}
       <div className="bg-navy px-6 py-8 md:px-16 border-b border-paper/10">
-        <BackLink
-          href={`/year/${yearId}/subjects/${subjectId}/modules`}
-          label={subject.title}
-          className="text-taupe hover:text-paper"
-        />
+        <div className="max-w-wide mx-auto">
+          <BackLink
+            href={`/year/${yearId}/subjects/${subjectId}/modules`}
+            label={subject.title}
+            className="text-taupe hover:text-paper"
+          />
+        </div>
       </div>
 
       {/* Module header — dark navy */}
-      <header className="bg-navy px-6 pt-10 pb-12 md:px-16 border-b border-paper/10 max-w-wide">
-        <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
-          § 0{year?.sort_order ?? "?"} — {subject.title}
-        </p>
-        <h1 className="font-serif text-display-md text-paper">{mod.title}</h1>
+      <header className="bg-navy px-6 pt-10 pb-12 md:px-16 border-b border-paper/10">
+        <div className="max-w-wide mx-auto">
+          <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
+            § 0{year?.sort_order ?? "?"} — {subject.title}
+          </p>
+          <h1 className="font-serif text-display-md text-paper">{mod.title}</h1>
+        </div>
       </header>
 
       {/* Article content — cream */}
-      <article className="px-6 py-12 md:px-16 max-w-wide space-y-16">
+      <article className="px-6 py-12 md:px-16">
+        <div className="max-w-wide mx-auto space-y-16">
         {/* Surface the offer at the top when this module has gated activities
             and the user hasn't unlocked them. Scrolls to the gate below. */}
         {!unlockActivities && (activityMeta?.length ?? 0) > 0 && (
@@ -152,10 +157,12 @@ export default async function ReaderPage({ params }: Props) {
 
           />
         ))}
+        </div>
       </article>
 
       {/* Next-module CTA */}
-      <div className="border-t border-ink-faint/20 px-6 py-12 md:px-16 max-w-wide">
+      <div className="border-t border-ink-faint/20 px-6 py-12 md:px-16">
+        <div className="max-w-wide mx-auto">
         {nextModule ? (
           <>
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-faint mb-4">
@@ -185,6 +192,7 @@ export default async function ReaderPage({ params }: Props) {
             </Link>
           </>
         )}
+        </div>
       </div>
     </main>
   );
