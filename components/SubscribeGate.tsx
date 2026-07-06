@@ -14,8 +14,11 @@ interface Props {
 const MAX_POLLS = 10;
 const POLL_INTERVAL_MS = 3000;
 
+// Keep labels below in sync with PLANS in lib/paymongo.ts (₱49 / ₱99 / ₱299).
+type GatePlan = "subject_month" | "subject_sem" | "year_sem";
+
 export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Props) {
-  const [loading, setLoading] = useState<"subject" | "year" | null>(null);
+  const [loading, setLoading] = useState<GatePlan | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Subscription-check state
@@ -119,7 +122,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
 
   // ── subscribe handler ─────────────────────────────────────────────────────
 
-  async function handleSubscribe(plan: "subject" | "year") {
+  async function handleSubscribe(plan: GatePlan) {
     const deviceId = getDeviceId();
     if (!deviceId) return;
 
@@ -131,9 +134,9 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
       const returnPath =
         typeof window !== "undefined" ? window.location.pathname : undefined;
       const body =
-        plan === "subject"
-          ? { yearId, subjectId, deviceId, returnPath }
-          : { yearId, deviceId, returnPath };
+        plan === "year_sem"
+          ? { yearId, deviceId, returnPath, plan }
+          : { yearId, subjectId, deviceId, returnPath, plan };
 
       const res = await fetch("/api/subscribe", {
         method: "POST",
@@ -175,10 +178,11 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
   return (
     <div className="border border-ink-faint/30 p-6 mt-4">
       <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-2">
-        Activity — Subscribers Only
+        Reviewer — locked
       </p>
       <p className="font-sans text-base text-ink-muted mb-6">
-        Unlock activities by choosing a plan below.
+        Reviewers with answer keys — drills, code labs, and full solutions.
+        Unlock them below.
       </p>
 
       {/* Polling / payment-pending banner */}
@@ -219,52 +223,79 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
       {/* Hide subscribe buttons while polling */}
       {!polling && (
         <div className="flex flex-col sm:flex-row gap-4">
-          {/* Subject plan */}
+          {/* ₱49 — subject, 1 month */}
           <div className="flex-1 border border-ink-faint/30 p-5 flex flex-col gap-4">
             <div>
               <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-1">
-                Subject Plan
+                1 Month
               </p>
               <p className="font-sans text-sm text-ink-muted">
                 {subjectTitle ?? "This subject"} only
               </p>
             </div>
-            <div className="flex items-baseline gap-2">
+            <div className="flex items-baseline gap-2 mt-auto">
               <span className="font-serif text-3xl text-ink">₱49</span>
               <span className="font-sans text-sm text-ink-muted">/ month</span>
             </div>
             <button
-              onClick={() => handleSubscribe("subject")}
+              onClick={() => handleSubscribe("subject_month")}
               disabled={loading !== null}
               className="bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading === "subject" ? "Redirecting…" : "Subscribe — ₱49/month"}
+              {loading === "subject_month" ? "Redirecting…" : "Unlock — ₱49"}
             </button>
           </div>
 
-          {/* Year plan */}
+          {/* ₱99 — subject, whole semester (anchor) */}
           <div className="flex-1 border border-accent/60 p-5 flex flex-col gap-4 relative">
+            <span className="absolute top-3 right-3 font-mono text-label-sm uppercase tracking-[0.1em] text-accent">
+              ★ Most Popular
+            </span>
+            <div>
+              <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-1">
+                Whole Semester
+              </p>
+              <p className="font-sans text-sm text-ink-muted">
+                {subjectTitle ?? "This subject"} until Dec 31 — covers prelims,
+                midterms, and finals
+              </p>
+            </div>
+            <div className="flex items-baseline gap-2 mt-auto">
+              <span className="font-serif text-3xl text-ink">₱99</span>
+              <span className="font-sans text-sm text-ink-muted">/ semester</span>
+            </div>
+            <button
+              onClick={() => handleSubscribe("subject_sem")}
+              disabled={loading !== null}
+              className="bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading === "subject_sem" ? "Redirecting…" : "Unlock — ₱99"}
+            </button>
+          </div>
+
+          {/* ₱299 — all subjects, whole semester */}
+          <div className="flex-1 border border-ink/60 p-5 flex flex-col gap-4 relative">
             <span className="absolute top-3 right-3 font-mono text-label-sm uppercase tracking-[0.1em] text-accent">
               Best Value
             </span>
             <div>
               <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-1">
-                Year Plan
+                Everything
               </p>
               <p className="font-sans text-sm text-ink-muted">
-                All subjects in {yearLabel ?? "this year"}
+                All subjects in {yearLabel ?? "this year"} until Dec 31
               </p>
             </div>
-            <div className="flex items-baseline gap-2">
+            <div className="flex items-baseline gap-2 mt-auto">
               <span className="font-serif text-3xl text-ink">₱299</span>
-              <span className="font-sans text-sm text-ink-muted">/ month</span>
+              <span className="font-sans text-sm text-ink-muted">/ semester</span>
             </div>
             <button
-              onClick={() => handleSubscribe("year")}
+              onClick={() => handleSubscribe("year_sem")}
               disabled={loading !== null}
               className="bg-ink text-paper font-sans text-sm px-4 py-3 hover:bg-accent transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading === "year" ? "Redirecting…" : "Subscribe — ₱299/month"}
+              {loading === "year_sem" ? "Redirecting…" : "Unlock everything — ₱299"}
             </button>
           </div>
         </div>
@@ -272,7 +303,8 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
 
       <div className="mt-4 flex flex-col gap-2">
         <p className="font-sans text-xs text-ink-faint">
-          Paid via GCash, Maya, or card. Cancel anytime.
+          One-time payment via GCash, Maya, or card. No auto-renew — access simply
+          ends with the semester. Instant unlock after payment.
         </p>
       </div>
     </div>
