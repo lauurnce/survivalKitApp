@@ -668,6 +668,74 @@ $md$, 2),
 11. Create the truth table for the circuit: two inverters (NOT gates) feeding into an AND gate.
 $md$, 3);
 
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
+('a1000002-0001-0001-0001-000000000003','activity','Worked Exam Solutions + How-to-Pass Tips — Unit III',$md$
+**Answer Key — Storage and Units (1–4)**
+
+1. *Primary vs. secondary storage:* primary (RAM) holds data **currently being processed**, is directly accessed by the CPU, and is volatile; secondary (disk, SSD, tape) holds data **permanently**, is far larger and cheaper per byte, but slower — the CPU never reads it directly, data must be loaded into RAM first.
+2. *RAM vs. ROM:* RAM is read-write, volatile, and holds running programs and data; ROM is read-only, non-volatile, and holds the startup (boot) instructions. Mnemonic: RAM forgets, ROM remembers.
+3. *Four main units:* **Input devices** bring data in (keyboard, mouse, scanner); the **CPU** interprets and executes instructions (control unit directs traffic, ALU computes, registers hold in-flight data, the clock sets the pace); **main storage** holds the OS, programs, and data in use; **output devices** deliver results (monitor, printer, speakers).
+4. *Cloud storage services:* Google Drive, Microsoft OneDrive, Dropbox (also acceptable: iCloud, MEGA).
+
+**Answer Key — Digital Logic (5–11)**
+
+5. *Z = WX + YZ circuit:* two 2-input **AND** gates — one fed by W and X, one fed by Y and Z — whose outputs feed a 2-input **OR** gate. (Products = AND, sum = OR; that mapping is the entire skill.)
+6. *XOR truth table:* output is 1 only when inputs differ:
+
+| A | B | A⊕B |
+|---|---|---|
+| 0 | 0 | 0 |
+| 0 | 1 | 1 |
+| 1 | 0 | 1 |
+| 1 | 1 | 0 |
+
+7. *De Morgan Theorem 1:* (X + Y)′ = X′Y′ — a **NOR gate is equivalent to an AND gate with both inputs inverted** ("bubbled AND"). Draw the AND gate with small circles on its inputs.
+8. *Simplify F = A′B′C + A′BC + AB′:* factor the first two terms: A′C(B′ + B) + AB′ = A′C(1) + AB′ = **A′C + AB′**. Show the B′+B = 1 step — that is where the point is.
+9. *OR from NOR gates only:* (A NOR B) gives (A+B)′; feed that into a second NOR wired as an inverter (both inputs tied together): ((A+B)′)′ = **A + B**. Two NOR gates total.
+10. *AND from NAND gates only:* (A NAND B) = (AB)′; invert it with a second NAND (inputs tied together): ((AB)′)′ = **AB**. Two NAND gates total.
+11. *Two inverters into an AND:* output = A′ · B′, which by De Morgan is (A + B)′ — the **NOR** function:
+
+| A | B | A′·B′ |
+|---|---|---|
+| 0 | 0 | 1 |
+| 0 | 1 | 0 |
+| 1 | 0 | 0 |
+| 1 | 1 | 0 |
+
+**Worked Exam-Style Problem**
+
+*Problem:* Build the truth table for F = AB + C′.
+
+*Solution:* Step 1: List all 2³ = 8 input rows (000 to 111 in binary order — never skip rows). Step 2: Add helper columns: AB, then C′. Step 3: OR them. Rows where C=0 make C′=1, so F=1 regardless of AB; rows with C=1 need AB=1. Result: F = 1 for (0,0,0),(0,1,0),(1,0,0),(1,1,0),(1,1,1) — five 1s. Helper columns are not optional decoration: examiners award method marks for them even when the final column has a slip.
+
+**How to Pass Tips**
+
+- Boolean → circuit: every product term is an AND gate, every + is an OR gate, every prime/overbar is an inverter. Translate mechanically.
+- The two identities that solve most simplification items: X + X′ = 1 (factor, then collapse) and the two De Morgan theorems (break the bar, flip the operator).
+- NAND and NOR are the *universal* gates — any "build X using only NAND/NOR" answer starts by making an inverter (tie the inputs together).
+- A truth table for n variables has exactly 2ⁿ rows, written in binary counting order. Missing or misordered rows lose marks before the logic is even checked.
+$md$, 4);
+
+INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
+('a1000002-0001-0001-0001-000000000003','activity','Code Lab — Unit III: Truth-Table Generator',$md$
+**Coding Drill:** Complete `f` so it computes Z = WX + YZ (two ANDs feeding an OR — exercise 5's circuit) and the loop prints the full 16-row truth table. Change the expression afterward and watch the table update — instant circuit checking.
+
+Expected output (last two rows):
+```
+1 1 1 0 | 1
+1 1 1 1 | 1
+```
+$md$, 5, 'python', $code$def f(w, x, y, z):
+    # TODO: return (w AND x) OR (y AND z) using Python's and/or
+    return 0
+
+print("W X Y Z | F")
+for w in (0, 1):
+    for x in (0, 1):
+        for y in (0, 1):
+            for z in (0, 1):
+                print(w, x, y, z, "|", f(w, x, y, z))$code$);
+
 -- ============================================================
 -- UNIT IV: Peopleware
 -- ============================================================
