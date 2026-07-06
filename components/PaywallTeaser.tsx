@@ -11,14 +11,17 @@ interface Props {
   yearLabel?: string;
   subjectTitle?: string;
   /**
-   * Where "Unlock activities" sends the user. Use "#subscribe" on the module
+   * Where "Unlock reviewers" sends the user. Use "#subscribe" on the module
    * detail page (scrolls to the SubscribeGate); use the first module's URL with
    * a "#subscribe" hash on the modules-list page.
    */
   ctaHref: string;
+  /** Number of gated reviewer sections in this subject, when the page knows it. */
+  reviewerCount?: number;
 }
 
-export function PaywallTeaser({ yearId, subjectId, yearLabel, subjectTitle, ctaHref }: Props) {
+// Keep prices in sync with PLANS in lib/paymongo.ts (₱99 subject_sem, ₱299 year_sem).
+export function PaywallTeaser({ yearId, subjectId, yearLabel, subjectTitle, ctaHref, reviewerCount }: Props) {
   // null = still checking; true = subscribed (render nothing); false = show teaser
   const [subscribed, setSubscribed] = useState<boolean | null>(null);
   const viewLogged = useRef(false);
@@ -65,21 +68,23 @@ export function PaywallTeaser({ yearId, subjectId, yearLabel, subjectTitle, ctaH
   return (
     <div className="border border-accent/40 bg-accent/[0.03] p-5 mb-10">
       <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent mb-2">
-        Unlock Activities
+        Reviewers with Answer Keys
       </p>
       <p className="font-sans text-base text-ink-muted mb-4">
-        Hands-on activities in {subjectTitle ?? "this subject"} are for subscribers.
-        Get {subjectTitle ?? "this subject"} for{" "}
-        <span className="text-ink font-semibold">₱49/month</span>, or all of{" "}
-        {yearLabel ?? "this year"} for{" "}
-        <span className="text-ink font-semibold">₱299/month</span>.
+        {reviewerCount
+          ? `${reviewerCount} reviewers with answer keys in ${subjectTitle ?? "this subject"} — drills, code labs, and full solutions.`
+          : `Reviewers with answer keys in ${subjectTitle ?? "this subject"} — drills, code labs, and full solutions.`}{" "}
+        The first one&apos;s free. Unlock the rest for{" "}
+        <span className="text-ink font-semibold">₱99 until end of semester</span>,
+        or all of {yearLabel ?? "this year"} for{" "}
+        <span className="text-ink font-semibold">₱299</span>.
       </p>
       <Link
         href={ctaHref}
         onClick={handleClick}
         className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
       >
-        Unlock activities →
+        Unlock reviewers →
       </Link>
     </div>
   );

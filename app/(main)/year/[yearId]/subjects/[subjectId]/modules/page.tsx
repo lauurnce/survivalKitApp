@@ -28,6 +28,16 @@ export default async function ModulesPage({ params }: Props) {
     supabase.from("counters").select("resource_id, read_count").eq("resource_type", "module"),
   ]);
 
+  // Concrete reviewer count for the teaser ("N reviewers with answer keys…").
+  const moduleIds = (modules ?? []).map((m) => m.id);
+  const { count: reviewerCount } = moduleIds.length
+    ? await supabase
+        .from("sections")
+        .select("id", { count: "exact", head: true })
+        .eq("kind", "activity")
+        .in("module_id", moduleIds)
+    : { count: 0 };
+
   if (!subject) notFound();
 
   const year = subject.years as { label: string; sort_order: number } | null;
@@ -67,6 +77,7 @@ export default async function ModulesPage({ params }: Props) {
               yearLabel={year?.label}
               subjectTitle={subject.title}
               ctaHref={`/year/${yearId}/subjects/${subjectId}/modules/${modules[0].id}#subscribe`}
+              reviewerCount={reviewerCount ?? undefined}
             />
           )}
         </div>
