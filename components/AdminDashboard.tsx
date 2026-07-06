@@ -55,6 +55,13 @@ interface WaitlistAgg {
   by_subject: { subject_title: string; year_label: string; count: number }[] | null;
 }
 
+interface ProfilesAgg {
+  total: number;
+  by_pathway: { pathway: string; count: number }[] | null;
+  by_university: { university: string; count: number }[] | null;
+  by_major: { major: string; count: number }[] | null;
+}
+
 interface UnreflectedPayment {
   linkId: string;
   reference: string;
@@ -87,6 +94,7 @@ interface Props {
   newSubscribersToday: number;
   waitlistEntries: WaitlistEntry[];
   waitlistAgg: WaitlistAgg;
+  profilesAgg: ProfilesAgg;
   transactions: TransactionRow[];
   unreflectedPayments: UnreflectedPayment[];
   reconcileError: string | null;
@@ -736,7 +744,7 @@ export function AdminDashboard({
   totalUniqueUsers, todayUsers, last7Sessions,
   approvedUnlocks, activeNow, newUsers, recurringUsers, totalRevenue,
   activeSubscribers, newSubscribersToday,
-  waitlistEntries, waitlistAgg, transactions,
+  waitlistEntries, waitlistAgg, profilesAgg, transactions,
   unreflectedPayments, reconcileError,
 }: Props) {
   const unlockClicks    = funnel.find(s => s.type === "unlock_click")?.unique ?? 0;
@@ -868,13 +876,44 @@ export function AdminDashboard({
       </section>
 
       {/* ── Waitlist ────────────────────────────────────────── */}
-      <section className="mb-12">
+      <section className="mb-20">
         <SectionBand
           eyebrow="06"
           title="Waitlist"
           summary={`${waitlistAgg.total} total signups`}
         />
         <WaitlistSection entries={waitlistEntries} agg={waitlistAgg} />
+      </section>
+
+      {/* ── Student profiles — who our users are and where they
+             want to go, to guide which tracks to build next ──── */}
+      <section className="mb-12">
+        <SectionBand
+          eyebrow="07"
+          title="Student Profiles"
+          summary={`${profilesAgg.total} profiles completed`}
+        />
+        {profilesAgg.total === 0 ? (
+          <p className="font-sans text-xs text-ink-faint">
+            No profiles yet — this fills in as logged-in users complete the
+            profile card on their account page.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-wide mx-auto">
+            <BarChart
+              data={(profilesAgg.by_pathway ?? []).map(p => ({ label: p.pathway, count: p.count }))}
+              label="Preferred Pathways"
+            />
+            <BarChart
+              data={(profilesAgg.by_university ?? []).map(u => ({ label: u.university, count: u.count }))}
+              label="Universities"
+            />
+            <BarChart
+              data={(profilesAgg.by_major ?? []).map(m => ({ label: m.major, count: m.count }))}
+              label="Majors / Programs"
+            />
+          </div>
+        )}
       </section>
 
     </main>

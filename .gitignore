@@ -47,3 +47,6 @@ docs/NEXT_STEPS.md
 
 # Git worktrees
 .worktrees/
+
+# Local preview stores (PROFILE_STORE=file)
+.dev/

@@ -62,6 +62,7 @@ export default async function AdminPage() {
     // for revenue would silently undercount once lifetime payments exceed 100.
     { data: revenueRaw },
     { data: waitlistAggRaw },
+    { data: profilesAggRaw },
   ] = await Promise.all([
     // Funnel distinct-device counts per event_type, aggregated in Postgres
     // (the old raw .limit() was capped at 1000 rows and undercounted).
@@ -119,6 +120,9 @@ export default async function AdminPage() {
     // Aggregated waitlist stats: total + breakdowns by year and subject.
     // Runs entirely in Postgres so charts are never limited to the 500-row display cap.
     supabase.rpc("admin_waitlist_agg"),
+    // Aggregated student profiles: pathway / university / major breakdowns
+    // for deciding which future tracks to build.
+    supabase.rpc("admin_profiles_agg"),
   ]);
 
   const funnelCounts = new Map<string, number>();
@@ -269,6 +273,13 @@ export default async function AdminPage() {
     by_subject: { subject_title: string; year_label: string; count: number }[] | null;
   };
 
+  const profilesAgg = (profilesAggRaw ?? { total: 0, by_pathway: [], by_university: [], by_major: [] }) as {
+    total: number;
+    by_pathway: { pathway: string; count: number }[] | null;
+    by_university: { university: string; count: number }[] | null;
+    by_major: { major: string; count: number }[] | null;
+  };
+
   const waitlistEntries = (waitlistRaw ?? []) as {
     id: string;
     email: string;
@@ -314,6 +325,7 @@ export default async function AdminPage() {
       newSubscribersToday={paymentsToday}
       waitlistEntries={waitlistEntries}
       waitlistAgg={waitlistAgg}
+      profilesAgg={profilesAgg}
       transactions={transactions}
       unreflectedPayments={unreflectedPayments}
       reconcileError={reconcileError}

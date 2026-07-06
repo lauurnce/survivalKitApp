@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { getAccountOverview } from "@/lib/account";
+import { getProfile } from "@/lib/profileStore";
 import { signOutAction } from "../(auth)/actions";
 import { ThemeToggleInline } from "@/components/ThemeToggle";
 import { AccountSidebar } from "@/components/account/AccountSidebar";
@@ -15,7 +16,10 @@ interface Props {
 export default async function AccountPage({ searchParams }: Props) {
   const userId = await getCurrentUserId();
   if (!userId) redirect("/login?next=/account");
-  const overview = await getAccountOverview(userId);
+  const [overview, profile] = await Promise.all([
+    getAccountOverview(userId),
+    getProfile(userId),
+  ]);
   const { payment } = await searchParams;
   const paymentSuccess = payment === "success";
 
@@ -52,6 +56,7 @@ export default async function AccountPage({ searchParams }: Props) {
         <AccountSidebar
           unlockedSubjects={unlockedSubjects}
           years={overview.years}
+          profile={profile}
         />
 
         {/* RIGHT — Module list for each unlocked subject */}

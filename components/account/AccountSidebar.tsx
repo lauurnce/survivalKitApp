@@ -5,10 +5,13 @@ import Link from "next/link";
 import type { YearGroup, SubjectSummary } from "@/lib/account";
 import { pct } from "@/lib/account";
 import { getDeviceId } from "@/lib/device";
+import type { Profile } from "@/lib/profile";
+import { ProfileCard } from "./ProfileCard";
 
 interface Props {
   unlockedSubjects: SubjectSummary[];
   years: YearGroup[];
+  profile: Profile | null;
 }
 
 // ── subscribe helper (shared by year and subject buttons) ─────────────────────
@@ -255,7 +258,7 @@ function YearSection({ year }: { year: YearGroup }) {
 
 // ── Main sidebar ──────────────────────────────────────────────────────────────
 
-export function AccountSidebar({ unlockedSubjects, years }: Props) {
+export function AccountSidebar({ unlockedSubjects, years, profile }: Props) {
   const [subjectModal, setSubjectModal] = useState<SubjectSummary | null>(null);
 
   // Years that still have at least one locked subject
@@ -264,6 +267,9 @@ export function AccountSidebar({ unlockedSubjects, years }: Props) {
   return (
     <>
       <aside className="w-64 shrink-0 border-r border-taupe/30 px-5 py-8 space-y-8 overflow-y-auto">
+
+        {/* Profile card — the user's customizable wall, above the timeline */}
+        <ProfileCard profile={profile} />
 
         {/* Unlocked subjects — always visible at top */}
         {unlockedSubjects.length > 0 && (
