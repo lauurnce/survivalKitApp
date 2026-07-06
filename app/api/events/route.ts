@@ -41,6 +41,13 @@ function isRateLimited(key: string): boolean {
   return false;
 }
 
+// Attribution fields are free-form client strings — cap their length and drop
+// anything that isn't a string so junk never reaches the events table.
+function sanitizeText(value: unknown, maxLength: number): string | null {
+  if (typeof value !== "string" || value.length === 0) return null;
+  return value.slice(0, maxLength);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -86,14 +93,24 @@ export async function POST(req: NextRequest) {
     }
 
     const supabase = createServerClient();
-    await supabase.from("events").insert({
+    const { error: insertError } = await supabase.from("events").insert({
       device_id,
       event_type,
       year_id,
       subject_id,
       module_id,
       section_id,
+      referrer: sanitizeText(body.referrer, 500),
+      utm_source: sanitizeText(body.utm_source, 120),
+      utm_medium: sanitizeText(body.utm_medium, 120),
+      utm_campaign: sanitizeText(body.utm_campaign, 120),
     });
+    if (insertError) {
+      // Analytics must never break the app, but a rejected insert must be
+      // visible in the function logs — a silent drop here once hid a DB
+      // constraint mismatch for weeks.
+      console.error(`events insert failed (${event_type}):`, insertError.message);
+    }
 
     // Determine which resource to count (fire-and-forget — never blocks response)
     const counterArgs = (() => {

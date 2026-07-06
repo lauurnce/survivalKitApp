@@ -5,6 +5,19 @@ import { getDeviceId } from "./device";
 
 const pendingSectionViews = new Map<string, ReturnType<typeof setTimeout>>();
 
+// Traffic attribution, captured only on "enter" (first pageview of a visit):
+// where the visitor came from (document.referrer) and any utm_* tags on the URL.
+function getAttribution(): Record<string, string> {
+  const attribution: Record<string, string> = {};
+  if (document.referrer) attribution.referrer = document.referrer;
+  const params = new URLSearchParams(window.location.search);
+  for (const key of ["utm_source", "utm_medium", "utm_campaign"] as const) {
+    const value = params.get(key);
+    if (value) attribution[key] = value;
+  }
+  return attribution;
+}
+
 export async function logEvent(
   event_type: EventType,
   meta: {
@@ -17,11 +30,13 @@ export async function logEvent(
   const device_id = getDeviceId();
   if (!device_id) return;
 
+  const attribution = event_type === "enter" ? getAttribution() : {};
+
   try {
     await fetch("/api/events", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ device_id, event_type, ...meta }),
+      body: JSON.stringify({ device_id, event_type, ...meta, ...attribution }),
     });
   } catch {
     // Silent fail — analytics should never break the app
