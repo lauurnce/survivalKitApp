@@ -247,14 +247,16 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
           </div>
 
           {/* ₱99 — subject, whole semester (anchor) */}
-          <div className="flex-1 border border-accent/60 p-5 flex flex-col gap-4 relative">
-            <span className="absolute top-3 right-3 font-mono text-label-sm uppercase tracking-[0.1em] text-accent">
-              ★ Most Popular
-            </span>
+          <div className="flex-1 border border-accent/60 p-5 flex flex-col gap-4">
             <div>
-              <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-1">
-                Whole Semester
-              </p>
+              <div className="flex items-baseline justify-between gap-3 mb-1">
+                <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
+                  Whole Semester
+                </p>
+                <span className="font-mono text-label-sm uppercase tracking-[0.1em] text-accent shrink-0">
+                  ★ Most Popular
+                </span>
+              </div>
               <p className="font-sans text-sm text-ink-muted">
                 {subjectTitle ?? "This subject"} until Dec 31 — covers prelims,
                 midterms, and finals
@@ -274,14 +276,16 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
           </div>
 
           {/* ₱299 — all subjects, whole semester */}
-          <div className="flex-1 border border-ink/60 p-5 flex flex-col gap-4 relative">
-            <span className="absolute top-3 right-3 font-mono text-label-sm uppercase tracking-[0.1em] text-accent">
-              Best Value
-            </span>
+          <div className="flex-1 border border-ink/60 p-5 flex flex-col gap-4">
             <div>
-              <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-1">
-                Everything
-              </p>
+              <div className="flex items-baseline justify-between gap-3 mb-1">
+                <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
+                  Everything
+                </p>
+                <span className="font-mono text-label-sm uppercase tracking-[0.1em] text-accent shrink-0">
+                  Best Value
+                </span>
+              </div>
               <p className="font-sans text-sm text-ink-muted">
                 All subjects in {yearLabel ?? "this year"} until Dec 31
               </p>
