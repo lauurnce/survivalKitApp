@@ -4,7 +4,6 @@ import {
   verifyPaymongoWebhook,
   parseLinkRemarks,
   getLinkByReference,
-  YEAR_AMOUNT,
   PLANS,
   SEMESTER_END,
   resolvePlan,
@@ -61,7 +60,7 @@ describe("createPaymongoLink", () => {
     const sentBody = JSON.parse(
       vi.mocked(fetch).mock.calls[0][1]!.body as string
     );
-    expect(sentBody.data.attributes.amount).toBe(YEAR_AMOUNT);
+    expect(sentBody.data.attributes.amount).toBe(PLANS.year_sem.amount);
     expect(result.checkoutUrl).toBe("https://checkout.paymongo.com/abc");
     expect(result.linkId).toBe("link_abc123");
   });

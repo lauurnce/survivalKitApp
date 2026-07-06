@@ -13,11 +13,6 @@ export const PLANS: Record<PlanKey, { amount: number; description: string }> = {
   year_sem: { amount: 29900, description: "BSIT Survival Kit — All subjects (semester)" },
 };
 
-// Temporary compat exports — removed once the webhook and reconcile routes
-// resolve plans themselves (Tasks 4-5 of the 2026-07-06 conversion plan).
-export const SUBJECT_AMOUNT = PLANS.subject_month.amount;
-export const YEAR_AMOUNT = PLANS.year_sem.amount;
-
 // End of 1st Semester AY 2026-27: Dec 31, 2026 23:59 PH (UTC+8).
 // Bump once per semester when the selling window rolls over.
 export const SEMESTER_END = new Date("2026-12-31T15:59:59Z");

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/auth/adminSession";
 import { createServerClient } from "@/lib/supabase/server";
-import { getLinkByReference, parseLinkRemarks, SUBJECT_AMOUNT, YEAR_AMOUNT } from "@/lib/paymongo";
+import { getLinkByReference, parseLinkRemarks, resolvePlan, periodEndFor, PLANS } from "@/lib/paymongo";
 import { recordPayment } from "@/lib/payments";
 import { isUuid } from "@/lib/validation";
 
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Link is not paid" }, { status: 400 });
   }
 
-  const { yearId, subjectId, deviceId, userId } = parseLinkRemarks(link.remarks);
+  const { yearId, subjectId, deviceId, userId, plan: planToken } = parseLinkRemarks(link.remarks);
   if (!yearId || !deviceId || !isUuid(yearId) || !isUuid(deviceId)) {
     return NextResponse.json({ error: "Link remarks are malformed; cannot grant" }, { status: 422 });
   }
@@ -44,7 +44,8 @@ export async function POST(req: NextRequest) {
   }
 
   const paidAmount = link.amount;
-  const expected = subjectId ? SUBJECT_AMOUNT : YEAR_AMOUNT;
+  const plan = resolvePlan(planToken, subjectId);
+  const expected = PLANS[plan].amount;
   if (paidAmount < expected) {
     return NextResponse.json(
       { error: `Underpaid: ${paidAmount} < ${expected}` },
@@ -62,6 +63,7 @@ export async function POST(req: NextRequest) {
       amount: paidAmount,
       paidAt: new Date(),
       userId: userId && isUuid(userId) ? userId : null,
+      periodEnd: periodEndFor(plan),
     });
     return NextResponse.json({ ok: true, recorded, deduped });
   } catch (err) {
