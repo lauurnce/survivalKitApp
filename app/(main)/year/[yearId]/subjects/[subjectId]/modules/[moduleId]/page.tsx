@@ -10,6 +10,7 @@ import { SectionRenderer } from "@/components/SectionRenderer";
 import { PageTracker } from "@/components/PageTracker";
 import { LastModuleTracker } from "@/components/LastModuleTracker";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
+import { pickFirstActivity } from "@/lib/freeSample";
 
 export const revalidate = 300;
 
@@ -80,18 +81,45 @@ export default async function ReaderPage({ params }: Props) {
     topology_data?: import("@/lib/topology/types").TopologyData | null;
   };
 
+  // Free sample: locked visitors get the subject's FIRST reviewer in full — a
+  // taste of the paid content. Everything else stays headings-only, gated
+  // server-side exactly as before.
+  let freeSectionId: string | null = null;
+  let reviewerCount = 0;
+  let freeSection: ReaderSection | null = null;
+  if (!unlockActivities && siblings.length > 0) {
+    const { data: subjectActivities } = await supabase
+      .from("sections")
+      .select("id, module_id, sort_order")
+      .eq("kind", "activity")
+      .in("module_id", siblings.map((m) => m.id));
+    const rows = subjectActivities ?? [];
+    reviewerCount = rows.length;
+    freeSectionId = pickFirstActivity(siblings.map((m) => m.id), rows);
+
+    // Fetch the free section's full body only when it lives in THIS module.
+    if (freeSectionId && (activityMeta ?? []).some((s) => s.id === freeSectionId)) {
+      const { data: full } = await supabase
+        .from("sections")
+        .select("id, kind, heading, body_md, sort_order, ide_language, starter_code, topology_data")
+        .eq("id", freeSectionId)
+        .single();
+      freeSection = (full as unknown as ReaderSection) ?? null;
+    }
+  }
+
   const allSections: ReaderSection[] = [
     ...((contentSections ?? []) as ReaderSection[]),
-    ...((activityMeta ?? []) as Partial<ReaderSection>[]).map(
-      (s) =>
-        ({
-          body_md: "",
-          ide_language: null,
-          starter_code: null,
-          topology_data: null,
-          ...s,
-        }) as ReaderSection
-    ),
+    ...((activityMeta ?? []) as Partial<ReaderSection>[]).map((s) => {
+      if (freeSection && s.id === freeSection.id) return freeSection;
+      return {
+        body_md: "",
+        ide_language: null,
+        starter_code: null,
+        topology_data: null,
+        ...s,
+      } as ReaderSection;
+    }),
   ].sort((a, b) => a.sort_order - b.sort_order);
 
   const year = subject.years as { label: string; sort_order: number } | null;
@@ -140,6 +168,7 @@ export default async function ReaderPage({ params }: Props) {
             yearLabel={year?.label}
             subjectTitle={subject.title}
             ctaHref="#subscribe"
+            reviewerCount={reviewerCount || undefined}
           />
         )}
         {allSections.map((section, i) => (
@@ -154,7 +183,8 @@ export default async function ReaderPage({ params }: Props) {
             yearLabel={year?.label}
             subjectTitle={subject.title}
             moduleTitle={mod.title}
-
+            freeSectionId={freeSectionId}
+            reviewerCount={reviewerCount}
           />
         ))}
         </div>

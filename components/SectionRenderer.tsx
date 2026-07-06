@@ -41,16 +41,23 @@ interface Props {
   yearLabel?: string;
   subjectTitle?: string;
   moduleTitle?: string;
+  /** The subject's one free-sample reviewer; rendered in full even when locked. */
+  freeSectionId?: string | null;
+  /** Total gated reviewers in the subject — shown in the free-sample upsell. */
+  reviewerCount?: number;
 }
 
-export function SectionRenderer({ section, index, moduleId, yearId, subjectId, unlockAll, yearLabel, subjectTitle, moduleTitle }: Props) {
+export function SectionRenderer({ section, index, moduleId, yearId, subjectId, unlockAll, yearLabel, subjectTitle, moduleTitle, freeSectionId, reviewerCount }: Props) {
   useEffect(() => {
     if (section.kind === "content") {
       logSectionView(section.id, moduleId);
     }
   }, [section.id, section.kind, moduleId]);
 
-  if (section.kind === "activity" && !unlockAll) {
+  const isFreeSample =
+    section.kind === "activity" && !unlockAll && section.id === freeSectionId;
+
+  if (section.kind === "activity" && !unlockAll && !isFreeSample) {
     return (
       <section id="subscribe" className="scroll-mt-24">
         <div className="flex items-baseline gap-4 mb-6">
@@ -89,6 +96,25 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
       {section.kind === "activity" && unlockAll && (
         <div className="mt-4 pl-10 md:pl-12">
           <span className="label-sm text-accent">Activity (UNLOCK_ALL active)</span>
+        </div>
+      )}
+      {isFreeSample && (
+        <div className="mt-6 pl-10 md:pl-12">
+          <div className="border border-accent/40 bg-accent/[0.03] p-5">
+            <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent mb-2">
+              Free Sample
+            </p>
+            <p className="font-sans text-base text-ink-muted mb-4">
+              That was 1 of {reviewerCount || "the"} reviewers with answer keys in{" "}
+              {subjectTitle ?? "this subject"}. Unlock all of them for the semester.
+            </p>
+            <a
+              href="#subscribe"
+              className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
+            >
+              Unlock all reviewers →
+            </a>
+          </div>
         </div>
       )}
     </section>
