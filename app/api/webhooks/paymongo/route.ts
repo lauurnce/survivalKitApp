@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyPaymongoWebhook, SUBJECT_AMOUNT, YEAR_AMOUNT } from "@/lib/paymongo";
+import {
+  verifyPaymongoWebhook,
+  parseLinkRemarks,
+  resolvePlan,
+  periodEndFor,
+  PLANS,
+} from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
@@ -83,22 +89,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing link id" }, { status: 400 });
   }
 
-  // remarks format:
-  //   subject plan: "year:<yearId> subject:<subjectId> device:<deviceId>"
-  //   year plan:    "year:<yearId> device:<deviceId>"
-  const yearMatch = remarks.match(/year:([^\s]+)/);
-  const subjectMatch = remarks.match(/subject:([^\s]+)/);
-  const deviceMatch = remarks.match(/device:([^\s]+)/);
-  const userMatch = remarks.match(/user:([^\s]+)/);
+  // remarks format: "year:<id> [subject:<id>] device:<id> [user:<id>] [plan:<key>]"
+  const parsed = parseLinkRemarks(remarks);
 
-  if (!yearMatch || !deviceMatch) {
+  if (!parsed.yearId || !parsed.deviceId) {
     return NextResponse.json({ error: "Missing remarks" }, { status: 400 });
   }
 
-  const yearId = yearMatch[1];
-  const subjectId = subjectMatch ? subjectMatch[1] : null;
-  const deviceId = deviceMatch[1];
-  const userId = userMatch && isUuid(userMatch[1]) ? userMatch[1] : null;
+  const yearId = parsed.yearId;
+  const subjectId = parsed.subjectId;
+  const deviceId = parsed.deviceId;
+  const userId = parsed.userId && isUuid(parsed.userId) ? parsed.userId : null;
 
   if (!isUuid(yearId) || !isUuid(deviceId)) {
     return NextResponse.json({ error: "Malformed remarks" }, { status: 400 });
@@ -113,14 +114,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, ignored: "status" });
   }
 
-  // Validate paid amount covers the plan: ₱49 subject, ₱299 year. Reject only
-  // UNDERpayments (e.g. a tampered ₱1 link trying to unlock ₱299 of content) —
-  // a payer who paid the correct amount or more must always be granted access,
-  // so a price change, promo, or manually-created link never strands a real
-  // payment. Still require a numeric amount; never grant on a missing field.
-  const expectedAmount = subjectId ? SUBJECT_AMOUNT : YEAR_AMOUNT;
+  // Resolve the tier from the link's plan token (legacy links infer from
+  // scope) and validate the paid amount covers it. Reject only UNDERpayments
+  // (e.g. a tampered ₱1 link trying to unlock ₱299 of content) — a payer who
+  // paid the correct amount or more must always be granted access, so a price
+  // change, promo, or manually-created link never strands a real payment.
+  // Still require a numeric amount; never grant on a missing field.
+  const plan = resolvePlan(parsed.plan, subjectId);
+  const expectedAmount = PLANS[plan].amount;
   if (typeof paidAmount !== "number" || paidAmount < expectedAmount) {
-    console.error(`Webhook underpayment: got ${paidAmount}, expected >= ${expectedAmount}`);
+    console.error(`Webhook underpayment: got ${paidAmount}, expected >= ${expectedAmount} (${plan})`);
     return NextResponse.json({ error: "Amount too low" }, { status: 400 });
   }
 
@@ -141,6 +144,7 @@ export async function POST(req: NextRequest) {
       amount: paidAmount,
       paidAt,
       userId,
+      periodEnd: periodEndFor(plan),
     });
     if (deduped) return NextResponse.json({ ok: true, deduped: true });
   } catch (err) {

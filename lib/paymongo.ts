@@ -1,33 +1,70 @@
 import crypto from "crypto";
 
-export const SUBJECT_AMOUNT = 4900;  // ₱49.00 — one subject
-export const YEAR_AMOUNT = 29900;    // ₱299.00 — all subjects in the year
+// ── Plans ─────────────────────────────────────────────────────────────────────
+// The single source of truth for what we sell. Display labels in
+// SubscribeGate.tsx, PaywallTeaser.tsx, and account/AccountSidebar.tsx must be
+// kept in sync with these amounts (client components can't import this file —
+// it pulls in node:crypto).
+export type PlanKey = "subject_month" | "subject_sem" | "year_sem";
+
+export const PLANS: Record<PlanKey, { amount: number; description: string }> = {
+  subject_month: { amount: 4900, description: "BSIT Survival Kit — Subject (1 month)" },
+  subject_sem: { amount: 9900, description: "BSIT Survival Kit — Subject (semester)" },
+  year_sem: { amount: 29900, description: "BSIT Survival Kit — All subjects (semester)" },
+};
+
+// End of 1st Semester AY 2026-27: Dec 31, 2026 23:59 PH (UTC+8).
+// Bump once per semester when the selling window rolls over.
+export const SEMESTER_END = new Date("2026-12-31T15:59:59Z");
+
+const PERIOD_31_DAYS_MS = 31 * 24 * 60 * 60 * 1000;
+
+// Resolve a plan from a link's `plan:` remarks token. Tokens that are unknown
+// or contradict the link's scope (subject plans need a subject; year_sem must
+// not have one) fall back to legacy inference so old links keep working.
+export function resolvePlan(planToken: string | null, subjectId: string | null): PlanKey {
+  if (planToken && planToken in PLANS) {
+    const plan = planToken as PlanKey;
+    const needsSubject = plan !== "year_sem";
+    if (needsSubject === (subjectId !== null)) return plan;
+  }
+  return subjectId !== null ? "subject_month" : "year_sem";
+}
+
+// Access end for a plan. Semester plans are floored at 31 days so a stale
+// SEMESTER_END constant can never grant less than a month.
+export function periodEndFor(plan: PlanKey, from: Date = new Date()): Date {
+  const monthEnd = new Date(from.getTime() + PERIOD_31_DAYS_MS);
+  if (plan === "subject_month") return monthEnd;
+  return SEMESTER_END.getTime() > monthEnd.getTime() ? SEMESTER_END : monthEnd;
+}
 
 export async function createPaymongoLink(
   yearId: string,
   deviceId: string,
   successUrl: string,
   subjectId: string | null = null,
-  userId?: string
+  userId?: string,
+  plan?: PlanKey
 ): Promise<{ checkoutUrl: string; linkId: string }> {
   const secretKey = process.env.PAYMONGO_SECRET_KEY;
   if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
 
   const encoded = Buffer.from(`${secretKey}:`).toString("base64");
 
-  const amount = subjectId ? SUBJECT_AMOUNT : YEAR_AMOUNT;
-  const description = subjectId
-    ? "BSIT Survival Kit — Subject Subscription"
-    : "BSIT Survival Kit — Year Subscription";
+  const resolvedPlan: PlanKey = plan ?? resolvePlan(null, subjectId);
+  const { amount, description } = PLANS[resolvedPlan];
   let remarks = subjectId
     ? `year:${yearId} subject:${subjectId} device:${deviceId}`
     : `year:${yearId} device:${deviceId}`;
   if (userId) remarks += ` user:${userId}`;
+  remarks += ` plan:${resolvedPlan}`;
 
-  // Idempotency key per (device, year, subject) — prevents duplicate charges on double-click
+  // Idempotency key per (device, year, subject, plan) — prevents duplicate
+  // charges on double-click while letting a user buy a different tier.
   const idempotencyKey = crypto
     .createHash("sha256")
-    .update(`subscribe:${deviceId}:${yearId}:${subjectId ?? "year"}`)
+    .update(`subscribe:${deviceId}:${yearId}:${subjectId ?? "year"}:${resolvedPlan}`)
     .digest("hex");
 
   const res = await fetch("https://api.paymongo.com/v1/links", {
@@ -76,6 +113,7 @@ export interface PaidLink {
   subjectId: string | null;
   deviceId: string | null;
   userId: string | null;
+  plan: string | null;
 }
 
 // Parse the remarks string we attach at checkout. Mirrors the webhook's regexes
@@ -85,16 +123,19 @@ export function parseLinkRemarks(remarks: string): {
   subjectId: string | null;
   deviceId: string | null;
   userId: string | null;
+  plan: string | null;
 } {
   const year = remarks.match(/year:([^\s]+)/);
   const subject = remarks.match(/subject:([^\s]+)/);
   const device = remarks.match(/device:([^\s]+)/);
   const user = remarks.match(/user:([^\s]+)/);
+  const plan = remarks.match(/plan:([^\s]+)/);
   return {
     yearId: year ? year[1] : null,
     subjectId: subject ? subject[1] : null,
     deviceId: device ? device[1] : null,
     userId: user ? user[1] : null,
+    plan: plan ? plan[1] : null,
   };
 }
 

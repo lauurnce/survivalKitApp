@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createPaymongoLink } from "@/lib/paymongo";
+import { createPaymongoLink, PLANS, type PlanKey } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   const userId = await getCurrentUserId();
 
   const body = (await req.json().catch(() => null)) as
-    | { yearId?: string; subjectId?: string; deviceId?: string; returnPath?: string }
+    | { yearId?: string; subjectId?: string; deviceId?: string; returnPath?: string; plan?: string }
     | null;
 
   const yearId = body?.yearId;
@@ -35,6 +35,20 @@ export async function POST(req: NextRequest) {
       { error: "subjectId must be a valid UUID" },
       { status: 400 }
     );
+  }
+
+  // Plan: optional for legacy clients (defaults to the old tier for the
+  // scope), but when present it must be a known key that matches the scope.
+  let plan: PlanKey;
+  if (body?.plan === undefined) {
+    plan = subjectId ? "subject_month" : "year_sem";
+  } else if (
+    body.plan in PLANS &&
+    (body.plan !== "year_sem") === (subjectId !== null)
+  ) {
+    plan = body.plan as PlanKey;
+  } else {
+    return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
   }
 
   const supabase = createServerClient();
@@ -84,7 +98,8 @@ export async function POST(req: NextRequest) {
       deviceId,
       successUrl,
       subjectId,
-      userId ?? undefined
+      userId ?? undefined,
+      plan
     );
     return NextResponse.json({ checkoutUrl });
   } catch (err) {

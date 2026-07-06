@@ -82,6 +82,32 @@ describe("recordPayment", () => {
     );
   });
 
+  it("writes the caller-supplied periodEnd as current_period_end", async () => {
+    const periodEnd = new Date("2026-12-31T15:59:59Z");
+    const { supabase, subsInsert } = makeSupabase({});
+    await recordPayment(supabase as never, {
+      ...input,
+      subjectId: "33333333-3333-3333-3333-333333333333",
+      amount: 9900,
+      periodEnd,
+    });
+    expect(subsInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ current_period_end: periodEnd.toISOString() })
+    );
+  });
+
+  it("defaults to ~31 days from now when periodEnd is absent", async () => {
+    const { supabase, subsInsert } = makeSupabase({});
+    await recordPayment(supabase as never, input);
+    const row = (subsInsert as ReturnType<typeof vi.fn>).mock.calls[0][0] as {
+      current_period_end: string;
+    };
+    const delta = new Date(row.current_period_end).getTime() - Date.now();
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    expect(delta).toBeGreaterThan(30 * DAY_MS);
+    expect(delta).toBeLessThanOrEqual(31 * DAY_MS + 5000);
+  });
+
   it("updates existing subscription instead of inserting when one already exists", async () => {
     const { supabase, subsUpdate, subsInsert } = makeSupabase({ existingSub: true });
     const res = await recordPayment(supabase as never, input);

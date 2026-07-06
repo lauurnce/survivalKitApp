@@ -50,16 +50,18 @@ function YearSubscribeModal({
   subjectTitle?: string;
   onClose: () => void;
 }) {
-  const [loading, setLoading] = useState<"subject" | "year" | null>(null);
+  // Keep labels in sync with PLANS in lib/paymongo.ts (₱49 / ₱99 / ₱299).
+  type ModalPlan = "subject_month" | "subject_sem" | "year_sem";
+  const [loading, setLoading] = useState<ModalPlan | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function handlePlan(plan: "subject" | "year") {
+  async function handlePlan(plan: ModalPlan) {
     setLoading(plan);
     setError(null);
     await startCheckout(
-      plan === "subject"
-        ? { yearId: year.yearId, subjectId: subjectId ?? null }
-        : { yearId: year.yearId },
+      plan === "year_sem"
+        ? { yearId: year.yearId, plan }
+        : { yearId: year.yearId, subjectId: subjectId ?? null, plan },
       (msg) => { setError(msg); setLoading(null); }
     );
   }
@@ -81,41 +83,58 @@ function YearSubscribeModal({
         {error && <p className="text-xs text-red-500">{error}</p>}
 
         <div className="space-y-3">
-          {/* Subject plan — only shown when opened from a specific subject */}
+          {/* Subject tiers — only shown when opened from a specific subject */}
           {subjectId && (
-            <button
-              onClick={() => handlePlan("subject")}
-              disabled={loading !== null}
-              className="w-full flex items-center justify-between rounded-lg border border-taupe/50 px-4 py-3 text-left hover:border-accent/50 transition-colors disabled:opacity-50"
-            >
-              <div>
-                <p className="text-sm font-medium text-ink">{subjectTitle ?? "This subject"}</p>
-                <p className="text-xs text-ink-muted">Single subject · ₱49 / month</p>
-              </div>
-              <span className="text-sm font-semibold text-accent shrink-0">
-                {loading === "subject" ? "…" : "₱49"}
-              </span>
-            </button>
+            <>
+              <button
+                onClick={() => handlePlan("subject_month")}
+                disabled={loading !== null}
+                className="w-full flex items-center justify-between rounded-lg border border-taupe/50 px-4 py-3 text-left hover:border-accent/50 transition-colors disabled:opacity-50"
+              >
+                <div>
+                  <p className="text-sm font-medium text-ink">{subjectTitle ?? "This subject"}</p>
+                  <p className="text-xs text-ink-muted">Single subject · 1 month</p>
+                </div>
+                <span className="text-sm font-semibold text-accent shrink-0">
+                  {loading === "subject_month" ? "…" : "₱49"}
+                </span>
+              </button>
+
+              <button
+                onClick={() => handlePlan("subject_sem")}
+                disabled={loading !== null}
+                className="w-full flex items-center justify-between rounded-lg border border-accent/60 px-4 py-3 text-left hover:border-accent transition-colors disabled:opacity-50"
+              >
+                <div>
+                  <p className="text-sm font-medium text-ink">{subjectTitle ?? "This subject"}</p>
+                  <p className="text-xs text-ink-muted">Single subject · until Dec 31 (whole semester)</p>
+                  <span className="inline-block mt-1 text-[10px] font-medium text-accent uppercase tracking-wider">★ Most popular</span>
+                </div>
+                <span className="text-sm font-semibold text-accent shrink-0">
+                  {loading === "subject_sem" ? "…" : "₱99"}
+                </span>
+              </button>
+            </>
           )}
 
-          {/* Year plan */}
+          {/* All-subjects semester plan */}
           <button
-            onClick={() => handlePlan("year")}
+            onClick={() => handlePlan("year_sem")}
             disabled={loading !== null}
             className="w-full flex items-center justify-between rounded-lg border border-accent/60 bg-accent/5 px-4 py-3 text-left hover:bg-accent/10 transition-colors disabled:opacity-50"
           >
             <div>
               <p className="text-sm font-medium text-ink">All of {year.label}</p>
-              <p className="text-xs text-ink-muted">Every subject in this year · ₱299 / month</p>
+              <p className="text-xs text-ink-muted">Every subject in this year · until Dec 31</p>
               <span className="inline-block mt-1 text-[10px] font-medium text-accent uppercase tracking-wider">Best value</span>
             </div>
             <span className="text-sm font-semibold text-accent shrink-0">
-              {loading === "year" ? "…" : "₱299"}
+              {loading === "year_sem" ? "…" : "₱299"}
             </span>
           </button>
         </div>
 
-        <p className="text-xs text-ink-faint">Paid via GCash, Maya, or card. Cancel anytime.</p>
+        <p className="text-xs text-ink-faint">One-time payment via GCash, Maya, or card. No auto-renew.</p>
       </div>
     </div>
   );
@@ -130,15 +149,15 @@ function SubjectSubscribeModal({
   subject: SubjectSummary;
   onClose: () => void;
 }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<"subject_month" | "subject_sem" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleSubscribe() {
-    setLoading(true);
+  async function handleSubscribe(plan: "subject_month" | "subject_sem") {
+    setLoading(plan);
     setError(null);
     await startCheckout(
-      { yearId: subject.yearId, subjectId: subject.id },
-      (msg) => { setError(msg); setLoading(false); }
+      { yearId: subject.yearId, subjectId: subject.id, plan },
+      (msg) => { setError(msg); setLoading(null); }
     );
   }
 
@@ -159,14 +178,22 @@ function SubjectSubscribeModal({
         {error && <p className="text-xs text-red-500">{error}</p>}
 
         <button
-          onClick={handleSubscribe}
-          disabled={loading}
-          className="w-full rounded-lg bg-accent px-4 py-3 text-sm font-medium text-paper hover:bg-accent-dark transition-colors disabled:opacity-50"
+          onClick={() => handleSubscribe("subject_month")}
+          disabled={loading !== null}
+          className="w-full rounded-lg border border-taupe/50 px-4 py-3 text-sm font-medium text-ink hover:border-accent/50 transition-colors disabled:opacity-50"
         >
-          {loading ? "Redirecting…" : "Subscribe — ₱49 / month"}
+          {loading === "subject_month" ? "Redirecting…" : "Unlock — ₱49 / 1 month"}
         </button>
 
-        <p className="text-xs text-ink-faint">Paid via GCash, Maya, or card. Cancel anytime.</p>
+        <button
+          onClick={() => handleSubscribe("subject_sem")}
+          disabled={loading !== null}
+          className="w-full rounded-lg bg-accent px-4 py-3 text-sm font-medium text-paper hover:bg-accent-dark transition-colors disabled:opacity-50"
+        >
+          {loading === "subject_sem" ? "Redirecting…" : "Unlock — ₱99 / semester"}
+        </button>
+
+        <p className="text-xs text-ink-faint">One-time payment via GCash, Maya, or card. No auto-renew.</p>
       </div>
     </div>
   );

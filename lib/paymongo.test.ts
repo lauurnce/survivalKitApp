@@ -4,7 +4,10 @@ import {
   verifyPaymongoWebhook,
   parseLinkRemarks,
   getLinkByReference,
-  YEAR_AMOUNT,
+  PLANS,
+  SEMESTER_END,
+  resolvePlan,
+  periodEndFor,
 } from "./paymongo";
 import crypto from "crypto";
 
@@ -57,7 +60,7 @@ describe("createPaymongoLink", () => {
     const sentBody = JSON.parse(
       vi.mocked(fetch).mock.calls[0][1]!.body as string
     );
-    expect(sentBody.data.attributes.amount).toBe(YEAR_AMOUNT);
+    expect(sentBody.data.attributes.amount).toBe(PLANS.year_sem.amount);
     expect(result.checkoutUrl).toBe("https://checkout.paymongo.com/abc");
     expect(result.linkId).toBe("link_abc123");
   });
@@ -306,23 +309,144 @@ describe("parseLinkRemarks", () => {
 
   it("parses a full subject-plan remarks string (year+subject+device+user)", () => {
     const r = `year:${yearId} subject:${subjectId} device:${deviceId} user:${userId}`;
-    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId });
+    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId, plan: null });
   });
 
   it("parses a year-plan remarks string (no subject)", () => {
     const r = `year:${yearId} device:${deviceId} user:${userId}`;
-    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId: null, deviceId, userId });
+    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId: null, deviceId, userId, plan: null });
   });
 
   it("parses a remarks string without a user (anonymous device payment)", () => {
     const r = `year:${yearId} subject:${subjectId} device:${deviceId}`;
-    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId: null });
+    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId: null, plan: null });
   });
 
   it("returns all-null for empty or garbage remarks (caller must reject)", () => {
-    expect(parseLinkRemarks("")).toEqual({ yearId: null, subjectId: null, deviceId: null, userId: null });
+    expect(parseLinkRemarks("")).toEqual({ yearId: null, subjectId: null, deviceId: null, userId: null, plan: null });
     expect(parseLinkRemarks("totally unrelated text")).toEqual({
-      yearId: null, subjectId: null, deviceId: null, userId: null,
+      yearId: null, subjectId: null, deviceId: null, userId: null, plan: null,
     });
+  });
+
+  it("extracts the plan token", () => {
+    const r = parseLinkRemarks(`year:${yearId} subject:${subjectId} device:${deviceId} plan:subject_sem`);
+    expect(r.plan).toBe("subject_sem");
+  });
+
+  it("returns null plan for legacy remarks", () => {
+    const r = parseLinkRemarks(`year:${yearId} device:${deviceId}`);
+    expect(r.plan).toBeNull();
+  });
+});
+
+describe("createPaymongoLink plans", () => {
+  beforeEach(() => {
+    process.env.PAYMONGO_SECRET_KEY = FAKE_SECRET;
+    vi.stubGlobal("fetch", vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    delete process.env.PAYMONGO_SECRET_KEY;
+  });
+
+  const mockOk = () =>
+    ({
+      ok: true,
+      json: async () => ({
+        data: {
+          id: "link_plan1",
+          attributes: { checkout_url: "https://checkout.paymongo.com/p" },
+        },
+      }),
+    }) as Response;
+
+  function sentBody(i: number) {
+    return JSON.parse(vi.mocked(fetch).mock.calls[i][1]!.body as string);
+  }
+  function sentIdempotencyKey(i: number) {
+    return (vi.mocked(fetch).mock.calls[i][1]!.headers as Record<string, string>)[
+      "Idempotency-Key"
+    ];
+  }
+
+  it("charges 9900 and stamps plan:subject_sem in remarks for the semester subject plan", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(mockOk());
+    await createPaymongoLink("year-1", "device-1", "https://x/ok", "subj-1", undefined, "subject_sem");
+    expect(sentBody(0).data.attributes.amount).toBe(9900);
+    expect(sentBody(0).data.attributes.remarks).toContain("plan:subject_sem");
+    expect(sentBody(0).data.attributes.remarks).toContain("subject:subj-1");
+  });
+
+  it("defaults to legacy plans when plan is omitted", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(mockOk());
+    vi.mocked(fetch).mockResolvedValueOnce(mockOk());
+
+    await createPaymongoLink("year-1", "device-1", "https://x/ok", "subj-1");
+    expect(sentBody(0).data.attributes.amount).toBe(4900);
+    expect(sentBody(0).data.attributes.remarks).toContain("plan:subject_month");
+
+    await createPaymongoLink("year-1", "device-1", "https://x/ok", null);
+    expect(sentBody(1).data.attributes.amount).toBe(29900);
+    expect(sentBody(1).data.attributes.remarks).toContain("plan:year_sem");
+  });
+
+  it("includes the plan in the idempotency key so different tiers are distinct purchases", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(mockOk());
+    vi.mocked(fetch).mockResolvedValueOnce(mockOk());
+
+    await createPaymongoLink("year-1", "device-1", "https://x/ok", "subj-1", undefined, "subject_month");
+    await createPaymongoLink("year-1", "device-1", "https://x/ok", "subj-1", undefined, "subject_sem");
+    expect(sentIdempotencyKey(0)).not.toBe(sentIdempotencyKey(1));
+  });
+});
+
+describe("PLANS", () => {
+  it("defines the three tiers with exact centavo amounts", () => {
+    expect(PLANS.subject_month.amount).toBe(4900);
+    expect(PLANS.subject_sem.amount).toBe(9900);
+    expect(PLANS.year_sem.amount).toBe(29900);
+  });
+});
+
+describe("resolvePlan", () => {
+  const SUBJ = "10000000-0001-0001-0001-000000000001";
+
+  it("returns the token's plan when scope matches", () => {
+    expect(resolvePlan("subject_sem", SUBJ)).toBe("subject_sem");
+    expect(resolvePlan("subject_month", SUBJ)).toBe("subject_month");
+    expect(resolvePlan("year_sem", null)).toBe("year_sem");
+  });
+
+  it("falls back to legacy inference when token is missing", () => {
+    expect(resolvePlan(null, SUBJ)).toBe("subject_month");
+    expect(resolvePlan(null, null)).toBe("year_sem");
+  });
+
+  it("falls back to legacy inference when token contradicts scope or is unknown", () => {
+    expect(resolvePlan("year_sem", SUBJ)).toBe("subject_month");
+    expect(resolvePlan("subject_sem", null)).toBe("year_sem");
+    expect(resolvePlan("premium_gold", SUBJ)).toBe("subject_month");
+  });
+});
+
+describe("periodEndFor", () => {
+  const DAY_MS = 24 * 60 * 60 * 1000;
+
+  it("gives subject_month exactly 31 days from `from`", () => {
+    const from = new Date("2026-07-10T00:00:00Z");
+    expect(periodEndFor("subject_month", from).getTime()).toBe(from.getTime() + 31 * DAY_MS);
+  });
+
+  it("gives semester plans access until SEMESTER_END", () => {
+    const from = new Date("2026-07-10T00:00:00Z");
+    expect(periodEndFor("subject_sem", from).getTime()).toBe(SEMESTER_END.getTime());
+    expect(periodEndFor("year_sem", from).getTime()).toBe(SEMESTER_END.getTime());
+  });
+
+  it("floors semester plans at 31 days when SEMESTER_END is stale", () => {
+    const from = new Date("2026-12-25T00:00:00Z"); // < 31 days before SEMESTER_END
+    expect(periodEndFor("subject_sem", from).getTime()).toBe(from.getTime() + 31 * DAY_MS);
   });
 });

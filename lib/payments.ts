@@ -13,6 +13,9 @@ export interface RecordPaymentInput {
   amount: number; // centavos
   paidAt: Date;
   userId?: string | null;
+  // Access end computed by the caller (see periodEndFor in lib/paymongo.ts).
+  // Absent → legacy 31 days from now.
+  periodEnd?: Date;
 }
 
 // Append-only ledger write + subscription grant. Idempotent on linkId: a
@@ -54,8 +57,8 @@ export async function recordPayment(
   }
 
   // Grant / extend access.
-  const currentPeriodEnd = new Date();
-  currentPeriodEnd.setDate(currentPeriodEnd.getDate() + PERIOD_DAYS);
+  const currentPeriodEnd =
+    input.periodEnd ?? new Date(Date.now() + PERIOD_DAYS * 24 * 60 * 60 * 1000);
 
   // Use a manual upsert because the unique indexes are partial (one for
   // year plans where subject_id IS NULL, one where it IS NOT NULL).
