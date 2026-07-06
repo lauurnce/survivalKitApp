@@ -13,7 +13,7 @@ import type { Profile } from "./profile";
 
 const FILE_STORE = path.join(process.cwd(), ".dev", "profile-store.json");
 
-function useFileStore(): boolean {
+function isFileStore(): boolean {
   return process.env.PROFILE_STORE === "file";
 }
 
@@ -26,7 +26,7 @@ async function readFileStore(): Promise<Record<string, Profile>> {
 }
 
 export async function getProfile(userId: string): Promise<Profile | null> {
-  if (useFileStore()) {
+  if (isFileStore()) {
     return (await readFileStore())[userId] ?? null;
   }
 
@@ -49,7 +49,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
 }
 
 export async function saveProfile(userId: string, profile: Profile): Promise<void> {
-  if (useFileStore()) {
+  if (isFileStore()) {
     const store = await readFileStore();
     store[userId] = profile;
     await fs.mkdir(path.dirname(FILE_STORE), { recursive: true });

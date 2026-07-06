@@ -207,7 +207,7 @@ export function ProfileCard({ profile }: { profile: Profile | null }) {
         <div className="rounded-xl border border-dashed border-taupe/50 p-4 text-center space-y-2">
           <p className="font-serif text-base text-ink">Set up your profile</p>
           <p className="text-xs text-ink-muted">
-            Add your name, school, and the tech pathways you're aiming for.
+            Add your name, school, and the tech pathways you&apos;re aiming for.
           </p>
           <button
             onClick={() => setEditing(true)}
