@@ -6,6 +6,9 @@ import { getProfile } from "@/lib/profileStore";
 import { signOutAction } from "../(auth)/actions";
 import { ThemeToggleInline } from "@/components/ThemeToggle";
 import { AccountSidebar } from "@/components/account/AccountSidebar";
+import { ProgressOverview } from "@/components/account/ProgressOverview";
+import { ResumeCard } from "@/components/account/ResumeCard";
+import { ReviewQuiz } from "@/components/account/ReviewQuiz";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +27,23 @@ export default async function AccountPage({ searchParams }: Props) {
   const paymentSuccess = payment === "success";
 
   const unlockedSubjects = overview.subjects.filter((s) => s.unlocked);
+
+  // Server-side fallback for the resume card: the first unfinished module
+  // across unlocked subjects (used when the device has no bsit_last_module).
+  let resumeFallback = null;
+  for (const s of unlockedSubjects) {
+    const nextModule = s.modules.find((m) => !m.done);
+    if (nextModule) {
+      resumeFallback = {
+        moduleId: nextModule.id,
+        subjectId: s.id,
+        yearId: s.yearId,
+        moduleTitle: nextModule.title,
+        subjectTitle: s.title,
+      };
+      break;
+    }
+  }
 
   return (
     <main className="min-h-screen bg-paper">
@@ -68,6 +88,13 @@ export default async function AccountPage({ searchParams }: Props) {
             </div>
           ) : (
             <div className="space-y-10 max-w-wide">
+              <ResumeCard fallback={resumeFallback} />
+              <ProgressOverview
+                subjects={unlockedSubjects}
+                overallDone={overview.overallDone}
+                overallTotal={overview.overallTotal}
+              />
+              <ReviewQuiz />
               {unlockedSubjects.map((s) => {
                 // "Continue" jumps to the first unfinished lesson; if every
                 // module is done, fall back to the subject's module list.
