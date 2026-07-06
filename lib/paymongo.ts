@@ -49,26 +49,27 @@ export async function createPaymongoLink(
   deviceId: string,
   successUrl: string,
   subjectId: string | null = null,
-  userId?: string
+  userId?: string,
+  plan?: PlanKey
 ): Promise<{ checkoutUrl: string; linkId: string }> {
   const secretKey = process.env.PAYMONGO_SECRET_KEY;
   if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
 
   const encoded = Buffer.from(`${secretKey}:`).toString("base64");
 
-  const amount = subjectId ? SUBJECT_AMOUNT : YEAR_AMOUNT;
-  const description = subjectId
-    ? "BSIT Survival Kit — Subject Subscription"
-    : "BSIT Survival Kit — Year Subscription";
+  const resolvedPlan: PlanKey = plan ?? resolvePlan(null, subjectId);
+  const { amount, description } = PLANS[resolvedPlan];
   let remarks = subjectId
     ? `year:${yearId} subject:${subjectId} device:${deviceId}`
     : `year:${yearId} device:${deviceId}`;
   if (userId) remarks += ` user:${userId}`;
+  remarks += ` plan:${resolvedPlan}`;
 
-  // Idempotency key per (device, year, subject) — prevents duplicate charges on double-click
+  // Idempotency key per (device, year, subject, plan) — prevents duplicate
+  // charges on double-click while letting a user buy a different tier.
   const idempotencyKey = crypto
     .createHash("sha256")
-    .update(`subscribe:${deviceId}:${yearId}:${subjectId ?? "year"}`)
+    .update(`subscribe:${deviceId}:${yearId}:${subjectId ?? "year"}:${resolvedPlan}`)
     .digest("hex");
 
   const res = await fetch("https://api.paymongo.com/v1/links", {

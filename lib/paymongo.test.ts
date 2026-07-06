@@ -341,6 +341,68 @@ describe("parseLinkRemarks", () => {
   });
 });
 
+describe("createPaymongoLink plans", () => {
+  beforeEach(() => {
+    process.env.PAYMONGO_SECRET_KEY = FAKE_SECRET;
+    vi.stubGlobal("fetch", vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    delete process.env.PAYMONGO_SECRET_KEY;
+  });
+
+  const mockOk = () =>
+    ({
+      ok: true,
+      json: async () => ({
+        data: {
+          id: "link_plan1",
+          attributes: { checkout_url: "https://checkout.paymongo.com/p" },
+        },
+      }),
+    }) as Response;
+
+  function sentBody(i: number) {
+    return JSON.parse(vi.mocked(fetch).mock.calls[i][1]!.body as string);
+  }
+  function sentIdempotencyKey(i: number) {
+    return (vi.mocked(fetch).mock.calls[i][1]!.headers as Record<string, string>)[
+      "Idempotency-Key"
+    ];
+  }
+
+  it("charges 9900 and stamps plan:subject_sem in remarks for the semester subject plan", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(mockOk());
+    await createPaymongoLink("year-1", "device-1", "https://x/ok", "subj-1", undefined, "subject_sem");
+    expect(sentBody(0).data.attributes.amount).toBe(9900);
+    expect(sentBody(0).data.attributes.remarks).toContain("plan:subject_sem");
+    expect(sentBody(0).data.attributes.remarks).toContain("subject:subj-1");
+  });
+
+  it("defaults to legacy plans when plan is omitted", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(mockOk());
+    vi.mocked(fetch).mockResolvedValueOnce(mockOk());
+
+    await createPaymongoLink("year-1", "device-1", "https://x/ok", "subj-1");
+    expect(sentBody(0).data.attributes.amount).toBe(4900);
+    expect(sentBody(0).data.attributes.remarks).toContain("plan:subject_month");
+
+    await createPaymongoLink("year-1", "device-1", "https://x/ok", null);
+    expect(sentBody(1).data.attributes.amount).toBe(29900);
+    expect(sentBody(1).data.attributes.remarks).toContain("plan:year_sem");
+  });
+
+  it("includes the plan in the idempotency key so different tiers are distinct purchases", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(mockOk());
+    vi.mocked(fetch).mockResolvedValueOnce(mockOk());
+
+    await createPaymongoLink("year-1", "device-1", "https://x/ok", "subj-1", undefined, "subject_month");
+    await createPaymongoLink("year-1", "device-1", "https://x/ok", "subj-1", undefined, "subject_sem");
+    expect(sentIdempotencyKey(0)).not.toBe(sentIdempotencyKey(1));
+  });
+});
+
 describe("PLANS", () => {
   it("defines the three tiers with exact centavo amounts", () => {
     expect(PLANS.subject_month.amount).toBe(4900);
