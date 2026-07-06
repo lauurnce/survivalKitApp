@@ -5,6 +5,10 @@ import {
   parseLinkRemarks,
   getLinkByReference,
   YEAR_AMOUNT,
+  PLANS,
+  SEMESTER_END,
+  resolvePlan,
+  periodEndFor,
 } from "./paymongo";
 import crypto from "crypto";
 
@@ -306,23 +310,82 @@ describe("parseLinkRemarks", () => {
 
   it("parses a full subject-plan remarks string (year+subject+device+user)", () => {
     const r = `year:${yearId} subject:${subjectId} device:${deviceId} user:${userId}`;
-    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId });
+    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId, plan: null });
   });
 
   it("parses a year-plan remarks string (no subject)", () => {
     const r = `year:${yearId} device:${deviceId} user:${userId}`;
-    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId: null, deviceId, userId });
+    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId: null, deviceId, userId, plan: null });
   });
 
   it("parses a remarks string without a user (anonymous device payment)", () => {
     const r = `year:${yearId} subject:${subjectId} device:${deviceId}`;
-    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId: null });
+    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId: null, plan: null });
   });
 
   it("returns all-null for empty or garbage remarks (caller must reject)", () => {
-    expect(parseLinkRemarks("")).toEqual({ yearId: null, subjectId: null, deviceId: null, userId: null });
+    expect(parseLinkRemarks("")).toEqual({ yearId: null, subjectId: null, deviceId: null, userId: null, plan: null });
     expect(parseLinkRemarks("totally unrelated text")).toEqual({
-      yearId: null, subjectId: null, deviceId: null, userId: null,
+      yearId: null, subjectId: null, deviceId: null, userId: null, plan: null,
     });
+  });
+
+  it("extracts the plan token", () => {
+    const r = parseLinkRemarks(`year:${yearId} subject:${subjectId} device:${deviceId} plan:subject_sem`);
+    expect(r.plan).toBe("subject_sem");
+  });
+
+  it("returns null plan for legacy remarks", () => {
+    const r = parseLinkRemarks(`year:${yearId} device:${deviceId}`);
+    expect(r.plan).toBeNull();
+  });
+});
+
+describe("PLANS", () => {
+  it("defines the three tiers with exact centavo amounts", () => {
+    expect(PLANS.subject_month.amount).toBe(4900);
+    expect(PLANS.subject_sem.amount).toBe(9900);
+    expect(PLANS.year_sem.amount).toBe(29900);
+  });
+});
+
+describe("resolvePlan", () => {
+  const SUBJ = "10000000-0001-0001-0001-000000000001";
+
+  it("returns the token's plan when scope matches", () => {
+    expect(resolvePlan("subject_sem", SUBJ)).toBe("subject_sem");
+    expect(resolvePlan("subject_month", SUBJ)).toBe("subject_month");
+    expect(resolvePlan("year_sem", null)).toBe("year_sem");
+  });
+
+  it("falls back to legacy inference when token is missing", () => {
+    expect(resolvePlan(null, SUBJ)).toBe("subject_month");
+    expect(resolvePlan(null, null)).toBe("year_sem");
+  });
+
+  it("falls back to legacy inference when token contradicts scope or is unknown", () => {
+    expect(resolvePlan("year_sem", SUBJ)).toBe("subject_month");
+    expect(resolvePlan("subject_sem", null)).toBe("year_sem");
+    expect(resolvePlan("premium_gold", SUBJ)).toBe("subject_month");
+  });
+});
+
+describe("periodEndFor", () => {
+  const DAY_MS = 24 * 60 * 60 * 1000;
+
+  it("gives subject_month exactly 31 days from `from`", () => {
+    const from = new Date("2026-07-10T00:00:00Z");
+    expect(periodEndFor("subject_month", from).getTime()).toBe(from.getTime() + 31 * DAY_MS);
+  });
+
+  it("gives semester plans access until SEMESTER_END", () => {
+    const from = new Date("2026-07-10T00:00:00Z");
+    expect(periodEndFor("subject_sem", from).getTime()).toBe(SEMESTER_END.getTime());
+    expect(periodEndFor("year_sem", from).getTime()).toBe(SEMESTER_END.getTime());
+  });
+
+  it("floors semester plans at 31 days when SEMESTER_END is stale", () => {
+    const from = new Date("2026-12-25T00:00:00Z"); // < 31 days before SEMESTER_END
+    expect(periodEndFor("subject_sem", from).getTime()).toBe(from.getTime() + 31 * DAY_MS);
   });
 });

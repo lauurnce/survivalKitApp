@@ -1,7 +1,48 @@
 import crypto from "crypto";
 
-export const SUBJECT_AMOUNT = 4900;  // ₱49.00 — one subject
-export const YEAR_AMOUNT = 29900;    // ₱299.00 — all subjects in the year
+// ── Plans ─────────────────────────────────────────────────────────────────────
+// The single source of truth for what we sell. Display labels in
+// SubscribeGate.tsx, PaywallTeaser.tsx, and account/AccountSidebar.tsx must be
+// kept in sync with these amounts (client components can't import this file —
+// it pulls in node:crypto).
+export type PlanKey = "subject_month" | "subject_sem" | "year_sem";
+
+export const PLANS: Record<PlanKey, { amount: number; description: string }> = {
+  subject_month: { amount: 4900, description: "BSIT Survival Kit — Subject (1 month)" },
+  subject_sem: { amount: 9900, description: "BSIT Survival Kit — Subject (semester)" },
+  year_sem: { amount: 29900, description: "BSIT Survival Kit — All subjects (semester)" },
+};
+
+// Temporary compat exports — removed once the webhook and reconcile routes
+// resolve plans themselves (Tasks 4-5 of the 2026-07-06 conversion plan).
+export const SUBJECT_AMOUNT = PLANS.subject_month.amount;
+export const YEAR_AMOUNT = PLANS.year_sem.amount;
+
+// End of 1st Semester AY 2026-27: Dec 31, 2026 23:59 PH (UTC+8).
+// Bump once per semester when the selling window rolls over.
+export const SEMESTER_END = new Date("2026-12-31T15:59:59Z");
+
+const PERIOD_31_DAYS_MS = 31 * 24 * 60 * 60 * 1000;
+
+// Resolve a plan from a link's `plan:` remarks token. Tokens that are unknown
+// or contradict the link's scope (subject plans need a subject; year_sem must
+// not have one) fall back to legacy inference so old links keep working.
+export function resolvePlan(planToken: string | null, subjectId: string | null): PlanKey {
+  if (planToken && planToken in PLANS) {
+    const plan = planToken as PlanKey;
+    const needsSubject = plan !== "year_sem";
+    if (needsSubject === (subjectId !== null)) return plan;
+  }
+  return subjectId !== null ? "subject_month" : "year_sem";
+}
+
+// Access end for a plan. Semester plans are floored at 31 days so a stale
+// SEMESTER_END constant can never grant less than a month.
+export function periodEndFor(plan: PlanKey, from: Date = new Date()): Date {
+  const monthEnd = new Date(from.getTime() + PERIOD_31_DAYS_MS);
+  if (plan === "subject_month") return monthEnd;
+  return SEMESTER_END.getTime() > monthEnd.getTime() ? SEMESTER_END : monthEnd;
+}
 
 export async function createPaymongoLink(
   yearId: string,
@@ -76,6 +117,7 @@ export interface PaidLink {
   subjectId: string | null;
   deviceId: string | null;
   userId: string | null;
+  plan: string | null;
 }
 
 // Parse the remarks string we attach at checkout. Mirrors the webhook's regexes
@@ -85,16 +127,19 @@ export function parseLinkRemarks(remarks: string): {
   subjectId: string | null;
   deviceId: string | null;
   userId: string | null;
+  plan: string | null;
 } {
   const year = remarks.match(/year:([^\s]+)/);
   const subject = remarks.match(/subject:([^\s]+)/);
   const device = remarks.match(/device:([^\s]+)/);
   const user = remarks.match(/user:([^\s]+)/);
+  const plan = remarks.match(/plan:([^\s]+)/);
   return {
     yearId: year ? year[1] : null,
     subjectId: subject ? subject[1] : null,
     deviceId: device ? device[1] : null,
     userId: user ? user[1] : null,
+    plan: plan ? plan[1] : null,
   };
 }
 
