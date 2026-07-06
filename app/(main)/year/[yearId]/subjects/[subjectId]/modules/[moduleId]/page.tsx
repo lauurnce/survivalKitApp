@@ -98,7 +98,10 @@ export default async function ReaderPage({ params }: Props) {
     freeSectionId = pickFirstActivity(siblings.map((m) => m.id), rows);
 
     // Fetch the free section's full body only when it lives in THIS module.
-    if (freeSectionId && (activityMeta ?? []).some((s) => s.id === freeSectionId)) {
+    if (
+      freeSectionId &&
+      ((activityMeta ?? []) as unknown as { id: string }[]).some((s) => s.id === freeSectionId)
+    ) {
       const { data: full } = await supabase
         .from("sections")
         .select("id, kind, heading, body_md, sort_order, ide_language, starter_code, topology_data")
