@@ -41,6 +41,7 @@ function EditProfileModal({
           </div>
           <button
             onClick={onClose}
+            aria-label="Close"
             className="text-ink-faint hover:text-ink text-lg leading-none mt-0.5"
           >
             ✕
