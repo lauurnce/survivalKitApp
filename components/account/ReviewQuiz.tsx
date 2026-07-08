@@ -151,6 +151,7 @@ export function ReviewQuiz() {
           The quiz didn&apos;t load. Check your connection and try again.
         </p>
         <button
+          type="button"
           onClick={() => void loadQuiz()}
           className="rounded-lg border border-taupe/60 px-4 py-2 text-sm text-ink hover:border-accent/60 hover:text-accent transition-colors"
         >
@@ -254,6 +255,7 @@ export function ReviewQuiz() {
         </ul>
 
         <button
+          type="button"
           onClick={() => void loadQuiz(Math.floor(Math.random() * 1e9))}
           className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-paper hover:bg-accent-dark transition-colors"
         >
@@ -333,6 +335,7 @@ export function ReviewQuiz() {
                 return (
                   <button
                     key={i}
+                    type="button"
                     onClick={() => chooseOption(q, i)}
                     disabled={!answering}
                     aria-pressed={isChosen}
@@ -395,6 +398,7 @@ export function ReviewQuiz() {
       {result && (
         <div className="pt-4">
           <button
+            type="button"
             ref={nextRef}
             onClick={() => next(total)}
             className="rounded-lg border border-taupe/60 px-4 py-2 text-sm text-ink hover:border-accent/60 hover:text-accent transition-colors"
