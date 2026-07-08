@@ -23,6 +23,7 @@ export function WaitlistBanner({ yearLabel, subjectTitle, moduleTitle }: Props) 
     e.preventDefault();
     if (!name || !email || !willingToPay) return;
     setLoading(true);
+    setError(false);
     try {
       const res = await fetch("/api/waitlist", {
         method: "POST",
