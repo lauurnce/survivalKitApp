@@ -49,7 +49,7 @@ export function Playground({ languageId, initialCode }: Props) {
         <div className="flex gap-2">
           <button
             onClick={handleReset}
-            className="border border-paper/20 text-paper/70 font-sans text-xs uppercase tracking-widest px-3 py-1 hover:text-paper"
+            className="border border-paper/20 text-paper/70 font-sans text-xs uppercase tracking-widest px-3 py-1 hover:text-paper transition-colors duration-150"
           >
             Reset
           </button>
