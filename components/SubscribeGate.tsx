@@ -167,7 +167,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
           Access Unlocked
         </p>
         <p className="font-sans text-base text-ink-muted">
-          Access unlocked! Refresh the page to continue.
+          Refresh the page to continue.
         </p>
       </div>
     );
