@@ -107,6 +107,7 @@ function YearSubscribeModal({
               >
                 <div>
                   <p className="text-sm font-medium text-ink">{subjectTitle ?? "This subject"}</p>
+                  {/* "Dec 31" is hand-typed — keep in sync with SEMESTER_END in lib/paymongo.ts */}
                   <p className="text-xs text-ink-muted">Single subject · until Dec 31 (whole semester)</p>
                   <span className="inline-block mt-1 text-[10px] font-medium text-accent uppercase tracking-wider">★ Most popular</span>
                 </div>
@@ -125,6 +126,7 @@ function YearSubscribeModal({
           >
             <div>
               <p className="text-sm font-medium text-ink">All of {year.label}</p>
+              {/* "Dec 31" is hand-typed — keep in sync with SEMESTER_END in lib/paymongo.ts */}
               <p className="text-xs text-ink-muted">Every subject in this year · until Dec 31</p>
               <span className="inline-block mt-1 text-[10px] font-medium text-accent uppercase tracking-wider">Best value</span>
             </div>
