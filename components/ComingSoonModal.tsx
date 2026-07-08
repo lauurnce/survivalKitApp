@@ -20,6 +20,7 @@ export function ComingSoonModal({ yearLabel, onClose }: Props) {
     e.preventDefault();
     if (!name || !email || needsCapstone === null) return;
     setLoading(true);
+    setError(false);
     try {
       const res = await fetch("/api/waitlist", {
         method: "POST",
