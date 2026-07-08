@@ -77,7 +77,7 @@ function YearSubscribeModal({
             <p className="text-label-sm tracking-widest uppercase text-ink-muted mb-1">Subscribe</p>
             <h2 className="font-serif text-lg text-ink leading-snug">{year.label}</h2>
           </div>
-          <button onClick={onClose} className="text-ink-faint hover:text-ink text-lg leading-none mt-0.5">✕</button>
+          <button onClick={onClose} aria-label="Close" className="text-ink-faint hover:text-ink text-lg leading-none mt-0.5">✕</button>
         </div>
 
         {error && <p className="text-xs text-red-500">{error}</p>}
@@ -174,7 +174,7 @@ function SubjectSubscribeModal({
             <p className="text-label-sm tracking-widest uppercase text-ink-muted mb-1">Unlock subject</p>
             <h2 className="font-serif text-base text-ink leading-snug">{subject.title}</h2>
           </div>
-          <button onClick={onClose} className="text-ink-faint hover:text-ink text-lg leading-none mt-0.5">✕</button>
+          <button onClick={onClose} aria-label="Close" className="text-ink-faint hover:text-ink text-lg leading-none mt-0.5">✕</button>
         </div>
 
         {error && <p className="text-xs text-red-500">{error}</p>}
