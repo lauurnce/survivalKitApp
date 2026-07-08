@@ -105,7 +105,7 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
               Free Sample
             </p>
             <p className="font-sans text-base text-ink-muted mb-4">
-              That was 1 of {reviewerCount || "the"} reviewers with answer keys in{" "}
+              That was 1 of {reviewerCount || "several"} reviewers with answer keys in{" "}
               {subjectTitle ?? "this subject"}. Unlock all of them for the semester.
             </p>
             <a
