@@ -38,4 +38,29 @@ describe('getAnchor', () => {
     const result = getAnchor({ type: 'switch', x: 50, y: 50 }, { x: 50, y: 50 });
     expect(result).toEqual({ x: 50, y: 50 });
   });
+
+  it('exits right edge for horizontal rightward cable (server)', () => {
+    const result = getAnchor({ type: 'server', x: 0, y: 0 }, { x: 100, y: 0 });
+    expect(result).toEqual({ x: 20, y: 0 });
+  });
+
+  it('exits right edge for horizontal rightward cable (laptop)', () => {
+    const result = getAnchor({ type: 'laptop', x: 0, y: 0 }, { x: 100, y: 0 });
+    expect(result).toEqual({ x: 32, y: 0 });
+  });
+
+  it('exits right edge for horizontal rightward cable (hub)', () => {
+    const result = getAnchor({ type: 'hub', x: 0, y: 0 }, { x: 100, y: 0 });
+    expect(result).toEqual({ x: 40, y: 0 });
+  });
+
+  it('exits right edge for horizontal rightward cable (firewall)', () => {
+    const result = getAnchor({ type: 'firewall', x: 0, y: 0 }, { x: 100, y: 0 });
+    expect(result).toEqual({ x: 30, y: 0 });
+  });
+
+  it('exits right edge for horizontal rightward cable (cloud)', () => {
+    const result = getAnchor({ type: 'cloud', x: 0, y: 0 }, { x: 100, y: 0 });
+    expect(result).toEqual({ x: 42, y: 0 });
+  });
 });
