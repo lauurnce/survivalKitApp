@@ -379,6 +379,7 @@ function WaitlistSubjectDemand({ bySubject }: { bySubject: { subject_title: stri
       </div>
       {hasMore && (
         <button
+          type="button"
           onClick={() => setExpanded(v => !v)}
           className="mt-4 font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150"
         >
@@ -426,6 +427,7 @@ function TransactionsSection({ rows }: { rows: TransactionRow[] }) {
       </div>
       {hasMore && (
         <button
+          type="button"
           onClick={() => setExpanded(v => !v)}
           className="mt-4 font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150"
         >
@@ -592,6 +594,7 @@ function WaitlistTable({ entries }: { entries: WaitlistEntry[] }) {
       </table>
       {hasMore && (
         <button
+          type="button"
           onClick={() => setExpanded(v => !v)}
           className="mt-4 font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150"
         >
@@ -682,6 +685,7 @@ function WaitlistSection({ entries, agg }: { entries: WaitlistEntry[]; agg: Wait
             })}
           </select>
           <button
+            type="button"
             onClick={downloadMonth}
             disabled={!selectedMonth}
             className="font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150 disabled:opacity-40"
