@@ -72,6 +72,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
 
         {modules.length > 0 && (
           <button
+            type="button"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
             aria-controls={listId}
