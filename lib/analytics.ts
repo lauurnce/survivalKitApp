@@ -49,7 +49,7 @@ export function logSectionView(sectionId: string, moduleId: string) {
     clearTimeout(pendingSectionViews.get(sectionId)!);
   }
   const timer = setTimeout(() => {
-    logEvent("section_view", { section_id: sectionId, module_id: moduleId });
+    void logEvent("section_view", { section_id: sectionId, module_id: moduleId });
     pendingSectionViews.delete(sectionId);
   }, 2000);
   pendingSectionViews.set(sectionId, timer);
