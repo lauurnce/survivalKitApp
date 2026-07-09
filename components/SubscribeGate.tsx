@@ -126,7 +126,7 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
     const deviceId = getDeviceId();
     if (!deviceId) return;
 
-    logEvent("subscribe_click", { year_id: yearId, subject_id: subjectId });
+    void logEvent("subscribe_click", { year_id: yearId, subject_id: subjectId });
     setLoading(plan);
     setError(null);
 
