@@ -28,6 +28,7 @@ export function YearGrid({ cards }: Props) {
             return (
               <button
                 key={year.id}
+                type="button"
                 onClick={() => setActiveLabel(year.label)}
                 className="group border border-ink-faint hover:border-navy hover:bg-navy p-8 flex flex-col gap-4 transition-colors duration-200 text-left"
               >
