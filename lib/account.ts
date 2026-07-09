@@ -12,6 +12,13 @@ export interface ActiveSub {
   subject_id: string | null;
 }
 
+// The joined `years` relation on a subjects row (see the subjects query below).
+interface SubjectYearJoin {
+  id: string;
+  label: string;
+  sort_order: number | null;
+}
+
 /**
  * In-memory equivalent of isSubscribed(): given a user's active, unexpired
  * subscriptions, is (yearId, subjectId) unlocked? A year-level plan
@@ -104,8 +111,7 @@ export async function getAccountOverview(userId: string): Promise<AccountOvervie
     const totalCount = moduleSummaries.length;
     const unlocked = isUnlockedBy(activeSubs, s.year_id, s.id);
     if (unlocked) { overallDone += doneCount; overallTotal += totalCount; }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const yr = (s as any).years;
+    const yr = (s as unknown as { years: SubjectYearJoin | null }).years;
     yearLabel = yearLabel ?? yr?.label ?? null;
     const summary: SubjectSummary = {
       id: s.id, title: s.title, yearId: s.year_id,
