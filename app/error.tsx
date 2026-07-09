@@ -38,6 +38,7 @@ export default function Error({
         </p>
         <div className="flex items-center gap-6">
           <button
+            type="button"
             onClick={reset}
             className="inline-flex items-center gap-3 bg-navy text-paper font-sans text-sm uppercase tracking-widest px-8 py-4 hover:bg-ink transition-colors duration-150"
           >
