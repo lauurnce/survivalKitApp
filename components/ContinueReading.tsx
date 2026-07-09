@@ -18,9 +18,15 @@ export function ContinueReading() {
     try {
       const raw = localStorage.getItem("bsit_last_module");
       if (!raw) return;
-      const parsed = JSON.parse(raw) as LastModule;
-      if (parsed.moduleId && parsed.subjectId && parsed.yearId && parsed.moduleTitle && parsed.subjectTitle) {
-        setLast(parsed);
+      const parsed = JSON.parse(raw) as Partial<LastModule>;
+      if (
+        typeof parsed.moduleId === "string" && parsed.moduleId &&
+        typeof parsed.subjectId === "string" && parsed.subjectId &&
+        typeof parsed.yearId === "string" && parsed.yearId &&
+        typeof parsed.moduleTitle === "string" && parsed.moduleTitle &&
+        typeof parsed.subjectTitle === "string" && parsed.subjectTitle
+      ) {
+        setLast(parsed as LastModule);
       }
     } catch {
       // corrupted localStorage — ignore
