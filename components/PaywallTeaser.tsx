@@ -77,7 +77,7 @@ export function PaywallTeaser({ yearId, subjectId, yearLabel, subjectTitle, ctaH
         The first one&apos;s free. Unlock the rest for{" "}
         <span className="text-ink font-semibold">₱99 until end of semester</span>,
         or all of {yearLabel ?? "this year"} for{" "}
-        <span className="text-ink font-semibold">₱299</span>.
+        <span className="text-ink font-semibold">₱299 until end of semester</span>.
       </p>
       <Link
         href={ctaHref}
