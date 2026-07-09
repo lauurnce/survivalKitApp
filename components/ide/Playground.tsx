@@ -48,12 +48,14 @@ export function Playground({ languageId, initialCode }: Props) {
         </span>
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={handleReset}
             className="border border-paper/20 text-paper/70 font-sans text-xs uppercase tracking-widest px-3 py-1 hover:text-paper transition-colors duration-150"
           >
             Reset
           </button>
           <button
+            type="button"
             onClick={handleRun}
             disabled={running}
             className="bg-accent text-navy font-sans text-xs uppercase tracking-widest px-4 py-1 disabled:opacity-50"
