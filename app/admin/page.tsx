@@ -36,13 +36,13 @@ export default async function AdminPage() {
   // paid_at is timestamptz so we must filter using UTC instants that correspond
   // to the start of the current PH calendar month and the start of the next.
   // We derive these BEFORE the Promise.all so we can use them in the query.
-  const _todayPHForBounds = new Date(Date.now() + PH_OFFSET_MS);
-  const _phYear = _todayPHForBounds.getUTCFullYear();
-  const _phMonth = _todayPHForBounds.getUTCMonth();
-  const _monthStartUtcMs = Date.UTC(_phYear, _phMonth, 1) - PH_OFFSET_MS;
-  const _nextMonthStartUtcMs = Date.UTC(_phYear, _phMonth + 1, 1) - PH_OFFSET_MS;
-  const _monthStartUtcIso = new Date(_monthStartUtcMs).toISOString();
-  const _nextMonthStartUtcIso = new Date(_nextMonthStartUtcMs).toISOString();
+  const todayPHForBounds = new Date(Date.now() + PH_OFFSET_MS);
+  const phYear = todayPHForBounds.getUTCFullYear();
+  const phMonth = todayPHForBounds.getUTCMonth();
+  const monthStartUtcMs = Date.UTC(phYear, phMonth, 1) - PH_OFFSET_MS;
+  const nextMonthStartUtcMs = Date.UTC(phYear, phMonth + 1, 1) - PH_OFFSET_MS;
+  const monthStartUtcIso = new Date(monthStartUtcMs).toISOString();
+  const nextMonthStartUtcIso = new Date(nextMonthStartUtcMs).toISOString();
 
   const [
     { data: funnelRaw },
@@ -115,8 +115,8 @@ export default async function AdminPage() {
     supabase
       .from("payments")
       .select("amount, paid_at")
-      .gte("paid_at", _monthStartUtcIso)
-      .lt("paid_at", _nextMonthStartUtcIso),
+      .gte("paid_at", monthStartUtcIso)
+      .lt("paid_at", nextMonthStartUtcIso),
     // Aggregated waitlist stats: total + breakdowns by year and subject.
     // Runs entirely in Postgres so charts are never limited to the 500-row display cap.
     supabase.rpc("admin_waitlist_agg"),
