@@ -103,7 +103,7 @@ const KNOWN_TOKENS: Record<string, string[]> = {
     "MIN", "MAX", "PRIMARY", "FOREIGN", "KEY", "NOT", "NULL", "AND",
   ],
 };
-KNOWN_TOKENS.py = KNOWN_TOKENS.python;
+KNOWN_TOKENS.py = [...KNOWN_TOKENS.python];
 
 function isSkippableTerm(term: string): boolean {
   if (term.length < MIN_TERM_LEN) return true;
