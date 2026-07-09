@@ -19,7 +19,8 @@ function isFileStore(): boolean {
 
 async function readFileStore(): Promise<Record<string, Profile>> {
   try {
-    return JSON.parse(await fs.readFile(FILE_STORE, "utf8"));
+    const raw = await fs.readFile(FILE_STORE, "utf8");
+    return JSON.parse(raw) as Record<string, Profile>;
   } catch {
     return {};
   }
