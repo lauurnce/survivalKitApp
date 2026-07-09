@@ -1,10 +1,9 @@
 import type { Runner, RunRequest, RunResult } from "@/lib/ide/types";
+import type { SqlJsStatic } from "sql.js";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let sqlPromise: Promise<any> | null = null;
+let sqlPromise: Promise<SqlJsStatic> | null = null;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function loadSql(): Promise<any> {
+async function loadSql(): Promise<SqlJsStatic> {
   if (!sqlPromise) {
     sqlPromise = (async () => {
       const initSqlJs = (await import("sql.js")).default;
