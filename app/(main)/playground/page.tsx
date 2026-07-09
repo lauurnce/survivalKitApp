@@ -16,6 +16,7 @@ export default function PlaygroundTestPage() {
         {LANGS.map((l) => (
           <button
             key={l}
+            type="button"
             onClick={() => setLang(l)}
             className={`px-3 py-1 text-xs uppercase tracking-widest border ${
               lang === l ? "bg-navy text-paper" : "border-ink-faint/30 text-ink-muted"
