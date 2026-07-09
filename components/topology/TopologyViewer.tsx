@@ -103,6 +103,7 @@ export function TopologyViewer({ data }: { data: TopologyData }) {
           <div className="flex items-center justify-between mb-1">
             <span className="font-bold text-ink">{selectedNode.label}</span>
             <button
+              type="button"
               onClick={() => setSelectedId(null)}
               className="text-xs text-ink-muted hover:text-ink leading-none"
               aria-label="Close device info"
