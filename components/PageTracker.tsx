@@ -13,7 +13,7 @@ interface Props {
 
 export function PageTracker({ event, yearId, subjectId, moduleId }: Props) {
   useEffect(() => {
-    logEvent(event, {
+    void logEvent(event, {
       year_id: yearId,
       subject_id: subjectId,
       module_id: moduleId,
