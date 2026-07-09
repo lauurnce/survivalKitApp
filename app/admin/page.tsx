@@ -50,7 +50,8 @@ export default async function AdminPage() {
     { data: subjectCounters },
     { data: moduleCounters },
     { data: topSectionsRaw },
-    { data: _pendingRaw },
+    // Pending-unlocks result isn't consumed on the dashboard (only approvedRaw is).
+    {},
     { data: approvedRaw },
     { data: activeRaw },
     { data: userTotalsRaw },
