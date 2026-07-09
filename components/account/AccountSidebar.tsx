@@ -87,6 +87,7 @@ function YearSubscribeModal({
           {subjectId && (
             <>
               <button
+                type="button"
                 onClick={() => handlePlan("subject_month")}
                 disabled={loading !== null}
                 className="w-full flex items-center justify-between rounded-lg border border-taupe/50 px-4 py-3 text-left hover:border-accent/50 transition-colors disabled:opacity-50"
@@ -101,6 +102,7 @@ function YearSubscribeModal({
               </button>
 
               <button
+                type="button"
                 onClick={() => handlePlan("subject_sem")}
                 disabled={loading !== null}
                 className="w-full flex items-center justify-between rounded-lg border border-accent/60 px-4 py-3 text-left hover:border-accent transition-colors disabled:opacity-50"
@@ -120,6 +122,7 @@ function YearSubscribeModal({
 
           {/* All-subjects semester plan */}
           <button
+            type="button"
             onClick={() => handlePlan("year_sem")}
             disabled={loading !== null}
             className="w-full flex items-center justify-between rounded-lg border border-accent/60 bg-accent/5 px-4 py-3 text-left hover:bg-accent/10 transition-colors disabled:opacity-50"
@@ -180,6 +183,7 @@ function SubjectSubscribeModal({
         {error && <p className="text-xs text-red-500">{error}</p>}
 
         <button
+          type="button"
           onClick={() => handleSubscribe("subject_month")}
           disabled={loading !== null}
           className="w-full rounded-lg border border-taupe/50 px-4 py-3 text-sm font-medium text-ink hover:border-accent/50 transition-colors disabled:opacity-50"
@@ -188,6 +192,7 @@ function SubjectSubscribeModal({
         </button>
 
         <button
+          type="button"
           onClick={() => handleSubscribe("subject_sem")}
           disabled={loading !== null}
           className="w-full rounded-lg bg-accent px-4 py-3 text-sm font-medium text-paper hover:bg-accent-dark transition-colors disabled:opacity-50"
@@ -217,6 +222,7 @@ function YearSection({ year }: { year: YearGroup }) {
     <section>
       {/* Year header — always visible, full opacity */}
       <button
+        type="button"
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center justify-between gap-2 text-left group"
       >
@@ -246,6 +252,7 @@ function YearSection({ year }: { year: YearGroup }) {
                     {s.title}
                   </Link>
                   <button
+                    type="button"
                     onClick={() => setModal({ kind: "subject", subject: s })}
                     className="shrink-0 text-[10px] text-accent underline underline-offset-2 hover:no-underline"
                   >
@@ -258,6 +265,7 @@ function YearSection({ year }: { year: YearGroup }) {
 
           {/* Year-level subscribe button */}
           <button
+            type="button"
             onClick={() => setModal({ kind: "year" })}
             className="mt-4 w-full rounded-lg border border-accent/50 px-3 py-2 text-xs font-medium text-accent hover:bg-accent/10 transition-colors text-center"
           >
