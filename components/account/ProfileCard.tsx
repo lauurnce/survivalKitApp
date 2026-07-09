@@ -184,6 +184,7 @@ export function ProfileCard({ profile }: { profile: Profile | null }) {
               )}
             </div>
             <button
+              type="button"
               onClick={() => setEditing(true)}
               className="shrink-0 text-xs text-accent underline underline-offset-2 hover:no-underline"
             >
@@ -211,6 +212,7 @@ export function ProfileCard({ profile }: { profile: Profile | null }) {
             Add your name, school, and the tech pathways you&apos;re aiming for.
           </p>
           <button
+            type="button"
             onClick={() => setEditing(true)}
             className="rounded-lg border border-accent/50 px-3 py-1.5 text-xs font-medium text-accent hover:bg-accent/10 transition-colors"
           >
