@@ -54,7 +54,7 @@ export function PaywallTeaser({ yearId, subjectId, yearLabel, subjectTitle, ctaH
   useEffect(() => {
     if (subscribed === false && !viewLogged.current) {
       viewLogged.current = true;
-      logEvent("paywall_teaser_view", { year_id: yearId, subject_id: subjectId });
+      void logEvent("paywall_teaser_view", { year_id: yearId, subject_id: subjectId });
     }
   }, [subscribed, yearId, subjectId]);
 
@@ -62,7 +62,7 @@ export function PaywallTeaser({ yearId, subjectId, yearLabel, subjectTitle, ctaH
   if (subscribed !== false) return null;
 
   function handleClick() {
-    logEvent("paywall_teaser_click", { year_id: yearId, subject_id: subjectId });
+    void logEvent("paywall_teaser_click", { year_id: yearId, subject_id: subjectId });
   }
 
   return (
