@@ -162,13 +162,20 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle }: Pr
 
   if (unlocked) {
     return (
-      <div className="border border-ink-faint/30 p-6 mt-4">
-        <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-2">
+      <div className="border border-accent/40 p-6 mt-4">
+        <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent mb-2">
           Access Unlocked
         </p>
-        <p className="font-sans text-base text-ink-muted">
-          Refresh the page to continue.
+        <p className="font-sans text-base text-ink-muted mb-4">
+          Payment confirmed — you now have full access to the reviewers.
         </p>
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="bg-accent text-paper font-sans text-sm px-6 py-3 hover:bg-ink transition-colors duration-150"
+        >
+          Show my reviewers →
+        </button>
       </div>
     );
   }
