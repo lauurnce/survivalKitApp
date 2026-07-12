@@ -56,11 +56,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${interTight.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${fraunces.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+    >
       <head>
         <script
+          // First visit follows the device's dark-mode setting; an explicit
+          // toggle choice (stored under 'theme') always wins afterwards.
+          // localStorage can throw in private browsing — fall back to system.
           dangerouslySetInnerHTML={{
-            __html: `(function(){if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');}})();`,
+            __html: `(function(){var t=null;try{t=localStorage.getItem('theme');}catch(e){}var dark=t==='dark'||(!t&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(dark){document.documentElement.classList.add('dark');}})();`,
           }}
         />
       </head>
