@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — BSIT Survival Kit",
+  title: "Privacy Policy",
   description:
     "How BSIT Survival Kit collects, uses, and protects your personal data, in compliance with the Philippine Data Privacy Act of 2012 (RA 10173).",
 };

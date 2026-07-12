@@ -24,9 +24,30 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
+const SITE_URL = "https://survival-kit-app.vercel.app";
+
 export const metadata: Metadata = {
-  title: "BSIT Survival Kit",
-  description: "Your complete study companion for BSIT modules.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "BSIT Survival Kit",
+    template: "%s — BSIT Survival Kit",
+  },
+  description:
+    "Module notes, programming guides, and reviewers with answer keys for BSIT students — organized by year and subject.",
+  openGraph: {
+    type: "website",
+    siteName: "BSIT Survival Kit",
+    title: "BSIT Survival Kit",
+    description:
+      "Module notes, programming guides, and reviewers with answer keys for BSIT students — organized by year and subject.",
+    url: SITE_URL,
+  },
+  twitter: {
+    card: "summary",
+    title: "BSIT Survival Kit",
+    description:
+      "Module notes, programming guides, and reviewers with answer keys for BSIT students — organized by year and subject.",
+  },
 };
 
 export default function RootLayout({
