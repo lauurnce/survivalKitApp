@@ -55,6 +55,7 @@ export default async function ReaderPage({ params }: Props) {
     currentIndex >= 0 && currentIndex < siblings.length - 1
       ? siblings[currentIndex + 1]
       : null;
+  const prevModule = currentIndex > 0 ? siblings[currentIndex - 1] : null;
 
   const { data: contentSections } = await supabase
     .from("sections")
@@ -225,19 +226,39 @@ export default async function ReaderPage({ params }: Props) {
               </span>
               <span className="text-accent text-xl flex-shrink-0">→</span>
             </Link>
+            {prevModule && (
+              <Link
+                href={`/year/${yearId}/subjects/${subjectId}/modules/${prevModule.id}`}
+                className="group inline-flex items-center gap-3 mt-6 font-sans text-sm text-ink-muted hover:text-ink transition-colors duration-150"
+              >
+                <span className="text-accent group-hover:translate-x-[-2px] transition-transform duration-150">←</span>
+                <span>Previous: {prevModule.title}</span>
+              </Link>
+            )}
           </>
         ) : (
           <>
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-faint mb-4">
               You&apos;ve finished this subject
             </p>
-            <Link
-              href={`/year/${yearId}/subjects/${subjectId}/modules`}
-              className="inline-flex items-center gap-3 font-sans text-sm text-ink-muted hover:text-ink transition-colors duration-150"
-            >
-              <span className="text-accent">←</span>
-              <span>Back to {subject.title}</span>
-            </Link>
+            <div className="flex flex-col gap-3">
+              <Link
+                href={`/year/${yearId}/subjects/${subjectId}/modules`}
+                className="inline-flex items-center gap-3 font-sans text-sm text-ink-muted hover:text-ink transition-colors duration-150"
+              >
+                <span className="text-accent">←</span>
+                <span>Back to {subject.title}</span>
+              </Link>
+              {prevModule && (
+                <Link
+                  href={`/year/${yearId}/subjects/${subjectId}/modules/${prevModule.id}`}
+                  className="inline-flex items-center gap-3 font-sans text-sm text-ink-muted hover:text-ink transition-colors duration-150"
+                >
+                  <span className="text-accent">←</span>
+                  <span>Previous: {prevModule.title}</span>
+                </Link>
+              )}
+            </div>
           </>
         )}
         </div>
