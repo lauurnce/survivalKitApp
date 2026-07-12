@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export interface SearchItem {
   type: "subject" | "module";
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export function SearchClient({ items }: Props) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
 
   const trimmed = query.trim().toLowerCase();
@@ -44,6 +46,14 @@ export function SearchClient({ items }: Props) {
           autoFocus
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => {
+            // Enter jumps straight to the top match — fastest path for
+            // returning students who know what they're looking for.
+            if (e.key === "Enter" && results.length > 0) {
+              e.preventDefault();
+              router.push(results[0].href);
+            }
+          }}
           placeholder="Search subjects and modules…"
           className="w-full bg-transparent border border-ink-faint focus:border-navy outline-none font-sans text-base text-ink placeholder:text-ink-faint pl-11 pr-4 py-4 transition-colors duration-150"
           aria-label="Search subjects and modules"
@@ -56,10 +66,20 @@ export function SearchClient({ items }: Props) {
           Start typing to find a subject or module by name.
         </p>
       ) : results.length === 0 ? (
-        <p className="font-sans text-sm text-ink-muted">
-          No matches for{" "}
-          <span className="text-ink">&ldquo;{query.trim()}&rdquo;</span>.
-        </p>
+        <div className="flex flex-col gap-4">
+          <p className="font-sans text-sm text-ink-muted">
+            No matches for{" "}
+            <span className="text-ink">&ldquo;{query.trim()}&rdquo;</span>.
+            Try a shorter keyword, or browse by year instead.
+          </p>
+          <Link
+            href="/year"
+            className="inline-flex items-center gap-2 font-sans text-sm text-ink hover:text-accent transition-colors duration-150"
+          >
+            <span>Browse all subjects</span>
+            <span className="text-accent" aria-hidden="true">→</span>
+          </Link>
+        </div>
       ) : (
         <>
           <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
