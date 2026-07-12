@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
@@ -5,6 +6,11 @@ import { PageTracker } from "@/components/PageTracker";
 import { YearGrid, type YearCardData } from "@/components/YearGrid";
 
 export const revalidate = 300;
+
+export const metadata: Metadata = {
+  title: "Select Year",
+  description: "Pick your year level to browse BSIT subjects and modules.",
+};
 
 export default async function YearPage() {
   const supabase = createServerClient();

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
@@ -11,6 +12,10 @@ import { ResumeCard } from "@/components/account/ResumeCard";
 import { ReviewQuiz } from "@/components/account/ReviewQuiz";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "My Account",
+};
 
 interface Props {
   searchParams: Promise<{ payment?: string }>;

@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import { AuthForm } from "@/components/AuthForm";
 import { signInAction } from "../actions";
+
+export const metadata: Metadata = {
+  title: "Log in",
+  description: "Log in to your BSIT Survival Kit account.",
+};
 
 export default async function LoginPage({
   searchParams,

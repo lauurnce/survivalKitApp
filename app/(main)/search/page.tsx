@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { SearchClient, type SearchItem } from "@/components/SearchClient";
 
 export const revalidate = 300;
+
+export const metadata: Metadata = {
+  title: "Search",
+  description: "Find any BSIT subject or module by name.",
+};
 
 export default async function SearchPage() {
   const supabase = createServerClient();
