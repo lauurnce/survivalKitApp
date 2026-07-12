@@ -79,6 +79,8 @@ export function SubjectComingSoon({ subjectTitle, yearLabel }: Props) {
         <input
           type="text"
           placeholder="Your name"
+          aria-label="Your name"
+          autoComplete="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -87,6 +89,8 @@ export function SubjectComingSoon({ subjectTitle, yearLabel }: Props) {
         <input
           type="email"
           placeholder="your@email.com"
+          aria-label="Email address"
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
