@@ -72,7 +72,13 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans min-h-screen flex flex-col">
-        <div className="flex-1">{children}</div>
+        <a
+          href="#content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-navy focus:text-paper focus:px-4 focus:py-2 font-sans text-sm"
+        >
+          Skip to content
+        </a>
+        <div id="content" className="flex-1">{children}</div>
         <footer className="border-t border-ink-faint/20 px-6 py-4 md:px-16">
           <div className="max-w-wide mx-auto flex flex-wrap items-center justify-between gap-2">
             <p className="font-sans text-[11px] text-ink-faint leading-relaxed">
