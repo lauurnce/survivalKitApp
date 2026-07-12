@@ -7,6 +7,7 @@ import { isSubscribed } from "@/lib/subscriptions";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { BackLink } from "@/components/BackLink";
+import { ModuleDoneToggle } from "@/components/ModuleDoneToggle";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import { PageTracker } from "@/components/PageTracker";
 import { LastModuleTracker } from "@/components/LastModuleTracker";
@@ -212,6 +213,12 @@ export default async function ReaderPage({ params }: Props) {
       {/* Next-module CTA */}
       <div className="border-t border-ink-faint/20 px-6 py-12 md:px-16">
         <div className="max-w-wide mx-auto">
+        <div className="flex items-center justify-between gap-4 mb-10">
+          <p className="font-sans text-sm text-ink-muted">
+            Done with this module? Track it — your progress shows on the subject list.
+          </p>
+          <ModuleDoneToggle moduleId={moduleId} />
+        </div>
         {nextModule ? (
           <>
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-faint mb-4">
