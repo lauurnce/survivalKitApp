@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -37,8 +38,26 @@ export function AuthForm({
   const pendingLabel = mode === "login" ? "Signing in…" : "Creating account…";
 
   return (
-    <form className="mx-auto mt-24 max-w-sm space-y-4 px-6" action={formAction}>
+    <div className="mx-auto mt-16 max-w-sm px-6">
+      <div className="mb-10 flex flex-col gap-6">
+        <Link
+          href="/"
+          className="group inline-flex items-center gap-2 font-sans text-sm text-ink-muted hover:text-ink transition-colors duration-150 self-start"
+        >
+          <span className="text-accent group-hover:translate-x-[-2px] transition-transform duration-150">←</span>
+          <span>Home</span>
+        </Link>
+        <span className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-muted">
+          BSIT Survival Kit
+        </span>
+      </div>
+    <form className="space-y-4" action={formAction}>
       <h1 className="font-serif text-3xl text-ink">{title}</h1>
+      <p className="text-sm text-ink-muted">
+        {mode === "login"
+          ? "Pick up where you left off — your unlocks and progress are saved to your account."
+          : "An account keeps your unlocks and progress across devices."}
+      </p>
       <input type="hidden" name="next" value={next} />
       <label className="block text-sm text-ink-muted">
         Email
@@ -106,5 +125,6 @@ export function AuthForm({
         )}
       </p>
     </form>
+    </div>
   );
 }
