@@ -88,13 +88,22 @@ export default async function LandingPage() {
           Module notes, programming guides, and computation walkthroughs,
           organized by year and subject. Start wherever you need to.
         </p>
-        <Link
-          href="/year"
-          className="inline-flex items-center gap-3 bg-navy text-paper font-sans text-sm uppercase tracking-widest px-8 py-4 hover:bg-ink transition-colors duration-150"
-        >
-          Start here
-          <span className="text-accent">→</span>
-        </Link>
+        <div className="flex flex-wrap items-center gap-8">
+          <Link
+            href="/year"
+            className="inline-flex items-center gap-3 bg-navy text-paper font-sans text-sm uppercase tracking-widest px-8 py-4 hover:bg-ink transition-colors duration-150"
+          >
+            Start here
+            <span className="text-accent">→</span>
+          </Link>
+          <Link
+            href="/search"
+            className="inline-flex items-center gap-2 font-sans text-sm uppercase tracking-widest text-ink-muted hover:text-ink transition-colors duration-150"
+          >
+            <span className="text-accent" aria-hidden="true">⌕</span>
+            <span>Search modules</span>
+          </Link>
+        </div>
       </div>
 
       {/* Continue reading — client, null for first-time visitors */}
