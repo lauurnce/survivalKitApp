@@ -4,6 +4,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
 import { SubjectAccordion, type SubjectModule } from "@/components/SubjectAccordion";
+import { sectionLabel } from "@/lib/sectionLabel";
 
 export const revalidate = 300;
 
@@ -85,7 +86,7 @@ export default async function SubjectsPage({ params }: Props) {
           <BackLink href="/year" label="Select Year" className="text-taupe hover:text-paper" />
           <div className="mt-10">
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
-              § 0{year.sort_order} — {year.label}
+              {sectionLabel(year.sort_order)} — {year.label}
             </p>
             <h1 className="font-serif text-display-lg text-paper">Subjects</h1>
           </div>

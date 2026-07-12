@@ -8,6 +8,7 @@ import { ModuleDoneToggle } from "@/components/ModuleDoneToggle";
 import { SubjectComingSoon } from "@/components/SubjectComingSoon";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
 import { formatCount } from "@/lib/counters";
+import { sectionLabel } from "@/lib/sectionLabel";
 
 export const revalidate = 300;
 
@@ -45,6 +46,8 @@ export default async function ModulesPage({ params }: Props) {
     supabase.from("counters").select("resource_id, read_count").eq("resource_type", "module"),
   ]);
 
+  if (!subject) notFound();
+
   // Concrete reviewer count for the teaser ("N reviewers with answer keys…").
   const moduleIds = (modules ?? []).map((m) => m.id);
   const { count: reviewerCount } = moduleIds.length
@@ -54,8 +57,6 @@ export default async function ModulesPage({ params }: Props) {
         .eq("kind", "activity")
         .in("module_id", moduleIds)
     : { count: 0 };
-
-  if (!subject) notFound();
 
   const year = subject.years as { label: string; sort_order: number } | null;
 
@@ -77,7 +78,7 @@ export default async function ModulesPage({ params }: Props) {
           />
           <div className="mt-10">
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
-              § 0{year?.sort_order ?? "?"} — {subject.title}
+              {sectionLabel(year?.sort_order)} — {subject.title}
             </p>
             <h1 className="font-serif text-display-lg text-paper">Modules</h1>
           </div>

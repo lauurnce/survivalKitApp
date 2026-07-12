@@ -13,6 +13,7 @@ import { PageTracker } from "@/components/PageTracker";
 import { LastModuleTracker } from "@/components/LastModuleTracker";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
 import { pickFirstActivity } from "@/lib/freeSample";
+import { sectionLabel } from "@/lib/sectionLabel";
 
 export const revalidate = 300;
 
@@ -170,7 +171,7 @@ export default async function ReaderPage({ params }: Props) {
       <header className="bg-navy px-6 pt-10 pb-12 md:px-16 border-b border-paper/10">
         <div className="max-w-wide mx-auto">
           <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
-            § 0{year?.sort_order ?? "?"} — {subject.title}
+            {sectionLabel(year?.sort_order)} — {subject.title}
           </p>
           <h1 className="font-serif text-display-md text-paper">{mod.title}</h1>
         </div>
