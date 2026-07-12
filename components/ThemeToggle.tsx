@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 const SunIcon = () => (
   <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="5"/>
@@ -22,51 +20,55 @@ const MoonIcon = () => (
   </svg>
 );
 
-function useTheme() {
-  const [isDark, setIsDark] = useState(false);
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"));
-  }, []);
-  function toggle() {
-    const next = !isDark;
-    setIsDark(next);
-    if (next) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
+function toggleTheme() {
+  const next = !document.documentElement.classList.contains("dark");
+  document.documentElement.classList.toggle("dark", next);
+  try {
+    localStorage.setItem("theme", next ? "dark" : "light");
+  } catch {
+    // private browsing / storage full — theme still applies for this visit
   }
-  return { isDark, toggle };
+}
+
+// Both icons are always rendered and swapped purely via the `dark` class, so
+// the button never flashes the wrong icon while React hydrates.
+function ThemeIcon() {
+  return (
+    <>
+      <span className="dark:hidden" aria-hidden="true">
+        <MoonIcon />
+      </span>
+      <span className="hidden dark:inline" aria-hidden="true">
+        <SunIcon />
+      </span>
+    </>
+  );
 }
 
 // Fixed floating button — used on all pages except account dashboard
 export function ThemeToggle() {
-  const { isDark, toggle } = useTheme();
   return (
     <button
-      onClick={toggle}
-      suppressHydrationWarning
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      type="button"
+      onClick={toggleTheme}
+      aria-label="Toggle dark mode"
       className="fixed top-4 right-4 z-50 w-9 h-9 flex items-center justify-center border border-ink-faint/30 bg-paper text-ink hover:bg-ink hover:text-paper transition-colors duration-150"
     >
-      {isDark ? <SunIcon /> : <MoonIcon />}
+      <ThemeIcon />
     </button>
   );
 }
 
 // Inline button — sits inside a flex row (account top bar)
 export function ThemeToggleInline() {
-  const { isDark, toggle } = useTheme();
   return (
     <button
-      onClick={toggle}
-      suppressHydrationWarning
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      type="button"
+      onClick={toggleTheme}
+      aria-label="Toggle dark mode"
       className="w-8 h-8 flex items-center justify-center border border-ink-faint/30 bg-paper text-ink hover:bg-ink hover:text-paper transition-colors duration-150"
     >
-      {isDark ? <SunIcon /> : <MoonIcon />}
+      <ThemeIcon />
     </button>
   );
 }
