@@ -73,15 +73,17 @@ export function YearGrid({ cards }: Props) {
                 View subjects →
               </span>
 
-              <div className="flex items-center gap-2 pt-3 border-t border-ink-faint/20 group-hover:border-taupe/20 transition-colors duration-200">
-                <div className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
-                <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint group-hover:text-taupe transition-colors duration-200">
-                  <span className="text-ink-muted group-hover:text-taupe/80 transition-colors duration-200">
-                    {formatCount(year.readers)}
-                  </span>{" "}
-                  readers
-                </span>
-              </div>
+              {year.readers > 0 && (
+                <div className="flex items-center gap-2 pt-3 border-t border-ink-faint/20 group-hover:border-taupe/20 transition-colors duration-200">
+                  <div className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
+                  <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint group-hover:text-taupe transition-colors duration-200">
+                    <span className="text-ink-muted group-hover:text-taupe/80 transition-colors duration-200">
+                      {formatCount(year.readers)}
+                    </span>{" "}
+                    readers
+                  </span>
+                </div>
+              )}
             </Link>
           );
         })}

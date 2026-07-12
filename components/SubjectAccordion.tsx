@@ -55,10 +55,14 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
               <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
                 {subject.kind === "major" ? "Major" : "Minor"}
               </span>
-              <span className="font-mono text-label-sm text-ink-faint/40">·</span>
-              <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
-                <span className="text-ink-muted">{formatCount(reads)}</span> reads
-              </span>
+              {reads > 0 && (
+                <>
+                  <span className="font-mono text-label-sm text-ink-faint/40">·</span>
+                  <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
+                    <span className="text-ink-muted">{formatCount(reads)}</span> reads
+                  </span>
+                </>
+              )}
             </div>
             <SubjectProgressBar moduleIds={moduleIds} />
           </div>

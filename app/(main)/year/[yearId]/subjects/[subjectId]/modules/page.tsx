@@ -112,9 +112,15 @@ export default async function ModulesPage({ params }: Props) {
                 <h2 className="font-serif text-2xl text-ink group-hover:text-accent transition-colors duration-150 mb-1">
                   {mod.title}
                 </h2>
-                <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
-                  <span className="text-ink-muted">{formatCount(readCount(mod.id))}</span> reads
-                </span>
+                {readCount(mod.id) > 0 ? (
+                  <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
+                    <span className="text-ink-muted">{formatCount(readCount(mod.id))}</span> reads
+                  </span>
+                ) : (
+                  <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent">
+                    New
+                  </span>
+                )}
               </div>
               <ModuleDoneToggle moduleId={mod.id} />
               <span className="font-sans text-sm text-ink-faint group-hover:text-ink transition-colors mt-1">
