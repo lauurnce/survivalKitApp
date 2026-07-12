@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
@@ -16,6 +17,20 @@ export const revalidate = 300;
 
 interface Props {
   params: Promise<{ yearId: string; subjectId: string; moduleId: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { subjectId, moduleId } = await params;
+  const supabase = createServerClient();
+  const [{ data: mod }, { data: subject }] = await Promise.all([
+    supabase.from("modules").select("title").eq("id", moduleId).single(),
+    supabase.from("subjects").select("title").eq("id", subjectId).single(),
+  ]);
+  if (!mod) return {};
+  return {
+    title: subject ? `${mod.title} · ${subject.title}` : mod.title,
+    description: `Study notes and reviewers for ${mod.title}${subject ? ` in ${subject.title}` : ""}.`,
+  };
 }
 
 export default async function ReaderPage({ params }: Props) {
