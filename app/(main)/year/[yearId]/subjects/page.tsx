@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
@@ -17,6 +18,21 @@ interface Subject {
   semester: number;
   kind: "major" | "minor";
   sort_order: number;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { yearId } = await params;
+  const supabase = createServerClient();
+  const { data: year } = await supabase
+    .from("years")
+    .select("label")
+    .eq("id", yearId)
+    .single();
+  if (!year) return {};
+  return {
+    title: `${year.label} Subjects`,
+    description: `Browse all ${year.label} BSIT subjects, modules, and reviewers.`,
+  };
 }
 
 export default async function SubjectsPage({ params }: Props) {

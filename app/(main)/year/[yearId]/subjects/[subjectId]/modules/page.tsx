@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
@@ -12,6 +13,22 @@ export const revalidate = 300;
 
 interface Props {
   params: Promise<{ yearId: string; subjectId: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { subjectId } = await params;
+  const supabase = createServerClient();
+  const { data: subject } = await supabase
+    .from("subjects")
+    .select("title, years(label)")
+    .eq("id", subjectId)
+    .single();
+  if (!subject) return {};
+  const year = subject.years as unknown as { label: string } | null;
+  return {
+    title: subject.title,
+    description: `Modules and reviewers for ${subject.title}${year ? ` (${year.label})` : ""}.`,
+  };
 }
 
 export default async function ModulesPage({ params }: Props) {
