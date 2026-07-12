@@ -1,7 +1,7 @@
 -- ============================================================
--- Ethics — Modules & Sections
+-- Ethics, Modules & Sections
 -- Subject ID: 476dbfed-5212-4296-9036-895bbbe546d4
--- 2nd Year, Semester 2 — minor
+-- 2nd Year, Semester 2, minor
 -- 5 lessons. Each has 3 content blocks + 1 Practice & Exam Drills.
 --   Split: S1+S2 = content (FREE); the 3rd teaching block + drill = activity
 --   (PAID) -> 2 free / 2 paid every lesson.
@@ -38,7 +38,7 @@ A **moral dilemma** is a tough situation where you have to choose between two co
 
 *Ready to apply these ideas? The practice set below contains examples, step-by-step solutions, and deeper exercises.*
 $md$, 3),
-('cf8fe871-8018-5e68-a12b-0f9cc7821b84','activity','Practice & Exam Drills — Lesson 1',$md$
+('cf8fe871-8018-5e68-a12b-0f9cc7821b84','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions**
 
 1. Define ethics and explain how it differs from personal taste or preference.
@@ -95,7 +95,7 @@ Ethics is not only about decisions in one moment; it's also about what kind of p
 
 *Ready to apply these ideas? The practice set below contains examples, step-by-step solutions, and deeper exercises.*
 $md$, 3),
-('f0aff824-e320-5405-9bbe-6e17eddd662d','activity','Practice & Exam Drills — Lesson 2',$md$
+('f0aff824-e320-5405-9bbe-6e17eddd662d','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions**
 
 1. Why is freedom important in ethics, and what responsibility comes with it?
@@ -138,11 +138,11 @@ $md$, 1),
 Many Filipino values relate to ethics. For instance, **pakikisama** (harmonious community relations) encourages considering others' needs, which aligns with empathy and cooperation. **Bayanihan** (helping neighbors) teaches generosity. **Pagmamano** and **paggalang** (respect) show how personal behavior affects others' dignity. On the other hand, **hiya** (shame) can deter wrongdoing but may also silence people from reporting issues. Philippine society is also deeply influenced by Christianity: teachings like "love thy neighbor" and the sanctity of life inform moral choices. In short, when making decisions, Filipino students often balance modern ethical principles (fairness, rights) with traditional values like family loyalty and religious beliefs.
 $md$, 2),
 ('5e27e216-70e2-5d8a-beb8-e36d540ddd43','activity','Developing Community and Individual Morality',$md$
-Ethics education in society aims to build both social and individual virtue. Classrooms, families, and communities teach moral values through examples and practice. Psychologist **Lawrence Kohlberg** describes how people grow from obeying rules to understanding justice as they mature. In the Philippines, schools use collaborative activities (like group projects) to teach teamwork and fairness. Civic values—like bayanihan—encourage students to think beyond themselves. For example, a student council organizing a tree-planting teaches care for the environment and community. These experiences help students internalize moral principles so they act correctly even without supervision.
+Ethics education in society aims to build both social and individual virtue. Classrooms, families, and communities teach moral values through examples and practice. Psychologist **Lawrence Kohlberg** describes how people grow from obeying rules to understanding justice as they mature. In the Philippines, schools use collaborative activities (like group projects) to teach teamwork and fairness. Civic values, like bayanihan, encourage students to think beyond themselves. For example, a student council organizing a tree-planting teaches care for the environment and community. These experiences help students internalize moral principles so they act correctly even without supervision.
 
 *Ready to apply these ideas? The practice set below contains examples, step-by-step solutions, and deeper exercises.*
 $md$, 3),
-('5e27e216-70e2-5d8a-beb8-e36d540ddd43','activity','Practice & Exam Drills — Lesson 3',$md$
+('5e27e216-70e2-5d8a-beb8-e36d540ddd43','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions**
 
 1. How can cultural values influence what a person thinks is right or wrong?
@@ -191,7 +191,7 @@ $md$, 2),
 
 *Ready to apply these ideas? The practice set below contains examples, step-by-step solutions, and deeper exercises.*
 $md$, 3),
-('264ba160-fc4f-5392-ac1f-4c75057ce66b','activity','Practice & Exam Drills — Lesson 4',$md$
+('264ba160-fc4f-5392-ac1f-4c75057ce66b','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions**
 
 1. Explain utilitarianism and give a simple example. What is a potential problem with it?
@@ -220,7 +220,7 @@ $md$, 3),
 - Clearly label each theory in answers (e.g. "Under Kant's categorical imperative…"). Compare if needed (e.g. "Unlike utilitarianism, Kantian ethics says…").
 - Memorize key names: Aristotle (virtue), Kant (duty/rights), Bentham/Mill (utilitarian). Professors often expect these.
 - For justice/taxation questions: mention fairness to majority and vulnerable (for utilitarian) and duty of government (for Kantian/social justice).
-- Don't just memorize definitions—apply them. For example, practice identifying which theory an exam question is testing.
+- Don't just memorize definitions, apply them. For example, practice identifying which theory an exam question is testing.
 - Common mistakes: mixing up theories or missing any explanation. Structure answers so it's clear which framework you're using.
 $md$, 4);
 
@@ -239,7 +239,7 @@ We live in a connected, diverse world. **Globalization** brings different cultur
 
 *Ready to apply these ideas? The practice set below contains examples, step-by-step solutions, and deeper exercises.*
 $md$, 3),
-('4fb4afbb-c0de-583a-8020-d17130f234d2','activity','Practice & Exam Drills — Lesson 5',$md$
+('4fb4afbb-c0de-583a-8020-d17130f234d2','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. What is meant by the "common good" and how do taxes relate to it?
@@ -273,9 +273,9 @@ $md$, 4);
 
 -- ============================================================
 -- SOURCES
--- Far Eastern University Institute of Technology — Ethics course syllabus
--- Polytechnic University of the Philippines — Ethics instructional materials (course outline and topics)
--- De La Salle University Manila — GE Ethics course syllabus (outline of course parts)
--- CHED — National General Education Ethics syllabus (CMO 20 s.2013)
--- CHED CMO No. 25, s.2015 — Revised PSGs for the BSIT program
+-- Far Eastern University Institute of Technology, Ethics course syllabus
+-- Polytechnic University of the Philippines, Ethics instructional materials (course outline and topics)
+-- De La Salle University Manila, GE Ethics course syllabus (outline of course parts)
+-- CHED, National General Education Ethics syllabus (CMO 20 s.2013)
+-- CHED CMO No. 25, s.2015, Revised PSGs for the BSIT program
 -- ============================================================

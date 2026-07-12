@@ -1,5 +1,5 @@
 -- ============================================================
--- Discrete Structures 1 — Exam Prep: Prelims & Finals
+-- Discrete Structures 1, Exam Prep: Prelims & Finals
 -- Subject ID: 10000000-0001-0002-0001-000000000002
 -- Module ID:  b1000001-0001-0002-0001-0000000000e1
 -- Purpose: exam-prep module (blueprints, mock exams, answer
@@ -46,16 +46,16 @@ Your prelim in Discrete Structures 1 almost always covers the first four lessons
 
 Do not walk into the prelim without these cold:
 
-1. **The five connective truth tables** — ¬P, P ∧ Q, P ∨ Q, P → Q, P ↔ Q. Especially: P → Q is false **only** when P is true and Q is false.
-2. **The equivalence laws** — De Morgan's, Material Implication (P → Q ≡ ¬P ∨ Q), Involution (¬¬P ≡ P), Commutative, Associative, Distributive, Idempotence, Identity laws, Exportation, Material Equivalence.
-3. **The inference rules** — Modus Ponens, Modus Tollens, Disjunctive Syllogism, Hypothetical Syllogism, Addition, Simplification, Conjunction, Constructive Dilemma, Destructive Dilemma.
-4. **The conditional's three related forms** — inverse (¬P → ¬Q), converse (Q → P), contrapositive (¬Q → ¬P). Only the contrapositive is equivalent to the original.
-5. **Set identities** — De Morgan's for sets ((A ∪ B)' = A' ∩ B'), |A × B| = |A| × |B|, and inclusion-exclusion: |A ∪ B| = |A| + |B| − |A ∩ B|.
-6. **Quantifier patterns** — "All A are B" is ∀x[A(x) → B(x)]; "Some A are B" is ∃x[A(x) ∧ B(x)]. Note the ∀ pairs with →, the ∃ pairs with ∧.
+1. **The five connective truth tables**, ¬P, P ∧ Q, P ∨ Q, P → Q, P ↔ Q. Especially: P → Q is false **only** when P is true and Q is false.
+2. **The equivalence laws**, De Morgan's, Material Implication (P → Q ≡ ¬P ∨ Q), Involution (¬¬P ≡ P), Commutative, Associative, Distributive, Idempotence, Identity laws, Exportation, Material Equivalence.
+3. **The inference rules**, Modus Ponens, Modus Tollens, Disjunctive Syllogism, Hypothetical Syllogism, Addition, Simplification, Conjunction, Constructive Dilemma, Destructive Dilemma.
+4. **The conditional's three related forms**, inverse (¬P → ¬Q), converse (Q → P), contrapositive (¬Q → ¬P). Only the contrapositive is equivalent to the original.
+5. **Set identities**, De Morgan's for sets ((A ∪ B)' = A' ∩ B'), |A × B| = |A| × |B|, and inclusion-exclusion: |A ∪ B| = |A| + |B| − |A ∩ B|.
+6. **Quantifier patterns**, "All A are B" is ∀x[A(x) → B(x)]; "Some A are B" is ∃x[A(x) ∧ B(x)]. Note the ∀ pairs with →, the ∃ pairs with ∧.
 
 ### Top Mistakes That Cost Points
 
-- Marking P → Q false when P is false. A false antecedent makes the conditional **true** — always.
+- Marking P → Q false when P is false. A false antecedent makes the conditional **true**, always.
 - Writing the inverse when asked for the converse (or vice versa). Converse swaps; inverse negates; contrapositive does both.
 - Building 2ⁿ⁻¹ rows instead of 2ⁿ. Three variables means 8 rows, no exceptions.
 - Pushing ¬ inside parentheses without flipping the connective. ¬(P ∧ Q) is ¬P ∨ ¬Q, not ¬P ∧ ¬Q.
@@ -77,11 +77,11 @@ Do not walk into the prelim without these cold:
 $md$, 1);
 
 -- ============================================================
--- SECTION 2 (content, FREE): Free Practice Set — 15 Items
+-- SECTION 2 (content, FREE): Free Practice Set, 15 Items
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b1000001-0001-0002-0001-0000000000e1','content','Free Practice Set — 15 Items with Answer Key',$md$
+('b1000001-0001-0002-0001-0000000000e1','content','Free Practice Set, 15 Items with Answer Key',$md$
 Work through all 15 items before scrolling to the key. Everything here comes straight from Lessons 1–4.
 
 ### Items
@@ -150,7 +150,7 @@ Work through all 15 items before scrolling to the key. Everything here comes str
 
 11. **∃x[A(x) ∧ F(x)].** "Some A are B" always uses ∃ with ∧.
 
-12. **A ∩ B = {3, 9}** — the elements in both sets.
+12. **A ∩ B = {3, 9}**, the elements in both sets.
 
 13. **A − B = {1, 5, 7}** (in A but not in B). **B' = {1, 2, 4, 5, 7, 8}** (everything in U outside B).
 
@@ -162,14 +162,14 @@ The two full 30-item prelim mocks, two full 30-item final mocks, complete explai
 $md$, 2);
 
 -- ============================================================
--- SECTION 3 (activity): Prelim Mock Exam A — 30 Items
+-- SECTION 3 (activity): Prelim Mock Exam A, 30 Items
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b1000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exam A — 30 Items',$md$
+('b1000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exam A, 30 Items',$md$
 Simulate the real thing: one sitting, 60 minutes, no notes. Coverage: Lessons 1–4. The full answer key with explanations is in the "Answer Key with Explanations" section.
 
-### Part I — Multiple Choice (Items 1–10)
+### Part I, Multiple Choice (Items 1–10)
 
 1. Which of the following is a proposition?
    a. "Close the door!"  b. "5 + 9 = 14"  c. "Why is the sky blue?"  d. "x < 10"
@@ -204,7 +204,7 @@ Simulate the real thing: one sitting, 60 minutes, no notes. Coverage: Lessons 1�
 10. Let S(x) = "x is a student," H(x) = "x is hardworking." ∀x[S(x) → H(x)] reads:
     a. "Some students are hardworking"  b. "All students are hardworking"  c. "All hardworking people are students"  d. "No students are hardworking"
 
-### Part II — True or False (Items 11–15)
+### Part II, True or False (Items 11–15)
 
 11. The converse of P → Q is ¬P → ¬Q.
 12. P ∧ Q ≡ Q ∧ P by the Commutative law.
@@ -212,7 +212,7 @@ Simulate the real thing: one sitting, 60 minutes, no notes. Coverage: Lessons 1�
 14. If |A| = 5 and |B| = 3, then |A × B| = 15.
 15. ¬(P ∧ Q) ≡ ¬P ∧ ¬Q.
 
-### Part III — Translation (Items 16–20)
+### Part III, Translation (Items 16–20)
 
 16. Let A = "Aki studies," B = "Bea plays." Symbolize: "Aki studies, but Bea plays."
 17. Let D = "The server is down," S = "We can submit." Symbolize: "If the server is down, then we cannot submit."
@@ -220,7 +220,7 @@ Simulate the real thing: one sitting, 60 minutes, no notes. Coverage: Lessons 1�
 19. Let R = "Rina reviews," L = "Rina relaxes." Write R → ¬L as an English sentence.
 20. Let F(x) = "x is a freshman," T(x) = "x takes Discrete Structures." Symbolize: "All freshmen take Discrete Structures."
 
-### Part IV — Identify the Rule (Items 21–24)
+### Part IV, Identify the Rule (Items 21–24)
 
 Name the rule of inference used in each argument form.
 
@@ -229,12 +229,12 @@ Name the rule of inference used in each argument form.
 23. P ∨ Q, ¬P ∴ Q
 24. P → Q, Q → R ∴ P → R
 
-### Part V — Truth-Table Construction (Items 25–26)
+### Part V, Truth-Table Construction (Items 25–26)
 
 25. Construct the full truth table for (P ∧ Q) → P. Classify it as a tautology, contradiction, or contingency.
 26. Construct the full truth table for ¬P ∨ (Q ∧ P). Classify it, and name one familiar formula it is logically equivalent to.
 
-### Part VI — Set Computations (Items 27–30)
+### Part VI, Set Computations (Items 27–30)
 
 For items 27–29, use U = {1,2,3,4,5,6,7,8}, A = {1,2,3,4}, B = {2,4,6,8}.
 
@@ -245,14 +245,14 @@ For items 27–29, use U = {1,2,3,4,5,6,7,8}, A = {1,2,3,4}, B = {2,4,6,8}.
 $md$, 3);
 
 -- ============================================================
--- SECTION 4 (activity): Prelim Mock Exam B — 30 Items
+-- SECTION 4 (activity): Prelim Mock Exam B, 30 Items
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b1000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exam B — 30 Items',$md$
+('b1000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exam B, 30 Items',$md$
 Same scope as Mock A (Lessons 1–4), all-new items, a notch harder. One sitting, 60 minutes, no notes.
 
-### Part I — Multiple Choice (Items 1–10)
+### Part I, Multiple Choice (Items 1–10)
 
 1. Which of the following is NOT a proposition?
    a. "8 + 7 = 13"  b. "1 is an even number"  c. "x + 2 = 7"  d. "A grizzly is a bear"
@@ -284,7 +284,7 @@ Same scope as Mock A (Lessons 1–4), all-new items, a notch harder. One sitting
 10. Let S(x) = "x is a student," O(x) = "x attends online classes." ∃x[S(x) ∧ ¬O(x)] reads:
     a. "All students attend online classes"  b. "Some students do not attend online classes"  c. "No students attend online classes"  d. "Some non-students attend online classes"
 
-### Part II — True or False (Items 11–15)
+### Part II, True or False (Items 11–15)
 
 11. ((P ∧ Q) → R) ≡ (P → (Q → R)) is the Exportation law.
 12. P ∨ TRUE ≡ P.
@@ -292,7 +292,7 @@ Same scope as Mock A (Lessons 1–4), all-new items, a notch harder. One sitting
 14. |{1, 2, 2, 3, 3, 3}| = 6.
 15. A × B = B × A for all sets A and B.
 
-### Part III — Translation (Items 16–20)
+### Part III, Translation (Items 16–20)
 
 16. Let D = "Mia debugs," T = "Mia tests," S = "The app ships." Symbolize: "If Mia debugs and tests, then the app ships."
 17. Let P = "The printer works," S = "The scanner works." Symbolize: "Neither the printer nor the scanner works."
@@ -300,19 +300,19 @@ Same scope as Mock A (Lessons 1–4), all-new items, a notch harder. One sitting
 19. Let A = "The alarm rang," B = "The backup ran." Write ¬(A ∧ B) as an English sentence.
 20. Let L(x) = "x is a laptop," C(x) = "x is cheap," D(x) = "x is durable." Symbolize: "Some laptops are neither cheap nor durable."
 
-### Part IV — Identify the Rule or Law (Items 21–24)
+### Part IV, Identify the Rule or Law (Items 21–24)
 
 21. (P → Q) ∧ (R → S), P ∨ R ∴ Q ∨ S
 22. P ∴ P ∨ Q
 23. P ∧ Q ∴ P
 24. In a proof, a step moves from ¬(P ∨ Q) to ¬P ∧ ¬Q. Which law justifies it?
 
-### Part V — Truth-Table Construction (Items 25–26)
+### Part V, Truth-Table Construction (Items 25–26)
 
 25. Construct the full truth table for (P → Q) ∧ (Q → P), then compare its final column with the truth table of P ↔ Q. What do you conclude, and which named equivalence law says so?
 26. Construct the full 8-row truth table for (P ∨ Q) → R. Classify it as a tautology, contradiction, or contingency.
 
-### Part VI — Set Computations (Items 27–30)
+### Part VI, Set Computations (Items 27–30)
 
 For items 27–29, use U = {1,2,...,10}, A = {2,4,6,8,10}, B = {1,2,3,4,5}.
 
@@ -323,14 +323,14 @@ For items 27–29, use U = {1,2,...,10}, A = {2,4,6,8,10}, B = {1,2,3,4,5}.
 $md$, 4);
 
 -- ============================================================
--- SECTION 5 (activity): Prelim Mock Exams — Answer Key
+-- SECTION 5 (activity): Prelim Mock Exams, Answer Key
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b1000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exams — Answer Key with Explanations',$md$
+('b1000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exams, Answer Key with Explanations',$md$
 Mark your mocks honestly. Every wrong item points at a specific lesson section to re-read.
 
-## Mock Exam A — Key
+## Mock Exam A, Key
 
 ### Part I
 
@@ -341,7 +341,7 @@ Mark your mocks honestly. Every wrong item points at a specific lesson section t
 5. **c.** 2⁴ = 16 rows.
 6. **b.** Material Implication: P → Q ≡ ¬P ∨ Q.
 7. **c.** Contrapositive negates both parts and swaps them: ¬Q → ¬P.
-8. **c.** One of P, ¬P is always true, so the disjunction is always true — a tautology.
+8. **c.** One of P, ¬P is always true, so the disjunction is always true, a tautology.
 9. **b.** "Some A are B" pairs ∃ with ∧: ∃x[D(x) ∧ F(x)].
 10. **b.** ∀ with → is the "All A are B" pattern.
 
@@ -351,7 +351,7 @@ Mark your mocks honestly. Every wrong item points at a specific lesson section t
 12. **True.** Order does not matter for ∧.
 13. **False.** A contingency's final column has both T and F. All-T is a tautology.
 14. **True.** |A × B| = |A| × |B| = 5 × 3 = 15.
-15. **False.** De Morgan's gives ¬(P ∧ Q) ≡ ¬P ∨ ¬Q — the connective flips.
+15. **False.** De Morgan's gives ¬(P ∧ Q) ≡ ¬P ∨ ¬Q, the connective flips.
 
 ### Part III
 
@@ -399,7 +399,7 @@ Mark your mocks honestly. Every wrong item points at a specific lesson section t
 29. **(A ∪ B)' = {5, 7}.** From item 27, A ∪ B misses only 5 and 7 in U.
 30. |B ∪ V| = 45 + 30 − 12 = **63** like at least one. Neither: 80 − 63 = **17**.
 
-## Mock Exam B — Key
+## Mock Exam B, Key
 
 ### Part I
 
@@ -408,9 +408,9 @@ Mark your mocks honestly. Every wrong item points at a specific lesson section t
 3. **b.** "Only if" introduces the consequent, so the ticket goes after the arrow: R → T.
 4. **c.** The inverse negates both sides without swapping: ¬P → ¬Q.
 5. **c.** A conditional is equivalent to its contrapositive ¬Q → ¬P. (Converse and inverse are not equivalent to it.)
-6. **a.** False antecedent makes any conditional true — even one with a contradiction as its consequent.
+6. **a.** False antecedent makes any conditional true, even one with a contradiction as its consequent.
 7. **b.** Derivation: ¬(P → Q) ≡ ¬(¬P ∨ Q) (Material Implication) ≡ ¬¬P ∧ ¬Q (De Morgan's) ≡ P ∧ ¬Q (Involution).
-8. **b.** True on T,T and F,F — two rows.
+8. **b.** True on T,T and F,F, two rows.
 9. **c.** Denying "all" requires only one counterexample: some program fails to compile. "No programs compile" claims far more than the negation needs.
 10. **b.** There exists a student who does not attend online classes.
 
@@ -468,8 +468,8 @@ Mark your mocks honestly. Every wrong item points at a specific lesson section t
 ### Part VI
 
 27. A' = {1, 3, 5, 7, 9}, so **A' ∩ B = {1, 3, 5}**.
-28. **A − B = {6, 8, 10}** and **B − A = {1, 3, 5}**. Not equal — set difference depends on order.
-29. Left side: A ∩ B = {2, 4}, so (A ∩ B)' = **{1, 3, 5, 6, 7, 8, 9, 10}**. Right side: A' = {1, 3, 5, 7, 9}, B' = {6, 7, 8, 9, 10}, so A' ∪ B' = **{1, 3, 5, 6, 7, 8, 9, 10}**. They match — De Morgan's law confirmed.
+28. **A − B = {6, 8, 10}** and **B − A = {1, 3, 5}**. Not equal, set difference depends on order.
+29. Left side: A ∩ B = {2, 4}, so (A ∩ B)' = **{1, 3, 5, 6, 7, 8, 9, 10}**. Right side: A' = {1, 3, 5, 7, 9}, B' = {6, 7, 8, 9, 10}, so A' ∪ B' = **{1, 3, 5, 6, 7, 8, 9, 10}**. They match, De Morgan's law confirmed.
 30. Inclusion-exclusion for three sets: 60 + 50 + 40 − 20 − 15 − 10 + 5 = **110** take at least one. None: 120 − 110 = **10**.
 $md$, 5);
 
@@ -479,41 +479,41 @@ $md$, 5);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('b1000001-0001-0002-0001-0000000000e1','activity','Common Prelim Traps & How to Avoid Them',$md$
-These are the confusions that quietly kill prelim scores. Each trap comes with a one-minute drill — answer it before reading the solution.
+These are the confusions that quietly kill prelim scores. Each trap comes with a one-minute drill, answer it before reading the solution.
 
-### Trap 1 — Converse vs. Inverse vs. Contrapositive
+### Trap 1, Converse vs. Inverse vs. Contrapositive
 
-Students scramble the three forms because all of them "look like the original." Fix it with the memory hook: **converse swaps, inverse negates, contrapositive does both** — and only the contrapositive is equivalent to the original.
+Students scramble the three forms because all of them "look like the original." Fix it with the memory hook: **converse swaps, inverse negates, contrapositive does both**, and only the contrapositive is equivalent to the original.
 
 **Drill:** For "If n is divisible by 4, then n is even," write the converse, inverse, and contrapositive. Which one is logically equivalent to the original?
 
-**Answer:** Converse: "If n is even, then n is divisible by 4." Inverse: "If n is not divisible by 4, then n is not even." Contrapositive: "If n is not even, then n is not divisible by 4." Only the **contrapositive** is equivalent. (Notice the converse is actually false — 6 is even but not divisible by 4.)
+**Answer:** Converse: "If n is even, then n is divisible by 4." Inverse: "If n is not divisible by 4, then n is not even." Contrapositive: "If n is not even, then n is not divisible by 4." Only the **contrapositive** is equivalent. (Notice the converse is actually false, 6 is even but not divisible by 4.)
 
-### Trap 2 — "False Antecedent" Panic
+### Trap 2, "False Antecedent" Panic
 
-Many students mark P → Q false whenever anything in it is false. Wrong: the conditional has exactly one false row — P true, Q false. When P is false, the conditional is true no matter what Q is.
+Many students mark P → Q false whenever anything in it is false. Wrong: the conditional has exactly one false row, P true, Q false. When P is false, the conditional is true no matter what Q is.
 
 **Drill:** P is false and Q is true. Evaluate P → Q and Q → P.
 
 **Answer:** P → Q is **true** (false antecedent). Q → P is **false** (true antecedent, false consequent). This also shows a conditional and its converse can disagree.
 
-### Trap 3 — Pushing ¬ Inside Without Flipping
+### Trap 3, Pushing ¬ Inside Without Flipping
 
 ¬(P ∧ Q) is not ¬P ∧ ¬Q. De Morgan's law flips the connective: negation of a conjunction is a disjunction of negations, and vice versa.
 
 **Drill:** Negate "The code compiles and the tests pass."
 
-**Answer:** "The code does not compile **or** the tests do not pass." Symbolically: ¬(C ∧ T) ≡ ¬C ∨ ¬T. If you wrote "and," you claimed both fail — much stronger than the actual negation.
+**Answer:** "The code does not compile **or** the tests do not pass." Symbolically: ¬(C ∧ T) ≡ ¬C ∨ ¬T. If you wrote "and," you claimed both fail, much stronger than the actual negation.
 
-### Trap 4 — Negating "All" and "Some" Statements
+### Trap 4, Negating "All" and "Some" Statements
 
 The negation of "All A are B" is not "No A are B." One counterexample is enough to falsify an "all" claim, so the negation is a "some ... not" statement. Likewise, negating "Some A are B" gives "All A are not B."
 
 **Drill:** Negate (a) "All modules are graded" and (b) "Some students commute."
 
-**Answer:** (a) "**Some module is not graded**" — ∃x ¬G(x) territory, not "no modules are graded." (b) "**No student commutes**," i.e., every student does not commute.
+**Answer:** (a) "**Some module is not graded**", ∃x ¬G(x) territory, not "no modules are graded." (b) "**No student commutes**," i.e., every student does not commute.
 
-### Trap 5 — "Only If" Points the Wrong Way
+### Trap 5, "Only If" Points the Wrong Way
 
 "P only if Q" tempts you to write Q → P. It is the opposite: **"only if" introduces the consequent**, so "P only if Q" is P → Q. Related hook: a **sufficient** condition sits before the arrow; a **necessary** condition sits after it.
 
@@ -521,29 +521,29 @@ The negation of "All A are B" is not "No A are B." One counterexample is enough 
 
 **Answer:** **C → F**, and the antecedent is C. Finishing is the necessary condition, so it lands in the consequent.
 
-### Trap 6 — Treating A − B Like It Commutes
+### Trap 6, Treating A − B Like It Commutes
 
 Set difference is directional: A − B keeps what is in A and throws out anything that is also in B. Swapping the order changes the answer almost every time.
 
 **Drill:** A = {1, 2, 3, 4}, B = {3, 4, 5}. Find A − B and B − A.
 
-**Answer:** A − B = **{1, 2}**; B − A = **{5}**. Different sets — never assume symmetry.
+**Answer:** A − B = **{1, 2}**; B − A = **{5}**. Different sets, never assume symmetry.
 
-### Trap 7 — Cardinality Miscounts
+### Trap 7, Cardinality Miscounts
 
 Two classic slips: counting duplicates (sets hold distinct elements), and adding instead of multiplying for Cartesian products.
 
 **Drill:** (a) Find |{a, a, b, c, c, c}|. (b) If |A| = 3 and |B| = 2, find |A × B|.
 
-**Answer:** (a) The set is {a, b, c}, so cardinality is **3**. (b) |A × B| = 3 × 2 = **6** ordered pairs — multiply, never add.
+**Answer:** (a) The set is {a, b, c}, so cardinality is **3**. (b) |A × B| = 3 × 2 = **6** ordered pairs, multiply, never add.
 
-### Trap 8 — Forgetting the Overlap in Inclusion-Exclusion
+### Trap 8, Forgetting the Overlap in Inclusion-Exclusion
 
 Adding |A| + |B| double-counts everyone in both sets. Always subtract |A ∩ B| once; for "how many in neither," subtract the union from the total.
 
 **Drill:** In a block of 40 students, 25 like math quizzes, 22 like coding drills, and 12 like both. How many like at least one? How many like neither?
 
-**Answer:** |A ∪ B| = 25 + 22 − 12 = **35** like at least one; 40 − 35 = **5** like neither. If you got 47, you forgot the subtraction — and 47 students in a block of 40 should have set off alarms.
+**Answer:** |A ∪ B| = 25 + 22 − 12 = **35** like at least one; 40 − 35 = **5** like neither. If you got 47, you forgot the subtraction, and 47 students in a block of 40 should have set off alarms.
 $md$, 6);
 
 -- ============================================================
@@ -574,19 +574,19 @@ The final is cumulative over all nine lessons, but the weight sits on the second
 - "All A are B": ∀x[A(x) → B(x)]. "Some A are B": ∃x[A(x) ∧ B(x)].
 - |A ∪ B| = |A| + |B| − |A ∩ B|; |A × B| = |A| × |B|.
 
-#### Lesson 5 — Relation Property Tests
+#### Lesson 5, Relation Property Tests
 
 | Property | Test |
 |---|---|
-| Reflexive | Every (a, a) is in R — self-loop at every vertex of the digraph |
+| Reflexive | Every (a, a) is in R, self-loop at every vertex of the digraph |
 | Symmetric | (a, b) in R forces (b, a) in R |
 | Antisymmetric | (a, b) and (b, a) both in R forces a = b |
 | Transitive | (a, b) and (b, c) in R forces (a, c) in R |
 | Partial order | Reflexive + antisymmetric + transitive (the set is then a poset) |
 
-Functions: (f ∘ g)(x) = f(g(x)) — apply g first. In general f ∘ g ≠ g ∘ f. Pigeonhole: n + 1 objects into n containers means some container holds at least two.
+Functions: (f ∘ g)(x) = f(g(x)), apply g first. In general f ∘ g ≠ g ∘ f. Pigeonhole: n + 1 objects into n containers means some container holds at least two.
 
-#### Lesson 6 — Counting Formulas
+#### Lesson 6, Counting Formulas
 
 | Situation | Formula |
 |---|---|
@@ -599,7 +599,7 @@ Functions: (f ∘ g)(x) = f(g(x)) — apply g first. In general f ∘ g ≠ g �
 
 Decision hook: order matters → permutation; order irrelevant → combination.
 
-#### Lesson 7 — Sequences and Series
+#### Lesson 7, Sequences and Series
 
 | Item | Formula |
 |---|---|
@@ -610,7 +610,7 @@ Decision hook: order matters → permutation; order irrelevant → combination.
 | Standard sums | ∑ 1 (i = 1 to n) = n; ∑ i (i = 1 to n) = n(n + 1)/2 |
 | Fibonacci | xₙ = xₙ₋₁ + xₙ₋₂, starting 0, 1, 1, 2, 3, 5, 8, ... |
 
-#### Lesson 8 — Induction Template
+#### Lesson 8, Induction Template
 
 Write this skeleton for every induction item:
 
@@ -619,9 +619,9 @@ Write this skeleton for every induction item:
 3. **Inductive Step:** start from the P(k + 1) statement, substitute the hypothesis, and simplify algebraically until the target form appears.
 4. **Conclusion:** "By mathematical induction, P(n) holds for all n ≥ 1."
 
-Graders award the "assume P(k)" line and the substitution line — never skip writing them.
+Graders award the "assume P(k)" line and the substitution line, never skip writing them.
 
-#### Lesson 9 — Graph Facts
+#### Lesson 9, Graph Facts
 
 - Handshaking theorem: sum of all deg(v) = 2m, where m = number of edges.
 - Corollary: the number of odd-degree vertices is always even.
@@ -635,14 +635,14 @@ Weight your review like the exam: two sessions on counting (Lesson 6), one full 
 $md$, 7);
 
 -- ============================================================
--- SECTION 8 (activity): Final Mock Exam A — 30 Items
+-- SECTION 8 (activity): Final Mock Exam A, 30 Items
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b1000001-0001-0002-0001-0000000000e1','activity','Final Mock Exam A — 30 Items',$md$
-Cumulative, weighted to Lessons 5–9. One sitting, 90 minutes, no notes. Show full working on computation and proof items — that is where partial credit lives.
+('b1000001-0001-0002-0001-0000000000e1','activity','Final Mock Exam A, 30 Items',$md$
+Cumulative, weighted to Lessons 5–9. One sitting, 90 minutes, no notes. Show full working on computation and proof items, that is where partial credit lives.
 
-### Part I — Multiple Choice (Items 1–10)
+### Part I, Multiple Choice (Items 1–10)
 
 1. The contrapositive of "If n is even, then n² is even" is:
    a. "If n² is even, then n is even"  b. "If n is not even, then n² is not even"  c. "If n² is not even, then n is not even"  d. "n is even and n² is not even"
@@ -674,7 +674,7 @@ Cumulative, weighted to Lessons 5–9. One sitting, 90 minutes, no notes. Show f
 10. A tree with 25 vertices has how many edges?
     a. 25  b. 26  c. 24  d. 50
 
-### Part II — True or False (Items 11–15)
+### Part II, True or False (Items 11–15)
 
 11. Every partial order is reflexive, antisymmetric, and transitive.
 12. C(n, r) counts ordered selections of r items from n.
@@ -682,7 +682,7 @@ Cumulative, weighted to Lessons 5–9. One sitting, 90 minutes, no notes. Show f
 14. Verifying P(1), P(2), and P(3) is enough to prove that P(n) holds for every natural number n.
 15. A graph can have exactly three vertices of odd degree.
 
-### Part III — Computation (Items 16–24)
+### Part III, Computation (Items 16–24)
 
 16. Let f(x) = 2x² − 3x + 1. Find f(−2).
 17. Let f(x) = 3x − 2 and g(x) = x². Find (f ∘ g)(2) and (g ∘ f)(2).
@@ -694,13 +694,13 @@ Cumulative, weighted to Lessons 5–9. One sitting, 90 minutes, no notes. Show f
 23. Find the sum of the arithmetic series 5 + 8 + 11 + ... + 62. (First find how many terms it has.)
 24. A geometric progression has a = 3 and r = 2. Find its 8th term.
 
-### Part IV — Graphs (Items 25–27)
+### Part IV, Graphs (Items 25–27)
 
 25. A graph has 12 vertices, each of degree 5. How many edges does it have? Name the theorem you used.
 26. What special structural property does the adjacency matrix of an undirected graph always have?
 27. In a directed graph, a vertex has in-degree 3 and out-degree 2. What is its total degree?
 
-### Part V — Proofs (Items 28–30)
+### Part V, Proofs (Items 28–30)
 
 28. **Guided induction.** Prove that 1 + 2 + 3 + ... + n = n(n + 1)/2 for all natural numbers n, by completing each step:
     a. State and verify the Basis Step.
@@ -717,14 +717,14 @@ Cumulative, weighted to Lessons 5–9. One sitting, 90 minutes, no notes. Show f
 $md$, 8);
 
 -- ============================================================
--- SECTION 9 (activity): Final Mock Exam B — 30 Items
+-- SECTION 9 (activity): Final Mock Exam B, 30 Items
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b1000001-0001-0002-0001-0000000000e1','activity','Final Mock Exam B — 30 Items',$md$
+('b1000001-0001-0002-0001-0000000000e1','activity','Final Mock Exam B, 30 Items',$md$
 All-new items, same cumulative scope weighted to Lessons 5–9. One sitting, 90 minutes, no notes.
 
-### Part I — Multiple Choice (Items 1–10)
+### Part I, Multiple Choice (Items 1–10)
 
 1. ¬(P ∨ Q) is logically equivalent to:
    a. ¬P ∨ ¬Q  b. ¬P ∧ ¬Q  c. P ∧ Q  d. ¬P → ¬Q
@@ -756,7 +756,7 @@ All-new items, same cumulative scope weighted to Lessons 5–9. One sitting, 90 
 10. What distinguishes a multigraph from a simple graph?
     a. Directed edges  b. Weighted edges  c. Multiple edges allowed between the same pair of vertices  d. Disconnected components
 
-### Part II — True or False (Items 11–15)
+### Part II, True or False (Items 11–15)
 
 11. (A ∪ B)' = A' ∩ B' for all sets A and B in a universal set U.
 12. f ∘ g = g ∘ f for all functions f and g.
@@ -764,9 +764,9 @@ All-new items, same cumulative scope weighted to Lessons 5–9. One sitting, 90 
 14. ∑ 1 for i = 1 to n equals n.
 15. A loop contributes 1 to the degree of its vertex.
 
-### Part III — Computation (Items 16–24)
+### Part III, Computation (Items 16–24)
 
-16. R = {(1,1), (2,2), (3,3), (1,3), (3,1)} on {1, 2, 3}. Determine whether R is reflexive, symmetric, antisymmetric, and transitive — check all four, with reasons.
+16. R = {(1,1), (2,2), (3,3), (1,3), (3,1)} on {1, 2, 3}. Determine whether R is reflexive, symmetric, antisymmetric, and transitive, check all four, with reasons.
 17. Let g(x) = (x + 3)/(x − 2). Find g(5), and explain why g(2) is undefined.
 18. Let f(x) = x + 4 and g(x) = 2x − 1. Find (f ∘ g)(x) and (g ∘ f)(x).
 19. How many people must be in a room to guarantee that at least two share a birth month? Name the principle.
@@ -776,13 +776,13 @@ All-new items, same cumulative scope weighted to Lessons 5–9. One sitting, 90 
 23. Evaluate: ∑ (4j − 3) for j = 2 to 5.
 24. A geometric progression has a = 2 and r = 3. Find the sum of its first 6 terms.
 
-### Part IV — Graphs (Items 25–27)
+### Part IV, Graphs (Items 25–27)
 
 25. A graph has 21 edges. What is the sum of the degrees of all its vertices?
 26. A tree has 500 edges. How many vertices does it have?
 27. A graph has five vertices with degrees 3, 3, 2, 2, 2. How many edges does it have, and why is this degree list consistent with the handshaking corollary?
 
-### Part V — Proofs (Items 28–30)
+### Part V, Proofs (Items 28–30)
 
 28. Prove by mathematical induction: 1 + 3 + 5 + ... + (2n − 1) = n² for all natural numbers n.
 29. Prove by mathematical induction: 4ⁿ − 1 is divisible by 3 for all natural numbers n.
@@ -790,21 +790,21 @@ All-new items, same cumulative scope weighted to Lessons 5–9. One sitting, 90 
 $md$, 9);
 
 -- ============================================================
--- SECTION 10 (activity): Final Mock Exams — Answer Key
+-- SECTION 10 (activity): Final Mock Exams, Answer Key
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b1000001-0001-0002-0001-0000000000e1','activity','Final Mock Exams — Answer Key with Explanations',$md$
+('b1000001-0001-0002-0001-0000000000e1','activity','Final Mock Exams, Answer Key with Explanations',$md$
 Full working for every item. If a computation item cost you points, redo it from scratch before reading the solution a second time.
 
-## Final Mock A — Key
+## Final Mock A, Key
 
 ### Part I
 
 1. **c.** Contrapositive: negate both parts and swap. "If n² is not even, then n is not even."
 2. **b.** Modus Tollens: denying the consequent denies the antecedent.
-3. **c.** Inclusion-exclusion — the subtraction removes the double-counted overlap.
-4. **b.** (1, 2) is in R but (2, 1) is not, so symmetry fails. Reflexive holds (all three self-pairs present); antisymmetric holds (no two-way pair between distinct elements); transitive holds — the only nontrivial chains, such as (1, 1)(1, 2) and (1, 2)(2, 2), give (1, 2), which is in R.
+3. **c.** Inclusion-exclusion, the subtraction removes the double-counted overlap.
+4. **b.** (1, 2) is in R but (2, 1) is not, so symmetry fails. Reflexive holds (all three self-pairs present); antisymmetric holds (no two-way pair between distinct elements); transitive holds, the only nontrivial chains, such as (1, 1)(1, 2) and (1, 2)(2, 2), give (1, 2), which is in R.
 5. **c.** Apply g first, then f: f(g(x)).
 6. **b.** P(6, 2) = 6!/4! = 6 × 5 = 30.
 7. **a.** C(6, 2) = 30/2! = 15.
@@ -817,13 +817,13 @@ Full working for every item. If a computation item cost you points, redo it from
 11. **True.** That triple of properties is the definition of a partial order.
 12. **False.** Combinations ignore order; P(n, r) counts ordered selections.
 13. **True.** Each term is the sum of the two before it.
-14. **False.** Finitely many checks show a pattern but prove nothing about all n — that is exactly why the Inductive Step exists.
+14. **False.** Finitely many checks show a pattern but prove nothing about all n, that is exactly why the Inductive Step exists.
 15. **False.** The handshaking corollary: the count of odd-degree vertices is always even, so exactly three is impossible.
 
 ### Part III
 
 16. f(−2) = 2(−2)² − 3(−2) + 1 = 2(4) + 6 + 1 = **15**.
-17. (f ∘ g)(2) = f(g(2)) = f(4) = 3(4) − 2 = **10**. (g ∘ f)(2) = g(f(2)) = g(4) = 4² = **16**. Different answers — composition order matters.
+17. (f ∘ g)(2) = f(g(2)) = f(4) = 3(4) − 2 = **10**. (g ∘ f)(2) = g(f(2)) = g(4) = 4² = **16**. Different answers, composition order matters.
 18. **3 pulls.** With 2 colors (containers), 3 socks force two of the same color. This is the **pigeonhole principle**.
 19. Product rule with repetition: 10⁴ = **10,000** PINs.
 20. Ordered arrangement without repetition: P(9, 5) = 9 × 8 × 7 × 6 × 5 = **15,120**.
@@ -835,7 +835,7 @@ Full working for every item. If a computation item cost you points, redo it from
 ### Part IV
 
 25. Handshaking theorem: sum of degrees = 12 × 5 = 60 = 2m, so m = **30 edges**.
-26. It is **symmetric** — entry (i, j) equals entry (j, i), because an undirected edge runs both ways.
+26. It is **symmetric**, entry (i, j) equals entry (j, i), because an undirected edge runs both ways.
 27. Total degree = in-degree + out-degree = 3 + 2 = **5**.
 
 ### Part V
@@ -849,10 +849,10 @@ Full working for every item. If a computation item cost you points, redo it from
        = (k + 1)(k/2 + 1)
        = (k + 1)(k + 2)/2,
        which is exactly the formula with n = k + 1. By mathematical induction, the formula holds for all natural numbers n.
-29. **Line 2** is the inductive hypothesis. Line 1 is the **Basis Step** and Line 3 is the **Inductive Step** — together they form a proof by mathematical induction.
+29. **Line 2** is the inductive hypothesis. Line 1 is the **Basis Step** and Line 3 is the **Inductive Step**, together they form a proof by mathematical induction.
 30. **Direct proof.** Let m and n be even, so m = 2a and n = 2b for integers a, b. Then m + n = 2a + 2b = 2(a + b). Since a + b is an integer, m + n is twice an integer, hence even.
 
-## Final Mock B — Key
+## Final Mock B, Key
 
 ### Part I
 
@@ -870,19 +870,19 @@ Full working for every item. If a computation item cost you points, redo it from
 ### Part II
 
 11. **True.** De Morgan's law for sets.
-12. **False.** Composition is generally not commutative — Lesson 5's own example: g(x) = 2x, f(x) = x + 1 gives g ∘ f(1) = 4 but f ∘ g(1) = 3.
+12. **False.** Composition is generally not commutative, Lesson 5's own example: g(x) = 2x, f(x) = x + 1 gives g ∘ f(1) = 4 but f ∘ g(1) = 3.
 13. **True.** Each of the r positions has n independent choices.
 14. **True.** Adding 1 to itself n times gives n.
 15. **False.** A loop contributes **2** to its vertex's degree.
 
 ### Part III
 
-16. **Reflexive: yes** — (1,1), (2,2), (3,3) are all present. **Symmetric: yes** — (1,3) and (3,1) are both present; every other pair is a self-pair. **Antisymmetric: no** — (1,3) and (3,1) are both in R but 1 does not equal 3. **Transitive: yes** — check the chains: (1,3)(3,1) gives (1,1) which is in R; (3,1)(1,3) gives (3,3) which is in R; (1,3)(3,3) gives (1,3); (3,1)(1,1) gives (3,1); chains through self-pairs give back the original pairs. All required pairs are present.
+16. **Reflexive: yes**, (1,1), (2,2), (3,3) are all present. **Symmetric: yes**, (1,3) and (3,1) are both present; every other pair is a self-pair. **Antisymmetric: no**, (1,3) and (3,1) are both in R but 1 does not equal 3. **Transitive: yes**, check the chains: (1,3)(3,1) gives (1,1) which is in R; (3,1)(1,3) gives (3,3) which is in R; (1,3)(3,3) gives (1,3); (3,1)(1,1) gives (3,1); chains through self-pairs give back the original pairs. All required pairs are present.
 17. g(5) = (5 + 3)/(5 − 2) = **8/3**. g(2) is **undefined** because the denominator x − 2 becomes 0, and division by zero is not allowed.
 18. (f ∘ g)(x) = f(2x − 1) = (2x − 1) + 4 = **2x + 3**. (g ∘ f)(x) = g(x + 4) = 2(x + 4) − 1 = **2x + 7**.
 19. **13 people.** Twelve months are the containers; 12 + 1 = 13 people force two into the same month. This is the **pigeonhole principle**.
 20. Product rule: 26 × 26 × 26 × 10 × 10 = 17,576 × 100 = **1,757,600** plates.
-21. (a) One leader from either group is an either/or choice — sum rule: 7 + 6 = **13** ways. (b) Sequential choices — product rule: 7 × 6 = **42** pairs.
+21. (a) One leader from either group is an either/or choice, sum rule: 7 + 6 = **13** ways. (b) Sequential choices, product rule: 7 × 6 = **42** pairs.
 22. Combination with repetition: C(n + r − 1, r) = C(5 + 3 − 1, 3) = C(7, 3) = (7 × 6 × 5)/6 = **35**.
 23. Terms: j = 2 gives 5; j = 3 gives 9; j = 4 gives 13; j = 5 gives 17. Sum = 5 + 9 + 13 + 17 = **44**.
 24. S = a(rⁿ − 1)/(r − 1) = 2(3⁶ − 1)/(3 − 1) = 2 × 728/2 = **728**. (Check: 2 + 6 + 18 + 54 + 162 + 486 = 728.)
@@ -891,7 +891,7 @@ Full working for every item. If a computation item cost you points, redo it from
 
 25. Handshaking theorem: sum of degrees = 2m = 2 × 21 = **42**.
 26. A tree with n vertices has n − 1 edges, so n = 500 + 1 = **501 vertices**.
-27. Sum of degrees = 3 + 3 + 2 + 2 + 2 = 12 = 2m, so m = **6 edges**. The list has exactly two odd-degree vertices (the two 3s), and two is an even count — consistent with the corollary that odd-degree vertices always come in even numbers.
+27. Sum of degrees = 3 + 3 + 2 + 2 + 2 = 12 = 2m, so m = **6 edges**. The list has exactly two odd-degree vertices (the two 3s), and two is an even count, consistent with the corollary that odd-degree vertices always come in even numbers.
 
 ### Part V
 
@@ -912,5 +912,5 @@ Full working for every item. If a computation item cost you points, redo it from
     Since 4t + 1 is an integer, 4ᵏ⁺¹ − 1 is divisible by 3. By mathematical induction, 4ⁿ − 1 is divisible by 3 for all natural numbers n.
 30. **Proof by contrapositive.** The contrapositive of "if n² is even, then n is even" is "if n is not even (odd), then n² is odd." Let n be odd, so n = 2a + 1 for some integer a. Then
     n² = (2a + 1)² = 4a² + 4a + 1 = 2(2a² + 2a) + 1,
-    which is twice an integer plus one — odd. The contrapositive is proved, so the original statement holds.
+    which is twice an integer plus one, odd. The contrapositive is proved, so the original statement holds.
 $md$, 10);

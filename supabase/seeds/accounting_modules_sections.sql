@@ -1,5 +1,5 @@
 -- ============================================================
--- Financial Accounting Principles — Modules & Sections
+-- Financial Accounting Principles, Modules & Sections
 -- Subject ID: 10000000-0001-0001-0002-000000000002
 -- Run after migration 002 and 1st_year_subjects.sql
 -- ============================================================
@@ -299,11 +299,11 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a2000002-0001-0001-0002-000000000006','content','The 4 Steps of the Closing Process',$md$
 Closing entries reset temporary nominal accounts (Revenues, Expenses, Drawings) to a zero balance at the end of the year, preventing past operational data from bleeding into the next financial cycle.
 
-**Step 1 — Clear Revenue Accounts:** Debit all individual revenue accounts to clear their credit balances, and credit the total sum into the Income Summary clearing account.
+**Step 1, Clear Revenue Accounts:** Debit all individual revenue accounts to clear their credit balances, and credit the total sum into the Income Summary clearing account.
 
-**Step 2 — Clear Expense Accounts:** Credit all individual expense accounts to clear their debit balances, and debit the total sum into the Income Summary account.
+**Step 2, Clear Expense Accounts:** Credit all individual expense accounts to clear their debit balances, and debit the total sum into the Income Summary account.
 
-**Step 3 — Clear Income Summary to Capital:**
+**Step 3, Clear Income Summary to Capital:**
 
 If the business generated a Net Income (Income Summary holds a net credit balance), clear it out via:
 
@@ -313,7 +313,7 @@ If the business incurred a Net Loss (Income Summary holds a net debit balance), 
 
 $$\text{Debit: Owner's Capital Account} \\ \text{Credit: Income Summary}$$
 
-**Step 4 — Clear Drawing Account:** Transfer the personal drawing balance directly into capital:
+**Step 4, Clear Drawing Account:** Transfer the personal drawing balance directly into capital:
 
 $$\text{Debit: Owner's Capital Account} \\ \text{Credit: Owner's Drawing Account}$$
 $md$, 1),

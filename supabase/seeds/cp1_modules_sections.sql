@@ -1,5 +1,5 @@
 -- ============================================================
--- Computer Programming 1 — Modules & Sections
+-- Computer Programming 1, Modules & Sections
 -- Subject ID: 10000000-0001-0001-0001-000000000001
 -- Run after migration 002 and 1st_year_subjects.sql
 -- ============================================================
@@ -25,26 +25,26 @@ A computer is an electronic device that accepts data from the user, processes it
 
 ### Hardware and Software
 
-**Hardware** refers to the physical, mechanical parts of a computer — the devices you can touch. This includes the CPU, keyboard, mouse, hard drive, and other components.
+**Hardware** refers to the physical, mechanical parts of a computer, the devices you can touch. This includes the CPU, keyboard, mouse, hard drive, and other components.
 
 **Software** is the set of instructions that drives the computer to perform tasks. Software falls into two categories:
-- **System software** — operates directly on the hardware (e.g., Windows, Linux, Unix).
-- **Application software** — designed to help users perform specific tasks (e.g., word processors, spreadsheets).
+- **System software**, operates directly on the hardware (e.g., Windows, Linux, Unix).
+- **Application software**, designed to help users perform specific tasks (e.g., word processors, spreadsheets).
 
 ### Programs and Programming
 
 A **program** is the ordered set of instructions a computer follows to process data into information. Writing that set of instructions is called **programming**.
 
 **The five-step programming process:**
-1. **Define the problem** — understand what needs to be solved. Specify objectives, identify users, define inputs and outputs, and assess feasibility.
-2. **Design the solution** — plan the logic using tools like hierarchy charts, flowcharts, or pseudocode.
-3. **Code the program** — translate the design into a specific programming language.
-4. **Test the program** — desk check, debug, and run with real data to confirm correctness.
-5. **Document the program** — write user, operator, and programmer documentation.
+1. **Define the problem**, understand what needs to be solved. Specify objectives, identify users, define inputs and outputs, and assess feasibility.
+2. **Design the solution**, plan the logic using tools like hierarchy charts, flowcharts, or pseudocode.
+3. **Code the program**, translate the design into a specific programming language.
+4. **Test the program**, desk check, debug, and run with real data to confirm correctness.
+5. **Document the program**, write user, operator, and programmer documentation.
 
 **Types of errors:**
-- **Syntax errors** — incorrect formatting, caught during compilation.
-- **Logic errors** — code runs but produces wrong results due to faulty reasoning.
+- **Syntax errors**, incorrect formatting, caught during compilation.
+- **Logic errors**, code runs but produces wrong results due to faulty reasoning.
 $md$, 1),
 
 ('a1000001-0001-0001-0001-000000000001','content','Program Logic Formulation',$md$
@@ -59,18 +59,18 @@ A flowchart is a visual representation of a solution using standardized shapes c
 | Oval | Terminal | Marks start or stop |
 | Parallelogram | Input/Output | User input or output of results |
 | Rectangle | Process | Computation or data manipulation |
-| Diamond | Decision | Condition — TRUE or FALSE paths |
+| Diamond | Decision | Condition, TRUE or FALSE paths |
 | Arrow | Flow Line | Direction of execution |
 | Circle | Connector | Connects parts across pages |
 
 **Three fundamental control structures:**
 
-**1. Sequential** — steps execute one after another in order.
+**1. Sequential**, steps execute one after another in order.
 ```
 START → Initialize → INPUT → PROCESS → OUTPUT → STOP
 ```
 
-**2. Selection** — a decision point where one of two paths is taken.
+**2. Selection**, a decision point where one of two paths is taken.
 ```
 START → INPUT A
   IF A < 0 → OUTPUT "NEGATIVE"
@@ -79,7 +79,7 @@ START → INPUT A
 STOP
 ```
 
-**3. Repetition** — steps are repeated until a condition is met.
+**3. Repetition**, steps are repeated until a condition is met.
 ```
 START → N=0
   LOOP while N < 10:
@@ -88,7 +88,7 @@ START → N=0
 STOP
 ```
 
-These three structures — sequence, selection, repetition — are sufficient to construct any program logic.
+These three structures, sequence, selection, repetition, are sufficient to construct any program logic.
 $md$, 2),
 
 ('a1000001-0001-0001-0001-000000000001','content','Algorithms (Pseudocode)',$md$
@@ -101,7 +101,7 @@ An **algorithm** is a step-by-step description of a solution written in structur
 - Output: `OUTPUT`, `PRINT`, or `DISPLAY`
 - Indentation shows grouping of related steps
 
-**Sequential example — sum of two numbers:**
+**Sequential example, sum of two numbers:**
 ```
 ALGORITHM sum
   A → 0, B → 0, SUM → 0
@@ -111,7 +111,7 @@ ALGORITHM sum
 END sum
 ```
 
-**Sequential example — product of three numbers:**
+**Sequential example, product of three numbers:**
 ```
 ALGORITHM product
   A → 0, B → 0, C → 0, PRODUCT → 0
@@ -121,7 +121,7 @@ ALGORITHM product
 END product
 ```
 
-**Selection example — positive or negative number:**
+**Selection example, positive or negative number:**
 ```
 ALGORITHM pos_neg
   N → 0
@@ -138,7 +138,7 @@ END pos_neg
 ```
 $md$, 3),
 
-('a1000001-0001-0001-0001-000000000001','activity','Practice Exercises — Lesson 1',$md$
+('a1000001-0001-0001-0001-000000000001','activity','Practice Exercises, Lesson 1',$md$
 **Review questions (write answers in your own words):**
 1. Differentiate hardware and software.
 2. Differentiate program and programming.
@@ -146,7 +146,7 @@ $md$, 3),
 4. What are the five steps of programming?
 5. What is the difference between a syntax error and a logic error?
 
-**Algorithm exercises — write a flowchart AND pseudocode for each:**
+**Algorithm exercises, write a flowchart AND pseudocode for each:**
 
 1. The volume of a rectangular box is V = length × width × height. Design an algorithm that takes the three dimensions and displays the volume.
 
@@ -160,16 +160,16 @@ $md$, 3),
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a1000001-0001-0001-0001-000000000001','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 1',$md$
-**Answer Key — Review Questions**
+('a1000001-0001-0001-0001-000000000001','activity','Worked Exam Solutions + How-to-Pass Tips, Lesson 1',$md$
+**Answer Key, Review Questions**
 
 1. **Hardware vs. software:** Hardware is the physical, touchable part of the computer (CPU, keyboard, monitor); software is the set of instructions that tells the hardware what to do. One sentence to memorize: *hardware is the body, software is the mind.*
-2. **Program vs. programming:** A program is the *product* — the ordered set of instructions the computer follows. Programming is the *process* — writing, testing, and refining those instructions.
+2. **Program vs. programming:** A program is the *product*, the ordered set of instructions the computer follows. Programming is the *process*, writing, testing, and refining those instructions.
 3. **Components of hardware:** input devices (keyboard, mouse), the CPU (control unit + arithmetic/logic unit), memory and storage (RAM, hard drive), and output devices (monitor, printer).
-4. **Five steps of programming:** (1) define the problem, (2) design the solution, (3) code the program, (4) test the program, (5) document the program. Exams love asking these *in order* — memorize the sequence, not just the list.
+4. **Five steps of programming:** (1) define the problem, (2) design the solution, (3) code the program, (4) test the program, (5) document the program. Exams love asking these *in order*, memorize the sequence, not just the list.
 5. **Syntax vs. logic error:** a syntax error breaks the language rules and is caught by the compiler before the program runs; a logic error compiles and runs but produces wrong results (e.g., using `+` where you meant `*`). Compiler catches syntax; only testing catches logic.
 
-**Answer Key — Algorithm Exercises (pseudocode)**
+**Answer Key, Algorithm Exercises (pseudocode)**
 
 1. *Volume of a box:*
 ```
@@ -212,7 +212,7 @@ END candy_cost
 
 *Problem:* (Exercise 5) A 100-pound Earth person weighs 38 pounds on Mars and 264 pounds on Jupiter. Design the algorithm.
 
-*Solution:* Step 1: Find the conversion factors — Mars: 38/100 = 0.38, Jupiter: 264/100 = 2.64. Stating this derivation is what separates a full-credit answer from a lucky guess. Step 2: Identify input (Earth weight E) and outputs (Mars weight M, Jupiter weight J). Step 3: Write the pseudocode:
+*Solution:* Step 1: Find the conversion factors, Mars: 38/100 = 0.38, Jupiter: 264/100 = 2.64. Stating this derivation is what separates a full-credit answer from a lucky guess. Step 2: Identify input (Earth weight E) and outputs (Mars weight M, Jupiter weight J). Step 3: Write the pseudocode:
 ```
 ALGORITHM planet_weight
   INPUT E
@@ -221,19 +221,19 @@ ALGORITHM planet_weight
   OUTPUT M, J
 END planet_weight
 ```
-Step 4: For the flowchart, draw: oval START → parallelogram INPUT E → rectangle M = E * 0.38 → rectangle J = E * 2.64 → parallelogram OUTPUT M, J → oval STOP. Step 5: Desk-check with the given data: E = 100 → M = 38, J = 264 ✓ — always desk-check with the numbers the problem itself gives you.
+Step 4: For the flowchart, draw: oval START → parallelogram INPUT E → rectangle M = E * 0.38 → rectangle J = E * 2.64 → parallelogram OUTPUT M, J → oval STOP. Step 5: Desk-check with the given data: E = 100 → M = 38, J = 264 ✓, always desk-check with the numbers the problem itself gives you.
 
 **How to Pass Tips**
 
-- Flowchart symbol questions are free points: oval = start/stop, parallelogram = input/output, rectangle = process, diamond = decision. Draw them correctly — wrong shapes lose marks even when the logic is right.
+- Flowchart symbol questions are free points: oval = start/stop, parallelogram = input/output, rectangle = process, diamond = decision. Draw them correctly, wrong shapes lose marks even when the logic is right.
 - Every algorithm needs INPUT, PROCESS, and OUTPUT. If your pseudocode is missing one of the three, you dropped a step.
 - Desk-check every answer with easy numbers before moving on; it takes 30 seconds and catches most logic slips.
-- When a problem states a sample ("100 pounds → 38 pounds"), the conversion factor is hiding in that sentence — divide to find it.
+- When a problem states a sample ("100 pounds → 38 pounds"), the conversion factor is hiding in that sentence, divide to find it.
 $md$, 5);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('a1000001-0001-0001-0001-000000000001','activity','Code Lab — Lesson 1: Run It Yourself',$md$
-**Coding Drill:** This is Exercise 1 (volume of a box) translated from pseudocode into a real C program. Complete the TODO line, then press Run — you are compiling actual C in your browser, no installation needed.
+('a1000001-0001-0001-0001-000000000001','activity','Code Lab, Lesson 1: Run It Yourself',$md$
+**Coding Drill:** This is Exercise 1 (volume of a box) translated from pseudocode into a real C program. Complete the TODO line, then press Run, you are compiling actual C in your browser, no installation needed.
 
 Expected output:
 ```
@@ -261,20 +261,20 @@ C is a general-purpose, structured programming language known for efficiency and
 
 ### Brief History
 
-- **BCPL** — developed by Martin Richards in 1967; influenced B.
-- **B** — created by Ken Thompson in 1970 for early UNIX on the DEC PDP-7; typeless (no data types).
-- **C** — designed by Dennis Ritchie in 1972 at AT&T Bell Laboratories; expanded B by adding data types.
-- **Turbo C** — developed by Borland International in 1987 for MS-DOS.
+- **BCPL**, developed by Martin Richards in 1967; influenced B.
+- **B**, created by Ken Thompson in 1970 for early UNIX on the DEC PDP-7; typeless (no data types).
+- **C**, designed by Dennis Ritchie in 1972 at AT&T Bell Laboratories; expanded B by adding data types.
+- **Turbo C**, developed by Borland International in 1987 for MS-DOS.
 
 ### Key Definitions
 
-- **Interpreter** — reads and executes source code one line at a time.
-- **Compiler** — reads the entire program and converts it to object code.
-- **Compile time** — when compilation happens; syntax errors are caught here.
-- **Object code** — machine-language translation of source code; also called binary or machine code.
-- **Source code** — the human-readable text of a program.
-- **Run time** — when the compiled program executes; run-time (semantic) errors appear here.
-- **Library** — a collection of pre-written functions available for use in programs.
+- **Interpreter**, reads and executes source code one line at a time.
+- **Compiler**, reads the entire program and converts it to object code.
+- **Compile time**, when compilation happens; syntax errors are caught here.
+- **Object code**, machine-language translation of source code; also called binary or machine code.
+- **Source code**, the human-readable text of a program.
+- **Run time**, when the compiled program executes; run-time (semantic) errors appear here.
+- **Library**, a collection of pre-written functions available for use in programs.
 $md$, 1),
 
 ('a1000001-0001-0001-0001-000000000002','content','The Compilation Process',$md$
@@ -365,8 +365,8 @@ double a, b = 100.00;
 
 ### Global vs. Local Variables
 
-- **Global variables** — declared outside all functions; accessible throughout the program; initialized to zero if unspecified.
-- **Local variables** — declared inside a function; accessible only within that function; must be explicitly initialized.
+- **Global variables**, declared outside all functions; accessible throughout the program; initialized to zero if unspecified.
+- **Local variables**, declared inside a function; accessible only within that function; must be explicitly initialized.
 
 ### Constants
 
@@ -389,7 +389,7 @@ $md$, 5),
 | `/` | Division |
 | `+` | Addition |
 | `-` | Subtraction |
-| `%` | Modulus (remainder) — integers only |
+| `%` | Modulus (remainder), integers only |
 | `++` | Increment (add 1) |
 | `--` | Decrement (subtract 1) |
 
@@ -455,7 +455,7 @@ If `expression1` is true, result is `expression2`; otherwise `expression3`.
 ```
 $md$, 6),
 
-('a1000001-0001-0001-0001-000000000002','activity','Practice Exercises — Lesson 2',$md$
+('a1000001-0001-0001-0001-000000000002','activity','Practice Exercises, Lesson 2',$md$
 **Review questions:**
 1. Show the C declaration that associates each identifier with its value:
    - `counter` → 7, `length` → 12, `offset` → 12.3723, `sname` → "Sonnet", `group` → 'A'
@@ -486,8 +486,8 @@ f.  (7 == 2) || (7 > 4) && (6 == 5)
 $md$, 7);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a1000001-0001-0001-0001-000000000002','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 2',$md$
-**Answer Key — Declarations (Q1)**
+('a1000001-0001-0001-0001-000000000002','activity','Worked Exam Solutions + How-to-Pass Tips, Lesson 2',$md$
+**Answer Key, Declarations (Q1)**
 
 ```c
 int    counter = 7;
@@ -498,7 +498,7 @@ char   group   = 'A';       /* single character → single quotes */
 ```
 The two classic traps: strings take **double quotes and a char array**, single characters take **single quotes and plain `char`**.
 
-**Answer Key — Identifier Validity (Q2)**
+**Answer Key, Identifier Validity (Q2)**
 
 | Identifier | Verdict | Why |
 |---|---|---|
@@ -507,29 +507,29 @@ The two classic traps: strings take **double quotes and a char array**, single c
 | `float` | **invalid** | reserved keyword |
 | `qty_sold` | valid | letters, underscore |
 | `_ _` | **invalid** | contains a space (`__` with no space would be valid) |
-| `integer` | **valid** | looks reserved, but `integer` is NOT a C keyword — the keyword is `int`. Favorite trick question. |
+| `integer` | **valid** | looks reserved, but `integer` is NOT a C keyword, the keyword is `int`. Favorite trick question. |
 | `x_tra` | valid | letters + underscore |
 | `1311Nov` | **invalid** | starts with a digit |
 | `Rating` | valid | letters only |
 | `@_First!` | **invalid** | `@` and `!` are not allowed characters |
 
-**Answer Key — Data Types (Q3)**
+**Answer Key, Data Types (Q3)**
 
-`'A'` → `char` · `32769` → `int` (it exceeds `short`'s max of 32,767 — that is the point of the question) · `32.55` → `float` · `21482.93` → `float` (or `double`) · `-123` → `int` · `632179` → `int` on 4-byte-int compilers; if your professor uses the old Turbo C table where `int` is 2 bytes, answer `long int`. State which table you are using — that sentence earns the point either way.
+`'A'` → `char` · `32769` → `int` (it exceeds `short`'s max of 32,767, that is the point of the question) · `32.55` → `float` · `21482.93` → `float` (or `double`) · `-123` → `int` · `632179` → `int` on 4-byte-int compilers; if your professor uses the old Turbo C table where `int` is 2 bytes, answer `long int`. State which table you are using, that sentence earns the point either way.
 
-**Worked Exam-Style Problem — Expression Evaluation**
+**Worked Exam-Style Problem, Expression Evaluation**
 
 *Problem (b):* Evaluate `9 * 2 + (8 - 5) / 2 < 1 * (7 + 4) && 6 + 7 * 4 / 5 > 7 * 2 + 5 - 4`
 
-*Solution:* Step 1: Left side of `&&`: `9*2 = 18`; `(8-5)/2 = 3/2 = 1` (**integer division truncates**); `18 + 1 = 19`; `1*(7+4) = 11`; so `19 < 11` → **0** (false). Step 2: Right side: `7*4/5 = 28/5 = 5`; `6 + 5 = 11`; `7*2+5-4 = 15`; so `11 > 15` → **0**. Step 3: `0 && 0` → **0 (FALSE)**. Show the truncation steps — that is where the points are.
+*Solution:* Step 1: Left side of `&&`: `9*2 = 18`; `(8-5)/2 = 3/2 = 1` (**integer division truncates**); `18 + 1 = 19`; `1*(7+4) = 11`; so `19 < 11` → **0** (false). Step 2: Right side: `7*4/5 = 28/5 = 5`; `6 + 5 = 11`; `7*2+5-4 = 15`; so `11 > 15` → **0**. Step 3: `0 && 0` → **0 (FALSE)**. Show the truncation steps, that is where the points are.
 
 Remaining answers, same method:
 - (a) `5*6 + 8 - 4%3` = `30 + 8 - 1` = **37**
-- (c) `6*5/(9-3) = 5`; `(2*3+10)/4 + 1 = 4+1 = 5`; `5 != 5` → 0. `8+2*5 = 18 < 20` → 1. `6 + 18%4 = 8`; `2*3-4 = 2`; `8 == 2` → 0. Final: `0 || (1 && 0)` = **0 (FALSE)** — `&&` binds tighter than `||`.
+- (c) `6*5/(9-3) = 5`; `(2*3+10)/4 + 1 = 4+1 = 5`; `5 != 5` → 0. `8+2*5 = 18 < 20` → 1. `6 + 18%4 = 8`; `2*3-4 = 2`; `8 == 2` → 0. Final: `0 || (1 && 0)` = **0 (FALSE)**, `&&` binds tighter than `||`.
 - (d) `6*5/2 = 15`; `15 == 15` → true → ternary returns **100**
 - (e) `(15>26) = 0`; `!(7>=8) = !0 = 1`; `(4<=2) = 0`; `0 || (1 && 0)` = **0 (FALSE)**
 
-**Answer Key — TRUE or FALSE**
+**Answer Key, TRUE or FALSE**
 
 - (a) `2 - 4 > + 3` → `-2 > 3` → **FALSE**
 - (b) `17 == 35` → **FALSE**
@@ -542,13 +542,13 @@ Remaining answers, same method:
 
 - Integer division truncates: `3/2` is `1`, never `1.5`. Nearly every evaluation item hides one of these.
 - Precedence order that decides most answers: `* / %` before `+ -` before relational (`< >`) before `==`/`!=` before `&&` before `||`. The ternary `? :` comes last.
-- `&&` before `||` — when you see both, bracket the `&&` part first.
+- `&&` before `||`, when you see both, bracket the `&&` part first.
 - `integer`, `main`, and `printf` are NOT keywords; `int`, `float`, `if`, `while` are. Trick items rely on you confusing the two.
 $md$, 8);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('a1000001-0001-0001-0001-000000000002','activity','Code Lab — Lesson 2: Fix the Five Errors',$md$
-**Debugging Drill:** This program contains the five most common declaration errors from this lesson — exactly the mistakes the identifier-validity exercise is training you to spot. Fix all five so the program compiles and prints the expected output. The compiler messages are your clues; read them from the top.
+('a1000001-0001-0001-0001-000000000002','activity','Code Lab, Lesson 2: Fix the Five Errors',$md$
+**Debugging Drill:** This program contains the five most common declaration errors from this lesson, exactly the mistakes the identifier-validity exercise is training you to spot. Fix all five so the program compiles and prints the expected output. The compiler messages are your clues; read them from the top.
 
 Expected output:
 ```
@@ -566,7 +566,7 @@ int main(void) {
     double offset = 12.3723    /* error 2: something is missing here */
     char sname[] = 'Sonnet';   /* error 3: wrong quotes for a string */
     char group = "A";          /* error 4: wrong quotes for a character */
-    int float = 99;            /* error 5: keyword used as identifier — rename or delete */
+    int float = 99;            /* error 5: keyword used as identifier, rename or delete */
 
     printf("counter = %d\n", counter);
     printf("length  = %d\n", 1length);
@@ -582,7 +582,7 @@ int main(void) {
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a1000001-0001-0001-0001-000000000003','content','The C Preprocessor',$md$
-Lines that start with `#` in a C file are preprocessor directives — handled before compilation begins.
+Lines that start with `#` in a C file are preprocessor directives, handled before compilation begins.
 
 ### `#define`
 
@@ -593,7 +593,7 @@ Replaces a symbolic name with a value throughout the file. By convention, consta
 #define PI 3.14159
 ```
 
-Changing the `#define` in one place takes effect everywhere — makes programs easier to update.
+Changing the `#define` in one place takes effect everywhere, makes programs easier to update.
 
 ### `#include`
 
@@ -624,7 +624,7 @@ printf("format string", variable1, variable2, ...);
 | `%e` | Scientific notation |
 | `%s` | String |
 
-**Field width** — specified between `%` and the conversion character:
+**Field width**, specified between `%` and the conversion character:
 ```c
 printf("%c %3c %5c\n", 'A', 'B', 'C');
 // A printed normally, B right-justified in 3 chars, C in 5
@@ -714,15 +714,15 @@ main() {
 ```
 
 **Key parts:**
-- `#include <stdio.h>` — includes standard I/O declarations
-- `main()` — entry point; every C program starts here
-- `/* ... */` — comment; ignored by compiler
-- `{` and `}` — mark start and end of a function body
-- `;` — terminates every statement
-- `return 0;` — exits `main()` and signals success
+- `#include <stdio.h>`, includes standard I/O declarations
+- `main()`, entry point; every C program starts here
+- `/* ... */`, comment; ignored by compiler
+- `{` and `}`, mark start and end of a function body
+- `;`, terminates every statement
+- `return 0;`, exits `main()` and signals success
 $md$, 5),
 
-('a1000001-0001-0001-0001-000000000003','activity','Practice Exercises — Lesson 3',$md$
+('a1000001-0001-0001-0001-000000000003','activity','Practice Exercises, Lesson 3',$md$
 **Conceptual questions:**
 1. What is a header file? What does `stdio.h` provide? What does `conio.h` provide?
 2. What is the purpose of `printf()`? Of `scanf()`?
@@ -739,7 +739,7 @@ printf("\n\n Do you know the next number? \n");
 printf("\n %5d %6.2f", 6, 6.5);
 ```
 
-**Programming exercises — write complete C programs:**
+**Programming exercises, write complete C programs:**
 1. Calculate and display the volume of a rectangular box (V = length × width × height).
 2. Convert hours to minutes (e.g., "3 hours is equal to 180 minutes").
 3. Given a, b, c: compute sum, difference, product, quotient, and sum of squares.
@@ -748,17 +748,17 @@ printf("\n %5d %6.2f", 6, 6.5);
 $md$, 6);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a1000001-0001-0001-0001-000000000003','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 3',$md$
-**Answer Key — Conceptual Questions**
+('a1000001-0001-0001-0001-000000000003','activity','Worked Exam Solutions + How-to-Pass Tips, Lesson 3',$md$
+**Answer Key, Conceptual Questions**
 
-1. A **header file** (`.h`) contains declarations that `#include` pastes into your program before compilation. `stdio.h` provides standard input/output (`printf`, `scanf`); `conio.h` provides console functions (`getch`, `clrscr`) — note `conio.h` is Turbo C-only and does not exist on modern compilers.
+1. A **header file** (`.h`) contains declarations that `#include` pastes into your program before compilation. `stdio.h` provides standard input/output (`printf`, `scanf`); `conio.h` provides console functions (`getch`, `clrscr`), note `conio.h` is Turbo C-only and does not exist on modern compilers.
 2. `printf()` writes formatted output to the screen; `scanf()` reads formatted input from the keyboard into variables.
-3. `%d` = decimal integer, `%c` = single character, `%f` = float, `%lf` = double. Mismatching specifier and type is undefined behavior — and an exam favorite.
+3. `%d` = decimal integer, `%c` = single character, `%f` = float, `%lf` = double. Mismatching specifier and type is undefined behavior, and an exam favorite.
 4. `\n` = newline, `\"` = prints a double quote, `\'` = prints a single quote, `\\` = prints one backslash.
 5. `gets()` reads a whole line into a string; `getch()` reads one key silently without waiting for Enter; `getche()` same but echoes the key; `puts()` prints a string plus a newline; `putchar()` prints a single character.
 6. A block begins with `{` and ends with `}`. Every statement inside ends with `;`.
 
-**Worked Exam-Style Problem — Predict the Output**
+**Worked Exam-Style Problem, Predict the Output**
 
 *Problem:* What exactly does this print?
 ```c
@@ -777,9 +777,9 @@ The value of     5 is five.
 
      6   6.50
 ```
-Count the spaces in your answer — field-width questions are graded character by character.
+Count the spaces in your answer, field-width questions are graded character by character.
 
-**Worked Programming Exercise (#1 — Volume of a Box)**
+**Worked Programming Exercise (#1, Volume of a Box)**
 
 ```c
 #include <stdio.h>
@@ -795,19 +795,19 @@ int main(void) {
     return 0;
 }
 ```
-The four-part pattern — declare, prompt + `scanf`, compute, `printf` the result — solves ALL five programming exercises in this set. Exercise 2 is one multiplication (`minutes = hours * 60`), Exercise 5 is two (`* 0.38`, `* 2.64`). Write the pattern once, swap the formula.
+The four-part pattern, declare, prompt + `scanf`, compute, `printf` the result, solves ALL five programming exercises in this set. Exercise 2 is one multiplication (`minutes = hours * 60`), Exercise 5 is two (`* 0.38`, `* 2.64`). Write the pattern once, swap the formula.
 
 **How to Pass Tips**
 
-- `scanf("%d", &num)` — forgetting the `&` is the most common exam and lab mistake in this chapter. Arrays/strings are the exception (`scanf("%s", name)` — no `&`).
+- `scanf("%d", &num)`, forgetting the `&` is the most common exam and lab mistake in this chapter. Arrays/strings are the exception (`scanf("%s", name)`, no `&`).
 - `%5d` pads a NUMBER to width 5; `%6.2f` = total width 6 including the decimal point, 2 digits after it.
-- `%f` prints floats, but in `scanf` a `double` needs `%lf` — mixing them up corrupts the value.
+- `%f` prints floats, but in `scanf` a `double` needs `%lf`, mixing them up corrupts the value.
 - If the expected output has blank lines, count the `\n`s; if it has aligned columns, count the field widths.
 $md$, 7);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('a1000001-0001-0001-0001-000000000003','activity','Code Lab — Lesson 3: Format It Right',$md$
-**Coding Drill:** Compute the average of three grades and print it in a clean right-aligned column using the field-width tricks from this lesson. Complete the TODO, run it, and match the expected output exactly — including the alignment.
+('a1000001-0001-0001-0001-000000000003','activity','Code Lab, Lesson 3: Format It Right',$md$
+**Coding Drill:** Compute the average of three grades and print it in a clean right-aligned column using the field-width tricks from this lesson. Complete the TODO, run it, and match the expected output exactly, including the alignment.
 
 Expected output:
 ```
@@ -840,8 +840,8 @@ int main(void) {
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a1000001-0001-0001-0001-000000000004','content','Flow of Control and Operators',$md$
 By default, statements execute in sequence. Control structures change this:
-- **Selection** (`if`, `if-else`, `switch`) — choose which code to execute based on a condition.
-- **Repetition** (`while`, `for`, `do`) — repeat code while a condition holds.
+- **Selection** (`if`, `if-else`, `switch`), choose which code to execute based on a condition.
+- **Repetition** (`while`, `for`, `do`), repeat code while a condition holds.
 
 ### Relational and Equality Operators
 ```
@@ -991,9 +991,9 @@ for (initialization; condition; increment)
     statement;
 ```
 
-1. **Initialization** — runs once before the loop.
-2. **Condition** — checked before each iteration.
-3. **Increment** — runs after each iteration.
+1. **Initialization**, runs once before the loop.
+2. **Condition**, checked before each iteration.
+3. **Increment**, runs after each iteration.
 
 ```c
 for (x = 100; x != 65; x += 5) {
@@ -1009,7 +1009,7 @@ for (x = 0, y = 0; x + y < 10; x++) { ... }
 
 ### `do-while` Loop
 
-Body runs **at least once** — condition checked after each iteration.
+Body runs **at least once**, condition checked after each iteration.
 
 ```c
 do {
@@ -1026,7 +1026,7 @@ printf("The sum is %d", sum);
 ```
 $md$, 4),
 
-('a1000001-0001-0001-0001-000000000004','activity','Practice Exercises — Lesson 4',$md$
+('a1000001-0001-0001-0001-000000000004','activity','Practice Exercises, Lesson 4',$md$
 **Conceptual questions:**
 1. What is the difference between `break` and `continue`?
 2. What happens if you omit `break` from a `switch` case?
@@ -1065,16 +1065,16 @@ do {
 $md$, 5);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a1000001-0001-0001-0001-000000000004','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 4',$md$
-**Answer Key — Conceptual Questions**
+('a1000001-0001-0001-0001-000000000004','activity','Worked Exam Solutions + How-to-Pass Tips, Lesson 4',$md$
+**Answer Key, Conceptual Questions**
 
 1. `break` exits the loop (or `switch`) completely; `continue` skips the rest of the current iteration and jumps to the next loop test. Break = leave the room; continue = skip this round.
 2. Without `break`, execution **falls through** into the next case and keeps running statements until it hits a `break` or the end of the `switch`.
-3. A compound statement is a group of statements wrapped in `{ }` — treated as a single statement wherever one statement is expected.
+3. A compound statement is a group of statements wrapped in `{ }`, treated as a single statement wherever one statement is expected.
 4. A `while` body never executes when the condition is false on the very first test (e.g., `while (n > 0)` with `n = 0`).
 5. `do-while` tests the condition **after** the body, so the body always runs at least once; `while` tests **before**, so it may run zero times.
 
-**Worked Exam-Style Problem — Trace (a): the Dangling Else**
+**Worked Exam-Style Problem, Trace (a): the Dangling Else**
 
 *Problem:* `x = 7; y = 8;` then
 ```c
@@ -1084,14 +1084,14 @@ if (x <= y)
 printf("%d %d\n", x, y);
 ```
 
-*Solution:* Step 1: The `else` pairs with the **nearest** `if` — the inner one — regardless of indentation. Step 2: `x <= y` (7 ≤ 8) → true, enter inner if. Step 3: `x == y` (7 == 8) → false → run the `else`: `y++` → y = 9. Step 4: Output: **`7 9`**. The trap answer `8 8` comes from pairing the else with the outer if — indentation lies, braces do not.
+*Solution:* Step 1: The `else` pairs with the **nearest** `if`, the inner one, regardless of indentation. Step 2: `x <= y` (7 ≤ 8) → true, enter inner if. Step 3: `x == y` (7 == 8) → false → run the `else`: `y++` → y = 9. Step 4: Output: **`7 9`**. The trap answer `8 8` comes from pairing the else with the outer if, indentation lies, braces do not.
 
-**Answer Key — Traces (b) and (c)**
+**Answer Key, Traces (b) and (c)**
 
 - (b) `%2d` prints each number right-justified in width 2: **` 1 2 3 4 5`** on one line.
-- (c) The `do-while` increments `ctr` from 1 to 10. Odd values hit `continue` (skipped); even values print with `%2d`. Output: **` 2 4 6 810`** — note `10` fills its full width-2 field, so there is no space before it. Loop stops when `ctr != 10` becomes false.
+- (c) The `do-while` increments `ctr` from 1 to 10. Odd values hit `continue` (skipped); even values print with `%2d`. Output: **` 2 4 6 810`**, note `10` fills its full width-2 field, so there is no space before it. Loop stops when `ctr != 10` becomes false.
 
-**Worked Programming Exercise (#3 — Three Integers in Descending Order)**
+**Worked Programming Exercise (#3, Three Integers in Descending Order)**
 
 ```c
 #include <stdio.h>
@@ -1110,19 +1110,19 @@ int main(void) {
     return 0;
 }
 ```
-Three compare-and-swap steps — the same idea bubble sort scales up in Lesson 5. For Exercise 1 (child/teen/adult), use an `if / else if / else` ladder on age; for Exercise 5 (late fees), a ladder on days works, but a `switch` cannot — the conditions are ranges, and `case` labels must be constants.
+Three compare-and-swap steps, the same idea bubble sort scales up in Lesson 5. For Exercise 1 (child/teen/adult), use an `if / else if / else` ladder on age; for Exercise 5 (late fees), a ladder on days works, but a `switch` cannot, the conditions are ranges, and `case` labels must be constants.
 
 **How to Pass Tips**
 
 - Dangling else: `else` always pairs with the nearest unmatched `if`. Any trace with a nested, brace-less if is testing exactly this.
-- In a `switch`, every forgotten `break` means fall-through — when a trace prints "too many" things, that is why.
+- In a `switch`, every forgotten `break` means fall-through, when a trace prints "too many" things, that is why.
 - `for (i = 1; i <= 5; i++)` runs 5 times; `for (i = 1; i < 5; i++)` runs 4. Off-by-one boundaries are the most common trace trap.
 - Ranges (`age <= 12`, `days <= 4`) need if/else-if ladders; `switch` only matches exact constant values.
 $md$, 6);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('a1000001-0001-0001-0001-000000000004','activity','Code Lab — Lesson 4: Grade Remarks Ladder',$md$
-**Coding Drill:** Complete the if/else-if ladder so each quiz score gets the right remark: 90 and above → A, 80–89 → B, 75–79 → C, below 75 → FAIL. The loop feeds it four test scores — exactly how your professor will test your ladder on the board.
+('a1000001-0001-0001-0001-000000000004','activity','Code Lab, Lesson 4: Grade Remarks Ladder',$md$
+**Coding Drill:** Complete the if/else-if ladder so each quiz score gets the right remark: 90 and above → A, 80–89 → B, 75–79 → C, below 75 → FAIL. The loop feeds it four test scores, exactly how your professor will test your ladder on the board.
 
 Expected output:
 ```
@@ -1217,7 +1217,7 @@ for (i = 0; i < 10; i++)
     printf("%d\n", scores[i]);
 ```
 
-**Copying (element by element — arrays cannot be assigned directly):**
+**Copying (element by element, arrays cannot be assigned directly):**
 ```c
 for (i = 0; i < 25; i++)
     second[i] = first[i];
@@ -1225,7 +1225,7 @@ for (i = 0; i < 25; i++)
 $md$, 2),
 
 ('a1000001-0001-0001-0001-000000000005','content','Array Examples: Sorting and Counting',$md$
-### Bubble Sort — Ascending Order
+### Bubble Sort, Ascending Order
 
 ```c
 #include <stdio.h>
@@ -1271,7 +1271,7 @@ void main() {
 ```
 $md$, 3),
 
-('a1000001-0001-0001-0001-000000000005','activity','Practice Exercises — Lesson 5',$md$
+('a1000001-0001-0001-0001-000000000005','activity','Practice Exercises, Lesson 5',$md$
 **Review questions:**
 1. Write an array definition for a 12-element integer array `C` with values 1, 4, 7, 10, …, 34.
 2. Write a character array `point` initialized with "NORTH" (including null terminator).
@@ -1302,14 +1302,14 @@ printf("%d", b);
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a1000001-0001-0001-0001-000000000005','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 5',$md$
-**Answer Key — Review Questions**
+('a1000001-0001-0001-0001-000000000005','activity','Worked Exam Solutions + How-to-Pass Tips, Lesson 5',$md$
+**Answer Key, Review Questions**
 
-1. *12-element array 1, 4, 7, …, 34:* `int C[12] = {1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34};` — arithmetic sequence, start 1, step 3. On exams, note the pattern (`1 + 3(n-1)`) so the checker sees you did not just count.
-2. *"NORTH" with null terminator:* `char point[6] = "NORTH";` — 5 letters + `'\0'` = 6 slots. Writing `char point[5]` is the classic mark-loser: it compiles but drops the terminator.
-3. *4-character direction array:* `char letters[4] = {'N', 'S', 'E', 'W'};` — no terminator needed because it is a char *array* used as 4 separate characters, not a string.
+1. *12-element array 1, 4, 7, …, 34:* `int C[12] = {1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34};`, arithmetic sequence, start 1, step 3. On exams, note the pattern (`1 + 3(n-1)`) so the checker sees you did not just count.
+2. *"NORTH" with null terminator:* `char point[6] = "NORTH";`, 5 letters + `'\0'` = 6 slots. Writing `char point[5]` is the classic mark-loser: it compiles but drops the terminator.
+3. *4-character direction array:* `char letters[4] = {'N', 'S', 'E', 'W'};`, no terminator needed because it is a char *array* used as 4 separate characters, not a string.
 
-**Worked Exam-Style Problem — The Value-vs-Index Twin Traces**
+**Worked Exam-Style Problem, The Value-vs-Index Twin Traces**
 
 *Problem:* Both traces use `static int c[10] = {1,2,3,4,5,6,7,8,9,10};` and `b = 0`. Why do they print different numbers?
 
@@ -1319,7 +1319,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 
 This pair is the single most reused CP1 exam question. Before summing anything, ask: is the condition on `c[a]` (the value) or on `a` (the index)?
 
-**Worked Programming Exercise (#2 — REVERSE Copy)**
+**Worked Programming Exercise (#2, REVERSE Copy)**
 
 ```c
 #include <stdio.h>
@@ -1342,19 +1342,19 @@ int main(void) {
     return 0;
 }
 ```
-The whole trick is the index formula `n - 1 - i`: when i = 0 it reads x[4], when i = 4 it reads x[0]. Derive it by testing the endpoints — that check works for every "mirror" problem.
+The whole trick is the index formula `n - 1 - i`: when i = 0 it reads x[4], when i = 4 it reads x[0]. Derive it by testing the endpoints, that check works for every "mirror" problem.
 
 **How to Pass Tips**
 
 - Array indices run 0 to *size − 1*; nearly every CP1 exam plants an off-by-one trap on the last element.
-- `int x[10]` initializes nothing — reading `x[3]` before assigning it is garbage. But `static` and global arrays start at zero, and a partial initializer like `{3, 7}` zero-fills the rest.
+- `int x[10]` initializes nothing, reading `x[3]` before assigning it is garbage. But `static` and global arrays start at zero, and a partial initializer like `{3, 7}` zero-fills the rest.
 - For string questions, count the `'\0'` every single time.
-- When a trace mixes `a` and `c[a]`, slow down — value-vs-index is the intended trap (see the twin traces above).
+- When a trace mixes `a` and `c[a]`, slow down, value-vs-index is the intended trap (see the twin traces above).
 $md$, 5);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('a1000001-0001-0001-0001-000000000005','activity','Code Lab — Lesson 5: Run It Yourself',$md$
-**Coding Drill:** Complete `sum` and `largest` so the program reports the total and the highest quiz score. Press Run to compile real C right here — then try changing the scores and predicting the output before running again.
+('a1000001-0001-0001-0001-000000000005','activity','Code Lab, Lesson 5: Run It Yourself',$md$
+**Coding Drill:** Complete `sum` and `largest` so the program reports the total and the highest quiz score. Press Run to compile real C right here, then try changing the scores and predicting the output before running again.
 
 Expected output:
 ```
@@ -1386,10 +1386,10 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 A function is a self-contained section of code that performs a specific task. Functions are the primary tool for breaking large programs into manageable pieces (top-down design).
 
 **Advantages of using functions:**
-1. **Cleaner design** — hide implementation details; overall logic is easier to follow.
-2. **Reusability** — write once, call anywhere.
-3. **Team development** — each function can be developed as an independent unit.
-4. **Easier debugging** — functions can be tested individually.
+1. **Cleaner design**, hide implementation details; overall logic is easier to follow.
+2. **Reusability**, write once, call anywhere.
+3. **Team development**, each function can be developed as an independent unit.
+4. **Easier debugging**, functions can be tested individually.
 $md$, 1),
 
 ('a1000001-0001-0001-0001-000000000006','content','Function Declaration, Definition, and Variables',$md$
@@ -1435,13 +1435,13 @@ If return type is `void`, the function returns no value.
 - Declared outside all functions.
 - Accessible from any function.
 - Initialized to zero if unspecified.
-- Persist for the program's lifetime. Use sparingly — they make functions less self-contained.
+- Persist for the program's lifetime. Use sparingly, they make functions less self-contained.
 $md$, 2),
 
 ('a1000001-0001-0001-0001-000000000006','content','Call by Value vs. Call by Reference',$md$
 ### Call by Value
 
-Arguments are passed as **copies** — changes inside the function do not affect the original.
+Arguments are passed as **copies**, changes inside the function do not affect the original.
 
 ```c
 void funct_sample(int y) {
@@ -1453,7 +1453,7 @@ main() {
     int n = 5;
     printf("n before call: %d", n);   // 5
     funct_sample(n);
-    printf("n after call: %d", n);    // still 5 — unchanged
+    printf("n after call: %d", n);    // still 5, unchanged
 }
 ```
 
@@ -1461,8 +1461,8 @@ main() {
 
 To allow a function to modify a variable in the caller, pass the **address** using `&`. Inside the function, use `*` to access the value at that address.
 
-- `&variable` — "the address of variable"
-- `*pointer` — "the value at the address held by pointer"
+- `&variable`, "the address of variable"
+- `*pointer`, "the value at the address held by pointer"
 
 ```c
 void compute_rating(float midterm, float final, float *rating) {
@@ -1481,13 +1481,13 @@ main() {
 `&fin_grd` passes the address. `*rating = ...` stores a value directly into that memory location, so the change is visible in `main()` after the call.
 $md$, 3),
 
-('a1000001-0001-0001-0001-000000000006','activity','Practice Exercises — Lesson 6',$md$
+('a1000001-0001-0001-0001-000000000006','activity','Practice Exercises, Lesson 6',$md$
 **Conceptual questions:**
 1. What is a function and what is its syntax?
 2. What does the return type `void` indicate?
-3. Explain call by value — what happens to the original variable?
+3. Explain call by value, what happens to the original variable?
 4. What is a pointer? What do `&` and `*` mean?
-5. Explain call by reference — how does it differ from call by value?
+5. Explain call by reference, how does it differ from call by value?
 
 **Trace the output:**
 ```c
@@ -1511,16 +1511,16 @@ main() {
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a1000001-0001-0001-0001-000000000006','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 6',$md$
-**Answer Key — Conceptual Questions**
+('a1000001-0001-0001-0001-000000000006','activity','Worked Exam Solutions + How-to-Pass Tips, Lesson 6',$md$
+**Answer Key, Conceptual Questions**
 
 1. A function is a self-contained block of code that performs one task. Syntax: `return_type name(parameter list) { declarations; statements; return value; }`.
-2. `void` means the function returns **no value** — you call it for its effect (printing, modifying via pointers), not for a result.
+2. `void` means the function returns **no value**, you call it for its effect (printing, modifying via pointers), not for a result.
 3. Call by value passes a **copy**; whatever the function does to the parameter, the caller's original variable is untouched.
 4. A pointer is a variable that holds a memory **address**. `&x` reads "the address of x"; `*p` reads "the value stored at the address held by p".
 5. Call by reference passes the address (`&x`) so the function can write into the caller's variable through `*`. Call by value cannot change the original; call by reference can.
 
-**Worked Exam-Style Problem — The Mixed Trace**
+**Worked Exam-Style Problem, The Mixed Trace**
 
 *Problem:*
 ```c
@@ -1536,14 +1536,14 @@ main() {
 }
 ```
 
-*Solution:* Step 1: `trace1(x, &y)` — x is passed **by value** (a copy), y **by reference** (its address). Step 2: Inside, the copy becomes 5 and `*y = 2` writes 2 straight into main's y. The function prints ` 5  2`. Step 3: Back in main: x was only copied, so it is still 3; y was written through the pointer, so it is 2. Main prints ` 3  2`. Full output:
+*Solution:* Step 1: `trace1(x, &y)`, x is passed **by value** (a copy), y **by reference** (its address). Step 2: Inside, the copy becomes 5 and `*y = 2` writes 2 straight into main's y. The function prints ` 5  2`. Step 3: Back in main: x was only copied, so it is still 3; y was written through the pointer, so it is 2. Main prints ` 3  2`. Full output:
 ```
  5  2
  3  2
 ```
-One parameter changed, one did not — if you can explain *why* in one sentence ("copy vs. address"), you own this whole lesson.
+One parameter changed, one did not, if you can explain *why* in one sentence ("copy vs. address"), you own this whole lesson.
 
-**Worked Programming Exercise (#1 — factorial)**
+**Worked Programming Exercise (#1, factorial)**
 
 ```c
 #include <stdio.h>
@@ -1563,18 +1563,18 @@ int main(void) {
     return 0;
 }
 ```
-Note how validation returns a sentinel (−1) instead of printing inside the function — keeping input/output in `main` and computation in the function is exactly the "self-contained" design the lesson preaches, and professors award style points for it.
+Note how validation returns a sentinel (−1) instead of printing inside the function, keeping input/output in `main` and computation in the function is exactly the "self-contained" design the lesson preaches, and professors award style points for it.
 
 **How to Pass Tips**
 
 - The exam question is almost always some version of: which arguments change after the call? Copies (plain parameters) never change the caller; addresses (`*` parameters passed with `&`) always can.
-- Prototype before `main`, definition after — or define the whole function before `main`. Calling an undeclared function is a compile-time trap question.
+- Prototype before `main`, definition after, or define the whole function before `main`. Calling an undeclared function is a compile-time trap question.
 - A `void` function with a `return 5;` inside is invalid; a non-void function missing `return` is the reverse trap.
 - Local variables die when the function returns; if a value must survive, return it or write it through a pointer.
 $md$, 5);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('a1000001-0001-0001-0001-000000000006','activity','Code Lab — Lesson 6: Value vs. Reference',$md$
+('a1000001-0001-0001-0001-000000000006','activity','Code Lab, Lesson 6: Value vs. Reference',$md$
 **Coding Drill:** Complete both functions. `square` returns a value (call by value); `swap` must exchange the caller's variables through pointers (call by reference). If your swap only works inside the function but `main` prints the old order, you have rediscovered why `&` and `*` exist.
 
 Expected output:
@@ -1650,7 +1650,7 @@ strnset(str, ch, n)            // set first n characters to ch
 $md$, 1),
 
 ('a1000001-0001-0001-0001-000000000007','content','Math Functions (<math.h>) and Character Functions (<ctype.h>)',$md$
-### Mathematical Functions — include `<math.h>`
+### Mathematical Functions, include `<math.h>`
 
 | Function | Syntax | Description |
 |---|---|---|
@@ -1662,7 +1662,7 @@ $md$, 1),
 | `pow()` | `double pow(double base, double exp)` | base raised to exp |
 | `sqrt()` | `double sqrt(double num)` | Square root (num must be ≥ 0) |
 
-### Character Functions — include `<ctype.h>`
+### Character Functions, include `<ctype.h>`
 
 | Function | Tests/Does |
 |---|---|
@@ -1676,7 +1676,7 @@ $md$, 1),
 | `tolower(ch)` | Returns lowercase version |
 | `toupper(ch)` | Returns uppercase version |
 
-### Conversion Functions — include `<stdlib.h>`
+### Conversion Functions, include `<stdlib.h>`
 
 | Function | Description |
 |---|---|
@@ -1686,8 +1686,8 @@ $md$, 1),
 | `itoa(num, str, radix)` | Convert int to string in given base |
 $md$, 2),
 
-('a1000001-0001-0001-0001-000000000007','activity','Practice Exercises — Lesson 7',$md$
-**Given: `char third[20] = "God Loves U"`, `char fourth[20] = "GOD BLESS U"` — evaluate:**
+('a1000001-0001-0001-0001-000000000007','activity','Practice Exercises, Lesson 7',$md$
+**Given: `char third[20] = "God Loves U"`, `char fourth[20] = "GOD BLESS U"`, evaluate:**
 ```
 a. strrev(fourth)
 b. strupr(third)
@@ -1725,8 +1725,8 @@ f. ceil(pow(5, 3))
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a1000001-0001-0001-0001-000000000007','activity','Worked Exam Solutions + How-to-Pass Tips — Lesson 7',$md$
-**Answer Key — String Function Evaluations**
+('a1000001-0001-0001-0001-000000000007','activity','Worked Exam Solutions + How-to-Pass Tips, Lesson 7',$md$
+**Answer Key, String Function Evaluations**
 
 Starting values each time: `third = "God Loves U"`, `fourth = "GOD BLESS U"`.
 
@@ -1736,11 +1736,11 @@ Starting values each time: `third = "God Loves U"`, `fourth = "GOD BLESS U"`.
 | b. `strupr(third)` | `"GOD LOVES U"` | all letters uppercased |
 | c. `strncat(fourth, third, 5)` | `"GOD BLESS UGod L"` | appends first 5 chars of third: `G`,`o`,`d`,space,`L` |
 | d. `strlwr(fourth)` | `"god bless u"` | all letters lowercased |
-| e. `strncpy(first, fourth, 5)` | `first = "GOD B"` | copies exactly 5 chars — and does NOT add `'\0'`; say so for full credit |
+| e. `strncpy(first, fourth, 5)` | `first = "GOD B"` | copies exactly 5 chars, and does NOT add `'\0'`; say so for full credit |
 | f. `strlen(third)` | `11` | count the two spaces, exclude `'\0'`: G-o-d, space, L-o-v-e-s, space, U |
-| g. `strncat(third, fourth, 4)` | `"God Loves UGOD "` | appends `G`,`O`,`D`,space — the 4th char is the space |
+| g. `strncat(third, fourth, 4)` | `"God Loves UGOD "` | appends `G`,`O`,`D`,space, the 4th char is the space |
 
-**Answer Key — Character Tests** (`c='C'`, `m='?'`, `i='t'`, `b='5'`)
+**Answer Key, Character Tests** (`c='C'`, `m='?'`, `i='t'`, `b='5'`)
 
 - a. `isdigit(b)` → **TRUE** ('5' is a digit character)
 - b. `isalpha(c)` → **TRUE**
@@ -1750,16 +1750,16 @@ Starting values each time: `third = "God Loves U"`, `fourth = "GOD BLESS U"`.
 - f. `ispunct(m)` → **TRUE**
 - g. `islower(i)` → **TRUE**
 
-**Answer Key — Math Expressions**
+**Answer Key, Math Expressions**
 
 - a. `abs(5)` = **5**
 - b. `floor(5.5)` = **5.0**
-- c. `ceil(5)` = **5.0** (already whole — nothing to round up)
+- c. `ceil(5)` = **5.0** (already whole, nothing to round up)
 - d. `sqrt(floor(25.12))` = `sqrt(25.0)` = **5.0** (work inside-out)
 - e. `fabs(-44.98)` = **44.98**
 - f. `ceil(pow(5, 3))` = `ceil(125.0)` = **125.0**
 
-**Worked Programming Exercise (#1 — Palindrome)**
+**Worked Programming Exercise (#1, Palindrome)**
 
 ```c
 #include <stdio.h>
@@ -1768,11 +1768,11 @@ Starting values each time: `third = "God Loves U"`, `fourth = "GOD BLESS U"`.
 int is_palindrome(char s[]) {
     int i = 0, j = strlen(s) - 1;
     while (i < j) {
-        if (s[i] != s[j]) return 0;  /* mismatch — not a palindrome */
+        if (s[i] != s[j]) return 0;  /* mismatch, not a palindrome */
         i++;
         j--;
     }
-    return 1;                        /* pointers met — palindrome */
+    return 1;                        /* pointers met, palindrome */
 }
 
 int main(void) {
@@ -1781,19 +1781,19 @@ int main(void) {
     return 0;
 }
 ```
-Two indexes walk inward from both ends — the same mirror-formula thinking as Lesson 5's REVERSE (`n - 1 - i`). Any mismatch ends it immediately; meeting in the middle proves it.
+Two indexes walk inward from both ends, the same mirror-formula thinking as Lesson 5's REVERSE (`n - 1 - i`). Any mismatch ends it immediately; meeting in the middle proves it.
 
 **How to Pass Tips**
 
 - `strlen` does NOT count `'\0'`; `sizeof` a char array DOES include it. Confusing the two is the top mark-loser here.
-- `strncpy(dest, src, n)` copies exactly n characters and adds no terminator when src is longer — mentioning this earns the bonus point.
-- Character tests take a CHARACTER: `isdigit('5')` is true because '5' is a digit *symbol* — its `char` value 53 has nothing to do with the number 5.
+- `strncpy(dest, src, n)` copies exactly n characters and adds no terminator when src is longer, mentioning this earns the bonus point.
+- Character tests take a CHARACTER: `isdigit('5')` is true because '5' is a digit *symbol*, its `char` value 53 has nothing to do with the number 5.
 - Work nested calls inside-out, writing each intermediate result: `sqrt(floor(25.12))` → `sqrt(25.0)` → `5.0`.
-- `strrev`, `strupr`, `strlwr`, `stricmp` are Turbo C extensions, not standard C — on gcc you write your own loop with `toupper`/`tolower`. Professors on modern compilers love this as a bonus question.
+- `strrev`, `strupr`, `strlwr`, `stricmp` are Turbo C extensions, not standard C, on gcc you write your own loop with `toupper`/`tolower`. Professors on modern compilers love this as a bonus question.
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('a1000001-0001-0001-0001-000000000007','activity','Code Lab — Lesson 7: Count the Vowels',$md$
+('a1000001-0001-0001-0001-000000000007','activity','Code Lab, Lesson 7: Count the Vowels',$md$
 **Coding Drill:** Complete `count_vowels` using `tolower` from `ctype.h` so uppercase and lowercase vowels both count. This combines the whole lesson: walking a string with `strlen`, character functions, and building your own helper the way `strrev` would be built on gcc.
 
 Expected output:
@@ -1822,7 +1822,7 @@ int main(void) {
 -- ============================================================
 -- FREE "Try It" playground teasers (Lessons 2-7, sort_order 999)
 -- Backported 2026-07-05 from the live DB, where they were added
--- directly and never existed in this file — without these rows a
+-- directly and never existed in this file, without these rows a
 -- full re-run of this seed would delete them from production.
 -- ============================================================
 

@@ -1,5 +1,5 @@
 -- ============================================================
--- Reading in Philippine History — Modules & Sections
+-- Reading in Philippine History, Modules & Sections
 -- Subject ID: 10000000-0001-0002-0002-000000000001
 -- Run after 1st_year_subjects.sql
 -- ============================================================
@@ -10,12 +10,12 @@ INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
   ('b2000001-0001-0002-0002-000000000001','10000000-0001-0002-0002-000000000001','The Meaning and Relevance of History','meaning-and-relevance-of-history',1),
   ('b2000001-0001-0002-0002-000000000002','10000000-0001-0002-0002-000000000001','Tests of Authenticity and Credibility','tests-of-authenticity-and-credibility',2),
   ('b2000001-0001-0002-0002-000000000003','10000000-0001-0002-0002-000000000001','Case Study: The Tejeros Convention of 1897','case-study-tejeros-convention',3),
-  ('b2000001-0001-0002-0002-000000000004','10000000-0001-0002-0002-000000000001','Early Philippine Chronicles — Pigafetta and Plasencia','early-philippine-chronicles',4),
-  ('b2000001-0001-0002-0002-000000000005','10000000-0001-0002-0002-000000000001','The Katipunan — Revolution and Its Documents','katipunan-revolution-documents',5),
+  ('b2000001-0001-0002-0002-000000000004','10000000-0001-0002-0002-000000000001','Early Philippine Chronicles, Pigafetta and Plasencia','early-philippine-chronicles',4),
+  ('b2000001-0001-0002-0002-000000000005','10000000-0001-0002-0002-000000000001','The Katipunan, Revolution and Its Documents','katipunan-revolution-documents',5),
   ('b2000001-0001-0002-0002-000000000006','10000000-0001-0002-0002-000000000001','Visual and Documentary Sources in Philippine History','visual-documentary-sources',6),
   ('b2000001-0001-0002-0002-000000000007','10000000-0001-0002-0002-000000000001','Historic Controversies','historic-controversies',7),
   ('b2000001-0001-0002-0002-000000000008','10000000-0001-0002-0002-000000000001','Philippine Constitutions, Indigenous Peoples, and Agrarian Reform','constitutions-ips-agrarian-reform',8),
-  ('b2000001-0001-0002-0002-000000000009','10000000-0001-0002-0002-000000000001','Colonial Legacies — Applied Historical Analysis','colonial-legacies-applied-history',9),
+  ('b2000001-0001-0002-0002-000000000009','10000000-0001-0002-0002-000000000001','Colonial Legacies, Applied Historical Analysis','colonial-legacies-applied-history',9),
   ('b2000001-0001-0002-0002-000000000010','10000000-0001-0002-0002-000000000001','Local History and Philippine Heritage','local-history-and-heritage',10);
 
 -- ============================================================
@@ -28,14 +28,14 @@ History is more than a catalogue of dates and names. When studied properly, it m
 
 The discipline of history serves several key purposes, identified by historian Peter Stearns (1998):
 
-- **Moral understanding** — History presents humanity's ethical struggles, achievements, and failures, giving readers material to develop moral judgment.
-- **Understanding people and societies** — Examining past behavior reveals patterns in how societies respond to crises, conflicts, and change.
-- **Providing identity** — Communities understand who they are partly through their shared historical experiences.
-- **Civic formation** — Informed citizenship depends on understanding how political systems, institutions, and rights were fought for and developed.
+- **Moral understanding**, History presents humanity's ethical struggles, achievements, and failures, giving readers material to develop moral judgment.
+- **Understanding people and societies**, Examining past behavior reveals patterns in how societies respond to crises, conflicts, and change.
+- **Providing identity**, Communities understand who they are partly through their shared historical experiences.
+- **Civic formation**, Informed citizenship depends on understanding how political systems, institutions, and rights were fought for and developed.
 
 ### Where to Find Historical Sources
 
-Historians don't work from imagination — they work from **sources**: the surviving records, objects, and testimonies of the past.
+Historians don't work from imagination, they work from **sources**: the surviving records, objects, and testimonies of the past.
 
 **Philippine Repositories:**
 
@@ -50,8 +50,8 @@ Because the Philippines spent over three centuries under Spanish rule, significa
 | Country | Key Archives |
 |---|---|
 | Spain | Archivo General de Indias (Seville); Archivo Histórico Nacional, Real Academia de la Historia, Biblioteca Nacional de España (all in Madrid). The government's Portal de Archivos Españoles (PARES) offers free online access to many digitized documents. |
-| Mexico | Archivo General de la Nación de México — relevant because the Philippines was under the Viceroyalty of New Spain until Mexico's independence in 1821. |
-| United Kingdom | British Museum — some Spanish-period documents were taken during the British occupation of Manila (1762–64). |
+| Mexico | Archivo General de la Nación de México, relevant because the Philippines was under the Viceroyalty of New Spain until Mexico's independence in 1821. |
+| United Kingdom | British Museum, some Spanish-period documents were taken during the British occupation of Manila (1762–64). |
 | United States | National Archives and Records Service (NARS); Library of Congress; Ayer Collection (Newberry Library, Chicago). |
 
 Online archives such as **archive.org** and **Project Gutenberg** offer a growing number of scanned primary sources freely available for download.
@@ -60,15 +60,15 @@ Online archives such as **archive.org** and **Project Gutenberg** offer a growin
 
 **Sources** are defined as artifacts left by the past. They fall into three broad categories.
 
-An **artifact** is any object made or modified by humans for their own purposes — tools, artworks, pottery, documents. An **ecofact** is archaeological evidence from nature (bones, seeds, shells) that was not shaped by humans but still tells us about past environments and cultures.
+An **artifact** is any object made or modified by humans for their own purposes, tools, artworks, pottery, documents. An **ecofact** is archaeological evidence from nature (bones, seeds, shells) that was not shaped by humans but still tells us about past environments and cultures.
 
 #### Written Sources
 
-**Primary Sources** — the direct testimony of an eyewitness, or someone who was present at the events being described. Examples: diaries, letters, official documents, newspaper articles written at the time, photographs, and video recordings.
+**Primary Sources**, the direct testimony of an eyewitness, or someone who was present at the events being described. Examples: diaries, letters, official documents, newspaper articles written at the time, photographs, and video recordings.
 
 Historian Louis Gottschalk (1950) defines a primary source as "the testimony of an eyewitness, or of a witness by any other of the senses, or of a mechanical device... that is, of one who or that which was present at the events of which he or it tells."
 
-**Secondary Sources** — produced by someone who was *not* present at the events. Examples: bibliographies, encyclopedias, journal articles, monographs, and textbooks.
+**Secondary Sources**, produced by someone who was *not* present at the events. Examples: bibliographies, encyclopedias, journal articles, monographs, and textbooks.
 
 The key distinction is **proximity to the event**. Primary sources come from inside the experience; secondary sources reflect on it from the outside.
 
@@ -76,12 +76,12 @@ The key distinction is **proximity to the event**. Primary sources come from ins
 
 Not all history is recorded in text. Three types of non-written evidence are commonly used:
 
-- **Archaeological evidence** — Artifacts and ecofacts (tools, ornaments, ruins, agricultural implements) that reveal past cultures and lifeways.
-- **Oral evidence** — Folk tales, myths, legends, folk songs, and rituals passed down through generations.
-- **Material evidence** — Photographs, artworks, videos, and sound recordings.
+- **Archaeological evidence**, Artifacts and ecofacts (tools, ornaments, ruins, agricultural implements) that reveal past cultures and lifeways.
+- **Oral evidence**, Folk tales, myths, legends, folk songs, and rituals passed down through generations.
+- **Material evidence**, Photographs, artworks, videos, and sound recordings.
 $md$, 1),
 
-('b2000001-0001-0002-0002-000000000001','activity','Activity — Designing a Research Outline',$md$
+('b2000001-0001-0002-0002-000000000001','activity','Activity, Designing a Research Outline',$md$
 Propose a title for a possible research topic in Philippine history. Formulate at least **three (3) problem statements or research questions** that your work would address. Prepare an outline showing the logical flow of your research.
 
 Using digital archives (such as archive.org, PARES, or the National Library's online collections), compile a **bibliography of at least five sources** you would use. Classify each source according to type (primary/secondary, written/unwritten).
@@ -97,7 +97,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 
 **Historical Method** is the process of rigorously examining and critically analyzing the records and survivals of the past, applying a set of scientific rules to determine whether a reconstructed event actually occurred.
 
-**Historiography** refers to the process of *writing* history — synthesizing tested data into a narrative. Before a historian begins writing, they must have completed the methodological work of examining their sources.
+**Historiography** refers to the process of *writing* history, synthesizing tested data into a narrative. Before a historian begins writing, they must have completed the methodological work of examining their sources.
 
 ### External Criticism: The Test of Authenticity
 
@@ -106,21 +106,21 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 This test is necessary because:
 1. **Sources can be fabricated.** A historical example is the alleged *Maragtas*, a document that historian William Henry Scott (1984) argued was based on suspicious oral traditions and fabricated written sources.
 2. **Negative revisionism exists.** Deliberate attempts to downplay, minimize, or distort historical events.
-3. **Sources can mislead.** Misleading sources — even unintentionally — miseducate people by distorting the value or meaning of events.
+3. **Sources can mislead.** Misleading sources, even unintentionally, miseducate people by distorting the value or meaning of events.
 
 In assessing authenticity, historians examine:
-- **Authorship** — Who created the source?
-- **Time** — When was the event? When was the source created relative to that event?
-- **Space (setting/context)** — Where did the event occur?
+- **Authorship**, Who created the source?
+- **Time**, When was the event? When was the source created relative to that event?
+- **Space (setting/context)**, Where did the event occur?
 
 ### Internal Criticism: The Test of Credibility
 
-Once authenticity is established, the historian turns to **internal criticism** — evaluating whether the source accurately represents reality.
+Once authenticity is established, the historian turns to **internal criticism**, evaluating whether the source accurately represents reality.
 
 For a source to be credible, Gottschalk (1950) suggests the historian assess:
 1. The **competence** of the source (did the author have sufficient knowledge or vantage point?)
 2. The **willingness** to tell the truth (was there reason to deceive?)
-3. The **adequacy** of the data — is the information detailed and complete enough?
+3. The **adequacy** of the data, is the information detailed and complete enough?
 4. The **reliability** when tested against other independent sources
 
 Gottschalk famously described the historian's role as playing "prosecutor, attorney for the defense, judge, and jury all in one."
@@ -161,18 +161,18 @@ Historians are expected to:
 - Never use sources to deliberately mislead or modify history for personal benefit
 $md$, 1),
 
-('b2000001-0001-0002-0002-000000000002','activity','Activity — Applying Criticism to a Document',$md$
+('b2000001-0001-0002-0002-000000000002','activity','Activity, Applying Criticism to a Document',$md$
 Locate any official document issued about you or your household (for example, a birth certificate, barangay clearance, or community record). Analyze it using the following criteria:
 
-1. **Competence and impartiality** — How capable is the issuing authority of accurately recording the information? Is there any reason it might not be impartial?
-2. **Willingness to tell the truth** — What official obligation did the issuer have to be accurate?
-3. **Adequacy of data** — Does the document provide enough information, or are there gaps?
+1. **Competence and impartiality**, How capable is the issuing authority of accurately recording the information? Is there any reason it might not be impartial?
+2. **Willingness to tell the truth**, What official obligation did the issuer have to be accurate?
+3. **Adequacy of data**, Does the document provide enough information, or are there gaps?
 
 Identify at least one other independent source you could use to corroborate this document. What does comparing the two sources tell you?
 $md$, 2);
 
 -- ============================================================
--- MODULE 3: Case Study — The Tejeros Convention of 1897
+-- MODULE 3: Case Study, The Tejeros Convention of 1897
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
@@ -194,11 +194,11 @@ The Tejeros Convention is significant to historians not only for its political o
 
 **Source 1: *Katipunan and the Revolution: Memoirs of a General* by Santiago V. Alvarez**
 
-Santiago Alvarez (1872–?) was a member of the Magdiwang faction and a direct participant in the events of the revolution. His memoirs were originally serialized in the Tagalog weekly *Sampagita* in the 1920s. Because Alvarez was present at the Tejeros Convention and was a member of the Magdiwang (Bonifacio's closer allies), his account is a **primary source** — but one with clear potential biases stemming from his political loyalties.
+Santiago Alvarez (1872–?) was a member of the Magdiwang faction and a direct participant in the events of the revolution. His memoirs were originally serialized in the Tagalog weekly *Sampagita* in the 1920s. Because Alvarez was present at the Tejeros Convention and was a member of the Magdiwang (Bonifacio's closer allies), his account is a **primary source**, but one with clear potential biases stemming from his political loyalties.
 
 **Source 2: *The Revolt of the Masses: The Story of Bonifacio and the Katipunan* by Teodoro A. Agoncillo**
 
-Teodoro Agoncillo (1912–1985) was one of the most prominent Filipino historians of the 20th century, credited with pioneering a **nationalist historiography** — the view that Philippine history must be written from a Filipino perspective, centered on the experiences of ordinary Filipinos. His book, first published in 1956, argues that the masses made the revolution possible.
+Teodoro Agoncillo (1912–1985) was one of the most prominent Filipino historians of the 20th century, credited with pioneering a **nationalist historiography**, the view that Philippine history must be written from a Filipino perspective, centered on the experiences of ordinary Filipinos. His book, first published in 1956, argues that the masses made the revolution possible.
 
 Because Agoncillo was not an eyewitness to the events, his work is a **secondary source**. However, he drew on a wide range of primary documents and is considered a major scholarly reference.
 
@@ -221,7 +221,7 @@ When comparing both accounts of the Tejeros Convention, evaluate:
 - How do the accounts compare with each other and with other independent sources?
 $md$, 1),
 
-('b2000001-0001-0002-0002-000000000003','activity','Activity — Source Comparison Matrix: Tejeros Convention',$md$
+('b2000001-0001-0002-0002-000000000003','activity','Activity, Source Comparison Matrix: Tejeros Convention',$md$
 Using the two books (Alvarez's *Katipunan and the Revolution* and Agoncillo's *Revolt of the Masses*), complete the following analysis matrices.
 
 **A. Test of Authenticity**
@@ -244,11 +244,11 @@ Based on your comparison of both sources using the above criteria: Which account
 $md$, 2);
 
 -- ============================================================
--- MODULE 4: Early Philippine Chronicles — Pigafetta and Plasencia
+-- MODULE 4: Early Philippine Chronicles, Pigafetta and Plasencia
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b2000001-0001-0002-0002-000000000004','content','Early Philippine Chronicles — Pigafetta and Plasencia',$md$
+('b2000001-0001-0002-0002-000000000004','content','Early Philippine Chronicles, Pigafetta and Plasencia',$md$
 ### The Age of Exploration and the Philippine Encounter
 
 The Age of Exploration (roughly the 15th and 16th centuries) marked a turning point for the Philippines. In 1521, Ferdinand Magellan's expedition inadvertently reached the Philippine archipelago, setting off a chain of subsequent voyages that would result in the conquest by Miguel López de Legazpi beginning in 1564–1565.
@@ -269,22 +269,22 @@ Four known manuscript versions survive:
 
 **Key Events from Pigafetta's Account**
 
-Magellan's fleet — five ships (*Victoria*, *Concepción*, *San Antonio*, *Santiago*, *Trinidad*) and approximately 270 crew — left Seville on August 10, 1519.
+Magellan's fleet, five ships (*Victoria*, *Concepción*, *San Antonio*, *Santiago*, *Trinidad*) and approximately 270 crew, left Seville on August 10, 1519.
 
 Key narrative highlights:
-- On October 21, 1520, Magellan discovered the passage between the Atlantic and Pacific Oceans — now called the **Strait of Magellan**. Only three ships made it through.
+- On October 21, 1520, Magellan discovered the passage between the Atlantic and Pacific Oceans, now called the **Strait of Magellan**. Only three ships made it through.
 - Crossing the Pacific brought immense suffering. The crew was reduced to eating leather, sawdust, and mice.
 - On **March 16, 1521**, they landed on the island of Zamal (Samar), marking the first European contact with the Philippines. Magellan named the islands the *Archipelago of St. Lazarus*.
 - Proceeding to Homonhon, they encountered Rajah Siagun and Rajah Colambu of Butuan and Caraga.
 - On March 27–28, they reached Masao (Mazaua?) in Butuan, where Magellan and Rajah Colambu performed a **blood compact**. On March 31, Mass was offered and a cross was erected.
-- They sailed to **Cebu**, arriving April 7, 1521, where they met Rajah Humabon. Over 800 natives including Humabon and his wife were baptized. The **Santo Niño** was presented as a gift — an image still venerated in Cebu today.
+- They sailed to **Cebu**, arriving April 7, 1521, where they met Rajah Humabon. Over 800 natives including Humabon and his wife were baptized. The **Santo Niño** was presented as a gift, an image still venerated in Cebu today.
 - **Lapu-Lapu** of Mactan refused to submit. Magellan led an assault on Mactan personally on April 27, 1521 and was killed in the **Battle of Mactan**.
 
 ### Fray Juan de Plasencia and the Customs of the Tagalogs
 
-Fray Juan de Plasencia, a Franciscan friar who arrived in the Philippines in 1577, wrote *Customs of the Tagalogs* (c. 1589) — one of the earliest and most detailed descriptions of Tagalog religious beliefs, social practices, and daily life.
+Fray Juan de Plasencia, a Franciscan friar who arrived in the Philippines in 1577, wrote *Customs of the Tagalogs* (c. 1589), one of the earliest and most detailed descriptions of Tagalog religious beliefs, social practices, and daily life.
 
-His account reflects the **perspective of a Spanish missionary**, which creates significant bias: Plasencia consistently frames indigenous religious practices as idolatrous or superstitious. His purpose was partly descriptive and partly evangelical — he documented practices in order to help other missionaries understand and eventually replace them.
+His account reflects the **perspective of a Spanish missionary**, which creates significant bias: Plasencia consistently frames indigenous religious practices as idolatrous or superstitious. His purpose was partly descriptive and partly evangelical, he documented practices in order to help other missionaries understand and eventually replace them.
 
 **Key Topics in Plasencia's Account**
 
@@ -317,16 +317,16 @@ The deceased was buried beside their house. The Tagalogs believed in an afterlif
 > **Note:** The term "Priest of the Devil" reflects Plasencia's colonial-Christian framing. These roles were understood very differently within Tagalog culture itself.
 $md$, 1),
 
-('b2000001-0001-0002-0002-000000000004','activity','Activity — Analyzing Pigafetta and Plasencia',$md$
+('b2000001-0001-0002-0002-000000000004','activity','Activity, Analyzing Pigafetta and Plasencia',$md$
 1. Using a world map and a Philippine map, trace the route of the Magellan expedition from Seville (1519) to the Philippines and back.
 
 2. Explain why Pigafetta's account of the Magellan expedition is considered an essential primary source. What are its strengths? What are its limitations as a source about pre-colonial Filipinos?
 
-3. Analyze Fray de Plasencia's *Customs of the Tagalogs*: focusing on his description of Tagalog religious beliefs and worship practices, does the language he uses suggest any bias? How does Plasencia's perspective compare to that of Antonio de Morga in his *Sucesos de las Islas Filipinas* — another Spanish colonial account — in terms of how each author treats their subject?
+3. Analyze Fray de Plasencia's *Customs of the Tagalogs*: focusing on his description of Tagalog religious beliefs and worship practices, does the language he uses suggest any bias? How does Plasencia's perspective compare to that of Antonio de Morga in his *Sucesos de las Islas Filipinas*, another Spanish colonial account, in terms of how each author treats their subject?
 $md$, 2);
 
 -- ============================================================
--- MODULE 5: The Katipunan — Revolution and Its Documents
+-- MODULE 5: The Katipunan, Revolution and Its Documents
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
@@ -347,7 +347,7 @@ Despite never completing a formal university degree, Jacinto was intellectually 
 
 The Kartilya is a primary source containing the oaths and guiding principles that Katipunan members were required to follow. British scholar Jim Richardson (2013) notes it was sold at four *kualta* per copy and continued to circulate even after the revolution shifted to resisting American control.
 
-Richardson distinguishes the Kartilya from Bonifacio's own *Decalogue*: Jacinto's Kartilya was more expansive, focusing on **aspirations and moral values** — the kind of person a Katipunero should aspire to be, rather than simply listing obligations.
+Richardson distinguishes the Kartilya from Bonifacio's own *Decalogue*: Jacinto's Kartilya was more expansive, focusing on **aspirations and moral values**, the kind of person a Katipunero should aspire to be, rather than simply listing obligations.
 
 Key principles stressed in the Kartilya:
 - Love of country as a supreme obligation
@@ -368,14 +368,14 @@ Key principles stressed in the Kartilya:
 The **Philippine Declaration of Independence** was proclaimed by Emilio Aguinaldo on **June 12, 1898**, at his ancestral house in Kawit, Cavite. This proclamation came in the context of the Spanish-American War, during which U.S. naval forces under Commodore George Dewey had destroyed the Spanish fleet in Manila Bay on May 1, 1898.
 
 The declaration document, known formally as the **Acta de la Proclamación de la Independencia del Pueblo Filipino**, was written and publicly read by **Ambrocio Rianzares Bautista** before a crowd of thousands. At the same occasion:
-- The Philippine flag — sewn in Hong Kong — was raised and waved publicly for the first time
+- The Philippine flag, sewn in Hong Kong, was raised and waved publicly for the first time
 - The national anthem was performed for the first time by composer **Julian Felipe**
 
 #### Points of Historical Interest and Controversy
 
 1. **Aguinaldo's missing signature.** Of the 98 signatories, Aguinaldo's signature does not appear (Ocampo, 2020). The reasons remain a subject of historical discussion.
 2. **American presence.** Commodore Dewey was invited but did not appear. An American military officer, Colonel L.M. Johnson, was among the signatories.
-3. **Apolinario Mabini's opposition.** Mabini considered the proclamation "reckless and premature." He believed the Philippines was not yet ready — it needed more weapons and ammunition.
+3. **Apolinario Mabini's opposition.** Mabini considered the proclamation "reckless and premature." He believed the Philippines was not yet ready, it needed more weapons and ammunition.
 4. **Absence of immediate ratification.** The declaration was not immediately promulgated into law or recognized internationally.
 
 > **Note:** The full text of the *Acta de la Proclamación* (English translation by Sulpicio Guevara) is available through the Official Gazette of the Philippines online.
@@ -400,8 +400,8 @@ On **January 23, 1899**, the **First Republic of the Philippines** was inaugurat
 > **Note:** The full text of the Malolos Constitution is accessible through the Official Gazette of the Philippines online.
 $md$, 1),
 
-('b2000001-0001-0002-0002-000000000005','activity','Activities — Katipunan and Revolution Documents',$md$
-## Activity A — Reflecting on the Kartilya
+('b2000001-0001-0002-0002-000000000005','activity','Activities, Katipunan and Revolution Documents',$md$
+## Activity A, Reflecting on the Kartilya
 
 After reading the full text of the Kartilya ng Katipunan (available in Richardson, 2013, or accessible through digital archives):
 
@@ -411,7 +411,7 @@ After reading the full text of the Kartilya ng Katipunan (available in Richardso
 
 ---
 
-## Activity B — Analyzing the Declaration as a Source
+## Activity B, Analyzing the Declaration as a Source
 
 After reading the full text of the *Acta de la Proclamación* (available online at the Official Gazette or through Guevara, 1972):
 
@@ -433,7 +433,7 @@ After reading the full text of the *Acta de la Proclamación* (available online 
 
 ---
 
-## Activity C — Comparing Constitutional Provisions
+## Activity C, Comparing Constitutional Provisions
 
 Access the texts of the Philippine constitutions through the Official Gazette and complete the matrix below. For each comparison point, identify at least one similarity and one difference.
 
@@ -453,7 +453,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('b2000001-0001-0002-0002-000000000006','content','Visual and Documentary Sources in Philippine History',$md$
 ### Lesson 1: Visual Sources in the Study of History
 
-History is not recorded only in written texts. Visual sources — photographs, paintings, drawings, maps, and political cartoons — are also primary sources that reveal how people saw, experienced, and represented the world around them.
+History is not recorded only in written texts. Visual sources, photographs, paintings, drawings, maps, and political cartoons, are also primary sources that reveal how people saw, experienced, and represented the world around them.
 
 Like any primary source, visual sources carry the biases and perspectives of their creators. Reading them critically requires asking: *Who created this? For what audience? With what purpose?*
 
@@ -465,29 +465,29 @@ The book *Political Cartoons: Political Caricature of the American Era, 1901–1
 
 **Key themes depicted in these cartoons:**
 
-- **Unequal pay** — Cartoons from *The Independent* (1915) and *Bag-ong Kusog* (1928) criticized the salary gap between American and Filipino workers doing equivalent jobs.
-- **Power dynamics between colonizer and colonized** — A cartoon from *Lipag Kalabaw* (November 14, 1908) depicted Juan dela Cruz (representing the Filipino) questioning Uncle Sam (representing the United States) about restrictions on freedom of speech. The relative size and posture of the figures visually communicated the colonial power imbalance.
-- **Anti-friar sentiment** — Even as Spanish influence waned politically, cartoonists mercilessly satirized the continued political power of the Catholic friars.
-- **Filipino politicians and corruption** — Manila's political class was repeatedly depicted as self-serving and corrupt.
-- **Anti-Chinese and later anti-Japanese sentiment** — Cartoonists turned critical attention toward Chinese merchants (during the rice crisis of 1919) and later toward Japan's expanding military ambitions.
+- **Unequal pay**, Cartoons from *The Independent* (1915) and *Bag-ong Kusog* (1928) criticized the salary gap between American and Filipino workers doing equivalent jobs.
+- **Power dynamics between colonizer and colonized**, A cartoon from *Lipag Kalabaw* (November 14, 1908) depicted Juan dela Cruz (representing the Filipino) questioning Uncle Sam (representing the United States) about restrictions on freedom of speech. The relative size and posture of the figures visually communicated the colonial power imbalance.
+- **Anti-friar sentiment**, Even as Spanish influence waned politically, cartoonists mercilessly satirized the continued political power of the Catholic friars.
+- **Filipino politicians and corruption**, Manila's political class was repeatedly depicted as self-serving and corrupt.
+- **Anti-Chinese and later anti-Japanese sentiment**, Cartoonists turned critical attention toward Chinese merchants (during the rice crisis of 1919) and later toward Japan's expanding military ambitions.
 
 #### Juan Luna and the Spoliarium
 
 **Juan Luna** (1857–1899) was born in Badoc, Ilocos Norte and is remembered as one of the Philippines' greatest painters. His most celebrated masterpiece, the **Spoliarium**, depicts the aftermath of gladiatorial combat in ancient Rome. The painting measures 4.22 × 7.675 meters and is the largest painting in the Philippines.
 
-Technically, the Spoliarium is notable for its dramatic use of **chiaroscuro** — the contrasting of light and dark — which highlights mangled bodies against a dark, oppressive background.
+Technically, the Spoliarium is notable for its dramatic use of **chiaroscuro**, the contrasting of light and dark, which highlights mangled bodies against a dark, oppressive background.
 
-Allegorically, José Rizal interpreted the Spoliarium as a representation of the condition of the Philippines under colonial rule — humanity unredeemed, idealism in struggle against injustice. Rizal declared that "genius knows no country; genius sprouts everywhere."
+Allegorically, José Rizal interpreted the Spoliarium as a representation of the condition of the Philippines under colonial rule, humanity unredeemed, idealism in struggle against injustice. Rizal declared that "genius knows no country; genius sprouts everywhere."
 
 #### Fernando Amorsolo: Landscape and War
 
 **Fernando Amorsolo** (1892–1972) was named National Artist in Painting in 1972.
 
 During World War II, Amorsolo shifted from his signature luminous landscapes of rural Filipino life to witnessing and painting the destruction brought by war:
-- **The Bombing of the Intendencia** — painted from his house as he observed the burning of the colonial customs building
-- **The Burning of Manila** — depicts the widespread destruction of the capital during the Japanese occupation
+- **The Bombing of the Intendencia**, painted from his house as he observed the burning of the colonial customs building
+- **The Burning of Manila**, depicts the widespread destruction of the capital during the Japanese occupation
 
-His earlier painting **Planting Rice** (1951) became iconic — a luminous depiction of women working in ricefields.
+His earlier painting **Planting Rice** (1951) became iconic, a luminous depiction of women working in ricefields.
 
 ---
 
@@ -495,7 +495,7 @@ His earlier painting **Planting Rice** (1951) became iconic — a luminous depic
 
 A **documentary film** occupies a complex place in historical source typology:
 - If it contains actual footage, recordings, or interviews from the period being studied, that footage may constitute a primary source
-- The documentary itself as a curated, edited work is a **secondary source** — the filmmaker's interpretation of events
+- The documentary itself as a curated, edited work is a **secondary source**, the filmmaker's interpretation of events
 - Like all secondary sources, documentaries must be examined for selection bias, editorial choices, and the perspectives the filmmaker privileges or omits
 
 When evaluating any documentary as a historical source, ask:
@@ -506,7 +506,7 @@ When evaluating any documentary as a historical source, ask:
 - Does the evidence it presents support its conclusions?
 $md$, 1),
 
-('b2000001-0001-0002-0002-000000000006','activity','Activity — Reading a Visual Source',$md$
+('b2000001-0001-0002-0002-000000000006','activity','Activity, Reading a Visual Source',$md$
 Select any one of the following:
 - A political cartoon from a Philippine newspaper of the American period (available through archive.org)
 - The painting *Spoliarium* by Juan Luna (viewable at the National Museum of the Philippines' online collection)
@@ -532,7 +532,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 
 One of the most debated questions in Philippine colonial history is: *Where did the first Easter Mass on Philippine soil take place?* The two main competing claims are **Limasawa** (Southern Leyte) and **Butuan** (Agusan del Norte).
 
-The debate is based on **Pigafetta's account** of the Magellan expedition, specifically his identification of a location he called "Mazaua" or "Masao" — the place where Magellan's crew first heard Mass in the Philippines on March 31, 1521.
+The debate is based on **Pigafetta's account** of the Magellan expedition, specifically his identification of a location he called "Mazaua" or "Masao", the place where Magellan's crew first heard Mass in the Philippines on March 31, 1521.
 
 #### The Historical Backdrop
 
@@ -552,7 +552,7 @@ Proponents argue that Mazaua refers to Masao in Butuan, Agusan del Norte. They p
 The Gancayco Report concluded in favor of Limasawa based on assessment of sailing routes, land forms, river deltas, and geographical location. This report was used as a basis by the NHCP for decades.
 
 **The Mojares Panel (2018–2019):**
-In preparation for the 500th anniversary of the arrival of Christianity in the Philippines, the NHCP and the National Quincentennial Committee created a new panel chaired by Dr. Resil Mojares. Two respondents, Gabriel Atega and Dr. Potenciano Malvar, both argued in favor of Butuan but from different directions, noting that from heights near an 1872 monument in Magallanes, Agusan del Norte, Camiguin Island appears as three visible "mountains" to the west-southwest — aligning with accounts of three islands visible from the location of the cross-planting.
+In preparation for the 500th anniversary of the arrival of Christianity in the Philippines, the NHCP and the National Quincentennial Committee created a new panel chaired by Dr. Resil Mojares. Two respondents, Gabriel Atega and Dr. Potenciano Malvar, both argued in favor of Butuan but from different directions, noting that from heights near an 1872 monument in Magallanes, Agusan del Norte, Camiguin Island appears as three visible "mountains" to the west-southwest, aligning with accounts of three islands visible from the location of the cross-planting.
 
 **The controversy remains unresolved** at the scholarly level and continues to be a subject of active historical debate.
 
@@ -564,7 +564,7 @@ In preparation for the 500th anniversary of the arrival of Christianity in the P
 
 The **Cavite Mutiny** (*La Algarada Caviteña*) was a brief uprising of Filipino soldiers and laborers serving the Spanish armed forces at **Fort San Felipe** in Cavite Province on January 20, 1872. The mutineers believed their action could spark a wider national uprising, but the Spanish military crushed it within hours.
 
-The most consequential result was the arrest, trial, and public execution on **February 17, 1872** of three priests prominent in the movement for secularization — the transfer of parishes from Spanish friars to Filipino secular clergy:
+The most consequential result was the arrest, trial, and public execution on **February 17, 1872** of three priests prominent in the movement for secularization, the transfer of parishes from Spanish friars to Filipino secular clergy:
 
 - **Fr. Mariano Gómez** (age 73)
 - **Fr. José Burgos** (age 35)
@@ -576,13 +576,13 @@ Known collectively as **GOMBURZA**, the three were executed by garrote at Bagumb
 
 Three surviving accounts of the Cavite Mutiny, all translated and published by historian Gregorio Zaide (1990) in *Documentary Sources of Philippine History*, demonstrate sharply different perspectives:
 
-**1. The Spanish Version — José Montero y Vidal**
-A Spanish government official in Manila. His account is heavily biased against Filipinos and the Jesuits, largely supporting the official position of Governor-General Izquierdo. American historian James LeRoy observed that Montero y Vidal became notably "rabid" in his treatment of the Cavite events — strongly condemning the executed priests.
+**1. The Spanish Version, José Montero y Vidal**
+A Spanish government official in Manila. His account is heavily biased against Filipinos and the Jesuits, largely supporting the official position of Governor-General Izquierdo. American historian James LeRoy observed that Montero y Vidal became notably "rabid" in his treatment of the Cavite events, strongly condemning the executed priests.
 
-**2. The Filipino Version — T.H. Pardo de Tavera**
+**2. The Filipino Version, T.H. Pardo de Tavera**
 This account represents an effort to contextualize the mutiny from a reformist Filipino perspective.
 
-**3. The Official Report — Governor-General Rafael de Izquierdo**
+**3. The Official Report, Governor-General Rafael de Izquierdo**
 The colonial government's official account, reflecting the administration's decision to portray the mutiny as a widespread conspiracy to justify its repressive response.
 
 > **Note:** Students are directed to access the three accounts through Zaide's *Documentary Sources of Philippine History* (Vol. 7, National Bookstore, 1990) or through Philippine archives.
@@ -592,8 +592,8 @@ The colonial government's official account, reflecting the administration's deci
 The Cavite Mutiny and the execution of GOMBURZA illustrate a key theme in Philippine history: how colonial authorities used perceived threats as justification for suppression, and how that suppression could generate new forms of resistance. The memory of GOMBURZA directly inspired the Propaganda Movement and, ultimately, the Revolution of 1896.
 $md$, 1),
 
-('b2000001-0001-0002-0002-000000000007','activity','Activities — Historic Controversies',$md$
-## Activity A — Controversy Analysis: The First Mass
+('b2000001-0001-0002-0002-000000000007','activity','Activities, Historic Controversies',$md$
+## Activity A, Controversy Analysis: The First Mass
 
 1. Create a Venn diagram comparing the arguments used by the Limasawa side and the Butuan side in claiming that the first Mass occurred in their respective localities. What evidence do they share? What is unique to each?
 
@@ -603,7 +603,7 @@ $md$, 1),
 
 ---
 
-## Activity B — Comparing Accounts of the Cavite Mutiny
+## Activity B, Comparing Accounts of the Cavite Mutiny
 
 Using the three versions of the Cavite Mutiny (Montero y Vidal, Pardo de Tavera, and de Izquierdo), fill in the matrix below:
 
@@ -629,15 +629,15 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 
 The Philippines has had multiple constitutions, each reflecting the political circumstances of its time:
 
-**The Malolos Constitution (1899)** — The first Philippine constitution, drafted by the Malolos Congress and promulgated on January 21, 1899. Established the First Philippine Republic and is celebrated as the first republican constitution in Asia. The republic was short-lived: the Philippine-American War (1899–1902) ended Filipino sovereignty.
+**The Malolos Constitution (1899)**, The first Philippine constitution, drafted by the Malolos Congress and promulgated on January 21, 1899. Established the First Philippine Republic and is celebrated as the first republican constitution in Asia. The republic was short-lived: the Philippine-American War (1899–1902) ended Filipino sovereignty.
 
-**The 1935 Commonwealth Constitution** — Following decades of American colonial administration, the Philippine Commonwealth was established under the Tydings-McDuffie Act (1934). The 1935 Constitution provided for a strong executive, a bicameral legislature (Senate and House of Representatives), and an independent judiciary. Manuel Quezon became the first Commonwealth President.
+**The 1935 Commonwealth Constitution**, Following decades of American colonial administration, the Philippine Commonwealth was established under the Tydings-McDuffie Act (1934). The 1935 Constitution provided for a strong executive, a bicameral legislature (Senate and House of Representatives), and an independent judiciary. Manuel Quezon became the first Commonwealth President.
 
-**The 1943 Japanese-Sponsored Constitution** — During the Japanese occupation (1941–1945), a puppet Philippine Republic was established. The 1943 Constitution governed this republic under Jose P. Laurel. It was generally dismissed as illegitimate by Filipino resistance movements, as it was imposed by an occupying foreign power.
+**The 1943 Japanese-Sponsored Constitution**, During the Japanese occupation (1941–1945), a puppet Philippine Republic was established. The 1943 Constitution governed this republic under Jose P. Laurel. It was generally dismissed as illegitimate by Filipino resistance movements, as it was imposed by an occupying foreign power.
 
-**The 1973 Constitution (Marcos Period)** — Following the declaration of Martial Law on September 21, 1972, a new constitution was ratified under controversial circumstances in January 1973. Critics argued it was ratified through staged Citizens' Assemblies. It concentrated power in the executive and allowed Marcos to rule by decree without legislative oversight.
+**The 1973 Constitution (Marcos Period)**, Following the declaration of Martial Law on September 21, 1972, a new constitution was ratified under controversial circumstances in January 1973. Critics argued it was ratified through staged Citizens' Assemblies. It concentrated power in the executive and allowed Marcos to rule by decree without legislative oversight.
 
-**The 1987 Constitution** — Drafted by a Constitutional Commission following the 1986 People Power Revolution, which ousted Marcos and brought Corazon Aquino to power. Ratified on February 2, 1987, it restored democratic governance, reestablished the Senate, and introduced significant protections for civil liberties and human rights. A distinguishing feature is its extensive treatment of **social justice** as a core constitutional value.
+**The 1987 Constitution**, Drafted by a Constitutional Commission following the 1986 People Power Revolution, which ousted Marcos and brought Corazon Aquino to power. Ratified on February 2, 1987, it restored democratic governance, reestablished the Senate, and introduced significant protections for civil liberties and human rights. A distinguishing feature is its extensive treatment of **social justice** as a core constitutional value.
 
 As Constitutional Commission President Justice Cecilia Muñoz-Palma stated: "Social justice is the heart of the 1987 Constitution." Social justice, as defined in the landmark *Calalang v. Williams* case by Justice José Laurel, means the humanization of laws and the equalization of social and economic forces so that justice may be approximated for all.
 
@@ -659,7 +659,7 @@ The Philippines is home to approximately **110 ethno-linguistic groups** compris
 
 **Distribution of Indigenous Peoples:**
 - **Mindanao:** approximately 61% of the IP population; includes the Lumad (18 non-Muslim IP groups; *Lumad* is a Visayan word meaning "of the land") and the Moro Peoples (seven Islamized groups)
-- **Northern Luzon (Cordillera Administrative Region):** approximately 33%; includes the Igorot peoples (Ifugao, Ibaloy, Bontoc, Isneg, Tinguia, Kankanaey — *Igorot* meaning "people from the mountain")
+- **Northern Luzon (Cordillera Administrative Region):** approximately 33%; includes the Igorot peoples (Ifugao, Ibaloy, Bontoc, Isneg, Tinguia, Kankanaey, *Igorot* meaning "people from the mountain")
 - **Visayas and other regions:** the remaining percentage, including the Mangyan of Mindoro
 
 #### Historical Context: Colonialism and Classification
@@ -686,9 +686,9 @@ In 1998, the **National Commission on Indigenous Peoples (NCIP)** was created to
 
 **Agrarian reform** refers to the redistribution of land to landless farmers and farm workers, together with the support services needed to make such redistribution effective.
 
-**Spanish Colonial Period:** The *encomienda* system and later the *hacienda* system concentrated large tracts of agricultural land in the hands of the Church, Spanish nobles, and the colonial government. Filipino farmers worked as tenants under arrangements that extracted a large portion of their harvests — creating a deeply embedded system of landlordism.
+**Spanish Colonial Period:** The *encomienda* system and later the *hacienda* system concentrated large tracts of agricultural land in the hands of the Church, Spanish nobles, and the colonial government. Filipino farmers worked as tenants under arrangements that extracted a large portion of their harvests, creating a deeply embedded system of landlordism.
 
-**American Period:** The Americans initially promised land reforms but largely maintained the hacienda structure. The *friar lands* were purchased by the colonial government and resold — but often to wealthy Filipinos or companies rather than to the tenant farmers.
+**American Period:** The Americans initially promised land reforms but largely maintained the hacienda structure. The *friar lands* were purchased by the colonial government and resold, but often to wealthy Filipinos or companies rather than to the tenant farmers.
 
 **Commonwealth and Post-War Period:** The **Land Reform Act of 1955** and **Agricultural Land Reform Code of 1963** (Republic Act 3844) were significant attempts but fell short of substantive redistribution.
 
@@ -698,18 +698,18 @@ In 1998, the **National Commission on Indigenous Peoples (NCIP)** was created to
 $md$, 1);
 
 -- ============================================================
--- MODULE 9: Colonial Legacies — Applied Historical Analysis
+-- MODULE 9: Colonial Legacies, Applied Historical Analysis
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b2000001-0001-0002-0002-000000000009','content','Colonial Legacies — Applied Historical Analysis',$md$
+('b2000001-0001-0002-0002-000000000009','content','Colonial Legacies, Applied Historical Analysis',$md$
 ### Lesson 1: Bridges in 19th-Century Philippines as Historical Sources
 
 #### Bridges as Material Evidence
 
-Colonial-era bridges were built primarily using **cut stone** sourced from local geological materials — volcanic rock, limestone, and similar formations. The mortar (*argamasa*) was made from powdered lime mixed with water; to increase durability, local materials were sometimes added: plant sap, molasses, and egg white.
+Colonial-era bridges were built primarily using **cut stone** sourced from local geological materials, volcanic rock, limestone, and similar formations. The mortar (*argamasa*) was made from powdered lime mixed with water; to increase durability, local materials were sometimes added: plant sap, molasses, and egg white.
 
-The architectural style is described as **Arquitectura Mestiza** — "mixed architecture," a term used by the Jesuit Ignacio Alcina as early as 1668 to describe the blend of European design with Philippine materials and labor. The designs were originally European; the construction workers were primarily Filipino *polistas* (those fulfilling labor obligations under the colonial *polo y servicios* system).
+The architectural style is described as **Arquitectura Mestiza**, "mixed architecture," a term used by the Jesuit Ignacio Alcina as early as 1668 to describe the blend of European design with Philippine materials and labor. The designs were originally European; the construction workers were primarily Filipino *polistas* (those fulfilling labor obligations under the colonial *polo y servicios* system).
 
 **What Bridges Reveal:**
 
@@ -722,32 +722,32 @@ Notable surviving colonial bridges include the **Puente de Malagonlong** in Taya
 
 ---
 
-### Lesson 2: The "Moro" Problem — Origins and Persistence
+### Lesson 2: The "Moro" Problem, Origins and Persistence
 
 #### Understanding the Term
 
 Before the arrival of the Spaniards in 1565, Muslims in the Philippines were among the most politically powerful groups in the archipelago. Islam had spread through Mindanao, the Sulu Archipelago, Palawan, and even parts of Luzon and the Visayas.
 
-The Spanish brought with them a centuries-long conflict with Muslims rooted in the Iberian Peninsula. During the **Conquista** and the subsequent **Reconquista**, the Spanish developed deep antipathy toward Muslims, whom they called **Moros** — a term derived from the North African peoples ("Moors") who had invaded Spain. When they encountered Muslim communities in the Philippines, the Spaniards automatically applied this label, framing Muslim Filipinos as their natural enemies despite the fact that Philippine Muslims had no connection whatsoever to the North African Moors.
+The Spanish brought with them a centuries-long conflict with Muslims rooted in the Iberian Peninsula. During the **Conquista** and the subsequent **Reconquista**, the Spanish developed deep antipathy toward Muslims, whom they called **Moros**, a term derived from the North African peoples ("Moors") who had invaded Spain. When they encountered Muslim communities in the Philippines, the Spaniards automatically applied this label, framing Muslim Filipinos as their natural enemies despite the fact that Philippine Muslims had no connection whatsoever to the North African Moors.
 
 #### Origins of the Conflict
 
 Mutual hostility between the Spanish colonial state and Muslim Filipino communities developed through several mechanisms:
 - The Spaniards subjected Philippine Muslim communities to repeated military campaigns (*Moro Wars*), attempting to break Muslim political autonomy
 - Muslims were categorically labeled in colonial historiography as backward, violent, and opposed to civilization
-- In response, Muslim communities launched raids against Christianized coastal settlements — partly for economic resources and partly as an assertion of autonomy against colonial encroachment
+- In response, Muslim communities launched raids against Christianized coastal settlements, partly for economic resources and partly as an assertion of autonomy against colonial encroachment
 
 From the Muslim perspective, these raids were acts of self-defense. From the Spanish and Christianized Filipino perspective, they were unprovoked piracy.
 
 #### The American Period and After
 
-When the Philippines transferred to American sovereignty following the Spanish-American War (1898), the Moro problem was inherited rather than resolved. Through the **Bates Treaty** (1899), the Sultan of Sulu formally recognized American sovereignty — though with significant reservations.
+When the Philippines transferred to American sovereignty following the Spanish-American War (1898), the Moro problem was inherited rather than resolved. Through the **Bates Treaty** (1899), the Sultan of Sulu formally recognized American sovereignty, though with significant reservations.
 
 After independence in 1946, the integration of Muslim Mindanao remained deeply contested. A 1963 Senate Committee report identified the root causes of Muslim discontent as: (1) land problems, (2) educational disparity, (3) lack of livelihood, and (4) inadequate health and transportation infrastructure. By the 1960s and 1970s, the Moro Problem had escalated to armed separatism, with groups like the Moro National Liberation Front (MNLF) demanding an independent Muslim homeland.
 
 ---
 
-### Lesson 3: The Claveria Decree of 1849 — Surnames and Colonial Public Order
+### Lesson 3: The Claveria Decree of 1849, Surnames and Colonial Public Order
 
 #### Why Do Filipinos Have the Surnames They Do?
 
@@ -759,17 +759,17 @@ Before 1849, Filipinos had no systematic, enforced system of surnames. Many peop
 
 #### The Decree of November 21, 1849
 
-Governor-General Narciso Claveria issued a decree requiring the native population to adopt surnames from an officially compiled catalogue — a list drawn from Spanish vocabulary, place names, historical figures, and nature. The catalogue was distributed to each municipality in alphabetical order; municipalities were assigned to use a specific portion of the list to distinguish residents of different towns.
+Governor-General Narciso Claveria issued a decree requiring the native population to adopt surnames from an officially compiled catalogue, a list drawn from Spanish vocabulary, place names, historical figures, and nature. The catalogue was distributed to each municipality in alphabetical order; municipalities were assigned to use a specific portion of the list to distinguish residents of different towns.
 
 The implementation was uneven. The decree's purpose was as much about **administrative control** as cultural transformation: by creating stable, trackable family identities, the colonial government improved its capacity to levy taxes, track legal obligations, and administer the population.
 
 ---
 
-### Lesson 4: The School Curriculum in the Philippines — Historical Development
+### Lesson 4: The School Curriculum in the Philippines, Historical Development
 
 #### Pre-Colonial Education
 
-Before Spanish colonization, education in the Philippines was informal and community-based. Literacy in the indigenous **Baybayin** script existed among the Tagalogs and other groups. Children were taught practical skills — farming, fishing, weaving, navigation, and trade — by their families and communities.
+Before Spanish colonization, education in the Philippines was informal and community-based. Literacy in the indigenous **Baybayin** script existed among the Tagalogs and other groups. Children were taught practical skills, farming, fishing, weaving, navigation, and trade, by their families and communities.
 
 #### Education Under Spanish Colonial Rule
 
@@ -780,10 +780,10 @@ The Spanish colonial education system was primarily an instrument of **religious
 Beginning in 1901, the colonial government deployed over a thousand American teachers (popularly known as the **Thomasites**, after the ship *Thomas* that brought many of them) to establish a public school system.
 
 Key features:
-- **English as the medium of instruction** — English displaced Filipino languages in the classroom
-- **Mass public education** — The colonial government built thousands of schools across the archipelago
-- **Secular curriculum** — Unlike the Spanish system, American colonial education was not Church-controlled
-- **Americanization** — The curriculum promoted American values, institutions, and cultural norms
+- **English as the medium of instruction**, English displaced Filipino languages in the classroom
+- **Mass public education**, The colonial government built thousands of schools across the archipelago
+- **Secular curriculum**, Unlike the Spanish system, American colonial education was not Church-controlled
+- **Americanization**, The curriculum promoted American values, institutions, and cultural norms
 
 #### Post-Independence and Contemporary Curriculum
 
@@ -794,8 +794,8 @@ After independence in 1946, the Philippines inherited the American-designed educ
 - The **K-12 program** (implemented 2012–2016) added two years to the secondary school cycle, bringing the Philippines into alignment with international standards
 $md$, 1),
 
-('b2000001-0001-0002-0002-000000000009','activity','Activities — Colonial Legacies',$md$
-## Activity A — Local Infrastructure as Historical Source
+('b2000001-0001-0002-0002-000000000009','activity','Activities, Colonial Legacies',$md$
+## Activity A, Local Infrastructure as Historical Source
 
 Select a specific bridge, building, road, or other infrastructure near your area. Using primary and secondary sources:
 
@@ -805,9 +805,9 @@ Select a specific bridge, building, road, or other infrastructure near your area
 
 ---
 
-## Activity B — Examining Perceptions of Muslims
+## Activity B, Examining Perceptions of Muslims
 
-1. Conduct a brief interview with three or more members of your household or community. Ask: (a) What words or images come to mind when you hear the term "Muslim" or "Moro"? (b) Where do you think these perceptions come from — school, media, personal experience, or community?
+1. Conduct a brief interview with three or more members of your household or community. Ask: (a) What words or images come to mind when you hear the term "Muslim" or "Moro"? (b) Where do you think these perceptions come from, school, media, personal experience, or community?
 
 2. Based on the interviews and the history presented in this lesson, write a short narrative assessing whether the negative historical framing of Filipino Muslims continues to influence perceptions in your community today. What historical factors have shaped this perception?
 $md$, 2);
@@ -822,28 +822,28 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 
 #### What Is Local History?
 
-**Local history** is the "unheard history" of communities and localities — the collective experiences and testimonies of ordinary people, places, and institutions that conventional national history has often overlooked. Local history decentralizes historical inquiry: instead of starting from centers of political power (capitals, rulers, major figures), it begins from the ground up — from the lives and events of communities, towns, and regions.
+**Local history** is the "unheard history" of communities and localities, the collective experiences and testimonies of ordinary people, places, and institutions that conventional national history has often overlooked. Local history decentralizes historical inquiry: instead of starting from centers of political power (capitals, rulers, major figures), it begins from the ground up, from the lives and events of communities, towns, and regions.
 
 This is distinct from **oral history**, though related to it. Oral history refers specifically to the transmission of historical experience through spoken word across generations.
 
 #### Why Local History Matters
 
-For much of the history of historical writing in the Philippines, scholars focused predominantly on the national narrative centered on Manila, on prominent political figures, and on major events. Regional and community experiences — the Cebuanos, the Igorots, the Visayans, the farmers and fishermen — received relatively little attention.
+For much of the history of historical writing in the Philippines, scholars focused predominantly on the national narrative centered on Manila, on prominent political figures, and on major events. Regional and community experiences, the Cebuanos, the Igorots, the Visayans, the farmers and fishermen, received relatively little attention.
 
 The growing field of local history helps to:
-1. **Fill the gaps** — Illuminate events, communities, and experiences absent from the national narrative
-2. **Correct imbalances** — Provide historical voice to groups marginalized in conventional accounts
-3. **Strengthen local identity** — Help communities understand their own roots and contributions to the larger national story
-4. **Support national development** — As local governments gained greater autonomy under the Local Government Code, local history provides cultural and historical context for communities to understand and shape their own development
+1. **Fill the gaps**, Illuminate events, communities, and experiences absent from the national narrative
+2. **Correct imbalances**, Provide historical voice to groups marginalized in conventional accounts
+3. **Strengthen local identity**, Help communities understand their own roots and contributions to the larger national story
+4. **Support national development**, As local governments gained greater autonomy under the Local Government Code, local history provides cultural and historical context for communities to understand and shape their own development
 
 #### Standards for Writing Local History
 
-1. **Authentic** — Original in approach; not a duplication of existing work
-2. **Accurate** — Correct in factual details
-3. **Objective** — As impartial as possible; avoid excessive use of subjective adjectives and superlatives
-4. **Reliable** — Supported by properly authenticated and credible sources
-5. **Relevant** — Addresses questions or gaps of genuine interest and value
-6. **Systematic/Scientific** — Follows established research methods; applies external and internal criticism to all sources
+1. **Authentic**, Original in approach; not a duplication of existing work
+2. **Accurate**, Correct in factual details
+3. **Objective**, As impartial as possible; avoid excessive use of subjective adjectives and superlatives
+4. **Reliable**, Supported by properly authenticated and credible sources
+5. **Relevant**, Addresses questions or gaps of genuine interest and value
+6. **Systematic/Scientific**, Follows established research methods; applies external and internal criticism to all sources
 
 #### Sources for Local History
 
@@ -874,22 +874,22 @@ The growing field of local history helps to:
 
 #### UNESCO's Three Categories of Heritage
 
-**1. Cultural Heritage** — has two types:
-- *Tangible Cultural Heritage* — Physical, material objects and sites:
+**1. Cultural Heritage**, has two types:
+- *Tangible Cultural Heritage*, Physical, material objects and sites:
   - **Movable:** Paintings, artifacts, coins, manuscripts
   - **Immovable:** Monuments, historic buildings, archaeological sites, sacred landscapes
   - **Underwater:** Shipwrecks, submerged ruins
-- *Intangible Cultural Heritage* — Living practices and expressions passed from generation to generation: oral traditions, performing arts, rituals, indigenous knowledge, craftsmanship
+- *Intangible Cultural Heritage*, Living practices and expressions passed from generation to generation: oral traditions, performing arts, rituals, indigenous knowledge, craftsmanship
 
-**2. Natural Heritage** — Natural features and formations of outstanding physical, biological, or geological value: landscapes, geological formations, habitats of threatened species
+**2. Natural Heritage**, Natural features and formations of outstanding physical, biological, or geological value: landscapes, geological formations, habitats of threatened species
 
-**3. Heritage in Armed Conflict** — Protection of cultural property in situations of armed conflict
+**3. Heritage in Armed Conflict**, Protection of cultural property in situations of armed conflict
 
 #### What History Does for Heritage
 
-Heritage and history are not the same thing, though they are deeply connected. History provides **context** — it situates heritage in time, explains its creation, documents its significance, and reveals the human stories behind material objects.
+Heritage and history are not the same thing, though they are deeply connected. History provides **context**, it situates heritage in time, explains its creation, documents its significance, and reveals the human stories behind material objects.
 
-A useful example is **The Ruins** in Bacolod City — the skeletal remains of an early 20th-century mansion built by Don Mariano Ledesma Lacson for his wife. During World War II, Filipino guerrillas burned the structure to prevent Japanese forces from using it as a garrison. Without knowing this history, visitors see only a picturesque ruin. With it, the site becomes a layered story of love, loss, war, and resistance.
+A useful example is **The Ruins** in Bacolod City, the skeletal remains of an early 20th-century mansion built by Don Mariano Ledesma Lacson for his wife. During World War II, Filipino guerrillas burned the structure to prevent Japanese forces from using it as a garrison. Without knowing this history, visitors see only a picturesque ruin. With it, the site becomes a layered story of love, loss, war, and resistance.
 
 #### The Heritage Cycle
 
@@ -910,7 +910,7 @@ The **National Cultural Heritage Act of 2009** (Republic Act 10066) provides the
 Key cultural agencies involved in heritage management include the National Historical Commission of the Philippines (NHCP), the National Museum of the Philippines, the National Library, the Cultural Center of the Philippines (CCP), and the National Archives.
 $md$, 1),
 
-('b2000001-0001-0002-0002-000000000010','activity','Activity — Heritage Reflection',$md$
+('b2000001-0001-0002-0002-000000000010','activity','Activity, Heritage Reflection',$md$
 Write **two or more paragraphs** (at least 3 sentences each) on the following questions:
 
 1. What is heritage? Why is it important, both for communities and for the nation?

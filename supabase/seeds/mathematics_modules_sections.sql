@@ -1,5 +1,5 @@
 -- ============================================================
--- Mathematics in the Modern World — Modules & Sections
+-- Mathematics in the Modern World, Modules & Sections
 -- Subject ID: 10000000-0001-0001-0002-000000000001
 -- Run after migration 002 and 1st_year_subjects.sql
 -- ============================================================
@@ -147,7 +147,7 @@ Far from being confined to an academic environment, mathematical frameworks are 
 4. **Daily Logistics and Financial Decisions:** Mathematical literacy underpins everyday operations, ranging from household budgeting and calculating travel logistics to analyzing chemical solutions in laboratories or computing complex banking transactions.
 $md$, 7),
 
-('a2000001-0001-0001-0002-000000000001','activity','Practice Exercises — Unit I',$md$
+('a2000001-0001-0001-0002-000000000001','activity','Practice Exercises, Unit I',$md$
 **Question 1: Symmetry Classification**
 
 Analyze your immediate physical surroundings and identify five distinct objects that exhibit bilateral symmetry, and five distinct objects that exhibit radial symmetry. For each object, explicitly identify the location of its axis or center of symmetry.
@@ -315,7 +315,7 @@ Isolates all elements in the universal set $U$ that do not belong to set $A$:
 $$A' = U \setminus A = \{x \mid x \in U \text{ and } x \notin A\}$$
 $md$, 7),
 
-('a2000001-0001-0001-0002-000000000002','activity','Practice Exercises — Unit II',$md$
+('a2000001-0001-0001-0002-000000000002','activity','Practice Exercises, Unit II',$md$
 **Question 1: Constructing Compound Truth Tables**
 
 Construct a complete truth table for the following compound proposition:
@@ -372,7 +372,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 
 The process of deriving a broad, generalized conclusion (termed a conjecture) by observing specific patterns or a limited sequence of samples.
 
-**Risk:** Conjectures generated via inductive workflows are not guaranteed to be true. They can be completely disproved if a single counterexample is found — an exception that satisfies all premises but invalidates the conclusion.
+**Risk:** Conjectures generated via inductive workflows are not guaranteed to be true. They can be completely disproved if a single counterexample is found, an exception that satisfies all premises but invalidates the conclusion.
 
 ### Deductive Reasoning
 
@@ -421,7 +421,7 @@ Apply your chosen strategy and perform the necessary calculations. Verify the pr
 Evaluate your final answer to verify it makes sense within the context of the problem. Double-check your calculations and check for alternative, more efficient solution paths.
 $md$, 2),
 
-('a2000001-0001-0001-0002-000000000003','activity','Practice Exercises — Unit III',$md$
+('a2000001-0001-0001-0002-000000000003','activity','Practice Exercises, Unit III',$md$
 **Question 1: Consecutive Analytical Sums**
 
 Observe the following arithmetic products and sums inductively:
@@ -564,7 +564,7 @@ $$s^2 = \frac{\sum (x_i - \bar{x})^2}{n - 1}$$
 $$s = \sqrt{s^2}$$
 $md$, 5),
 
-('a2000001-0001-0001-0002-000000000004','activity','Practice Exercises — Unit IV',$md$
+('a2000001-0001-0001-0002-000000000004','activity','Practice Exercises, Unit IV',$md$
 **Question 1: Classifying Sampling Designs**
 
 Identify the specific sampling technique used in each of the following scenarios:
@@ -626,7 +626,7 @@ For linear programming models with two decision variables, the optimal solution 
 ```
 $md$, 2),
 
-('a2000001-0001-0001-0002-000000000005','activity','Practice Exercises — Unit V',$md$
+('a2000001-0001-0001-0002-000000000005','activity','Practice Exercises, Unit V',$md$
 **Question 1: Manufacturing Optimization Modeling**
 
 A production facility manufactures two styles of traditional fans: Small ($x_1$) and Large ($x_2$). Production relies on three distinct raw material types ($R_1, R_2, R_3$) with fixed daily availability:
@@ -769,7 +769,7 @@ A graph is planar if it can be drawn on a flat plane without any of its edges cr
 Every planar graph (and by extension, any standard geographic map) can be colored using at most four distinct colors such that no two adjacent regions share the same color.
 $md$, 5),
 
-('a2000001-0001-0001-0002-000000000006','activity','Practice Exercises — Unit VI',$md$
+('a2000001-0001-0001-0002-000000000006','activity','Practice Exercises, Unit VI',$md$
 **Question 1: Eulerian Lifecycle Assessment**
 
 Determine whether an Euler circuit, an Euler path, or neither exists for each of the following graphs. If a path or circuit exists, write out the sequence of vertices using Fleury's algorithm:

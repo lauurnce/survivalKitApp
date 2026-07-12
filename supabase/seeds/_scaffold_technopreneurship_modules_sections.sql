@@ -1,7 +1,7 @@
 -- ============================================================
--- Technopreneurship — Modules & Sections (SCAFFOLD)
+-- Technopreneurship, Modules & Sections (SCAFFOLD)
 -- Subject ID: 30000000-0003-0002-0001-000000000002
--- 3rd Year, Semester 2 — minor
+-- 3rd Year, Semester 2, minor
 -- Suggested module count: 4-6
 --
 -- Reserved UUID namespace below is collision-free and deterministic.
@@ -175,18 +175,18 @@ DELETE FROM modules WHERE subject_id = '30000000-0003-0002-0001-000000000002';
 --   S10: b8e2c0b9-28a9-51a5-8145-54ac9bfbddc5  <- reserve last for kind='activity'
 
 -- ============================================================
--- IMPORT TEMPLATE — one INSERT per module. Replace placeholders.
+-- IMPORT TEMPLATE, one INSERT per module. Replace placeholders.
 -- content sections are FREE; the final activity section is PAID.
 -- ide_language (python|sql|java|c), starter_code, topology_data are
--- all OPTIONAL columns — include only when the section needs them.
+-- all OPTIONAL columns, include only when the section needs them.
 -- ============================================================
 --
 -- INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 -- ('d736d8a8-5bba-57b2-9d63-45757ebf4fd3','content','<Heading>',$md$
--- <full markdown teaching body — free tier>
+-- <full markdown teaching body, free tier>
 -- $md$, 1),
--- ('d736d8a8-5bba-57b2-9d63-45757ebf4fd3','activity','Practice & Exam Drills — Lesson 1',$md$
--- <review questions, worked exam problems w/ solutions, how-to-pass tips — paid tier>
+-- ('d736d8a8-5bba-57b2-9d63-45757ebf4fd3','activity','Practice & Exam Drills, Lesson 1',$md$
+-- <review questions, worked exam problems w/ solutions, how-to-pass tips, paid tier>
 -- $md$, 2);
 --
 -- With an interactive playground, use the 5-column form instead:
@@ -220,9 +220,9 @@ Technopreneurs can drive growth by creating high-value products and services. Th
 
 In this way, technopreneurship is seen as a path to national development. By combining entrepreneurship with tech innovation, technopreneurs can help modernize industries and compete globally. Yet, the core skill is still entrepreneurship: identifying needs, taking calculated risks, and organizing resources effectively, but with a tech twist.
 
-Ready to apply this? The practice set for this lesson contains review questions and examples to test your understanding of entrepreneurship and technopreneurship — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson contains review questions and examples to test your understanding of entrepreneurship and technopreneurship, unlock it to start drilling.
 $md$, 2),
-('d736d8a8-5bba-57b2-9d63-45757ebf4fd3','activity','Practice & Exam Drills — Lesson 1',$md$
+('d736d8a8-5bba-57b2-9d63-45757ebf4fd3','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions:**
 
 1. Define entrepreneurship and technopreneurship. How are they similar and how are they different?
@@ -262,21 +262,21 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('12286be1-33eb-54d3-bc4c-550b4e7e30e9','content','Brainstorming and Creativity Techniques',$md$
 Good technopreneurs must generate innovative ideas. Brainstorming is a way to come up with as many ideas as possible, even ones that seem strange. For example, think of daily problems: traffic jams in Manila, heavy school books, or payment hassles. Then imagine a tech solution (GPS app, e-textbooks, e-wallet). Encourage creative thinking by combining different fields: maybe use AI (artificial intelligence) for farming advice, or mobile games for education.
 
-In Philippine classrooms, techniques like mind mapping or "Six Thinking Hats" are taught. You can create a map with a central problem and branch into solutions. There are no wrong answers in brainstorming — sometimes a wild idea sparks a practical one. The key is to keep a notepad or phone app with these ideas. Later, filter them by feasibility (can Filipinos afford it? Does internet access suffice?).
+In Philippine classrooms, techniques like mind mapping or "Six Thinking Hats" are taught. You can create a map with a central problem and branch into solutions. There are no wrong answers in brainstorming, sometimes a wild idea sparks a practical one. The key is to keep a notepad or phone app with these ideas. Later, filter them by feasibility (can Filipinos afford it? Does internet access suffice?).
 $md$, 1),
 ('12286be1-33eb-54d3-bc4c-550b4e7e30e9','content','Evaluating and Selecting Ideas',$md$
 Not every idea becomes a good venture. Once you have ideas, evaluate them using criteria: market need, feasibility, and personal passion. Market need: Are there enough customers who face this problem? Feasibility: Do you have or can you learn the tech skills needed? Passion: Are you excited to work on this for a long time? For example, if you love games, a gaming app might keep you motivated.
 
-In BSIT courses, a common tool is the Lean Canvas or Business Model Canvas. This helps outline the idea's key points: who customers are, what problem it solves, how you earn money, etc. For now, simply ask: does this idea solve a real problem? Even a simple survey among friends or family (explain the idea and get feedback) can filter ideas. Philippine professors appreciate when students show understanding of local context — e.g. an idea that works in urban Manila might need adjustment for rural areas.
+In BSIT courses, a common tool is the Lean Canvas or Business Model Canvas. This helps outline the idea's key points: who customers are, what problem it solves, how you earn money, etc. For now, simply ask: does this idea solve a real problem? Even a simple survey among friends or family (explain the idea and get feedback) can filter ideas. Philippine professors appreciate when students show understanding of local context, e.g. an idea that works in urban Manila might need adjustment for rural areas.
 $md$, 2),
 ('12286be1-33eb-54d3-bc4c-550b4e7e30e9','activity','From Idea to Opportunity',$md$
 An opportunity is an idea with a clear path to profit. For instance, an app idea is an opportunity if you know how to reach users and make money (through ads, sales, or subscriptions). An idea becomes a real business opportunity after checking technology availability (smartphones, internet), legal constraints (licensing for apps, data privacy rules in the Philippines), and competition (are similar apps already popular?). In your studies, you might be taught to write a concept note: a short description of idea, target market, and revenue model. Practice by doing one-page summaries of your ideas.
 
 Remember, opportunities often come from trends (like fintech or online learning post-pandemic). Stay updated on tech trends in the Philippines (e.g., growing use of mobile payments, cloud services for SMEs). A good technopreneur can spot these trends early.
 
-Ready to apply this? The practice set for this lesson includes guided exercises on evaluating business ideas and generating start-up concepts — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson includes guided exercises on evaluating business ideas and generating start-up concepts, unlock it to start drilling.
 $md$, 3),
-('12286be1-33eb-54d3-bc4c-550b4e7e30e9','activity','Practice & Exam Drills — Lesson 2',$md$
+('12286be1-33eb-54d3-bc4c-550b4e7e30e9','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions:**
 
 1. List three creative techniques (brainstorming, etc.) used for generating business ideas. Which one do you find most effective and why?
@@ -322,9 +322,9 @@ $md$, 2),
 ('f0d7678d-dfd4-5b3c-98d4-aa7d30bfb1d1','activity','Creating a Value Proposition',$md$
 Your value proposition is the promise of benefits to be delivered to the customer. In Philippine terms, think: "What makes Filipino users want to choose your tech product?" It could be convenience (booking ₱5 Jeepneys via app vs queueing all day), cost savings (free e-learning material vs pricey tutors), or innovation (virtual reality for heritage tours). When planning, clearly state the value: "Our e-wallet is safe and works even with low-end phones" is a value proposition. This often goes into the business plan's introduction. Practice writing one sentence that describes how your idea solves a key problem. That line can sometimes be used as the exam answer if asked for an "elevator pitch."
 
-Ready to apply this? The practice set for this lesson includes creating a simple Lean Canvas and a mini business plan outline — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson includes creating a simple Lean Canvas and a mini business plan outline, unlock it to start drilling.
 $md$, 3),
-('f0d7678d-dfd4-5b3c-98d4-aa7d30bfb1d1','activity','Practice & Exam Drills — Lesson 3',$md$
+('f0d7678d-dfd4-5b3c-98d4-aa7d30bfb1d1','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions:**
 
 1. List at least five components typically found in a business model or business plan.
@@ -364,7 +364,7 @@ $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('710b3247-bdcc-5d45-842b-eb54f1b4a579','content','Protecting Your Invention (IPR Basics)',$md$
-Intellectual Property Rights (IPR) protect your technology idea. Common forms are patents (for new inventions), trademarks (for brand names/logos), and copyright (for software code or original content). In the Philippines, the Intellectual Property Office (IPO) grants patents. If your tech startup develops a unique device or algorithm, consider patenting it to prevent copying. For example, if you invent a new compression algorithm, you could patent it. Remember: a patent is expensive and lengthy, so in early startup stages, focus on building the product quickly but keep it confidential. Trademarks matter too — register your brand name early. This topic may not appear heavily in BSIT exams, but knowing the basics can impress professors.
+Intellectual Property Rights (IPR) protect your technology idea. Common forms are patents (for new inventions), trademarks (for brand names/logos), and copyright (for software code or original content). In the Philippines, the Intellectual Property Office (IPO) grants patents. If your tech startup develops a unique device or algorithm, consider patenting it to prevent copying. For example, if you invent a new compression algorithm, you could patent it. Remember: a patent is expensive and lengthy, so in early startup stages, focus on building the product quickly but keep it confidential. Trademarks matter too, register your brand name early. This topic may not appear heavily in BSIT exams, but knowing the basics can impress professors.
 $md$, 1),
 ('710b3247-bdcc-5d45-842b-eb54f1b4a579','content','Business Registration and Compliance',$md$
 Starting a technopreneurial venture means dealing with legalities. In the Philippines, you must register your business with DTI (sole proprietorship) or SEC (corporation) and get a Mayor's Permit. You'll also need to follow data privacy laws (like the Data Privacy Act) if you collect user data, and possibly get permits for things like software testing or online retail. Many technopreneurship courses cover the "legal framework" briefly. You should know that taxes (BIR registration) and local ordinances (e.g. sanitary permit for office, even for a startup) are part of setting up. In exams, you might be asked which agency issues a patent, or what law governs online transactions (Electronic Commerce Act of 2000 in PH). Be familiar with a few key terms, but content sections keep it basic: just know that legal compliance is essential before launching.
@@ -372,9 +372,9 @@ $md$, 2),
 ('710b3247-bdcc-5d45-842b-eb54f1b4a579','activity','Technology Standards and Ethics',$md$
 Technopreneurs must also follow technical regulations. For instance, devices must meet telecommunications standards, and software must respect user privacy and security. Ethical issues include being honest with investors about your technology's capabilities, and building secure systems to protect users' personal data. If your venture deals with financial transactions or health data, mention in an exam that you adhere to relevant laws (like the Electronic Commerce Act or Medical Technology Act). This knowledge shows professionalism. Professors may test awareness of "regulatory environment," but often it appears in context ("Which law covers e-signatures?"). If you covered Chapter on legal issues in textbooks, review important local laws.
 
-Ready to apply this? The practice set for this lesson includes problems about patents, business registration scenarios, and compliance case studies — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson includes problems about patents, business registration scenarios, and compliance case studies, unlock it to start drilling.
 $md$, 3),
-('710b3247-bdcc-5d45-842b-eb54f1b4a579','activity','Practice & Exam Drills — Lesson 4',$md$
+('710b3247-bdcc-5d45-842b-eb54f1b4a579','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions:**
 
 1. What is the difference between a patent and a trademark? Give an example of each.
@@ -428,11 +428,11 @@ $$\text{ROI} = \frac{\text{Gain} - \text{Cost}}{\text{Cost}}$$
 If a small app cost ₱50,000 to build and it makes ₱200,000 profit after a year, $\text{ROI} = (200{,}000-50{,}000)/50{,}000 = 3$ (or 300%). For the free content, emphasize concept: money must be managed, and tech startups often have upfront development cost before earning revenue.
 $md$, 2),
 ('746eca95-87ee-556e-a230-14a4f2efdf62','activity','Financial Statements Overview',$md$
-You may have heard of Income Statement (shows profit/loss) and Balance Sheet (assets vs liabilities). While BSIT curriculum isn't accounting-heavy, a technopreneur should at least know profit and loss basics. If asked on exams, describe: "Income Statement reports revenues, costs, and profits over time." "Balance Sheet shows company worth at a snapshot." In practice, startups often prepare simple monthly profit/loss reports for investors. In class, if you see formulas like NPV (Net Present Value) or Payback Period, get a sense of what they mean but don't panic — focus on the simpler exam tasks like break-even calculations or reading a mini profit table.
+You may have heard of Income Statement (shows profit/loss) and Balance Sheet (assets vs liabilities). While BSIT curriculum isn't accounting-heavy, a technopreneur should at least know profit and loss basics. If asked on exams, describe: "Income Statement reports revenues, costs, and profits over time." "Balance Sheet shows company worth at a snapshot." In practice, startups often prepare simple monthly profit/loss reports for investors. In class, if you see formulas like NPV (Net Present Value) or Payback Period, get a sense of what they mean but don't panic, focus on the simpler exam tasks like break-even calculations or reading a mini profit table.
 
-Ready to apply this? The practice set for this lesson includes numerical problems on break-even and funding scenarios, plus tips on budgeting — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson includes numerical problems on break-even and funding scenarios, plus tips on budgeting, unlock it to start drilling.
 $md$, 3),
-('746eca95-87ee-556e-a230-14a4f2efdf62','activity','Practice & Exam Drills — Lesson 5',$md$
+('746eca95-87ee-556e-a230-14a4f2efdf62','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions:**
 
 1. List and briefly describe four different funding sources a technopreneur might pursue.
@@ -481,9 +481,9 @@ $md$, 3),
 ('51e40729-6467-59f5-be87-33b809bf4ebc','activity','Local Context and Global Reach',$md$
 A lesson from technopreneurship courses is balancing local needs and global opportunities. You might start solving a problem in the Philippines (like a jeepney-hailing app) but later think about adapting to other countries. Marketing locally could mean using Tagalog content or addressing local festivals. Going global might involve English-language marketing and knowing foreign regulations. On exam answers, mentioning that Filipino values (bayanihan/community culture) can influence marketing (e.g., community promo events) can show cultural awareness. Remember to always frame marketing as finding ways to effectively communicate and sell your tech solution to real people.
 
-Ready to apply this? The practice set for this lesson includes example marketing scenarios and customer profile exercises — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson includes example marketing scenarios and customer profile exercises, unlock it to start drilling.
 $md$, 4),
-('51e40729-6467-59f5-be87-33b809bf4ebc','activity','Practice & Exam Drills — Lesson 6',$md$
+('51e40729-6467-59f5-be87-33b809bf4ebc','activity','Practice & Exam Drills, Lesson 6',$md$
 **Review Questions:**
 
 1. What is a target market, and why is it important for a startup?
@@ -521,20 +521,20 @@ $md$, 5);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('1d9c3e63-44dd-53ef-901f-fe1cd9aca6fb','content','Building the Team',$md$
-A startup's success often relies on the right team. A typical tech startup team has roles: one person with tech skills (developer/engineer), one with business/marketing skills, and sometimes a designer or specialist. In your coursework, you might have learned about agile teams (small, cross-functional). Emphasize that technopreneurs should find co-founders or partners whose skills complement theirs. For example, if you're a good coder but not a marketer, partner with someone who is. In Philippines local context, mention that family members often join startups too — while helpful, be cautious about mixing family and business. In exams, you may be asked "What are important qualities of a startup team?" — answer that a mix of technical expertise, leadership, and adaptability is crucial.
+A startup's success often relies on the right team. A typical tech startup team has roles: one person with tech skills (developer/engineer), one with business/marketing skills, and sometimes a designer or specialist. In your coursework, you might have learned about agile teams (small, cross-functional). Emphasize that technopreneurs should find co-founders or partners whose skills complement theirs. For example, if you're a good coder but not a marketer, partner with someone who is. In Philippines local context, mention that family members often join startups too, while helpful, be cautious about mixing family and business. In exams, you may be asked "What are important qualities of a startup team?", answer that a mix of technical expertise, leadership, and adaptability is crucial.
 $md$, 1),
 ('1d9c3e63-44dd-53ef-901f-fe1cd9aca6fb','content','Organizational Structure and Leadership',$md$
 In small tech startups, structure is usually flat (everyone collaborates directly) rather than a big hierarchy. Leaders (like CEO or CTO) should empower team members to make decisions. Agile methodologies (Scrum, etc.) are popular: teams work in sprints to develop software iteratively. While BSIT courses might not dive deep into management methods, knowing terms like "MVP (Minimum Viable Product)" or "pivot" can impress. If a professor asks how you would manage a project, mention splitting tasks into milestones and having regular team check-ins (often used in PH tech companies). Also note the importance of ethical leadership: being honest about workload and addressing conflicts early, which is valued in Filipino work culture.
 $md$, 2),
 ('1d9c3e63-44dd-53ef-901f-fe1cd9aca6fb','activity','Stakeholder Management',$md$
-Stakeholders include anyone with an interest in the startup: founders, investors, employees, customers, suppliers, and the community. Good technopreneurs communicate with investors (provide updates), listen to customer feedback (for improvements), and treat employees well. For Philippine exams, you might get questions like: "How should a startup handle investor relations?" or "Why involve the local community?" Prepare answers like: keep transparent financial reports for investors; run community tech meetups to get ideas. Also, mention the government or regulatory agencies as stakeholders (like DOST tech councils) — in class you likely learned about stakeholders such as "Regulatory agencies" and "Community."
+Stakeholders include anyone with an interest in the startup: founders, investors, employees, customers, suppliers, and the community. Good technopreneurs communicate with investors (provide updates), listen to customer feedback (for improvements), and treat employees well. For Philippine exams, you might get questions like: "How should a startup handle investor relations?" or "Why involve the local community?" Prepare answers like: keep transparent financial reports for investors; run community tech meetups to get ideas. Also, mention the government or regulatory agencies as stakeholders (like DOST tech councils), in class you likely learned about stakeholders such as "Regulatory agencies" and "Community."
 $md$, 3),
 ('1d9c3e63-44dd-53ef-901f-fe1cd9aca6fb','activity','Project Management Basics (IT Focus)',$md$
 Many technopreneurship modules touch on project management. Familiarize yourself with basic IT project terms: MVP (minimum product to test market), Agile (iterative development), Waterfall (linear development). In Philippine BSIT classes, they might emphasize delivering working prototypes and using tools (even if just planning boards or Trello). Know that keeping a timeline and adapting to change is part of managing a tech venture. On an exam, an example question could be: "What is the advantage of agile development for startups?" (Answer: It allows for quick feedback and change, important when resources are limited.)
 
-Ready to apply this? The practice set for this lesson includes team roles exercises and a case study on managing a startup project — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson includes team roles exercises and a case study on managing a startup project, unlock it to start drilling.
 $md$, 4),
-('1d9c3e63-44dd-53ef-901f-fe1cd9aca6fb','activity','Practice & Exam Drills — Lesson 7',$md$
+('1d9c3e63-44dd-53ef-901f-fe1cd9aca6fb','activity','Practice & Exam Drills, Lesson 7',$md$
 **Review Questions:**
 
 1. What skills are important in a technopreneurial team? List at least three roles or skill sets.
@@ -580,9 +580,9 @@ $md$, 2),
 ('d76ea986-68c3-559e-8394-6eebd84cc0db','activity','Exit Strategies and Sustainability',$md$
 A successful startup eventually thinks about exit or sustainability. Exit strategy could mean selling the company (acquisition by a larger firm) or going public (IPO). Not all students will face this, but it's often in entrepreneurship curriculum. For a Philippine context, remember examples: some local startups have been acquired by bigger tech companies, or have listed on the Philippine Stock Exchange. Sustainability means building a venture that lasts. That involves good management, continuous innovation, and possibly diversifying offerings. Prof exam scenarios might ask what an entrepreneur should consider after growth (like market saturation or new threats). It's good to mention simple ideas: plan for new product lines or international offices, keep improving the technology, and always manage finances carefully.
 
-Ready to apply this? The practice set for this lesson includes case studies on scaling and questions about going global — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson includes case studies on scaling and questions about going global, unlock it to start drilling.
 $md$, 3),
-('d76ea986-68c3-559e-8394-6eebd84cc0db','activity','Practice & Exam Drills — Lesson 8',$md$
+('d76ea986-68c3-559e-8394-6eebd84cc0db','activity','Practice & Exam Drills, Lesson 8',$md$
 **Review Questions:**
 
 1. What does it mean to "scale" a startup? Give an example related to technology.

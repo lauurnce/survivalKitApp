@@ -1,5 +1,5 @@
 -- ============================================================
--- Computer Programming 2 — Modules & Sections
+-- Computer Programming 2, Modules & Sections
 -- Subject ID: 10000000-0001-0002-0001-000000000001
 -- Run after migration 002 and 1st_year_subjects.sql
 -- ============================================================
@@ -15,7 +15,7 @@ INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a3000001-0001-0002-0001-000000000001','content','What is an Array and Why Do We Need One?',$md$
-Suppose your program needs to work with 20 integers — reading them, processing them, and printing them. One approach is to declare 20 separate variables, each with its own name. That works for a small number, but it quickly becomes unmanageable. Imagine doing the same thing for 200, 2000, or 20,000 values. You'd need a separate variable declaration and a separate line of code for every single one of them.
+Suppose your program needs to work with 20 integers, reading them, processing them, and printing them. One approach is to declare 20 separate variables, each with its own name. That works for a small number, but it quickly becomes unmanageable. Imagine doing the same thing for 200, 2000, or 20,000 values. You'd need a separate variable declaration and a separate line of code for every single one of them.
 
 Arrays solve this problem. Instead of giving each value its own name, an array groups many values of the same data type under a single name, and lets you refer to individual values by their position (called an **index** or **subscript**).
 $md$, 1),
@@ -23,13 +23,13 @@ $md$, 1),
 ('a3000001-0001-0002-0001-000000000001','content','Characteristics of an Array',$md$
 An array has three defining properties:
 
-1. **Fixed size** — the number of elements is set at the time the array is declared and does not change during the program's execution.
-2. **Same data type** — every element in the array must be of the same type (all integers, all floats, all characters, etc.).
-3. **Contiguous storage** — the elements are stored one after another in memory, which makes it possible to calculate the address of any element efficiently.
+1. **Fixed size**, the number of elements is set at the time the array is declared and does not change during the program's execution.
+2. **Same data type**, every element in the array must be of the same type (all integers, all floats, all characters, etc.).
+3. **Contiguous storage**, the elements are stored one after another in memory, which makes it possible to calculate the address of any element efficiently.
 
 Because elements are stored in sequence, you can refer to them by position: the first element, the second element, and so on. In C, positions are counted starting from zero. So for an array named `num` with 20 elements, the valid positions are `num[0]` through `num[19]`.
 
-The notation `num[i]` — a name followed by an integer expression in square brackets — is called **index notation**. The value inside the brackets is the **index** (or subscript), and it tells the compiler which element you want. Using a variable like `i` as the index is what makes it possible to process entire arrays with loops.
+The notation `num[i]`, a name followed by an integer expression in square brackets, is called **index notation**. The value inside the brackets is the **index** (or subscript), and it tells the compiler which element you want. Using a variable like `i` as the index is what makes it possible to process entire arrays with loops.
 $md$, 2),
 
 ('a3000001-0001-0002-0001-000000000001','content','Declaring an Array in C',$md$
@@ -41,9 +41,9 @@ Before an array can be used it must be declared. The declaration tells the compi
 data_type array_name[size];
 ```
 
-- `data_type` — the type of each element (`int`, `float`, `char`, `double`, etc.)
-- `array_name` — any valid C identifier
-- `size` — a positive integer constant specifying the number of elements
+- `data_type`, the type of each element (`int`, `float`, `char`, `double`, etc.)
+- `array_name`, any valid C identifier
+- `size`, a positive integer constant specifying the number of elements
 
 **Examples:**
 
@@ -70,11 +70,11 @@ For example, if an integer array starts at memory address 10,000 and each intege
 10,000 + (2 × 3) = 10,006
 ```
 
-This is why array indexing is fast — calculating an address from a base and an offset is a single arithmetic operation.
+This is why array indexing is fast, calculating an address from a base and an offset is a single arithmetic operation.
 $md$, 4),
 
 ('a3000001-0001-0002-0001-000000000001','content','Storing Values in an Array',$md$
-Declaring an array only reserves memory — it does not put any values in. There are three ways to get values into an array.
+Declaring an array only reserves memory, it does not put any values in. There are three ways to get values into an array.
 
 ### 1. Initialization at Declaration
 
@@ -86,7 +86,7 @@ data_type array_name[size] = {value1, value2, ..., valueN};
 ```
 
 **Rules:**
-- You cannot supply more values than there are elements — that is a compile error.
+- You cannot supply more values than there are elements, that is a compile error.
 - If you supply fewer values than the declared size, the remaining elements are automatically set to zero.
 - If you initialize all elements, you can omit the size and the compiler will count them for you.
 
@@ -111,7 +111,7 @@ for (i = 0; i < 10; i++) {
 }
 ```
 
-Note that `&scores[i]` uses the address-of operator — required by `scanf()` just as it is for ordinary variables.
+Note that `&scores[i]` uses the address-of operator, required by `scanf()` just as it is for ordinary variables.
 
 ### 3. Assigning Values Individually
 
@@ -183,10 +183,10 @@ You can also use nested braces to make the row grouping explicit:
 int mat[3][3] = { {1,2,3}, {4,5,6}, {7,8,9} };
 ```
 
-If a row's inner brace contains fewer values than the column count, the remaining elements in that row are set to zero. However, you cannot put *more* values in a row's inner brace than the declared column count — that is a compile error.
+If a row's inner brace contains fewer values than the column count, the remaining elements in that row are set to zero. However, you cannot put *more* values in a row's inner brace than the declared column count, that is a compile error.
 $md$, 7),
 
-('a3000001-0001-0002-0001-000000000001','activity','Sample Program 1 — Sorting an Array',$md$
+('a3000001-0001-0002-0001-000000000001','activity','Sample Program 1, Sorting an Array',$md$
 This program sorts a small integer array using a basic comparison-and-swap approach.
 
 ```c
@@ -222,7 +222,7 @@ void main() {
 ```
 $md$, 8),
 
-('a3000001-0001-0002-0001-000000000001','activity','Sample Program 2 — Counting Positives and Negatives',$md$
+('a3000001-0001-0002-0001-000000000001','activity','Sample Program 2, Counting Positives and Negatives',$md$
 This program reads `n` integers into an array, then counts how many are negative and how many are non-negative.
 
 ```c
@@ -255,7 +255,7 @@ void main() {
 ```
 $md$, 9),
 
-('a3000001-0001-0002-0001-000000000001','activity','Sample Program 3 — Adding Two Matrices',$md$
+('a3000001-0001-0002-0001-000000000001','activity','Sample Program 3, Adding Two Matrices',$md$
 This program reads two matrices of equal dimensions from the user, adds them element by element, and stores the result in a third matrix.
 
 ```c
@@ -295,7 +295,7 @@ void main() {
 $md$, 10),
 
 ('a3000001-0001-0002-0001-000000000001','activity','Practice Exercises',$md$
-### Exercise 1 — Array Definitions
+### Exercise 1, Array Definitions
 
 Write appropriate array declarations for each of the following:
 
@@ -307,7 +307,7 @@ c. A 4-element character array holding the compass characters `'N'`, `'S'`, `'E'
 
 ---
 
-### Exercise 2 — Trace the Output
+### Exercise 2, Trace the Output
 
 Determine what each program prints without running it. Write your answer in the box provided.
 

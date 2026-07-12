@@ -1,5 +1,5 @@
 -- ============================================================
--- Filipinolohiya — Modules & Sections
+-- Filipinolohiya, Modules & Sections
 -- Subject ID: 10000000-0001-0001-0002-000000000004
 -- Run after migration 002 and 1st_year_subjects.sql
 -- ============================================================
@@ -60,8 +60,8 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a2000004-0001-0001-0002-000000000002','content','Sikolohiyang Pilipino (SP)',$md$
 Ipinakilala ito bilang pag-aaral ng "diwa" na nakabatay sa aktwal na karanasan, kamalayan, at oryentasyon ng mga Pilipino, na malalim na nakakabit sa wika at kultura ng bansa. Tinututulan nito ang ideya na ang mga teoryang Kanluranin ay unibersal at direktang mailalapat sa mga Pilipino. Gumagamit ito ng mga katutubong metodolohiya sa pananaliksik na nakabatay sa pakiramdam at pakikipagkapwa, gaya ng:
 
-- **Pakapa-kapa** — Isang eksploratoryong pamamaraan kung saan nagpapakiramdam ang mananaliksik sa konteksto ng komunidad nang walang paunang hinuha.
-- **Pagdalaw-dalaw** — Ang paulit-ulit at impormal na pagbisita sa mga kalahok upang makuha ang kanilang tiwala at tunay na saloobin.
+- **Pakapa-kapa**, Isang eksploratoryong pamamaraan kung saan nagpapakiramdam ang mananaliksik sa konteksto ng komunidad nang walang paunang hinuha.
+- **Pagdalaw-dalaw**, Ang paulit-ulit at impormal na pagbisita sa mga kalahok upang makuha ang kanilang tiwala at tunay na saloobin.
 $md$, 1),
 
 ('a2000004-0001-0001-0002-000000000002','content','Pilipinolohiya bilang Disiplina',$md$
@@ -95,9 +95,9 @@ Ang **Pambansang Industriyalisasyon** (National Industrialization) ay ang proses
 
 Upang maging ganap ang pag-unlad ng isang bansa, kinakailangan ang sabay at planadong pagpapatatag sa tatlong pangunahing antas ng industriya:
 
-- **Mabigat na Industriya (Heavy Industries)** — Ito ang pundasyon ng ekonomiya. Lumilikha ito ng mga kagamitang pamproduksyon, makinarya, bakal, kemikal, at enerhiya na ginagamit para sa iba pang industriya.
-- **Intermedyong Industriya (Medium Industries)** — Gumagawa ng mga ekstrang bahagi (spare parts), kable, at mga semi-prosesong materyales na kailangan sa pagbuo ng mga makina.
-- **Magaang Industriya (Light Industries)** — Nagpoproseso ng mga produktong pangkonsumo para sa pang-araw-araw na pangangailangan ng buong bayan (gaya ng pagkain, damit, gamot, at kagamitan sa bahay).
+- **Mabigat na Industriya (Heavy Industries)**, Ito ang pundasyon ng ekonomiya. Lumilikha ito ng mga kagamitang pamproduksyon, makinarya, bakal, kemikal, at enerhiya na ginagamit para sa iba pang industriya.
+- **Intermedyong Industriya (Medium Industries)**, Gumagawa ng mga ekstrang bahagi (spare parts), kable, at mga semi-prosesong materyales na kailangan sa pagbuo ng mga makina.
+- **Magaang Industriya (Light Industries)**, Nagpoproseso ng mga produktong pangkonsumo para sa pang-araw-araw na pangangailangan ng buong bayan (gaya ng pagkain, damit, gamot, at kagamitan sa bahay).
 $md$, 1),
 
 ('a2000004-0001-0001-0002-000000000003','content','Ang Ugnayan ng Agrikultura at Industriya',$md$
@@ -110,11 +110,11 @@ $md$, 2),
 ('a2000004-0001-0001-0002-000000000003','content','Mga Rekursong Pang-ekonomiya ng Pilipinas',$md$
 May sapat at mayayamang rekurso ang Pilipinas upang maging isang industriyal na bansa:
 
-- **Yamang Lupa** — Milyun-milyong ektarya ng matabang lupain na angkop sa pagtatanim ng palay, mais, niyog, tubo, at iba pang pananim.
-- **Yamang Tubig** — Malawak na karagatan, daan-daang ilog, at mga lawa na mapagkukunan ng isda, irigasyon, transportasyon, at enerhiya.
-- **Yamang Mineral** — Isa sa may pinakamalaking reserba ng mga mineral sa buong mundo, kabilang ang ginto, tanso, nickel, at chromite na mahahalagang sangkap sa mabigat na industriya.
-- **Enerhiya** — Mayaman sa mga likas na pinagmumulan ng kuryente gaya ng natural gas, geothermal, hydropower, solar, at wind energy.
-- **Yamang Tao** — Milyun-milyong skilled workers, propesyonal, at mga manggagawa na kilala sa buong mundo sa kanilang kahusayan at kakayahan sa produksyon.
+- **Yamang Lupa**, Milyun-milyong ektarya ng matabang lupain na angkop sa pagtatanim ng palay, mais, niyog, tubo, at iba pang pananim.
+- **Yamang Tubig**, Malawak na karagatan, daan-daang ilog, at mga lawa na mapagkukunan ng isda, irigasyon, transportasyon, at enerhiya.
+- **Yamang Mineral**, Isa sa may pinakamalaking reserba ng mga mineral sa buong mundo, kabilang ang ginto, tanso, nickel, at chromite na mahahalagang sangkap sa mabigat na industriya.
+- **Enerhiya**, Mayaman sa mga likas na pinagmumulan ng kuryente gaya ng natural gas, geothermal, hydropower, solar, at wind energy.
+- **Yamang Tao**, Milyun-milyong skilled workers, propesyonal, at mga manggagawa na kilala sa buong mundo sa kanilang kahusayan at kakayahan sa produksyon.
 $md$, 3),
 
 ('a2000004-0001-0001-0002-000000000003','content','Ang Balangkas ng Pagpapatupad ng Filipinolohiya',$md$
@@ -172,7 +172,7 @@ $md$, 7),
 
 **Mga Pamantayan sa Pagsulat:**
 
-- **Nilalaman** — Dapat malinaw na maipakita ang ugnayan ng wika, kultura, at ekonomiya tungo sa kagalingan ng nakararaming mamamayan.
-- **Bahagi** — Mayroong malinaw na Panimula, Katawan (Pagsusuri), Konklusyon, at Talaan ng mga Batayang Ginamit (References) sa dulo.
-- **Haba** — Minimum na 3 pahina at maximum na 7 pahina.
+- **Nilalaman**, Dapat malinaw na maipakita ang ugnayan ng wika, kultura, at ekonomiya tungo sa kagalingan ng nakararaming mamamayan.
+- **Bahagi**, Mayroong malinaw na Panimula, Katawan (Pagsusuri), Konklusyon, at Talaan ng mga Batayang Ginamit (References) sa dulo.
+- **Haba**, Minimum na 3 pahina at maximum na 7 pahina.
 $md$, 8);

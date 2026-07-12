@@ -1,5 +1,5 @@
 -- ============================================================
--- Mathematics in the Modern World — Exam Prep: Prelims & Finals
+-- Mathematics in the Modern World, Exam Prep: Prelims & Finals
 -- Module ID:  a2000001-0001-0001-0002-0000000000e1
 -- Subject ID: 10000000-0001-0001-0002-000000000001
 -- Purpose: prelim/final blueprints, mock exams, and fully worked
@@ -34,7 +34,7 @@ Your prelim in Mathematics in the Modern World is built almost entirely from the
 ### Typical Question-Type Breakdown
 
 - **Multiple choice (~35–40%):** fast definition and classification items. These are free points if you memorized the lists below.
-- **True or false (~20–25%):** almost always aimed at the classic confusions — converse vs. contrapositive, inductive vs. deductive, inclusive "or".
+- **True or false (~20–25%):** almost always aimed at the classic confusions, converse vs. contrapositive, inductive vs. deductive, inclusive "or".
 - **Computations and constructions (~35–45%):** truth tables, set operations, a Venn diagram word problem, Fibonacci calculations, and one Polya-style word problem. This is where exams are won or lost, so most of your practice time should go here.
 
 ### The Exact Memorize List
@@ -48,7 +48,7 @@ Everything below appears repeatedly on prelims. Write this on one sheet and dril
 - Binet's formula: $F_n = \dfrac{\varphi^n - \bar{\varphi}^n}{\sqrt{5}}$.
 - Symmetry types: bilateral (one mirror axis) vs. radial (repeats around a center).
 - Rosette patterns: cyclic $C_n$ (rotations only) vs. dihedral $D_n$ (rotations and reflections).
-- The seven Conway frieze names: hop, step, sidle, spinning hop, spinning sidle, jump, spinning jump — and which symmetries each allows.
+- The seven Conway frieze names: hop, step, sidle, spinning hop, spinning sidle, jump, spinning jump, and which symmetries each allows.
 - Exactly **7** frieze groups and exactly **17** wallpaper pattern types exist.
 
 **Unit II**
@@ -69,11 +69,11 @@ Everything below appears repeatedly on prelims. Write this on one sheet and dril
 
 ### Top Mistakes Students Actually Make
 
-1. Treating the converse as equivalent to the original conditional. It is not — only the contrapositive is.
+1. Treating the converse as equivalent to the original conditional. It is not, only the contrapositive is.
 2. Marking $p \vee q$ false when both parts are true. The "or" in logic is inclusive: both true means the disjunction is true.
 3. Forgetting that a false premise makes the whole conditional true, and marking $F \longrightarrow F$ as false.
 4. Off-by-one Fibonacci indexing: the 10th term is 55, not 89. Count carefully from $F_1 = 1$.
-5. Adding $n(A) + n(B)$ in Venn problems without subtracting the overlap — double-counting the intersection.
+5. Adding $n(A) + n(B)$ in Venn problems without subtracting the overlap, double-counting the intersection.
 6. Writing $x \subseteq A$ when they mean $x \in A$. Elements belong with $\in$; only sets sit inside $\subseteq$.
 7. "Proving" a conjecture with three examples. Inductive evidence is not proof; a single counterexample disproves it.
 
@@ -90,8 +90,8 @@ Everything below appears repeatedly on prelims. Write this on one sheet and dril
 | 7 | Full dress rehearsal | Take a full 30-item mock exam in 60 minutes, mark it honestly, and spend the rest of the day only on your wrong answers. |
 $md$, 1),
 
-('a2000001-0001-0001-0002-0000000000e1','content','Free Practice Set — 15 Items with Answer Key',$md$
-Work through these under exam conditions first — 25 minutes, no notes — then check the key. Every item is drawn straight from Units I–III.
+('a2000001-0001-0001-0002-0000000000e1','content','Free Practice Set, 15 Items with Answer Key',$md$
+Work through these under exam conditions first, 25 minutes, no notes, then check the key. Every item is drawn straight from Units I–III.
 
 ### Items
 
@@ -143,9 +143,9 @@ Work through these under exam conditions first — 25 minutes, no notes — then
 
 **5.** $\varphi = \dfrac{1 + \sqrt{5}}{2} \approx 1.618$.
 
-**6.** (a) Proposition, true. (b) Not a proposition — imperative. (c) Not a proposition — interrogative. (d) Proposition, **false** (the equation fails, but it still has a definite truth value, so it qualifies).
+**6.** (a) Proposition, true. (b) Not a proposition, imperative. (c) Not a proposition, interrogative. (d) Proposition, **false** (the equation fails, but it still has a definite truth value, so it qualifies).
 
-**7.** (a) $p \wedge q$ is **false** (needs both true). (b) $p \vee q$ is **true** (one true is enough). (c) $p \longrightarrow q$ is **false** (true premise, false conclusion — the only failing row). (d) $p \longleftrightarrow q$ is **false** (values differ).
+**7.** (a) $p \wedge q$ is **false** (needs both true). (b) $p \vee q$ is **true** (one true is enough). (c) $p \longrightarrow q$ is **false** (true premise, false conclusion, the only failing row). (d) $p \longleftrightarrow q$ is **false** (values differ).
 
 **8.** Swap and negate both parts: "If the class is not suspended, then it does not rain." (Order matters: negated conclusion first.)
 
@@ -153,7 +153,7 @@ Work through these under exam conditions first — 25 minutes, no notes — then
 
 **10.** (a) $A \cap B = \{3,4\}$ (b) $A \cup B = \{1,2,3,4,5,6\}$ (c) $(A \cup B)' = \{7,8\}$ (d) $A \setminus B = \{1,2\}$.
 
-**11.** (a) $n(A) = 4$. (b) **True** — every element of $\{1,2\}$ is in $A$.
+**11.** (a) $n(A) = 4$. (b) **True**, every element of $\{1,2\}$ is in $A$.
 
 **12.** | $p$ | $\neg p$ | $p \vee \neg p$ |
 |---|---|---|
@@ -162,7 +162,7 @@ Work through these under exam conditions first — 25 minutes, no notes — then
 
 True in every row, so it is a **tautology**.
 
-**13.** (a) **Inductive** — a general expectation drawn from a few specific observations, and not guaranteed. (b) **Deductive** — a general rule applied to a specific case, giving certainty.
+**13.** (a) **Inductive**, a general expectation drawn from a few specific observations, and not guaranteed. (b) **Deductive**, a general rule applied to a specific case, giving certainty.
 
 **14.** Each of the 10 people shakes 9 hands, but that counts every handshake twice: $\dfrac{10 \times 9}{2} = \mathbf{45}$.
 
@@ -176,10 +176,10 @@ $md$, 2);
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a2000001-0001-0001-0002-0000000000e1','activity','Prelim Mock Exam A — 30 Items',$md$
-Simulate the real thing: 60 minutes, no notes, calculator allowed for Part III. Answers are in the answer key section — do not peek until you finish.
+('a2000001-0001-0001-0002-0000000000e1','activity','Prelim Mock Exam A, 30 Items',$md$
+Simulate the real thing: 60 minutes, no notes, calculator allowed for Part III. Answers are in the answer key section, do not peek until you finish.
 
-### Part I — Multiple Choice (Items 1–10)
+### Part I, Multiple Choice (Items 1–10)
 
 **1.** Which natural structure is the classic example of a tessellation?
 (A) a honeycomb  (B) a sunflower seed head  (C) a hurricane  (D) butterfly wings
@@ -211,7 +211,7 @@ Simulate the real thing: 60 minutes, no notes, calculator allowed for Part III. 
 **10.** The second step of Polya's problem-solving strategy is:
 (A) review and reflect  (B) devise a plan  (C) execute the plan  (D) understand the problem
 
-### Part II — True or False (Items 11–18)
+### Part II, True or False (Items 11–18)
 
 **11.** Every conditional statement is logically equivalent to its converse.
 
@@ -229,7 +229,7 @@ Simulate the real thing: 60 minutes, no notes, calculator allowed for Part III. 
 
 **18.** A single counterexample is enough to disprove a conjecture.
 
-### Part III — Computations (Items 19–30)
+### Part III, Computations (Items 19–30)
 
 **19.** List the first ten terms of the Fibonacci sequence, starting from $F_1 = 1$ and $F_2 = 1$.
 
@@ -256,10 +256,10 @@ Simulate the real thing: 60 minutes, no notes, calculator allowed for Part III. 
 **30.** A number is tripled and then decreased by 5, giving 22. Work backwards to find the number, and verify your answer forwards.
 $md$, 3),
 
-('a2000001-0001-0001-0002-0000000000e1','activity','Prelim Mock Exam B — 30 Items',$md$
-Same scope as Mock A (Units I–III), all-new items, and slightly harder — take this one after reviewing your Mock A mistakes. 60 minutes.
+('a2000001-0001-0001-0002-0000000000e1','activity','Prelim Mock Exam B, 30 Items',$md$
+Same scope as Mock A (Units I–III), all-new items, and slightly harder, take this one after reviewing your Mock A mistakes. 60 minutes.
 
-### Part I — Multiple Choice (Items 1–10)
+### Part I, Multiple Choice (Items 1–10)
 
 **1.** Complex, self-similar geometric patterns that repeat at ever-smaller scales are called:
 (A) tessellations  (B) spirals  (C) fractals  (D) frieze patterns
@@ -291,7 +291,7 @@ Same scope as Mock A (Units I–III), all-new items, and slightly harder — tak
 **10.** A compound proposition that evaluates as true in every row of its truth table is a:
 (A) contingency  (B) contradiction  (C) conjecture  (D) tautology
 
-### Part II — True or False (Items 11–18)
+### Part II, True or False (Items 11–18)
 
 **11.** Spirals are continuous, widening curves that radiate outward from a central point.
 
@@ -309,7 +309,7 @@ Same scope as Mock A (Units I–III), all-new items, and slightly harder — tak
 
 **18.** Deductive reasoning applies general principles to reach a specific, certain conclusion.
 
-### Part III — Computations (Items 19–30)
+### Part III, Computations (Items 19–30)
 
 **19.** Given $F_{10} = 55$ and $F_{11} = 89$, compute $F_{12}$ and $F_{13}$.
 
@@ -341,12 +341,12 @@ $md$, 4);
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a2000001-0001-0001-0002-0000000000e1','activity','Prelim Mock Exams — Answer Key with Explanations',$md$
-Check your work item by item. For every computation, compare your working against the steps shown — a right answer with wrong reasoning will not survive a harder version of the same item.
+('a2000001-0001-0001-0002-0000000000e1','activity','Prelim Mock Exams, Answer Key with Explanations',$md$
+Check your work item by item. For every computation, compare your working against the steps shown, a right answer with wrong reasoning will not survive a harder version of the same item.
 
-### Mock Exam A — Answers
+### Mock Exam A, Answers
 
-**1. (A) a honeycomb.** Regular hexagons tile the plane completely with no gaps or overlaps — the defining property of a tessellation. Sunflower heads and hurricanes are spiral examples; butterfly wings show bilateral symmetry.
+**1. (A) a honeycomb.** Regular hexagons tile the plane completely with no gaps or overlaps, the defining property of a tessellation. Sunflower heads and hurricanes are spiral examples; butterfly wings show bilateral symmetry.
 
 **2. (B) radial.** A starfish repeats around a fixed central point. Bilateral symmetry needs a single mirror axis, which a starfish does not rely on.
 
@@ -354,11 +354,11 @@ Check your work item by item. For every computation, compare your working agains
 
 **4. (A) hop.** In Conway's table, hop is the frieze group with translation symmetry only.
 
-**5. (C) 144.** Count up: $1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144$ — the 12th entry is 144.
+**5. (C) 144.** Count up: $1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144$, the 12th entry is 144.
 
 **6. (B).** $\varphi = \dfrac{1+\sqrt{5}}{2} \approx 1.618$. Option (C) is the conjugate $\bar{\varphi}$.
 
-**7. (C).** "9 is a prime number" is declarative with a definite truth value (false, since $9 = 3 \times 3$) — so it is a proposition. (A) is imperative, (B) interrogative, (D) subjective.
+**7. (C).** "9 is a prime number" is declarative with a definite truth value (false, since $9 = 3 \times 3$), so it is a proposition. (A) is imperative, (B) interrogative, (D) subjective.
 
 **8. (B).** A conditional fails only when a true premise leads to a false conclusion.
 
@@ -415,8 +415,8 @@ True in every row: **tautology**. (Rows 2–4 have a false premise, so the condi
 Mixed outputs (true only when $p$ is false and $q$ is true): **contingency**.
 
 **24.**
-- Converse: "If a number is even, then it is divisible by 4." (False in general — 6 is a counterexample.)
-- Inverse: "If a number is not divisible by 4, then it is not even." (Also false — again, 6.)
+- Converse: "If a number is even, then it is divisible by 4." (False in general, 6 is a counterexample.)
+- Inverse: "If a number is not divisible by 4, then it is not even." (Also false, again, 6.)
 - Contrapositive: "If a number is not even, then it is not divisible by 4." (True, and equivalent to the original.)
 
 **25.** (a) $A \cap B = \{2, 4\}$ (b) $A \cup B = \{1,2,3,4,5,6,8,10\}$ (c) $A' = \{1,3,5,7,9\}$ (d) $B \setminus A = \{1,3,5\}$.
@@ -431,13 +431,13 @@ Mixed outputs (true only when $p$ is false and $q$ is true): **contingency**.
 1. *Understand:* 12 people, each pair shakes hands exactly once; count the pairs.
 2. *Plan:* each person shakes 11 hands, but each handshake involves two people, so halve the total.
 3. *Execute:* $\dfrac{12 \times 11}{2} = \mathbf{66}$.
-4. *Review:* test on a small case — 3 people give $\frac{3 \times 2}{2} = 3$ handshakes, which is correct, so the method is sound.
+4. *Review:* test on a small case, 3 people give $\frac{3 \times 2}{2} = 3$ handshakes, which is correct, so the method is sound.
 
 **30.** Undo the operations in reverse: $22 + 5 = 27$, then $27 \div 3 = \mathbf{9}$. Forward check: $9 \times 3 - 5 = 27 - 5 = 22$. ✓
 
-### Mock Exam B — Answers
+### Mock Exam B, Answers
 
-**1. (C) fractals** — self-similar structures repeated at shrinking scales.
+**1. (C) fractals**, self-similar structures repeated at shrinking scales.
 
 **2. (B) sidle.** Translation plus vertical reflection only. A step uses glide reflection; a spinning hop uses half-turns.
 
@@ -447,7 +447,7 @@ Mixed outputs (true only when $p$ is false and $q$ is true): **contingency**.
 
 **5. (B) 1.618.** The ratio of consecutive Fibonacci terms stabilizes at $\varphi$.
 
-**6. (B) $-0.618$.** $\bar{\varphi} = \frac{1 - \sqrt{5}}{2} = \frac{1 - 2.2361}{2} \approx -0.618$ — note the negative sign.
+**6. (B) $-0.618$.** $\bar{\varphi} = \frac{1 - \sqrt{5}}{2} = \frac{1 - 2.2361}{2} \approx -0.618$, note the negative sign.
 
 **7. (C).** "Most exciting subject" is a subjective claim with no objective truth value. (B) is false but still a proposition.
 
@@ -496,7 +496,7 @@ So $F_6 = \mathbf{8}$. ✓
 | 0 | 1 | 1 | 0 | 0 | 0 |
 | 0 | 0 | 1 | 1 | 1 | 1 |
 
-The last two columns are identical in every row, so the two propositions are logically equivalent — a biconditional is exactly a two-way conditional.
+The last two columns are identical in every row, so the two propositions are logically equivalent, a biconditional is exactly a two-way conditional.
 
 **23.** | $p$ | $q$ | $r$ | $p \wedge q$ | $\neg r$ | $(p \wedge q) \vee \neg r$ |
 |---|---|---|---|---|---|
@@ -511,9 +511,9 @@ The last two columns are identical in every row, so the two propositions are log
 
 Mixed true and false rows: **contingency**.
 
-**24.** (a) $p \wedge \neg p$ is false in both rows (a statement and its negation can never hold together): **contradiction**. (b) $(p \longrightarrow q) \vee p$: when $p$ is true the right disjunct is true; when $p$ is false the conditional is true by default — every row is true: **tautology**.
+**24.** (a) $p \wedge \neg p$ is false in both rows (a statement and its negation can never hold together): **contradiction**. (b) $(p \longrightarrow q) \vee p$: when $p$ is true the right disjunct is true; when $p$ is false the conditional is true by default, every row is true: **tautology**.
 
-**25.** (a) $A = \{p, a, t, e, r, n\}$ and $B = \{p, r, o, b, l, e, m\}$ (duplicates dropped — sets keep distinct elements only). (b) $A \cap B = \{p, e, r\}$. (c) $A \setminus B = \{a, t, n\}$. (d) $A \cup B = \{p,a,t,e,r,n,o,b,l,m\}$, so $n(A \cup B) = \mathbf{10}$.
+**25.** (a) $A = \{p, a, t, e, r, n\}$ and $B = \{p, r, o, b, l, e, m\}$ (duplicates dropped, sets keep distinct elements only). (b) $A \cap B = \{p, e, r\}$. (c) $A \setminus B = \{a, t, n\}$. (d) $A \cup B = \{p,a,t,e,r,n,o,b,l,m\}$, so $n(A \cup B) = \mathbf{10}$.
 
 **26.** Fill from the center: all three $= 3$. Java–Python only $= 8-3 = 5$; Python–C++ only $= 6-3 = 3$; Java–C++ only $= 7-3 = 4$. Java only $= 25 - 5 - 4 - 3 = 13$; Python only $= 22 - 5 - 3 - 3 = 11$; C++ only $= 18 - 3 - 4 - 3 = 8$.
 - (a) At least one: $13+11+8+5+3+4+3 = \mathbf{47}$.
@@ -521,7 +521,7 @@ Mixed true and false rows: **contingency**.
 - (c) Exactly one: $13+11+8 = \mathbf{32}$.
 - (d) Exactly two: $5+3+4 = \mathbf{12}$. (Check: $32 + 12 + 3 = 47$ ✓)
 
-**27.** (a) **True** — 3 is an element of $A$. (b) **True** — both 3 and 5 belong to $A$, so $\{3,5\}$ is a subset. (c) **False** — 9 is an element, not a set; the correct statement is $9 \in A$. (d) **True** — $A$ has five distinct elements.
+**27.** (a) **True**, 3 is an element of $A$. (b) **True**, both 3 and 5 belong to $A$, so $\{3,5\}$ is a subset. (c) **False**, 9 is an element, not a set; the correct statement is $9 \in A$. (d) **True**, $A$ has five distinct elements.
 
 **28.** (a) Conjecture: the sum of the first $n$ odd numbers is $n^2$. (b) The odd numbers from 1 to 99 are $1, 3, \dots, 99$; since $99 = 2(50) - 1$, there are 50 terms, so the sum is $50^2 = \mathbf{2{,}500}$.
 
@@ -529,63 +529,63 @@ Mixed true and false rows: **contingency**.
 1. *Understand:* 15 teams, every pair plays exactly once; count the pairings.
 2. *Plan:* each team plays 14 games, but each game involves two teams, so halve the product.
 3. *Execute:* $\dfrac{15 \times 14}{2} = \mathbf{105}$.
-4. *Review:* small case check — 4 teams give $\frac{4 \times 3}{2} = 6$ games, which matches listing them out.
+4. *Review:* small case check, 4 teams give $\frac{4 \times 3}{2} = 6$ games, which matches listing them out.
 
 **30.** Work backwards from ₱45: before lunch she had $45 + 30 = 75$; that was half her money, so she started with $75 \times 2 = \mathbf{₱150}$. Forward check: $150 \div 2 = 75$, then $75 - 30 = 45$. ✓
 $md$, 5),
 
 ('a2000001-0001-0001-0002-0000000000e1','activity','Common Prelim Traps & How to Avoid Them',$md$
-These are the mistakes that cost the most points on this exam, in roughly the order examiners exploit them. Each trap comes with a 30-second drill — do the drill *before* reading its answer.
+These are the mistakes that cost the most points on this exam, in roughly the order examiners exploit them. Each trap comes with a 30-second drill, do the drill *before* reading its answer.
 
-### Trap 1 — Treating the converse as the contrapositive
+### Trap 1, Treating the converse as the contrapositive
 
 From $p \longrightarrow q$, only the contrapositive $\neg q \longrightarrow \neg p$ is equivalent to the original. The converse $q \longrightarrow p$ merely swaps the parts and can be false while the original is true. Exams love offering the converse as a tempting "equivalent" choice.
 
 **Drill:** For "If a shape is a square, then it has four sides," which one of the converse, inverse, and contrapositive is logically equivalent to it? Write that statement out.
 
-**Answer:** Only the contrapositive: "If a shape does not have four sides, then it is not a square." The converse ("If a shape has four sides, then it is a square") fails — a rectangle is a counterexample.
+**Answer:** Only the contrapositive: "If a shape does not have four sides, then it is not a square." The converse ("If a shape has four sides, then it is a square") fails, a rectangle is a counterexample.
 
-### Trap 2 — Reading "or" as exclusive
+### Trap 2, Reading "or" as exclusive
 
 In logic, $p \vee q$ is **inclusive**: it is true when either part is true *and also when both are*. It is false only when both parts are false. Students trained on everyday "either-or" wrongly mark the both-true row as false.
 
 **Drill:** Let $p$: "10 is divisible by 5" and $q$: "10 is divisible by 2." Both are true. What is the truth value of $p \vee q$?
 
-**Answer:** **True.** Both components being true makes a disjunction true — the only false row is false-false.
+**Answer:** **True.** Both components being true makes a disjunction true, the only false row is false-false.
 
-### Trap 3 — Confusing $\in$ with $\subseteq$
+### Trap 3, Confusing $\in$ with $\subseteq$
 
 Elements *belong to* a set ($\in$); only sets can be *subsets* ($\subseteq$). Writing $2 \subseteq A$ instead of $2 \in A$ is an automatic deduction on many rubrics.
 
 **Drill:** Let $A = \{2, 4, 6\}$. Mark each true or false: (a) $2 \in A$ (b) $\{2\} \subseteq A$ (c) $\{2\} \in A$ (d) $\emptyset \subseteq A$
 
-**Answer:** (a) True. (b) True — every element of $\{2\}$ is in $A$. (c) **False** — the set $\{2\}$ is not itself listed as an element of $A$. (d) True — the empty set has no element that could fail the subset test, so by the definition it is a subset of every set.
+**Answer:** (a) True. (b) True, every element of $\{2\}$ is in $A$. (c) **False**, the set $\{2\}$ is not itself listed as an element of $A$. (d) True, the empty set has no element that could fail the subset test, so by the definition it is a subset of every set.
 
-### Trap 4 — Swapping union and intersection
+### Trap 4, Swapping union and intersection
 
 Union $A \cup B$ collects everything in *either* set; intersection $A \cap B$ keeps only what is in *both*. Under time pressure students compute the wrong one, especially inside bigger expressions.
 
 **Drill:** $A = \{a, b, c\}$, $B = \{b, c, d\}$. Find $A \cup B$, $A \cap B$, and $n(A \cup B)$.
 
-**Answer:** $A \cup B = \{a, b, c, d\}$, $A \cap B = \{b, c\}$, and $n(A \cup B) = 4$ — not 6, because shared elements are listed once.
+**Answer:** $A \cup B = \{a, b, c, d\}$, $A \cap B = \{b, c\}$, and $n(A \cup B) = 4$, not 6, because shared elements are listed once.
 
-### Trap 5 — Fibonacci off-by-one
+### Trap 5, Fibonacci off-by-one
 
 With $F_1 = 1$ and $F_2 = 1$, "the 10th term" means $F_{10} = 55$. Students who start counting from 0, or who miscount the two starting 1s, land one position off and answer 89 or 34.
 
 **Drill:** Without listing all terms aloud, state $F_9$ and $F_{10}$.
 
-**Answer:** $1, 1, 2, 3, 5, 8, 13, 21, 34, 55$ — so $F_9 = 34$ and $F_{10} = 55$. If you wrote 55 and 89, you started one index too late.
+**Answer:** $1, 1, 2, 3, 5, 8, 13, 21, 34, 55$, so $F_9 = 34$ and $F_{10} = 55$. If you wrote 55 and 89, you started one index too late.
 
-### Trap 6 — Marking a false-premise conditional as false
+### Trap 6, Marking a false-premise conditional as false
 
 When the premise is false, $p \longrightarrow q$ is **true by default**, whatever $q$ says. The only failing row of a conditional is true-premise, false-conclusion.
 
 **Drill:** What is the truth value of: "If $2 + 2 = 5$, then Manila is in Mindanao"?
 
-**Answer:** **True.** The premise is false, so the conditional holds by default — even though the conclusion is also false.
+**Answer:** **True.** The premise is false, so the conditional holds by default, even though the conclusion is also false.
 
-### Trap 7 — Believing three examples prove a conjecture
+### Trap 7, Believing three examples prove a conjecture
 
 Inductive evidence suggests; it never proves. One counterexample is fatal, and exam writers pick conjectures that survive several small cases before failing.
 
@@ -593,13 +593,13 @@ Inductive evidence suggests; it never proves. One counterexample is fatal, and e
 
 **Answer:** No. At $n = 10$: $100 + 10 + 11 = 121 = 11 \times 11$, which is not prime. The conjecture is disproved by this single counterexample despite nine straight successes before it.
 
-### Trap 8 — Double-counting the overlap in Venn problems
+### Trap 8, Double-counting the overlap in Venn problems
 
 Adding $n(A) + n(B)$ counts the intersection twice. Always subtract it once: $n(A \cup B) = n(A) + n(B) - n(A \cap B)$. In three-set problems, fill the diagram from the center outward instead of trusting raw totals.
 
 **Drill:** In a survey, 20 students like math, 15 like programming, and 8 like both. How many like at least one of the two?
 
-**Answer:** $20 + 15 - 8 = \mathbf{27}$ — not 35. The 8 students who like both were inside both totals and must be subtracted once.
+**Answer:** $20 + 15 - 8 = \mathbf{27}$, not 35. The 8 students who like both were inside both totals and must be subtracted once.
 $md$, 6);
 
 -- ============================================================
@@ -617,15 +617,15 @@ The final is cumulative across all six units, but it is weighted toward what you
 | Unit V: Optimization via Linear Programming | ~20% | Model formulation and the graphical corner-point method |
 | Unit VI: Graph Theory and Network Models | ~20–25% | Euler/Hamilton conditions, TSP algorithms, Kruskal, coloring |
 
-Your prelim review still counts — skim the prelim blueprint and traps sections first, then spend most of your time on the material below. The final is **computation-heavy**: sample sizes, standard deviations, corner-point evaluations, and network algorithms make up most of the points.
+Your prelim review still counts, skim the prelim blueprint and traps sections first, then spend most of your time on the material below. The final is **computation-heavy**: sample sizes, standard deviations, corner-point evaluations, and network algorithms make up most of the points.
 
-### Rapid Review — Unit IV: Statistics
+### Rapid Review, Unit IV: Statistics
 
 **Branches and terms.** Descriptive statistics summarizes data you have; inferential statistics uses a sample to draw conclusions about a population. Know population vs. sample, and simple random sampling.
 
-**Sampling designs.** Probability methods: simple random, systematic (every $k$-th from a random start), stratified (proportional random draws from subgroups), cluster (randomly chosen groups, everyone inside). Non-probability methods: convenience, purposive, quota, snowball. Exams test these by scenario — identify the design, do not describe it.
+**Sampling designs.** Probability methods: simple random, systematic (every $k$-th from a random start), stratified (proportional random draws from subgroups), cluster (randomly chosen groups, everyone inside). Non-probability methods: convenience, purposive, quota, snowball. Exams test these by scenario, identify the design, do not describe it.
 
-**Levels of measurement**, lowest to highest: nominal (labels), ordinal (ranked, unequal gaps), interval (equal gaps, no true zero — Celsius), ratio (true zero — weight, salary, age).
+**Levels of measurement**, lowest to highest: nominal (labels), ordinal (ranked, unequal gaps), interval (equal gaps, no true zero, Celsius), ratio (true zero, weight, salary, age).
 
 **Sample-size formulas:**
 
@@ -639,19 +639,19 @@ $$\bar{x} = \frac{\sum x_i}{n} \qquad \text{Weighted: } \bar{x} = \frac{\sum wx}
 
 Median: middle value of the ordered list (average the two central values when $n$ is even). Mode: most frequent value. Range: maximum minus minimum. Remember the sample variance divides by $n - 1$, not $n$.
 
-### Rapid Review — Unit V: Linear Programming
+### Rapid Review, Unit V: Linear Programming
 
-**Every LP model has four parts** — write all four or lose formulation points:
+**Every LP model has four parts**, write all four or lose formulation points:
 1. Decision variables ($x_1, x_2, \dots$): define them in words with units.
 2. Objective function: maximize profit or minimize cost, linear in the variables.
 3. Structural constraints: one inequality per limited resource or requirement.
 4. Non-negativity: $x_i \ge 0$.
 
-**Graphical method:** plot each constraint's boundary line, shade using a test point (the origin is easiest when it is not on the line), intersect the shaded regions to get the feasible region, find every corner point (vertex), and evaluate the objective function at each. **If an optimum exists, it occurs at a corner point** — that sentence alone is often an exam item.
+**Graphical method:** plot each constraint's boundary line, shade using a test point (the origin is easiest when it is not on the line), intersect the shaded regions to get the feasible region, find every corner point (vertex), and evaluate the objective function at each. **If an optimum exists, it occurs at a corner point**, that sentence alone is often an exam item.
 
 Corner points on the interior come from solving pairs of boundary equations simultaneously (elimination or substitution).
 
-### Rapid Review — Unit VI: Graph Theory
+### Rapid Review, Unit VI: Graph Theory
 
 **Core counts:**
 - Sum of all vertex degrees $= 2 \times$ (number of edges). Hence the number of odd-degree vertices is always even.
@@ -660,7 +660,7 @@ Corner points on the interior come from solving pairs of boundary equations simu
 
 **Euler rules (about edges):** a connected graph has an Euler *circuit* iff every vertex has even degree; it has an Euler *path* iff exactly two vertices have odd degree (start at one odd vertex, end at the other). Fleury's algorithm: never cross a bridge unless there is no other option.
 
-**Hamilton (about vertices):** a Hamilton path visits every vertex once; a Hamilton circuit returns to the start. No simple degree test exists — that asymmetry with Euler is a favorite true/false item.
+**Hamilton (about vertices):** a Hamilton path visits every vertex once; a Hamilton circuit returns to the start. No simple degree test exists, that asymmetry with Euler is a favorite true/false item.
 
 **Traveling Salesman algorithms:** brute force (all circuits, guaranteed optimal, impractical when large); nearest neighbor (always move to the closest unvisited vertex, then return); cheapest link (take the lowest-weight edges one by one, rejecting any edge that closes a circuit early or gives a vertex degree 3).
 
@@ -670,13 +670,13 @@ Corner points on the interior come from solving pairs of boundary equations simu
 
 ### The Night Before
 
-Recompute one of each by hand: a Slovin sample size, a standard deviation, a corner-point evaluation, a nearest-neighbor circuit, and a Kruskal tree. If all five run clean without notes, you are ready. Then sleep — a rested pass through easy MCQ items beats a groggy pass through everything.
+Recompute one of each by hand: a Slovin sample size, a standard deviation, a corner-point evaluation, a nearest-neighbor circuit, and a Kruskal tree. If all five run clean without notes, you are ready. Then sleep, a rested pass through easy MCQ items beats a groggy pass through everything.
 $md$, 7),
 
-('a2000001-0001-0001-0002-0000000000e1','activity','Final Mock Exam A — 30 Items',$md$
+('a2000001-0001-0001-0002-0000000000e1','activity','Final Mock Exam A, 30 Items',$md$
 Cumulative coverage, weighted like the real final: items 1–6 review Units I–III, items 7–14 cover statistics, 15–20 linear programming, 21–30 graph theory. Allow 90 minutes; a calculator is expected from item 9 onward.
 
-### Part I — Units I–III Review (Items 1–6)
+### Part I, Units I–III Review (Items 1–6)
 
 **1.** Given $F_{11} = 89$ and $F_{12} = 144$, compute $F_{13}$ and $F_{14}$.
 
@@ -690,7 +690,7 @@ Cumulative coverage, weighted like the real final: items 1–6 review Units I–
 
 **6.** For the sequence $2, 6, 12, 20, 30, \dots$, give the next term and a formula for the $n$-th term.
 
-### Part II — Unit IV: Statistics (Items 7–14)
+### Part II, Unit IV: Statistics (Items 7–14)
 
 **7.** Classify the level of measurement of each: (a) temperature in degrees Celsius (b) basketball jersey numbers (c) class standing (1st, 2nd, 3rd) (d) monthly salary in pesos.
 
@@ -708,7 +708,7 @@ Cumulative coverage, weighted like the real final: items 1–6 review Units I–
 
 **14.** For the sample $4, 8, 6, 5, 2$: compute the range, the sample variance, and the sample standard deviation.
 
-### Part III — Unit V: Linear Programming (Items 15–20)
+### Part III, Unit V: Linear Programming (Items 15–20)
 
 **15.** In the model below, identify (a) the decision variables, (b) the objective function, (c) the structural constraints, and (d) the non-negativity restrictions.
 
@@ -724,7 +724,7 @@ $$\text{Maximize } P = 120x + 90y \quad \text{subject to} \quad 3x + 2y \le 180,
 
 **20.** Find the exact intersection point of the boundary lines $3x + 2y = 12$ and $x + 2y = 8$.
 
-### Part IV — Unit VI: Graph Theory (Items 21–30)
+### Part IV, Unit VI: Graph Theory (Items 21–30)
 
 **21.** A graph has vertices $\{A, B, C, D\}$ and edges $(A\text{-}B), (A\text{-}C), (A\text{-}D), (B\text{-}C), (C\text{-}D)$. (a) State the degree of each vertex. (b) Does the graph have an Euler circuit, an Euler path only, or neither? If a path exists, where must it start and end?
 
@@ -747,10 +747,10 @@ $$\text{Maximize } P = 120x + 90y \quad \text{subject to} \quad 3x + 2y \le 180,
 **30.** A graph consists of a triangle $A\text{-}B\text{-}C$ plus a fourth vertex $D$ adjacent only to $A$. Determine its chromatic number and exhibit a valid coloring.
 $md$, 8),
 
-('a2000001-0001-0001-0002-0000000000e1','activity','Final Mock Exam B — 30 Items',$md$
+('a2000001-0001-0001-0002-0000000000e1','activity','Final Mock Exam B, 30 Items',$md$
 All-new items, same cumulative structure as Final Mock A: items 1–6 review Units I–III, 7–14 statistics, 15–20 linear programming, 21–30 graph theory. 90 minutes.
 
-### Part I — Units I–III Review (Items 1–6)
+### Part I, Units I–III Review (Items 1–6)
 
 **1.** Given $F_{17} = 1{,}597$ and $F_{19} = 4{,}181$, compute $F_{18}$ and $F_{20}$.
 
@@ -764,7 +764,7 @@ All-new items, same cumulative structure as Final Mock A: items 1–6 review Uni
 
 **6.** For the sequence $5, 8, 11, 14, \dots$, conjecture a formula for the $n$-th term and compute the 20th term.
 
-### Part II — Unit IV: Statistics (Items 7–14)
+### Part II, Unit IV: Statistics (Items 7–14)
 
 **7.** Classify each statement as descriptive or inferential statistics: (a) "The average score of the 40 students in this section is 82." (b) "Based on a sample of 400 voters, we estimate that 56% of all registered voters favor the candidate."
 
@@ -782,7 +782,7 @@ All-new items, same cumulative structure as Final Mock A: items 1–6 review Uni
 
 **14.** For the sample $10, 12, 14, 16, 18$: compute the range, the sample variance, and the sample standard deviation.
 
-### Part III — Unit V: Linear Programming (Items 15–20)
+### Part III, Unit V: Linear Programming (Items 15–20)
 
 **15.** Given the constraints $x + y \le 5$, $2x + y \le 8$, $x \ge 0$, $y \ge 0$: determine whether each of the points $(2, 2)$ and $(4, 2)$ lies in the feasible region. Show the checks.
 
@@ -796,7 +796,7 @@ All-new items, same cumulative structure as Final Mock A: items 1–6 review Uni
 
 **20.** Find the exact intersection point of the boundary lines $x + y = 7$ and $2x + 3y = 18$.
 
-### Part IV — Unit VI: Graph Theory (Items 21–30)
+### Part IV, Unit VI: Graph Theory (Items 21–30)
 
 **21.** A graph has vertices $\{P, Q, R, S, T\}$ and edges $(P\text{-}Q), (P\text{-}R), (Q\text{-}R), (Q\text{-}S), (R\text{-}S), (S\text{-}T)$. (a) State the degree of each vertex. (b) Does the graph have an Euler circuit, an Euler path only, or neither? Justify.
 
@@ -824,10 +824,10 @@ $md$, 9);
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a2000001-0001-0001-0002-0000000000e1','activity','Final Mock Exams — Answer Key with Explanations',$md$
-Full working for every item of both final mocks. Where a computation appears, redo it on paper alongside the solution — final exams award method points, and this is where you earn them.
+('a2000001-0001-0001-0002-0000000000e1','activity','Final Mock Exams, Answer Key with Explanations',$md$
+Full working for every item of both final mocks. Where a computation appears, redo it on paper alongside the solution, final exams award method points, and this is where you earn them.
 
-### Final Mock Exam A — Answers
+### Final Mock Exam A, Answers
 
 **1.** $F_{13} = F_{12} + F_{11} = 144 + 89 = \mathbf{233}$; then $F_{14} = F_{13} + F_{12} = 233 + 144 = \mathbf{377}$.
 
@@ -848,9 +848,9 @@ True in every row: **tautology**. Whenever the premise $p \wedge q$ holds, $q$ a
 
 **6.** The gaps are $4, 6, 8, 10$, so the next gap is 12 and the next term is $30 + 12 = \mathbf{42}$. Each term is $a_n = n(n+1)$: check $1 \cdot 2 = 2$, $2 \cdot 3 = 6$, ..., $6 \cdot 7 = 42$. ✓
 
-**7.** (a) **Interval** — equal degree gaps but 0°C is not "no temperature." (b) **Nominal** — the numbers are labels, not quantities. (c) **Ordinal** — ranked, but the gap between 1st and 2nd need not equal the gap between 2nd and 3rd. (d) **Ratio** — a true zero exists and ₱40,000 is genuinely twice ₱20,000.
+**7.** (a) **Interval**, equal degree gaps but 0°C is not "no temperature." (b) **Nominal**, the numbers are labels, not quantities. (c) **Ordinal**, ranked, but the gap between 1st and 2nd need not equal the gap between 2nd and 3rd. (d) **Ratio**, a true zero exists and ₱40,000 is genuinely twice ₱20,000.
 
-**8.** (a) **Systematic** — every $k$-th member from an ordered list. (b) **Stratified random** — proportional random draws from subgroups. (c) **Convenience** — chosen by ease of access. (d) **Cluster** — random groups selected, then everyone inside them.
+**8.** (a) **Systematic**, every $k$-th member from an ordered list. (b) **Stratified random**, proportional random draws from subgroups. (c) **Convenience**, chosen by ease of access. (d) **Cluster**, random groups selected, then everyone inside them.
 
 **9.** $$n = \frac{N}{1 + NE^2} = \frac{2000}{1 + 2000(0.05)^2} = \frac{2000}{1 + 2000(0.0025)} = \frac{2000}{6} \approx 333.33$$
 
@@ -874,13 +874,13 @@ Round up: $n_0 = \mathbf{385}$.
 
 $$s^2 = \frac{20}{5-1} = \mathbf{5} \qquad s = \sqrt{5} \approx \mathbf{2.24}$$
 
-(Divide by $n - 1 = 4$, not by 5 — this is a sample.)
+(Divide by $n - 1 = 4$, not by 5, this is a sample.)
 
 **15.** (a) Decision variables: $x$ and $y$. (b) Objective function: $P = 120x + 90y$, to be maximized. (c) Structural constraints: $3x + 2y \le 180$ and $x + y \le 80$. (d) Non-negativity: $x \ge 0$, $y \ge 0$.
 
-**16.** The decision variables represent physical quantities such as units produced or resources used, and producing a negative quantity is meaningless — so the model restricts every variable to zero or above.
+**16.** The decision variables represent physical quantities such as units produced or resources used, and producing a negative quantity is meaningless, so the model restricts every variable to zero or above.
 
-**17.** Evaluate $P = 3x + 4y$ at every corner: $(0,0) \to 0$; $(0,5) \to 20$; $(4,3) \to 12 + 12 = 24$; $(6,0) \to 18$. Maximum $P = \mathbf{24}$ at $(4, 3)$ — the optimum sits at a vertex, as LP theory guarantees.
+**17.** Evaluate $P = 3x + 4y$ at every corner: $(0,0) \to 0$; $(0,5) \to 20$; $(4,3) \to 12 + 12 = 24$; $(6,0) \to 18$. Maximum $P = \mathbf{24}$ at $(4, 3)$, the optimum sits at a vertex, as LP theory guarantees.
 
 **18.** Let $x$ = batches of pandesal per day, $y$ = batches of ensaymada per day.
 
@@ -888,7 +888,7 @@ $$\text{Maximize } P = 40x + 60y$$
 
 $$\text{subject to } 2x + 3y \le 60 \; \text{(flour)}, \quad x + 2y \le 32 \; \text{(oven-hours)}, \quad x \ge 0, \; y \ge 0$$
 
-**19.** Corner points: $(0,0)$; $(6,0)$ from $x + y = 6$ (check: $6 \le 8$ ✓); $(0,4)$ from $x + 2y = 8$ (check: $4 \le 6$ ✓); and the intersection of the two boundary lines — subtracting $x + y = 6$ from $x + 2y = 8$ gives $y = 2$, so $x = 4$: the point $(4,2)$.
+**19.** Corner points: $(0,0)$; $(6,0)$ from $x + y = 6$ (check: $6 \le 8$ ✓); $(0,4)$ from $x + 2y = 8$ (check: $4 \le 6$ ✓); and the intersection of the two boundary lines, subtracting $x + y = 6$ from $x + 2y = 8$ gives $y = 2$, so $x = 4$: the point $(4,2)$.
 
 | Corner | $P = 2x + 3y$ |
 |---|---|
@@ -901,7 +901,7 @@ Optimal solution: $x = 4$, $y = 2$, maximum $P = \mathbf{14}$.
 
 **20.** Subtract the equations: $(3x + 2y) - (x + 2y) = 12 - 8$ gives $2x = 4$, so $x = 2$. Substitute back: $2 + 2y = 8$, so $y = 3$. Intersection: $\mathbf{(2, 3)}$.
 
-**21.** (a) $\deg(A) = 3$ (edges to $B, C, D$), $\deg(B) = 2$, $\deg(C) = 3$, $\deg(D) = 2$. (b) Exactly two vertices ($A$ and $C$) have odd degree, so the graph has an **Euler path only** — no circuit. The path must start at one of $A, C$ and end at the other.
+**21.** (a) $\deg(A) = 3$ (edges to $B, C, D$), $\deg(B) = 2$, $\deg(C) = 3$, $\deg(D) = 2$. (b) Exactly two vertices ($A$ and $C$) have odd degree, so the graph has an **Euler path only**, no circuit. The path must start at one of $A, C$ and end at the other.
 
 **22.** Every degree is even, so by Euler's theorem the connected graph has an **Euler circuit** (which is also an Euler path, traversed from any starting vertex back to itself).
 
@@ -909,11 +909,11 @@ Optimal solution: $x = 4$, $y = 2$, maximum $P = \mathbf{14}$.
 
 **24.** **No.** The degree sum equals twice the edge count, which is even; if exactly three vertices were odd, the total would be odd. The number of odd-degree vertices must always be even.
 
-**25.** $K_5$ has $\dfrac{n(n-1)}{2} = \dfrac{5 \times 4}{2} = \mathbf{10}$ edges — each of the 5 vertices connects to the other 4, and halving corrects the double count.
+**25.** $K_5$ has $\dfrac{n(n-1)}{2} = \dfrac{5 \times 4}{2} = \mathbf{10}$ edges, each of the 5 vertices connects to the other 4, and halving corrects the double count.
 
 **26.** An Euler circuit traverses every **edge** exactly once and returns to the start; a Hamilton circuit visits every **vertex** exactly once and returns to the start (it need not use every edge).
 
-**27.** From $A$, the nearest city is $C$ (4). From $C$, unvisited options are $B$ (6) and $D$ (8) — pick $B$. From $B$, only $D$ remains (3). Return $D \to A$ (7).
+**27.** From $A$, the nearest city is $C$ (4). From $C$, unvisited options are $B$ (6) and $D$ (8), pick $B$. From $B$, only $D$ remains (3). Return $D \to A$ (7).
 
 $$A \to C \to B \to D \to A: \quad 4 + 6 + 3 + 7 = \mathbf{20}$$
 
@@ -922,16 +922,16 @@ $$A \to C \to B \to D \to A: \quad 4 + 6 + 3 + 7 = \mathbf{20}$$
 1. Take $(a\text{-}c) = 2$.
 2. Take $(c\text{-}e) = 3$.
 3. Take $(a\text{-}b) = 4$.
-4. Reject $(b\text{-}c) = 5$ — it would close the circuit $a\text{-}b\text{-}c$.
-5. Take $(d\text{-}e) = 7$ — now all five vertices are connected with $5 - 1 = 4$ edges.
+4. Reject $(b\text{-}c) = 5$, it would close the circuit $a\text{-}b\text{-}c$.
+5. Take $(d\text{-}e) = 7$, now all five vertices are connected with $5 - 1 = 4$ edges.
 
 MST edges: $\{a\text{-}c, \; c\text{-}e, \; a\text{-}b, \; d\text{-}e\}$, total weight $2 + 3 + 4 + 7 = \mathbf{16}$.
 
-**29.** (a) A tree with $n = 12$ vertices has $n - 1 = \mathbf{11}$ edges. (b) **True** — a tree contains no circuits, so no edge has an alternate route around it; every edge is a bridge.
+**29.** (a) A tree with $n = 12$ vertices has $n - 1 = \mathbf{11}$ edges. (b) **True**, a tree contains no circuits, so no edge has an alternate route around it; every edge is a bridge.
 
 **30.** The triangle $A, B, C$ has mutually adjacent vertices, forcing three distinct colors. $D$ touches only $A$, so it can reuse $B$'s color. Chromatic number $= \mathbf{3}$; one valid coloring: $A = 1$, $B = 2$, $C = 3$, $D = 2$.
 
-### Final Mock Exam B — Answers
+### Final Mock Exam B, Answers
 
 **1.** From $F_{19} = F_{18} + F_{17}$: $F_{18} = 4{,}181 - 1{,}597 = \mathbf{2{,}584}$. Then $F_{20} = F_{19} + F_{18} = 4{,}181 + 2{,}584 = \mathbf{6{,}765}$.
 
@@ -952,9 +952,9 @@ The two disjunctions match in every row (disjunction is order-independent), so t
 
 **6.** Common difference 3 starting at 5: $a_n = 3n + 2$ (check $n = 1$: $5$ ✓). Then $a_{20} = 3(20) + 2 = \mathbf{62}$.
 
-**7.** (a) **Descriptive** — it summarizes the data actually collected from that section. (b) **Inferential** — it generalizes from a 400-voter sample to the whole voting population.
+**7.** (a) **Descriptive**, it summarizes the data actually collected from that section. (b) **Inferential**, it generalizes from a 400-voter sample to the whole voting population.
 
-**8.** (a) **Snowball** — participants recruit further participants from their networks. (b) **Purposive** — the researcher's judgment selects specific well-suited subjects. (c) **Quota** — recruiting continues until preset category targets are filled.
+**8.** (a) **Snowball**, participants recruit further participants from their networks. (b) **Purposive**, the researcher's judgment selects specific well-suited subjects. (c) **Quota**, recruiting continues until preset category targets are filled.
 
 **9.** $$n = \frac{1500}{1 + 1500(0.04)^2} = \frac{1500}{1 + 1500(0.0016)} = \frac{1500}{1 + 2.4} = \frac{1500}{3.4} \approx 441.18$$
 
@@ -976,7 +976,7 @@ Round up: $n_0 = \mathbf{323}$.
 
 $$s^2 = \frac{40}{4} = \mathbf{10} \qquad s = \sqrt{10} \approx \mathbf{3.16}$$
 
-**15.** Point $(2,2)$: $2 + 2 = 4 \le 5$ ✓ and $2(2) + 2 = 6 \le 8$ ✓, with both coordinates non-negative — **feasible**. Point $(4,2)$: $4 + 2 = 6 > 5$ ✗ — the first constraint already fails, so it is **not feasible**.
+**15.** Point $(2,2)$: $2 + 2 = 4 \le 5$ ✓ and $2(2) + 2 = 6 \le 8$ ✓, with both coordinates non-negative, **feasible**. Point $(4,2)$: $4 + 2 = 6 > 5$ ✗, the first constraint already fails, so it is **not feasible**.
 
 **16.** Let $x$ = number of trays of puto produced per day and $y$ = number of trays of kutsinta produced per day. (Any clearly worded pair naming the quantity, the product, and the time unit earns full credit.)
 
@@ -988,7 +988,7 @@ $$\text{Maximize } P = 200x + 80y$$
 
 $$\text{subject to } 8x + 3y \le 240 \; \text{(wood)}, \quad 4x + 2y \le 140 \; \text{(labor-hours)}, \quad x \ge 0, \; y \ge 0$$
 
-**19.** Corner points: $(0,0)$; $(5,0)$ from $2x + y = 10$ (check: $5 \le 15$ ✓); $(0,5)$ from $x + 3y = 15$ (check: $5 \le 10$ ✓); and the intersection — substitute $y = 10 - 2x$ into $x + 3y = 15$: $x + 30 - 6x = 15$, so $-5x = -15$, $x = 3$, $y = 4$: the point $(3,4)$.
+**19.** Corner points: $(0,0)$; $(5,0)$ from $2x + y = 10$ (check: $5 \le 15$ ✓); $(0,5)$ from $x + 3y = 15$ (check: $5 \le 10$ ✓); and the intersection, substitute $y = 10 - 2x$ into $x + 3y = 15$: $x + 30 - 6x = 15$, so $-5x = -15$, $x = 3$, $y = 4$: the point $(3,4)$.
 
 | Corner | $P = 5x + 4y$ |
 |---|---|
@@ -1001,7 +1001,7 @@ Optimal solution: $x = 3$, $y = 4$, maximum $P = \mathbf{31}$.
 
 **20.** From $x + y = 7$, $y = 7 - x$. Substitute: $2x + 3(7 - x) = 18$ gives $2x + 21 - 3x = 18$, so $-x = -3$ and $x = 3$, $y = 4$. Intersection: $\mathbf{(3, 4)}$.
 
-**21.** (a) $\deg(P) = 2$, $\deg(Q) = 3$, $\deg(R) = 3$, $\deg(S) = 3$, $\deg(T) = 1$. (Check: degree sum $= 12 = 2 \times 6$ edges ✓.) (b) Four vertices ($Q, R, S, T$) have odd degree — more than two — so the graph has **neither** an Euler circuit nor an Euler path.
+**21.** (a) $\deg(P) = 2$, $\deg(Q) = 3$, $\deg(R) = 3$, $\deg(S) = 3$, $\deg(T) = 1$. (Check: degree sum $= 12 = 2 \times 6$ edges ✓.) (b) Four vertices ($Q, R, S, T$) have odd degree, more than two, so the graph has **neither** an Euler circuit nor an Euler path.
 
 **22.** **True.** This is exactly Euler's circuit theorem: a connected graph has an Euler circuit if and only if every vertex has even degree.
 
@@ -1011,9 +1011,9 @@ Optimal solution: $x = 3$, $y = 4$, maximum $P = \mathbf{31}$.
 
 **25.** (a) Each vertex connects to the other 5, so every degree is $\mathbf{5}$. (b) Edges: $\dfrac{6 \times 5}{2} = \mathbf{15}$.
 
-**26.** Never traverse a bridge unless no other edge remains available — crossing a bridge too early strands the edges on the far side.
+**26.** Never traverse a bridge unless no other edge remains available, crossing a bridge too early strands the edges on the far side.
 
-**27.** From $P$: nearest is $R$ (3). From $R$: unvisited are $Q$ (4), $S$ (5), $T$ (6) — pick $Q$. From $Q$: $S$ (7) or $T$ (8) — pick $S$. From $S$: only $T$ (4). Return $T \to P$ (5).
+**27.** From $P$: nearest is $R$ (3). From $R$: unvisited are $Q$ (4), $S$ (5), $T$ (6), pick $Q$. From $Q$: $S$ (7) or $T$ (8), pick $S$. From $S$: only $T$ (4). Return $T \to P$ (5).
 
 $$P \to R \to Q \to S \to T \to P: \quad 3 + 4 + 7 + 4 + 5 = \mathbf{23}$$
 
@@ -1022,20 +1022,20 @@ $$P \to R \to Q \to S \to T \to P: \quad 3 + 4 + 7 + 4 + 5 = \mathbf{23}$$
 1. Take $PR = 3$.
 2. Take $QR = 4$.
 3. Take $ST = 4$.
-4. Take $PT = 5$ — no early circuit; the selected edges form the path $Q\text{-}R\text{-}P\text{-}T\text{-}S$.
-5. Reject $RS = 5$ — $R$ already has degree 2.
-6. Reject $PQ = 6$ — $P$ already has degree 2.
-7. Reject $RT = 6$ — both $R$ and $T$ already have degree 2.
-8. Take $QS = 7$ — it closes the circuit only now, when all five cities are included.
+4. Take $PT = 5$, no early circuit; the selected edges form the path $Q\text{-}R\text{-}P\text{-}T\text{-}S$.
+5. Reject $RS = 5$, $R$ already has degree 2.
+6. Reject $PQ = 6$, $P$ already has degree 2.
+7. Reject $RT = 6$, both $R$ and $T$ already have degree 2.
+8. Take $QS = 7$, it closes the circuit only now, when all five cities are included.
 
-Circuit: $P \to R \to Q \to S \to T \to P$, total $3 + 4 + 4 + 5 + 7 = \mathbf{23}$ — in this network, the same result the Nearest Neighbor method found.
+Circuit: $P \to R \to Q \to S \to T \to P$, total $3 + 4 + 4 + 5 + 7 = \mathbf{23}$, in this network, the same result the Nearest Neighbor method found.
 
 **29.** Sorted edges: $(v\text{-}x)=2$, $(x\text{-}y)=3$, $(w\text{-}x)=4$, $(y\text{-}z)=5$, $(w\text{-}y)=6$, $(v\text{-}w)=7$, $(x\text{-}z)=8$.
 
 1. Take $(v\text{-}x) = 2$.
 2. Take $(x\text{-}y) = 3$.
 3. Take $(w\text{-}x) = 4$.
-4. Take $(y\text{-}z) = 5$ — all five nodes are now connected with 4 edges, so stop.
+4. Take $(y\text{-}z) = 5$, all five nodes are now connected with 4 edges, so stop.
 
 MST edges: $\{v\text{-}x, \; x\text{-}y, \; w\text{-}x, \; y\text{-}z\}$, total weight $2 + 3 + 4 + 5 = \mathbf{14}$.
 

@@ -1,4 +1,4 @@
-# Computer Programming 1 — Complete Study Guide
+# Computer Programming 1, Complete Study Guide
 <!-- subject: Computer Programming 1 | year: 1st -->
 
 ---
@@ -12,26 +12,26 @@ A computer is an electronic device that accepts data from the user, processes it
 
 ### Hardware and Software
 
-**Hardware** refers to the physical, mechanical parts of a computer — the devices you can touch. This includes the CPU, keyboard, mouse, hard drive, and other components. At the core, hardware consists of the CPU and its peripheral devices.
+**Hardware** refers to the physical, mechanical parts of a computer, the devices you can touch. This includes the CPU, keyboard, mouse, hard drive, and other components. At the core, hardware consists of the CPU and its peripheral devices.
 
 **Software** is the set of instructions that drives the computer to perform tasks. Software is written in a programming language, translated into machine language (binary), and then executed by the hardware. Software falls into two categories:
-- **System software** — operates directly on the hardware and provides the platform for applications to run (e.g., Windows, Linux, Unix).
-- **Application software** — designed to help users perform specific tasks (e.g., word processors, spreadsheets, database tools).
+- **System software**, operates directly on the hardware and provides the platform for applications to run (e.g., Windows, Linux, Unix).
+- **Application software**, designed to help users perform specific tasks (e.g., word processors, spreadsheets, database tools).
 
 ### Programs and Programming
 
 A **program** is the ordered set of instructions a computer follows to process data into information. Writing that set of instructions is called **programming**. Programming is fundamentally problem-solving: you define the problem clearly, then develop the detailed step-by-step logic to solve it.
 
 **The five-step programming process:**
-1. **Define the problem** — understand what needs to be solved. Specify objectives, identify users, define inputs and outputs, and assess feasibility.
-2. **Design the solution** — plan the logic using tools like hierarchy charts, flowcharts, or pseudocode. A structural walkthrough (review with other developers) helps catch issues early.
-3. **Code the program** — translate the design into a specific programming language, following its syntax and rules.
-4. **Test the program** — check the program manually (desk checking), debug it (find and remove errors), and run it with real data to confirm it works correctly.
-5. **Document the program** — write user documentation (how to use it), operator documentation (how to manage errors), and programmer documentation (how the code works internally, for future maintenance).
+1. **Define the problem**, understand what needs to be solved. Specify objectives, identify users, define inputs and outputs, and assess feasibility.
+2. **Design the solution**, plan the logic using tools like hierarchy charts, flowcharts, or pseudocode. A structural walkthrough (review with other developers) helps catch issues early.
+3. **Code the program**, translate the design into a specific programming language, following its syntax and rules.
+4. **Test the program**, check the program manually (desk checking), debug it (find and remove errors), and run it with real data to confirm it works correctly.
+5. **Document the program**, write user documentation (how to use it), operator documentation (how to manage errors), and programmer documentation (how the code works internally, for future maintenance).
 
 **Types of errors:**
-- **Syntax errors** — incorrect formatting or usage of language statements, caught during compilation.
-- **Logic errors** — the code runs but produces wrong results due to incorrect program flow or faulty reasoning.
+- **Syntax errors**, incorrect formatting or usage of language statements, caught during compilation.
+- **Logic errors**, the code runs but produces wrong results due to incorrect program flow or faulty reasoning.
 
 ---
 
@@ -51,25 +51,25 @@ A flowchart is a visual representation of a solution, using standardized shapes 
 | Oval | Terminal | Marks the start or stop of the program |
 | Parallelogram | Input/Output | Represents input from the user or output of results |
 | Rectangle | Process | Represents a computation or data manipulation step |
-| Diamond | Decision | Represents a condition — two paths: TRUE or FALSE |
+| Diamond | Decision | Represents a condition, two paths: TRUE or FALSE |
 | Arrow | Flow Line | Shows direction of execution |
 | Circle | Connector | Connects parts of the flowchart across pages |
 | Hexagon (special) | Loop Limit | Marks the start and end of a loop |
 
 **Two types of flowcharts:**
-- **System flowchart** — shows an entire system at a high level (data flow between processes, storage, reports).
-- **Program flowchart** — shows the detailed logic of a specific program. This is the type used in programming.
+- **System flowchart**, shows an entire system at a high level (data flow between processes, storage, reports).
+- **Program flowchart**, shows the detailed logic of a specific program. This is the type used in programming.
 
 **Three fundamental control structures used in flowcharts (and code):**
 
-**1. Sequential** — steps execute one after another in order, each exactly once. This is the simplest structure.
+**1. Sequential**, steps execute one after another in order, each exactly once. This is the simplest structure.
 
 Example flowchart for computing the product of three numbers:
 ```
 START → Initialize A=0, B=0, C=0, P=0 → INPUT A, B, C → P = A * B * C → OUTPUT P → STOP
 ```
 
-**2. Selection** — a decision point where one of two or more paths is taken based on a condition. Uses the diamond (decision) symbol.
+**2. Selection**, a decision point where one of two or more paths is taken based on a condition. Uses the diamond (decision) symbol.
 
 Example (determine if a number is positive, negative, or zero):
 ```
@@ -80,7 +80,7 @@ START → INPUT A
 STOP
 ```
 
-**3. Repetition** — one or more steps are performed repeatedly until a condition is met.
+**3. Repetition**, one or more steps are performed repeatedly until a condition is met.
 
 Example (print all odd numbers from 1 to 10):
 ```
@@ -92,7 +92,7 @@ START → N=0, ODD=0
 STOP
 ```
 
-These three structures — sequence, selection, and repetition — are sufficient to construct any program logic.
+These three structures, sequence, selection, and repetition, are sufficient to construct any program logic.
 
 ---
 
@@ -110,7 +110,7 @@ An **algorithm** is a step-by-step description of a solution written in a struct
 
 **The same three control structures apply in pseudocode:**
 
-**Sequential example — sum of two numbers:**
+**Sequential example, sum of two numbers:**
 ```
 ALGORITHM sum
   A → 0, B → 0, SUM → 0
@@ -120,7 +120,7 @@ ALGORITHM sum
 END sum
 ```
 
-**Sequential example — product of three numbers:**
+**Sequential example, product of three numbers:**
 ```
 ALGORITHM product
   A → 0, B → 0, C → 0, PRODUCT → 0
@@ -130,7 +130,7 @@ ALGORITHM product
 END product
 ```
 
-**Selection example — positive or negative number:**
+**Selection example, positive or negative number:**
 ```
 ALGORITHM pos_neg
   N → 0
@@ -149,7 +149,7 @@ END pos_neg
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Lesson 1
+## Practice Exercises, Lesson 1
 
 **Review questions (write answers in your own words):**
 1. Differentiate hardware and software.
@@ -158,7 +158,7 @@ END pos_neg
 4. What are the five steps of programming?
 5. What is the difference between a syntax error and a logic error?
 
-**Algorithm exercises — write a flowchart AND pseudocode for each:**
+**Algorithm exercises, write a flowchart AND pseudocode for each:**
 
 1. The volume of a rectangular box is V = length × width × height. Design an algorithm that takes the three dimensions from the user and displays the volume.
 
@@ -183,20 +183,20 @@ C is a general-purpose, structured programming language known for its efficiency
 
 ### Brief History
 
-- **BCPL** — developed by Martin Richards in 1967; influenced the development of B.
-- **B** — created by Ken Thompson in 1970 for early UNIX systems on the DEC PDP-7; typeless (no data types).
-- **C** — designed by Dennis Ritchie in 1972 at AT&T Bell Laboratories; expanded B by adding data types.
-- **Turbo C** — a version of C developed by Borland International Corporation in 1987 for MS-DOS systems.
+- **BCPL**, developed by Martin Richards in 1967; influenced the development of B.
+- **B**, created by Ken Thompson in 1970 for early UNIX systems on the DEC PDP-7; typeless (no data types).
+- **C**, designed by Dennis Ritchie in 1972 at AT&T Bell Laboratories; expanded B by adding data types.
+- **Turbo C**, a version of C developed by Borland International Corporation in 1987 for MS-DOS systems.
 
 ### Key Definitions
 
-- **Interpreter** — reads and executes source code one line at a time.
-- **Compiler** — reads the entire program and converts it to object code (machine-executable binary).
-- **Compile time** — when compilation happens; syntax errors are caught here.
-- **Object code** — the machine-language translation of source code; also called binary code or machine code.
-- **Source code** — the human-readable text of a program.
-- **Run time** — when the compiled program is actually executing; run-time (semantic) errors appear here.
-- **Library** — a collection of pre-written functions available for use in programs.
+- **Interpreter**, reads and executes source code one line at a time.
+- **Compiler**, reads the entire program and converts it to object code (machine-executable binary).
+- **Compile time**, when compilation happens; syntax errors are caught here.
+- **Object code**, the machine-language translation of source code; also called binary code or machine code.
+- **Source code**, the human-readable text of a program.
+- **Run time**, when the compiled program is actually executing; run-time (semantic) errors appear here.
+- **Library**, a collection of pre-written functions available for use in programs.
 
 ---
 
@@ -225,12 +225,12 @@ Source code (.c file)
 ## Components of the C Environment
 
 A full C development environment typically includes:
-1. **Editor** — creates and edits the source code.
-2. **C Language** — the actual language standard (ANSI C or extended versions).
-3. **Compiler** — translates source to machine code.
-4. **Debugger** — helps locate and fix programming errors.
-5. **Run-time environment** — the capability to run programs within the development system.
-6. **User interface** — integrates all components so you can move smoothly from editing to compiling to debugging to running.
+1. **Editor**, creates and edits the source code.
+2. **C Language**, the actual language standard (ANSI C or extended versions).
+3. **Compiler**, translates source to machine code.
+4. **Debugger**, helps locate and fix programming errors.
+5. **Run-time environment**, the capability to run programs within the development system.
+6. **User interface**, integrates all components so you can move smoothly from editing to compiling to debugging to running.
 
 ---
 
@@ -287,7 +287,7 @@ char Sname[30];
 ```
 
 ### Initializing Variables
-Variables are not automatically set to zero — they contain garbage values until explicitly assigned. Three ways to initialize:
+Variables are not automatically set to zero, they contain garbage values until explicitly assigned. Three ways to initialize:
 
 **1. Assignment statement:**
 ```c
@@ -309,8 +309,8 @@ double a, b = 100.00;
 ```
 
 ### Global and Local Variables
-- **Global variables** — declared outside all functions; accessible throughout the entire program; initialized to zero if no value is specified.
-- **Local variables** — declared inside a function; accessible only within that function; must be explicitly initialized.
+- **Global variables**, declared outside all functions; accessible throughout the entire program; initialized to zero if no value is specified.
+- **Local variables**, declared inside a function; accessible only within that function; must be explicitly initialized.
 
 ### Constants
 Constants are fixed values that cannot be changed during execution.
@@ -350,7 +350,7 @@ Both declare constants, but have different syntax. With `#define`, the type is i
 | `/` | Division |
 | `+` | Addition |
 | `-` | Subtraction |
-| `%` | Modulus (remainder) — integer types only |
+| `%` | Modulus (remainder), integer types only |
 | `++` | Increment (add 1) |
 | `--` | Decrement (subtract 1) |
 
@@ -358,7 +358,7 @@ Both declare constants, but have different syntax. With `#define`, the type is i
 - Integer division truncates the result: `11/2 = 5`, `10/3 = 3`
 - Modulus gives the remainder: `11 % 2 = 1`, `147 % 20 = 7`
 
-**Increment/Decrement — prefix vs. postfix:**
+**Increment/Decrement, prefix vs. postfix:**
 ```c
 x = 10;
 y = ++x;   // x becomes 11 first, then y = 11
@@ -434,7 +434,7 @@ x > y ? sum = x + y : diff = x - y;
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Lesson 2
+## Practice Exercises, Lesson 2
 
 **Review questions:**
 1. Show the C declaration statement that associates each of these identifiers with its value:
@@ -473,7 +473,7 @@ f.  (7 == 2) || (7 > 4) && (6 == 5)
 <!-- kind: content -->
 ## The C Preprocessor
 
-Lines that start with `#` in a C file are preprocessor directives — handled before compilation begins.
+Lines that start with `#` in a C file are preprocessor directives, handled before compilation begins.
 
 ### `#define`
 Replaces a symbolic name with a value throughout the file wherever that name appears. By convention, symbolic constants are written in uppercase.
@@ -483,7 +483,7 @@ Replaces a symbolic name with a value throughout the file wherever that name app
 #define PI 3.14159
 ```
 
-This makes programs more readable and easier to update — change the `#define` in one place and it takes effect everywhere.
+This makes programs more readable and easier to update, change the `#define` in one place and it takes effect everywhere.
 
 ### `#include`
 Causes the contents of another file (a header file) to be inserted at that point during compilation. Header file names end in `.h`.
@@ -627,17 +627,17 @@ main() {
 ```
 
 **Key parts explained:**
-- `#include <stdio.h>` — tells the compiler to include standard I/O declarations
-- `main()` — the entry point; every C program starts here
-- `/* ... */` — a comment; ignored by the compiler, useful for documentation
-- `{` and `}` — mark the start and end of a function body
-- `;` — terminates every statement
-- `return 0;` — exits `main()` and returns a value to the calling environment
+- `#include <stdio.h>`, tells the compiler to include standard I/O declarations
+- `main()`, the entry point; every C program starts here
+- `/* ... */`, a comment; ignored by the compiler, useful for documentation
+- `{` and `}`, mark the start and end of a function body
+- `;`, terminates every statement
+- `return 0;`, exits `main()` and returns a value to the calling environment
 
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Lesson 3
+## Practice Exercises, Lesson 3
 
 **Conceptual questions:**
 1. What is a header file? What does `stdio.h` provide? What does `conio.h` provide?
@@ -655,7 +655,7 @@ printf("\n\n Do you know the next number? \n");
 printf("\n %5d %6.2f", 6, 6.5);
 ```
 
-**Programming exercises — write complete C programs for each:**
+**Programming exercises, write complete C programs for each:**
 1. Calculate and display the volume of a rectangular box (V = length × width × height).
 2. Convert hours to minutes (e.g., "3 hours is equal to 180 minutes").
 3. Given a, b, c: compute and display sum, difference, product, quotient, and sum of squares.
@@ -672,8 +672,8 @@ printf("\n %5d %6.2f", 6, 6.5);
 ## Flow of Control
 
 By default, statements in a program execute in sequence, one after another. Control structures change this:
-- **Selection** (`if`, `if-else`, `switch`) — choose which code to execute based on a condition.
-- **Repetition** (`while`, `for`, `do`) — repeat code as long as a condition holds.
+- **Selection** (`if`, `if-else`, `switch`), choose which code to execute based on a condition.
+- **Repetition** (`while`, `for`, `do`), repeat code as long as a condition holds.
 
 ---
 
@@ -806,7 +806,7 @@ switch (expression) {
 - `break` exits the switch after a case executes. Without it, execution "falls through" to the next case.
 - `default` handles any value not matched by the listed cases.
 
-**Example — print month name from a number:**
+**Example, print month name from a number:**
 ```c
 switch (number) {
     case 1:  printf("January\n");   break;
@@ -839,7 +839,7 @@ switch (QUIZ) {
 ### `break`
 Two uses:
 1. Exits a `switch` statement after a matching case runs.
-2. Immediately exits the innermost loop — execution continues at the statement after the loop.
+2. Immediately exits the innermost loop, execution continues at the statement after the loop.
 
 ```c
 while (1) {
@@ -892,9 +892,9 @@ for (initialization; condition; increment)
 ```
 
 Three parts:
-1. **Initialization** — runs once before the loop starts; sets the loop control variable.
-2. **Condition** — checked before each iteration; loop runs as long as it is true.
-3. **Increment** — runs after each iteration; updates the control variable.
+1. **Initialization**, runs once before the loop starts; sets the loop control variable.
+2. **Condition**, checked before each iteration; loop runs as long as it is true.
+3. **Increment**, runs after each iteration; updates the control variable.
 
 ```c
 for (x = 100; x != 65; x += 5) {
@@ -930,7 +930,7 @@ do {
 } while (condition);
 ```
 
-The body runs **at least once** — the condition is checked after each iteration.
+The body runs **at least once**, the condition is checked after each iteration.
 
 ```c
 do {
@@ -940,7 +940,7 @@ do {
 printf("Sum: %d", sum);
 ```
 
-**Full example — sum integers until 0 is entered:**
+**Full example, sum integers until 0 is entered:**
 ```c
 #include <stdio.h>
 #include <conio.h>
@@ -971,7 +971,7 @@ The sum is 19
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Lesson 4
+## Practice Exercises, Lesson 4
 
 **Conceptual questions:**
 1. What is the difference between `break` and `continue`?
@@ -1022,7 +1022,7 @@ do {
 <!-- kind: content -->
 ## What Is an Array?
 
-Imagine storing 20 integers in 20 separate named variables — you would need 20 different `scanf` calls to read them and 20 more `printf` calls to display them. For 200 or 2000 values, that becomes completely impractical.
+Imagine storing 20 integers in 20 separate named variables, you would need 20 different `scanf` calls to read them and 20 more `printf` calls to display them. For 200 or 2000 values, that becomes completely impractical.
 
 An **array** solves this problem. An array is a fixed-size, sequenced collection of elements all of the same data type, stored in contiguous memory locations and accessed through a single name plus an index.
 
@@ -1111,7 +1111,7 @@ for (i = 0; i < 10; i++)
 scores[4] = 23;
 ```
 
-**Copying one array to another** (element by element — you cannot assign arrays directly):
+**Copying one array to another** (element by element, you cannot assign arrays directly):
 ```c
 for (i = 0; i < 25; i++)
     second[i] = first[i];
@@ -1128,7 +1128,7 @@ for (i = 0; i < 25; i++)
 <!-- kind: content -->
 ## Sorting Example
 
-**Bubble sort — sorts an array in ascending order:**
+**Bubble sort, sorts an array in ascending order:**
 ```c
 #include <stdio.h>
 #include <conio.h>
@@ -1194,7 +1194,7 @@ void main() {
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Lesson 5
+## Practice Exercises, Lesson 5
 
 **Review questions:**
 1. Write an array definition for a 12-element integer array called `C` with values 1, 4, 7, 10, …, 34.
@@ -1238,10 +1238,10 @@ printf("%d", b);
 A function is a self-contained section of code that performs a specific task. Functions are the primary tool for breaking large programs into manageable pieces (top-down design). When the program encounters a function call, control passes to that function; when the function finishes, control returns to where it was called.
 
 **Advantages of using functions:**
-1. **Cleaner design** — functions hide implementation details and make the overall program logic easier to follow.
-2. **Reusability** — a function written once can be called anywhere in the program or in other programs.
-3. **Team development** — each function can be defined as an independent unit with clear inputs and outputs, allowing multiple developers to work in parallel.
-4. **Easier debugging** — functions can be tested individually, isolating errors to specific pieces of functionality.
+1. **Cleaner design**, functions hide implementation details and make the overall program logic easier to follow.
+2. **Reusability**, a function written once can be called anywhere in the program or in other programs.
+3. **Team development**, each function can be defined as an independent unit with clear inputs and outputs, allowing multiple developers to work in parallel.
+4. **Easier debugging**, functions can be tested individually, isolating errors to specific pieces of functionality.
 
 ---
 
@@ -1348,7 +1348,7 @@ float f(char a, char b, char c) {
 <!-- kind: content -->
 ## Call by Value
 
-When a function is called in C, arguments are passed **by value** — the function receives a copy of each argument, not the original variable. Changes made to the copy inside the function do not affect the original.
+When a function is called in C, arguments are passed **by value**, the function receives a copy of each argument, not the original variable. Changes made to the copy inside the function do not affect the original.
 
 ```c
 void funct_sample(int y) {
@@ -1360,7 +1360,7 @@ main() {
     int n = 5;
     printf("n before call: %d", n);   // prints 5
     funct_sample(n);
-    printf("n after call: %d", n);    // still 5 — unchanged
+    printf("n after call: %d", n);    // still 5, unchanged
 }
 ```
 
@@ -1371,8 +1371,8 @@ main() {
 
 To allow a function to modify a variable in the calling environment, pass the **address** of the variable using the address-of operator `&`. Inside the function, a pointer (indicated by `*`) is used to access the value at that address.
 
-- `&variable` — "the address of variable"
-- `*pointer` — "the value at the address held by pointer"
+- `&variable`, "the address of variable"
+- `*pointer`, "the value at the address held by pointer"
 
 ```c
 void compute_rating(float midterm, float final, float *rating) {
@@ -1399,14 +1399,14 @@ Here, `&fin_grd` passes the address of `fin_grd` to the function. Inside the fun
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Lesson 6
+## Practice Exercises, Lesson 6
 
 **Conceptual questions:**
 1. What is a function and what is its syntax?
 2. What does the return type `void` indicate?
-3. Explain call by value — what happens to the original variable?
+3. Explain call by value, what happens to the original variable?
 4. What is a pointer? What do `&` and `*` mean?
-5. Explain call by reference — how does it differ from call by value?
+5. Explain call by reference, how does it differ from call by value?
 
 **Trace the output of each program:**
 ```c
@@ -1534,7 +1534,7 @@ These functions test or transform single characters. They return non-zero (true)
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Lesson 7
+## Practice Exercises, Lesson 7
 
 **Evaluate the following (given: `char third[20] = "God Loves U"`, `char fourth[20] = "GOD BLESS U"`):**
 ```

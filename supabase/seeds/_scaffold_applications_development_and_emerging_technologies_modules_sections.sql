@@ -1,7 +1,7 @@
 -- ============================================================
--- Applications Development and Emerging Technologies — Modules & Sections
+-- Applications Development and Emerging Technologies, Modules & Sections
 -- Subject ID: 30000000-0003-0002-0001-000000000001
--- 3rd Year, Semester 2 — major
+-- 3rd Year, Semester 2, major
 -- 7 lessons. Per lesson: S1+S2 = content (FREE), S3 + drill = activity (PAID).
 -- Re-running is safe (the DELETE clears prior rows for this subject first).
 -- ============================================================
@@ -25,14 +25,14 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 Application development is the process of creating software applications for users. It involves writing code, designing interfaces, and managing data to solve real-world problems. In the Philippine context, this could mean building apps for local businesses, education platforms, or government services. Applications are developed using various technologies (web, mobile, desktop) and follow a systematic approach. Emerging technologies, such as cloud computing and artificial intelligence, influence how modern applications are built and deployed.
 $md$, 1),
 ('1836bce1-585f-59d6-a2a8-e506c9d47865','content','Software Development Life Cycle (SDLC)',$md$
-The Software Development Life Cycle (SDLC) is a structured process used to plan, develop, test, and maintain software. Common models include Waterfall (sequential phases) and Agile (iterative sprints). Each phase—requirements, design, implementation, testing, deployment, and maintenance—helps ensure quality and clarity. For example, before coding an e-commerce app, you would gather requirements (what features it needs), then design the architecture and user interface, and finally implement and test the software. Documenting each step prevents mistakes and confusion later on.
+The Software Development Life Cycle (SDLC) is a structured process used to plan, develop, test, and maintain software. Common models include Waterfall (sequential phases) and Agile (iterative sprints). Each phase, requirements, design, implementation, testing, deployment, and maintenance, helps ensure quality and clarity. For example, before coding an e-commerce app, you would gather requirements (what features it needs), then design the architecture and user interface, and finally implement and test the software. Documenting each step prevents mistakes and confusion later on.
 $md$, 2),
 ('1836bce1-585f-59d6-a2a8-e506c9d47865','activity','Emerging Technologies in IT',$md$
 Emerging technologies are new or evolving tools that impact how we create and use applications. Examples include cloud computing (e.g. AWS or Azure for hosting apps), artificial intelligence (AI/ML for smart features like recommendations), and the Internet of Things (IoT) for connecting devices. For instance, a smart traffic app in Metro Manila might use cloud servers and machine learning to predict congestion. Understanding these trends is important: exams may ask how such technologies can improve a given software solution.
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('1836bce1-585f-59d6-a2a8-e506c9d47865','activity','Practice & Exam Drills — Lesson 1',$md$
+('1836bce1-585f-59d6-a2a8-e506c9d47865','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions:**
 
 1. What is the SDLC and why is it important in software development?
@@ -88,7 +88,7 @@ Once requirements are set, planning begins. This involves setting timelines, ass
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('a8bed4f2-250b-5cf7-bbf9-50fc755f2fa6','activity','Practice & Exam Drills — Lesson 2',$md$
+('a8bed4f2-250b-5cf7-bbf9-50fc755f2fa6','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions:**
 
 1. What is the difference between functional and non-functional requirements? Give one example of each.
@@ -138,7 +138,7 @@ $md$, 2),
 ('52c67d2e-5ca0-568c-b7c8-ca2c0f5d5473','activity','Front-End Technologies Overview',$md$
 Front-end development uses languages like HTML, CSS, and JavaScript to build what users see. For example, HTML defines page structure, CSS styles it, and JavaScript adds interactivity (buttons, form validation). Modern frameworks (React, Angular, Vue) speed up development by providing reusable components and templates. You don't need to code these in this course, but know they exist: understanding the roles of HTML/CSS/JS helps in questions about web-based applications.
 $md$, 3),
-('52c67d2e-5ca0-568c-b7c8-ca2c0f5d5473','activity','Practice & Exam Drills — Lesson 3',$md$
+('52c67d2e-5ca0-568c-b7c8-ca2c0f5d5473','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions:**
 
 1. List two key principles of good UI design and why each matters.
@@ -157,7 +157,7 @@ Issues: (1) The "Add to Cart" button is too far from product details; users migh
 
 **Hands-on Exercise:**
 
-(This exercise is conceptual—no code block needed.) Imagine a simple login page. Describe one improvement to its design to enhance usability. For example: making the "Login" button larger and a bright color so users find it easily, or aligning the "Username" and "Password" fields for a cleaner look. Write your answer in a few sentences.
+(This exercise is conceptual, no code block needed.) Imagine a simple login page. Describe one improvement to its design to enhance usability. For example: making the "Login" button larger and a bright color so users find it easily, or aligning the "Username" and "Password" fields for a cleaner look. Write your answer in a few sentences.
 
 **How to Pass Tips:**
 
@@ -181,7 +181,7 @@ APIs (Application Programming Interfaces) allow different software systems to co
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('6482f159-acca-57be-b95f-7a3242217995','activity','Practice & Exam Drills — Lesson 4',$md$
+('6482f159-acca-57be-b95f-7a3242217995','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions:**
 
 1. What is a database table? Give a real-world example (like a table of books or students).
@@ -236,7 +236,7 @@ $md$, 2),
 ('c98ee9ff-ba9f-5a82-8283-35d95951f53d','activity','Internet of Things (IoT) and Other Trends',$md$
 The Internet of Things (IoT) connects everyday devices (sensors, appliances) to the internet, enabling smart applications. An example is traffic sensors that adjust light timings automatically. IoT raises security and privacy issues (like protecting device data). Other emerging trends include AR/VR (augmented/virtual reality) and blockchain. You may not be asked in detail about these, but mentioning a Philippine example (like smart farming sensors or e-agriculture devices) shows you're aware of local tech trends.
 $md$, 3),
-('c98ee9ff-ba9f-5a82-8283-35d95951f53d','activity','Practice & Exam Drills — Lesson 5',$md$
+('c98ee9ff-ba9f-5a82-8283-35d95951f53d','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions:**
 
 1. What is cloud computing? Give one advantage and one disadvantage of using a cloud service.
@@ -276,11 +276,11 @@ $md$, 1),
 Deployment is releasing an application to users (for example, uploading a website or submitting an app to a store). DevOps is the practice of combining development and operations, often using continuous integration/continuous deployment (CI/CD) tools. This means whenever new code is written, automated processes test and deploy it. For instance, after committing code, a CI/CD system can run tests and update the live app without manual steps. Questions may cover the concept of a deployment pipeline or why automated deployment reduces errors.
 $md$, 2),
 ('3e810057-cdfd-5424-8d29-5af3b0a80efa','activity','Security Best Practices',$md$
-Security is crucial in development. Always validate user inputs (to prevent attacks like SQL injection) and encrypt or hash sensitive data. For example, do not store passwords in plain text—always hash them first. In the Philippines, the Data Privacy Act (RA 10173) requires protecting personal data (e.g., use secure connections, ask user consent). Professors may present a scenario (like a data breach or suspicious input) and ask how to secure the app (e.g., input validation, encryption, software updates).
+Security is crucial in development. Always validate user inputs (to prevent attacks like SQL injection) and encrypt or hash sensitive data. For example, do not store passwords in plain text, always hash them first. In the Philippines, the Data Privacy Act (RA 10173) requires protecting personal data (e.g., use secure connections, ask user consent). Professors may present a scenario (like a data breach or suspicious input) and ask how to secure the app (e.g., input validation, encryption, software updates).
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('3e810057-cdfd-5424-8d29-5af3b0a80efa','activity','Practice & Exam Drills — Lesson 6',$md$
+('3e810057-cdfd-5424-8d29-5af3b0a80efa','activity','Practice & Exam Drills, Lesson 6',$md$
 **Review Questions:**
 
 1. What is unit testing? Give one example.
@@ -340,7 +340,7 @@ $md$, 2),
 ('12489fd2-3e14-5ba6-bbb8-9d2ac50e843e','activity','Professional Conduct and Legal Compliance',$md$
 Professional behavior means following laws and organizational policies. This includes protecting user data (complying with the Data Privacy Act) and doing honest work (no cheating on exams or projects). For instance, if your college requires original projects, copying code is unethical and likely violates academic rules. Professors often expect answers like "report the issue" or "use licensed resources." Key laws: RA 10173 (Data Privacy Act of 2012) and RA 8293 (Intellectual Property Code of 1997). These highlight the importance of ethical and legal practice in IT.
 $md$, 3),
-('12489fd2-3e14-5ba6-bbb8-9d2ac50e843e','activity','Practice & Exam Drills — Lesson 7',$md$
+('12489fd2-3e14-5ba6-bbb8-9d2ac50e843e','activity','Practice & Exam Drills, Lesson 7',$md$
 **Review Questions:**
 
 1. What is one ethical practice an IT professional should always follow?
@@ -370,6 +370,6 @@ You should refuse to share your login because it violates the software licensing
 $md$, 4);
 
 -- SOURCES:
---   De La Salle University — BSIT program core subjects listing (includes Applications Development and Emerging Technologies)
---   CHED CMO No. 25, s.2015 — Revised PSGs for BSCS/BSIS/BSIT (course specification)
---   CHED CMO No. 02, s.2014 — PSGs for Entertainment and Multimedia (Annex C sample syllabus)
+--   De La Salle University, BSIT program core subjects listing (includes Applications Development and Emerging Technologies)
+--   CHED CMO No. 25, s.2015, Revised PSGs for BSCS/BSIS/BSIT (course specification)
+--   CHED CMO No. 02, s.2014, PSGs for Entertainment and Multimedia (Annex C sample syllabus)

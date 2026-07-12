@@ -1,5 +1,5 @@
 -- ============================================================
--- Computer Programming 2 — Exam Prep: Prelims & Finals
+-- Computer Programming 2, Exam Prep: Prelims & Finals
 -- Subject ID: 10000000-0001-0002-0001-000000000001
 -- Module ID:  a3000001-0001-0002-0001-0000000000e1
 -- Purpose: exam-prep module (blueprints, free practice set,
@@ -34,31 +34,31 @@ Different professors shuffle the weights, but almost every CP2 prelim on arrays 
 | III | Debugging / spot-the-error | 10–20% | Off-by-one loops, missing `&` in `scanf()`, illegal array assignment |
 | IV | Fill-in-the-blank / write-the-code | 20–30% | Producing the standard array idioms from memory |
 
-Tracing plus write-the-code is usually more than half the exam. You cannot pass by memorizing definitions alone — you have to practice running code on paper.
+Tracing plus write-the-code is usually more than half the exam. You cannot pass by memorizing definitions alone, you have to practice running code on paper.
 
 ### Your Exact Memorize List
 
 If you can do all ten of these cold, you are ready:
 
-1. **Declaration syntax** — `data_type array_name[size];` for 1D and `data_type array_name[rows][columns];` for 2D.
-2. **The three initialization rules** — more values than elements is a compile error; fewer values means the rest become zero; if you initialize everything you may omit the size.
-3. **Indexing starts at zero** — for `int num[20]`, valid positions are `num[0]` through `num[19]`. There is no `num[20]`.
-4. **The address formula** — element address = base address + (size of one element × index). Expect one arithmetic item on this.
-5. **The loop-over-array idiom** — `for (i = 0; i < n; i++)`, and `scanf("%d", &a[i]);` with the address-of operator.
-6. **No whole-array assignment** — `second = first;` is illegal; copy element by element with a loop.
-7. **Strings end with `'\0'`** — a string literal of `n` letters needs `n + 1` array slots.
-8. **2D traversal** — nested loops, rows outside, columns inside; a flat initializer list fills row by row (the last subscript increases fastest).
-9. **Swapping needs a temp variable** — three assignments: `temp = a; a = b; b = temp;`.
-10. **The compare-and-swap sorting logic** from Sample Program 1 — if the left neighbor is bigger, swap the pair.
+1. **Declaration syntax**, `data_type array_name[size];` for 1D and `data_type array_name[rows][columns];` for 2D.
+2. **The three initialization rules**, more values than elements is a compile error; fewer values means the rest become zero; if you initialize everything you may omit the size.
+3. **Indexing starts at zero**, for `int num[20]`, valid positions are `num[0]` through `num[19]`. There is no `num[20]`.
+4. **The address formula**, element address = base address + (size of one element × index). Expect one arithmetic item on this.
+5. **The loop-over-array idiom**, `for (i = 0; i < n; i++)`, and `scanf("%d", &a[i]);` with the address-of operator.
+6. **No whole-array assignment**, `second = first;` is illegal; copy element by element with a loop.
+7. **Strings end with `'\0'`**, a string literal of `n` letters needs `n + 1` array slots.
+8. **2D traversal**, nested loops, rows outside, columns inside; a flat initializer list fills row by row (the last subscript increases fastest).
+9. **Swapping needs a temp variable**, three assignments: `temp = a; a = b; b = temp;`.
+10. **The compare-and-swap sorting logic** from Sample Program 1, if the left neighbor is bigger, swap the pair.
 
 ### Top Mistakes That Cost Points
 
-- Writing `a[size]` as if it were the last element — the last element is `a[size - 1]`.
+- Writing `a[size]` as if it were the last element, the last element is `a[size - 1]`.
 - Using `<=` where `<` belongs in a loop condition, reading one slot past the end.
 - Forgetting `&` in `scanf("%d", &a[i]);`.
 - Filling a 2D initializer column-first instead of row-first when tracing.
 - Assuming a declared-but-uninitialized array holds zeros (only *partially initialized* arrays zero-fill the remainder).
-- "Swapping" with two assignments and no temp — one value gets destroyed.
+- "Swapping" with two assignments and no temp, one value gets destroyed.
 
 ### Realistic 7-Day Study Plan
 
@@ -70,15 +70,15 @@ Each day is keyed to section titles in Unit 1. Around 45–60 minutes a day is e
 | 2 | "Declaring an Array in C" + "How C Finds an Element in Memory" | Write 10 declarations of your own (mix `int`, `float`, `char`, `double`). Compute 5 element addresses by hand with the formula. |
 | 3 | "Storing Values in an Array" | Memorize the three ways to store values and the three initialization rules. Write the array-copy loop from memory twice. |
 | 4 | "Character Arrays and Strings" + "Multidimensional Arrays" | Draw the memory picture of a string including `'\0'`. Fill a 3×3 table from a flat initializer list by hand. |
-| 5 | "Sample Program 1 — Sorting an Array" + "Sample Program 2 — Counting Positives and Negatives" | Trace both programs on paper with your own input values before checking the expected output. |
-| 6 | "Sample Program 3 — Adding Two Matrices" + "Practice Exercises" | Do all three trace exercises (Programs A, B, C) with a timer — 5 minutes each. |
+| 5 | "Sample Program 1, Sorting an Array" + "Sample Program 2, Counting Positives and Negatives" | Trace both programs on paper with your own input values before checking the expected output. |
+| 6 | "Sample Program 3, Adding Two Matrices" + "Practice Exercises" | Do all three trace exercises (Programs A, B, C) with a timer, 5 minutes each. |
 | 7 | The **Free Practice Set** below | Simulate exam conditions: 30 minutes, no notes. Review every miss against the Unit 1 section it came from. |
 $md$, 1),
 
-('a3000001-0001-0002-0001-0000000000e1','content','Free Practice Set — 15 Items with Answer Key',$md$
-Fifteen genuine exam-style items on one-dimensional arrays. Do all fifteen before looking at the key — treat it like the real thing: 30 minutes, no notes.
+('a3000001-0001-0002-0001-0000000000e1','content','Free Practice Set, 15 Items with Answer Key',$md$
+Fifteen genuine exam-style items on one-dimensional arrays. Do all fifteen before looking at the key, treat it like the real thing: 30 minutes, no notes.
 
-### Part I — Multiple Choice (Items 1–5)
+### Part I, Multiple Choice (Items 1–5)
 
 **1.** Given `int num[20];`, which positions are valid?
 
@@ -106,7 +106,7 @@ Fifteen genuine exam-style items on one-dimensional arrays. Do all fifteen befor
 - A. Unknown until runtime
 - B. 4
 - C. 5
-- D. Compile error — size is required
+- D. Compile error, size is required
 
 **5.** An integer array starts at memory address 5,000 and each integer occupies 4 bytes. What is the address of the element at index 6?
 
@@ -115,7 +115,7 @@ Fifteen genuine exam-style items on one-dimensional arrays. Do all fifteen befor
 - C. 5,024
 - D. 5,028
 
-### Part II — Output Tracing (Items 6–9)
+### Part II, Output Tracing (Items 6–9)
 
 Write exactly what each fragment prints.
 
@@ -157,7 +157,7 @@ for (i = 3; i >= 0; i--)
     printf("%d", a[i]);
 ```
 
-### Part III — Spot the Error (Items 10–12)
+### Part III, Spot the Error (Items 10–12)
 
 **10.** `int a[10];` is declared. What is wrong here, and what is the fix?
 
@@ -179,9 +179,9 @@ for (i = 0; i < 10; i++)
 int a[5] = {1, 2, 3, 4, 5, 6};
 ```
 
-### Part IV — Fill in the Blank (Items 13–15)
+### Part IV, Fill in the Blank (Items 13–15)
 
-**13.** `char city[] = "CEBU";` — how many elements does `city` have?
+**13.** `char city[] = "CEBU";`, how many elements does `city` have?
 
 **14.** Complete the loop so that every element of `first` is copied into `second` (both are 25-element `int` arrays):
 
@@ -205,9 +205,9 @@ for (i = 0; i < n; i++)
 | # | Answer | One-Line Why |
 |---|---|---|
 | 1 | B | Indexing starts at 0, so 20 elements occupy positions 0 through 19. |
-| 2 | C | `data_type array_name[size];` — square brackets after the name. |
+| 2 | C | `data_type array_name[size];`, square brackets after the name. |
 | 3 | A | Only 5 of 15 elements are initialized; the remaining elements (indices 5–14) are automatically set to zero. |
-| 4 | C | When all elements are initialized, the compiler counts them — 5 values means size 5. |
+| 4 | C | When all elements are initialized, the compiler counts them, 5 values means size 5. |
 | 5 | C | 5,000 + (4 × 6) = 5,024, straight from the address formula. |
 | 6 | `12` | The even values are 4, 2, and 6; 4 + 2 + 6 = 12. |
 | 7 | `18` | The condition tests the *index*, not the value: indices 0, 2, 4 give 2 + 6 + 10 = 18. |
@@ -215,12 +215,12 @@ for (i = 0; i < n; i++)
 | 9 | `1413` | Printed in reverse index order: a[3], a[2], a[1], a[0] = 1, 4, 1, 3. |
 | 10 | Change `<=` to `<` | `i <= 10` reads into `a[10]`, one slot past the last element `a[9]`. |
 | 11 | Add `&`: `&a[i]` | `scanf()` needs the address-of operator, just as with ordinary variables. |
-| 12 | Illegal — compile error | Six initializers for five elements; you cannot supply more values than there are elements. |
+| 12 | Illegal, compile error | Six initializers for five elements; you cannot supply more values than there are elements. |
 | 13 | 5 | Four letters plus the automatic null terminator `'\0'`. |
 | 14 | `second[i] = first[i]` | Arrays cannot be assigned whole; copy element by element. |
 | 15 | `a[i] < 0` | Test each element against zero, exactly as in Sample Program 2. |
 
-Scored 12 or better? You are on track. Below that, go back to the Day-by-day plan above and re-trace the sample programs. The four full mock exams below — 100 fresh items with complete answer keys and worked traces — come with the subject unlock.
+Scored 12 or better? You are on track. Below that, go back to the Day-by-day plan above and re-trace the sample programs. The four full mock exams below, 100 fresh items with complete answer keys and worked traces, come with the subject unlock.
 $md$, 2);
 
 -- ============================================================
@@ -228,10 +228,10 @@ $md$, 2);
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exam A — 25 Items',$md$
-Simulate the real thing: 60 minutes, no notes, answers on paper. The full answer key with worked traces is two sections down — do not open it until you finish.
+('a3000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exam A, 25 Items',$md$
+Simulate the real thing: 60 minutes, no notes, answers on paper. The full answer key with worked traces is two sections down, do not open it until you finish.
 
-### Part I — Multiple Choice (Items 1–8)
+### Part I, Multiple Choice (Items 1–8)
 
 **1.** Every element of an array must be:
 
@@ -289,7 +289,7 @@ Simulate the real thing: 60 minutes, no notes, answers on paper. The full answer
 - C. 4
 - D. 5
 
-### Part II — Output Tracing (Items 9–18)
+### Part II, Output Tracing (Items 9–18)
 
 Write exactly what each fragment prints.
 
@@ -378,7 +378,7 @@ for (i = 0; i < 3; i++)
 printf("%d", s);
 ```
 
-### Part III — Fill in the Blank (Items 19–25)
+### Part III, Fill in the Blank (Items 19–25)
 
 Write the exact code that belongs in each blank.
 
@@ -389,7 +389,7 @@ for (i = 0; i < n; i++)
     scanf("%d", ____);
 ```
 
-**20.** Print the `n` elements of array `a` in reverse order — complete the entire loop header:
+**20.** Print the `n` elements of array `a` in reverse order, complete the entire loop header:
 
 ```c
 for (____)
@@ -431,12 +431,12 @@ for (i = 0; i < n; i++) {
 **25.** Write a declaration for a 12-element array of `float` values named `rates`.
 $md$, 3),
 
-('a3000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exam B — 25 Items',$md$
-All-new items, a step harder than Exam A — this one includes sorting traces, the kind professors love for the last page of a prelim. Same rules: 60 minutes, no notes.
+('a3000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exam B, 25 Items',$md$
+All-new items, a step harder than Exam A, this one includes sorting traces, the kind professors love for the last page of a prelim. Same rules: 60 minutes, no notes.
 
-For the sorting items, **one pass** means: compare `a[0]` with `a[1]`, then `a[1]` with `a[2]`, and so on up to the last pair, swapping whenever the left value is greater than the right value (ascending order) — the same compare-and-swap logic as Sample Program 1.
+For the sorting items, **one pass** means: compare `a[0]` with `a[1]`, then `a[1]` with `a[2]`, and so on up to the last pair, swapping whenever the left value is greater than the right value (ascending order), the same compare-and-swap logic as Sample Program 1.
 
-### Part I — Multiple Choice (Items 1–7)
+### Part I, Multiple Choice (Items 1–7)
 
 **1.** If an `int` occupies 4 bytes, how many bytes does `int a[10];` reserve?
 
@@ -487,7 +487,7 @@ For the sorting items, **one pass** means: compare `a[0]` with `a[1]`, then `a[1
 - C. Garbage (unpredictable)
 - D. 0
 
-### Part II — Output Tracing (Items 8–17)
+### Part II, Output Tracing (Items 8–17)
 
 Write exactly what each fragment prints.
 
@@ -589,7 +589,7 @@ for (i = 0; i < 3; i++)
 printf("%d", s);
 ```
 
-### Part III — Sorting Traces (Items 18–21)
+### Part III, Sorting Traces (Items 18–21)
 
 Use the one-pass definition given at the top of this exam. Sort is **ascending**.
 
@@ -601,7 +601,7 @@ Use the one-pass definition given at the top of this exam. Sort is **ascending**
 
 **21.** A different array is `{5, 1, 8, 3}`. Write the state of the array **after pass 1**.
 
-### Part IV — Debugging & Fill in the Blank (Items 22–25)
+### Part IV, Debugging & Fill in the Blank (Items 22–25)
 
 **22.** `int a[5];` is declared. This input loop has **two** problems. Name both and write the corrected loop header.
 
@@ -633,12 +633,12 @@ scanf("%d", ____);
 ```
 $md$, 4),
 
-('a3000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exams — Answer Key with Explanations',$md$
-Check your work item by item. For tracing items, follow the trace table row by row and find the exact line where your trace went wrong — that tells you which Unit 1 section to re-read.
+('a3000001-0001-0002-0001-0000000000e1','activity','Prelim Mock Exams, Answer Key with Explanations',$md$
+Check your work item by item. For tracing items, follow the trace table row by row and find the exact line where your trace went wrong, that tells you which Unit 1 section to re-read.
 
 ## Exam A
 
-### Part I — Multiple Choice
+### Part I, Multiple Choice
 
 | # | Answer | Why |
 |---|---|---|
@@ -651,9 +651,9 @@ Check your work item by item. For tracing items, follow the trace table row by r
 | 7 | B | A string literal is stored with an automatic null terminator in the last slot. |
 | 8 | C | A flat list fills row by row: row 0 = {1, 2, 3}, row 1 = {4, 5, 6}, so `mat[1][0]` is 4. |
 
-### Part II — Output Tracing
+### Part II, Output Tracing
 
-**9. Answer: `20`** — sum of all elements.
+**9. Answer: `20`**, sum of all elements.
 
 | i | a[i] | s after |
 |---|---|---|
@@ -663,9 +663,9 @@ Check your work item by item. For tracing items, follow the trace table row by r
 | 3 | 6 | 18 |
 | 4 | 2 | 20 |
 
-**10. Answer: `14`** — `a[1]` is 8 and `a[3]` is 6; 8 + 6 = 14. No loop, just indexing.
+**10. Answer: `14`**, `a[1]` is 8 and `a[3]` is 6; 8 + 6 = 14. No loop, just indexing.
 
-**11. Answer: `3`** — the values greater than 4 are 5, 9, and 7.
+**11. Answer: `3`**, the values greater than 4 are 5, 9, and 7.
 
 | i | a[i] | a[i] > 4? | count after |
 |---|---|---|---|
@@ -676,9 +676,9 @@ Check your work item by item. For tracing items, follow the trace table row by r
 | 4 | 7 | yes | 3 |
 | 5 | 1 | no | 3 |
 
-**12. Answer: `10 43`** — each element gets its own index added: a[0] = 10 + 0 = 10 and a[3] = 40 + 3 = 43.
+**12. Answer: `10 43`**, each element gets its own index added: a[0] = 10 + 0 = 10 and a[3] = 40 + 3 = 43.
 
-**13. Answer: `15`** — a running sum builds along the array, because each step uses the *already updated* `a[i - 1]`.
+**13. Answer: `15`**, a running sum builds along the array, because each step uses the *already updated* `a[i - 1]`.
 
 | i | a[i - 1] | a[i] before | a[i] after |
 |---|---|---|---|
@@ -687,13 +687,13 @@ Check your work item by item. For tracing items, follow the trace table row by r
 | 3 | 6 | 4 | 10 |
 | 4 | 10 | 5 | 15 |
 
-**14. Answer: `AY`** — A-R-R-A-Y occupies indices 0–4 (with `'\0'` at index 5), so `word[0]` is `'A'` and `word[4]` is `'Y'`.
+**14. Answer: `AY`**, A-R-R-A-Y occupies indices 0–4 (with `'\0'` at index 5), so `word[0]` is `'A'` and `word[4]` is `'Y'`.
 
-**15. Answer: `5`** — `i == j` only holds at m[0][0] = 2 and m[1][1] = 3 (there is no row 2), so s = 2 + 3 = 5.
+**15. Answer: `5`**, `i == j` only holds at m[0][0] = 2 and m[1][1] = 3 (there is no row 2), so s = 2 + 3 = 5.
 
-**16. Answer: `11`** — the flat list fills row by row: row 0 = {7, 8}, row 1 = {9, 10}, row 2 = {11, 12}; `z[2][0]` is 11.
+**16. Answer: `11`**, the flat list fills row by row: row 0 = {7, 8}, row 1 = {9, 10}, row 2 = {11, 12}; `z[2][0]` is 11.
 
-**17. Answer: `9 5`** — the standard three-step swap with `temp`; the two values exchange places.
+**17. Answer: `9 5`**, the standard three-step swap with `temp`; the two values exchange places.
 
 | Step | temp | a[0] | a[1] |
 |---|---|---|---|
@@ -702,15 +702,15 @@ Check your work item by item. For tracing items, follow the trace table row by r
 | a[0] = a[1] | 5 | 9 | 9 |
 | a[1] = temp | 5 | 9 | 5 |
 
-**18. Answer: `15`** — the loop sums column 1: m[0][1] + m[1][1] + m[2][1] = 2 + 5 + 8 = 15.
+**18. Answer: `15`**, the loop sums column 1: m[0][1] + m[1][1] + m[2][1] = 2 + 5 + 8 = 15.
 
-### Part III — Fill in the Blank
+### Part III, Fill in the Blank
 
 | # | Answer | Why |
 |---|---|---|
 | 19 | `&a[i]` | `scanf()` requires the address-of operator. |
 | 20 | `i = n - 1; i >= 0; i--` | Start at the last index, stop after index 0, count down. |
-| 21 | `z[a][b] < smallest` | Update `smallest` only when the current element is smaller — same logic as Practice Exercises Program C. |
+| 21 | `z[a][b] < smallest` | Update `smallest` only when the current element is smaller, same logic as Practice Exercises Program C. |
 | 22 | `c[i][j]` | The sum of each element pair lands in the same position of the result matrix. |
 | 23 | `second[i]` | Element-by-element copy; whole-array assignment is illegal. |
 | 24 | `a[i] < 0` | Negative test first; everything else falls into the `else`, as in Sample Program 2. |
@@ -720,23 +720,23 @@ Check your work item by item. For tracing items, follow the trace table row by r
 
 ## Exam B
 
-### Part I — Multiple Choice
+### Part I, Multiple Choice
 
 | # | Answer | Why |
 |---|---|---|
 | 1 | C | 10 elements × 4 bytes = 40 bytes of contiguous storage. |
 | 2 | C | Indices 5–14 are automatically set to zero: 10 elements. |
-| 3 | D | An inner brace may hold *fewer* values than the column count, never more — `{1, 2, 3}` has 3 values for 2 columns. |
+| 3 | D | An inner brace may hold *fewer* values than the column count, never more, `{1, 2, 3}` has 3 values for 2 columns. |
 | 4 | B | 8,000 + (8 × 5) = 8,040. |
-| 5 | B | B-A-G-U at indices 0, 1, 2, 3 — so `s[3]` is `'U'`. |
+| 5 | B | B-A-G-U at indices 0, 1, 2, 3, so `s[3]` is `'U'`. |
 | 6 | B | Rows run 0–3 and columns 0–4, so the last element is `t[3][4]`. |
 | 7 | A | `a[0]` is 9 and `a[4]` is auto-zeroed, so the sum is 9. |
 
-### Part II — Output Tracing
+### Part II, Output Tracing
 
-**8. Answer: `8`** — `i += 2` visits only indices 0, 2, 4: 1 + 2 + 5 = 8. Check the step size before you trace.
+**8. Answer: `8`**, `i += 2` visits only indices 0, 2, 4: 1 + 2 + 5 = 8. Check the step size before you trace.
 
-**9. Answer: `3`** — the loop runs *downward*, so `p` keeps getting overwritten; the odd value at the smallest index wins.
+**9. Answer: `3`**, the loop runs *downward*, so `p` keeps getting overwritten; the odd value at the smallest index wins.
 
 | i | a[i] | odd? | p after |
 |---|---|---|---|
@@ -746,9 +746,9 @@ Check your work item by item. For tracing items, follow the trace table row by r
 | 1 | 3 | yes | 3 |
 | 0 | 2 | no | 3 |
 
-**10. Answer: `2`** — this prints the *index* of the largest value (9 sits at index 2), not the value itself. Read the `printf` carefully.
+**10. Answer: `2`**, this prints the *index* of the largest value (9 sits at index 2), not the value itself. Read the `printf` carefully.
 
-**11. Answer: `1 2 4 8`** — each new element is double the *already updated* previous one.
+**11. Answer: `1 2 4 8`**, each new element is double the *already updated* previous one.
 
 | i | a[i] (source) | a[i + 1] becomes |
 |---|---|---|
@@ -756,21 +756,21 @@ Check your work item by item. For tracing items, follow the trace table row by r
 | 1 | 2 | 4 |
 | 2 | 4 | 8 |
 
-**12. Answer: `2 11`** — P-R-O-G-R-A-M-M-I-N-G has two `'M'` characters, and `i` stops at 11, the number of letters before `'\0'`.
+**12. Answer: `2 11`**, P-R-O-G-R-A-M-M-I-N-G has two `'M'` characters, and `i` stops at 11, the number of letters before `'\0'`.
 
-**13. Answer: `1324`** — the two off-diagonal elements m[0][1] and m[1][0] exchange their values 2 and 3; the diagonal stays put.
+**13. Answer: `1324`**, the two off-diagonal elements m[0][1] and m[1][0] exchange their values 2 and 3; the diagonal stays put.
 
-**14. Answer: `10 11`** — row sums: row 0 = {5, 1, 4} gives 10; row 1 = {2, 6, 3} gives 11 (flat list fills row by row).
+**14. Answer: `10 11`**, row sums: row 0 = {5, 1, 4} gives 10; row 1 = {2, 6, 3} gives 11 (flat list fills row by row).
 
-**15. Answer: `40`** — work inside out: `a[2]` is 30, then 30 / 10 = 3, then `a[3]` is 40. An index can be any integer expression.
+**15. Answer: `40`**, work inside out: `a[2]` is 30, then 30 / 10 = 3, then `a[3]` is 40. An index can be any integer expression.
 
-**16. Answer: `4`** — the value 3 appears at indices 0, 1, 3, and 5.
+**16. Answer: `4`**, the value 3 appears at indices 0, 1, 3, and 5.
 
-**17. Answer: `18`** — the multiples of 3 in the table are 6, 9, and 3: 6 + 9 + 3 = 18.
+**17. Answer: `18`**, the multiples of 3 in the table are 6, 9, and 3: 6 + 9 + 3 = 18.
 
-### Part III — Sorting Traces
+### Part III, Sorting Traces
 
-**18. Answer: `4 7 2 6 9`** — the largest value bubbles to the end.
+**18. Answer: `4 7 2 6 9`**, the largest value bubbles to the end.
 
 | Compare | Swap? | Array after |
 |---|---|---|
@@ -788,7 +788,7 @@ Check your work item by item. For tracing items, follow the trace table row by r
 | 7, 6 | yes | 4 2 6 7 9 |
 | 7, 9 | no | 4 2 6 7 9 |
 
-**20. Answer: `4`** — every comparison in pass 1 caused a swap (see the Item 18 table).
+**20. Answer: `4`**, every comparison in pass 1 caused a swap (see the Item 18 table).
 
 **21. Answer: `1 5 3 8`**
 
@@ -798,11 +798,11 @@ Check your work item by item. For tracing items, follow the trace table row by r
 | 5, 8 | no | 1 5 8 3 |
 | 8, 3 | yes | 1 5 3 8 |
 
-### Part IV — Debugging & Fill in the Blank
+### Part IV, Debugging & Fill in the Blank
 
 **22.** Problem 1: starting at `i = 1` skips `a[0]`, so the first slot never receives a value. Problem 2: `i <= 5` writes into `a[5]`, one slot past the last element `a[4]`. Corrected header: `for (i = 0; i < 5; i++)`.
 
-**23.** The first line destroys the original `a[0]` before anything saves it — after both lines, `a[0]` and `a[1]` hold the *same* value (the old `a[1]`). Correct version:
+**23.** The first line destroys the original `a[0]` before anything saves it, after both lines, `a[0]` and `a[1]` hold the *same* value (the old `a[1]`). Correct version:
 
 ```c
 temp = a[0];
@@ -810,9 +810,9 @@ a[0] = a[1];
 a[1] = temp;
 ```
 
-**24.** `a[i] == key` — compare with `==`, not `=`. A single `=` would *assign* `key` into the array instead of comparing.
+**24.** `a[i] == key`, compare with `==`, not `=`. A single `=` would *assign* `key` into the array instead of comparing.
 
-**25.** `&b[i][j]` — 2D elements need the address-of operator in `scanf()` too, exactly as in Sample Program 3.
+**25.** `&b[i][j]`, 2D elements need the address-of operator in `scanf()` too, exactly as in Sample Program 3.
 
 **Passing bar:** 17/25 on Exam B (it is harder). If both A and B are at or above the bar, you are prelim-ready.
 $md$, 5);
@@ -823,17 +823,17 @@ $md$, 5);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('a3000001-0001-0002-0001-0000000000e1','activity','Common Array Traps & How to Avoid Them',$md$
-Six traps account for most of the points lost on array exams. Each one comes with a mini-drill — do the drill *before* reading its answer.
+Six traps account for most of the points lost on array exams. Each one comes with a mini-drill, do the drill *before* reading its answer.
 
-### Trap 1 — Index Out of Bounds
+### Trap 1, Index Out of Bounds
 
-For `int a[10];` the valid positions are `a[0]` through `a[9]`. There is no `a[10]` — the size is the *count* of elements, not the last index. C will not stop you from writing `a[10]`; it will silently read or overwrite memory that does not belong to the array.
+For `int a[10];` the valid positions are `a[0]` through `a[9]`. There is no `a[10]`, the size is the *count* of elements, not the last index. C will not stop you from writing `a[10]`; it will silently read or overwrite memory that does not belong to the array.
 
 **Drill:** Given `int a[10];`, which of these are invalid? `a[10]`, `a[0]`, `a[9]`, `a[-1]`
 
-**Answer:** `a[10]` and `a[-1]`. The valid range is 0 through 9 — nothing below zero, nothing at or above the size.
+**Answer:** `a[10]` and `a[-1]`. The valid range is 0 through 9, nothing below zero, nothing at or above the size.
 
-### Trap 2 — Off-by-One in Loops
+### Trap 2, Off-by-One in Loops
 
 The loop condition `i <= size` visits one slot too many. The safe idiom is always `i < size`.
 
@@ -841,38 +841,38 @@ The loop condition `i <= size` visits one slot too many. The safe idiom is alway
 
 **Answer:** Six visits (i = 0, 1, 2, 3, 4, 5); the last one touches `a[5]`, which is out of bounds. Fix: `i < 5`.
 
-### Trap 3 — Confusing Elements with Bytes
+### Trap 3, Confusing Elements with Bytes
 
-The address formula multiplies the index by the *size of one element in bytes*. Mixing up "number of elements" with "number of bytes" wrecks address items — and if you use `sizeof`, remember that `sizeof(a)` gives the total **bytes**, not the element count.
+The address formula multiplies the index by the *size of one element in bytes*. Mixing up "number of elements" with "number of bytes" wrecks address items, and if you use `sizeof`, remember that `sizeof(a)` gives the total **bytes**, not the element count.
 
 **Drill:** `int a[10];` and an `int` occupies 4 bytes. What is `sizeof(a)`? How do you get the element count from `sizeof`?
 
 **Answer:** `sizeof(a)` is 40 (10 elements × 4 bytes). Element count = `sizeof(a) / sizeof(a[0])` = 40 / 4 = 10.
 
-### Trap 4 — Row vs Column Confusion in 2D
+### Trap 4, Row vs Column Confusion in 2D
 
-In `m[rows][columns]`, the **first** subscript is the row. And a flat initializer list fills **row by row** — the last subscript increases fastest. Filling column-first is the single most common 2D tracing mistake.
+In `m[rows][columns]`, the **first** subscript is the row. And a flat initializer list fills **row by row**, the last subscript increases fastest. Filling column-first is the single most common 2D tracing mistake.
 
 **Drill:** For `int m[3][4];`, is `m[3][2]` valid? And given `int m[2][3] = {1, 2, 3, 4, 5, 6};`, what is `m[1][0]`?
 
-**Answer:** `m[3][2]` is invalid — rows run 0 through 2 only. `m[1][0]` is 4: row 0 = {1, 2, 3}, row 1 = {4, 5, 6}.
+**Answer:** `m[3][2]` is invalid, rows run 0 through 2 only. `m[1][0]` is 4: row 0 = {1, 2, 3}, row 1 = {4, 5, 6}.
 
-### Trap 5 — Uninitialized Elements
+### Trap 5, Uninitialized Elements
 
 Two different situations that students constantly mix up:
 
-- **Partial initialization** — `int a[5] = {1, 2};` — the remaining elements are automatically set to **zero**.
-- **No initialization at all** — `int b[5];` inside a function — the elements hold **garbage** (whatever was in that memory before).
+- **Partial initialization**, `int a[5] = {1, 2};`, the remaining elements are automatically set to **zero**.
+- **No initialization at all**, `int b[5];` inside a function, the elements hold **garbage** (whatever was in that memory before).
 
 **Drill:** After `int a[5] = {1, 2};` what is `a[4]`? After `int b[5];` (declared inside a function, no initializer) what is `b[4]`?
 
-**Answer:** `a[4]` is 0 (partial initialization zero-fills). `b[4]` is garbage — unpredictable. Never assume zeros unless at least one initializer is present.
+**Answer:** `a[4]` is 0 (partial initialization zero-fills). `b[4]` is garbage, unpredictable. Never assume zeros unless at least one initializer is present.
 
-### Trap 6 — Swapping Without a Temp
+### Trap 6, Swapping Without a Temp
 
-Two plain assignments cannot exchange two values — the first assignment destroys one of them. A correct swap is always three steps through a temporary variable.
+Two plain assignments cannot exchange two values, the first assignment destroys one of them. A correct swap is always three steps through a temporary variable.
 
-**Drill:** `int a[2] = {4, 9};` then `a[0] = a[1]; a[1] = a[0];` — what does `printf("%d %d", a[0], a[1]);` print?
+**Drill:** `int a[2] = {4, 9};` then `a[0] = a[1]; a[1] = a[0];`, what does `printf("%d %d", a[0], a[1]);` print?
 
 **Answer:** `9 9`. The first line overwrote the 4 before anything saved it. Correct: `temp = a[0]; a[0] = a[1]; a[1] = temp;`
 
@@ -880,7 +880,7 @@ Two plain assignments cannot exchange two values — the first assignment destro
 
 ### Now Fix Them Yourself
 
-The playground below contains Trap 2 and Trap 6 as live bugs. Run it once and watch what happens: the print loop walks past the end of the array (you will likely see a garbage sixth value), and the "swap" produces a duplicate. Fix the loop condition, complete the swap with `temp`, and run again — the final line should read `5 3 9 1 7`.
+The playground below contains Trap 2 and Trap 6 as live bugs. Run it once and watch what happens: the print loop walks past the end of the array (you will likely see a garbage sixth value), and the "swap" produces a duplicate. Fix the loop condition, complete the swap with `temp`, and run again, the final line should read `5 3 9 1 7`.
 $md$, 6, 'c', $code$#include <stdio.h>
 
 int main(void) {
@@ -923,7 +923,7 @@ The final is cumulative over the currently published **Unit 1: Arrays**, with ex
 | IV | Fill-in-the-blank | 10–15% | The idioms below, verbatim |
 | V | Write the program | 20–25% | Complete programs graded by rubric |
 
-### Rapid Review — Every Idiom on One Sheet
+### Rapid Review, Every Idiom on One Sheet
 
 Everything below comes straight from Unit 1. If you can write these from memory, Part IV and Part V are free points.
 
@@ -973,7 +973,7 @@ for (i = 0; i < n; i++)
         found = 1;
 ```
 
-**Bubble-sort skeleton (ascending — one full sort):**
+**Bubble-sort skeleton (ascending, one full sort):**
 
 ```c
 for (i = 0; i < n - 1; i++)
@@ -987,7 +987,7 @@ for (i = 0; i < n - 1; i++)
 
 For **descending** order, change the condition to `a[j] < a[j + 1]`. For a **single pass** (the tracing favorite), keep only the inner loop with `j` running from 0 to n − 2.
 
-**Matrix traversal (read, process, or print — same shape every time):**
+**Matrix traversal (read, process, or print, same shape every time):**
 
 ```c
 for (i = 0; i < rows; i++) {
@@ -1011,16 +1011,16 @@ for (i = 0; i < m; i++)
 2. Element address = base + (element size × index).
 3. Partial initialization zero-fills; no initialization means garbage.
 4. Flat 2D initializers fill row by row.
-5. `scanf()` needs `&` — for 1D and 2D elements alike.
+5. `scanf()` needs `&`, for 1D and 2D elements alike.
 $md$, 7);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-0000000000e1','activity','Final Mock Exam A — 25 Items',$md$
-Cumulative over Unit 1, weighted toward 2D arrays, matrices, and sorting — like the real final. 90 minutes, no notes. Items 23–25 are write-the-program items; write complete programs, not fragments.
+('a3000001-0001-0002-0001-0000000000e1','activity','Final Mock Exam A, 25 Items',$md$
+Cumulative over Unit 1, weighted toward 2D arrays, matrices, and sorting, like the real final. 90 minutes, no notes. Items 23–25 are write-the-program items; write complete programs, not fragments.
 
 For sorting items, **one pass** means comparing each adjacent pair left to right, swapping when the left value is greater (ascending).
 
-### Part I — Multiple Choice (Items 1–6)
+### Part I, Multiple Choice (Items 1–6)
 
 **1.** How many elements does `int t[4][6];` hold?
 
@@ -1064,7 +1064,7 @@ For sorting items, **one pass** means comparing each adjacent pair left to right
 - C. The two values are equal
 - D. On every comparison
 
-### Part II — Output Tracing (Items 7–16)
+### Part II, Output Tracing (Items 7–16)
 
 Write exactly what each fragment prints.
 
@@ -1173,7 +1173,7 @@ for (j = 0; j < 3; j++)
 printf("%d", s);
 ```
 
-### Part III — Sorting Traces (Items 17–19)
+### Part III, Sorting Traces (Items 17–19)
 
 The array is `{6, 3, 8, 1, 4}`, sorted **ascending**.
 
@@ -1183,7 +1183,7 @@ The array is `{6, 3, 8, 1, 4}`, sorted **ascending**.
 
 **19.** Write the state of the array **after pass 3**.
 
-### Part IV — Fill in the Blank (Items 20–22)
+### Part IV, Fill in the Blank (Items 20–22)
 
 **20.** Read every element of an `m`-row, `n`-column matrix `a`:
 
@@ -1212,7 +1212,7 @@ for (i = 0; i < n; i++)
         found = 1;
 ```
 
-### Part V — Write the Program (Items 23–25)
+### Part V, Write the Program (Items 23–25)
 
 Write each as a complete C program. Rubric per item (10 points): correct declarations (2), correct input loop with `&` (2), correct core logic (4), correct output (2).
 
@@ -1224,10 +1224,10 @@ Write each as a complete C program. Rubric per item (10 points): correct declara
 $md$, 8);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-0000000000e1','activity','Final Mock Exam B — 25 Items',$md$
+('a3000001-0001-0002-0001-0000000000e1','activity','Final Mock Exam B, 25 Items',$md$
 All-new items, same blueprint as Final Mock Exam A. 90 minutes, no notes. The same one-pass definition applies to the sorting items, and the same 10-point rubric (declarations 2, input 2, logic 4, output 2) applies to items 23–25.
 
-### Part I — Multiple Choice (Items 1–6)
+### Part I, Multiple Choice (Items 1–6)
 
 **1.** If an `int` occupies 4 bytes, how many bytes does `int g[6][2];` reserve?
 
@@ -1271,7 +1271,7 @@ All-new items, same blueprint as Final Mock Exam A. 90 minutes, no notes. The sa
 - C. 8
 - D. Unknown until runtime
 
-### Part II — Output Tracing (Items 7–16)
+### Part II, Output Tracing (Items 7–16)
 
 Write exactly what each fragment prints.
 
@@ -1371,7 +1371,7 @@ for (i = 0; i < 2; i++)
 printf("%d", s);
 ```
 
-### Part III — Sorting Traces (Items 17–19)
+### Part III, Sorting Traces (Items 17–19)
 
 The array is `{7, 2, 9, 5, 3}`, sorted **ascending**.
 
@@ -1381,7 +1381,7 @@ The array is `{7, 2, 9, 5, 3}`, sorted **ascending**.
 
 **19.** How many **swaps** happened in total across pass 1 and pass 2 combined?
 
-### Part IV — Fill in the Blank (Items 20–22)
+### Part IV, Fill in the Blank (Items 20–22)
 
 **20.** Complete the condition so one pass moves values toward **descending** order (largest first):
 
@@ -1412,7 +1412,7 @@ for (i = 0; i < m; i++) {
 }
 ```
 
-### Part V — Write the Program (Items 23–25)
+### Part V, Write the Program (Items 23–25)
 
 **23.** Read 8 integers into an array, then print their **sum** and their **average** (the average must show decimal places).
 
@@ -1422,12 +1422,12 @@ for (i = 0; i < m; i++) {
 $md$, 9);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a3000001-0001-0002-0001-0000000000e1','activity','Final Mock Exams — Answer Key with Explanations',$md$
-Full key for both final mocks, including complete model programs for the write-the-program items. Model solutions follow the same style as the Unit 1 sample programs (`conio.h`, `void main()`, `clrscr()`, `getch()`); if your compiler is not Turbo C, remove those three and use `int main(void)` with `return 0;` — the array logic is identical either way.
+('a3000001-0001-0002-0001-0000000000e1','activity','Final Mock Exams, Answer Key with Explanations',$md$
+Full key for both final mocks, including complete model programs for the write-the-program items. Model solutions follow the same style as the Unit 1 sample programs (`conio.h`, `void main()`, `clrscr()`, `getch()`); if your compiler is not Turbo C, remove those three and use `int main(void)` with `return 0;`, the array logic is identical either way.
 
 ## Final Mock Exam A
 
-### Part I — Multiple Choice
+### Part I, Multiple Choice
 
 | # | Answer | Why |
 |---|---|---|
@@ -1438,11 +1438,11 @@ Full key for both final mocks, including complete model programs for the write-t
 | 5 | B | Five letters plus `'\0'` needs 6 slots. |
 | 6 | B | Ascending: swap when the left neighbor is bigger. |
 
-### Part II — Output Tracing
+### Part II, Output Tracing
 
-**7. Answer: `8 10`** — c becomes {6, 8; 10, 12}; the program prints `c[0][1]` then `c[1][0]`.
+**7. Answer: `8 10`**, c becomes {6, 8; 10, 12}; the program prints `c[0][1]` then `c[1][0]`.
 
-**8. Answer: `18`** — main diagonal of {4, 1, 2; 3, 5, 6; 7, 8, 9}: 4 + 5 + 9 = 18.
+**8. Answer: `18`**, main diagonal of {4, 1, 2; 3, 5, 6; 7, 8, 9}: 4 + 5 + 9 = 18.
 
 **9. Answer:**
 ```
@@ -1451,13 +1451,13 @@ Full key for both final mocks, including complete model programs for the write-t
 ```
 Row-by-row printing with a newline after each inner loop.
 
-**10. Answer: `2`** — the smallest of {9, 4, 8, 2, 7, 3, 6, 5}, found exactly as in Practice Exercises Program C.
+**10. Answer: `2`**, the smallest of {9, 4, 8, 2, 7, 3, 6, 5}, found exactly as in Practice Exercises Program C.
 
-**11. Answer: `3`** — the values greater than 5 are 7, 9, and 6.
+**11. Answer: `3`**, the values greater than 5 are 7, 9, and 6.
 
-**12. Answer: `8`** — column 1 holds 8, 2, 6; `big` starts at 8 and nothing beats it.
+**12. Answer: `8`**, column 1 holds 8, 2, 6; `big` starts at 8 and nothing beats it.
 
-**13. Answer: `2 1 4 3 5`** — this is one sorting pass.
+**13. Answer: `2 1 4 3 5`**, this is one sorting pass.
 
 | Compare | Swap? | Array after |
 |---|---|---|
@@ -1466,13 +1466,13 @@ Row-by-row printing with a newline after each inner loop.
 | 5, 4 | yes | 2 1 4 5 3 |
 | 5, 3 | yes | 2 1 4 3 5 |
 
-**14. Answer: `6`** — the loop counts characters until `'\0'`; MATRIX has 6 letters.
+**14. Answer: `6`**, the loop counts characters until `'\0'`; MATRIX has 6 letters.
 
-**15. Answer: `0 2 3 8`** — each element is multiplied by (row + column): 1 × 0 = 0, 2 × 1 = 2, 3 × 1 = 3, 4 × 2 = 8.
+**15. Answer: `0 2 3 8`**, each element is multiplied by (row + column): 1 × 0 = 0, 2 × 1 = 2, 3 × 1 = 3, 4 × 2 = 8.
 
-**16. Answer: `9`** — (4 − 1) + (5 − 2) + (6 − 3) = 3 + 3 + 3 = 9.
+**16. Answer: `9`**, (4 − 1) + (5 − 2) + (6 − 3) = 3 + 3 + 3 = 9.
 
-### Part III — Sorting Traces
+### Part III, Sorting Traces
 
 Start: `{6, 3, 8, 1, 4}`.
 
@@ -1494,17 +1494,17 @@ Start: `{6, 3, 8, 1, 4}`.
 | 6, 4 | yes | 3 1 4 6 8 |
 | 6, 8 | no | 3 1 4 6 8 |
 
-**19. Answer: `1 3 4 6 8`** — pass 3 only swaps the first pair (3, 1); the array is now fully sorted.
+**19. Answer: `1 3 4 6 8`**, pass 3 only swaps the first pair (3, 1); the array is now fully sorted.
 
-### Part IV — Fill in the Blank
+### Part IV, Fill in the Blank
 
 | # | Answer | Why |
 |---|---|---|
-| 20 | `&a[i][j]` | Address-of operator, 2D version — as in Sample Program 3. |
+| 20 | `&a[i][j]` | Address-of operator, 2D version, as in Sample Program 3. |
 | 21 | `sum += a[i];` | Accumulate inside the loop; the average is computed after. (Check: sum = 30, avg = 6.0.) |
 | 22 | `a[i] == key` | Comparison uses `==`; a single `=` assigns instead. |
 
-### Part V — Model Solutions
+### Part V, Model Solutions
 
 **23. Largest and smallest of 10 integers.**
 
@@ -1535,7 +1535,7 @@ void main() {
 }
 ```
 
-Rubric notes: both `big` and `small` must start from `a[0]` — starting `big` at 0 is a graded classic that fails when every input is negative.
+Rubric notes: both `big` and `small` must start from `a[0]`, starting `big` at 0 is a graded classic that fails when every input is negative.
 
 **24. Sum of a 3×3 matrix.**
 
@@ -1596,7 +1596,7 @@ Rubric notes: the swap must go through `temp` (three assignments); the outer loo
 
 ## Final Mock Exam B
 
-### Part I — Multiple Choice
+### Part I, Multiple Choice
 
 | # | Answer | Why |
 |---|---|---|
@@ -1607,30 +1607,30 @@ Rubric notes: the swap must go through `temp` (three assignments); the outer loo
 | 5 | B | 4,000 + (4 × 9) = 4,036. |
 | 6 | B | I-L-O-I-L-O is 6 letters, plus the automatic `'\0'` = 7 elements. |
 
-### Part II — Output Tracing
+### Part II, Output Tracing
 
-**7. Answer: `22`** — `i += 2` starting at 1 visits indices 1, 3, 5: 7 + 9 + 6 = 22.
+**7. Answer: `22`**, `i += 2` starting at 1 visits indices 1, 3, 5: 7 + 9 + 6 = 22.
 
-**8. Answer: `3`** — adjacent pairs where left > right: (5, 3), (8, 6), (6, 2). The pair (3, 8) does not count.
+**8. Answer: `3`**, adjacent pairs where left > right: (5, 3), (8, 6), (6, 2). The pair (3, 8) does not count.
 
-**9. Answer: `9`** — `m[0][2]` is 4 and `m[1][1]` is 5.
+**9. Answer: `9`**, `m[0][2]` is 4 and `m[1][1]` is 5.
 
-**10. Answer: `8 4 6 2`** — the loop swaps row 0 with row 1, column by column.
+**10. Answer: `8 4 6 2`**, the loop swaps row 0 with row 1, column by column.
 
 | j | Matrix after |
 |---|---|
 | 0 | {8, 2; 6, 4} |
 | 1 | {8, 4; 6, 2} |
 
-**11. Answer: `55`** — sum of squares: 1 + 4 + 9 + 16 + 25 = 55.
+**11. Answer: `55`**, sum of squares: 1 + 4 + 9 + 16 + 25 = 55.
 
-**12. Answer: `3`** — C-O-D-I-N-G: the only `'I'` sits at index 3, so the loop prints 3 once.
+**12. Answer: `3`**, C-O-D-I-N-G: the only `'I'` sits at index 3, so the loop prints 3 once.
 
-**13. Answer: `15`** — `i + j == 2` picks the anti-diagonal: m[0][2] + m[1][1] + m[2][0] = 3 + 5 + 7 = 15.
+**13. Answer: `15`**, `i + j == 2` picks the anti-diagonal: m[0][2] + m[1][1] + m[2][0] = 3 + 5 + 7 = 15.
 
-**14. Answer: `3 1`** — find-the-minimum by index: the smallest value 1 sits at index 3; the program prints the index, then the value.
+**14. Answer: `3 1`**, find-the-minimum by index: the smallest value 1 sits at index 3; the program prints the index, then the value.
 
-**15. Answer: `1 2 2 2 2`** — the loop runs *backwards*, so each subtraction uses the still-original left neighbor.
+**15. Answer: `1 2 2 2 2`**, the loop runs *backwards*, so each subtraction uses the still-original left neighbor.
 
 | i | a[i] before | a[i - 1] | a[i] after |
 |---|---|---|---|
@@ -1639,9 +1639,9 @@ Rubric notes: the swap must go through `temp` (three assignments); the outer loo
 | 2 | 5 | 3 | 2 |
 | 1 | 3 | 1 | 2 |
 
-**16. Answer: `36`** — sum of everything in both matrices: (2 + 4 + 6 + 8) + (1 + 3 + 5 + 7) = 20 + 16 = 36.
+**16. Answer: `36`**, sum of everything in both matrices: (2 + 4 + 6 + 8) + (1 + 3 + 5 + 7) = 20 + 16 = 36.
 
-### Part III — Sorting Traces
+### Part III, Sorting Traces
 
 Start: `{7, 2, 9, 5, 3}`.
 
@@ -1663,17 +1663,17 @@ Start: `{7, 2, 9, 5, 3}`.
 | 7, 3 | yes | 2 5 3 7 9 |
 | 7, 9 | no | 2 5 3 7 9 |
 
-**19. Answer: `5`** — pass 1 had 3 swaps, pass 2 had 2 swaps.
+**19. Answer: `5`**, pass 1 had 3 swaps, pass 2 had 2 swaps.
 
-### Part IV — Fill in the Blank
+### Part IV, Fill in the Blank
 
 | # | Answer | Why |
 |---|---|---|
 | 20 | `a[i] < a[i + 1]` | Descending: swap when the left value is *smaller*, so bigger values move left. |
 | 21 | `count++` | One increment per match. |
-| 22 | `printf("\n")` | The newline goes after the inner loop — once per row, not once per element. |
+| 22 | `printf("\n")` | The newline goes after the inner loop, once per row, not once per element. |
 
-### Part V — Model Solutions
+### Part V, Model Solutions
 
 **23. Sum and average of 8 integers.**
 
@@ -1735,7 +1735,7 @@ void main() {
 }
 ```
 
-Rubric notes: this is Sample Program 3 with fixed 2×2 dimensions — the `printf("\n")` after the inner loop earns the "one row per line" output points.
+Rubric notes: this is Sample Program 3 with fixed 2×2 dimensions, the `printf("\n")` after the inner loop earns the "one row per line" output points.
 
 **25. Sort 5 integers descending.**
 
@@ -1770,5 +1770,5 @@ Rubric notes: identical to the ascending sort except the comparison flips to `<`
 
 ---
 
-Scored 20+ on both finals? You are walking into that exam room ready. Anything you missed, chase it back to the exact Unit 1 section named in the Rapid Review Sheet and re-trace it by hand — that is how the points come back.
+Scored 20+ on both finals? You are walking into that exam room ready. Anything you missed, chase it back to the exact Unit 1 section named in the Rapid Review Sheet and re-trace it by hand, that is how the points come back.
 $md$, 10);

@@ -1,5 +1,5 @@
 -- ============================================================
--- Filipinolohiya — Paghahanda sa Eksamen: Prelim at Finals
+-- Filipinolohiya, Paghahanda sa Eksamen: Prelim at Finals
 -- Subject ID: 10000000-0001-0001-0002-000000000004
 -- Module ID:  a2000004-0001-0001-0002-0000000000e1
 -- Purpose: exam-prep module (study guides, practice sets, mock
@@ -25,7 +25,7 @@ Karaniwang sinasaklaw ng prelim exam sa Filipinolohiya ang **Kabanata 1** (Kamal
 | Uri | Ano ang Hinihingi |
 |---|---|
 | **Multiple choice** | Pagpili ng tamang depinisyon, epekto, o halimbawa ng isang konsepto. |
-| **Tama o Mali** | Pagsusuri kung tumpak ang isang pahayag ayon sa aralin — bantayan ang mga salitang binaligtad. |
+| **Tama o Mali** | Pagsusuri kung tumpak ang isang pahayag ayon sa aralin, bantayan ang mga salitang binaligtad. |
 | **Pagtutukoy (Identipikasyon)** | Pagbibigay ng eksaktong termino mula sa depinisyon o paglalarawan. |
 | **Maikling pagsusuri** | Pagpapaliwanag ng ugnayan ng dalawang konsepto sa 2 hanggang 5 pangungusap. |
 
@@ -34,34 +34,34 @@ Karaniwang sinasaklaw ng prelim exam sa Filipinolohiya ang **Kabanata 1** (Kamal
 **Mula sa Kabanata 1:**
 
 - Ang epekto ng kolonisasyon sa **kamalayan** at kung paano nililimitahan ng wikang banyaga ang pag-unlad ng pambansang wika at ang pagkaunawa sa sariling pagkakakilanlan.
-- Ang estratehiyang **"unawa at salakay"** — masusing pag-aaral at dokumentasyon muna ng kultura ng katutubo bago ito manipulahin.
-- Ang kalagayan **bago ang kolonisasyon** — walang iisang pambansang wika; magkakahiwalay na pangkat na may kanya-kanyang wika at kultura.
-- Ang **pagbubura sa tala ng bayan** — hindi isinama ang boses ng katutubo sa mga opisyal na dokumento maliban kung negatibo, upang bigyang-katwiran ang pananakop.
+- Ang estratehiyang **"unawa at salakay"**, masusing pag-aaral at dokumentasyon muna ng kultura ng katutubo bago ito manipulahin.
+- Ang kalagayan **bago ang kolonisasyon**, walang iisang pambansang wika; magkakahiwalay na pangkat na may kanya-kanyang wika at kultura.
+- Ang **pagbubura sa tala ng bayan**, hindi isinama ang boses ng katutubo sa mga opisyal na dokumento maliban kung negatibo, upang bigyang-katwiran ang pananakop.
 - Ang **"lisyang edukasyon"** sa ilalim ng Amerikano: edukasyon bilang armas ng pagsupil, ang papel ng wikang Ingles bilang pader, ang oryentasyong pang-agrikultura, at ang hadlang sa tunay na demokrasya.
 - Ang pares: **relihiyon** ang kasangkapan ng Espanyol; **edukasyon** ang kasangkapan ng Amerikano.
 
 **Mula sa Kabanata 2:**
 
-- **Sikolohiyang Pilipino** — pag-aaral ng "diwa"; tumututol sa unibersalidad ng teoryang Kanluranin; mga metodolohiyang **pakapa-kapa** at **pagdalaw-dalaw**.
-- **Pilipinolohiya** — pagbuo ng kaalaman mula sa "loob"; kaiba sa **Philippine Studies** na itinuturing na area studies para sa banyagang institusyon.
-- **Pantayong Pananaw** — diskursong pangkabihasnan; perspektibong **"tayo"** laban sa **"pangkami"**; ang kondisyon upang masabing may PP ang isang lipunan.
-- **Filipinolohiya** — pagsisinop ng **karanasang bayan** tungo sa **talinong bayan** na gagabay sa pambansang pag-unlad.
+- **Sikolohiyang Pilipino**, pag-aaral ng "diwa"; tumututol sa unibersalidad ng teoryang Kanluranin; mga metodolohiyang **pakapa-kapa** at **pagdalaw-dalaw**.
+- **Pilipinolohiya**, pagbuo ng kaalaman mula sa "loob"; kaiba sa **Philippine Studies** na itinuturing na area studies para sa banyagang institusyon.
+- **Pantayong Pananaw**, diskursong pangkabihasnan; perspektibong **"tayo"** laban sa **"pangkami"**; ang kondisyon upang masabing may PP ang isang lipunan.
+- **Filipinolohiya**, pagsisinop ng **karanasang bayan** tungo sa **talinong bayan** na gagabay sa pambansang pag-unlad.
 - Ang **talahanayan ng paghahambing** ng apat na perspektibo: tuon at papel ng wika sa bawat isa.
 
 ### Mga Karaniwang Pagkakamali
 
 - Pinagpapalit ang kasangkapan ng Espanyol (relihiyon) at ng Amerikano (edukasyon).
-- Pinagpapalit ang **Pilipinolohiya** at **Filipinolohiya** — magkaiba ang tuon ng dalawa sa talahanayan ng paghahambing.
-- Iniisip na ang "pangkami" ang ninanais ng Pantayong Pananaw — ang kabaligtaran ang tama.
+- Pinagpapalit ang **Pilipinolohiya** at **Filipinolohiya**, magkaiba ang tuon ng dalawa sa talahanayan ng paghahambing.
+- Iniisip na ang "pangkami" ang ninanais ng Pantayong Pananaw, ang kabaligtaran ang tama.
 - Pinagpapalit ang pakapa-kapa (eksploratoryo, walang paunang hinuha) at pagdalaw-dalaw (paulit-ulit na impormal na pagbisita para sa tiwala).
-- Iniisip na "karanasang bayan" ang makaagham na kaalaman — iyon ang **talinong bayan**.
+- Iniisip na "karanasang bayan" ang makaagham na kaalaman, iyon ang **talinong bayan**.
 
 ### 7-Araw na Plano ng Pag-aaral
 
 | Araw | Gawain |
 |---|---|
 | **1** | Basahin ang unang tatlong seksiyon ng Kabanata 1: kamalayan, "unawa at salakay", at ang pagbubura sa tala ng bayan. Gumawa ng sariling listahan ng mga termino. |
-| **2** | Pag-aralan ang "Lisyang Edukasyon" sa Kabanata 1 — apat na bahagi nito: armas ng pagsupil, papel ng Ingles, oryentasyong pang-agrikultura, hadlang sa demokrasya. |
+| **2** | Pag-aralan ang "Lisyang Edukasyon" sa Kabanata 1, apat na bahagi nito: armas ng pagsupil, papel ng Ingles, oryentasyong pang-agrikultura, hadlang sa demokrasya. |
 | **3** | Basahin ang Sikolohiyang Pilipino at Pilipinolohiya sa Kabanata 2. Isulat ang pagkakaiba ng pakapa-kapa at pagdalaw-dalaw sa sariling salita. |
 | **4** | Tapusin ang Kabanata 2: Pantayong Pananaw, Filipinolohiya, at ang talahanayan ng paghahambing. Kabisaduhin ang tuon ng bawat perspektibo. |
 | **5** | Sagutan ang **Libreng Practice Set** sa ibaba nang hindi tumitingin sa susi. Balikan ang mga seksiyong may mali kang sagot. |
@@ -69,7 +69,7 @@ Karaniwang sinasaklaw ng prelim exam sa Filipinolohiya ang **Kabanata 1** (Kamal
 | **7** | Kunin ang **Prelim Mock Exam B**, pagkatapos ay basahin ang "Mga Karaniwang Patibong sa Prelim" bilang huling repaso. |
 $md$, 1),
 
-('a2000004-0001-0001-0002-0000000000e1','content','Libreng Practice Set — 15 Aytem na may Susi ng Kasagutan',$md$
+('a2000004-0001-0001-0002-0000000000e1','content','Libreng Practice Set, 15 Aytem na may Susi ng Kasagutan',$md$
 ### Panuto
 
 Sagutan muna ang lahat ng 15 aytem bago tumingin sa susi ng kasagutan sa ibaba. Saklaw: Kabanata 1 at 2.
@@ -166,7 +166,7 @@ Sagutan muna ang lahat ng 15 aytem bago tumingin sa susi ng kasagutan sa ibaba. 
 Ang apat na kumpletong 30-aytem na mock exam sa ibaba, kasama ang buong susi ng kasagutan na may paliwanag, ay kasama na sa subject unlock ng Filipinolohiya.
 $md$, 2),
 
-('a2000004-0001-0001-0002-0000000000e1','activity','Prelim Mock Exam A — 30 Aytem',$md$
+('a2000004-0001-0001-0002-0000000000e1','activity','Prelim Mock Exam A, 30 Aytem',$md$
 ### Panuto
 
 Saklaw: Kabanata 1 at 2. Inirerekomendang oras: 45 minuto. Sagutan nang tuluy-tuloy bago tumingin sa susi ng kasagutan.
@@ -269,7 +269,7 @@ Saklaw: Kabanata 1 at 2. Inirerekomendang oras: 45 minuto. Sagutan nang tuluy-tu
 
 **21.** Anong termino ang tumutukoy sa edukasyong ipinatupad ng mga Amerikano na ginamit upang supilin ang rebolusyonaryong kamalayan ng mga Pilipino?
 
-**22.** Anong penomenon — kasama ng kawalan ng malay at pag-asa sa mga tradisyunal na lider — ang ibinubunsod ng kahirapan ng masa na unawain ang mga suliraning pambansa dahil Ingles ang wika ng pamumuno at batas?
+**22.** Anong penomenon, kasama ng kawalan ng malay at pag-asa sa mga tradisyunal na lider, ang ibinubunsod ng kahirapan ng masa na unawain ang mga suliraning pambansa dahil Ingles ang wika ng pamumuno at batas?
 
 **23.** Anong eksploratoryong metodolohiya ng Sikolohiyang Pilipino ang isinasagawa nang walang paunang hinuha?
 
@@ -279,7 +279,7 @@ Saklaw: Kabanata 1 at 2. Inirerekomendang oras: 45 minuto. Sagutan nang tuluy-tu
 
 **26.** Anong termino ang tumutukoy sa makaagham at sistematikong kaalaman na resulta ng pagsisinop sa mga danas ng mamamayan?
 
-### Bahagi IV: Maikling Pagsusuri (27–30) — 3 hanggang 5 pangungusap bawat isa
+### Bahagi IV: Maikling Pagsusuri (27–30), 3 hanggang 5 pangungusap bawat isa
 
 **27.** Ipaliwanag kung paano naging "pader" ang wikang Ingles sa pagitan ng mga Pilipino at ng kanilang kasaysayan.
 
@@ -290,7 +290,7 @@ Saklaw: Kabanata 1 at 2. Inirerekomendang oras: 45 minuto. Sagutan nang tuluy-tu
 **30.** Ipaliwanag kung paano naaapektuhan ang pagkaunawa ng mga mamamayan sa kanilang sariling pagkakakilanlan kapag nabubusot ang potensyal ng sariling wika.
 $md$, 3),
 
-('a2000004-0001-0001-0002-0000000000e1','activity','Prelim Mock Exam B — 30 Aytem',$md$
+('a2000004-0001-0001-0002-0000000000e1','activity','Prelim Mock Exam B, 30 Aytem',$md$
 ### Panuto
 
 Saklaw: Kabanata 1 at 2, parehong saklaw ng Mock Exam A ngunit bagong mga aytem at bahagyang mas mahirap. Inirerekomendang oras: 45 minuto.
@@ -327,10 +327,10 @@ Saklaw: Kabanata 1 at 2, parehong saklaw ng Mock Exam A ngunit bagong mga aytem 
 
 **5.** Alin ang tamang pares ng mananakop at pangunahing kasangkapan nito sa pagsakop ng kamalayan?
 
-- A. Espanyol — edukasyon; Amerikano — relihiyon
-- B. Espanyol — relihiyon; Amerikano — edukasyon
-- C. Espanyol — kalakalan; Amerikano — relihiyon
-- D. Espanyol — edukasyon; Amerikano — kalakalan
+- A. Espanyol, edukasyon; Amerikano, relihiyon
+- B. Espanyol, relihiyon; Amerikano, edukasyon
+- C. Espanyol, kalakalan; Amerikano, relihiyon
+- D. Espanyol, edukasyon; Amerikano, kalakalan
 
 **6.** Ayon sa Kabanata 1, bakit lumalabo ang pagkaunawa ng mga mamamayan sa kanilang pagkakakilanlan kapag nabubusot ang potensyal ng sariling wika?
 
@@ -401,9 +401,9 @@ Saklaw: Kabanata 1 at 2, parehong saklaw ng Mock Exam A ngunit bagong mga aytem 
 
 **25.** Ano ang tawag sa tradisyunal na larangan ng pag-aaral na nakatuon sa Pilipinas bilang paksa o obheto para sa kapakinabangan ng mga banyagang institusyon?
 
-**26.** Anong perspektibo ang binibigyang-diin ng Pantayong Pananaw — ang komunikasyon ng mga Pilipino para sa kapwa Pilipino?
+**26.** Anong perspektibo ang binibigyang-diin ng Pantayong Pananaw, ang komunikasyon ng mga Pilipino para sa kapwa Pilipino?
 
-### Bahagi IV: Maikling Pagsusuri (27–30) — 3 hanggang 5 pangungusap bawat isa
+### Bahagi IV: Maikling Pagsusuri (27–30), 3 hanggang 5 pangungusap bawat isa
 
 **27.** Bakit masasabing "armas ng pagsupil" ang edukasyon sa ilalim ng pamamalaging Amerikano, gayong sa unang tingin ay biyaya ito?
 
@@ -414,30 +414,30 @@ Saklaw: Kabanata 1 at 2, parehong saklaw ng Mock Exam A ngunit bagong mga aytem 
 **30.** Kung ang layunin ng isang mananaliksik ay unawain ang tunay na saloobin ng isang komunidad, aling dalawang metodolohiya ng Sikolohiyang Pilipino ang gagamitin niya, at paano magkaiba ang gamit ng bawat isa?
 $md$, 4),
 
-('a2000004-0001-0001-0002-0000000000e1','activity','Susi ng Kasagutan sa Prelim Mock Exams — may Paliwanag',$md$
+('a2000004-0001-0001-0002-0000000000e1','activity','Susi ng Kasagutan sa Prelim Mock Exams, may Paliwanag',$md$
 ### Prelim Mock Exam A
 
 **Bahagi I: Multiple Choice**
 
-1. **B.** Relihiyon ang pangunahing kasangkapan ng mga Espanyol; ang edukasyon (A) ay kasangkapan ng mga Amerikano — ito ang klasikong pinagpapalit.
+1. **B.** Relihiyon ang pangunahing kasangkapan ng mga Espanyol; ang edukasyon (A) ay kasangkapan ng mga Amerikano, ito ang klasikong pinagpapalit.
 2. **C.** Ang "unawa at salakay" ay nagsisimula sa masusing pag-aaral at dokumentasyon ng kultura; ang ibang opsyon ay hindi bahagi ng estratehiyang inilarawan sa aralin.
 3. **B.** Walang iisang pambansang wika o sentralisadong konsepto ng bansa bago ang kolonisasyon; kaya mali ang A at D.
 4. **B.** Layunin ng pampublikong paaralan na payapain ang mamamayan at palitan ang likas na mithiin ng kaisipang banyaga; ang C ay eksaktong kabaligtaran.
 5. **B.** Ang oryentasyong pang-agrikultura ay nagpanatili sa bansa bilang tagaluwas ng hilaw na materyales at tagabili ng yaring produkto; ang A at C ay kabaligtaran ng nangyari.
-6. **B.** Itinuring na mga salarin o tulisan ang mga bayaning lumaban — hindi mga modelo (A) o pambansang bayani (C) sa ilalim ng kolonyal na pagtuturo.
+6. **B.** Itinuring na mga salarin o tulisan ang mga bayaning lumaban, hindi mga modelo (A) o pambansang bayani (C) sa ilalim ng kolonyal na pagtuturo.
 7. **A.** Ang SP ay pag-aaral ng "diwa" na nakaugat sa karanasan, kamalayan, at oryentasyon ng mga Pilipino.
 8. **B.** Tinututulan ng SP ang unibersalidad ng teoryang Kanluranin; ang A ang mismong ideyang nilalabanan nito.
-9. **B.** Ang Pilipinolohiya ay mula sa "loob"; ang Philippine Studies ay area studies para sa banyagang institusyon — hindi usapin ng wika lamang (A) o ng target na mambabasa lamang (C).
+9. **B.** Ang Pilipinolohiya ay mula sa "loob"; ang Philippine Studies ay area studies para sa banyagang institusyon, hindi usapin ng wika lamang (A) o ng target na mambabasa lamang (C).
 10. **A.** Nilalayon ng Filipinolohiya na sinupin ang karanasang bayan tungo sa talinong bayan; ang D ay kulang dahil may pagproseso tungo sa makaagham na kaalaman, hindi pagtatala lamang.
 
 **Bahagi II: Tama o Mali**
 
-11. **Tama.** Ito ang pangunahing tesis ng Kabanata 1 — nag-iwan ng marka ang kolonisasyon sa kultura, ekonomiya, at pulitika hanggang ngayon.
+11. **Tama.** Ito ang pangunahing tesis ng Kabanata 1, nag-iwan ng marka ang kolonisasyon sa kultura, ekonomiya, at pulitika hanggang ngayon.
 12. **Mali.** Kabaligtaran: nililimitahan nito ang pag-unlad ng pambansang wika at iba pang katutubong wika.
 13. **Tama.** Ginamit ang pag-aaral sa mga katutubong wika upang ipalaganap ang Kristiyanismo.
 14. **Tama.** Nabago ang ilang polisiya ng mananakop dahil sa reaksyon at katatagan ng mga mamamayan.
 15. **Tama.** Natutunan ang kasaysayan at pamumuhay ng ibang bansa habang ang sariling mga bayani ay itinuring na tulisan.
-16. **Mali.** Ang pakapa-kapa ay isinasagawa nang **walang** paunang hinuha — eksploratoryo ito.
+16. **Mali.** Ang pakapa-kapa ay isinasagawa nang **walang** paunang hinuha, eksploratoryo ito.
 17. **Mali.** Ang pagdalaw-dalaw ay **paulit-ulit at impormal**, hindi isahang pormal na interbyu.
 18. **Tama.** Ipinapahayag ang PP sa pamamagitan ng sariling wika ng kultura.
 19. **Tama.** Ito mismo ang depinisyon ng perspektibong "pangkami".
@@ -455,7 +455,7 @@ $md$, 4),
 **Bahagi IV: Maikling Pagsusuri (mga puntong dapat lumitaw sa sagot)**
 
 27. Ang Ingles bilang wikang panturo ay naghiwalay sa mga Pilipino sa kanilang kasaysayan: natutunan nila ang kasaysayan at pamumuhay ng ibang bansa, itinuring na tulisan ang sariling mga bayani, at nalikha ang agwat sa pagitan ng elite na nakapag-aral at ng masa.
-28. Sa pamamagitan ng dokumentasyon ng mga gawi, tradisyon, pagkain, at relihiyon, naging mas madali para sa mga mananakop na pasukin at baguhin ang kamalayan ng mga lokal na komunidad — ito ang buod ng "unawa at salakay".
+28. Sa pamamagitan ng dokumentasyon ng mga gawi, tradisyon, pagkain, at relihiyon, naging mas madali para sa mga mananakop na pasukin at baguhin ang kamalayan ng mga lokal na komunidad, ito ang buod ng "unawa at salakay".
 29. Ang "tayo" ay komunikasyon ng mga Pilipino para sa kapwa Pilipino gamit ang sariling wika at mga kodigong alam ng lahat; ang "pangkami" ay pagpapaliwanag o pagdedepensa ng sarili sa mga dayuhan gamit ang banyagang wika. Ang una ang itinataguyod ng Pantayong Pananaw.
 30. Kapag nabubusot ang potensyal ng sariling wika, naaapektuhan ang buong kultura; dahil ang kultura ang batayan ng pagkakakilanlan, lumalabo ang pagkaunawa ng mga mamamayan sa kanilang sarili at sa kanilang tungkulin sa bayan.
 
@@ -463,11 +463,11 @@ $md$, 4),
 
 **Bahagi I: Multiple Choice**
 
-1. **C.** Sinupil — hindi pinalakas — ng lisyang edukasyon ang rebolusyonaryong kamalayan; ang A, B, at D ay pawang tunay na epekto nito.
-2. **B.** Walang paunang hinuha at nagpapakiramdam sa konteksto — pakapa-kapa; ang pagdalaw-dalaw (A) ay nakatuon sa paulit-ulit na pagbisita para sa tiwala.
-3. **B.** Pagpapaliwanag ng sarili sa mga dayuhan gamit ang banyagang wika — perspektibong "pangkami"; ang "tayo" (A) ay para sa kapwa Pilipino gamit ang sariling wika.
+1. **C.** Sinupil, hindi pinalakas, ng lisyang edukasyon ang rebolusyonaryong kamalayan; ang A, B, at D ay pawang tunay na epekto nito.
+2. **B.** Walang paunang hinuha at nagpapakiramdam sa konteksto, pakapa-kapa; ang pagdalaw-dalaw (A) ay nakatuon sa paulit-ulit na pagbisita para sa tiwala.
+3. **B.** Pagpapaliwanag ng sarili sa mga dayuhan gamit ang banyagang wika, perspektibong "pangkami"; ang "tayo" (A) ay para sa kapwa Pilipino gamit ang sariling wika.
 4. **B.** Ang pagkakaiba ay nasa pinanggagalingan at pinaglilingkuran ng kaalaman ("loob" laban sa obheto ng area studies), hindi sa edad (A) o lokasyon (D) ng disiplina.
-5. **B.** Espanyol — relihiyon; Amerikano — edukasyon. Ang A ang karaniwang maling baligtad na pares.
+5. **B.** Espanyol, relihiyon; Amerikano, edukasyon. Ang A ang karaniwang maling baligtad na pares.
 6. **B.** Ang wika ay nakakabit sa buong kultura, at ang kultura ang batayan ng pagkakakilanlan at tungkulin sa bayan.
 7. **B.** Itinanghal na superyor ang kultura ng mananakop habang ipinalabas na mababa o negatibo ang katutubong gawi.
 8. **B.** Ang kondisyon ay ang **lahat** ng mamamayan ay gumagamit ng mga konsepto at kodigong alam ng lahat ang kahulugan; walang kinalaman ang unibersidad (A) o Ingles (C).
@@ -481,10 +481,10 @@ $md$, 4),
 13. **Mali.** May sariling sigla ang maagang kasaysayan ng bansa bago pa dumating ang mga dayuhan.
 14. **Mali.** Tinututulan ng SP ang direktang paglalapat ng teoryang Kanluranin; bumubuo ito ng pag-unawa mula sa sariling wika at kultura.
 15. **Tama.** Ito ang layunin ng paulit-ulit at impormal na pagbisita.
-16. **Tama.** Ito mismo ang katawagan ng aralin sa PP — isang diskursong pangkabihasnan.
+16. **Tama.** Ito mismo ang katawagan ng aralin sa PP, isang diskursong pangkabihasnan.
 17. **Mali.** Ang Filipinolohiya ay parehong **akademiko at praktikal** na disiplina.
 18. **Mali.** Kabaligtaran: nahihirapan ang masa na unawain ang mga suliraning pambansa, kaya nawawalan sila ng aktibong pakikilahok.
-19. **Tama.** Pinalitan ng mga kaisipang banyaga ang mga likas na mithiin — ito ang ubod ng lisyang edukasyon.
+19. **Tama.** Pinalitan ng mga kaisipang banyaga ang mga likas na mithiin, ito ang ubod ng lisyang edukasyon.
 20. **Mali.** Ang karanasang bayan ay ang mga **praktikal at pang-araw-araw na danas**; ang makaagham at sistematikong kaalaman ay ang talinong bayan.
 
 **Bahagi III: Pagtutukoy**
@@ -498,9 +498,9 @@ $md$, 4),
 
 **Bahagi IV: Maikling Pagsusuri (mga puntong dapat lumitaw sa sagot)**
 
-27. Ginamit ang pampublikong paaralan hindi upang palayain kundi upang payapain ang mamamayan at palitan ang kanilang likas na mithiin ng kaisipang banyaga; sinakop nito ang rebolusyonaryong kamalayan na hindi nagagawa ng dahas lamang — kaya armas ito ng pagsupil na nakabalatkayong biyaya.
+27. Ginamit ang pampublikong paaralan hindi upang palayain kundi upang payapain ang mamamayan at palitan ang kanilang likas na mithiin ng kaisipang banyaga; sinakop nito ang rebolusyonaryong kamalayan na hindi nagagawa ng dahas lamang, kaya armas ito ng pagsupil na nakabalatkayong biyaya.
 28. Dahil Ingles ang wika ng pamumuno at batas, nahihirapan ang masa na unawain ang mga suliraning pambansa; nagbubunga ito ng kawalan ng malay, pagkakahati-hati ayon sa rehiyon (rehiyonalismo), at pag-asa na lamang sa mga tradisyunal na lider sa halip na aktibong pakikilahok.
-29. Ang Philippine Studies ay tumitingin din sa Pilipinas ngunit bilang paksa o obheto (area studies) para sa pangangailangan ng mga banyagang institusyon; ang Pilipinolohiya ay bumubuo ng kaalaman mula sa "loob" gamit ang sariling kultura — kaya ang pinanggagalingan at pinaglilingkuran ng kaalaman, hindi ang paksa, ang sukatan.
+29. Ang Philippine Studies ay tumitingin din sa Pilipinas ngunit bilang paksa o obheto (area studies) para sa pangangailangan ng mga banyagang institusyon; ang Pilipinolohiya ay bumubuo ng kaalaman mula sa "loob" gamit ang sariling kultura, kaya ang pinanggagalingan at pinaglilingkuran ng kaalaman, hindi ang paksa, ang sukatan.
 30. Gagamitin niya ang **pakapa-kapa** upang magpakiramdam muna sa konteksto ng komunidad nang walang paunang hinuha, at ang **pagdalaw-dalaw** upang sa paulit-ulit at impormal na pagbisita ay makuha ang tiwala at tunay na saloobin ng mga kalahok.
 $md$, 5),
 
@@ -511,15 +511,15 @@ Karamihan ng mga maling sagot sa Filipinolohiya ay hindi dahil sa kakulangan ng 
 
 ### Patibong 1: Relihiyon (Espanyol) laban sa Edukasyon (Amerikano)
 
-Dalawang mananakop, dalawang magkaibang kasangkapan sa pagsakop ng kamalayan. Espanyol — **relihiyon** (Kristiyanismo, sa pamamagitan ng pag-aaral ng katutubong wika). Amerikano — **edukasyon** (sistema ng pampublikong paaralan at wikang Ingles).
+Dalawang mananakop, dalawang magkaibang kasangkapan sa pagsakop ng kamalayan. Espanyol, **relihiyon** (Kristiyanismo, sa pamamagitan ng pag-aaral ng katutubong wika). Amerikano, **edukasyon** (sistema ng pampublikong paaralan at wikang Ingles).
 
 **Mini-drill:** Anong kasangkapan ang ginamit upang "payapain ang mga mamamayan at palitan ang kanilang mga likas na mithiin"?
 
-**Sagot:** Edukasyon — ito ang wika ng aralin tungkol sa pampublikong paaralan ng mga Amerikano.
+**Sagot:** Edukasyon, ito ang wika ng aralin tungkol sa pampublikong paaralan ng mga Amerikano.
 
 ### Patibong 2: Pilipinolohiya laban sa Filipinolohiya
 
-Magkaiba ang dalawa sa talahanayan ng paghahambing. **Pilipinolohiya** — pagsusuri ng kasaysayan at lipunan mula sa sariling kultura at karanasan; katapat ng Philippine Studies. **Filipinolohiya** — pagsasapraktika ng talino tungo sa pagtatatag ng pambansang industriya; nagpoproseso ng karanasang bayan tungo sa talinong bayan.
+Magkaiba ang dalawa sa talahanayan ng paghahambing. **Pilipinolohiya**, pagsusuri ng kasaysayan at lipunan mula sa sariling kultura at karanasan; katapat ng Philippine Studies. **Filipinolohiya**, pagsasapraktika ng talino tungo sa pagtatatag ng pambansang industriya; nagpoproseso ng karanasang bayan tungo sa talinong bayan.
 
 **Mini-drill:** Aling disiplina ang tahasang nag-uugnay ng karunungan sa pagtatatag ng pambansang industriya?
 
@@ -527,41 +527,41 @@ Magkaiba ang dalawa sa talahanayan ng paghahambing. **Pilipinolohiya** — pagsu
 
 ### Patibong 3: "Tayo" laban sa "Pangkami"
 
-Ang **"tayo"** ay komunikasyon ng mga Pilipino para sa kapwa Pilipino gamit ang sariling wika — ito ang itinataguyod ng Pantayong Pananaw. Ang **"pangkami"** ay pagpapaliwanag o pagdedepensa ng sarili sa mga dayuhan gamit ang banyagang wika — ito ang inilalayo ng PP.
+Ang **"tayo"** ay komunikasyon ng mga Pilipino para sa kapwa Pilipino gamit ang sariling wika, ito ang itinataguyod ng Pantayong Pananaw. Ang **"pangkami"** ay pagpapaliwanag o pagdedepensa ng sarili sa mga dayuhan gamit ang banyagang wika, ito ang inilalayo ng PP.
 
-**Mini-drill:** Tama o Mali — Itinataguyod ng Pantayong Pananaw ang perspektibong "pangkami".
+**Mini-drill:** Tama o Mali, Itinataguyod ng Pantayong Pananaw ang perspektibong "pangkami".
 
 **Sagot:** Mali. Ang perspektibong "tayo" ang itinataguyod nito.
 
 ### Patibong 4: Pakapa-kapa laban sa Pagdalaw-dalaw
 
-Parehong metodolohiya ng Sikolohiyang Pilipino, ngunit magkaiba ang diin. **Pakapa-kapa** — eksploratoryo, nagpapakiramdam sa konteksto ng komunidad, **walang paunang hinuha**. **Pagdalaw-dalaw** — **paulit-ulit at impormal** na pagbisita upang makuha ang **tiwala** at tunay na saloobin.
+Parehong metodolohiya ng Sikolohiyang Pilipino, ngunit magkaiba ang diin. **Pakapa-kapa**, eksploratoryo, nagpapakiramdam sa konteksto ng komunidad, **walang paunang hinuha**. **Pagdalaw-dalaw**, **paulit-ulit at impormal** na pagbisita upang makuha ang **tiwala** at tunay na saloobin.
 
 **Mini-drill:** Kung ang susing salita sa tanong ay "tiwala", alin ang sagot? Kung "walang paunang hinuha"?
 
-**Sagot:** "Tiwala" — pagdalaw-dalaw; "walang paunang hinuha" — pakapa-kapa.
+**Sagot:** "Tiwala", pagdalaw-dalaw; "walang paunang hinuha", pakapa-kapa.
 
 ### Patibong 5: Karanasang Bayan laban sa Talinong Bayan
 
-Magkasunod sila sa proseso, hindi magkapalit. **Karanasang bayan** — hilaw na materyal: mga praktikal at pang-araw-araw na danas ng mga mamamayan. **Talinong bayan** — naprosesong produkto: makaagham at sistematikong kaalaman na gagabay sa pambansang pag-unlad.
+Magkasunod sila sa proseso, hindi magkapalit. **Karanasang bayan**, hilaw na materyal: mga praktikal at pang-araw-araw na danas ng mga mamamayan. **Talinong bayan**, naprosesong produkto: makaagham at sistematikong kaalaman na gagabay sa pambansang pag-unlad.
 
-**Mini-drill:** Ang paggamit ng dahon ng Tawa-tawa bilang tradisyunal na panggagamot — karanasang bayan ba ito o talinong bayan?
+**Mini-drill:** Ang paggamit ng dahon ng Tawa-tawa bilang tradisyunal na panggagamot, karanasang bayan ba ito o talinong bayan?
 
 **Sagot:** Karanasang bayan. Nagiging talinong bayan lamang ito matapos ang makaagham na pagsisinop, gaya ng parmasyutikong pananaliksik.
 
 ### Patibong 6: Pilipinolohiya laban sa Philippine Studies
 
-Parehong "tungkol sa Pilipinas" ang paksa, kaya madaling malito. Ang sukatan ay **kanino nanggagaling at para kanino ang kaalaman**: Pilipinolohiya — mula sa "loob", gamit ang sariling kultura; Philippine Studies — ang Pilipinas bilang obheto ng area studies para sa mga banyagang institusyon.
+Parehong "tungkol sa Pilipinas" ang paksa, kaya madaling malito. Ang sukatan ay **kanino nanggagaling at para kanino ang kaalaman**: Pilipinolohiya, mula sa "loob", gamit ang sariling kultura; Philippine Studies, ang Pilipinas bilang obheto ng area studies para sa mga banyagang institusyon.
 
-**Mini-drill:** Ang isang pag-aaral tungkol sa mga piyesta sa Pilipinas na isinagawa para sa pangangailangan ng isang banyagang institusyon — Pilipinolohiya ba ito?
+**Mini-drill:** Ang isang pag-aaral tungkol sa mga piyesta sa Pilipinas na isinagawa para sa pangangailangan ng isang banyagang institusyon, Pilipinolohiya ba ito?
 
 **Sagot:** Hindi. Kahit Pilipinas ang paksa, Philippine Studies ang oryentasyon nito dahil obheto lamang ang Pilipinas at banyagang institusyon ang pinaglilingkuran.
 
 ### Patibong 7: Ang mga Pahayag na Binaligtad sa Tama o Mali
 
-Paboritong padron ng mga tanong na Tama o Mali ang pagbaligtad ng direksyon ng epekto: "ang Ingles ay nagpaunlad sa pambansang wika" (mali — nilimitahan nito), "ang kolonyal na edukasyon ay naghikayat ng industriyalisasyon" (mali — nagtanim ito ng takot dito), "ang masa ay napadali ang pakikilahok dahil sa Ingles" (mali — nahirapan sila).
+Paboritong padron ng mga tanong na Tama o Mali ang pagbaligtad ng direksyon ng epekto: "ang Ingles ay nagpaunlad sa pambansang wika" (mali, nilimitahan nito), "ang kolonyal na edukasyon ay naghikayat ng industriyalisasyon" (mali, nagtanim ito ng takot dito), "ang masa ay napadali ang pakikilahok dahil sa Ingles" (mali, nahirapan sila).
 
-**Mini-drill:** Tama o Mali — Ang oryentasyong pang-agrikultura ng kolonyal na edukasyon ay naghanda sa Pilipinas na maging tagagawa ng mga yaring produkto.
+**Mini-drill:** Tama o Mali, Ang oryentasyong pang-agrikultura ng kolonyal na edukasyon ay naghanda sa Pilipinas na maging tagagawa ng mga yaring produkto.
 
 **Sagot:** Mali. Pinanatili nito ang bansa bilang **tagaluwas ng murang hilaw na materyales** at **tagabili** ng mamahaling yaring produkto mula sa labas.
 $md$, 6),
@@ -587,11 +587,11 @@ Ang finals ay **kumulatibo**: sinasaklaw nito ang Kabanata 1 hanggang 3, ngunit 
 
 **Limang rekursong pang-ekonomiya ng Pilipinas:**
 
-1. **Yamang Lupa** — milyun-milyong ektarya ng matabang lupain (palay, mais, niyog, tubo).
-2. **Yamang Tubig** — karagatan, daan-daang ilog, at mga lawa (isda, irigasyon, transportasyon, enerhiya).
-3. **Yamang Mineral** — isa sa pinakamalaking reserba sa mundo: ginto, tanso, nickel, chromite.
-4. **Enerhiya** — natural gas, geothermal, hydropower, solar, wind energy.
-5. **Yamang Tao** — milyun-milyong skilled workers at propesyonal na kilala sa buong mundo.
+1. **Yamang Lupa**, milyun-milyong ektarya ng matabang lupain (palay, mais, niyog, tubo).
+2. **Yamang Tubig**, karagatan, daan-daang ilog, at mga lawa (isda, irigasyon, transportasyon, enerhiya).
+3. **Yamang Mineral**, isa sa pinakamalaking reserba sa mundo: ginto, tanso, nickel, chromite.
+4. **Enerhiya**, natural gas, geothermal, hydropower, solar, wind energy.
+5. **Yamang Tao**, milyun-milyong skilled workers at propesyonal na kilala sa buong mundo.
 
 **Ang balangkas ng pagpapatupad ng Filipinolohiya (kabisaduhin ang daloy):**
 
@@ -602,23 +602,23 @@ Karanasang Bayan (wika, tao, kultura, likas na yaman) → **sisinupin ng sistema
 ### Rapid Review: Kabanata 1 at 2 (Pinaikling Listahan)
 
 - Kolonisasyon → marka sa **kamalayan**; wikang banyaga → limitado ang pambansang wika → lumalabo ang pagkakakilanlan.
-- **"Unawa at salakay"** — dokumentasyon muna ng kultura bago manipulahin; ipinalaganap ang Kristiyanismo sa pamamagitan ng pag-aaral ng katutubong wika.
+- **"Unawa at salakay"**, dokumentasyon muna ng kultura bago manipulahin; ipinalaganap ang Kristiyanismo sa pamamagitan ng pag-aaral ng katutubong wika.
 - Bago ang kolonisasyon: magkakahiwalay na pangkat, walang iisang pambansang wika.
-- **Pagbubura sa tala ng bayan** — wala ang boses ng katutubo sa mga dokumento maliban kung negatibo.
+- **Pagbubura sa tala ng bayan**, wala ang boses ng katutubo sa mga dokumento maliban kung negatibo.
 - **Lisyang edukasyon** (Amerikano): armas ng pagsupil; Ingles bilang pader; oryentasyong pang-agrikultura → takot sa industriyalisasyon; Ingles sa batas → kawalan ng malay, rehiyonalismo, pag-asa sa tradisyunal na lider.
-- **Sikolohiyang Pilipino** — diwa; laban sa unibersalidad ng teoryang Kanluranin; **pakapa-kapa** (walang paunang hinuha) at **pagdalaw-dalaw** (tiwala).
-- **Pilipinolohiya** — mula sa "loob"; laban sa **Philippine Studies** (area studies para sa banyaga).
-- **Pantayong Pananaw** — diskursong pangkabihasnan; "tayo" hindi "pangkami"; may PP lamang kung alam ng **lahat** ang mga kodigo.
-- **Filipinolohiya** — karanasang bayan → talinong bayan → pambansang pag-unlad.
+- **Sikolohiyang Pilipino**, diwa; laban sa unibersalidad ng teoryang Kanluranin; **pakapa-kapa** (walang paunang hinuha) at **pagdalaw-dalaw** (tiwala).
+- **Pilipinolohiya**, mula sa "loob"; laban sa **Philippine Studies** (area studies para sa banyaga).
+- **Pantayong Pananaw**, diskursong pangkabihasnan; "tayo" hindi "pangkami"; may PP lamang kung alam ng **lahat** ang mga kodigo.
+- **Filipinolohiya**, karanasang bayan → talinong bayan → pambansang pag-unlad.
 
 ### Estratehiya sa Pagsagot
 
-- Sa mga tanong tungkol sa tatlong antas ng industriya, hanapin ang **produkto**: makinarya at bakal — mabigat; spare parts at kable — intermedyo; pagkain, damit, at gamot — magaan.
+- Sa mga tanong tungkol sa tatlong antas ng industriya, hanapin ang **produkto**: makinarya at bakal, mabigat; spare parts at kable, intermedyo; pagkain, damit, at gamot, magaan.
 - Sa mga tanong tungkol sa balangkas, tandaan na ang **sistema ng edukasyon** ang nagpoproseso, at ang dulo ay laging **pambansang kaunlaran**.
 - Sa mga kumulatibong tanong, hanapin ang tulay: ang **takot sa industriyalisasyon** (Kabanata 1) ang siyang nilulunasan ng **pambansang industriyalisasyon** (Kabanata 3).
 $md$, 7),
 
-('a2000004-0001-0001-0002-0000000000e1','activity','Final Mock Exam A — 30 Aytem',$md$
+('a2000004-0001-0001-0002-0000000000e1','activity','Final Mock Exam A, 30 Aytem',$md$
 ### Panuto
 
 Kumulatibo: Kabanata 1 hanggang 3, mas mabigat sa Kabanata 3. Inirerekomendang oras: 50 minuto.
@@ -741,7 +741,7 @@ Kumulatibo: Kabanata 1 hanggang 3, mas mabigat sa Kabanata 3. Inirerekomendang o
 
 **26.** Anong metodolohiya ng Sikolohiyang Pilipino ang eksploratoryong pagpapakiramdam sa konteksto ng komunidad nang walang paunang hinuha?
 
-### Bahagi IV: Maikling Pagsusuri (27–30) — 3 hanggang 5 pangungusap bawat isa
+### Bahagi IV: Maikling Pagsusuri (27–30), 3 hanggang 5 pangungusap bawat isa
 
 **27.** Bakit kinakailangang **sabay at planado** ang pagpapatatag sa tatlong antas ng industriya sa halip na isa-isa?
 
@@ -752,7 +752,7 @@ Kumulatibo: Kabanata 1 hanggang 3, mas mabigat sa Kabanata 3. Inirerekomendang o
 **30.** Bakit itinuturing na base o pundasyon ng industriyalisasyon ang tunay na reporma sa lupa at ang pagpapaunlad ng agrikultura?
 $md$, 8),
 
-('a2000004-0001-0001-0002-0000000000e1','activity','Final Mock Exam B — 30 Aytem',$md$
+('a2000004-0001-0001-0002-0000000000e1','activity','Final Mock Exam B, 30 Aytem',$md$
 ### Panuto
 
 Kumulatibo: Kabanata 1 hanggang 3, mas mabigat sa Kabanata 3. Bagong mga aytem. Inirerekomendang oras: 50 minuto.
@@ -780,7 +780,7 @@ Kumulatibo: Kabanata 1 hanggang 3, mas mabigat sa Kabanata 3. Bagong mga aytem. 
 - C. Nagpoproseso ng pagkain para sa mamamayan
 - D. Nagtatanim ng mga hilaw na materyales
 
-**4.** Isang pabrika ng gamot at isang pabrika ng damit — saang antas ng industriya sila nabibilang?
+**4.** Isang pabrika ng gamot at isang pabrika ng damit, saang antas ng industriya sila nabibilang?
 
 - A. Mabigat na industriya
 - B. Intermedyong industriya
@@ -819,7 +819,7 @@ Kumulatibo: Kabanata 1 hanggang 3, mas mabigat sa Kabanata 3. Bagong mga aytem. 
 
 - A. Talinong bayan
 - B. Paglikha ng mga pangangailangan
-- C. Pambansang kaunlaran — tunay na kalayaan at maunlad na lipunan
+- C. Pambansang kaunlaran, tunay na kalayaan at maunlad na lipunan
 - D. Dokumentasyon ng karanasang bayan
 
 **10.** Bakit itinuring na mga tulisan ang mga bayaning Pilipino sa ilalim ng kolonyal na edukasyon?
@@ -869,13 +869,13 @@ Kumulatibo: Kabanata 1 hanggang 3, mas mabigat sa Kabanata 3. Bagong mga aytem. 
 
 **23.** Sa Filipinolohiya, ano ang tawag sa mga praktikal at pang-araw-araw na danas ng mga mamamayan na hilaw na materyal ng talinong bayan?
 
-**24.** Anong perspektibo ang binibigyang-diin ng Pantayong Pananaw — ang komunikasyon ng mga Pilipino para sa kapwa Pilipino?
+**24.** Anong perspektibo ang binibigyang-diin ng Pantayong Pananaw, ang komunikasyon ng mga Pilipino para sa kapwa Pilipino?
 
 **25.** Anong termino ang tumutukoy sa edukasyong kolonyal na ipinatupad ng mga Amerikano upang supilin ang rebolusyonaryong kamalayan?
 
 **26.** Aling antas ng industriya ang gumagawa ng mga semi-prosesong materyales na kailangan sa pagbuo ng mga makina?
 
-### Bahagi IV: Maikling Pagsusuri (27–30) — 3 hanggang 5 pangungusap bawat isa
+### Bahagi IV: Maikling Pagsusuri (27–30), 3 hanggang 5 pangungusap bawat isa
 
 **27.** Ipaliwanag kung bakit hindi katumbas ng Pambansang Industriyalisasyon ang simpleng pagtatayo lamang ng mga banyagang assembly plant o economic zone sa bansa.
 
@@ -886,23 +886,23 @@ Kumulatibo: Kabanata 1 hanggang 3, mas mabigat sa Kabanata 3. Bagong mga aytem. 
 **30.** Ipaliwanag ang pahayag: "Ang maunlad na agrikultura ay pundasyon ng industriyalisasyon."
 $md$, 9),
 
-('a2000004-0001-0001-0002-0000000000e1','activity','Susi ng Kasagutan sa Final Mock Exams — may Paliwanag',$md$
+('a2000004-0001-0001-0002-0000000000e1','activity','Susi ng Kasagutan sa Final Mock Exams, may Paliwanag',$md$
 ### Final Mock Exam A
 
 **Bahagi I: Multiple Choice**
 
 1. **B.** Ang NI ay pagpapaunlad ng mga **lokal** na industriya tungo sa modernong industriyal na lipunan; ang A ay banyagang pagawaan lamang, at ang C ang mismong kalagayang nilulunasan nito.
 2. **C.** Ang mabigat na industriya ang pundasyon dahil lumilikha ito ng mga kagamitang pamproduksyon na ginagamit ng iba pang industriya.
-3. **B.** Spare parts, kable, at semi-prosesong materyales — intermedyong industriya; ang mabigat (A) ay makinarya at bakal, ang magaan (C) ay produktong pangkonsumo.
+3. **B.** Spare parts, kable, at semi-prosesong materyales, intermedyong industriya; ang mabigat (A) ay makinarya at bakal, ang magaan (C) ay produktong pangkonsumo.
 4. **C.** Ang pagkain, damit, gamot, at kagamitan sa bahay ay mga produktong pangkonsumo ng magaang industriya.
 5. **B.** Tahasang sinabi ng aralin na ang pagpapatupad ng tunay na reporma sa lupa ang pangunahing basehan ng industriyalisasyon; ang C (pag-import ng makinarya) ay sintomas ng pag-asa sa labas.
 6. **B.** Dalawang ibinibigay ng maunlad na agrikultura: murang pagkain para sa mamamayan at lokal na hilaw na materyales para sa mga pabrika.
 7. **C.** Ginto, tanso, nickel, at chromite ang binanggit sa aralin; walang lithium sa listahan.
 8. **B.** Sa balangkas, ang sistema ng edukasyon ang sumisinop sa karanasang bayan sa pamamagitan ng proseso, dokumentasyon, at siyentipikong balangkas.
-9. **B.** Ang parmasyutikong pananaliksik ang proseso ng Filipinolohiya; ang A (tradisyunal na paggamit) ang karanasang bayan — bantayan ang pagkakabaligtad.
+9. **B.** Ang parmasyutikong pananaliksik ang proseso ng Filipinolohiya; ang A (tradisyunal na paggamit) ang karanasang bayan, bantayan ang pagkakabaligtad.
 10. **B.** Edukasyon ang kasangkapan ng mga Amerikano; relihiyon (A) ang sa mga Espanyol.
 11. **B.** Ang kondisyon ng PP: gumagamit ang **lahat** ng mamamayan ng mga konsepto at kodigong alam ng lahat ang kahulugan.
-12. **B.** Nakabatay ang mga metodolohiya ng SP sa pakiramdam at pakikipagkapwa — gaya ng pakapa-kapa at pagdalaw-dalaw.
+12. **B.** Nakabatay ang mga metodolohiya ng SP sa pakiramdam at pakikipagkapwa, gaya ng pakapa-kapa at pagdalaw-dalaw.
 
 **Bahagi II: Tama o Mali**
 
@@ -913,7 +913,7 @@ $md$, 9),
 17. **Tama.** Ang yamang tao ay isa sa limang rekursong pang-ekonomiya na binanggit.
 18. **Mali.** Ang karanasang bayan ang panimulang punto; sinisinop pa lamang ito upang maging talinong bayan.
 19. **Mali.** Edukasyon ang kasangkapan ng mga Amerikano; relihiyon ang sa mga Espanyol.
-20. **Mali.** Iyan ang perspektibong "pangkami" na inilalayo ng PP; ang itinataguyod nito ay ang "tayo" — komunikasyon para sa kapwa Pilipino sa sariling wika.
+20. **Mali.** Iyan ang perspektibong "pangkami" na inilalayo ng PP; ang itinataguyod nito ay ang "tayo", komunikasyon para sa kapwa Pilipino sa sariling wika.
 
 **Bahagi III: Pagtutukoy**
 
@@ -927,25 +927,25 @@ $md$, 9),
 **Bahagi IV: Maikling Pagsusuri (mga puntong dapat lumitaw sa sagot)**
 
 27. Magkakaugnay ang tatlong antas: ang mabigat na industriya ang lumilikha ng makinarya na ginagamit ng iba pang industriya, ang intermedyo ang nagbibigay ng mga bahagi sa pagbuo ng mga makina, at ang magaan ang tumutugon sa pang-araw-araw na pangangailangan. Kapag isa lamang ang pinaunlad, mananatili ang pag-asa sa import para sa kulang na antas, kaya dapat sabay at planado.
-28. Ang karanasang bayan (wika, tao, kultura, likas na yaman) ay sinisinop ng sistema ng edukasyon sa pamamagitan ng dokumentasyon at siyentipikong balangkas upang maging talinong bayan; ang karunungang ito ang gagabay sa polisiyang kultural, pulitikal, at ekonomikal, na lilikha ng industriya at trabaho, tungo sa pambansang kaunlaran — tunay na kalayaan at maunlad na lipunan.
+28. Ang karanasang bayan (wika, tao, kultura, likas na yaman) ay sinisinop ng sistema ng edukasyon sa pamamagitan ng dokumentasyon at siyentipikong balangkas upang maging talinong bayan; ang karunungang ito ang gagabay sa polisiyang kultural, pulitikal, at ekonomikal, na lilikha ng industriya at trabaho, tungo sa pambansang kaunlaran, tunay na kalayaan at maunlad na lipunan.
 29. Itinanim ng lisyang edukasyon ang pananaw na para lamang sa agrikultura ang Pilipinas, na nagbunsod ng takot at pagwawalang-bahala sa industriyalisasyon at nagpanatili sa bansa bilang tagaluwas ng hilaw na materyales. Ang pambansang industriyalisasyon sa Kabanata 3 ang tugon dito: pagbabago mula atrasadong agraryan tungo sa modernong industriyal na lipunan gamit ang sariling rekurso.
-30. Ang tunay na reporma sa lupa, kasama ang mekanisasyon ng pagsasaka, ay nagpapataas ng produktibidad ng mga bukirin; nagbibigay ito ng sapat at murang pagkain sa mamamayan at ng tuluy-tuloy na suplay ng lokal na hilaw na materyales sa mga pambansang pabrika nang hindi umaasa sa import — kaya ito ang base ng industriyalisasyon.
+30. Ang tunay na reporma sa lupa, kasama ang mekanisasyon ng pagsasaka, ay nagpapataas ng produktibidad ng mga bukirin; nagbibigay ito ng sapat at murang pagkain sa mamamayan at ng tuluy-tuloy na suplay ng lokal na hilaw na materyales sa mga pambansang pabrika nang hindi umaasa sa import, kaya ito ang base ng industriyalisasyon.
 
 ### Final Mock Exam B
 
 **Bahagi I: Multiple Choice**
 
 1. **C.** Ang pananatili bilang tagaluwas ng murang hilaw na materyales ang mismong kalagayang binabago ng NI; ang A, B, at D ay pawang mga layunin nito.
-2. **B.** Bakal, kemikal, at kagamitang pamproduksyon — mabigat na industriya; ang A at C ay mga produkto ng magaang industriya.
+2. **B.** Bakal, kemikal, at kagamitang pamproduksyon, mabigat na industriya; ang A at C ay mga produkto ng magaang industriya.
 3. **B.** Ang intermedyong industriya ang gumagawa ng spare parts, kable, at semi-prosesong materyales para sa pagbuo ng mga makina.
-4. **C.** Ang gamot at damit ay mga produktong pangkonsumo para sa pang-araw-araw na pangangailangan — magaang industriya.
+4. **C.** Ang gamot at damit ay mga produktong pangkonsumo para sa pang-araw-araw na pangangailangan, magaang industriya.
 5. **A.** Ang maunlad na agrikultura ang nagbibigay ng lokal na hilaw na materyales sa mga pabrika nang hindi umaasa sa pag-import.
 6. **C.** Natural gas, geothermal, hydropower, solar, at wind energy ang binanggit; walang nuclear sa listahan ng aralin.
 7. **B.** Pagkatapos ng talinong bayan, ito ay nagiging karunungang gagabay sa polisiyang kultural, pulitikal, at ekonomikal bago ang paglikha ng mga pangangailangan.
 8. **B.** Ang tradisyunal na paggamit ng dahon ng Tawa-tawa ang karanasang bayan; ang pananaliksik (A) ang proseso ng Filipinolohiya.
-9. **C.** Ang dulo ng balangkas ay pambansang kaunlaran — tunay na kalayaan at maunlad na lipunan.
-10. **B.** Ang kasaysayang itinuro ay mula sa pananaw ng mananakop, kaya ang mga lumaban ay ipinalabas na salarin o tulisan — hindi dahil totoo itong lumabag sila sa sariling bayan (A).
-11. **B.** Ang Philippine Studies ay para sa kapakinabangan at pangangailangan ng mga banyagang institusyon — ito ang pagkakaiba nito sa Pilipinolohiya.
+9. **C.** Ang dulo ng balangkas ay pambansang kaunlaran, tunay na kalayaan at maunlad na lipunan.
+10. **B.** Ang kasaysayang itinuro ay mula sa pananaw ng mananakop, kaya ang mga lumaban ay ipinalabas na salarin o tulisan, hindi dahil totoo itong lumabag sila sa sariling bayan (A).
+11. **B.** Ang Philippine Studies ay para sa kapakinabangan at pangangailangan ng mga banyagang institusyon, ito ang pagkakaiba nito sa Pilipinolohiya.
 12. **A.** Sa talahanayan, ang wika para sa SP ay katutubong wika bilang susi sa pag-unawa sa panloob na kalagayan ng tao; ang B ay para sa Filipinolohiya.
 
 **Bahagi II: Tama o Mali**
@@ -970,8 +970,8 @@ $md$, 9),
 
 **Bahagi IV: Maikling Pagsusuri (mga puntong dapat lumitaw sa sagot)**
 
-27. Ang NI ay pagtatatag ng mga **lokal** na industriya sa tatlong antas — mabigat, intermedyo, at magaan — na pag-aari at para sa mamamayan, upang matugunan ang pangangailangan ng bansa. Ang banyagang assembly plant ay hindi nagtatayo ng pundasyong mabigat na industriya at nagpapanatili ng pag-asa sa imported na makinarya at teknolohiya, kaya hindi nito binabago ang atrasadong agraryang katangian ng ekonomiya.
-28. Ang paggamit ng dahon ng Tawa-tawa bilang panggagamot sa dengue ay karanasang bayan; sa pamamagitan ng parmasyutikong pananaliksik, napatunayan sa siyentipikong paraan ang kakayahan nitong magpataas ng platelets — naging talinong bayan ito na nagbunsod ng mga modernong gamot na aprubado ng FDA. Ipinapakita nito na ang lokal na kaalaman, kapag sininop nang makaagham, ay nagiging batayan ng industriya at kapakinabangang pambansa.
-29. Ipinakita ng Kabanata 1 na ang banyagang wika ay ginamit upang ihiwalay ang mga Pilipino sa kanilang kasaysayan at pagkakakilanlan; ipinakita naman ng Kabanata 2 na ang sariling wika ang susi sa pagbuo ng kaalamang mula sa loob — sa SP, sa Pantayong Pananaw, at sa Filipinolohiya. Samakatuwid, ang wika ay hindi lamang kasangkapan ng komunikasyon kundi pundasyon ng pagkatuto, agham, at pambansang pagpapalaya.
+27. Ang NI ay pagtatatag ng mga **lokal** na industriya sa tatlong antas, mabigat, intermedyo, at magaan, na pag-aari at para sa mamamayan, upang matugunan ang pangangailangan ng bansa. Ang banyagang assembly plant ay hindi nagtatayo ng pundasyong mabigat na industriya at nagpapanatili ng pag-asa sa imported na makinarya at teknolohiya, kaya hindi nito binabago ang atrasadong agraryang katangian ng ekonomiya.
+28. Ang paggamit ng dahon ng Tawa-tawa bilang panggagamot sa dengue ay karanasang bayan; sa pamamagitan ng parmasyutikong pananaliksik, napatunayan sa siyentipikong paraan ang kakayahan nitong magpataas ng platelets, naging talinong bayan ito na nagbunsod ng mga modernong gamot na aprubado ng FDA. Ipinapakita nito na ang lokal na kaalaman, kapag sininop nang makaagham, ay nagiging batayan ng industriya at kapakinabangang pambansa.
+29. Ipinakita ng Kabanata 1 na ang banyagang wika ay ginamit upang ihiwalay ang mga Pilipino sa kanilang kasaysayan at pagkakakilanlan; ipinakita naman ng Kabanata 2 na ang sariling wika ang susi sa pagbuo ng kaalamang mula sa loob, sa SP, sa Pantayong Pananaw, at sa Filipinolohiya. Samakatuwid, ang wika ay hindi lamang kasangkapan ng komunikasyon kundi pundasyon ng pagkatuto, agham, at pambansang pagpapalaya.
 30. Ang maunlad na agrikultura, sa pamamagitan ng tunay na reporma sa lupa at mekanisasyon, ay nagbibigay ng sapat at murang pagkain para sa mamamayan at ng tuluy-tuloy na suplay ng lokal na hilaw na materyales para sa mga pambansang pabrika. Kung walang ganitong base, mananatiling umaasa ang industriya sa inaangkat na materyales, kaya hindi ito magiging tunay na pambansa.
 $md$, 10);

@@ -1,7 +1,7 @@
 -- ============================================================
--- Systems Integration and Architecture — Modules & Sections
+-- Systems Integration and Architecture, Modules & Sections
 -- Subject ID: 30000000-0003-0001-0001-000000000002
--- 3rd Year, Semester 1 — major
+-- 3rd Year, Semester 1, major
 --
 -- Free/paid split: per lesson, sections 1-2 are FREE (kind='content'),
 -- section 3 + the practice drills are PAID (kind='activity'). Each
@@ -171,18 +171,18 @@ INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
 --   S10: e1302fe3-6dac-52f3-af02-888b1f78d738  <- reserve last for kind='activity'
 
 -- ============================================================
--- IMPORT TEMPLATE — one INSERT per module. Replace placeholders.
+-- IMPORT TEMPLATE, one INSERT per module. Replace placeholders.
 -- content sections are FREE; the final activity section is PAID.
 -- ide_language (python|sql|java|c), starter_code, topology_data are
--- all OPTIONAL columns — include only when the section needs them.
+-- all OPTIONAL columns, include only when the section needs them.
 -- ============================================================
 --
 -- INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 -- ('55c215f7-4e39-5eed-9bdb-744e7eb24547','content','<Heading>',$md$
--- <full markdown teaching body — free tier>
+-- <full markdown teaching body, free tier>
 -- $md$, 1),
--- ('55c215f7-4e39-5eed-9bdb-744e7eb24547','activity','Practice & Exam Drills — Lesson 1',$md$
--- <review questions, worked exam problems w/ solutions, how-to-pass tips — paid tier>
+-- ('55c215f7-4e39-5eed-9bdb-744e7eb24547','activity','Practice & Exam Drills, Lesson 1',$md$
+-- <review questions, worked exam problems w/ solutions, how-to-pass tips, paid tier>
 -- $md$, 2);
 --
 -- With an interactive playground, use the 5-column form instead:
@@ -255,7 +255,7 @@ In exams, professors often check whether you can connect technology choices to b
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('55c215f7-4e39-5eed-9bdb-744e7eb24547','activity','Practice & Exam Drills — Lesson 1',$md$
+('55c215f7-4e39-5eed-9bdb-744e7eb24547','activity','Practice & Exam Drills, Lesson 1',$md$
 ### Review Questions
 
 1. What is systems integration in your own words?
@@ -397,7 +397,7 @@ When you answer architecture questions, do not jump from "problem" to "tool." Sh
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('82da7460-0642-5961-b7af-26e3514d34ab','activity','Practice & Exam Drills — Lesson 2',$md$
+('82da7460-0642-5961-b7af-26e3514d34ab','activity','Practice & Exam Drills, Lesson 2',$md$
 ### Review Questions
 
 1. What are the four common domains of enterprise architecture?
@@ -539,7 +539,7 @@ In short, architecture selection means translating requirements into structure. 
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('fb99eb69-56e4-5383-a04a-4bb95b7de567','activity','Practice & Exam Drills — Lesson 3',$md$
+('fb99eb69-56e4-5383-a04a-4bb95b7de567','activity','Practice & Exam Drills, Lesson 3',$md$
 ### Review Questions
 
 1. What is an architecture style?
@@ -678,7 +678,7 @@ In a midterm or final, if the case mentions many systems with repeated transform
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('5bd78697-327f-5e9a-bc27-ed46b93e8137','activity','Practice & Exam Drills — Lesson 4',$md$
+('5bd78697-327f-5e9a-bc27-ed46b93e8137','activity','Practice & Exam Drills, Lesson 4',$md$
 ### Review Questions
 
 1. What is middleware?
@@ -799,7 +799,7 @@ Use this mindset: a service is not complete when it only handles the happy path.
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('22dba449-b892-5d94-aa42-0e07c8a216d2','activity','Practice & Exam Drills — Lesson 5',$md$
+('22dba449-b892-5d94-aa42-0e07c8a216d2','activity','Practice & Exam Drills, Lesson 5',$md$
 ### Review Questions
 
 1. What is an API?
@@ -929,7 +929,7 @@ This is a very practical area for BSIT students because it combines data design,
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('df0c9643-382d-519a-812b-3c6ff679d92f','activity','Practice & Exam Drills — Lesson 6',$md$
+('df0c9643-382d-519a-812b-3c6ff679d92f','activity','Practice & Exam Drills, Lesson 6',$md$
 ### Review Questions
 
 1. Differentiate data mapping from data transformation.
@@ -1058,7 +1058,7 @@ Performance awareness is also important. If one service must call five others be
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('7147968d-c39c-55fe-9ffb-6e666a1e8f21','activity','Practice & Exam Drills — Lesson 7',$md$
+('7147968d-c39c-55fe-9ffb-6e666a1e8f21','activity','Practice & Exam Drills, Lesson 7',$md$
 ### Review Questions
 
 1. Differentiate authentication from authorization.
@@ -1194,7 +1194,7 @@ The final mindset of this course is simple: integration is not finished at deplo
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('8fdf6171-ba7e-50c4-9c78-885914e03998','activity','Practice & Exam Drills — Lesson 8',$md$
+('8fdf6171-ba7e-50c4-9c78-885914e03998','activity','Practice & Exam Drills, Lesson 8',$md$
 ### Review Questions
 
 1. Why is integration testing different from unit testing?
@@ -1249,7 +1249,7 @@ This mirrors the mindset of integration testing: validate contracts, not just co
 - In deployment questions, remember environment separation, configuration control, and rollback.
 - In governance questions, use terms such as ownership, standards, versioning, documentation, and change management.
 - Professors often appreciate answers that show life-cycle thinking: design, build, test, deploy, monitor, improve.
-- If the question asks "why did the deployment fail," think beyond coding—check contracts, configuration, access, and coordination.
+- If the question asks "why did the deployment fail," think beyond coding, check contracts, configuration, access, and coordination.
 $md$, 4, 'python', $code$# Lesson 8 starter code
 # Goal: write simple checks for an integrated workflow.
 
@@ -1269,7 +1269,7 @@ for rec in sample_records:
     print(rec, validate_student_record(rec))
 $code$);
 
--- SOURCES (metadata — not inserted): CHED CMO 25 s. 2015 (BSIT PSG); UP Diliman
+-- SOURCES (metadata, not inserted): CHED CMO 25 s. 2015 (BSIT PSG); UP Diliman
 -- DCS Software Engineering I/II, Database Systems, Computer Networks, Distributed
 -- Systems; PUP INTE 30033 Systems Integration and Architecture 1; FEU Institute
 -- of Technology BSIT; Adamson University BSIT 2022; Ateneo de Manila BS MIS

@@ -1,7 +1,7 @@
 -- ============================================================
--- Web Development — Modules & Sections (SCAFFOLD)
+-- Web Development, Modules & Sections (SCAFFOLD)
 -- Subject ID: 69e11f2d-2a28-41d3-85b2-632981d17b4b
--- 3rd Year, Semester 1 — major
+-- 3rd Year, Semester 1, major
 -- Suggested module count: 6-10
 --
 -- Reserved UUID namespace below is collision-free and deterministic.
@@ -171,18 +171,18 @@ INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
 --   S10: 6734f974-a459-53d1-8838-91235c47fa39  <- reserve last for kind='activity'
 
 -- ============================================================
--- IMPORT TEMPLATE — one INSERT per module. Replace placeholders.
+-- IMPORT TEMPLATE, one INSERT per module. Replace placeholders.
 -- content sections are FREE; the final activity section is PAID.
 -- ide_language (python|sql|java|c), starter_code, topology_data are
--- all OPTIONAL columns — include only when the section needs them.
+-- all OPTIONAL columns, include only when the section needs them.
 -- ============================================================
 --
 -- INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 -- ('2f237d87-4d3f-509a-962b-470987099daf','content','<Heading>',$md$
--- <full markdown teaching body — free tier>
+-- <full markdown teaching body, free tier>
 -- $md$, 1),
--- ('2f237d87-4d3f-509a-962b-470987099daf','activity','Practice & Exam Drills — Lesson 1',$md$
--- <review questions, worked exam problems w/ solutions, how-to-pass tips — paid tier>
+-- ('2f237d87-4d3f-509a-962b-470987099daf','activity','Practice & Exam Drills, Lesson 1',$md$
+-- <review questions, worked exam problems w/ solutions, how-to-pass tips, paid tier>
 -- $md$, 2);
 --
 -- With an interactive playground, use the 5-column form instead:
@@ -201,17 +201,17 @@ Web development is not only about making pages look good. It is the process of d
 
 A useful way to think about the web is through three major parts:
 
-- **Client side** — what the user sees and interacts with in the browser
-- **Server side** — the program or service that receives requests and sends responses
-- **Data layer** — the database or persistent storage where application data lives
+- **Client side**, what the user sees and interacts with in the browser
+- **Server side**, the program or service that receives requests and sends responses
+- **Data layer**, the database or persistent storage where application data lives
 
 When a student opens an online enrollment portal, the browser displays the page, the server checks the request, and the database stores subjects, schedules, and student records. A real web system is therefore a collaboration of technologies rather than a single file.
 
 Web development is usually grouped into:
 
-- **Front-end development** — structure, style, and interaction
-- **Back-end development** — business rules, data handling, authentication, and APIs
-- **Full-stack development** — working across both sides
+- **Front-end development**, structure, style, and interaction
+- **Back-end development**, business rules, data handling, authentication, and APIs
+- **Full-stack development**, working across both sides
 
 As a third-year BSIT student, you should start seeing the web not as "HTML only," but as an information system delivered through the browser. That mindset will guide the rest of the subject.
 $md$, 1),
@@ -227,10 +227,10 @@ Every time a user opens a website, a sequence happens behind the scenes:
 
 A URL is commonly broken into parts:
 
-- **Protocol** — `https`
-- **Domain** — `example.com`
-- **Path** — `/students/profile`
-- **Query string** — `?id=2025-00123`
+- **Protocol**, `https`
+- **Domain**, `example.com`
+- **Path**, `/students/profile`
+- **Query string**, `?id=2025-00123`
 
 For example:
 
@@ -303,7 +303,7 @@ In the Philippine setting, examples may include a barangay document request port
 
 What matters most in this lesson is the shift from "making pages" to building systems that serve users through the web.
 $md$, 4),
-('2f237d87-4d3f-509a-962b-470987099daf','activity','Practice & Exam Drills — Lesson 1',$md$
+('2f237d87-4d3f-509a-962b-470987099daf','activity','Practice & Exam Drills, Lesson 1',$md$
 ### Review Questions
 
 1. Differentiate the client side from the server side in one clear sentence each.
@@ -539,7 +539,7 @@ Poor structure leads to confusion even when the code is technically correct. A p
 
 As a web developer, you should think beyond tags. HTML structure should support clarity, flow, and purpose.
 $md$, 4),
-('f53e3b6c-d5d2-5797-8346-f6ce10f3b9a1','activity','Practice & Exam Drills — Lesson 2',$md$
+('f53e3b6c-d5d2-5797-8346-f6ce10f3b9a1','activity','Practice & Exam Drills, Lesson 2',$md$
 ### Review Questions
 
 1. What is semantic HTML?
@@ -791,7 +791,7 @@ This makes styles easier to maintain later.
 
 At the BSIT level, you are not expected to become a full UI designer in one lesson. But you should learn that layout and visual decisions affect how usable a system becomes.
 $md$, 4),
-('7268fad6-cfca-5a22-ab66-4ca8b277c587','activity','Practice & Exam Drills — Lesson 3',$md$
+('7268fad6-cfca-5a22-ab66-4ca8b277c587','activity','Practice & Exam Drills, Lesson 3',$md$
 ### Review Questions
 
 1. What are the two main parts of a CSS rule?
@@ -962,8 +962,8 @@ This selects an element whose ID is `pageTitle` and changes its display text.
 
 Common selectors:
 
-- `document.querySelector()` — first match
-- `document.querySelectorAll()` — all matches
+- `document.querySelector()`, first match
+- `document.querySelectorAll()`, all matches
 
 This bridge between JS and HTML is why interactive pages can update without being fully reloaded.
 $md$, 2),
@@ -1019,7 +1019,7 @@ Another important habit is debugging. If the page does not behave as expected, c
 
 In many lab exams, the logic is simple. The mistake is usually in the connection between HTML and JavaScript.
 $md$, 4),
-('34915f48-136f-577a-a00f-a1749b629849','activity','Practice & Exam Drills — Lesson 4',$md$
+('34915f48-136f-577a-a00f-a1749b629849','activity','Practice & Exam Drills, Lesson 4',$md$
 ### Review Questions
 
 1. What is the role of JavaScript in a web page?
@@ -1166,10 +1166,10 @@ $md$, 1),
 ('0912525f-5b59-5496-84ad-64faec6545c8','content','HTTP Methods and Status Codes',$md$
 HTTP is the protocol that drives browser-server communication. In practice, you should recognize the common request methods:
 
-- **GET** — request data
-- **POST** — submit new data
-- **PUT/PATCH** — update existing data
-- **DELETE** — remove data
+- **GET**, request data
+- **POST**, submit new data
+- **PUT/PATCH**, update existing data
+- **DELETE**, remove data
 
 A simple way to remember them is through CRUD:
 
@@ -1182,13 +1182,13 @@ A simple way to remember them is through CRUD:
 
 HTTP responses also include status codes. The most common ones in web development are:
 
-- **200** — success
-- **201** — created successfully
-- **400** — bad request
-- **401** — unauthorized
-- **403** — forbidden
-- **404** — not found
-- **500** — server error
+- **200**, success
+- **201**, created successfully
+- **400**, bad request
+- **401**, unauthorized
+- **403**, forbidden
+- **404**, not found
+- **500**, server error
 
 When answering exam items, do not only memorize the number. Understand the scenario that causes it.
 $md$, 2),
@@ -1241,7 +1241,7 @@ A practical example: if a student is filling out a long scholarship form, the ap
 
 Still, sensitive data should not be stored carelessly on the client. The browser is not a safe place for secrets.
 $md$, 4),
-('0912525f-5b59-5496-84ad-64faec6545c8','activity','Practice & Exam Drills — Lesson 5',$md$
+('0912525f-5b59-5496-84ad-64faec6545c8','activity','Practice & Exam Drills, Lesson 5',$md$
 ### Review Questions
 
 1. Why is browser-side validation alone not enough?
@@ -1446,7 +1446,7 @@ $md$, 4);
 -- 5-column-plus form. A single VALUES list cannot mix column counts, so the
 -- activity row is its own INSERT.
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('cf6350e6-340f-5cb5-ae98-8111fa5c1586','activity','Practice & Exam Drills — Lesson 6',$md$
+('cf6350e6-340f-5cb5-ae98-8111fa5c1586','activity','Practice & Exam Drills, Lesson 6',$md$
 ### Review Questions
 
 1. What tasks are usually handled by the server side?
@@ -1628,7 +1628,7 @@ Common questions to ask:
 
 A system is not "done" when the last line of code is written. It is closer to done when expected behavior has been checked carefully.
 $md$, 4),
-('1e807c61-eed0-562d-8df1-53eb6c9094ba','activity','Practice & Exam Drills — Lesson 7',$md$
+('1e807c61-eed0-562d-8df1-53eb6c9094ba','activity','Practice & Exam Drills, Lesson 7',$md$
 ### Review Questions
 
 1. Why must authorization be checked on the server?
@@ -1740,8 +1740,8 @@ A deployment-ready web application usually needs:
 
 Developers should also understand the difference between:
 
-- **development environment** — where features are built and debugged
-- **production environment** — the live version used by actual users
+- **development environment**, where features are built and debugged
+- **production environment**, the live version used by actual users
 
 A project that works on one laptop may still fail after deployment because of missing files, wrong configuration, or dependency mismatches.
 $md$, 1),
@@ -1809,7 +1809,7 @@ For BSIT students, strong project themes often involve local service workflows:
 
 The best systems balance technical correctness and user value.
 $md$, 4),
-('22034d95-8aae-51bf-a5f7-09dcc3f9ca8d','activity','Practice & Exam Drills — Lesson 8',$md$
+('22034d95-8aae-51bf-a5f7-09dcc3f9ca8d','activity','Practice & Exam Drills, Lesson 8',$md$
 ### Review Questions
 
 1. What is deployment?
@@ -1887,7 +1887,7 @@ Write it as a concise project brief. If your professor asks for "integration," t
 - In finals, integrated essay questions are common. Structure your answer from front end → logic → data → quality → deployment.
 $md$, 5);
 
--- SOURCES (metadata — not inserted): UP Open University / UP Diliman CMSC 207;
+-- SOURCES (metadata, not inserted): UP Open University / UP Diliman CMSC 207;
 -- PUP CCIS BSIT; FEU Institute of Technology BSIT (Web & Mobile); Adamson
 -- University BSIT 2022; Ateneo de Manila Web Design Fundamentals; DLSU CCAPDEV;
 -- CHED CMO 25 s. 2015 (BSCS/BSIS/BSIT PSG).

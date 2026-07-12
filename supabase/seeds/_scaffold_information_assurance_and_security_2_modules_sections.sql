@@ -1,7 +1,7 @@
 -- ============================================================
--- Information Assurance and Security 2 — Modules & Sections
+-- Information Assurance and Security 2, Modules & Sections
 -- Subject ID: 40000000-0004-0001-0001-000000000002
--- 4th Year, Semester 1 — major
+-- 4th Year, Semester 1, major
 -- 7 lessons. Split: S1+S2 = content (FREE); remaining teaching blocks + drill
 --   = activity (PAID). Paid count per lesson follows the paste's real section
 --   counts (2 or 3 paid).
@@ -29,7 +29,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 Modern cyber threats often target the **confidentiality, integrity, and availability (CIA)** of information systems. **Malware** is malicious software designed to disrupt or gain unauthorized access. Types of malware include **viruses** (self-replicating code attaching to files), **worms** (standalone programs that spread across networks), **trojan horses** (malicious code disguised as legitimate software), and **ransomware** (encrypts files to extort payment). Each can steal data, corrupt information, or block system availability. For example, ransomware like WannaCry can make critical data inaccessible until a payment is made. Organizations must use up-to-date antivirus software and backup systems to mitigate these threats.
 $md$, 1),
 ('882437b0-973e-51c7-be39-45f5c701541f','content','Social Engineering and Phishing',$md$
-Attackers often use **social engineering** to trick users into revealing credentials or downloading malware. **Phishing** is a common tactic: fraudulent emails or messages mimic trusted sources to steal passwords or install malware. Variations include **spear-phishing** (targeted emails) and **vishing** (phone-based phishing). For instance, a fake email claiming to be from "HR Department" asking to reset your password can compromise corporate systems. Vigilant practice—such as verifying the sender's address, not clicking unknown links, and never giving out passwords—helps prevent these attacks.
+Attackers often use **social engineering** to trick users into revealing credentials or downloading malware. **Phishing** is a common tactic: fraudulent emails or messages mimic trusted sources to steal passwords or install malware. Variations include **spear-phishing** (targeted emails) and **vishing** (phone-based phishing). For instance, a fake email claiming to be from "HR Department" asking to reset your password can compromise corporate systems. Vigilant practice, such as verifying the sender's address, not clicking unknown links, and never giving out passwords, helps prevent these attacks.
 $md$, 2),
 ('882437b0-973e-51c7-be39-45f5c701541f','activity','Web and Application Attacks (SQLi, XSS, CSRF)',$md$
 Many attacks exploit web applications. **SQL Injection (SQLi)** occurs when attackers insert malicious code into database queries, potentially exposing or altering data. **Cross-Site Scripting (XSS)** allows attackers to inject scripts into web pages that run in other users' browsers. **Cross-Site Request Forgery (CSRF)** tricks authenticated users into submitting unintended commands. These attacks exploit poor input validation or session management. For example, a vulnerable login form that concatenates input directly into a SQL query can allow an attacker to retrieve user passwords via SQLi.
@@ -39,7 +39,7 @@ Networks have specific vulnerabilities. A **Denial of Service (DoS)** attack flo
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a hands-on defense exercise.*
 $md$, 4),
-('882437b0-973e-51c7-be39-45f5c701541f','activity','Practice & Exam Drills — Lesson 1',$md$
+('882437b0-973e-51c7-be39-45f5c701541f','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions**
 
 1. What are the three goals of information security known as the CIA triad?
@@ -93,7 +93,7 @@ Wireless networks introduce additional risks because signals can extend beyond p
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a hands-on port-scanning exercise.*
 $md$, 4),
-('9f42039f-5ce6-5d59-a4bf-32eac14c991b','activity','Practice & Exam Drills — Lesson 2',$md$
+('9f42039f-5ce6-5d59-a4bf-32eac14c991b','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions**
 
 1. What is the main purpose of a network firewall?
@@ -140,11 +140,11 @@ $md$, 1),
 Virtual machines (VMs) and cloud services introduce new security considerations. Each VM should be isolated and given only the necessary resources. **Hypervisor security** is crucial: a breach in the hypervisor could compromise all VMs. Also, follow the **principle of least privilege** for cloud instances and secure API keys. In cloud environments, encrypt data at rest and in transit, and use identity roles (like AWS IAM roles) to control access. Regularly update VM images and use snapshots for rollback in case of issues.
 $md$, 2),
 ('2cb05beb-eda4-500f-9c0a-e69e6709df84','activity','Trusted Hardware and Secure Boot',$md$
-Modern systems use trusted hardware to enhance security. **TPM (Trusted Platform Module)** is a chip that can securely store encryption keys and verify system integrity (through measured boot). **Secure Boot** checks digital signatures of firmware and boot loaders to prevent rootkits at startup. For example, a computer with Secure Boot will refuse to load an untrusted operating system. Hardware-based protections—such as BIOS/UEFI passwords and disabling boot from external media—help prevent unauthorized access to the system.
+Modern systems use trusted hardware to enhance security. **TPM (Trusted Platform Module)** is a chip that can securely store encryption keys and verify system integrity (through measured boot). **Secure Boot** checks digital signatures of firmware and boot loaders to prevent rootkits at startup. For example, a computer with Secure Boot will refuse to load an untrusted operating system. Hardware-based protections, such as BIOS/UEFI passwords and disabling boot from external media, help prevent unauthorized access to the system.
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a hands-on hardening exercise.*
 $md$, 3),
-('2cb05beb-eda4-500f-9c0a-e69e6709df84','activity','Practice & Exam Drills — Lesson 3',$md$
+('2cb05beb-eda4-500f-9c0a-e69e6709df84','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions**
 
 1. What does "hardening" an operating system involve?
@@ -198,7 +198,7 @@ $md$, 3),
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a directory-service exercise.*
 $md$, 4),
-('44977e92-4e4f-5b35-9f58-2569fe966be1','activity','Practice & Exam Drills — Lesson 4',$md$
+('44977e92-4e4f-5b35-9f58-2569fe966be1','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions**
 
 1. Describe what multi-factor authentication (MFA) is and provide an example with at least two factors.
@@ -251,7 +251,7 @@ Many protocols use cryptography to secure communications. **TLS/SSL** (e.g., HTT
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('22f48ad7-d466-5b7c-8f6c-7fec52e01e1a','activity','Practice & Exam Drills — Lesson 5',$md$
+('22f48ad7-d466-5b7c-8f6c-7fec52e01e1a','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. Explain the difference between symmetric and asymmetric encryption, and give an example of each (e.g., AES vs RSA).
@@ -316,7 +316,7 @@ Beyond responding to attacks, organizations plan for continuity of operations. *
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a log-review exercise.*
 $md$, 4),
-('a4ea525a-c7f6-5e93-a82f-133c554b6228','activity','Practice & Exam Drills — Lesson 6',$md$
+('a4ea525a-c7f6-5e93-a82f-133c554b6228','activity','Practice & Exam Drills, Lesson 6',$md$
 **Review Questions**
 
 1. What is the purpose of a SIEM tool in security operations?
@@ -345,7 +345,7 @@ Review a security event on your own system. Check the Event Viewer on Windows or
 
 **How to Pass**
 
-- Remember key terms: clearly define containment, eradication, recovery, etc. Mnemonic: "Identify, Contain, Eradicate, Recover, Learn" — but list all phases.
+- Remember key terms: clearly define containment, eradication, recovery, etc. Mnemonic: "Identify, Contain, Eradicate, Recover, Learn", but list all phases.
 - Use examples: logging (detective) vs patching (preventive).
 - Mention relevant regulations: in the Philippines, cite the Cybersecurity Act (RA 11765) and the Data Privacy Act (RA 10173) regarding breach handling and notification.
 - Show your thought process: explain both what happened and how you respond. Common mistakes: describing only one phase (like just recovery) without containment or lessons learned.
@@ -369,7 +369,7 @@ $md$, 3),
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a risk-register exercise.*
 $md$, 4),
-('3e006bab-3aad-5280-9094-4b0a7df4ffb4','activity','Practice & Exam Drills — Lesson 7',$md$
+('3e006bab-3aad-5280-9094-4b0a7df4ffb4','activity','Practice & Exam Drills, Lesson 7',$md$
 **Review Questions**
 
 1. Why do organizations create an information security policy, and what might it include?
@@ -407,6 +407,6 @@ $md$, 5);
 
 -- ============================================================
 -- SOURCES
--- Polytechnic University of the Philippines (PUP) — BSIT program and course descriptions
--- CHED CMO No. 25, series of 2015 — Revised PSGs for BSCS/BSIS/BSIT programs
+-- Polytechnic University of the Philippines (PUP), BSIT program and course descriptions
+-- CHED CMO No. 25, series of 2015, Revised PSGs for BSCS/BSIS/BSIT programs
 -- ============================================================

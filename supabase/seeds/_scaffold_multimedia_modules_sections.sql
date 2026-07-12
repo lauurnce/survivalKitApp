@@ -1,7 +1,7 @@
 -- ============================================================
--- Multimedia — Modules & Sections
+-- Multimedia, Modules & Sections
 -- Subject ID: 30000000-0003-0001-0001-000000000001
--- 3rd Year, Semester 1 — major
+-- 3rd Year, Semester 1, major
 --
 -- Free/paid split: per lesson, sections 1-2 are FREE (kind='content'),
 -- section 3 + the practice drills are PAID (kind='activity').
@@ -101,9 +101,9 @@ A useful way to think about workflow is:
 
 Skipping planning usually causes rework. For example, if a team edits a long campus promotional video before agreeing on the target length and audience, it may need major cuts later. That wastes time.
 
-In IT environments, workflow discipline matters because multimedia often connects with system requirements such as storage, loading speed, usability, and deployment constraints. Before creating anything, prepare a multimedia plan that answers: What is the goal? Who is the audience? What media are needed? What are the constraints? How will success be measured? A common classroom mistake is starting with tools instead of goals — the better question is "What does the audience need to understand or do after using this?"
+In IT environments, workflow discipline matters because multimedia often connects with system requirements such as storage, loading speed, usability, and deployment constraints. Before creating anything, prepare a multimedia plan that answers: What is the goal? Who is the audience? What media are needed? What are the constraints? How will success be measured? A common classroom mistake is starting with tools instead of goals, the better question is "What does the audience need to understand or do after using this?"
 $md$, 3),
-('7e929126-052f-589a-92ca-ba044becbd35','activity','Practice & Exam Drills — Lesson 1',$md$
+('7e929126-052f-589a-92ca-ba044becbd35','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions**
 
 1. Define multimedia in your own words.
@@ -125,7 +125,7 @@ $md$, 3),
 3. Reject the unnecessary: long autoplay audio (users in public); one long video for everything (inconvenient on phones).
 4. Recommend structure: home screen with buttons (Enrollment, Campus Map, Fees & Requirements, FAQs), each using short text, visuals, and optional short video.
 
-*Final answer:* a mobile-friendly interactive orientation module with short text, icons, campus maps, FAQ navigation, and short optional videos — supports clarity, quick access, and low-friction phone use.
+*Final answer:* a mobile-friendly interactive orientation module with short text, icons, campus maps, FAQ navigation, and short optional videos, supports clarity, quick access, and low-friction phone use.
 
 **Problem 2: Estimating Basic Asset Storage.** 20 images at 3 MB each; 3 audio clips at 8 MB each; 2 videos at 120 MB each. Estimate total storage.
 
@@ -150,7 +150,7 @@ $md$, 3),
 - Memorize the six elements of multimedia.
 - Be ready to explain the workflow in order.
 - In situational questions, justify your answer using goal + audience + platform.
-- For "best media" questions, do not answer with just a tool — explain why the medium fits the task.
+- For "best media" questions, do not answer with just a tool, explain why the medium fits the task.
 - Professors often reward students who distinguish planning issues from production issues.
 $md$, 4);
 
@@ -178,7 +178,7 @@ Repeated styles build consistency. Repeating colors, button shapes, heading styl
 
 Related items should stay close together. If a label is too far from the image or button it describes, users may misread the screen.
 
-You should also remember **visual hierarchy** — arranging parts so the user sees the most important item first, then the next, then the supporting details. Typical hierarchy tools include bigger headings, stronger color contrast, placement near the top, whitespace, and bold emphasis.
+You should also remember **visual hierarchy**, arranging parts so the user sees the most important item first, then the next, then the supporting details. Typical hierarchy tools include bigger headings, stronger color contrast, placement near the top, whitespace, and bold emphasis.
 
 In exam situations, if you are asked why a design is confusing, look for weak hierarchy, poor alignment, low contrast, and inconsistent grouping.
 $md$, 1),
@@ -187,11 +187,11 @@ Digital images are commonly divided into raster and vector graphics.
 
 ### Raster graphics
 
-Raster images are made of pixels. They are ideal for photographs, detailed textures, and realistic visuals. Common formats: JPG/JPEG, PNG, GIF, WebP. Their weakness is scaling — when enlarged too much, they become blurry or pixelated.
+Raster images are made of pixels. They are ideal for photographs, detailed textures, and realistic visuals. Common formats: JPG/JPEG, PNG, GIF, WebP. Their weakness is scaling, when enlarged too much, they become blurry or pixelated.
 
 ### Vector graphics
 
-Vector images are based on mathematical paths. They are ideal for logos, icons, diagrams, and illustrations with clean shapes. Common formats: SVG, AI, EPS, PDF. Their strength is scalability — they can be resized without losing sharpness.
+Vector images are based on mathematical paths. They are ideal for logos, icons, diagrams, and illustrations with clean shapes. Common formats: SVG, AI, EPS, PDF. Their strength is scalability, they can be resized without losing sharpness.
 
 ### Resolution
 
@@ -214,15 +214,15 @@ Choosing the wrong format can cause poor quality or unnecessarily large files.
 | SVG | icons, logos, diagrams | scalable; light for simple art | not ideal for detailed photos |
 | WebP | web images | good compression | compatibility should still be checked |
 
-When optimizing images, think about three things: **quality** (readable and visually acceptable), **size** (large files slow loading), and **purpose** (a hero banner, thumbnail, icon, and full-screen photo do not need the same export settings). A common workflow: crop → adjust color/brightness → resize for actual display → export in the appropriate format → test in the final environment. Optimization is not "making the file as small as possible" — it is the best balance between clarity and efficiency.
+When optimizing images, think about three things: **quality** (readable and visually acceptable), **size** (large files slow loading), and **purpose** (a hero banner, thumbnail, icon, and full-screen photo do not need the same export settings). A common workflow: crop → adjust color/brightness → resize for actual display → export in the appropriate format → test in the final environment. Optimization is not "making the file as small as possible", it is the best balance between clarity and efficiency.
 
 ### Typography and layout for screen media
 
 Good screen typography usually follows these rules: use readable font sizes; avoid too many font families; maintain strong text/background contrast; keep line length comfortable; use spacing to separate ideas; reserve all caps for short emphasis only. A simple, effective pattern is one style for headings, one for body text, and one accent style only when necessary.
 
-For layout, think in grids and zones — users should predict where to find the title, navigation, content, and actions. A common Filipino student-project mistake is overdecorating with too many colors, outlines, effects, and fonts; a cleaner layout usually communicates better.
+For layout, think in grids and zones, users should predict where to find the title, navigation, content, and actions. A common Filipino student-project mistake is overdecorating with too many colors, outlines, effects, and fonts; a cleaner layout usually communicates better.
 $md$, 3),
-('75730f01-6f88-56d6-95fd-4b4ede5fcbce','activity','Practice & Exam Drills — Lesson 2',$md$
+('75730f01-6f88-56d6-95fd-4b4ede5fcbce','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions**
 
 1. What is contrast, and why is it important?
@@ -257,7 +257,7 @@ $md$, 3),
 **How to Pass This Topic**
 
 - Memorize format choices: JPG for photos, PNG for transparency, SVG for scalable graphics.
-- "Justify your format choice" appears often — never answer with the file type alone.
+- "Justify your format choice" appears often, never answer with the file type alone.
 - Review the image-size formula: $\text{Size} = \dfrac{\text{width} \times \text{height} \times \text{bit depth}}{8}$
 - In design critiques, use formal terms: contrast, alignment, hierarchy, readability, consistency.
 - Avoid vague answers such as "make it nicer." Be specific.
@@ -291,11 +291,11 @@ $md$, 1),
 ('2c1d5b05-ca76-578e-9580-570309e5cf8a','content','Recording and Editing Workflow',$md$
 A simple audio workflow looks like this:
 
-1. **Plan the content** — script, speaker, tone, duration.
-2. **Prepare the recording environment** — quiet room, reduced echo, proper microphone distance, test recording first.
-3. **Record cleanly** — stable speaking volume, minimal background noise, clear pronunciation.
-4. **Edit** — trim silence, remove obvious mistakes, reduce noise, normalize levels, add fades where needed.
-5. **Export** — choose the right format, test playback on target devices.
+1. **Plan the content**, script, speaker, tone, duration.
+2. **Prepare the recording environment**, quiet room, reduced echo, proper microphone distance, test recording first.
+3. **Record cleanly**, stable speaking volume, minimal background noise, clear pronunciation.
+4. **Edit**, trim silence, remove obvious mistakes, reduce noise, normalize levels, add fades where needed.
+5. **Export**, choose the right format, test playback on target devices.
 
 For instructional projects, poor audio can damage the whole experience more than students expect. Users will often tolerate average visuals, but unclear narration quickly becomes frustrating.
 
@@ -311,15 +311,15 @@ Common audio formats include:
 | AAC/M4A | streaming and mobile delivery | efficient compression |
 | OGG | some web and open-source contexts | compatibility varies |
 
-Two broad concepts matter: **uncompressed or lightly compressed audio** is better during editing because quality is preserved; **compressed audio** is better for delivery because file sizes are smaller. A classroom rule of thumb: use WAV while processing, export to MP3 or AAC for distribution depending on the platform. Compression reduces size by removing or simplifying audio data — that helps delivery, but too much compression can make audio sound thin or distorted.
+Two broad concepts matter: **uncompressed or lightly compressed audio** is better during editing because quality is preserved; **compressed audio** is better for delivery because file sizes are smaller. A classroom rule of thumb: use WAV while processing, export to MP3 or AAC for distribution depending on the platform. Compression reduces size by removing or simplifying audio data, that helps delivery, but too much compression can make audio sound thin or distorted.
 
 ### Sound design in multimedia
 
-Audio has several practical functions: narration for teaching, background music for mood, sound effects for realism or feedback, alerts for interface events, and ambient sound for immersion. Sound should support the purpose, not overpower it — a training module should prioritize speech clarity; a promotional video may use music more strongly; an app interface should use very subtle effects.
+Audio has several practical functions: narration for teaching, background music for mood, sound effects for realism or feedback, alerts for interface events, and ambient sound for immersion. Sound should support the purpose, not overpower it, a training module should prioritize speech clarity; a promotional video may use music more strongly; an app interface should use very subtle effects.
 
-When syncing sound with visuals, timing matters: a delayed click sound or mismatched voice-over feels unprofessional. Also remember user context — some learners use phones in noisy jeepney rides; some work in libraries with sound off. That is why subtitles, captions, and visual cues are still important even when audio is present.
+When syncing sound with visuals, timing matters: a delayed click sound or mismatched voice-over feels unprofessional. Also remember user context, some learners use phones in noisy jeepney rides; some work in libraries with sound off. That is why subtitles, captions, and visual cues are still important even when audio is present.
 $md$, 3),
-('2c1d5b05-ca76-578e-9580-570309e5cf8a','activity','Practice & Exam Drills — Lesson 3',$md$
+('2c1d5b05-ca76-578e-9580-570309e5cf8a','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions**
 
 1. What is sample rate?
@@ -373,10 +373,10 @@ Video is one of the strongest multimedia elements because it combines image, mot
 
 Useful planning tools include:
 
-- **Script** — defines what will be said or shown.
-- **Shot list** — lists the planned shots, such as wide shot, medium shot, close-up, screen recording, cutaway.
-- **Storyboard** — maps the visual sequence frame by frame or scene by scene.
-- **Production plan** — includes location, equipment, speakers, schedule, and permissions.
+- **Script**, defines what will be said or shown.
+- **Shot list**, lists the planned shots, such as wide shot, medium shot, close-up, screen recording, cutaway.
+- **Storyboard**, maps the visual sequence frame by frame or scene by scene.
+- **Production plan**, includes location, equipment, speakers, schedule, and permissions.
 
 A video for a university event recap and a video for a software tutorial are not planned the same way. The first may focus on emotional highlights. The second must focus on screen clarity, sequence, and readability.
 
@@ -397,12 +397,12 @@ A codec compresses and decompresses video data. It affects quality, compatibilit
 ### Container
 A container is the file wrapper, such as MP4, MOV, MKV.
 
-Many students confuse codec and container. Remember: **codec = how the data is compressed; container = how the data is packaged.** Bitrate also matters — higher bitrate usually means higher quality and larger files.
+Many students confuse codec and container. Remember: **codec = how the data is compressed; container = how the data is packaged.** Bitrate also matters, higher bitrate usually means higher quality and larger files.
 $md$, 2),
 ('e6c18ed9-ec62-51fd-9dac-30d64c50555d','activity','Editing, Post-Production, and Delivery',$md$
 After recording, post-production usually includes trimming unusable footage, arranging clips, correcting color, adjusting audio, adding titles, inserting transitions, and exporting for target use.
 
-Transitions should be purposeful. Overusing flashy transitions can make academic or professional outputs look weak — simple cuts and dissolves are often enough. For instructional or institutional videos, readability matters: titles must stay on screen long enough, screen captures must be legible, narration must match the sequence. Effective video editing means clarity, pacing, continuity, synchronization, and consistency of visual style.
+Transitions should be purposeful. Overusing flashy transitions can make academic or professional outputs look weak, simple cuts and dissolves are often enough. For instructional or institutional videos, readability matters: titles must stay on screen long enough, screen captures must be legible, narration must match the sequence. Effective video editing means clarity, pacing, continuity, synchronization, and consistency of visual style.
 
 ### Delivery and streaming considerations
 
@@ -412,9 +412,9 @@ A video that looks excellent on a lab computer may perform poorly on a low-bandw
 - **For mobile viewing:** smaller file size and subtitle readability matter.
 - **For LMS or web upload:** compatibility and streaming efficiency matter.
 
-A practical delivery checklist: Is the resolution appropriate? Is the bitrate too high for the audience? Is the text readable on small screens? Are captions available? Does the file play on common devices? A technically correct video is not always an effective video — delivery decisions should be based on audience, platform, and network conditions.
+A practical delivery checklist: Is the resolution appropriate? Is the bitrate too high for the audience? Is the text readable on small screens? Are captions available? Does the file play on common devices? A technically correct video is not always an effective video, delivery decisions should be based on audience, platform, and network conditions.
 $md$, 3),
-('e6c18ed9-ec62-51fd-9dac-30d64c50555d','activity','Practice & Exam Drills — Lesson 4',$md$
+('e6c18ed9-ec62-51fd-9dac-30d64c50555d','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions**
 
 1. What is the purpose of a storyboard?
@@ -438,14 +438,14 @@ $md$, 3),
 
 *Final answer:* about **120 MB.**
 
-**Problem 2: Export Decision.** A software-demo video for students who mostly watch on phones with unstable internet — 4K at very high bitrate, or 1080p at moderate bitrate?
+**Problem 2: Export Decision.** A software-demo video for students who mostly watch on phones with unstable internet, 4K at very high bitrate, or 1080p at moderate bitrate?
 
 *Step-by-step solution*
 1. Use case: mobile viewing, unstable internet, instructional purpose.
 2. What matters most: readable interface, smooth playback, manageable file size.
 3. Compare: 4K high bitrate gives more detail but is heavier and harder to stream; 1080p moderate bitrate is usually clear enough and more practical.
 
-*Final answer:* use **1080p at a moderate bitrate** — it balances readability and accessibility for the target audience.
+*Final answer:* use **1080p at a moderate bitrate**, it balances readability and accessibility for the target audience.
 
 **Hands-On Exercise.** Create a mini pre-production set for a 1-minute tutorial video on how to submit a file to an LMS: objective, audience, script outline, 6-shot storyboard, recommended export settings, subtitle plan.
 
@@ -510,7 +510,7 @@ Different multimedia tasks use different kinds of animation.
 | 3D animation | product visualization, simulation, games |
 | Motion graphics | titles, charts, branding, infographics |
 
-In many IT and academic projects, keyframe-based 2D animation and motion graphics are the most practical because they are easier to manage and fit instructional or promotional work well. Animation should not be added just to "make it look high-tech" — if motion delays access, overloads the screen, or distracts from reading, it reduces usability.
+In many IT and academic projects, keyframe-based 2D animation and motion graphics are the most practical because they are easier to manage and fit instructional or promotional work well. Animation should not be added just to "make it look high-tech", if motion delays access, overloads the screen, or distracts from reading, it reduces usability.
 
 ### Asset preparation and responsible motion use
 
@@ -518,7 +518,7 @@ Before animating, prepare assets carefully: separate layers clearly, name files 
 
 Responsible animation means short transition times, motion that supports understanding, avoiding excessive flashing or rapid movement, and respecting accessibility concerns. A useful design question is: *Does this motion help the user understand, navigate, or feel feedback?* If the answer is no, the motion may be unnecessary.
 $md$, 3),
-('28157b75-a9ed-5da2-bbe6-ee0447ed76ae','activity','Practice & Exam Drills — Lesson 5',$md$
+('28157b75-a9ed-5da2-bbe6-ee0447ed76ae','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. What is the purpose of animation in multimedia?
@@ -545,7 +545,7 @@ $md$, 3),
 1. Communication need: sequence, transformation, process understanding.
 2. Evaluate: static poster shows stages but not motion; live-action is unnecessary for abstract data flow; motion graphic animates arrows, labels, and transitions clearly.
 
-*Final answer:* a **short motion graphic** — it clearly shows sequence and movement without the overhead of live-action production.
+*Final answer:* a **short motion graphic**, it clearly shows sequence and movement without the overhead of live-action production.
 
 **Hands-On Exercise.** Design a 15-second storyboard for an animated explainer on "Strong Password Creation": opening frame, 3–5 key visual moments, text cues, motion notes, audio cue if needed. Then explain which animation principles are used.
 
@@ -593,20 +593,20 @@ $md$, 2),
 ('93abdd94-028d-5497-a29d-ea981ecbed93','activity','Usability Principles, Storyboards, and Prototypes',$md$
 A usable multimedia interface usually has these qualities:
 
-- **Consistency** — buttons, labels, and screen patterns behave similarly.
-- **Feedback** — the system tells the user what happened (clicked, loading, saved, error).
-- **Simplicity** — the interface avoids unnecessary complexity.
-- **Visibility** — important actions should be easy to find.
-- **Error prevention** — the design reduces common mistakes.
-- **Accessibility awareness** — the design considers users with different needs.
+- **Consistency**, buttons, labels, and screen patterns behave similarly.
+- **Feedback**, the system tells the user what happened (clicked, loading, saved, error).
+- **Simplicity**, the interface avoids unnecessary complexity.
+- **Visibility**, important actions should be easy to find.
+- **Error prevention**, the design reduces common mistakes.
+- **Accessibility awareness**, the design considers users with different needs.
 
 For example, if an e-learning module uses a speaker icon for audio on one screen, it should not suddenly use a different symbol elsewhere without reason.
 
 ### Storyboards and low-fidelity prototypes
 
-A storyboard helps plan the user experience over time. Unlike a film storyboard, an interactive storyboard may include screen state, user action, resulting system response, and next possible paths. A **low-fidelity prototype** is a rough version used for testing flow and logic before final production — paper sketches, slide-based click simulation, or grayscale digital mockups. Testing early reveals major issues like unclear labels, confusing menus, too many steps, missing feedback, and weak hierarchy. In many multimedia courses, storyboarding is where good projects start becoming organized instead of random.
+A storyboard helps plan the user experience over time. Unlike a film storyboard, an interactive storyboard may include screen state, user action, resulting system response, and next possible paths. A **low-fidelity prototype** is a rough version used for testing flow and logic before final production, paper sketches, slide-based click simulation, or grayscale digital mockups. Testing early reveals major issues like unclear labels, confusing menus, too many steps, missing feedback, and weak hierarchy. In many multimedia courses, storyboarding is where good projects start becoming organized instead of random.
 $md$, 3),
-('93abdd94-028d-5497-a29d-ea981ecbed93','activity','Practice & Exam Drills — Lesson 6',$md$
+('93abdd94-028d-5497-a29d-ea981ecbed93','activity','Practice & Exam Drills, Lesson 6',$md$
 **Review Questions**
 
 1. What is interactivity?
@@ -643,7 +643,7 @@ $md$, 3),
 **How to Pass This Topic**
 
 - Use proper terms: hierarchy, consistency, feedback, usability, wireframe, information architecture.
-- In critiques, do not only say what is wrong — always say how to improve it.
+- In critiques, do not only say what is wrong, always say how to improve it.
 - Professors often value logic of navigation more than artistic styling here.
 - If a question asks for a design choice, justify it through user goal and task flow.
 - Storyboards are not just drawings; they show sequence and response.
@@ -706,7 +706,7 @@ Before release, test the project carefully. A basic checklist: Do all buttons wo
 
 Documentation matters too. At minimum, teams should keep asset lists, version notes, source attributions, export settings, and revision logs. Documentation helps during grading, maintenance, and handoff.
 $md$, 3),
-('c5025b6a-9043-54d5-81a7-78ae458f52f8','activity','Practice & Exam Drills — Lesson 7',$md$
+('c5025b6a-9043-54d5-81a7-78ae458f52f8','activity','Practice & Exam Drills, Lesson 7',$md$
 **Review Questions**
 
 1. Why is consistent file naming important?
@@ -727,7 +727,7 @@ $md$, 3),
 2. Propose structure: folders `/video`, `/images`, `/audio`, `/docs`, `/exports`; consistent names like `promo_video_v01.mp4`, `promo_video_v02.mp4`, `promo_video_final.mp4`.
 3. Add documentation: changelog, export settings, final approved file name.
 
-*Final answer:* the project lacks naming standards, structure, and version documentation — reorganize with folders, readable names, and a simple revision log.
+*Final answer:* the project lacks naming standards, structure, and version documentation, reorganize with folders, readable names, and a simple revision log.
 
 **Problem 2: Choosing an Optimization Strategy.** A multimedia lesson has 5 full-resolution DSLR photos, 2 short MP4 videos, 1 voice-over, 1 interactive menu. Students complain it loads slowly on phones.
 
@@ -736,14 +736,14 @@ $md$, 3),
 2. Prioritize easy, high-impact actions: resize photos to actual display dimensions; compress photos appropriately; review video bitrate and resolution.
 3. Voice-over and menu are likely not the main problem.
 
-*Final answer:* optimize the **large photos first**, then check video export settings — those usually give the biggest performance gains.
+*Final answer:* optimize the **large photos first**, then check video export settings, those usually give the biggest performance gains.
 
 **Hands-On Exercise.** Prepare a delivery and test plan for an interactive multimedia lesson: folder structure, naming convention, export formats, device test list, a 10-point QA checklist, and a short revision-log template.
 
 **How to Pass This Topic**
 
 - In integration questions, show both technical assembly and project organization.
-- Do not treat documentation as optional — students often lose points here.
+- Do not treat documentation as optional, students often lose points here.
 - Use concrete terms: asset manifest, versioning, QA, deployment, compatibility.
 - When optimizing, prioritize assets with the biggest performance impact.
 - A "final" file name alone is not a workflow.
@@ -804,7 +804,7 @@ A multimedia output can be evaluated using several dimensions:
 | Efficiency | Does it load and perform acceptably? |
 | Professionalism | Is the output polished and organized? |
 
-Evaluation can happen through self-checks, peer review, user testing, instructor rubric, and revision cycles. Strong students do not only create — they also evaluate and improve.
+Evaluation can happen through self-checks, peer review, user testing, instructor rubric, and revision cycles. Strong students do not only create, they also evaluate and improve.
 
 ### Integrative review and exam mindset
 
@@ -814,7 +814,7 @@ By this point, multimedia should feel like a connected subject rather than a lis
 
 For exam preparation, review these recurring themes: choosing appropriate media; comparing file formats; computing basic storage or bitrate; explaining workflow; critiquing usability; recommending export settings; and identifying ethical or accessibility issues. If you remember only one habit, remember this: **always justify choices using purpose, audience, and platform.** That approach works across visual design, audio, video, interaction, optimization, and evaluation.
 $md$, 3),
-('871cd8ff-4850-522a-84be-335f2af192c9','activity','Practice & Exam Drills — Lesson 8',$md$
+('871cd8ff-4850-522a-84be-335f2af192c9','activity','Practice & Exam Drills, Lesson 8',$md$
 **Review Questions**
 
 1. Why are captions important?
@@ -836,7 +836,7 @@ $md$, 3),
 3. No transcript → limited access for users who cannot rely on audio. *Fix:* provide a transcript.
 4. Music louder than narration → weak speech intelligibility. *Fix:* reduce music level; prioritize voice clarity.
 
-*Final answer:* the video has subtitle readability, motion safety, transcript availability, and audio-balance issues — all must be corrected.
+*Final answer:* the video has subtitle readability, motion safety, transcript availability, and audio-balance issues, all must be corrected.
 
 **Problem 2: Integrative Case Question.** A cyber-safety campaign for senior high school plans to use random stock images, one long autoplay homepage video, text-heavy slides, no captions, and large PNG photos for every page.
 
@@ -847,14 +847,14 @@ $md$, 3),
 4. No captions → inaccessible. *Fix:* add captions and transcript.
 5. Large PNGs everywhere → inefficient. *Fix:* use optimized formats; JPG for photos where transparency is unnecessary.
 
-*Final answer:* the project has legal, accessibility, usability, and optimization problems — a better design uses licensed assets, optional short videos, segmented content, captions, and properly optimized image formats.
+*Final answer:* the project has legal, accessibility, usability, and optimization problems, a better design uses licensed assets, optional short videos, segmented content, captions, and properly optimized image formats.
 
 **Hands-On Exercise.** Perform a mini-evaluation of any multimedia output you can inspect (slide deck, short video, infographic, mockup, LMS page). Score it 1–5 in: content accuracy, visual clarity, technical execution, usability, accessibility, ethical/legal readiness. Then write a short improvement plan with the top three fixes.
 
 **How to Pass This Topic**
 
 - Always mention accessibility and ethics when evaluating a multimedia system.
-- Professors often ask "what is wrong and how will you fix it?" — prepare both parts.
+- Professors often ask "what is wrong and how will you fix it?", prepare both parts.
 - Memorize the difference between copyright, attribution, consent, and accuracy.
 - Integrative case questions reward answers that combine design, technical reasoning, user needs, and professional responsibility.
 - If you can justify a decision through clarity, inclusivity, legality, and efficiency, you are usually on strong ground.

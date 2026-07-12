@@ -1,8 +1,8 @@
 -- ============================================================
--- Reading in Philippine History — Exam Prep: Prelims & Finals
+-- Reading in Philippine History, Exam Prep: Prelims & Finals
 -- Subject ID: 10000000-0001-0002-0002-000000000001
 -- Module ID:  b2000001-0001-0002-0002-0000000000e1
--- Purpose: exam-prep module — blueprints, practice sets, full
+-- Purpose: exam-prep module, blueprints, practice sets, full
 --   mock exams with explained answer keys. Every item is
 --   answerable from reading_in_philippine_history_modules_sections.sql.
 -- Idempotent / INSERT-only for content: deletes only this one
@@ -31,14 +31,14 @@ Your prelim in Reading in Philippine History almost always draws from the first 
 | The Meaning and Relevance of History | ~20% | Stearns's four purposes of history; primary vs secondary; artifact vs ecofact; the three types of unwritten sources; Philippine and foreign repositories |
 | Tests of Authenticity and Credibility | ~30% | External vs internal criticism; Gottschalk's credibility criteria; the Maragtas case; rules for disagreeing and hostile sources; research ethics |
 | Case Study: The Tejeros Convention of 1897 | ~25% | The Katipunan split, the two factions and their leaders, the March 22, 1897 election and its aftermath, and why Alvarez is primary while Agoncillo is secondary |
-| Early Philippine Chronicles — Pigafetta and Plasencia | ~25% | The Magellan expedition timeline, Pigafetta's manuscripts, Plasencia's *Customs of the Tagalogs*, and the biases of both chroniclers |
+| Early Philippine Chronicles, Pigafetta and Plasencia | ~25% | The Magellan expedition timeline, Pigafetta's manuscripts, Plasencia's *Customs of the Tagalogs*, and the biases of both chroniclers |
 
 ### The Question Types You Will Face
 
 | Type | What it looks like | How to win it |
 |---|---|---|
 | Multiple choice | Four options, usually one "trap" distractor built from a nearby fact | Eliminate the distractor that belongs to a *different* module or person |
-| Identification | "Give the term/person" — no options | These come straight from the memorize list below |
+| Identification | "Give the term/person", no options | These come straight from the memorize list below |
 | True/False | Statements with one wrong detail (a date, a name, an "always") | Absolute words like "always" and "never" are usually false |
 | Primary vs secondary classification | A described source; you classify it | Ask one question: was the creator *present at the event*? (Proximity is the key distinction) |
 | Document analysis | A short quoted excerpt plus 2–3 questions | Name the source type, the author's vantage point, and the bias before answering anything else |
@@ -56,29 +56,29 @@ If you can recite everything here, you can answer roughly 80% of a typical preli
 
 **Module 2**
 - **Historical method** = examining/testing sources; **historiography** = the writing of history
-- **External criticism = authenticity** ("is it what it claims to be?") — examines **authorship, time, space**
-- **Internal criticism = credibility** — Gottschalk's four: **competence, willingness to tell the truth, adequacy of data, reliability against other sources**
+- **External criticism = authenticity** ("is it what it claims to be?"), examines **authorship, time, space**
+- **Internal criticism = credibility**, Gottschalk's four: **competence, willingness to tell the truth, adequacy of data, reliability against other sources**
 - The *Maragtas*: alleged document that **William Henry Scott (1984)** argued rested on suspicious oral traditions and fabricated written sources
 - Gottschalk: the historian plays "**prosecutor, attorney for the defense, judge, and jury all in one**"
 - A source that does not fit the **milieu** of its supposed period is likely fabricated; witnesses **without** a personal stake are more credible; when all independent sources agree, the event is accepted as factual
 
 **Module 3**
 - Full name: **Kataas-taasang Kagalang-galangang Katipunan ng mga Anak ng Bayan**, founded by **Andres Bonifacio**
-- Factions: **Magdiwang** — Noveleta, led by **Mariano Alvarez**; **Magdalo** — Kawit, led by **Baldomero Aguinaldo**
+- Factions: **Magdiwang**, Noveleta, led by **Mariano Alvarez**; **Magdalo**, Kawit, led by **Baldomero Aguinaldo**
 - **Tejeros Convention, March 22, 1897**: Emilio Aguinaldo elected President; **Danielo Tirona** challenged Bonifacio's qualification; Bonifacio declared the proceedings **null and void**; he was executed for treason in **Maragondon, Cavite, May 1897**
-- **Santiago Alvarez**, *Katipunan and the Revolution* — Magdiwang participant, serialized in *Sampagita* (1920s) → **primary** source with faction bias
-- **Teodoro Agoncillo**, *The Revolt of the Masses* (1956) — pioneer of **nationalist historiography** → **secondary** source
+- **Santiago Alvarez**, *Katipunan and the Revolution*, Magdiwang participant, serialized in *Sampagita* (1920s) → **primary** source with faction bias
+- **Teodoro Agoncillo**, *The Revolt of the Masses* (1956), pioneer of **nationalist historiography** → **secondary** source
 
 **Module 4**
-- Pigafetta: Italian chronicler of the Magellan-Elcano expedition; one of only **18 of ~270** crew who returned; **four manuscripts** — one Italian (Ambrosiana Library, Milan), three French (earliest c. 1525)
-- Timeline: left Seville **Aug 10, 1519** with five ships (*Victoria, Concepción, San Antonio, Santiago, Trinidad*) → **Strait of Magellan, Oct 21, 1520** (only three ships through) → landed **Zamal (Samar), March 16, 1521**, islands named **Archipelago of St. Lazarus** → blood compact with **Rajah Colambu** at Masao → first Mass **March 31, 1521** → **Cebu, April 7, 1521** (Rajah Humabon; 800+ baptized; **Santo Niño** gifted) → **Battle of Mactan, April 27, 1521** — Magellan killed by Lapu-Lapu's forces
+- Pigafetta: Italian chronicler of the Magellan-Elcano expedition; one of only **18 of ~270** crew who returned; **four manuscripts**, one Italian (Ambrosiana Library, Milan), three French (earliest c. 1525)
+- Timeline: left Seville **Aug 10, 1519** with five ships (*Victoria, Concepción, San Antonio, Santiago, Trinidad*) → **Strait of Magellan, Oct 21, 1520** (only three ships through) → landed **Zamal (Samar), March 16, 1521**, islands named **Archipelago of St. Lazarus** → blood compact with **Rajah Colambu** at Masao → first Mass **March 31, 1521** → **Cebu, April 7, 1521** (Rajah Humabon; 800+ baptized; **Santo Niño** gifted) → **Battle of Mactan, April 27, 1521**, Magellan killed by Lapu-Lapu's forces
 - Plasencia: **Franciscan friar**, arrived **1577**, wrote *Customs of the Tagalogs* (**c. 1589**) with a missionary bias; **Bathala** ("the maker of all things"); **catalonan** = chief religious officiator; afterlife: **maca** (rest) vs **casamaan** (punishment)
 
 ### Top Mistakes Students Make
 
 1. **Confusing the two Aguinaldos.** *Baldomero* Aguinaldo led the Magdalo faction; *Emilio* Aguinaldo was elected President at Tejeros. Read the question twice.
 2. **Swapping external and internal criticism.** External = authenticity (the document itself); internal = credibility (the content's truthfulness). If the question is about forgery, it is external.
-3. **Treating "primary" as "always true."** The lesson is explicit: primary sources carry biases too — Alvarez was a Magdiwang loyalist and still a primary source.
+3. **Treating "primary" as "always true."** The lesson is explicit: primary sources carry biases too, Alvarez was a Magdiwang loyalist and still a primary source.
 4. **Mixing up the 1521 dates.** Landing (March 16) ≠ first Mass (March 31) ≠ Cebu arrival (April 7) ≠ Mactan (April 27).
 5. **Attributing Plasencia's ethnography to Pigafetta.** Pigafetta sailed with Magellan in 1521; Plasencia was a friar writing about Tagalog customs almost 70 years later.
 
@@ -87,25 +87,25 @@ If you can recite everything here, you can answer roughly 80% of a typical preli
 | Day | Focus | Do this |
 |---|---|---|
 | 1 | The Meaning and Relevance of History | Recite Stearns's four purposes; build a two-column primary/secondary chart; drill artifact vs ecofact |
-| 2 | The Meaning and Relevance of History | Memorize the repositories table — country, archive, and the one fact attached to each (1821, 1762–64, Seville, PARES) |
+| 2 | The Meaning and Relevance of History | Memorize the repositories table, country, archive, and the one fact attached to each (1821, 1762–64, Seville, PARES) |
 | 3 | Tests of Authenticity and Credibility | External vs internal criticism until automatic; Gottschalk's four credibility criteria; the Maragtas case |
 | 4 | Tests of Authenticity and Credibility | Rules for disagreeing/hostile sources and the basic assumptions; say the "prosecutor, attorney, judge, jury" quote from memory |
 | 5 | Case Study: The Tejeros Convention of 1897 | Draw the faction map (Magdiwang/Noveleta/M. Alvarez vs Magdalo/Kawit/B. Aguinaldo); rehearse the March 22, 1897 sequence and the Alvarez-vs-Agoncillo source comparison |
-| 6 | Early Philippine Chronicles — Pigafetta and Plasencia | Write the 1519–1521 timeline from memory three times; list Plasencia's key terms (Bathala, catalonan, maca, casamaan) |
+| 6 | Early Philippine Chronicles, Pigafetta and Plasencia | Write the 1519–1521 timeline from memory three times; list Plasencia's key terms (Bathala, catalonan, maca, casamaan) |
 | 7 | All four modules | Take the free 15-item practice set below under time pressure (20 minutes), then the mock exams; review every miss against the lesson |
 
-One warning: do not study the modules in isolation. The best prelim questions cross modules — for example, applying Module 2's criticism tests to Module 3's Tejeros sources or Module 4's chronicles. That is exactly how the practice items below are built.
+One warning: do not study the modules in isolation. The best prelim questions cross modules, for example, applying Module 2's criticism tests to Module 3's Tejeros sources or Module 4's chronicles. That is exactly how the practice items below are built.
 $md$, 1);
 
 -- ------------------------------------------------------------
--- SECTION 2 (FREE): Free Practice Set — 15 Items with Answer Key
+-- SECTION 2 (FREE): Free Practice Set, 15 Items with Answer Key
 -- ------------------------------------------------------------
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b2000001-0001-0002-0002-0000000000e1','content','Free Practice Set — 15 Items with Answer Key',$md$
-Work through these 15 items in 20 minutes, closed notes. They are built exactly like real prelim questions — same modules, same traps. The answer key with explanations is at the bottom.
+('b2000001-0001-0002-0002-0000000000e1','content','Free Practice Set, 15 Items with Answer Key',$md$
+Work through these 15 items in 20 minutes, closed notes. They are built exactly like real prelim questions, same modules, same traps. The answer key with explanations is at the bottom.
 
-### Part I — Multiple Choice
+### Part I, Multiple Choice
 
 **1.** According to Peter Stearns (1998), a community coming to understand who they are through their shared historical experiences illustrates which purpose of history?
 
@@ -145,7 +145,7 @@ Work through these 15 items in 20 minutes, closed notes. They are built exactly 
 **6.** Santiago Alvarez's memoirs are a primary source on the Tejeros Convention while Teodoro Agoncillo's *The Revolt of the Masses* is a secondary source. What single criterion drives this distinction?
 
 - A. The language each book was written in
-- B. The proximity of each author to the event — Alvarez was present, Agoncillo was not
+- B. The proximity of each author to the event, Alvarez was present, Agoncillo was not
 - C. The publisher of each book
 - D. The political opinions of each author
 
@@ -163,13 +163,13 @@ Work through these 15 items in 20 minutes, closed notes. They are built exactly 
 - C. Rajah Humabon repelled the Spanish fleet
 - D. The expedition lost all five of its ships
 
-### Part II — True or False
+### Part II, True or False
 
 **9.** A source whose style and content do not fit the milieu of its supposed period is likely fabricated.
 
 **10.** Fray Juan de Plasencia sailed with the Magellan expedition and wrote his account of the voyage in 1521.
 
-### Part III — Identification
+### Part III, Identification
 
 **11.** The alleged document that historian William Henry Scott (1984) argued was based on suspicious oral traditions and fabricated written sources.
 
@@ -177,15 +177,15 @@ Work through these 15 items in 20 minutes, closed notes. They are built exactly 
 
 **13.** The supreme deity of the Tagalogs described by Plasencia as "the maker of all things."
 
-### Part IV — Source Classification
+### Part IV, Source Classification
 
 **14.** Classify each source as **primary** or **secondary**:
 - (a) The diary of a Katipunero written during the Revolution of 1896
 - (b) A college textbook chapter on the Philippine Revolution published in 2015
 
-### Part V — Document Analysis
+### Part V, Document Analysis
 
-**15.** Plasencia listed the Tagalog religious specialists — the catalonan, mangagauay, and others — under the heading "Priests of the Devil."
+**15.** Plasencia listed the Tagalog religious specialists, the catalonan, mangagauay, and others, under the heading "Priests of the Devil."
 
 - (a) What bias does this label reveal about the author?
 - (b) According to the lessons, does identifying this bias automatically disqualify *Customs of the Tagalogs* as a source? Explain in one sentence.
@@ -194,52 +194,52 @@ Work through these 15 items in 20 minutes, closed notes. They are built exactly 
 
 ### Answer Key
 
-**1. C** — "Providing identity" is Stearns's purpose about communities knowing who they are through shared historical experience; civic formation is about informed citizenship instead.
+**1. C**, "Providing identity" is Stearns's purpose about communities knowing who they are through shared historical experience; civic formation is about informed citizenship instead.
 
-**2. B** — Ecofacts are natural archaeological evidence not shaped by humans; artifacts are, by definition, made or modified by humans.
+**2. B**, Ecofacts are natural archaeological evidence not shaped by humans; artifacts are, by definition, made or modified by humans.
 
-**3. B** — External criticism tests authenticity (is the source what it claims to be?); options A, C, and D are all Gottschalk's internal-criticism credibility tests.
+**3. B**, External criticism tests authenticity (is the source what it claims to be?); options A, C, and D are all Gottschalk's internal-criticism credibility tests.
 
-**4. C** — Gottschalk's famous line: the historian is "prosecutor, attorney for the defense, judge, and jury all in one."
+**4. C**, Gottschalk's famous line: the historian is "prosecutor, attorney for the defense, judge, and jury all in one."
 
-**5. B** — Aguinaldo won the presidency; after Danielo Tirona questioned Bonifacio's qualification, Bonifacio declared the proceedings null and void. The Malolos Constitution (D) belongs to 1898–1899, not Tejeros.
+**5. B**, Aguinaldo won the presidency; after Danielo Tirona questioned Bonifacio's qualification, Bonifacio declared the proceedings null and void. The Malolos Constitution (D) belongs to 1898–1899, not Tejeros.
 
-**6. B** — Proximity to the event is the key distinction between primary and secondary sources; opinions and publishers do not change the classification.
+**6. B**, Proximity to the event is the key distinction between primary and secondary sources; opinions and publishers do not change the classification.
 
-**7. C** — First landfall was the island of Zamal (Samar), and the islands were named the Archipelago of St. Lazarus. Cebu came later (April 7).
+**7. C**, First landfall was the island of Zamal (Samar), and the islands were named the Archipelago of St. Lazarus. Cebu came later (April 7).
 
-**8. B** — Magellan led the Mactan assault personally and was killed; Lapu-Lapu had refused to submit.
+**8. B**, Magellan led the Mactan assault personally and was killed; Lapu-Lapu had refused to submit.
 
-**9. TRUE** — This is one of the basic assumptions in working with sources: a source out of step with its supposed milieu is likely fabricated.
+**9. TRUE**, This is one of the basic assumptions in working with sources: a source out of step with its supposed milieu is likely fabricated.
 
-**10. FALSE** — Plasencia was a Franciscan friar who arrived in 1577 and wrote *Customs of the Tagalogs* around 1589; the expedition chronicler in 1521 was Antonio Pigafetta.
+**10. FALSE**, Plasencia was a Franciscan friar who arrived in 1577 and wrote *Customs of the Tagalogs* around 1589; the expedition chronicler in 1521 was Antonio Pigafetta.
 
-**11. The Maragtas** — Scott's 1984 critique is the lesson's example of why the test of authenticity is necessary.
+**11. The Maragtas**, Scott's 1984 critique is the lesson's example of why the test of authenticity is necessary.
 
-**12. Danielo Tirona** — His challenge to Bonifacio's qualification triggered the nullification of the proceedings.
+**12. Danielo Tirona**, His challenge to Bonifacio's qualification triggered the nullification of the proceedings.
 
-**13. Bathala** — The Tagalog supreme deity who dwelled in heaven, per Plasencia.
+**13. Bathala**, The Tagalog supreme deity who dwelled in heaven, per Plasencia.
 
-**14. (a) Primary; (b) secondary** — The diarist was present inside the events; the 2015 textbook author reflects on them from outside.
+**14. (a) Primary; (b) secondary**, The diarist was present inside the events; the 2015 textbook author reflects on them from outside.
 
-**15. (a)** It reveals Plasencia's colonial-Christian missionary framing — he treated indigenous religious practice as idolatry to be understood and replaced. **(b)** No — identifying a bias does not automatically disqualify a source; it shapes how the historian interprets it.
+**15. (a)** It reveals Plasencia's colonial-Christian missionary framing, he treated indigenous religious practice as idolatry to be understood and replaced. **(b)** No, identifying a bias does not automatically disqualify a source; it shapes how the historian interprets it.
 
 ---
 
-**Scoring:** 13–15 correct, you are prelim-ready — sharpen with the mocks. 9–12, re-read your weakest module first. Below 9, restart the 7-day plan at Day 1.
+**Scoring:** 13–15 correct, you are prelim-ready, sharpen with the mocks. 9–12, re-read your weakest module first. Below 9, restart the 7-day plan at Day 1.
 
 The four full-length 30-item mock exams below, with fully explained answer keys and a traps drill, come with the subject unlock.
 $md$, 2);
 
 -- ------------------------------------------------------------
--- SECTION 3 (LOCKED): Prelim Mock Exam A — 30 Items
+-- SECTION 3 (LOCKED): Prelim Mock Exam A, 30 Items
 -- ------------------------------------------------------------
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b2000001-0001-0002-0002-0000000000e1','activity','Prelim Mock Exam A — 30 Items',$md$
+('b2000001-0001-0002-0002-0000000000e1','activity','Prelim Mock Exam A, 30 Items',$md$
 Simulate real conditions: 45 minutes, closed notes, no skipping ahead to the key. Coverage: the first four modules. The full answer key with explanations is in the section after Mock Exam B.
 
-### Part I — Multiple Choice (Items 1–12)
+### Part I, Multiple Choice (Items 1–12)
 
 **1.** Which pair consists of **two secondary sources**?
 
@@ -265,7 +265,7 @@ Simulate real conditions: 45 minutes, closed notes, no skipping ahead to the key
 **4.** As distinguished from the historical method, **historiography** refers to:
 
 - A. Applying scientific rules to test whether an event actually occurred
-- B. The process of writing history — synthesizing tested data into a narrative
+- B. The process of writing history, synthesizing tested data into a narrative
 - C. The excavation and dating of artifacts
 - D. The cataloguing of archival collections
 
@@ -281,14 +281,14 @@ Simulate real conditions: 45 minutes, closed notes, no skipping ahead to the key
 - A. The older of the two sources
 - B. The one with more logical reasoning and common sense
 - C. The one produced by a government institution
-- D. Neither — both must be rejected
+- D. Neither, both must be rejected
 
 **7.** Which option correctly pairs a Katipunan faction with its base and its leader?
 
-- A. Magdiwang — Kawit — Baldomero Aguinaldo
-- B. Magdalo — Noveleta — Mariano Alvarez
-- C. Magdiwang — Noveleta — Mariano Alvarez
-- D. Magdalo — Kawit — Emilio Aguinaldo
+- A. Magdiwang, Kawit, Baldomero Aguinaldo
+- B. Magdalo, Noveleta, Mariano Alvarez
+- C. Magdiwang, Noveleta, Mariano Alvarez
+- D. Magdalo, Kawit, Emilio Aguinaldo
 
 **8.** After the Tejeros Convention, Bonifacio was arrested, tried, and executed in May 1897. Where, and on what charge?
 
@@ -306,10 +306,10 @@ Simulate real conditions: 45 minutes, closed notes, no skipping ahead to the key
 
 **10.** How many manuscript versions of Pigafetta's account survive, and in what languages?
 
-- A. Two — both in Spanish
-- B. Four — one in Italian and three in French
-- C. Three — one each in Italian, French, and Spanish
-- D. Four — all in Italian
+- A. Two, both in Spanish
+- B. Four, one in Italian and three in French
+- C. Three, one each in Italian, French, and Spanish
+- D. Four, all in Italian
 
 **11.** Which sequence puts the 1521 events in the correct chronological order?
 
@@ -325,7 +325,7 @@ Simulate real conditions: 45 minutes, closed notes, no skipping ahead to the key
 - C. A powerful witch said to kill with a glance
 - D. A bishop-like figure who assisted the dying
 
-### Part II — True or False (Items 13–18)
+### Part II, True or False (Items 13–18)
 
 **13.** The Katipunan's full name was Kataas-taasang Kagalang-galangang Katipunan ng mga Anak ng Bayan.
 
@@ -339,7 +339,7 @@ Simulate real conditions: 45 minutes, closed notes, no skipping ahead to the key
 
 **18.** Santiago Alvarez's memoirs were originally serialized in Spanish in a Madrid newspaper.
 
-### Part III — Identification (Items 19–24)
+### Part III, Identification (Items 19–24)
 
 **19.** The Tagalog weekly that serialized Santiago Alvarez's memoirs in the 1920s.
 
@@ -353,7 +353,7 @@ Simulate real conditions: 45 minutes, closed notes, no skipping ahead to the key
 
 **24.** The three things historians examine when assessing a source's authenticity.
 
-### Part IV — Source Classification (Items 25–28)
+### Part IV, Source Classification (Items 25–28)
 
 Classify each source as **primary** or **secondary**. If it is an unwritten source, also name its type (archaeological, oral, or material evidence).
 
@@ -365,28 +365,28 @@ Classify each source as **primary** or **secondary**. If it is an unwritten sour
 
 **28.** Stone tools and pottery excavated from a pre-colonial settlement.
 
-### Part V — Document Analysis (Items 29–30)
+### Part V, Document Analysis (Items 29–30)
 
 Read the excerpt, then answer.
 
-> "...the testimony of an eyewitness, or of a witness by any other of the senses, or of a mechanical device... that is, of one who or that which was present at the events of which he or it tells." — Louis Gottschalk (1950), defining a primary source
+> "...the testimony of an eyewitness, or of a witness by any other of the senses, or of a mechanical device... that is, of one who or that which was present at the events of which he or it tells.", Louis Gottschalk (1950), defining a primary source
 
 **29.** (a) Under this definition, does Agoncillo's *The Revolt of the Masses* qualify as a primary source on the Tejeros Convention? Explain why or why not. (b) Give one reason the lesson still treats Agoncillo's book as a major scholarly reference despite your answer in (a).
 
-> "The Tagalogs recognized a supreme deity they called Bathala, the maker of all things, who dwelled in heaven. They also venerated the moon, especially during its new phase, and certain stars — the morning star, called Tala, and the Pleiades." — adapted from Fray Juan de Plasencia, *Customs of the Tagalogs* (c. 1589)
+> "The Tagalogs recognized a supreme deity they called Bathala, the maker of all things, who dwelled in heaven. They also venerated the moon, especially during its new phase, and certain stars, the morning star, called Tala, and the Pleiades.", adapted from Fray Juan de Plasencia, *Customs of the Tagalogs* (c. 1589)
 
 **30.** (a) Is this a primary or secondary source on 16th-century Tagalog religious beliefs? (b) What was the author's vantage point and purpose in documenting these practices? (c) Give one reason internal criticism is required before accepting this description at face value.
 $md$, 3);
 
 -- ------------------------------------------------------------
--- SECTION 4 (LOCKED): Prelim Mock Exam B — 30 Items
+-- SECTION 4 (LOCKED): Prelim Mock Exam B, 30 Items
 -- ------------------------------------------------------------
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b2000001-0001-0002-0002-0000000000e1','activity','Prelim Mock Exam B — 30 Items',$md$
-Same scope as Mock Exam A — the first four modules — but every item is new and pitched slightly harder: more detail recall, and classification items where the answer depends on the research question. 45 minutes, closed notes.
+('b2000001-0001-0002-0002-0000000000e1','activity','Prelim Mock Exam B, 30 Items',$md$
+Same scope as Mock Exam A, the first four modules, but every item is new and pitched slightly harder: more detail recall, and classification items where the answer depends on the research question. 45 minutes, closed notes.
 
-### Part I — Multiple Choice (Items 1–12)
+### Part I, Multiple Choice (Items 1–12)
 
 **1.** Which repository houses the Historical Data Papers and the Philippine Revolutionary Records?
 
@@ -472,7 +472,7 @@ Same scope as Mock Exam A — the first four modules — but every item is new a
 - C. Hocloban
 - D. Silagan
 
-### Part II — True or False (Items 13–18)
+### Part II, True or False (Items 13–18)
 
 **13.** Agoncillo's *The Revolt of the Masses* was first published in 1956.
 
@@ -486,7 +486,7 @@ Same scope as Mock Exam A — the first four modules — but every item is new a
 
 **18.** SIL Philippines in Quezon City holds approximately 2,000 titles on Philippine languages.
 
-### Part III — Identification (Items 19–24)
+### Part III, Identification (Items 19–24)
 
 **19.** The historian who in 1950 defined a primary source as "the testimony of an eyewitness."
 
@@ -500,9 +500,9 @@ Same scope as Mock Exam A — the first four modules — but every item is new a
 
 **24.** The exact date and the city from which Magellan's fleet departed at the start of the expedition.
 
-### Part IV — Source Classification (Items 25–28)
+### Part IV, Source Classification (Items 25–28)
 
-For each, classify the source as **primary** or **secondary** *relative to the stated research question*. Watch carefully — the same book can change classification when the question changes.
+For each, classify the source as **primary** or **secondary** *relative to the stated research question*. Watch carefully, the same book can change classification when the question changes.
 
 **25.** *The Revolt of the Masses* (Agoncillo, 1956), used to study the events of the Tejeros Convention of 1897.
 
@@ -512,9 +512,9 @@ For each, classify the source as **primary** or **secondary** *relative to the s
 
 **28.** An encyclopedia entry summarizing Pigafetta's account, used to study the 1521 voyage.
 
-### Part V — Document Analysis (Items 29–30)
+### Part V, Document Analysis (Items 29–30)
 
-> The historian must act as "prosecutor, attorney for the defense, judge, and jury all in one." — Louis Gottschalk (1950)
+> The historian must act as "prosecutor, attorney for the defense, judge, and jury all in one.", Louis Gottschalk (1950)
 
 **29.** (a) In one or two sentences, explain what this statement means about the historian's task. (b) Apply it to the Tejeros Convention: name the two sources analyzed in the lesson and state one thing the historian must "prosecute" (question) in each.
 
@@ -524,138 +524,138 @@ For each, classify the source as **primary** or **secondary** *relative to the s
 $md$, 4);
 
 -- ------------------------------------------------------------
--- SECTION 5 (LOCKED): Prelim Mock Exams — Answer Key with Explanations
+-- SECTION 5 (LOCKED): Prelim Mock Exams, Answer Key with Explanations
 -- ------------------------------------------------------------
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b2000001-0001-0002-0002-0000000000e1','activity','Prelim Mock Exams — Answer Key with Explanations',$md$
-Score yourself honestly, then read the explanation for **every** item — including the ones you got right. The explanations tell you why the tempting wrong choices are wrong, which is where the real exam points hide.
+('b2000001-0001-0002-0002-0000000000e1','activity','Prelim Mock Exams, Answer Key with Explanations',$md$
+Score yourself honestly, then read the explanation for **every** item, including the ones you got right. The explanations tell you why the tempting wrong choices are wrong, which is where the real exam points hide.
 
-### Mock Exam A — Key
+### Mock Exam A, Key
 
-**1. B** — Encyclopedias and textbooks are both produced by people not present at the events. Every other pair contains at least one primary source: diaries, photographs, letters, official documents, video recordings, and newspaper articles written at the time are all on the lesson's primary-source list.
+**1. B**, Encyclopedias and textbooks are both produced by people not present at the events. Every other pair contains at least one primary source: diaries, photographs, letters, official documents, video recordings, and newspaper articles written at the time are all on the lesson's primary-source list.
 
-**2. B** — Seville. Madrid is the tempting distractor: it hosts the Archivo Histórico Nacional, the Real Academia de la Historia, and the Biblioteca Nacional de España — but not the Archivo General de Indias.
+**2. B**, Seville. Madrid is the tempting distractor: it hosts the Archivo Histórico Nacional, the Real Academia de la Historia, and the Biblioteca Nacional de España, but not the Archivo General de Indias.
 
-**3. B** — The Philippines was governed under the Viceroyalty of New Spain until Mexican independence in 1821, so colonial paperwork flowed through Mexico. Option D describes the British Museum's story, not Mexico's.
+**3. B**, The Philippines was governed under the Viceroyalty of New Spain until Mexican independence in 1821, so colonial paperwork flowed through Mexico. Option D describes the British Museum's story, not Mexico's.
 
-**4. B** — Historiography is the *writing* of history. Option A is the definition of the historical method — the classic swap.
+**4. B**, Historiography is the *writing* of history. Option A is the definition of the historical method, the classic swap.
 
-**5. D** — Authorship belongs to the authenticity (external criticism) checklist along with time and space. Gottschalk's credibility criteria are competence, willingness to tell the truth, adequacy of data, and reliability against other sources.
+**5. D**, Authorship belongs to the authenticity (external criticism) checklist along with time and space. Gottschalk's credibility criteria are competence, willingness to tell the truth, adequacy of data, and reliability against other sources.
 
-**6. B** — When two sources are equally valid, the lesson's first rule is to prefer the one with more logical reasoning and common sense. Age and institutional origin are not the tiebreakers.
+**6. B**, When two sources are equally valid, the lesson's first rule is to prefer the one with more logical reasoning and common sense. Age and institutional origin are not the tiebreakers.
 
-**7. C** — Magdiwang was based in Noveleta under Mariano Alvarez. Option D is the classic trap: Magdalo really was based in Kawit, but its leader was **Baldomero** Aguinaldo, not Emilio.
+**7. C**, Magdiwang was based in Noveleta under Mariano Alvarez. Option D is the classic trap: Magdalo really was based in Kawit, but its leader was **Baldomero** Aguinaldo, not Emilio.
 
-**8. B** — Maragondon, Cavite, on charges of treason. Bagumbayan (A) is where GOMBURZA were executed in 1872 — a different event entirely.
+**8. B**, Maragondon, Cavite, on charges of treason. Bagumbayan (A) is where GOMBURZA were executed in 1872, a different event entirely.
 
-**9. B** — Nationalist historiography means writing Philippine history from a Filipino perspective, centered on ordinary Filipinos — Agoncillo argued the masses made the revolution, the opposite of option D.
+**9. B**, Nationalist historiography means writing Philippine history from a Filipino perspective, centered on ordinary Filipinos, Agoncillo argued the masses made the revolution, the opposite of option D.
 
-**10. B** — Four manuscripts survive: one Italian at the Ambrosiana Library in Milan, and three in French, the earliest (*Le Voyage et Navigation*) from around 1525.
+**10. B**, Four manuscripts survive: one Italian at the Ambrosiana Library in Milan, and three in French, the earliest (*Le Voyage et Navigation*) from around 1525.
 
-**11. B** — Samar landfall (March 16) → blood compact at Masao (March 27–28) → first Mass (March 31) → Cebu arrival (April 7) → Battle of Mactan (April 27). Every wrong option moves Cebu or the Mass out of place.
+**11. B**, Samar landfall (March 16) → blood compact at Masao (March 27–28) → first Mass (March 31) → Cebu arrival (April 7) → Battle of Mactan (April 27). Every wrong option moves Cebu or the Mass out of place.
 
-**12. B** — The catalonan was the chief religious officiator, male or female, held in high esteem. A describes the pangatahojan, C the hocloban, D the sonat.
+**12. B**, The catalonan was the chief religious officiator, male or female, held in high esteem. A describes the pangatahojan, C the hocloban, D the sonat.
 
-**13. TRUE** — Kataas-taasang Kagalang-galangang Katipunan ng mga Anak ng Bayan.
+**13. TRUE**, Kataas-taasang Kagalang-galangang Katipunan ng mga Anak ng Bayan.
 
-**14. FALSE** — The lesson says a primary source is *generally* more reliable, not always. Primary sources carry biases too (Alvarez wrote as a Magdiwang loyalist), and credibility must still be tested.
+**14. FALSE**, The lesson says a primary source is *generally* more reliable, not always. Primary sources carry biases too (Alvarez wrote as a Magdiwang loyalist), and credibility must still be tested.
 
-**15. TRUE** — Pigafetta was among only 18 of roughly 270 who returned, which is what makes his account so rare.
+**15. TRUE**, Pigafetta was among only 18 of roughly 270 who returned, which is what makes his account so rare.
 
-**16. FALSE** — It is the reverse: witnesses *without* a direct personal interest tend to be more credible than those with a stake in the outcome.
+**16. FALSE**, It is the reverse: witnesses *without* a direct personal interest tend to be more credible than those with a stake in the outcome.
 
-**17. TRUE** — The NAP holds government records from the Spanish colonial period; the National Library is the general national depository.
+**17. TRUE**, The NAP holds government records from the Spanish colonial period; the National Library is the general national depository.
 
-**18. FALSE** — The memoirs were serialized in the *Tagalog* weekly *Sampagita* in the 1920s.
+**18. FALSE**, The memoirs were serialized in the *Tagalog* weekly *Sampagita* in the 1920s.
 
-**19. Sampagita** — the Tagalog weekly of the 1920s.
+**19. Sampagita**, the Tagalog weekly of the 1920s.
 
-**20. The Strait of Magellan** — only three of the five ships made it through.
+**20. The Strait of Magellan**, only three of the five ships made it through.
 
-**21. The Santo Niño** — gifted at the mass baptism in Cebu and still venerated there today.
+**21. The Santo Niño**, gifted at the mass baptism in Cebu and still venerated there today.
 
-**22. Casamaan** — the place of punishment for the wicked; do not confuse it with *maca*, the place of rest for the just and valiant.
+**22. Casamaan**, the place of punishment for the wicked; do not confuse it with *maca*, the place of rest for the just and valiant.
 
-**23. PARES (Portal de Archivos Españoles)** — free online access to many digitized Spanish archival documents.
+**23. PARES (Portal de Archivos Españoles)**, free online access to many digitized Spanish archival documents.
 
-**24. Authorship, time, and space (setting/context)** — the three authenticity checks of external criticism.
+**24. Authorship, time, and space (setting/context)**, the three authenticity checks of external criticism.
 
-**25. Secondary, written** — an encyclopedia is on the lesson's list of secondary sources.
+**25. Secondary, written**, an encyclopedia is on the lesson's list of secondary sources.
 
-**26. Primary, written** — Pigafetta was aboard the expedition; his chronicle is eyewitness testimony.
+**26. Primary, written**, Pigafetta was aboard the expedition; his chronicle is eyewitness testimony.
 
-**27. Unwritten — oral evidence** — folk tales, myths, legends, and folk songs passed down through generations. For unwritten sources, the lesson classifies by type (archaeological, oral, material) rather than by the primary/secondary split.
+**27. Unwritten, oral evidence**, folk tales, myths, legends, and folk songs passed down through generations. For unwritten sources, the lesson classifies by type (archaeological, oral, material) rather than by the primary/secondary split.
 
-**28. Unwritten — archaeological evidence** — excavated tools and pottery are artifacts revealing past cultures and lifeways.
+**28. Unwritten, archaeological evidence**, excavated tools and pottery are artifacts revealing past cultures and lifeways.
 
 **29. (a)** No. Agoncillo was not present at the events of 1897 (he lived 1912–1985), so under Gottschalk's eyewitness definition his book is a **secondary** source. **(b)** The lesson still treats it as a major scholarly reference because Agoncillo drew on a wide range of primary documents and pioneered nationalist historiography.
 
-**30. (a)** Primary — Plasencia was a direct observer who lived and worked among the Tagalogs from his arrival in 1577. **(b)** He wrote as a Spanish Franciscan missionary; his purpose was partly descriptive and partly evangelical — documenting practices so other missionaries could understand and eventually replace them. **(c)** Internal criticism is needed because his colonial-Christian framing (he labeled indigenous specialists "Priests of the Devil") could distort the meaning of the practices he described.
+**30. (a)** Primary, Plasencia was a direct observer who lived and worked among the Tagalogs from his arrival in 1577. **(b)** He wrote as a Spanish Franciscan missionary; his purpose was partly descriptive and partly evangelical, documenting practices so other missionaries could understand and eventually replace them. **(c)** Internal criticism is needed because his colonial-Christian framing (he labeled indigenous specialists "Priests of the Devil") could distort the meaning of the practices he described.
 
 ---
 
-### Mock Exam B — Key
+### Mock Exam B, Key
 
-**1. B** — The National Library of the Philippines (Filipiniana Division and Microfilm Section) holds the Historical Data Papers and Philippine Revolutionary Records. The NAP (A) is the tempting swap — it holds Spanish-period *government* records.
+**1. B**, The National Library of the Philippines (Filipiniana Division and Microfilm Section) holds the Historical Data Papers and Philippine Revolutionary Records. The NAP (A) is the tempting swap, it holds Spanish-period *government* records.
 
-**2. B** — Taken during the British occupation of Manila, 1762–64.
+**2. B**, Taken during the British occupation of Manila, 1762–64.
 
-**3. C** — The Ayer Collection is at the Newberry Library in Chicago. The Library of Congress and NARS are separate US repositories.
+**3. C**, The Ayer Collection is at the Newberry Library in Chicago. The Library of Congress and NARS are separate US repositories.
 
-**4. D** — The lesson's three reasons are fabrication (the Maragtas case), negative revisionism, and misleading sources. "Primary sources are always biased" is not one of them — and "always" should make you suspicious anyway.
+**4. D**, The lesson's three reasons are fabrication (the Maragtas case), negative revisionism, and misleading sources. "Primary sources are always biased" is not one of them, and "always" should make you suspicious anyway.
 
-**5. B** — Ideologically fixed sources must be cross-checked against sources *not* aligned with that perspective. Discarding them outright (A) is not the rule; caution and corroboration are.
+**5. B**, Ideologically fixed sources must be cross-checked against sources *not* aligned with that perspective. Discarding them outright (A) is not the rule; caution and corroboration are.
 
-**6. B** — Assumption 1 in the lesson: relics and artifacts tend to be more reliable, while documents and testimonies are more detailed.
+**6. B**, Assumption 1 in the lesson: relics and artifacts tend to be more reliable, while documents and testimonies are more detailed.
 
-**7. B** — Baldomero Aguinaldo led the Magdalo. Emilio Aguinaldo (A) is the trap — he was elected President at Tejeros, but the faction leader named in the lesson is Baldomero.
+**7. B**, Baldomero Aguinaldo led the Magdalo. Emilio Aguinaldo (A) is the trap, he was elected President at Tejeros, but the faction leader named in the lesson is Baldomero.
 
-**8. B** — A series of Spanish military defeats eroded Bonifacio's standing, especially in Cavite.
+**8. B**, A series of Spanish military defeats eroded Bonifacio's standing, especially in Cavite.
 
-**9. D** — The five ships were *Victoria, Concepción, San Antonio, Santiago,* and *Trinidad*. There was no *San Pablo*.
+**9. D**, The five ships were *Victoria, Concepción, San Antonio, Santiago,* and *Trinidad*. There was no *San Pablo*.
 
-**10. B** — Leather, sawdust, and mice — the lesson's stark detail about the Pacific crossing.
+**10. B**, Leather, sawdust, and mice, the lesson's stark detail about the Pacific crossing.
 
-**11. B** — Rajah Colambu, at Masao. Rajah Siagun (D) was encountered around Homonhon; Rajah Humabon (A) belongs to Cebu; Lapu-Lapu (C) refused any compact.
+**11. B**, Rajah Colambu, at Masao. Rajah Siagun (D) was encountered around Homonhon; Rajah Humabon (A) belongs to Cebu; Lapu-Lapu (C) refused any compact.
 
-**12. C** — The hocloban was the more powerful witch said to kill with a glance. Mangagauay induced and cured illness; the mancocolam emitted fire at night; the silagan of Catanduanes ate human livers.
+**12. C**, The hocloban was the more powerful witch said to kill with a glance. Mangagauay induced and cured illness; the mancocolam emitted fire at night; the silagan of Catanduanes ate human livers.
 
-**13. TRUE** — First published in 1956.
+**13. TRUE**, First published in 1956.
 
-**14. TRUE** — *Le Voyage et Navigation*, c. 1525, Paris.
+**14. TRUE**, *Le Voyage et Navigation*, c. 1525, Paris.
 
-**15. TRUE** — Exactly as Plasencia recorded it.
+**15. TRUE**, Exactly as Plasencia recorded it.
 
-**16. FALSE** — When all independent sources agree on an event, that event is generally accepted as factual — one of the lesson's basic assumptions.
+**16. FALSE**, When all independent sources agree on an event, that event is generally accepted as factual, one of the lesson's basic assumptions.
 
-**17. FALSE** — Bonifacio declared the proceedings null and void, was arrested, tried, and executed in May 1897.
+**17. FALSE**, Bonifacio declared the proceedings null and void, was arrested, tried, and executed in May 1897.
 
-**18. TRUE** — Approximately 2,000 titles on Philippine languages.
+**18. TRUE**, Approximately 2,000 titles on Philippine languages.
 
-**19. Louis Gottschalk** — his 1950 definition anchors the whole primary/secondary distinction.
+**19. Louis Gottschalk**, his 1950 definition anchors the whole primary/secondary distinction.
 
-**20. Rajah Humabon** — over 800 natives, including Humabon and his wife, were baptized.
+**20. Rajah Humabon**, over 800 natives, including Humabon and his wife, were baptized.
 
-**21. The catalonan** — after the four-day, four-night blindfolded seclusion at a girl's first menstruation.
+**21. The catalonan**, after the four-day, four-night blindfolded seclusion at a girl's first menstruation.
 
-**22. Negative revisionism** — one of the reasons the test of authenticity exists.
+**22. Negative revisionism**, one of the reasons the test of authenticity exists.
 
-**23. Tala** — the morning star; the Pleiades were called *Mapolon* and *Balatic*.
+**23. Tala**, the morning star; the Pleiades were called *Mapolon* and *Balatic*.
 
-**24. August 10, 1519, from Seville** — with five ships and roughly 270 crew.
+**24. August 10, 1519, from Seville**, with five ships and roughly 270 crew.
 
-**25. Secondary** — measured against the events of 1897, Agoncillo is an outside, later scholar.
+**25. Secondary**, measured against the events of 1897, Agoncillo is an outside, later scholar.
 
-**26. Primary** — measured against the question "how did mid-20th-century Filipino historians write?", the 1956 book is itself direct evidence. Classification depends on proximity *to the event you are studying*, not on the book alone.
+**26. Primary**, measured against the question "how did mid-20th-century Filipino historians write?", the 1956 book is itself direct evidence. Classification depends on proximity *to the event you are studying*, not on the book alone.
 
-**27. Primary** — Alvarez was an eyewitness participant. The 1920s publication date matters for credibility testing (memory, motive), but it does not change his proximity to the event.
+**27. Primary**, Alvarez was an eyewitness participant. The 1920s publication date matters for credibility testing (memory, motive), but it does not change his proximity to the event.
 
-**28. Secondary** — a summary written by non-witnesses; it stands one step further from the voyage than Pigafetta himself.
+**28. Secondary**, a summary written by non-witnesses; it stands one step further from the voyage than Pigafetta himself.
 
-**29. (a)** The historian cannot simply accept testimony: they must challenge each source (prosecutor), give it a fair hearing (defense attorney), and then weigh and decide (judge and jury) — this is the work of external and internal criticism. **(b)** The two lesson sources are Santiago Alvarez's *Katipunan and the Revolution* and Agoncillo's *The Revolt of the Masses*. For Alvarez, the historian must question his Magdiwang loyalties and sympathy for Bonifacio's side; for Agoncillo, his distance from the events and his nationalist interpretive framework.
+**29. (a)** The historian cannot simply accept testimony: they must challenge each source (prosecutor), give it a fair hearing (defense attorney), and then weigh and decide (judge and jury), this is the work of external and internal criticism. **(b)** The two lesson sources are Santiago Alvarez's *Katipunan and the Revolution* and Agoncillo's *The Revolt of the Masses*. For Alvarez, the historian must question his Magdiwang loyalties and sympathy for Bonifacio's side; for Agoncillo, his distance from the events and his nationalist interpretive framework.
 
-**30. (a)** Pigafetta was aboard the expedition and present at the events he describes — the definition of a primary source. **(b)** It is the most detailed surviving firsthand narrative of the first circumnavigation, written by one of the few survivors. **(c)** He was a European outsider recording a brief encounter from the expedition's perspective, so his account cannot describe Filipino societies from within — a limitation the lesson flags for sources about pre-colonial Filipinos.
+**30. (a)** Pigafetta was aboard the expedition and present at the events he describes, the definition of a primary source. **(b)** It is the most detailed surviving firsthand narrative of the first circumnavigation, written by one of the few survivors. **(c)** He was a European outsider recording a brief encounter from the expedition's perspective, so his account cannot describe Filipino societies from within, a limitation the lesson flags for sources about pre-colonial Filipinos.
 
 ---
 
@@ -668,25 +668,25 @@ $md$, 5);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('b2000001-0001-0002-0002-0000000000e1','activity','Common Prelim Traps & How to Avoid Them',$md$
-These six traps account for most lost prelim points in this subject. Each one comes with a mini-drill — do the drill *before* reading its answer.
+These six traps account for most lost prelim points in this subject. Each one comes with a mini-drill, do the drill *before* reading its answer.
 
-### Trap 1 — Treating "primary" as a permanent label on a book
+### Trap 1, Treating "primary" as a permanent label on a book
 
 Primary vs secondary is not a property of the book; it is a relationship between the source and **the event you are studying**. The lesson's key distinction is *proximity to the event*. Change the research question and the classification can flip.
 
 **Mini-drill:** Classify Agoncillo's *The Revolt of the Masses* (1956) for each question: (a) "What happened at the Tejeros Convention in 1897?" (b) "How did Filipino historians of the 1950s interpret the revolution?"
 
-> **Answer:** (a) Secondary — Agoncillo was not present in 1897. (b) Primary — the 1956 book is itself direct, firsthand evidence of 1950s nationalist historiography.
+> **Answer:** (a) Secondary, Agoncillo was not present in 1897. (b) Primary, the 1956 book is itself direct, firsthand evidence of 1950s nationalist historiography.
 
-### Trap 2 — Swapping external and internal criticism
+### Trap 2, Swapping external and internal criticism
 
-Sort by what is being questioned. **External criticism = authenticity**: is the document itself what it claims to be? (authorship, time, space — forgery hunting). **Internal criticism = credibility**: is what it *says* accurate? (competence, willingness to tell the truth, adequacy, reliability against other sources).
+Sort by what is being questioned. **External criticism = authenticity**: is the document itself what it claims to be? (authorship, time, space, forgery hunting). **Internal criticism = credibility**: is what it *says* accurate? (competence, willingness to tell the truth, adequacy, reliability against other sources).
 
 **Mini-drill:** Which test applies? (a) Scott (1984) shows the *Maragtas* rests on fabricated written sources. (b) A historian asks whether Santiago Alvarez, as a Magdiwang loyalist, was willing to describe the Magdalo fairly.
 
-> **Answer:** (a) External criticism — the question is whether the document is genuine at all. (b) Internal criticism — the document is genuine; its truthfulness and bias are in question.
+> **Answer:** (a) External criticism, the question is whether the document is genuine at all. (b) Internal criticism, the document is genuine; its truthfulness and bias are in question.
 
-### Trap 3 — Confusing Pigafetta with Plasencia
+### Trap 3, Confusing Pigafetta with Plasencia
 
 Both are Spanish-era chroniclers, both are primary sources, and professors love swapping their details.
 
@@ -701,7 +701,7 @@ Both are Spanish-era chroniclers, both are primary sources, and professors love 
 
 > **Answer:** (a) Pigafetta. (b) Plasencia. (c) Plasencia. (d) Pigafetta.
 
-### Trap 4 — The two Aguinaldos and the two Alvarezes
+### Trap 4, The two Aguinaldos and the two Alvarezes
 
 Four names, two surnames, one exam disaster. Fix them now: **Mariano Alvarez** led the Magdiwang (Noveleta). **Santiago Alvarez** wrote the memoirs *Katipunan and the Revolution*. **Baldomero Aguinaldo** led the Magdalo (Kawit). **Emilio Aguinaldo** was elected President at Tejeros.
 
@@ -709,21 +709,21 @@ Four names, two surnames, one exam disaster. Fix them now: **Mariano Alvarez** l
 
 > **Answer:** (a) Magdalo, Baldomero Aguinaldo. (b) Santiago Alvarez. (c) Emilio Aguinaldo. (d) Maragondon, Cavite; May 1897.
 
-### Trap 5 — Blurring the 1521 timeline
+### Trap 5, Blurring the 1521 timeline
 
-Four dates in six weeks; every mock exam tests their order. Anchor them: **March 16** — landfall at Zamal (Samar), islands named Archipelago of St. Lazarus. **March 27–28** — Masao, blood compact with Rajah Colambu. **March 31** — first Mass; cross erected. **April 7** — arrival in Cebu (Humabon; 800+ baptized; Santo Niño). **April 27** — Battle of Mactan; Magellan killed. Behind them sit **August 10, 1519** (departure from Seville) and **October 21, 1520** (Strait of Magellan).
+Four dates in six weeks; every mock exam tests their order. Anchor them: **March 16**, landfall at Zamal (Samar), islands named Archipelago of St. Lazarus. **March 27–28**, Masao, blood compact with Rajah Colambu. **March 31**, first Mass; cross erected. **April 7**, arrival in Cebu (Humabon; 800+ baptized; Santo Niño). **April 27**, Battle of Mactan; Magellan killed. Behind them sit **August 10, 1519** (departure from Seville) and **October 21, 1520** (Strait of Magellan).
 
-**Mini-drill:** Put in order: Cebu arrival — first Mass — Samar landfall — Battle of Mactan — blood compact.
+**Mini-drill:** Put in order: Cebu arrival, first Mass, Samar landfall, Battle of Mactan, blood compact.
 
 > **Answer:** Samar landfall → blood compact → first Mass → Cebu arrival → Battle of Mactan.
 
-### Trap 6 — Mixing Gottschalk's credibility tests into the authenticity checklist
+### Trap 6, Mixing Gottschalk's credibility tests into the authenticity checklist
 
-Two separate checklists, one author quoted for both — that is the whole trick. Authenticity (external): **authorship, time, space**. Credibility (internal, Gottschalk's four): **competence, willingness to tell the truth, adequacy of data, reliability against other sources**. Bonus fallacy to drop: "primary = true." The lesson says primary sources are *generally* more reliable — they still carry biases, and witnesses with a personal stake are *less* credible.
+Two separate checklists, one author quoted for both, that is the whole trick. Authenticity (external): **authorship, time, space**. Credibility (internal, Gottschalk's four): **competence, willingness to tell the truth, adequacy of data, reliability against other sources**. Bonus fallacy to drop: "primary = true." The lesson says primary sources are *generally* more reliable, they still carry biases, and witnesses with a personal stake are *less* credible.
 
 **Mini-drill:** Sort into External or Internal: (a) adequacy of data, (b) authorship, (c) willingness to tell the truth, (d) time of composition, (e) competence, (f) space/setting.
 
-> **Answer:** External — (b) authorship, (d) time, (f) space. Internal — (a) adequacy, (c) willingness, (e) competence.
+> **Answer:** External, (b) authorship, (d) time, (f) space. Internal, (a) adequacy, (c) willingness, (e) competence.
 
 Master these six and the mock-exam distractors stop working on you. That is the point.
 $md$, 6);
@@ -734,56 +734,56 @@ $md$, 6);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('b2000001-0001-0002-0002-0000000000e1','activity','Final Exam Blueprint & Rapid Review Sheet',$md$
-The final is **cumulative** — all ten modules — but weighted heavily toward the material after the prelim. Expect roughly 20% from the first four modules (definitions, criticism tests, Tejeros, the chronicles) and 80% from modules five to ten. This sheet compresses everything you must memorize for that 80%.
+The final is **cumulative**, all ten modules, but weighted heavily toward the material after the prelim. Expect roughly 20% from the first four modules (definitions, criticism tests, Tejeros, the chronicles) and 80% from modules five to ten. This sheet compresses everything you must memorize for that 80%.
 
 ### Coverage and Weight
 
 | Module in this app | Typical weight |
 |---|---|
 | The Meaning and Relevance of History / Tests of Authenticity and Credibility / Tejeros / Early Chronicles | ~20% combined |
-| The Katipunan — Revolution and Its Documents | ~18% |
+| The Katipunan, Revolution and Its Documents | ~18% |
 | Visual and Documentary Sources in Philippine History | ~12% |
 | Historic Controversies | ~18% |
 | Philippine Constitutions, Indigenous Peoples, and Agrarian Reform | ~18% |
-| Colonial Legacies — Applied Historical Analysis | ~10% |
+| Colonial Legacies, Applied Historical Analysis | ~10% |
 | Local History and Philippine Heritage | ~4% |
 
-### Documents, Authors, Dates — The Master Table
+### Documents, Authors, Dates, The Master Table
 
 | Document / Work | Author | Date | One fact examiners love |
 |---|---|---|---|
-| Kartilya ng Katipunan | Emilio Jacinto ("Brain of the Katipunan") | Katipunan era | Sold at four kualta per copy (Richardson, 2013); more expansive than Bonifacio's *Decalogue* — aspirations and moral values, not just obligations |
+| Kartilya ng Katipunan | Emilio Jacinto ("Brain of the Katipunan") | Katipunan era | Sold at four kualta per copy (Richardson, 2013); more expansive than Bonifacio's *Decalogue*, aspirations and moral values, not just obligations |
 | *Liwanag at Dilim* | Emilio Jacinto | — | His collection of political and social essays |
-| Acta de la Proclamación de la Independencia del Pueblo Filipino | Written and read by Ambrocio Rianzares Bautista | June 12, 1898, Kawit, Cavite | 98 signatories — but not Aguinaldo (Ocampo, 2020); one American signed: Colonel L.M. Johnson |
+| Acta de la Proclamación de la Independencia del Pueblo Filipino | Written and read by Ambrocio Rianzares Bautista | June 12, 1898, Kawit, Cavite | 98 signatories, but not Aguinaldo (Ocampo, 2020); one American signed: Colonel L.M. Johnson |
 | Malolos Constitution | Malolos Congress (convened at Barasoain Church, Sept 15, 1898) | Promulgated Jan 21, 1899 | 93 articles, 14 titles; first republican constitution enacted in Asia; three branches |
 | *Political Cartoons: Political Caricature of the American Era, 1901–1941* | Alfred McCoy and Alfredo Roces | 1985 | Cartoons as evidence of political culture: unequal pay, Uncle Sam vs Juan dela Cruz (*Lipag Kalabaw*, Nov 14, 1908), anti-friar, corrupt politicians, rice crisis of 1919 |
 | Three accounts of the Cavite Mutiny | Montero y Vidal (Spanish), Pardo de Tavera (Filipino), Gov-Gen Rafael de Izquierdo (official) | 1872 event; compiled by Zaide (1990) | LeRoy called Montero y Vidal "rabid"; Izquierdo framed the mutiny as a wide conspiracy |
 
 ### Revolution-to-Republic Timeline
 
-- **July 7, 1892** — Katipunan founded by Bonifacio after the Reform Movement failed and La Liga Filipina disbanded
-- **August 30, 1896** — assault on San Juan del Monte (Jacinto as intelligence director)
-- **March 22, 1897** — Tejeros Convention; **May 1897** — Bonifacio executed at Maragondon
-- **May 1, 1898** — Dewey destroys the Spanish fleet in Manila Bay
-- **June 12, 1898** — Independence proclaimed at Kawit; flag (sewn in Hong Kong) first raised; anthem by **Julian Felipe** first performed; Mabini calls it "reckless and premature"
-- **September 15, 1898** — Malolos Congress convenes at Barasoain
-- **January 21, 1899** — Malolos Constitution promulgated; **January 23, 1899** — First Philippine Republic inaugurated, Aguinaldo President
-- **April 6, 1899** — Jacinto dies of malaria, about age 24
+- **July 7, 1892**, Katipunan founded by Bonifacio after the Reform Movement failed and La Liga Filipina disbanded
+- **August 30, 1896**, assault on San Juan del Monte (Jacinto as intelligence director)
+- **March 22, 1897**, Tejeros Convention; **May 1897**, Bonifacio executed at Maragondon
+- **May 1, 1898**, Dewey destroys the Spanish fleet in Manila Bay
+- **June 12, 1898**, Independence proclaimed at Kawit; flag (sewn in Hong Kong) first raised; anthem by **Julian Felipe** first performed; Mabini calls it "reckless and premature"
+- **September 15, 1898**, Malolos Congress convenes at Barasoain
+- **January 21, 1899**, Malolos Constitution promulgated; **January 23, 1899**, First Philippine Republic inaugurated, Aguinaldo President
+- **April 6, 1899**, Jacinto dies of malaria, about age 24
 
-### The Two Controversies — Positions and Panels
+### The Two Controversies, Positions and Panels
 
 **Site of the First Mass (March 31, 1521, said by Fr. Pedro de Valderrama at "Mazaua")**
 
 | Position | Core evidence | Backing |
 |---|---|---|
-| Limasawa (Southern Leyte) | Navigational/geographical fit of Pigafetta's account: routes, currents, landmarks | NHCP position through most of the 20th century; **Gancayco Committee (1979)** — sailing routes, land forms, river deltas |
-| Butuan / Masao (Agusan del Norte) | Pigafetta's explicit mention of Butuan; recorded latitude approx. 9 degrees 40 minutes North | Respondents to the **Mojares Panel (2018–2019)** — Gabriel Atega and Dr. Potenciano Malvar; Camiguin appearing as three "mountains" from heights near the 1872 Magallanes monument |
+| Limasawa (Southern Leyte) | Navigational/geographical fit of Pigafetta's account: routes, currents, landmarks | NHCP position through most of the 20th century; **Gancayco Committee (1979)**, sailing routes, land forms, river deltas |
+| Butuan / Masao (Agusan del Norte) | Pigafetta's explicit mention of Butuan; recorded latitude approx. 9 degrees 40 minutes North | Respondents to the **Mojares Panel (2018–2019)**, Gabriel Atega and Dr. Potenciano Malvar; Camiguin appearing as three "mountains" from heights near the 1872 Magallanes monument |
 
-The lesson's bottom line — and the safe exam answer on "who is right": **the controversy remains unresolved at the scholarly level.**
+The lesson's bottom line, and the safe exam answer on "who is right": **the controversy remains unresolved at the scholarly level.**
 
 **Cavite Mutiny (January 20, 1872, Fort San Felipe)**
 
-- Crushed within hours; led to the execution of **GOMBURZA** — Frs. Mariano Gómez (73), José Burgos (35), Jacinto Zamora (37) — by **garrote at Bagumbayan, February 17, 1872**
+- Crushed within hours; led to the execution of **GOMBURZA**, Frs. Mariano Gómez (73), José Burgos (35), Jacinto Zamora (37), by **garrote at Bagumbayan, February 17, 1872**
 - The priests were leaders of the **secularization** movement (transfer of parishes from Spanish friars to Filipino secular clergy)
 - Rizal dedicated ***El Filibusterismo*** to them; their memory fed the Propaganda Movement and the Revolution of 1896
 - Three versions: **Montero y Vidal** (Spanish, anti-Filipino bias), **Pardo de Tavera** (Filipino reformist context), **Izquierdo** (official report justifying repression)
@@ -798,34 +798,34 @@ The lesson's bottom line — and the safe exam answer on "who is right": **the c
 | 1973 | Martial Law (declared Sept 21, 1972) | Ratified via criticized **Citizens' Assemblies**; rule by decree |
 | 1987 | After the 1986 People Power Revolution | Ratified **February 2, 1987**; restored the Senate; **social justice** is its heart (Muñoz-Palma); defined in *Calalang v. Williams* by Justice José Laurel as the humanization of laws and equalization of social and economic forces |
 
-### Indigenous Peoples and Agrarian Reform — Numbers and Laws
+### Indigenous Peoples and Agrarian Reform, Numbers and Laws
 
-- IP definition: historical continuity criteria from the **Martínez Cobo (1983)** UN study — ancestral lands, common ancestry, distinct culture, language, regional residence
-- About **110 ethno-linguistic groups**, 14–17 million people; **Mindanao ~61%** (Lumad — 18 non-Muslim groups, Visayan for "of the land"; Moro — seven Islamized groups); **Cordillera ~33%** (Igorot — "people from the mountain"); Mangyan of Mindoro
+- IP definition: historical continuity criteria from the **Martínez Cobo (1983)** UN study, ancestral lands, common ancestry, distinct culture, language, regional residence
+- About **110 ethno-linguistic groups**, 14–17 million people; **Mindanao ~61%** (Lumad, 18 non-Muslim groups, Visayan for "of the land"; Moro, seven Islamized groups); **Cordillera ~33%** (Igorot, "people from the mountain"); Mangyan of Mindoro
 - Colonial labels: *infieles* / *salvajes* (Spanish) → "non-Christian tribes" (American); Bureau of Non-Christian Tribes (1901); **David Barrows** and the 1903 census
-- **IPRA — RA 8371 (1997)**: four bundles of rights — ancestral domains/lands, self-governance, social justice/human rights, cultural integrity; implemented by the **NCIP (1998)**
-- Agrarian reform ladder: encomienda/hacienda → friar lands resold (often to the wealthy) → Land Reform Act (1955) → Agricultural Land Reform Code, **RA 3844 (1963)** → **PD 27 (1972)**, rice and corn lands only → **CARP, RA 6657 (1988)** under Corazon Aquino — broad scope, criticized as slow and incomplete
+- **IPRA, RA 8371 (1997)**: four bundles of rights, ancestral domains/lands, self-governance, social justice/human rights, cultural integrity; implemented by the **NCIP (1998)**
+- Agrarian reform ladder: encomienda/hacienda → friar lands resold (often to the wealthy) → Land Reform Act (1955) → Agricultural Land Reform Code, **RA 3844 (1963)** → **PD 27 (1972)**, rice and corn lands only → **CARP, RA 6657 (1988)** under Corazon Aquino, broad scope, criticized as slow and incomplete
 
-### Visual Sources — Names to Lock In
+### Visual Sources, Names to Lock In
 
-- **Juan Luna** (1857–1899, Badoc, Ilocos Norte): *Spoliarium* — 4.22 × 7.675 m, largest painting in the Philippines; **chiaroscuro**; Rizal read it as the Philippines under colonial rule and declared "genius knows no country"
-- **Fernando Amorsolo** (1892–1972, National Artist 1972): *Planting Rice* (1951); wartime shift — *The Bombing of the Intendencia*, *The Burning of Manila*
+- **Juan Luna** (1857–1899, Badoc, Ilocos Norte): *Spoliarium*, 4.22 × 7.675 m, largest painting in the Philippines; **chiaroscuro**; Rizal read it as the Philippines under colonial rule and declared "genius knows no country"
+- **Fernando Amorsolo** (1892–1972, National Artist 1972): *Planting Rice* (1951); wartime shift, *The Bombing of the Intendencia*, *The Burning of Manila*
 - **Documentaries**: period footage inside them can be primary; the edited film itself is a **secondary** source
 
-### Colonial Legacies — Rapid Facts
+### Colonial Legacies, Rapid Facts
 
 - Bridges: cut stone + *argamasa* (lime mortar; plant sap, molasses, egg white added); **Arquitectura Mestiza** (Ignacio Alcina, 1668); built by *polistas* under *polo y servicios*; masonic marks by Filipino stone cutters; e.g. **Puente de Malagonlong** (Tayabas), Puente de España (Manila)
-- "Moro": Spanish label transplanted from the North African Moors of the Reconquista — Philippine Muslims had **no connection** to them; Moro Wars; raids read as self-defense (Muslim view) vs piracy (Spanish view); **Bates Treaty (1899)**; 1963 Senate report causes — land, education, livelihood, health/transport; MNLF by the 1960s–70s
-- **Claveria Decree, November 21, 1849**: surnames from an official catalogue, distributed alphabetically by municipality — administrative control (taxes, records, identity)
+- "Moro": Spanish label transplanted from the North African Moors of the Reconquista, Philippine Muslims had **no connection** to them; Moro Wars; raids read as self-defense (Muslim view) vs piracy (Spanish view); **Bates Treaty (1899)**; 1963 Senate report causes, land, education, livelihood, health/transport; MNLF by the 1960s–70s
+- **Claveria Decree, November 21, 1849**: surnames from an official catalogue, distributed alphabetically by municipality, administrative control (taxes, records, identity)
 - Education: pre-colonial **Baybayin** literacy; Spanish schooling = conversion and social control; American = **Thomasites (1901, ship Thomas)**, English medium, mass public and secular schooling, Americanization; later Filipino as co-medium, Marcos "New Society" use of curriculum, **K-12 (2012–2016)**
 
-### Local History and Heritage — The Short List
+### Local History and Heritage, The Short List
 
 - Local history = the "unheard history" of communities; **not the same as oral history** (spoken transmission across generations)
 - Standards: authentic, accurate, objective, reliable, relevant, systematic/scientific
 - NAP bundles: *Obras Publicas, Ereccion de Pueblos, Fincas, Testamentos, Provincias*
-- UNESCO heritage: **cultural** (tangible — movable/immovable/underwater; intangible), **natural**, **heritage in armed conflict**
-- **The Ruins** (Bacolod): Don Mariano Ledesma Lacson's mansion, burned by Filipino guerrillas in WWII so the Japanese could not garrison it — history gives heritage its context
+- UNESCO heritage: **cultural** (tangible, movable/immovable/underwater; intangible), **natural**, **heritage in armed conflict**
+- **The Ruins** (Bacolod): Don Mariano Ledesma Lacson's mansion, burned by Filipino guerrillas in WWII so the Japanese could not garrison it, history gives heritage its context
 - **Heritage Cycle** (Simon Thurley): understanding → valuing → caring → finding meaning → back to understanding
 - **RA 10066, National Cultural Heritage Act of 2009**, building on the 1987 Constitution (Art. XIV, Secs. 14–17); agencies: NHCP, National Museum, National Library, CCP, National Archives
 
@@ -833,14 +833,14 @@ Run the two final mocks below only after you can reproduce the master table and 
 $md$, 7);
 
 -- ------------------------------------------------------------
--- SECTION 8 (LOCKED): Final Mock Exam A — 30 Items
+-- SECTION 8 (LOCKED): Final Mock Exam A, 30 Items
 -- ------------------------------------------------------------
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b2000001-0001-0002-0002-0000000000e1','activity','Final Mock Exam A — 30 Items',$md$
+('b2000001-0001-0002-0002-0000000000e1','activity','Final Mock Exam A, 30 Items',$md$
 Cumulative, weighted toward everything after the prelim. 50 minutes, closed notes. Key with explanations is two sections down.
 
-### Part I — Multiple Choice (Items 1–14)
+### Part I, Multiple Choice (Items 1–14)
 
 **1.** The Katipunan was founded on July 7, 1892, in the wake of:
 
@@ -859,7 +859,7 @@ Cumulative, weighted toward everything after the prelim. 50 minutes, closed note
 **3.** According to Jim Richardson (2013), how did Jacinto's Kartilya differ from Bonifacio's *Decalogue*?
 
 - A. It was shorter and listed only obligations
-- B. It was more expansive, focused on aspirations and moral values — the kind of person a Katipunero should aspire to be
+- B. It was more expansive, focused on aspirations and moral values, the kind of person a Katipunero should aspire to be
 - C. It was written in Spanish for the educated elite
 - D. It abolished the Decalogue's teachings on equality
 
@@ -936,11 +936,11 @@ Cumulative, weighted toward everything after the prelim. 50 minutes, closed note
 **14.** The primary purpose of the Claveria Decree of 1849 was:
 
 - A. Religious conversion of the native population
-- B. Administrative control — stable, trackable family identities for taxation, legal records, and census
+- B. Administrative control, stable, trackable family identities for taxation, legal records, and census
 - C. Abolishing indigenous surnames entirely
 - D. Rewarding loyal families with noble titles
 
-### Part II — True or False (Items 15–19)
+### Part II, True or False (Items 15–19)
 
 **15.** Emilio Aguinaldo's signature appears among the 98 signatories of the declaration of independence.
 
@@ -952,7 +952,7 @@ Cumulative, weighted toward everything after the prelim. 50 minutes, closed note
 
 **19.** The 1943 Constitution was drafted by a Constitutional Commission after the People Power Revolution.
 
-### Part III — Identification (Items 20–25)
+### Part III, Identification (Items 20–25)
 
 **20.** The composer whose anthem was performed for the first time on June 12, 1898.
 
@@ -966,19 +966,19 @@ Cumulative, weighted toward everything after the prelim. 50 minutes, closed note
 
 **25.** The term coined by the Jesuit Ignacio Alcina in 1668 for the blend of European design with Philippine materials and labor.
 
-### Part IV — Source Classification (Items 26–27)
+### Part IV, Source Classification (Items 26–27)
 
 **26.** An actual political cartoon printed in *The Independent* in 1915, used to study public opinion during the American era. Primary or secondary?
 
 **27.** McCoy and Roces's 1985 book analyzing such cartoons. Primary or secondary?
 
-### Part V — Document Analysis (Items 28–30)
+### Part V, Document Analysis (Items 28–30)
 
-> "Social justice is the heart of the 1987 Constitution." — Justice Cecilia Muñoz-Palma, President of the Constitutional Commission
+> "Social justice is the heart of the 1987 Constitution.", Justice Cecilia Muñoz-Palma, President of the Constitutional Commission
 
 **28.** (a) What historical event led directly to the drafting of this constitution, and when was it ratified? (b) According to Justice José Laurel in *Calalang v. Williams*, what does social justice mean?
 
-> "Genius knows no country; genius sprouts everywhere." — José Rizal
+> "Genius knows no country; genius sprouts everywhere.", José Rizal
 
 **29.** (a) On the occasion of which painting, by which painter, did Rizal make this declaration? (b) What allegorical meaning did Rizal read into that painting?
 
@@ -988,14 +988,14 @@ Cumulative, weighted toward everything after the prelim. 50 minutes, closed note
 $md$, 8);
 
 -- ------------------------------------------------------------
--- SECTION 9 (LOCKED): Final Mock Exam B — 30 Items
+-- SECTION 9 (LOCKED): Final Mock Exam B, 30 Items
 -- ------------------------------------------------------------
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b2000001-0001-0002-0002-0000000000e1','activity','Final Mock Exam B — 30 Items',$md$
-Same cumulative scope as Final Mock A, all-new items, pitched at detail level — the questions that separate the top of the class. 50 minutes, closed notes.
+('b2000001-0001-0002-0002-0000000000e1','activity','Final Mock Exam B, 30 Items',$md$
+Same cumulative scope as Final Mock A, all-new items, pitched at detail level, the questions that separate the top of the class. 50 minutes, closed notes.
 
-### Part I — Multiple Choice (Items 1–14)
+### Part I, Multiple Choice (Items 1–14)
 
 **1.** Which statement about Emilio Jacinto is true?
 
@@ -1095,7 +1095,7 @@ Same cumulative scope as Final Mock A, all-new items, pitched at detail level �
 - C. The National Cultural Heritage Act of 2009
 - D. The Comprehensive Agrarian Reform Law
 
-### Part II — True or False (Items 15–19)
+### Part II, True or False (Items 15–19)
 
 **15.** The Philippine flag first raised on June 12, 1898 had been sewn in Hong Kong.
 
@@ -1107,7 +1107,7 @@ Same cumulative scope as Final Mock A, all-new items, pitched at detail level �
 
 **19.** Local history and oral history are two names for the same thing.
 
-### Part III — Identification (Items 20–25)
+### Part III, Identification (Items 20–25)
 
 **20.** The Governor-General whose official report portrayed the Cavite Mutiny as a widespread conspiracy, justifying the repressive response.
 
@@ -1117,17 +1117,17 @@ Same cumulative scope as Final Mock A, all-new items, pitched at detail level �
 
 **23.** The American teachers, deployed beginning 1901, popularly named after the ship that brought many of them.
 
-**24.** The Bacolod City landmark — a mansion's skeletal remains — burned by Filipino guerrillas in World War II to deny the Japanese a garrison.
+**24.** The Bacolod City landmark, a mansion's skeletal remains, burned by Filipino guerrillas in World War II to deny the Japanese a garrison.
 
 **25.** Simon Thurley's model describing how communities engage with heritage: understanding, valuing, caring, finding meaning, and back again.
 
-### Part IV — Source Classification (Items 26–27)
+### Part IV, Source Classification (Items 26–27)
 
 **26.** The surviving Puente de Malagonlong in Tayabas, used to study colonial labor systems. Classify it: primary or secondary evidence, and written or unwritten?
 
 **27.** A documentary film about the Philippine Revolution produced in 2010, taken as a whole work. Primary or secondary?
 
-### Part V — Document Analysis (Items 28–30)
+### Part V, Document Analysis (Items 28–30)
 
 > Historical continuity may consist of: occupation of ancestral lands; common ancestry with the original occupants; distinct cultural expressions such as religion, tribal systems, dress, and livelihood; language; and residence in particular regions. — adapted from the UN study by José Martínez Cobo (1983)
 
@@ -1137,142 +1137,142 @@ Same cumulative scope as Final Mock A, all-new items, pitched at detail level �
 
 **29.** (a) Under what colonial labor system were these bridges built, and what were the laborers called? (b) What do the carved marks reveal about the builders? (c) Name one other thing the lesson says bridges reveal about the colonial period.
 
-> Local history is the "unheard history" of communities and localities — the collective experiences of ordinary people, places, and institutions that conventional national history has often overlooked.
+> Local history is the "unheard history" of communities and localities, the collective experiences of ordinary people, places, and institutions that conventional national history has often overlooked.
 
 **30.** (a) How does local history differ from oral history? (b) Name two of the six standards for writing local history. (c) Give one reason the lesson says local history matters.
 $md$, 9);
 
 -- ------------------------------------------------------------
--- SECTION 10 (LOCKED): Final Mock Exams — Answer Key with Explanations
+-- SECTION 10 (LOCKED): Final Mock Exams, Answer Key with Explanations
 -- ------------------------------------------------------------
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('b2000001-0001-0002-0002-0000000000e1','activity','Final Mock Exams — Answer Key with Explanations',$md$
+('b2000001-0001-0002-0002-0000000000e1','activity','Final Mock Exams, Answer Key with Explanations',$md$
 Same rule as the prelim key: read every explanation, not just your misses. The wrong-choice notes are the vaccine against the final's distractors.
 
-### Final Mock Exam A — Key
+### Final Mock Exam A, Key
 
-**1. B** — The Katipunan (1892) answered the failure of the peaceful Reform Movement and the disbanding of La Liga Filipina. GOMBURZA (A) died in 1872, twenty years earlier; the Malolos Constitution (C) and the Spanish-American War (D) come six years later.
+**1. B**, The Katipunan (1892) answered the failure of the peaceful Reform Movement and the disbanding of La Liga Filipina. GOMBURZA (A) died in 1872, twenty years earlier; the Malolos Constitution (C) and the Spanish-American War (D) come six years later.
 
-**2. C** — Emilio Jacinto, the "Brain of the Katipunan." Bonifacio (A) wrote the separate *Decalogue* — the classic swap.
+**2. C**, Emilio Jacinto, the "Brain of the Katipunan." Bonifacio (A) wrote the separate *Decalogue*, the classic swap.
 
-**3. B** — Richardson distinguishes the Kartilya as more expansive, focused on aspirations and moral values — the kind of person a Katipunero should aspire to be — versus the Decalogue's list of obligations.
+**3. B**, Richardson distinguishes the Kartilya as more expansive, focused on aspirations and moral values, the kind of person a Katipunero should aspire to be, versus the Decalogue's list of obligations.
 
-**4. C** — Ambrocio Rianzares Bautista wrote and publicly read the *Acta*. Aguinaldo (A) proclaimed independence but did not write or read the document; Julian Felipe (D) composed the anthem.
+**4. C**, Ambrocio Rianzares Bautista wrote and publicly read the *Acta*. Aguinaldo (A) proclaimed independence but did not write or read the document; Julian Felipe (D) composed the anthem.
 
-**5. A** — January 21, 1899, and the first republican constitution enacted in Asia. January 23 (C) is the inauguration of the Republic, and the constitution established three branches, not two.
+**5. A**, January 21, 1899, and the first republican constitution enacted in Asia. January 23 (C) is the inauguration of the Republic, and the constitution established three branches, not two.
 
-**6. B** — The book's subtitle says it: *Political Caricature of the American Era, 1901–1941*.
+**6. B**, The book's subtitle says it: *Political Caricature of the American Era, 1901–1941*.
 
-**7. B** — Chiaroscuro: the dramatic contrast of light and dark that highlights the mangled bodies against the oppressive background.
+**7. B**, Chiaroscuro: the dramatic contrast of light and dark that highlights the mangled bodies against the oppressive background.
 
-**8. C** — Pigafetta's "Mazaua" (Masao) is the disputed place. Zamal (A) was the first landfall; Homonhon (B) came before Mazaua; Cebu (D) came after.
+**8. C**, Pigafetta's "Mazaua" (Masao) is the disputed place. Zamal (A) was the first landfall; Homonhon (B) came before Mazaua; Cebu (D) came after.
 
-**9. B** — The Gancayco Report (1979) favored Limasawa, based on sailing routes, land forms, river deltas, and geography, and anchored the NHCP position for decades.
+**9. B**, The Gancayco Report (1979) favored Limasawa, based on sailing routes, land forms, river deltas, and geography, and anchored the NHCP position for decades.
 
-**10. B** — Garrote at Bagumbayan (now Luneta). Fort San Felipe (A) was the mutiny site, not the execution site; Maragondon (D) is Bonifacio's story from 1897.
+**10. B**, Garrote at Bagumbayan (now Luneta). Fort San Felipe (A) was the mutiny site, not the execution site; Maragondon (D) is Bonifacio's story from 1897.
 
-**11. B** — The Tydings-McDuffie Act (1934). The Bates Treaty (A) is the 1899 agreement with the Sultan of Sulu — different module, different problem.
+**11. B**, The Tydings-McDuffie Act (1934). The Bates Treaty (A) is the 1899 agreement with the Sultan of Sulu, different module, different problem.
 
-**12. B** — RA 8371. RA 6657 is CARP; RA 10066 is the heritage act; RA 3844 is the 1963 agrarian code.
+**12. B**, RA 8371. RA 6657 is CARP; RA 10066 is the heritage act; RA 3844 is the 1963 agrarian code.
 
-**13. B** — The Spaniards transplanted their Reconquista-era label for the North African Moors; the lesson stresses that Philippine Muslims had no connection whatsoever to them.
+**13. B**, The Spaniards transplanted their Reconquista-era label for the North African Moors; the lesson stresses that Philippine Muslims had no connection whatsoever to them.
 
-**14. B** — Administrative control: stable, trackable family identities for taxation, legal obligations, and the census. Religious conversion (A) was the Spanish *school* system's aim, not the surname decree's.
+**14. B**, Administrative control: stable, trackable family identities for taxation, legal obligations, and the census. Religious conversion (A) was the Spanish *school* system's aim, not the surname decree's.
 
-**15. FALSE** — Of the 98 signatories, Aguinaldo's signature does not appear (Ocampo, 2020).
+**15. FALSE**, Of the 98 signatories, Aguinaldo's signature does not appear (Ocampo, 2020).
 
-**16. TRUE** — Mabini believed the Philippines was not yet ready; it needed more weapons and ammunition.
+**16. TRUE**, Mabini believed the Philippines was not yet ready; it needed more weapons and ammunition.
 
-**17. TRUE** — Footage inside it may be primary, but the curated, edited film is the filmmaker's interpretation — a secondary source.
+**17. TRUE**, Footage inside it may be primary, but the curated, edited film is the filmmaker's interpretation, a secondary source.
 
-**18. TRUE** — The Lumad are the 18 non-Muslim IP groups of Mindanao; *Lumad* is Visayan for "of the land."
+**18. TRUE**, The Lumad are the 18 non-Muslim IP groups of Mindanao; *Lumad* is Visayan for "of the land."
 
-**19. FALSE** — The 1943 Constitution was the Japanese-sponsored charter under Jose P. Laurel; the Constitutional Commission after People Power produced the 1987 Constitution.
+**19. FALSE**, The 1943 Constitution was the Japanese-sponsored charter under Jose P. Laurel; the Constitutional Commission after People Power produced the 1987 Constitution.
 
-**20. Julian Felipe** — the anthem's composer; first performed June 12, 1898 at Kawit.
+**20. Julian Felipe**, the anthem's composer; first performed June 12, 1898 at Kawit.
 
-**21. The Church of Barasoain** — hence the name "Malolos Congress."
+**21. The Church of Barasoain**, hence the name "Malolos Congress."
 
-**22. Fernando Amorsolo** — he painted *The Bombing of the Intendencia* from his own house as the building burned.
+**22. Fernando Amorsolo**, he painted *The Bombing of the Intendencia* from his own house as the building burned.
 
-**23. Fr. Pedro de Valderrama** — at Mazaua, March 31, 1521.
+**23. Fr. Pedro de Valderrama**, at Mazaua, March 31, 1521.
 
-**24. The National Commission on Indigenous Peoples (NCIP)** — created in 1998 to implement IPRA.
+**24. The National Commission on Indigenous Peoples (NCIP)**, created in 1998 to implement IPRA.
 
-**25. Arquitectura Mestiza** — "mixed architecture": European design executed in Philippine materials by Filipino labor.
+**25. Arquitectura Mestiza**, "mixed architecture": European design executed in Philippine materials by Filipino labor.
 
-**26. Primary** — a cartoon printed in 1915 is a visual source created inside the period being studied, carrying its creator's perspective on that moment.
+**26. Primary**, a cartoon printed in 1915 is a visual source created inside the period being studied, carrying its creator's perspective on that moment.
 
-**27. Secondary** — a 1985 scholarly analysis produced decades after the events, reflecting on them from outside.
+**27. Secondary**, a 1985 scholarly analysis produced decades after the events, reflecting on them from outside.
 
 **28. (a)** The 1986 People Power Revolution, which ousted Marcos and brought Corazon Aquino to power; the constitution was ratified on February 2, 1987. **(b)** The humanization of laws and the equalization of social and economic forces so that justice may be approximated for all.
 
-**29. (a)** The *Spoliarium*, by Juan Luna. **(b)** Rizal read it as a representation of the Philippines under colonial rule — humanity unredeemed, idealism in struggle against injustice.
+**29. (a)** The *Spoliarium*, by Juan Luna. **(b)** Rizal read it as a representation of the Philippines under colonial rule, humanity unredeemed, idealism in struggle against injustice.
 
 **30. (a)** The Moro problem as it persisted after independence in 1946. **(b)** The Spanish transplanted their Reconquista hostility, labeling Philippine Muslims "Moros" after the North African Moors and waging repeated military campaigns (the Moro Wars) against them. **(c)** The Moro National Liberation Front (MNLF).
 
 ---
 
-### Final Mock Exam B — Key
+### Final Mock Exam B, Key
 
-**1. B** — Jacinto served as intelligence director at San Juan del Monte on August 30, 1896. He never completed a formal university degree (A); Magdalo was led by Baldomero Aguinaldo (C); *The Revolt of the Masses* is Agoncillo's (D).
+**1. B**, Jacinto served as intelligence director at San Juan del Monte on August 30, 1896. He never completed a formal university degree (A); Magdalo was led by Baldomero Aguinaldo (C); *The Revolt of the Masses* is Agoncillo's (D).
 
-**2. B** — Sold at four kualta per copy and still circulating after the fight shifted to resisting American control (Richardson, 2013).
+**2. B**, Sold at four kualta per copy and still circulating after the fight shifted to resisting American control (Richardson, 2013).
 
-**3. B** — Colonel L.M. Johnson. Dewey (A) is the trap: he was invited but did not appear.
+**3. B**, Colonel L.M. Johnson. Dewey (A) is the trap: he was invited but did not appear.
 
-**4. A** — 93 articles divided into 14 titles, plus transitory provisions.
+**4. A**, 93 articles divided into 14 titles, plus transitory provisions.
 
-**5. D** — January 23, 1899, at Malolos, with Aguinaldo as President. June 12 (A) is the proclamation of independence; September 15 (B) is the Congress convening at Barasoain; January 21 (C) is the constitution's promulgation.
+**5. D**, January 23, 1899, at Malolos, with Aguinaldo as President. June 12 (A) is the proclamation of independence; September 15 (B) is the Congress convening at Barasoain; January 21 (C) is the constitution's promulgation.
 
-**6. B** — Juan dela Cruz questioning Uncle Sam about free-speech restrictions; the figures' relative size and posture visually communicated the colonial power imbalance.
+**6. B**, Juan dela Cruz questioning Uncle Sam about free-speech restrictions; the figures' relative size and posture visually communicated the colonial power imbalance.
 
-**7. A** — The rice crisis of 1919 turned cartoonists against Chinese merchants; critical attention to Japan came later, over its expanding military ambitions.
+**7. A**, The rice crisis of 1919 turned cartoonists against Chinese merchants; critical attention to Japan came later, over its expanding military ambitions.
 
-**8. B** — The explicit mention of Butuan in Pigafetta's account plus his recorded latitude of about 9 degrees 40 minutes North. The Gancayco Report (A) supports the *other* side.
+**8. B**, The explicit mention of Butuan in Pigafetta's account plus his recorded latitude of about 9 degrees 40 minutes North. The Gancayco Report (A) supports the *other* side.
 
-**9. B** — Created by the NHCP and the National Quincentennial Committee for the 500th anniversary, chaired by Dr. Resil Mojares, with respondents Atega and Malvar arguing for Butuan (including the Camiguin "three mountains" observation). It did not settle the question (A) or formally reverse the NHCP position (C) — the lesson says the controversy remains unresolved.
+**9. B**, Created by the NHCP and the National Quincentennial Committee for the 500th anniversary, chaired by Dr. Resil Mojares, with respondents Atega and Malvar arguing for Butuan (including the Camiguin "three mountains" observation). It did not settle the question (A) or formally reverse the NHCP position (C), the lesson says the controversy remains unresolved.
 
-**10. C** — José Montero y Vidal, the Spanish official whose account LeRoy said became notably "rabid" — strongly condemning the executed priests.
+**10. C**, José Montero y Vidal, the Spanish official whose account LeRoy said became notably "rabid", strongly condemning the executed priests.
 
-**11. B** — Staged Citizens' Assemblies: the standard criticism of the January 1973 ratification.
+**11. B**, Staged Citizens' Assemblies: the standard criticism of the January 1973 ratification.
 
-**12. C** — RA 6657, 1988, under Corazon Aquino. RA 3844 (A) is the 1963 Agricultural Land Reform Code; PD 27 (B) covered rice and corn lands only; RA 8371 (D) is IPRA.
+**12. C**, RA 6657, 1988, under Corazon Aquino. RA 3844 (A) is the 1963 Agricultural Land Reform Code; PD 27 (B) covered rice and corn lands only; RA 8371 (D) is IPRA.
 
-**13. B** — Plant sap, molasses, and egg white were added to the lime-and-water *argamasa* for durability.
+**13. B**, Plant sap, molasses, and egg white were added to the lime-and-water *argamasa* for durability.
 
-**14. C** — The National Cultural Heritage Act of 2009, built on the 1987 Constitution's Article XIV mandate.
+**14. C**, The National Cultural Heritage Act of 2009, built on the 1987 Constitution's Article XIV mandate.
 
-**15. TRUE** — Sewn in Hong Kong, first raised and waved publicly at Kawit on June 12, 1898.
+**15. TRUE**, Sewn in Hong Kong, first raised and waved publicly at Kawit on June 12, 1898.
 
-**16. TRUE** — 4.22 × 7.675 meters; the largest painting in the Philippines.
+**16. TRUE**, 4.22 × 7.675 meters; the largest painting in the Philippines.
 
-**17. FALSE** — Gómez was the *oldest* at 73; Burgos (35) was the youngest, with Zamora at 37.
+**17. FALSE**, Gómez was the *oldest* at 73; Burgos (35) was the youngest, with Zamora at 37.
 
-**18. FALSE** — PD 27 covered rice and corn lands only; that limited scope is exactly the lesson's criticism of it.
+**18. FALSE**, PD 27 covered rice and corn lands only; that limited scope is exactly the lesson's criticism of it.
 
-**19. FALSE** — They are related but distinct: local history is the ground-up history of communities and localities; oral history is specifically the transmission of historical experience through the spoken word across generations.
+**19. FALSE**, They are related but distinct: local history is the ground-up history of communities and localities; oral history is specifically the transmission of historical experience through the spoken word across generations.
 
-**20. Governor-General Rafael de Izquierdo** — his official report framed the mutiny as a widespread conspiracy to justify the repression.
+**20. Governor-General Rafael de Izquierdo**, his official report framed the mutiny as a widespread conspiracy to justify the repression.
 
-**21. *El Filibusterismo*** — dedicated to the memory of the three martyred priests.
+**21. *El Filibusterismo***, dedicated to the memory of the three martyred priests.
 
-**22. David Barrows** — of the Bureau of Non-Christian Tribes (established 1901).
+**22. David Barrows**, of the Bureau of Non-Christian Tribes (established 1901).
 
-**23. The Thomasites** — after the ship *Thomas* that brought many of them.
+**23. The Thomasites**, after the ship *Thomas* that brought many of them.
 
-**24. The Ruins** — Don Mariano Ledesma Lacson's mansion; knowing the history is what turns the picturesque ruin into layered heritage.
+**24. The Ruins**, Don Mariano Ledesma Lacson's mansion; knowing the history is what turns the picturesque ruin into layered heritage.
 
-**25. The Heritage Cycle** — understanding → valuing → taking care of it → finding meaning → back to understanding.
+**25. The Heritage Cycle**, understanding → valuing → taking care of it → finding meaning → back to understanding.
 
-**26. Primary, unwritten** — a surviving bridge is material/tangible evidence from inside the period: its stone, mortar, and carved marks testify directly to colonial construction and labor.
+**26. Primary, unwritten**, a surviving bridge is material/tangible evidence from inside the period: its stone, mortar, and carved marks testify directly to colonial construction and labor.
 
-**27. Secondary** — as a curated, edited whole it is the filmmaker's 2010 interpretation; only actual period footage inside it would count as primary.
+**27. Secondary**, as a curated, edited whole it is the filmmaker's 2010 interpretation; only actual period footage inside it would count as primary.
 
 **28. (a)** The Indigenous Peoples of the Philippines. **(b)** The Indigenous Peoples' Rights Act (IPRA), Republic Act 8371. **(c)** Any two of: right to ancestral domains and lands; right to self-governance and empowerment; right to social justice and human rights; right to cultural integrity.
 
-**29. (a)** The *polo y servicios* labor obligation; the laborers were called *polistas*. **(b)** Filipino stone cutters marked their work with carved symbols — asserting their presence even in anonymous colonial construction officially credited to the Spanish commissioners. **(c)** Either: bridges show economic integration (connecting pueblos and alcaldias for goods, troops, and missionaries), or they served as boundary markers between towns and provinces.
+**29. (a)** The *polo y servicios* labor obligation; the laborers were called *polistas*. **(b)** Filipino stone cutters marked their work with carved symbols, asserting their presence even in anonymous colonial construction officially credited to the Spanish commissioners. **(c)** Either: bridges show economic integration (connecting pueblos and alcaldias for goods, troops, and missionaries), or they served as boundary markers between towns and provinces.
 
 **30. (a)** Local history is the ground-up history of communities and localities; oral history refers specifically to historical experience transmitted through the spoken word across generations. **(b)** Any two of: authentic, accurate, objective, reliable, relevant, systematic/scientific. **(c)** Any one of: it fills gaps in the national narrative; corrects imbalances by giving voice to marginalized groups; strengthens local identity; supports national development as communities gained autonomy under the Local Government Code.
 

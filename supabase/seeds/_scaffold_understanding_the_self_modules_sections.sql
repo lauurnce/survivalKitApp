@@ -1,7 +1,7 @@
 -- ============================================================
--- Understanding the Self — Modules & Sections (SCAFFOLD)
+-- Understanding the Self, Modules & Sections (SCAFFOLD)
 -- Subject ID: 11509900-1340-449a-993c-13b894dee299
--- 1st Year, Semester 1 — minor
+-- 1st Year, Semester 1, minor
 -- Suggested module count: 4-6
 --
 -- Reserved UUID namespace below is collision-free and deterministic.
@@ -175,18 +175,18 @@ DELETE FROM modules WHERE subject_id = '11509900-1340-449a-993c-13b894dee299';
 --   S10: 5f167f4b-b798-5699-86e9-d15047a1c1f9  <- reserve last for kind='activity'
 
 -- ============================================================
--- IMPORT TEMPLATE — one INSERT per module. Replace placeholders.
+-- IMPORT TEMPLATE, one INSERT per module. Replace placeholders.
 -- content sections are FREE; the final activity section is PAID.
 -- ide_language (python|sql|java|c), starter_code, topology_data are
--- all OPTIONAL columns — include only when the section needs them.
+-- all OPTIONAL columns, include only when the section needs them.
 -- ============================================================
 --
 -- INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 -- ('a5a94d46-8676-5a28-94cf-f8849ea90ad6','content','<Heading>',$md$
--- <full markdown teaching body — free tier>
+-- <full markdown teaching body, free tier>
 -- $md$, 1),
--- ('a5a94d46-8676-5a28-94cf-f8849ea90ad6','activity','Practice & Exam Drills — Lesson 1',$md$
--- <review questions, worked exam problems w/ solutions, how-to-pass tips — paid tier>
+-- ('a5a94d46-8676-5a28-94cf-f8849ea90ad6','activity','Practice & Exam Drills, Lesson 1',$md$
+-- <review questions, worked exam problems w/ solutions, how-to-pass tips, paid tier>
 -- $md$, 2);
 --
 -- With an interactive playground, use the 5-column form instead:
@@ -224,9 +224,9 @@ Identity comes from many components. Some common factors include:
 
 By reflecting on these components, you start to see the big picture of your self and identity. You might use a journal to list your roles and traits, or talk with friends about what defines you. This exploration is the first step in understanding who you are.
 
-Ready to apply this? The practice set for this lesson includes exam-style questions and reflection exercises that build your understanding of self and identity — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson includes exam-style questions and reflection exercises that build your understanding of self and identity, unlock it to start drilling.
 $md$, 3),
-('a5a94d46-8676-5a28-94cf-f8849ea90ad6','activity','Practice & Exam Drills — Lesson 1',$md$
+('a5a94d46-8676-5a28-94cf-f8849ea90ad6','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions:**
 
 1. What is the difference between self and identity?
@@ -252,7 +252,7 @@ $md$, 3),
 **How to Pass Tips:**
 
 - Remember key terms: self, identity, personal identity vs. social identity. Professors often ask you to define these clearly.
-- Use Filipino examples if allowed (e.g. family, bayanihan) — it shows understanding of context.
+- Use Filipino examples if allowed (e.g. family, bayanihan), it shows understanding of context.
 - Don't just list traits; explain how they fit together (e.g. "I am a student and a writer because…").
 - For scenario questions, organize your answer (point out different aspects and compare). Outline before writing.
 $md$, 4);
@@ -287,14 +287,14 @@ $md$, 3),
 ('1bbfe4a0-d9ab-570b-8176-f8910b4293e4','activity','Reflection on Personal Growth',$md$
 By understanding these theories, you gain insight into your own growth. For example:
 
-- Remember when you were 10 vs. now — your interests and confidence changed. Erikson's theory suggests you moved from Industry vs. Inferiority (learning skills) to Identity vs. Role Confusion.
+- Remember when you were 10 vs. now, your interests and confidence changed. Erikson's theory suggests you moved from Industry vs. Inferiority (learning skills) to Identity vs. Role Confusion.
 - Think about personal goals (e.g. finishing college). Your self-efficacy (belief "I can study enough to pass") matters. Building self-efficacy is part of personal growth.
 
 Start a practice: set small goals (like finishing a book) to boost self-efficacy. Keep a learning journal: note successes and challenges each week. Over time, this builds a more detailed self-concept (you become aware of your strengths and values).
 
-Ready to apply this? The practice set for this lesson includes reflective questions on personality theories, example problems, and self-growth exercises — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson includes reflective questions on personality theories, example problems, and self-growth exercises, unlock it to start drilling.
 $md$, 4),
-('1bbfe4a0-d9ab-570b-8176-f8910b4293e4','activity','Practice & Exam Drills — Lesson 2',$md$
+('1bbfe4a0-d9ab-570b-8176-f8910b4293e4','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions:**
 
 1. Explain Bandura's triadic model (person, behavior, environment) in your own words.
@@ -349,9 +349,9 @@ Be mindful: media can spread stereotypes (e.g., "all IT people are nerdy," or "a
 
 Also, globalization means we're exposed to other cultures (K-pop fans, foreign movies). This can create multiple cultural identities (e.g., being a proud Filipino who also loves Korean music). Navigating between these can enrich your self, but also cause confusion if values clash. Recognizing this helps you build a more flexible and personal identity.
 
-Ready to apply this? The practice set for this lesson includes case studies on cultural influences and self-reflective exercises — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson includes case studies on cultural influences and self-reflective exercises, unlock it to start drilling.
 $md$, 4),
-('cdb37a9c-0c3c-519c-b54b-71716b948674','activity','Practice & Exam Drills — Lesson 3',$md$
+('cdb37a9c-0c3c-519c-b54b-71716b948674','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions:**
 
 1. How do family values influence personal identity? Give a Filipino example.
@@ -413,9 +413,9 @@ Ask yourself regularly: "Am I living for likes, or for what truly matters to me?
 
 By understanding the digital self, you control it. Don't let online comparisons define you; use the internet as a tool to explore interests and build genuine connections that enhance your sense of self.
 
-Ready to apply this? The practice set for this lesson offers exercises on digital identity and scenarios to test your understanding — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson offers exercises on digital identity and scenarios to test your understanding, unlock it to start drilling.
 $md$, 4),
-('1132195f-3e9a-5020-8393-7d3e4244cc3f','activity','Practice & Exam Drills — Lesson 4',$md$
+('1132195f-3e9a-5020-8393-7d3e4244cc3f','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions:**
 
 1. What is the "digital self"? How does it relate to your identity?
@@ -427,7 +427,7 @@ $md$, 4),
 
 **Scenario:** Miguel notices he feels anxious when he doesn't get enough "likes" on his online posts. He decides to limit his social media to 30 minutes a day. Explain how this action affects Miguel's self-management and identity.
 
-**Solution:** By limiting social media, Miguel exercises self-regulation, a self-care skill. This helps him detach his self-esteem from likes. It reinforces that his identity isn't defined by social media popularity. Over time, Miguel will likely feel more in control (increased self-efficacy) and authentic, because he's aligning his behavior (less scrolling) with his values (mental wellness). This change shows healthy personal growth—Miguel's self-concept becomes based on real achievements, not online validation.
+**Solution:** By limiting social media, Miguel exercises self-regulation, a self-care skill. This helps him detach his self-esteem from likes. It reinforces that his identity isn't defined by social media popularity. Over time, Miguel will likely feel more in control (increased self-efficacy) and authentic, because he's aligning his behavior (less scrolling) with his values (mental wellness). This change shows healthy personal growth, Miguel's self-concept becomes based on real achievements, not online validation.
 
 **Essay:** How can viewing only positive posts on social media create a "filtered" self-image issue? Suggest one strategy to cope with this effect.
 
@@ -443,7 +443,7 @@ $md$, 4),
 - Common exam question: "Discuss the impact of social media on the modern self." Make sure to give a balanced view (both positive and negative effects).
 - Use terms like "digital identity," "self-presentation," "cyber self," and cite local context if possible (e.g., mention popular apps in the Philippines like Facebook or TikTok).
 - A common mistake is focusing only on complaints. Also mention how digital tools can help (e.g., joining positive communities).
-- In your answers, emphasize self-management techniques (limiting screen time, critical thinking) — professors expect solutions, not just problems.
+- In your answers, emphasize self-management techniques (limiting screen time, critical thinking), professors expect solutions, not just problems.
 $md$, 5);
 
 -- ==== Lesson 5 ====
@@ -451,7 +451,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('6d899f41-8f1f-5553-b8c7-226e17294a79','content','Goal Setting and Motivation',$md$
 Personal growth often starts with goals. Setting clear, achievable goals gives direction to your self-development. Use the SMART approach: Specific, Measurable, Achievable, Relevant, Time-bound. For example, instead of saying, "I want to study more," say, "I will review 2 chapters of my programming book every evening this week." This clarity makes success and progress visible.
 
-Filipino values like sipag (hard work) and tiyaga (perseverance) tie into motivation. Frame goals as helping others too (e.g., "I'll study so I can help my younger cousin with homework"), adding meaning. Achieving small goals boosts motivation (as self-efficacy increases). Each success—no matter how small—is a piece of your developing self-story. Celebrate them quietly, or share with supportive friends.
+Filipino values like sipag (hard work) and tiyaga (perseverance) tie into motivation. Frame goals as helping others too (e.g., "I'll study so I can help my younger cousin with homework"), adding meaning. Achieving small goals boosts motivation (as self-efficacy increases). Each success, no matter how small, is a piece of your developing self-story. Celebrate them quietly, or share with supportive friends.
 $md$, 1),
 ('6d899f41-8f1f-5553-b8c7-226e17294a79','content','Stress Management and Resilience',$md$
 College can be stressful. Understanding stress and learning to manage it is part of caring for your self. Common stressors: exams, adjusting to new environment, personal conflicts. Filipinos often support each other in bayanihan style; don't hesitate to seek help (talk to a friend or counselor).
@@ -478,9 +478,9 @@ By now, you've explored many facets of yourself: personal traits, relationships,
 
 Keeping a Self-Improvement Plan (short notes or bullet points) can be motivating. It reminds you that understanding the self is an ongoing journey.
 
-Ready to apply this? The practice set for this lesson has goal-setting templates, exam questions on stress management, and a guided reflection activity — unlock it to start drilling.
+Ready to apply this? The practice set for this lesson has goal-setting templates, exam questions on stress management, and a guided reflection activity, unlock it to start drilling.
 $md$, 4),
-('6d899f41-8f1f-5553-b8c7-226e17294a79','activity','Practice & Exam Drills — Lesson 5',$md$
+('6d899f41-8f1f-5553-b8c7-226e17294a79','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions:**
 
 1. What does SMART stand for in goal-setting? Provide an example of a SMART goal.
@@ -512,9 +512,9 @@ $md$, 4),
 $md$, 5);
 
 -- SOURCES:
---   Ateneo de Manila University — Syllabus for SocSci 11: Understanding the Self (course outline)
---   Polytechnic University of the Philippines — Syllabus for GEED 10023: Understanding the Self
---   Far Eastern University Manila — Course Outline for GED0110: Understanding the Self
---   Commission on Higher Education (CHED) — CMO No. 25 s.2015 (BSIT/BSCS sample curriculum, includes GE2 Understanding the Self)
---   Commission on Higher Education (CHED) — Revised General Education Curriculum (course description for Understanding the Self)
+--   Ateneo de Manila University, Syllabus for SocSci 11: Understanding the Self (course outline)
+--   Polytechnic University of the Philippines, Syllabus for GEED 10023: Understanding the Self
+--   Far Eastern University Manila, Course Outline for GED0110: Understanding the Self
+--   Commission on Higher Education (CHED), CMO No. 25 s.2015 (BSIT/BSCS sample curriculum, includes GE2 Understanding the Self)
+--   Commission on Higher Education (CHED), Revised General Education Curriculum (course description for Understanding the Self)
 

@@ -1,4 +1,4 @@
-# Mathematics in the Modern World — Complete Study Guide
+# Mathematics in the Modern World, Complete Study Guide
 <!-- subject: Mathematics in the Modern World | year: 1st -->
 
 ---
@@ -155,7 +155,7 @@ Far from being confined to an academic environment, mathematical frameworks are 
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit I
+## Practice Exercises, Unit I
 
 **Question 1: Symmetry Classification**
 
@@ -344,7 +344,7 @@ $$A' = U \setminus A = \{x \mid x \in U \text{ and } x \notin A\}$$
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit II
+## Practice Exercises, Unit II
 
 **Question 1: Constructing Compound Truth Tables**
 
@@ -402,7 +402,7 @@ A market survey evaluates the reading choices of 90 bookstore consumers. The col
 
 The process of deriving a broad, generalized conclusion (termed a conjecture) by observing specific patterns or a limited sequence of samples.
 
-**Risk:** Conjectures generated via inductive workflows are not guaranteed to be true. They can be completely disproved if a single counterexample is found — an exception that satisfies all premises but invalidates the conclusion.
+**Risk:** Conjectures generated via inductive workflows are not guaranteed to be true. They can be completely disproved if a single counterexample is found, an exception that satisfies all premises but invalidates the conclusion.
 
 ### Deductive Reasoning
 
@@ -456,7 +456,7 @@ Evaluate your final answer to verify it makes sense within the context of the pr
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit III
+## Practice Exercises, Unit III
 
 **Question 1: Consecutive Analytical Sums**
 
@@ -614,7 +614,7 @@ $$s = \sqrt{s^2}$$
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit IV
+## Practice Exercises, Unit IV
 
 **Question 1: Classifying Sampling Designs**
 
@@ -682,7 +682,7 @@ For linear programming models with two decision variables, the optimal solution 
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit V
+## Practice Exercises, Unit V
 
 **Question 1: Manufacturing Optimization Modeling**
 
@@ -840,7 +840,7 @@ Every planar graph (and by extension, any standard geographic map) can be colore
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit VI
+## Practice Exercises, Unit VI
 
 **Question 1: Eulerian Lifecycle Assessment**
 

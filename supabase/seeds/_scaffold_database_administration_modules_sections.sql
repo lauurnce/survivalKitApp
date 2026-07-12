@@ -1,7 +1,7 @@
 -- ============================================================
--- Database Administration — Modules & Sections
+-- Database Administration, Modules & Sections
 -- Subject ID: 0a7947c5-6b9d-4a9c-8980-3d4187ec8d82
--- 3rd Year, Semester 1 — major
+-- 3rd Year, Semester 1, major
 --
 -- Free/paid split: per lesson, sections 1-2 are FREE (kind='content'),
 -- section 3 + the practice drills are PAID (kind='activity').
@@ -48,10 +48,10 @@ That does not mean the DBA works alone. The DBA collaborates with system analyst
 
 A strong DBA balances four goals:
 
-- **Integrity** — the data stays correct and consistent
-- **Availability** — the database stays usable when needed
-- **Security** — only the right people can access the right data
-- **Performance** — transactions and reports finish in acceptable time
+- **Integrity**, the data stays correct and consistent
+- **Availability**, the database stays usable when needed
+- **Security**, only the right people can access the right data
+- **Performance**, transactions and reports finish in acceptable time
 $md$, 1),
 
 ('65311dcc-72f1-50c9-80de-3f200a73f099','content','How a Database System Is Organized',$md$
@@ -86,9 +86,9 @@ You should also distinguish common database objects:
 
 A DBA also works across environments:
 
-- **development** — where systems are built and tested
-- **testing / staging** — where changes are validated before release
-- **production** — the live environment serving actual users
+- **development**, where systems are built and tested
+- **testing / staging**, where changes are validated before release
+- **production**, the live environment serving actual users
 
 This separation matters because unsafe testing in production can damage real data. In practice, one of the earliest signs of good administration is discipline in environments, naming, and change control.
 $md$, 2),
@@ -98,12 +98,12 @@ Database Administration is not one single task. It is a lifecycle.
 
 A typical administration cycle looks like this:
 
-1. **Plan** — Understand requirements, workload, security needs, and expected growth.
-2. **Design** — Review schema, constraints, indexing strategy, and storage layout.
-3. **Implement** — Create objects, configure accounts, apply permissions, load initial data.
-4. **Operate** — Monitor health, capacity, locks, slow queries, and usage patterns.
-5. **Protect** — Run backups, verify recoverability, harden access, audit activity.
-6. **Improve** — Tune performance, archive old data, revise indexes, adjust policies.
+1. **Plan**, Understand requirements, workload, security needs, and expected growth.
+2. **Design**, Review schema, constraints, indexing strategy, and storage layout.
+3. **Implement**, Create objects, configure accounts, apply permissions, load initial data.
+4. **Operate**, Monitor health, capacity, locks, slow queries, and usage patterns.
+5. **Protect**, Run backups, verify recoverability, harden access, audit activity.
+6. **Improve**, Tune performance, archive old data, revise indexes, adjust policies.
 
 Students often imagine database work as "write SQL and done." Real administration is more like managing a living service. Even a correct schema can fail in production if backups are missing, permissions are too broad, or the indexes no longer match the workload.
 
@@ -120,7 +120,7 @@ A DBA reduces these risks through standards, routines, and testing. Administrati
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('65311dcc-72f1-50c9-80de-3f200a73f099','activity','Practice & Exam Drills — Lesson 1',$md$
+('65311dcc-72f1-50c9-80de-3f200a73f099','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions**
 
 1. What is the main difference between a developer's perspective and a DBA's perspective?
@@ -256,9 +256,9 @@ This mixes student facts, subject facts, and teaching facts in one place. The re
 
 Normalization addresses this using forms such as:
 
-- **First Normal Form (1NF)** — values are atomic; no repeating groups
-- **Second Normal Form (2NF)** — non-key attributes depend on the whole key
-- **Third Normal Form (3NF)** — non-key attributes do not depend on other non-key attributes
+- **First Normal Form (1NF)**, values are atomic; no repeating groups
+- **Second Normal Form (2NF)**, non-key attributes depend on the whole key
+- **Third Normal Form (3NF)**, non-key attributes do not depend on other non-key attributes
 
 A practical DBA should know the symptoms of poor normalization:
 
@@ -277,11 +277,11 @@ A schema becomes administratively strong when it is not only normalized but also
 
 Constraints turn business rules into enforceable rules. Examples:
 
-- `PRIMARY KEY` — each row has a unique identifier
-- `FOREIGN KEY` — references only valid parent rows
-- `NOT NULL` — value is required
-- `UNIQUE` — duplicates not allowed
-- `CHECK` — values must satisfy a condition
+- `PRIMARY KEY`, each row has a unique identifier
+- `FOREIGN KEY`, references only valid parent rows
+- `NOT NULL`, value is required
+- `UNIQUE`, duplicates not allowed
+- `CHECK`, values must satisfy a condition
 
 Without constraints, applications may insert invalid data and the database stops being trustworthy.
 
@@ -312,7 +312,7 @@ Metadata matters because administration is not just about storing data; it is ab
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('db58ec7e-702f-569a-96e8-0bb0740187a3','activity','Practice & Exam Drills — Lesson 2',$md$
+('db58ec7e-702f-569a-96e8-0bb0740187a3','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions**
 
 1. Why is normalization relevant to database administration?
@@ -513,7 +513,7 @@ DBA work becomes stronger when physical design decisions are based on evidence, 
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('13310768-cc33-5dfc-9388-2e853ba6766c','activity','Practice & Exam Drills — Lesson 3',$md$
+('13310768-cc33-5dfc-9388-2e853ba6766c','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions**
 
 1. Why is physical design different from logical design?
@@ -694,7 +694,7 @@ Even when applications already validate input, DBAs should still check the datab
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('59f57eb3-cab9-5bbe-bd26-7880e4e43763','activity','Practice & Exam Drills — Lesson 4',$md$
+('59f57eb3-cab9-5bbe-bd26-7880e4e43763','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions**
 
 1. Why is DDL especially important for DBAs?
@@ -790,10 +790,10 @@ If the first two steps succeed but the third fails, the database may become inco
 
 The classic properties of transactions are called **ACID**:
 
-- **Atomicity** — all or nothing
-- **Consistency** — valid state before and after
-- **Isolation** — concurrent work should not interfere improperly
-- **Durability** — committed work survives failures
+- **Atomicity**, all or nothing
+- **Consistency**, valid state before and after
+- **Isolation**, concurrent work should not interfere improperly
+- **Durability**, committed work survives failures
 
 For DBAs, transactions are essential because they connect application behavior to correctness, locking, logging, and recovery.
 $md$, 1),
@@ -803,13 +803,13 @@ In real systems, many users act at the same time. This is called concurrency. Wi
 
 Common anomalies include:
 
-**Lost update** — Two users read the same row, both modify it, and one update overwrites the other.
+**Lost update**, Two users read the same row, both modify it, and one update overwrites the other.
 
-**Dirty read** — A transaction reads data written by another transaction that has not yet committed.
+**Dirty read**, A transaction reads data written by another transaction that has not yet committed.
 
-**Non-repeatable read** — A transaction reads the same row twice and gets different values because another transaction changed it in between.
+**Non-repeatable read**, A transaction reads the same row twice and gets different values because another transaction changed it in between.
 
-**Phantom read** — A transaction reruns a query and finds new rows added by another transaction.
+**Phantom read**, A transaction reruns a query and finds new rows added by another transaction.
 
 DBMSs manage these issues through locking, timestamps, or other concurrency methods, and expose different isolation levels. Higher isolation can increase correctness but may reduce concurrency and speed.
 
@@ -839,7 +839,7 @@ The DBA's role is to understand recovery logic well enough to support backup str
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('32c49f63-b4f0-50b1-8297-4a4c762514fd','activity','Practice & Exam Drills — Lesson 5',$md$
+('32c49f63-b4f0-50b1-8297-4a4c762514fd','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. What is a transaction?
@@ -949,11 +949,11 @@ A good DBA asks not only, "Do we have backups?" but also:
 
 Important backup ideas include:
 
-- **full backup** — complete copy of the database
-- **incremental backup** — captures changes since a baseline
-- **differential backup** — captures changes since the last full backup
-- **logical backup** — exports schema/data as logical statements or dumps
-- **physical backup** — copies physical database files or blocks, depending on DBMS support
+- **full backup**, complete copy of the database
+- **incremental backup**, captures changes since a baseline
+- **differential backup**, captures changes since the last full backup
+- **logical backup**, exports schema/data as logical statements or dumps
+- **physical backup**, copies physical database files or blocks, depending on DBMS support
 
 A backup that has never been tested is only a promise, not proof.
 $md$, 1),
@@ -963,8 +963,8 @@ When organizations recover from failure, two measures are very important:
 
 | Term | Meaning |
 |---|---|
-| RPO | Recovery Point Objective — how much data loss is acceptable |
-| RTO | Recovery Time Objective — how long downtime can last |
+| RPO | Recovery Point Objective, how much data loss is acceptable |
+| RTO | Recovery Time Objective, how long downtime can last |
 
 Example:
 
@@ -1008,7 +1008,7 @@ For a DBA, a mature protection plan usually combines:
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('eeadbcc4-8c57-57c5-ae6c-e645a339b44f','activity','Practice & Exam Drills — Lesson 6',$md$
+('eeadbcc4-8c57-57c5-ae6c-e645a339b44f','activity','Practice & Exam Drills, Lesson 6',$md$
 **Review Questions**
 
 1. Differentiate backup and recovery.
@@ -1096,10 +1096,10 @@ Database security is the protection of data against unauthorized access, misuse,
 
 A DBA supports security using practical principles such as:
 
-- **least privilege** — users get only the access they need
-- **separation of duties** — sensitive powers are not concentrated unnecessarily
-- **accountability** — actions can be traced
-- **defense in depth** — combine controls, do not rely on only one
+- **least privilege**, users get only the access they need
+- **separation of duties**, sensitive powers are not concentrated unnecessarily
+- **accountability**, actions can be traced
+- **defense in depth**, combine controls, do not rely on only one
 
 In actual environments, not every staff member should see complete records. For example:
 
@@ -1114,8 +1114,8 @@ $md$, 1),
 ('8e3f6912-f3d9-5fe2-919e-13fd37628889','content','Authentication, Authorization, and Least Privilege',$md$
 Two terms should be clear:
 
-- **Authentication** — proving identity
-- **Authorization** — deciding what that identity is allowed to do
+- **Authentication**, proving identity
+- **Authorization**, deciding what that identity is allowed to do
 
 After login, the DBMS checks permissions such as:
 
@@ -1167,7 +1167,7 @@ A DBA does not become a lawyer in this course, but the DBA must act as a careful
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('8e3f6912-f3d9-5fe2-919e-13fd37628889','activity','Practice & Exam Drills — Lesson 7',$md$
+('8e3f6912-f3d9-5fe2-919e-13fd37628889','activity','Practice & Exam Drills, Lesson 7',$md$
 **Review Questions**
 
 1. What is least privilege?
@@ -1281,11 +1281,11 @@ $md$, 1),
 ('369553ac-ecd5-5dc7-8a94-3538e96c8e0c','content','A Practical Tuning Workflow',$md$
 A good tuning workflow is usually:
 
-1. **Identify the symptom** — Example: "Student ledger query takes 18 seconds."
-2. **Measure the current behavior** — Which query? How often? At what time? On which tables?
-3. **Find probable causes** — Missing indexes? Too many joins? Old statistics? Blocking? Large scans?
-4. **Apply one change at a time** — Add or revise index, rewrite query, archive data, adjust schedule.
-5. **Measure again** — Did the change actually help? Did it create side effects?
+1. **Identify the symptom**, Example: "Student ledger query takes 18 seconds."
+2. **Measure the current behavior**, Which query? How often? At what time? On which tables?
+3. **Find probable causes**, Missing indexes? Too many joins? Old statistics? Blocking? Large scans?
+4. **Apply one change at a time**, Add or revise index, rewrite query, archive data, adjust schedule.
+5. **Measure again**, Did the change actually help? Did it create side effects?
 
 This method is better than random tweaking.
 
@@ -1329,7 +1329,7 @@ At this point, you can see the full picture of the course: database administrati
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('369553ac-ecd5-5dc7-8a94-3538e96c8e0c','activity','Practice & Exam Drills — Lesson 8',$md$
+('369553ac-ecd5-5dc7-8a94-3538e96c8e0c','activity','Practice & Exam Drills, Lesson 8',$md$
 **Review Questions**
 
 1. Why should tuning begin with monitoring?

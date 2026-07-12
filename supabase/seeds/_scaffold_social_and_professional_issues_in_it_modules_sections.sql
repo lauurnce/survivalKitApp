@@ -1,7 +1,7 @@
 -- ============================================================
--- Social and Professional Issues in IT — Modules & Sections
+-- Social and Professional Issues in IT, Modules & Sections
 -- Subject ID: 40000000-0004-0001-0001-000000000003
--- 4th Year, Semester 1 — major
+-- 4th Year, Semester 1, major
 -- 6 lessons. Split: S1+S2 = content (FREE); remaining teaching blocks + drill
 --   = activity (PAID). Paid count follows each lesson's real section count:
 --   L1 -> 2/2; L2-L5 -> 2/3; L6 -> 2/4.
@@ -39,7 +39,7 @@ Certification and continuing education are also part of professionalism. While n
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and scenario exercises.*
 $md$, 3),
-('537e166b-a533-59c2-bf18-70f907dfac3c','activity','Practice & Exam Drills — Lesson 1',$md$
+('537e166b-a533-59c2-bf18-70f907dfac3c','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions**
 
 1. What differentiates a profession from a job, and why is IT considered a profession?
@@ -71,7 +71,7 @@ $md$, 4);
 -- ============================================================
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('254ba5a2-90e0-5a1b-84e2-060dc2f083a6','content','What is Ethics?',$md$
-**Ethics** is the study of moral principles—what is right and wrong. In IT, ethics deals with questions like "Is it right to use data-mining on users without their consent?" Ethics differs from law: something illegal (like stealing data) is also unethical, but not all unethical acts are illegal (e.g., minor plagiarism may not be prosecuted but is still unethical). Applied ethics in IT focuses on real-world dilemmas.
+**Ethics** is the study of moral principles, what is right and wrong. In IT, ethics deals with questions like "Is it right to use data-mining on users without their consent?" Ethics differs from law: something illegal (like stealing data) is also unethical, but not all unethical acts are illegal (e.g., minor plagiarism may not be prosecuted but is still unethical). Applied ethics in IT focuses on real-world dilemmas.
 
 Filipino culture values **"kapwa"** (togetherness) and **"utang na loob"** (debt of gratitude), which inform ethical behavior too. IT ethics may ask: How do our actions affect our kapwa (fellow citizens)? For example, if you design a game that encourages gambling behaviors, is that socially responsible? Considering these cultural values helps make ethical decisions that respect Filipino society.
 $md$, 1),
@@ -101,7 +101,7 @@ Another issue is **freedom of information vs. security**. For example, should yo
 
 *Ready to apply this? The practice set below shows how to analyze ethical scenarios step-by-step, plus more problem drills.*
 $md$, 4),
-('254ba5a2-90e0-5a1b-84e2-060dc2f083a6','activity','Practice & Exam Drills — Lesson 2',$md$
+('254ba5a2-90e0-5a1b-84e2-060dc2f083a6','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions**
 
 1. Briefly define utilitarianism and deontological ethics in your own words.
@@ -125,7 +125,7 @@ You are designing a mobile app that collects location data. Outline in bullet po
 - Ethics questions often require specific theory names. Familiarize yourself with terms: utilitarian, deontology, virtue ethics, duty, outcome.
 - Always relate answers to scenarios: e.g., if asked about privacy, mention RA 10173 (Data Privacy Act) or informed consent.
 - Practice outlining steps: professors like seeing "Step 1: … Step 2: …".
-- Study Philippine examples of tech issues (like government data leaks) — they like local context.
+- Study Philippine examples of tech issues (like government data leaks), they like local context.
 $md$, 5);
 
 -- ============================================================
@@ -156,7 +156,7 @@ In the Philippines, **"bayanihan"** (helping community) is a cultural value. As 
 
 *Ready to apply this? The practice set below includes scenario exercises on code violations and solving them.*
 $md$, 4),
-('b1ec0564-da59-5cc2-92ee-d4328c2a626d','activity','Practice & Exam Drills — Lesson 3',$md$
+('b1ec0564-da59-5cc2-92ee-d4328c2a626d','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions**
 
 1. State two principles from the ACM Code of Ethics that relate to IT professionalism.
@@ -209,7 +209,7 @@ Employers often check social media of candidates, so professionalism extends onl
 
 *Ready to apply this? The practice set below includes problem scenarios on applying laws and best practices in real situations.*
 $md$, 4),
-('ee50e683-3e46-5f0e-82d6-3e7a7ebb3e47','activity','Practice & Exam Drills — Lesson 4',$md$
+('ee50e683-3e46-5f0e-82d6-3e7a7ebb3e47','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions**
 
 1. What are the three main pillars of information security (the CIA triad)?
@@ -262,7 +262,7 @@ Understand also **digital rights management (DRM)** from a consumer perspective:
 
 *Ready to apply this? The practice set below includes exercises on licensing decisions and IP case studies.*
 $md$, 4),
-('d0a396ec-b8bd-5cd9-9d59-b5d1a544b3d6','activity','Practice & Exam Drills — Lesson 5',$md$
+('d0a396ec-b8bd-5cd9-9d59-b5d1a544b3d6','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. What are the three main categories of intellectual property protected by law?
@@ -297,7 +297,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('3822c95b-e919-5f55-95c6-30a2d8c44a07','content','Digital Divide and Access',$md$
 Not everyone has equal access to technology. The **digital divide** is the gap between those who have internet/computers and those who do not. In the Philippines, many rural areas still struggle with connectivity. As future IT professionals, understanding this is important. For example, when building a website or app for all Filipinos, you might make it mobile-friendly and low-bandwidth so people with slower connections can still use it.
 
-Discussing the social impact, one should also note government initiatives (such as the DICT's free Wi-Fi in public areas) and community internet programs. In exams, you might analyze how IT projects can either widen or help bridge this divide. A question might ask for ideas on increasing e-learning access during the pandemic — citing examples like using radio or TV lessons (as the Philippine Department of Education did) shows cultural context.
+Discussing the social impact, one should also note government initiatives (such as the DICT's free Wi-Fi in public areas) and community internet programs. In exams, you might analyze how IT projects can either widen or help bridge this divide. A question might ask for ideas on increasing e-learning access during the pandemic, citing examples like using radio or TV lessons (as the Philippine Department of Education did) shows cultural context.
 $md$, 1),
 ('3822c95b-e919-5f55-95c6-30a2d8c44a07','content','E-Waste and Sustainability',$md$
 Technology has an environmental side too. Discarded computers, phones, and servers contribute to **electronic waste (e-waste)**, which can be toxic. A professional issue is to promote sustainable practices: recycling old gadgets, or designing devices that last longer. For instance, as a software engineer, you can optimize code so it runs efficiently on older hardware, extending their usable life.
@@ -312,7 +312,7 @@ $md$, 3),
 ('3822c95b-e919-5f55-95c6-30a2d8c44a07','activity','Accessibility and Inclusion',$md$
 Technology should serve everyone, including those with disabilities. Professional IT work includes making software usable for the visually impaired (screen readers, high contrast modes) or hearing impaired (captions on videos). This is a social responsibility. In the Philippines, laws like the **Magna Carta for Disabled Persons** encourage equal access.
 
-In exams, mention the importance of accessibility standards (like alt text for images, keyboard navigation) when discussing software development. It shows awareness that IT impact is not just technical but deeply social—helping fellow Filipinos regardless of ability.
+In exams, mention the importance of accessibility standards (like alt text for images, keyboard navigation) when discussing software development. It shows awareness that IT impact is not just technical but deeply social, helping fellow Filipinos regardless of ability.
 $md$, 4),
 ('3822c95b-e919-5f55-95c6-30a2d8c44a07','activity','Cultural and Ethical Considerations',$md$
 Philippine culture emphasizes **Bayanihan** (community spirit). IT solutions can harness this: e.g., community-driven apps (we often see jeepney route apps or barangay announcement apps built by local devs). On the flip side, there's also concern over **digital colonialism** (large global tech companies dominating local markets). As a professional, consider developing local content and supporting Filipino-language computing.
@@ -321,7 +321,7 @@ Also note: some technologies carry cultural bias. For example, AI chatbots might
 
 *Ready to apply this? The practice set below includes exam questions and activities on social impact scenarios.*
 $md$, 5),
-('3822c95b-e919-5f55-95c6-30a2d8c44a07','activity','Practice & Exam Drills — Lesson 6',$md$
+('3822c95b-e919-5f55-95c6-30a2d8c44a07','activity','Practice & Exam Drills, Lesson 6',$md$
 **Review Questions**
 
 1. What is the "digital divide," and why is it important for IT professionals?
@@ -350,8 +350,8 @@ $md$, 6);
 
 -- ============================================================
 -- SOURCES
--- University of La Salette — Social and Professional Issues 2 course learning plan and outline
--- Cavite State University — DCIT 65 Social and Professional Issues course syllabus (AY 2022-2023)
--- Far Eastern University Institute of Technology — BSIT Curriculum Overview (2022-2023)
--- CHED CMO No. 25 s.2015 — Revised PSGs for BSIT (Social and Professional Issues course specification)
+-- University of La Salette, Social and Professional Issues 2 course learning plan and outline
+-- Cavite State University, DCIT 65 Social and Professional Issues course syllabus (AY 2022-2023)
+-- Far Eastern University Institute of Technology, BSIT Curriculum Overview (2022-2023)
+-- CHED CMO No. 25 s.2015, Revised PSGs for BSIT (Social and Professional Issues course specification)
 -- ============================================================

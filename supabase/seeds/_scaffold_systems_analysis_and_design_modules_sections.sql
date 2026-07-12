@@ -1,7 +1,7 @@
 -- ============================================================
--- Systems Analysis and Design — Modules & Sections
+-- Systems Analysis and Design, Modules & Sections
 -- Subject ID: 30000000-0003-0002-0001-000000000003
--- 3rd Year, Semester 2 — major
+-- 3rd Year, Semester 2, major
 --
 -- Free/paid split: per lesson, sections 1-2 are FREE (kind='content'),
 -- section 3 + the practice drills are PAID (kind='activity').
@@ -154,7 +154,7 @@ For exam purposes, remember this principle:
 
 > The best development approach depends on the project's level of uncertainty, stakeholder availability, risk, and need for structure.
 $md$, 3),
-('7ca92329-c8f0-5c0b-a525-ab0e36577f5b','activity','Practice & Exam Drills — Lesson 1',$md$
+('7ca92329-c8f0-5c0b-a525-ab0e36577f5b','activity','Practice & Exam Drills, Lesson 1',$md$
 **Core Outputs to keep in mind:** problem statement, objectives, scope and limitations, feasibility study, requirements list, use cases/user stories, DFD/ERD/UML diagrams, interface sketches, data design and controls, test plan, implementation plan. Analysis asks *what* and *why*; design asks *how*.
 
 **Review Questions**
@@ -172,7 +172,7 @@ $md$, 3),
 
 **Problem 1: Classify the project concerns.** A private college wants to improve its student clearance process. Classify each concern as primarily a problem of *people, process, data, or technology*: approvals take too long; signatories cannot track pending requests; inconsistent cashier and registrar records; students must visit several offices physically.
 
-*Step-by-step solution* — Look for the dominant cause.
+*Step-by-step solution*, Look for the dominant cause.
 - "Approvals take too long" → **Process** (workflow speed)
 - "Cannot track pending requests" → **Technology** (missing system functionality)
 - "Inconsistent records" → **Data** (facts not matching across offices)
@@ -180,7 +180,7 @@ $md$, 3),
 
 **Problem 2: Choose the development approach.** A city health office wants a vaccine inventory and clinic appointment system. Staff can review screens weekly, and some requirements may change once nurses see drafts. Waterfall or prototyping/iterative?
 
-*Step-by-step solution* — Clues: users review weekly; requirements may change; seeing drafts affects decisions. Waterfall fits stable requirements; prototyping/iterative fits changing requirements + frequent review.
+*Step-by-step solution*, Clues: users review weekly; requirements may change; seeing drafts affects decisions. Waterfall fits stable requirements; prototyping/iterative fits changing requirements + frequent review.
 *Answer:* **Prototyping or iterative development**, because requirements are not yet stable and users can give regular feedback.
 
 **Problem 3: Distinguish analysis from design.** Label each as Analysis or Design:
@@ -190,7 +190,7 @@ $md$, 3),
 - Define the validation rules for a mobile registration form → **Design**
 - Write the system objective "reduce average processing time by 40%" → **Analysis**
 
-**Hands-On Practice — Barangay Service Request Tracker.** A barangay office receives complaints through paper forms, Facebook messages, and walk-ins; records are duplicated and statuses inconsistent.
+**Hands-On Practice, Barangay Service Request Tracker.** A barangay office receives complaints through paper forms, Facebook messages, and walk-ins; records are duplicated and statuses inconsistent.
 1. Write a 3-sentence problem statement.
 2. List five stakeholders.
 3. Propose two measurable objectives.
@@ -200,7 +200,7 @@ $md$, 3),
 
 **How to Pass This Topic**
 
-- Memorize the difference between analysis and design — it appears often.
+- Memorize the difference between analysis and design, it appears often.
 - To justify a method, use the words *requirements stability, user feedback, risk, documentation*.
 - In essays, always mention people, process, data, and technology.
 - Do not confuse stakeholders with project deliverables.
@@ -324,7 +324,7 @@ $$ \text{Payback Period} = \frac{\text{Project Cost}}{\text{Annual Net Benefit}}
 
 A project may still be approved even if some benefits are intangible, such as stronger public trust or easier compliance. The key is to state them honestly.
 $md$, 3),
-('5772a6c6-ea95-5361-8e8e-54b5af556c47','activity','Practice & Exam Drills — Lesson 2',$md$
+('5772a6c6-ea95-5361-8e8e-54b5af556c47','activity','Practice & Exam Drills, Lesson 2',$md$
 **Scope & Project Charter reminder.** Scope defines what is included and excluded; without scope control a project suffers **scope creep**. A scope statement should identify the business area, user groups, included/excluded functions, interfaces, assumptions, and constraints. A project charter usually contains title, sponsor, problem statement, objectives, scope, stakeholders, risks, schedule, and a high-level budget note.
 
 **Review Questions**
@@ -358,7 +358,7 @@ $md$, 3),
 *Weaknesses:* "all operations" too broad; "complete automation" unrealistic; "all future expansion" undefined; no boundary, user group, or exclusion.
 *Improved:* "The proposed resort management system will cover room reservation, guest check-in/check-out, payment recording, and occupancy reports for front-desk staff and management. It will exclude kitchen inventory, payroll, and online travel agency integration in Phase 1."
 
-**Hands-On Practice — Municipal Permit Renewal.**
+**Hands-On Practice, Municipal Permit Renewal.**
 1. Write one problem statement.
 2. List three tangible and three intangible benefits.
 3. Perform a TELOS analysis in bullet form.
@@ -415,7 +415,7 @@ Nonfunctional requirements often cover:
 | Compatibility | browser, OS, device support |
 | Legal and policy | privacy, retention, audit trails |
 
-Another important item is the **business rule** — a policy or condition that shapes the system. Examples:
+Another important item is the **business rule**, a policy or condition that shapes the system. Examples:
 
 - A student cannot enroll with an unsettled balance.
 - Only the department head can approve bulk inventory adjustments.
@@ -472,8 +472,8 @@ Requirements are often organized in a document such as an **SRS (Software Requir
 
 Validation means checking whether the requirements are truly correct. Typical validation actions: review with users, walkthroughs, prototype review, conflict resolution meetings, checking against policy or law, checking completeness against process steps.
 $md$, 3),
-('dee0e51b-5c73-5378-b28e-4f9bd998cbf2','activity','Practice & Exam Drills — Lesson 3',$md$
-**Prioritization, traceability & change control reminder.** Prioritize with MoSCoW: Must-have (core), Should-have (important), Could-have (if time allows), Won't-have-for-now (deferred). Traceability connects a requirement back to its source and forward to design, implementation, and test (stakeholder complaint → requirement → design element → test case). Change is normal; *uncontrolled* change is the problem — a healthy process asks what changed, why, who requested it, the impact, and whether to approve now or defer.
+('dee0e51b-5c73-5378-b28e-4f9bd998cbf2','activity','Practice & Exam Drills, Lesson 3',$md$
+**Prioritization, traceability & change control reminder.** Prioritize with MoSCoW: Must-have (core), Should-have (important), Could-have (if time allows), Won't-have-for-now (deferred). Traceability connects a requirement back to its source and forward to design, implementation, and test (stakeholder complaint → requirement → design element → test case). Change is normal; *uncontrolled* change is the problem, a healthy process asks what changed, why, who requested it, the impact, and whether to approve now or defer.
 
 **Review Questions**
 
@@ -503,7 +503,7 @@ $md$, 3),
 **Problem 3: Select elicitation techniques.** A school clinic wants a new patient logging system. The nurse performs undocumented shortcuts during busy days; the doctor wants better reports.
 *Answer:* prioritize **Observation** (capture undocumented shortcuts), **Interview** with nurse and doctor (pain points and report needs), **Document analysis** of current forms/logs, and an optional prototype review later. The case mixes hidden actual practice with stated managerial needs.
 
-**Hands-On Practice — Dormitory maintenance request system.**
+**Hands-On Practice, Dormitory maintenance request system.**
 1. Write five interview questions for students.
 2. Write five interview questions for the maintenance supervisor.
 3. List six functional requirements.
@@ -562,7 +562,7 @@ Example Level 0 processes for a clinic system: Manage patient records; Schedule 
 DFDs are useful because they force you to think about the actual movement of information, not just screens.
 $md$, 1),
 ('82df723c-7208-515c-81a2-3c46bc4bd44b','content','Data Dictionary and Process Specifications',$md$
-A DFD shows movement, but it does not fully define each data item. That is why analysts also prepare a **data dictionary** — a description of the meaning of data elements, records, and structures.
+A DFD shows movement, but it does not fully define each data item. That is why analysts also prepare a **data dictionary**, a description of the meaning of data elements, records, and structures.
 
 Example:
 
@@ -600,7 +600,7 @@ An ERD usually identifies:
 
 A good entity is something the organization needs to store information about repeatedly.
 
-### Example — clinic appointment system
+### Example, clinic appointment system
 
 Entities: Student, Appointment, Nurse, Medicine, Medicine_Issue.
 
@@ -622,7 +622,7 @@ Simple exam reminder: if one table mixes student info, course info, and instruct
 
 ERDs are especially important because many professors connect Systems Analysis and Design with earlier database subjects. They expect you to show that a process model and a data model agree with each other.
 $md$, 3),
-('82df723c-7208-515c-81a2-3c46bc4bd44b','activity','Practice & Exam Drills — Lesson 4',$md$
+('82df723c-7208-515c-81a2-3c46bc4bd44b','activity','Practice & Exam Drills, Lesson 4',$md$
 **Model quality & balancing reminder.** Common DFD errors: process with inputs but no outputs (or vice versa); vague data-flow names like "information"; data store with no process interaction; lower-level DFD not matching higher-level flow names; actor/process names confused. Common ERD errors: an "entity" that is really a report; attributes mixed across entities; missing/unreasonable cardinality; carelessly stored derived values; unclear key. **Balancing** means the data flows entering/leaving a process at a higher level stay consistent when that process is decomposed.
 
 **Review Questions**
@@ -655,7 +655,7 @@ $md$, 3),
 - Adviser(AdviserID, AdviserName, AdviserEmail)
 - Request(RequestID, StudentID, RequestDate, Status)
 
-**Hands-On Practice — Student Clearance System.**
+**Hands-On Practice, Student Clearance System.**
 1. A context diagram in words (entities + data flows).
 2. A Level 0 DFD as numbered processes and data stores.
 3. A mini data dictionary with at least eight fields.
@@ -664,7 +664,7 @@ $md$, 3),
 
 **How to Pass This Topic**
 
-- Name data flows precisely: Request Form, Approval Result, Payment Record — not vague "data."
+- Name data flows precisely: Request Form, Approval Result, Payment Record, not vague "data."
 - Processes should start with verbs: Validate Request, Generate Report, Update Status.
 - In ERD questions, identify entities before drawing relationships.
 - If unsure about full normalization, at least explain the redundancy clearly.
@@ -737,7 +737,7 @@ Example:
 
 ### Identifying candidate classes
 
-Read the case and mark important nouns, then screen them. Candidates: person roles, business records, transactions, resources, documents. But not every noun becomes a class — "screen," "button," or "office" may not belong in the core model unless central. Ask: Does the system need to remember information about it? Does it have distinct attributes? Does it participate in important relationships? Does it perform meaningful responsibilities?
+Read the case and mark important nouns, then screen them. Candidates: person roles, business records, transactions, resources, documents. But not every noun becomes a class, "screen," "button," or "office" may not belong in the core model unless central. Ask: Does the system need to remember information about it? Does it have distinct attributes? Does it participate in important relationships? Does it perform meaningful responsibilities?
 
 ### Sequence diagram
 
@@ -756,7 +756,7 @@ Shows workflow, decisions, and alternative paths. Useful for step-by-step proces
 
 A good analysis output does not use every diagram possible. It chooses the diagrams that best clarify the case.
 $md$, 3),
-('d71a716c-2be0-5dd8-9175-8a9e8e741e4a','activity','Practice & Exam Drills — Lesson 5',$md$
+('d71a716c-2be0-5dd8-9175-8a9e8e741e4a','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. What is the difference between an object and a class?
@@ -784,7 +784,7 @@ $md$, 3),
 | classes and relationships | Class Diagram |
 | user goals | Use Case Diagram |
 
-**Hands-On Practice — Dormitory Visitor Pass System.**
+**Hands-On Practice, Dormitory Visitor Pass System.**
 1. List three actors.
 2. Write four use cases.
 3. Draft one fully dressed mini use case (precondition, main flow, postcondition).
@@ -852,7 +852,7 @@ Some systems still export or import files such as CSV, PDF reports, spreadsheet 
 
 ### Component or module design
 
-A system is rarely one giant block. It is usually divided into modules — for example: user management, transaction processing, reporting, notification, inventory, audit log. Name components by major responsibilities. Example for a clinic system: Appointment Module, Patient Record Module, Medicine Inventory Module, Reporting Module, Access Control Module. The design should also decide which modules interact and what data they exchange.
+A system is rarely one giant block. It is usually divided into modules, for example: user management, transaction processing, reporting, notification, inventory, audit log. Name components by major responsibilities. Example for a clinic system: Appointment Module, Patient Record Module, Medicine Inventory Module, Reporting Module, Access Control Module. The design should also decide which modules interact and what data they exchange.
 
 ### Input and output design
 
@@ -860,7 +860,7 @@ A system is rarely one giant block. It is usually divided into modules — for e
 
 **Output design** includes receipts, reports, dashboards, notifications, approval slips, history logs. Managers usually want summarized reports; front-line staff often need transaction-level detail.
 
-A useful interface is consistent, readable, efficient, forgiving of mistakes, and accessible to beginners. In many BSIT courses, UI design connects closely with HCI — consider learnability, feedback, and error prevention, not only appearance.
+A useful interface is consistent, readable, efficient, forgiving of mistakes, and accessible to beginners. In many BSIT courses, UI design connects closely with HCI, consider learnability, feedback, and error prevention, not only appearance.
 $md$, 2),
 ('7793b931-b0db-57bf-adc8-31729fc28bde','activity','Controls, Security, and Design Quality',$md$
 System design must include controls. A system that looks polished but lacks controls will fail in real operations.
@@ -891,7 +891,7 @@ For Philippine academic and organizational settings, this is especially importan
 
 If asked to evaluate a design, comment on correctness, usability, maintainability, performance, security, and scalability. A good design is not only attractive. It is also defensible.
 $md$, 3),
-('7793b931-b0db-57bf-adc8-31729fc28bde','activity','Practice & Exam Drills — Lesson 6',$md$
+('7793b931-b0db-57bf-adc8-31729fc28bde','activity','Practice & Exam Drills, Lesson 6',$md$
 **Review Questions**
 
 1. What is the difference between analysis and design?
@@ -907,15 +907,15 @@ $md$, 3),
 
 **Problem 1: Choose a suitable architecture.** A university clinic needs access from the nurse station, doctor room, and student devices for booking; it should support notifications and reporting.
 *Step-by-step:* multiple locations + students need access + centralized reporting. Standalone is too limited; client-server is less convenient for students.
-*Answer:* a **web-based architecture with a mobile-friendly interface** — centralized data, multiple clinic users, student self-service, easier remote access.
+*Answer:* a **web-based architecture with a mobile-friendly interface**, centralized data, multiple clinic users, student self-service, easier remote access.
 
 **Problem 2: Critique the form design.** An employee-submitted leave-request form asks for Employee Name, Employee ID, Department, Date Filed, Leave Start, Leave End, Reason, Approver Name, Approval Date, Approval Signature Upload.
-*Two poor choices:* (1) **Approver Name** should not be entered by the employee — it is system-selected or role-assigned. (2) **Approval Date** and **Approval Signature Upload** belong to the approval stage, not the employee's initial submission. The form mixes applicant inputs with approver-side data.
+*Two poor choices:* (1) **Approver Name** should not be entered by the employee, it is system-selected or role-assigned. (2) **Approval Date** and **Approval Signature Upload** belong to the approval stage, not the employee's initial submission. The form mixes applicant inputs with approver-side data.
 
 **Problem 3: Recommend controls.** A cashiering system lets staff edit payment entries.
 *Controls:* role-based access (only authorized staff can edit); audit log (who changed what and when); confirmation prompt before saving; reason-for-change field; optional supervisor approval for high-value edits.
 
-**Hands-On Practice — Cooperative Membership System.**
+**Hands-On Practice, Cooperative Membership System.**
 1. Recommend an architecture and justify it.
 2. List five system modules.
 3. Design a text-based input form with field labels and validation notes.
@@ -925,7 +925,7 @@ $md$, 3),
 **How to Pass This Topic**
 
 - Justify every design choice with users, scale, and constraints.
-- Input/output questions are practical — think like a real user.
+- Input/output questions are practical, think like a real user.
 - If the case involves sensitive data, always mention access control, logging, and backup.
 - Use the words modular, maintainable, consistent, validated in design evaluations.
 - Explain *why* a design choice is better, not just *what* you chose.
@@ -963,12 +963,12 @@ Example:
 | Input | valid student ID and available date |
 | Expected result | appointment saved and confirmation shown |
 
-Strong test cases cover valid inputs, invalid inputs, boundary values, exceptions, and role restrictions. If your requirement is not clear, your testing will also be weak — that is why testing is closely tied to analysis quality.
+Strong test cases cover valid inputs, invalid inputs, boundary values, exceptions, and role restrictions. If your requirement is not clear, your testing will also be weak, that is why testing is closely tied to analysis quality.
 $md$, 1),
 ('d7748ee4-cb0a-5696-b40d-f7bd5dec9ae7','content','Implementation and Conversion Strategies',$md$
 Implementation is the stage where the proposed system is introduced into actual use. This often includes installation/deployment, configuration, data migration, user account setup, training, pilot run, and official go-live.
 
-A major implementation concern is the **conversion strategy** — how the old system is replaced.
+A major implementation concern is the **conversion strategy**, how the old system is replaced.
 
 | Strategy | Meaning | Main advantage | Main risk |
 |---|---|---|---|
@@ -999,7 +999,7 @@ Training should match user roles: end users need task-based practice; supervisor
 
 ### Maintenance and post-implementation review
 
-Once deployed, a system enters the maintenance period. Maintenance is not failure — it is part of normal system life.
+Once deployed, a system enters the maintenance period. Maintenance is not failure, it is part of normal system life.
 
 | Type | Meaning |
 |---|---|
@@ -1010,7 +1010,7 @@ Once deployed, a system enters the maintenance period. Maintenance is not failur
 
 A **post-implementation review** asks: Were objectives met? Did processing time improve? Were error rates reduced? Are users satisfied? What issues remain? What should be improved next? Metrics may include average processing time, rejected transactions, system availability, user satisfaction, and issue turnaround time. This review closes the loop between planning and actual results.
 $md$, 3),
-('d7748ee4-cb0a-5696-b40d-f7bd5dec9ae7','activity','Practice & Exam Drills — Lesson 7',$md$
+('d7748ee4-cb0a-5696-b40d-f7bd5dec9ae7','activity','Practice & Exam Drills, Lesson 7',$md$
 **Review Questions**
 
 1. Why is testing needed even after coding is finished?
@@ -1026,7 +1026,7 @@ $md$, 3),
 
 **Problem 1: Choose the conversion strategy.** A hospital pharmacy is replacing a medicine inventory system; wrong stock balances can affect patient treatment.
 *Step-by-step:* pharmacy data is critical; direct cutover is too risky; parallel/pilot reduces risk; parallel gives side-by-side verification.
-*Answer:* **parallel conversion** — compare new and old before full trust.
+*Answer:* **parallel conversion**, compare new and old before full trust.
 
 **Problem 2: Write a test case.** Requirement: "The system shall reject login after 5 consecutive failed attempts."
 
@@ -1046,7 +1046,7 @@ $md$, 3),
 - Improving slow dashboard loading → **Perfective**
 - Reorganizing backup routines before any failure → **Preventive**
 
-**Hands-On Practice — Enrollment Support System.**
+**Hands-On Practice, Enrollment Support System.**
 1. Write three test cases for input validation.
 2. Recommend one conversion strategy and justify it.
 3. Prepare a one-day training outline for end users.
@@ -1055,7 +1055,7 @@ $md$, 3),
 
 **How to Pass This Topic**
 
-- Conversion strategy questions are about risk level — mention it.
+- Conversion strategy questions are about risk level, mention it.
 - Test cases should always include the expected result.
 - If the requirement mentions limits, use boundary testing logic.
 - For implementation essays, include deployment, migration, training, and support.
@@ -1130,7 +1130,7 @@ By the end of this subject you should be able to: define a real organizational p
 
 If you cannot explain why a feature exists, it is probably not well analyzed. If you cannot test a requirement, it is probably too vague. If you cannot justify a design choice, it is probably premature or weak.
 $md$, 3),
-('00f881d4-f722-51d4-baf5-184966a95b17','activity','Practice & Exam Drills — Lesson 8',$md$
+('00f881d4-f722-51d4-baf5-184966a95b17','activity','Practice & Exam Drills, Lesson 8',$md$
 **Review Questions**
 
 1. Why is work breakdown useful in systems projects?
@@ -1149,12 +1149,12 @@ $md$, 3),
 *One acceptable sequence:* A → B → C → D → E → F.
 
 **Problem 2: Spot the documentation weakness.** A team presents screen mockups and database tables, but no problem statement, no stakeholder list, and no requirements section.
-*Answer:* the report jumps to design without analysis — the problem basis is unclear, stakeholders undefined, requirements not traceable, and the design cannot be properly justified. The main weakness is the **absence of analysis foundation and traceability.**
+*Answer:* the report jumps to design without analysis, the problem basis is unclear, stakeholders undefined, requirements not traceable, and the design cannot be properly justified. The main weakness is the **absence of analysis foundation and traceability.**
 
 **Problem 3: Oral defense practice.** "Why did your team choose a web-based design instead of a desktop-only system?"
 *Model answer:* "We chose web-based because the target users work from multiple offices and need shared real-time records. A desktop-only setup would make synchronization harder and reduce visibility across units. Our requirements also included browser access for management monitoring and easier deployment without installing client software on every workstation."
 
-**Hands-On Practice — Internship Placement Monitoring System.**
+**Hands-On Practice, Internship Placement Monitoring System.**
 1. A task breakdown of at least eight project tasks.
 2. A milestone schedule for six weeks.
 3. A list of team roles and responsibilities.
@@ -1167,7 +1167,7 @@ $md$, 3),
 - In documentation questions, connect problem → requirements → models → design → test.
 - In oral-defense items, justify choices using needs, constraints, users, and risk.
 - Mention ethics when the case includes personal, medical, academic, or financial data.
-- Strong final answers sound professional, specific, and grounded in the case — not generic.
+- Strong final answers sound professional, specific, and grounded in the case, not generic.
 $md$, 4);
 
 -- SOURCES (metadata, not inserted):

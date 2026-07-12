@@ -1,7 +1,7 @@
 -- ============================================================
--- Systems Administration and Maintenance — Modules & Sections
+-- Systems Administration and Maintenance, Modules & Sections
 -- Subject ID: 40000000-0004-0001-0001-000000000001
--- 4th Year, Semester 1 — major
+-- 4th Year, Semester 1, major
 -- 8 lessons. Split: S1+S2 = content (FREE); remaining teaching blocks + drill
 --   = activity (PAID). Most lessons have 3 content blocks -> 2 free / 2 paid;
 --   Lesson 4 has 4 content blocks -> 2 free / 3 paid.
@@ -37,7 +37,7 @@ Sysadmins use both command-line tools and graphical interfaces. For example, the
 
 *Ready to apply this? The practice section below walks through exam-style questions and scenarios about these concepts.*
 $md$, 3),
-('0b43e829-9722-556b-ac9d-2ff5de1e2776','activity','Practice & Exam Drills — Lesson 1',$md$
+('0b43e829-9722-556b-ac9d-2ff5de1e2776','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions**
 
 1. What is the main role of a system administrator?
@@ -62,7 +62,7 @@ $md$, 3),
 
 **How to Pass**
 
-Memorize the main duties of a sysadmin (installation, backup, troubleshooting). Professors often ask: "Which of these is not a sysadmin task?" — so know the difference between an admin and, say, a programmer. Understand basic tool names (Task Manager, `top`, SSH) and why updates matter. Practice answering in steps ("first do this, then that") as if you're actually fixing an issue.
+Memorize the main duties of a sysadmin (installation, backup, troubleshooting). Professors often ask: "Which of these is not a sysadmin task?", so know the difference between an admin and, say, a programmer. Understand basic tool names (Task Manager, `top`, SSH) and why updates matter. Practice answering in steps ("first do this, then that") as if you're actually fixing an issue.
 $md$, 4);
 
 -- ============================================================
@@ -80,7 +80,7 @@ Windows Server comes with built-in roles like **Active Directory Domain Services
 
 *Ready to apply this? The practice set below includes exam-style scenarios about Windows server setup and configuration.*
 $md$, 3),
-('04770e05-bf49-595b-b07c-05a0a61b1cb4','activity','Practice & Exam Drills — Lesson 2',$md$
+('04770e05-bf49-595b-b07c-05a0a61b1cb4','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions**
 
 1. What file system does Windows Server typically use on installation?
@@ -105,7 +105,7 @@ $md$, 3),
 
 **How to Pass**
 
-Remember the core difference between "client" Windows (like Windows 10) and "Server" edition (like Windows Server 2019). In exams, you might get a question like "Which feature is only available on Windows Server?" — look for options like AD or IIS. Also memorize common admin tool names ("Server Manager," "Active Directory Users and Computers") and where they are found. Practice explaining configuration tasks as clear steps.
+Remember the core difference between "client" Windows (like Windows 10) and "Server" edition (like Windows Server 2019). In exams, you might get a question like "Which feature is only available on Windows Server?", look for options like AD or IIS. Also memorize common admin tool names ("Server Manager," "Active Directory Users and Computers") and where they are found. Practice explaining configuration tasks as clear steps.
 $md$, 4);
 
 -- ============================================================
@@ -123,7 +123,7 @@ Linux admins rely on the shell (bash) and commands like `ls` (list files), `cp`,
 
 *Ready to apply this? The practice drills below include Linux commands and configuration scenarios with worked solutions.*
 $md$, 3),
-('184744d5-a256-573c-a94d-4159ba326ee0','activity','Practice & Exam Drills — Lesson 3',$md$
+('184744d5-a256-573c-a94d-4159ba326ee0','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions**
 
 1. What command lists files in a directory on Linux?
@@ -169,7 +169,7 @@ Permissions define what users and groups can do with files. In Windows, an admin
 
 *Ready to apply this? The practice drills below cover setting permissions and managing accounts, with full solutions and a hands-on exercise.*
 $md$, 4),
-('a8fe3e00-4cab-50cd-83a1-f8ae4358be20','activity','Practice & Exam Drills — Lesson 4',$md$
+('a8fe3e00-4cab-50cd-83a1-f8ae4358be20','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions**
 
 1. In Windows, where do you go to add a new user account on a local machine?
@@ -219,7 +219,7 @@ Using these, an admin can tell if the computer is on the right subnet, if DNS is
 
 *Ready to apply this? The activity below includes practice problems calculating subnets and interpreting ping results, plus review questions on network fundamentals.*
 $md$, 3),
-('adde31d0-fb73-57bf-841d-06791c73f84c','activity','Practice & Exam Drills — Lesson 5',$md$
+('adde31d0-fb73-57bf-841d-06791c73f84c','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. What is the purpose of a subnet mask?
@@ -262,7 +262,7 @@ Maintenance isn't just fixing problems – it's preventing data loss. **Backups*
 
 *Ready to apply this? The activity below lets you practice planning update and backup routines, answer review questions, and solve a maintenance case study step by step.*
 $md$, 3),
-('9d505050-c2b5-5ef9-b212-e026f5bff7e0','activity','Practice & Exam Drills — Lesson 6',$md$
+('9d505050-c2b5-5ef9-b212-e026f5bff7e0','activity','Practice & Exam Drills, Lesson 6',$md$
 **Review Questions**
 
 1. Why is it important to apply system patches regularly?
@@ -305,7 +305,7 @@ Many servers host websites or web services. Windows has **IIS** (Internet Inform
 
 *Ready to apply this? The practice section below covers scenarios like configuring a shared drive and setting up DHCP for lab computers, with step-by-step solutions.*
 $md$, 3),
-('ccc292bd-c576-599e-8493-11c2b172aa90','activity','Practice & Exam Drills — Lesson 7',$md$
+('ccc292bd-c576-599e-8493-11c2b172aa90','activity','Practice & Exam Drills, Lesson 7',$md$
 **Review Questions**
 
 1. What is the purpose of SMB or Samba in a network?
@@ -350,7 +350,7 @@ Once you have a script or command, you often want it to run automatically on a s
 $md$, 3);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('9597a77e-1d87-5e6c-92c7-637508ef238b','activity','Practice & Exam Drills — Lesson 8',$md$
+('9597a77e-1d87-5e6c-92c7-637508ef238b','activity','Practice & Exam Drills, Lesson 8',$md$
 **Review Questions**
 
 1. In Python, which keyword starts a loop?
@@ -396,8 +396,8 @@ ERROR: Could not connect
 
 -- ============================================================
 -- SOURCES
--- Polytechnic University of the Philippines (PUP Unisan) — Systems Administration and Maintenance course outline (CCIS ITPS)
--- Northern Negros State College of Science and Technology — Systems Administration and Maintenance syllabus overview
--- Misamis University (BSIT) — Systems Administration and Maintenance (ITP220) course description
--- CHED CMO No. 25 s.2015 — Revised PSGs for BSIT (sample curriculum listing)
+-- Polytechnic University of the Philippines (PUP Unisan), Systems Administration and Maintenance course outline (CCIS ITPS)
+-- Northern Negros State College of Science and Technology, Systems Administration and Maintenance syllabus overview
+-- Misamis University (BSIT), Systems Administration and Maintenance (ITP220) course description
+-- CHED CMO No. 25 s.2015, Revised PSGs for BSIT (sample curriculum listing)
 -- ============================================================

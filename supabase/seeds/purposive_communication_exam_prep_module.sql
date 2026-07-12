@@ -1,5 +1,5 @@
 -- ============================================================
--- Purposive Communication — Exam Prep: Prelims & Finals
+-- Purposive Communication, Exam Prep: Prelims & Finals
 -- Subject ID: 10000000-0001-0001-0002-000000000003
 -- Module ID:  a2000003-0001-0001-0002-0000000000e1
 -- Purpose: mock exams, blueprints, and answer keys covering
@@ -16,7 +16,7 @@ INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 
 -- ------------------------------------------------------------
--- 1. FREE — Prelim Exam Blueprint & Study Plan
+-- 1. FREE, Prelim Exam Blueprint & Study Plan
 -- ------------------------------------------------------------
 ('a2000003-0001-0001-0002-0000000000e1','content','Prelim Exam Blueprint & Study Plan',$md$
 Your prelim exam in Purposive Communication almost always covers the first two units of the course: **Unit I: Understanding the Communication Process** and **Unit II: Global and Intercultural Communication**. Everything below is built directly from those two units, so if you can answer the drills here, you can answer the exam.
@@ -28,7 +28,7 @@ Your prelim exam in Purposive Communication almost always covers the first two u
 | Multiple choice | 40–50% | Definitions of elements, barrier types, competencies |
 | True or false | 10–15% | Precise wording of concepts (where most careless mistakes happen) |
 | Identification | 15–20% | Exact terms: element names, barrier names, competency names |
-| Scenario analysis | 15–25% | "A manager emails a team abroad..." — you name the barrier, norm, or strategy at play |
+| Scenario analysis | 15–25% | "A manager emails a team abroad...", you name the barrier, norm, or strategy at play |
 
 Professors love scenario items because they separate students who memorized a list from students who can apply it. Every mock exam in this module trains that skill on purpose.
 
@@ -36,15 +36,15 @@ Professors love scenario items because they separate students who memorized a li
 
 If it is not on this list, it is not on your prelim. Master these cold:
 
-1. **The four core attributes of communication** — it is a process, systematic, symbolic, and it centers on meaning.
-2. **The eight elements of the interactive communication model** — sender, encoding, message, medium/channel, receiver, decoding, feedback, noise. Know each definition word-for-word and know the order of the loop.
-3. **The six barrier/noise types** — physical, psychological, socio-cultural, linguistic/semantic, technical, information overload. For each one, memorize one example scenario.
-4. **The four strategies for clear communication** — clarity and simplicity, strategic reinforcement, channel selection, interactive feedback loops.
-5. **Communication climate** — what positive climates build (trust, safe expression) and what negative climates cause (withdrawal, defensiveness).
-6. **The three cognitive processing channels** — visual, auditory, kinesthetic — plus the signature phrases for each ("I see what you mean", "That rings a bell", "Let's get a grip on this").
-7. **The four competencies of a global communicator** — high ambiguity tolerance, mindful awareness, conscious inclusivity, adaptive flexibility.
-8. **Country-specific norms** — China (harmony, hierarchy, avoiding public loss of face), South Korea (indirectness, respected silence, open palm instead of index-finger pointing), Japan (bowing, respected silence, no pressure for immediate decisions), Western/US contexts (directness, quick first names, rigid time management).
-9. **The two linguistic routes of "tea"** — the inland route (Sinitic "Chá" via the Silk Road, becoming Chay in Persian and Russian, Chai in Swahili) and the maritime route (Min Nan "Tê" via Dutch traders in the 17th century, becoming English Tea and French Thé).
+1. **The four core attributes of communication**, it is a process, systematic, symbolic, and it centers on meaning.
+2. **The eight elements of the interactive communication model**, sender, encoding, message, medium/channel, receiver, decoding, feedback, noise. Know each definition word-for-word and know the order of the loop.
+3. **The six barrier/noise types**, physical, psychological, socio-cultural, linguistic/semantic, technical, information overload. For each one, memorize one example scenario.
+4. **The four strategies for clear communication**, clarity and simplicity, strategic reinforcement, channel selection, interactive feedback loops.
+5. **Communication climate**, what positive climates build (trust, safe expression) and what negative climates cause (withdrawal, defensiveness).
+6. **The three cognitive processing channels**, visual, auditory, kinesthetic, plus the signature phrases for each ("I see what you mean", "That rings a bell", "Let's get a grip on this").
+7. **The four competencies of a global communicator**, high ambiguity tolerance, mindful awareness, conscious inclusivity, adaptive flexibility.
+8. **Country-specific norms**, China (harmony, hierarchy, avoiding public loss of face), South Korea (indirectness, respected silence, open palm instead of index-finger pointing), Japan (bowing, respected silence, no pressure for immediate decisions), Western/US contexts (directness, quick first names, rigid time management).
+9. **The two linguistic routes of "tea"**, the inland route (Sinitic "Chá" via the Silk Road, becoming Chay in Persian and Russian, Chai in Swahili) and the maritime route (Min Nan "Tê" via Dutch traders in the 17th century, becoming English Tea and French Thé).
 
 ### Top Mistakes Students Make on This Prelim
 
@@ -58,19 +58,19 @@ If it is not on this list, it is not on your prelim. Master these cold:
 
 | Day | Focus |
 |---|---|
-| 1 | Unit I: "What Is Communication?" + "Elements of the Interactive Communication Model" — draw the model from memory until you can label all eight elements |
-| 2 | Unit I: "Environmental and Processing Dynamics" — climate + the three processing channels and their signature phrases |
-| 3 | Unit I: "Communication Barriers and Mitigation Strategies" — write one original example for each of the six barriers and each of the four strategies |
-| 4 | Unit II: "Core Frameworks of Intercultural Communication" — culture definition + the four competencies |
-| 5 | Unit II: "Global Nuances in Communication Contexts" — make a four-row country table (China, South Korea, Japan, US) and quiz yourself |
-| 6 | Unit II: "Sociolinguistics: Food and Historical Adaptation" — sketch the Chá/Tê branching diagram from memory, then take the free 15-item practice set below |
+| 1 | Unit I: "What Is Communication?" + "Elements of the Interactive Communication Model", draw the model from memory until you can label all eight elements |
+| 2 | Unit I: "Environmental and Processing Dynamics", climate + the three processing channels and their signature phrases |
+| 3 | Unit I: "Communication Barriers and Mitigation Strategies", write one original example for each of the six barriers and each of the four strategies |
+| 4 | Unit II: "Core Frameworks of Intercultural Communication", culture definition + the four competencies |
+| 5 | Unit II: "Global Nuances in Communication Contexts", make a four-row country table (China, South Korea, Japan, US) and quiz yourself |
+| 6 | Unit II: "Sociolinguistics: Food and Historical Adaptation", sketch the Chá/Tê branching diagram from memory, then take the free 15-item practice set below |
 | 7 | Full dress rehearsal: take Prelim Mock Exam A under time pressure, check the key, then use Mock Exam B to close any gaps |
 $md$, 1),
 
 -- ------------------------------------------------------------
--- 2. FREE — Free Practice Set — 15 Items with Answer Key
+-- 2. FREE, Free Practice Set, 15 Items with Answer Key
 -- ------------------------------------------------------------
-('a2000003-0001-0001-0002-0000000000e1','content','Free Practice Set — 15 Items with Answer Key',$md$
+('a2000003-0001-0001-0002-0000000000e1','content','Free Practice Set, 15 Items with Answer Key',$md$
 Treat this like the real thing: no notes, 15 minutes, answers on paper. The key is at the bottom.
 
 ### Items
@@ -135,7 +135,7 @@ Treat this like the real thing: no notes, 15 minutes, answers on paper. The key 
 | 8 | C | In South Korea, index-finger pointing is offensive; use an open palm. |
 | 9 | C | US-style communication favors directness, quick first names, and rigid time management. |
 | 10 | B | Chai belongs to the Chá family, which spread through inland networks like the Silk Road. |
-| 11 | False | Communication is a dynamic two-way process — feedback closes the loop. |
+| 11 | False | Communication is a dynamic two-way process, feedback closes the loop. |
 | 12 | False | In Japan, silence is deeply respected, and pressure for immediate choices is avoided. |
 | 13 | True | That is exactly the stated role of feedback in the model. |
 | 14 | Culture | Word-for-word from the Unit II definition. |
@@ -145,10 +145,10 @@ Scored 12 or higher? You are ready for the full 30-item mock exams below, which 
 $md$, 2),
 
 -- ------------------------------------------------------------
--- 3. LOCKED — Prelim Mock Exam A — 30 Items
+-- 3. LOCKED, Prelim Mock Exam A, 30 Items
 -- ------------------------------------------------------------
-('a2000003-0001-0001-0002-0000000000e1','activity','Prelim Mock Exam A — 30 Items',$md$
-Coverage: Units I–II. Time limit: 40 minutes. Answer everything before opening the key — the explanations only help if you committed to an answer first.
+('a2000003-0001-0001-0002-0000000000e1','activity','Prelim Mock Exam A, 30 Items',$md$
+Coverage: Units I–II. Time limit: 40 minutes. Answer everything before opening the key, the explanations only help if you committed to an answer first.
 
 ### Part I: Multiple Choice (Items 1–12)
 
@@ -158,7 +158,7 @@ Coverage: Units I–II. Time limit: 40 minutes. Answer everything before opening
    C. It relies only on written symbols
    D. It never changes over time
 
-2. The physical or behavioral outcome of encoding — spoken words, written text, or body language — is the:
+2. The physical or behavioral outcome of encoding, spoken words, written text, or body language, is the:
    A. Medium  B. Feedback  C. Message  D. Channel
 
 3. The vehicle through which a message travels, such as a phone call or a formal document, is the:
@@ -247,9 +247,9 @@ Coverage: Units I–II. Time limit: 40 minutes. Answer everything before opening
 $md$, 3),
 
 -- ------------------------------------------------------------
--- 4. LOCKED — Prelim Mock Exam B — 30 Items
+-- 4. LOCKED, Prelim Mock Exam B, 30 Items
 -- ------------------------------------------------------------
-('a2000003-0001-0001-0002-0000000000e1','activity','Prelim Mock Exam B — 30 Items',$md$
+('a2000003-0001-0001-0002-0000000000e1','activity','Prelim Mock Exam B, 30 Items',$md$
 Same coverage as Mock A (Units I–II), all-new items, and a step harder: more two-part scenarios and closer distractors. Take this only after reviewing your Mock A results.
 
 ### Part I: Multiple Choice (Items 1–10)
@@ -367,31 +367,31 @@ Same coverage as Mock A (Units I–II), all-new items, and a step harder: more t
     A. Adaptive flexibility  B. High ambiguity tolerance  C. Mindful awareness  D. Channel selection
 
 29. Which pairing of tea-word and route is WRONG?
-    A. Persian "Chay" — inland Silk Road
-    B. Swahili "Chai" — inland networks
-    C. French "Thé" — maritime route via Dutch traders
-    D. English "Tea" — inland Silk Road
+    A. Persian "Chay", inland Silk Road
+    B. Swahili "Chai", inland networks
+    C. French "Thé", maritime route via Dutch traders
+    D. English "Tea", inland Silk Road
 
 30. A speech is perfectly encoded and transmitted, yet the audience decodes a different meaning because the speaker's vocabulary carries different meanings for them. The weak link is best described as:
     A. Feedback failure  B. A semantic barrier distorting decoding  C. A technical barrier blocking the channel  D. Information overload
 $md$, 4),
 
 -- ------------------------------------------------------------
--- 5. LOCKED — Prelim Answer Key with Explanations
+-- 5. LOCKED, Prelim Answer Key with Explanations
 -- ------------------------------------------------------------
-('a2000003-0001-0001-0002-0000000000e1','activity','Prelim Mock Exams — Answer Key with Explanations',$md$
-Check your work one part at a time. Every explanation also tells you why the tempting wrong choice fails — read those even for items you got right.
+('a2000003-0001-0001-0002-0000000000e1','activity','Prelim Mock Exams, Answer Key with Explanations',$md$
+Check your work one part at a time. Every explanation also tells you why the tempting wrong choice fails, read those even for items you got right.
 
-### Mock Exam A — Key
+### Mock Exam A, Key
 
 | # | Answer | Explanation |
 |---|---|---|
 | 1 | B | Systematic means components interact within structured systems, each affecting the other. A confuses systematic with scripted; D contradicts "it is a process." |
-| 2 | C | The message is the outcome of encoding. A (medium) is the vehicle the message travels through — the classic trap. |
+| 2 | C | The message is the outcome of encoding. A (medium) is the vehicle the message travels through, the classic trap. |
 | 3 | B | The medium/channel carries the message. A is the content itself, not the carrier. |
 | 4 | C | Too much complex data too quickly = information overload. A is tempting if you fixate on the presentation tech, but nothing malfunctioned. |
-| 5 | A | Bad acoustics, cramped dark rooms, and layout problems are environmental — physical noise. C requires an equipment/software failure. |
-| 6 | B | A personal grudge is an internal individual bias — psychological. A (socio-cultural) would need shared customs or group traditions, not a one-on-one history. |
+| 5 | A | Bad acoustics, cramped dark rooms, and layout problems are environmental, physical noise. C requires an equipment/software failure. |
+| 6 | B | A personal grudge is an internal individual bias, psychological. A (socio-cultural) would need shared customs or group traditions, not a one-on-one history. |
 | 7 | C | Matching the medium to message complexity is channel selection, verbatim from Unit I. |
 | 8 | C | Touch, physical sensation, and emotional-weight phrasing marks kinesthetic processors. |
 | 9 | B | Negative climates create tension, causing withdrawal or defensiveness. |
@@ -411,22 +411,22 @@ Check your work one part at a time. Every explanation also tells you why the tem
 | 23 | Intercultural communication | Interaction plus negotiation of meaning across cultural backgrounds. |
 | 24 | Open palm (gesture) | The respectful substitute for index-finger pointing in South Korea. |
 | 25 | B | Idioms and jargon that fail to translate are linguistic/semantic noise. C would need the email system itself to fail. |
-| 26 | B | Japan respects conversational silence and avoids pressure for immediate decisions — the lead broke both. D describes US norms, not Japanese ones. |
+| 26 | B | Japan respects conversational silence and avoids pressure for immediate decisions, the lead broke both. D describes US norms, not Japanese ones. |
 | 27 | B | "I see" and "clear picture" mark a visual processor, so diagrams and images fit. C serves auditory processors instead. |
 | 28 | C | Discomfort rooted in local customs about personal boundaries is socio-cultural. A would be an individual's internal bias, not a shared tradition. |
-| 29 | B | Unit II states first names are used quickly in US professional settings as informal equality — not disrespect. |
+| 29 | B | Unit II states first names are used quickly in US professional settings as informal equality, not disrespect. |
 | 30 | C | Encouraging questions and listening with validation is the interactive feedback loops strategy. |
 
-### Mock Exam B — Key
+### Mock Exam B, Key
 
 | # | Answer | Explanation |
 |---|---|---|
 | 1 | B | Decoding is the receiver's internal translation. Encoding (A) is the sender's mirror-image process. |
 | 2 | B | The loop runs sender, encoding, message, medium, receiver, decoding, then feedback back to the source. |
-| 3 | D | Communication is fluid and changes over time — "permanent and fixed" contradicts the process attribute. |
+| 3 | D | Communication is fluid and changes over time, "permanent and fixed" contradicts the process attribute. |
 | 4 | B | Poor translations and shifting word meanings are linguistic/semantic. A is tempting because a manual feels "technical," but no equipment failed. |
 | 5 | C | Power dropouts are listed under technical noise. A (physical) covers room/environment layout, not electrical failure of equipment. |
-| 6 | B | Strategic reinforcement clarifies complex ideas with simple everyday words *without* becoming repetitive — which rules out A. |
+| 6 | B | Strategic reinforcement clarifies complex ideas with simple everyday words *without* becoming repetitive, which rules out A. |
 | 7 | A | Positive climates build trust and safe expression. They reduce tension; they do not abolish noise or feedback. |
 | 8 | B | Generational divides are explicitly listed under socio-cultural barriers, not psychological ones. |
 | 9 | B | Sound-and-tone phrasing = auditory. A is visual; C and D are kinesthetic. |
@@ -435,36 +435,36 @@ Check your work one part at a time. Every explanation also tells you why the tem
 | 12 | True | Psychological barriers include anxiety, fixed biases, and selective memory retention. |
 | 13 | False | South Korean interaction is highly indirect, relying on body language, tone, and contextual cues. |
 | 14 | True | Bowing is the foundational sign of respect and social positioning in Japan. |
-| 15 | False | Tea and Thé come from Min Nan "Tê" via Dutch maritime trade — not the Chá/Silk Road line. |
+| 15 | False | Tea and Thé come from Min Nan "Tê" via Dutch maritime trade, not the Chá/Silk Road line. |
 | 16 | Information overload | Too much complex data, too fast, losing the core points. |
 | 17 | Clarity and simplicity | Brief, direct sentences with proper pauses and explicit terms. |
 | 18 | Conscious inclusivity | Dropping rigid biases and outdated generalizations. |
 | 19 | China | Careful phrasing around seniors preserves organizational harmony there. |
 | 20 | Dutch | Dutch traders spread "Tê" across European ports in the 17th century. |
-| 21 | B | Dense metrics belong in written formats — a channel selection failure. A addresses feedback, which was not the root problem. |
+| 21 | B | Dense metrics belong in written formats, a channel selection failure. A addresses feedback, which was not the root problem. |
 | 22 | A | Diagrams serve visual, the spoken summary serves auditory, and the demo serves kinesthetic processors. |
 | 23 | B | Anxiety is internal (psychological); a rattling aircon is environmental (physical). |
 | 24 | A | US professional culture uses first names quickly as informal equality. |
-| 25 | B | Idioms = linguistic/semantic; failed attachment = technical. Two separate barriers stack in one scenario — read for both. |
+| 25 | B | Idioms = linguistic/semantic; failed attachment = technical. Two separate barriers stack in one scenario, read for both. |
 | 26 | C | Without feedback, the loop is open: understanding is unproven. Encoding, channel use, and intent all happened on the sender's side regardless. |
-| 27 | B | Staying calm amid the unfamiliar is high ambiguity tolerance; adjusting pace and gestures is adaptive flexibility. Option A reverses them — the classic trap. |
+| 27 | B | Staying calm amid the unfamiliar is high ambiguity tolerance; adjusting pace and gestures is adaptive flexibility. Option A reverses them, the classic trap. |
 | 28 | C | Reflecting on your own assumptions before concluding is mindful awareness. B is about composure, not self-examination. |
-| 29 | D | English "Tea" is a maritime-route word from Min Nan "Tê" — pairing it with the Silk Road is the wrong match. A, B, and C are all correct pairings. |
-| 30 | B | The channel worked and volume was fine; meaning broke at decoding because vocabulary carried different meanings — semantic noise. |
+| 29 | D | English "Tea" is a maritime-route word from Min Nan "Tê", pairing it with the Silk Road is the wrong match. A, B, and C are all correct pairings. |
+| 30 | B | The channel worked and volume was fine; meaning broke at decoding because vocabulary carried different meanings, semantic noise. |
 $md$, 5),
 
 -- ------------------------------------------------------------
--- 6. LOCKED — Common Prelim Traps & How to Avoid Them
+-- 6. LOCKED, Common Prelim Traps & How to Avoid Them
 -- ------------------------------------------------------------
 ('a2000003-0001-0001-0002-0000000000e1','activity','Common Prelim Traps & How to Avoid Them',$md$
-These are the confusions that cost the most points on this specific prelim. Each trap comes with a one-question drill — answer it before reading the answer line.
+These are the confusions that cost the most points on this specific prelim. Each trap comes with a one-question drill, answer it before reading the answer line.
 
 ### Trap 1: Encoding vs. Decoding
 
 Both are invisible mental processes, which is why they get swapped. Anchor them to a person: **encoding lives in the sender** (thoughts become symbols), **decoding lives in the receiver** (symbols become concepts).
 
 > **Drill:** A student reads a professor's comment and works out what it means. Encoding or decoding?
-> **Answer:** Decoding — the student is the receiver translating symbols back into meaning.
+> **Answer:** Decoding, the student is the receiver translating symbols back into meaning.
 
 ### Trap 2: Message vs. Medium
 
@@ -485,46 +485,46 @@ Four boundary pairs cause nearly all wrong answers:
 | Physical vs. semantic | You cannot hear it = physical. You hear it but the words do not land = semantic. |
 
 > **Drill:** A webinar audience gets a crystal-clear audio feed of a lecture delivered entirely in unexplained acronyms. Which barrier?
-> **Answer:** Linguistic/semantic — the channel worked perfectly; the vocabulary failed.
+> **Answer:** Linguistic/semantic, the channel worked perfectly; the vocabulary failed.
 
 ### Trap 4: Ambiguity Tolerance vs. Adaptive Flexibility
 
 Both appear in intercultural scenarios, but one is *internal composure* and the other is *external behavior change*. Staying calm and objective = high ambiguity tolerance. Changing your tone, speed, or body language = adaptive flexibility.
 
 > **Drill:** A nurse slows her speech and simplifies her gestures for a foreign patient. Which competency?
-> **Answer:** Adaptive flexibility — she changed her behavior, not just her mindset.
+> **Answer:** Adaptive flexibility, she changed her behavior, not just her mindset.
 
 ### Trap 5: Mindful Awareness vs. Conscious Inclusivity
 
 Mindful awareness looks *inward*: reflecting on your own assumptions before concluding. Conscious inclusivity looks *outward*: dropping rigid cultural or gender biases and outdated generalizations toward others.
 
 > **Drill:** "Before assuming the client was rude, I asked myself whether I was misreading his directness." Which competency?
-> **Answer:** Mindful awareness — the speaker examined their own assumption.
+> **Answer:** Mindful awareness, the speaker examined their own assumption.
 
 ### Trap 6: High-Context Silence vs. Low-Context Directness
 
 Exams love a scenario where silence gets misread. In the high-context settings covered in Unit II (China, South Korea, Japan), silence and pauses signal deliberation and respect. In low-context Western settings, directness and explicit statements are the norm. Match the interpretation to the *listener's* cultural frame, not your own.
 
 > **Drill:** After a proposal, a South Korean partner pauses at length before responding. Positive, negative, or neutral signal?
-> **Answer:** Positive-to-neutral — pauses signal thoughtful deliberation and respect, not rejection.
+> **Answer:** Positive-to-neutral, pauses signal thoughtful deliberation and respect, not rejection.
 
 ### Trap 7: Chá vs. Tê
 
 One diagram, two branches, guaranteed one exam item. **Chá = land** (Silk Road, inland: Persian Chay, Russian Chay, Swahili Chai). **Tê = sea** (Min Nan coastal ports, Dutch traders, 17th century: English Tea, French Thé). Mnemonic: the words with an *-a* sound traveled by land; the *-e* sound sailed.
 
-> **Drill:** Russian "Chay" — land or sea?
-> **Answer:** Land — it descends from Sinitic "Chá" via inland routes.
+> **Drill:** Russian "Chay", land or sea?
+> **Answer:** Land, it descends from Sinitic "Chá" via inland routes.
 
 ### Trap 8: Processing-Channel Phrase Cues
 
 Identification items quote a phrase and ask for the channel. Sort by sense: sight words (see, picture, clear) = visual; sound words (rings, sound, tune) = auditory; touch and feeling words (grip, feels) = kinesthetic.
 
 > **Drill:** "That rings a bell, but let's get a clear picture first." Which two channels appear, in order?
-> **Answer:** Auditory ("rings a bell") then visual ("clear picture") — yes, professors mix two cues in one line.
+> **Answer:** Auditory ("rings a bell") then visual ("clear picture"), yes, professors mix two cues in one line.
 $md$, 6),
 
 -- ------------------------------------------------------------
--- 7. LOCKED — Final Exam Blueprint & Rapid Review Sheet
+-- 7. LOCKED, Final Exam Blueprint & Rapid Review Sheet
 -- ------------------------------------------------------------
 ('a2000003-0001-0001-0002-0000000000e1','activity','Final Exam Blueprint & Rapid Review Sheet',$md$
 The final exam is **cumulative across Units I–IV**, but the weight sits on the material after the prelim: **Unit III: Digital Communication Frameworks** and **Unit IV: Professional and Business Writing**. Expect roughly 70% of items from Units III–IV and 30% recycled concepts from Units I–II. Finals also add a question type prelims rarely use: **critique items**, where you are shown a flawed business-letter excerpt and asked to identify what is wrong.
@@ -541,19 +541,19 @@ The final exam is **cumulative across Units I–IV**, but the weight sits on the
 
 **The three pillars of modern connected networks:**
 
-- **Connectivity** — continuous access to global channels via digital devices.
-- **Convergence** — merging text, video-conferencing, audio, and data sharing into single unified platforms.
-- **Interactivity** — real-time engagement: manipulating content, live participation, instant feedback.
+- **Connectivity**, continuous access to global channels via digital devices.
+- **Convergence**, merging text, video-conferencing, audio, and data sharing into single unified platforms.
+- **Interactivity**, real-time engagement: manipulating content, live participation, instant feedback.
 
 **Internet memetics:** the term "meme" comes from biological evolutionary theory, coined by **Richard Dawkins** as a unit of cultural replication and imitation. Three structural pillars let memetic content spread:
 
-- **Intertextuality** — layering unrelated cultural references, text, and images into a new message.
-- **Indexicality** — one visual anchor reused across different scenarios while keeping its emotional tone.
-- **Substitutability** — structural openness that invites others to modify, re-caption, or build on the template.
+- **Intertextuality**, layering unrelated cultural references, text, and images into a new message.
+- **Indexicality**, one visual anchor reused across different scenarios while keeping its emotional tone.
+- **Substitutability**, structural openness that invites others to modify, re-caption, or build on the template.
 
 ### Rapid Review: Unit IV
 
-**Business letter anatomy, in order:** letterhead/heading, dateline, inside address, salutation (ends in a **colon** — "Dear Mr. Davis:"), body text (single-spaced paragraphs, double spacing between them), complimentary close (capitalize the **first word only** — "Sincerely,"), signature block (signed name above the typed name and designation).
+**Business letter anatomy, in order:** letterhead/heading, dateline, inside address, salutation (ends in a **colon**, "Dear Mr. Davis:"), body text (single-spaced paragraphs, double spacing between them), complimentary close (capitalize the **first word only**, "Sincerely,"), signature block (signed name above the typed name and designation).
 
 **The three letter formats:**
 
@@ -565,11 +565,11 @@ The final exam is **cumulative across Units I–IV**, but the weight sits on the
 
 **The three pillars of professional correspondence:**
 
-1. **Completeness** — verify against Who, What, When, Where, Why, and How.
-2. **Clarity** — replace outdated phrasing: "Enclosed please find" becomes "Enclosed is / Attached is"; "Due to the fact that" becomes "Because"; "In the event that" becomes "If"; "At the present time" becomes "Now"; "Act as an indicator of" becomes "Show."
-3. **Concreteness** — exact metrics over vague claims, active verbs over passive ones ("The engineering team optimized the system," not "The system optimization was completed by the engineering team").
+1. **Completeness**, verify against Who, What, When, Where, Why, and How.
+2. **Clarity**, replace outdated phrasing: "Enclosed please find" becomes "Enclosed is / Attached is"; "Due to the fact that" becomes "Because"; "In the event that" becomes "If"; "At the present time" becomes "Now"; "Act as an indicator of" becomes "Show."
+3. **Concreteness**, exact metrics over vague claims, active verbs over passive ones ("The engineering team optimized the system," not "The system optimization was completed by the engineering team").
 
-**Application documents:** the cover letter is a targeted, single-page document using the three-paragraph approach — Paragraph 1 **Orientation** (target position and where you found it), Paragraph 2 **Information** (skills and data-backed wins), Paragraph 3 **Action** (polite request for a meeting plus contact details). The resume hierarchy for early-career profiles: contact information, career objective (measurable value you bring), education history first, experience record with action-and-outcome bullets, then the technical skills inventory.
+**Application documents:** the cover letter is a targeted, single-page document using the three-paragraph approach, Paragraph 1 **Orientation** (target position and where you found it), Paragraph 2 **Information** (skills and data-backed wins), Paragraph 3 **Action** (polite request for a meeting plus contact details). The resume hierarchy for early-career profiles: contact information, career objective (measurable value you bring), education history first, experience record with action-and-outcome bullets, then the technical skills inventory.
 
 ### Rapid Review: Units I–II (the recycled 30%)
 
@@ -584,7 +584,7 @@ The final exam is **cumulative across Units I–IV**, but the weight sits on the
 
 | Day | Focus |
 |---|---|
-| 1 | Unit III in full: media ages table, three pillars, meme pillars — make flashcards for intertextuality/indexicality/substitutability |
+| 1 | Unit III in full: media ages table, three pillars, meme pillars, make flashcards for intertextuality/indexicality/substitutability |
 | 2 | Unit IV structure: letter anatomy in order, the three formats, punctuation rules (salutation colon, close capitalization) |
 | 3 | Unit IV pillars: rewrite five wordy sentences using the clarity table; convert three passive sentences to active |
 | 4 | Units I–II sweep using the prelim traps section, then take Final Mock Exam A |
@@ -592,10 +592,10 @@ The final exam is **cumulative across Units I–IV**, but the weight sits on the
 $md$, 7),
 
 -- ------------------------------------------------------------
--- 8. LOCKED — Final Mock Exam A — 30 Items
+-- 8. LOCKED, Final Mock Exam A, 30 Items
 -- ------------------------------------------------------------
-('a2000003-0001-0001-0002-0000000000e1','activity','Final Mock Exam A — 30 Items',$md$
-Cumulative, weighted to Units III–IV. Time limit: 45 minutes. Part V is a critique section — read the flawed letter excerpt carefully before answering items 27–30.
+('a2000003-0001-0001-0002-0000000000e1','activity','Final Mock Exam A, 30 Items',$md$
+Cumulative, weighted to Units III–IV. Time limit: 45 minutes. Part V is a critique section, read the flawed letter excerpt carefully before answering items 27–30.
 
 ### Part I: Multiple Choice (Items 1–12)
 
@@ -679,7 +679,7 @@ Cumulative, weighted to Units III–IV. Time limit: 45 minutes. Part V is a crit
 26. Swahili "Chai" and English "Tea" differ in origin because:
     A. Both came by sea  B. Chai came via inland routes from "Chá" while Tea came via maritime trade from "Tê"  C. Both came via the Silk Road  D. Tea predates all trade routes
 
-### Part V: Critique — The Flawed Application Letter (Items 27–30)
+### Part V: Critique, The Flawed Application Letter (Items 27–30)
 
 A student submits this application letter and labels it "full-block style." The body paragraphs are indented, and there is no dateline anywhere on the page.
 
@@ -711,9 +711,9 @@ A student submits this application letter and labels it "full-block style." The 
 $md$, 8),
 
 -- ------------------------------------------------------------
--- 9. LOCKED — Final Mock Exam B — 30 Items
+-- 9. LOCKED, Final Mock Exam B, 30 Items
 -- ------------------------------------------------------------
-('a2000003-0001-0001-0002-0000000000e1','activity','Final Mock Exam B — 30 Items',$md$
+('a2000003-0001-0001-0002-0000000000e1','activity','Final Mock Exam B, 30 Items',$md$
 All-new items, same cumulative scope weighted to Units III–IV. Take it in one sitting, closed notes, 45 minutes.
 
 ### Part I: Multiple Choice (Items 1–12)
@@ -798,7 +798,7 @@ All-new items, same cumulative scope weighted to Units III–IV. Take it in one 
 26. A Filipino delegate in Seoul wants to point out a chart during a presentation. The Unit II-appropriate gesture is:
     A. Index finger, for precision  B. An open palm  C. A closed fist  D. No gesture is ever acceptable
 
-### Part V: Critique — The Flawed Request Letter (Items 27–30)
+### Part V: Critique, The Flawed Request Letter (Items 27–30)
 
 This letter has a letterhead and dateline but jumps straight from the letterhead to "Dear Hiring Team:" with nothing in between. The writer calls it a cover letter.
 
@@ -817,7 +817,7 @@ This letter has a letterhead and dateline but jumps straight from the letterhead
 
 28. The three body paragraphs violate the three-paragraph approach because:
     A. They are too short
-    B. The Action paragraph comes first and the Orientation paragraph comes last — the order should be Orientation, Information, Action
+    B. The Action paragraph comes first and the Orientation paragraph comes last, the order should be Orientation, Information, Action
     C. There should only be one paragraph
     D. The Information paragraph is missing entirely
 
@@ -828,19 +828,19 @@ This letter has a letterhead and dateline but jumps straight from the letterhead
     D. My grades, in the event that you check them, indicate discipline
 
 30. "Many programming languages are known by me" violates concreteness and clarity how?
-    A. It is passive and vague — it should use an active verb and name the exact languages
+    A. It is passive and vague, it should use an active verb and name the exact languages
     B. It is too specific
     C. It uses a colon incorrectly
     D. It belongs in the salutation
 $md$, 9),
 
 -- ------------------------------------------------------------
--- 10. LOCKED — Final Answer Key with Explanations
+-- 10. LOCKED, Final Answer Key with Explanations
 -- ------------------------------------------------------------
-('a2000003-0001-0001-0002-0000000000e1','activity','Final Mock Exams — Answer Key with Explanations',$md$
-Score each mock out of 30. Anything below 24 on a part means reopen that unit before exam day — the explanations point you to exactly which concept to reread.
+('a2000003-0001-0001-0002-0000000000e1','activity','Final Mock Exams, Answer Key with Explanations',$md$
+Score each mock out of 30. Anything below 24 on a part means reopen that unit before exam day, the explanations point you to exactly which concept to reread.
 
-### Final Mock Exam A — Key
+### Final Mock Exam A, Key
 
 | # | Answer | Explanation |
 |---|---|---|
@@ -865,27 +865,27 @@ Score each mock out of 30. Anything below 24 on a part means reopen that unit be
 | 19 | Connectivity | Continuous access via smartphones, laptops, tablets. |
 | 20 | Inside address | Recipient name, title, company, and full mailing address. |
 | 21 | Technical skills inventory | The scannable list of tools, platforms, and languages. |
-| 22 | Paragraph 1 — Orientation | It names the target position and where the listing was found. |
+| 22 | Paragraph 1, Orientation | It names the target position and where the listing was found. |
 | 23 | C | Untranslated jargon is linguistic/semantic noise. B would require the equipment to fail. |
 | 24 | A | In Japan, silence signals deliberation and respect; repeating louder misdiagnoses the pause as disagreement. |
 | 25 | C | "Feels" and "grip" are kinesthetic phrase cues. |
 | 26 | B | Chai descends from inland "Chá"; Tea descends from maritime "Tê" via Dutch traders. |
-| 27 | C | Four: "Due to the fact that," "enclosed please find," "in the event that," and "at the present time." Count them against the clarity table — "a short amount of time" is a concreteness problem, not a listed clarity phrase, which is why D overcounts. |
+| 27 | C | Four: "Due to the fact that," "enclosed please find," "in the event that," and "at the present time." Count them against the clarity table, "a short amount of time" is a concreteness problem, not a listed clarity phrase, which is why D overcounts. |
 | 28 | B | Vague speed claims violate concreteness; the fix is an exact metric, mirroring the 15,000-requests example. |
-| 29 | A | Full-block forbids indentation, and every letter needs a dateline — the two named defects. |
+| 29 | A | Full-block forbids indentation, and every letter needs a dateline, the two named defects. |
 | 30 | B | The salutation takes a colon, not a comma; and only the first word of the close is capitalized, so "Yours Truly," must become "Yours truly,". |
 
-### Final Mock Exam B — Key
+### Final Mock Exam B, Key
 
 | # | Answer | Explanation |
 |---|---|---|
 | 1 | B | Second Media Age flow is multi-directional and interactive. A describes broadcast flow. |
 | 2 | C | The broadcast era solidified hierarchies and let gatekeepers control awareness. |
-| 3 | A | One platform carrying video, chat, and file sharing is convergence — modes merged into a unified platform. |
+| 3 | A | One platform carrying video, chat, and file sharing is convergence, modes merged into a unified platform. |
 | 4 | B | Dawkins coined the term within biological evolutionary theory. |
 | 5 | B | Combining unrelated cultural references into a new message is intertextuality. A (indexicality) would be one template reused across contexts. |
 | 6 | B | Modified-block centers exactly four elements: letterhead, dateline, complimentary close, signature block. |
-| 7 | B | Single-spaced paragraphs, double spacing between them — verbatim from the letter anatomy. |
+| 7 | B | Single-spaced paragraphs, double spacing between them, verbatim from the letter anatomy. |
 | 8 | B | "At the present time" becomes "Now." Every other option is still wordy. |
 | 9 | B | "In the event that" becomes "If." |
 | 10 | B | Concreteness demands an exact metric. C stays vague AND goes passive; A and D are still generalizations. |
@@ -900,13 +900,13 @@ Score each mock out of 30. Anything below 24 on a part means reopen that unit be
 | 19 | Interactivity | Real-time engagement capabilities. |
 | 20 | Dateline | The exact date the document was finalized. |
 | 21 | Who, What, When, Where, Why, and How | The completeness tracker. |
-| 22 | Information — a focused summary of skills, data-backed wins, and technical qualifications | Paragraph 2 of the three-paragraph approach. |
-| 23 | A | Idioms failing to translate = semantic; an attachment that will not open = technical. Order matters in the options — read them fully. |
+| 22 | Information, a focused summary of skills, data-backed wins, and technical qualifications | Paragraph 2 of the three-paragraph approach. |
+| 23 | A | Idioms failing to translate = semantic; an attachment that will not open = technical. Order matters in the options, read them fully. |
 | 24 | B | Questioning your own assumptions before concluding is mindful awareness. C (composure) is tempting but the interviewer is self-examining, not staying calm. |
-| 25 | B | Mockery creates tension; negative climates cause withdrawal and defensiveness — exactly what the staff did. |
+| 25 | B | Mockery creates tension; negative climates cause withdrawal and defensiveness, exactly what the staff did. |
 | 26 | B | South Korean norms replace index-finger pointing with an open palm. |
 | 27 | B | The inside address (recipient name, title, company, address) belongs between the dateline and the salutation, and it is absent. |
-| 28 | B | The letter opens with the call to action (Action), buries the skills summary in the middle, and states the position last — the approach requires Orientation, then Information, then Action. |
+| 28 | B | The letter opens with the call to action (Action), buries the skills summary in the middle, and states the position last, the approach requires Orientation, then Information, then Action. |
 | 29 | B | The clarity table maps "act as an indicator of" to "show." A keeps the wordy phrase; C goes passive; D adds another outdated phrase. |
 | 30 | A | Passive voice hides the doer, and "many" is a weak generalization. Active phrasing plus named languages satisfies both concreteness and clarity. |
 $md$, 10);

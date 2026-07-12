@@ -10,7 +10,7 @@
 
 Logic gives mathematical statements precise meaning and lets us judge whether arguments are valid. It has practical uses in circuit design, program construction, and program verification.
 
-A **proposition** is a declarative statement that carries a truth value — it is either true or false, with no middle ground. Propositions are sometimes called atomic statements.
+A **proposition** is a declarative statement that carries a truth value, it is either true or false, with no middle ground. Propositions are sometimes called atomic statements.
 
 Example: Consider three propositions:
 - P: A grizzly is a bear.
@@ -98,7 +98,7 @@ Biconditional keywords: *if and only if, when and only when, just in case, is a 
 
 Assign letter variables to simple statements, then build compound statements using connectives.
 
-Example — define:
+Example, define:
 - V: Victor hit the ball.
 - R: Reineil caught the ball.
 - L: Lucas chased the ball.
@@ -125,9 +125,9 @@ Example — define:
 
 ### Syntax and Semantics
 
-**Syntax** describes the formal structure of logical expressions — the rules for building valid formulas.
+**Syntax** describes the formal structure of logical expressions, the rules for building valid formulas.
 
-**Semantics** deals with the meaning of those expressions — specifically, their truth values.
+**Semantics** deals with the meaning of those expressions, specifically, their truth values.
 
 **Symbols used:**
 - Proposition letters: P, Q, R, ..., X, Y, Z
@@ -224,7 +224,7 @@ True when P and Q have the same truth value.
 
 - **Tautology:** A proposition that is always true regardless of variable values. The last column of its truth table contains only T.
 - **Contradiction:** A proposition that is always false. The last column contains only F.
-- **Contingency:** A proposition that is neither always true nor always false — the last column contains both T and F.
+- **Contingency:** A proposition that is neither always true nor always false, the last column contains both T and F.
 
 ---
 
@@ -248,7 +248,7 @@ Both columns match, confirming the equivalence.
 ---
 
 <!-- kind: activity -->
-## Exercise 1.1 — Identifying Propositions
+## Exercise 1.1, Identifying Propositions
 
 Which of the following are propositions?
 1. Study hard!
@@ -259,7 +259,7 @@ Which of the following are propositions?
 
 ---
 
-## Exercise 1.2 — Negation and Symbolization
+## Exercise 1.2, Negation and Symbolization
 
 Let p = "x < 50" and q = "x > 40". Write as simply as you can:
 a. ¬p
@@ -271,7 +271,7 @@ f. ¬p ∧ ¬q
 
 ---
 
-## Exercise 1.3 — Symbolic Notation
+## Exercise 1.3, Symbolic Notation
 
 Let C = "Critical thinker", D = "Dota player", S = "Studying well".
 
@@ -283,7 +283,7 @@ Let C = "Critical thinker", D = "Dota player", S = "Studying well".
 
 ---
 
-## Exercise 1.4 — Truth Tables (Construction)
+## Exercise 1.4, Truth Tables (Construction)
 
 Construct the truth table for each of the following:
 1. P ∧ (Q ∨ R)
@@ -410,7 +410,7 @@ All T → tautology → argument is **valid**.
 ---
 
 <!-- kind: activity -->
-## Exercise 2.1 — Identify the Law
+## Exercise 2.1, Identify the Law
 
 Identify which equivalence law applies in each case:
 
@@ -422,7 +422,7 @@ e. [¬(¬P) ∨ Q] ≡ P ∨ Q
 
 ---
 
-## Exercise 2.2 — Prove Equivalences Using Laws
+## Exercise 2.2, Prove Equivalences Using Laws
 
 Use propositional equivalence laws to prove each of the following:
 
@@ -434,7 +434,7 @@ Use propositional equivalence laws to prove each of the following:
 
 ---
 
-## Exercise 2.3 — Validity Using Truth Tables
+## Exercise 2.3, Validity Using Truth Tables
 
 Use truth tables to determine whether each argument form is a tautology and whether the argument is valid or a fallacy.
 
@@ -453,7 +453,7 @@ Use truth tables to determine whether each argument form is a tautology and whet
 
 Propositional logic handles individual statements, but it cannot express relationships involving general quantities like "all" or "some." Predicate logic extends propositional logic to handle these kinds of statements.
 
-For example, from "Every computer on a network is functioning normally" and "Machine X is on the network," we can conclude "Machine X is functioning normally." Propositional logic alone cannot make this deduction — predicate logic can.
+For example, from "Every computer on a network is functioning normally" and "Machine X is on the network," we can conclude "Machine X is functioning normally." Propositional logic alone cannot make this deduction, predicate logic can.
 
 ---
 
@@ -511,10 +511,10 @@ Worked example using Universal Instantiation:
 - Nemo is a fish. F(n)
 
 Proof:
-1. (∀x)[F(x) → O(x)] — Hypothesis
-2. F(n) — Hypothesis
-3. F(n) → O(n) — Universal Instantiation (1)
-4. O(n) — Modus Ponens (2, 3)
+1. (∀x)[F(x) → O(x)], Hypothesis
+2. F(n), Hypothesis
+3. F(n) → O(n), Universal Instantiation (1)
+4. O(n), Modus Ponens (2, 3)
 
 ---
 
@@ -563,7 +563,7 @@ Example: Prove that for any integer h, h is odd if and only if h² is odd.
 ---
 
 <!-- kind: activity -->
-## Exercise 3.1 — Quantifier Translation
+## Exercise 3.1, Quantifier Translation
 
 Using H(x): "x is a student", E(x): "x is happy", Y(x): "x likes Taylor Swift":
 
@@ -576,7 +576,7 @@ Express symbolically:
 
 ---
 
-## Exercise 3.2 — Proofs
+## Exercise 3.2, Proofs
 
 1. Write the contrapositive of: "For all integers p and q, if p + q is even, then p and q are both even."
 2. Is the original statement true or false? Prove your answer.
@@ -618,7 +618,7 @@ Examples:
 - A = {x | x is an even number, 4 < x < 16}
 
 #### 3. Cardinality
-The **cardinality** of a set is its size — the number of distinct elements. Written as |A|.
+The **cardinality** of a set is its size, the number of distinct elements. Written as |A|.
 
 Examples:
 - A = {2, 4, 6, 8, 12} → |A| = 5
@@ -690,7 +690,7 @@ For three sets:
 ---
 
 <!-- kind: activity -->
-## Exercise 4.1 — Set Operations
+## Exercise 4.1, Set Operations
 
 Given: U = {1,2,3,4,5}, A = {1,2,3}, B = {5}
 1. A'
@@ -705,7 +705,7 @@ Given: U = {1,2,3,4,5,6}, A = {1,2,3}, B = {2,3,4}, C = {1,5}
 
 ---
 
-## Exercise 4.2 — Set Representation
+## Exercise 4.2, Set Representation
 
 Write each set in both Roster Form and Set-Builder Notation:
 1. Natural numbers that divide 12.
@@ -716,7 +716,7 @@ Write each set in both Roster Form and Set-Builder Notation:
 
 ---
 
-## Exercise 4.3 — Inclusion-Exclusion Problems
+## Exercise 4.3, Inclusion-Exclusion Problems
 
 1. In a group of 65 people, 40 like hockey and 35 like cricket. 20 like both. How many like neither?
 
@@ -881,7 +881,7 @@ Example 2: If a class has 14 boys and 22 girls (36 total), how large must a grou
 ---
 
 <!-- kind: activity -->
-## Exercise 5.1 — Relation Properties
+## Exercise 5.1, Relation Properties
 
 For each relation, determine whether it is reflexive, symmetric, antisymmetric, or transitive:
 
@@ -891,7 +891,7 @@ For each relation, determine whether it is reflexive, symmetric, antisymmetric, 
 
 ---
 
-## Exercise 5.2 — Function Evaluation
+## Exercise 5.2, Function Evaluation
 
 1. f(x) = x² + 7x − 24; find f(0), f(−1), f(3)
 2. f(x) = (x+5)/(x−5); find f(4), f(6), f(15)
@@ -899,7 +899,7 @@ For each relation, determine whether it is reflexive, symmetric, antisymmetric, 
 
 ---
 
-## Exercise 5.3 — Composition of Functions
+## Exercise 5.3, Composition of Functions
 
 1. Let f(x) = 3x + 4. Find (f ∘ f)(x).
 2. Let f(x) = 2x + 1 and g(x) = x + 3.
@@ -909,7 +909,7 @@ For each relation, determine whether it is reflexive, symmetric, antisymmetric, 
 
 ---
 
-## Exercise 5.4 — Pigeonhole Principle
+## Exercise 5.4, Pigeonhole Principle
 
 1. How many handkerchiefs must John pull from a box containing 1 pair each of yellow, red, blue, and black handkerchiefs to guarantee he has a matching pair?
 2. How many cards must you draw from a standard deck to guarantee at least two spades?
@@ -928,7 +928,7 @@ More generally: |A₁ ∪ A₂ ∪ ... ∪ Aₖ| when the sets are disjoint.
 
 ### The Product Rule
 
-When a procedure consists of **sequential steps** — first do task A, then do task B — the total number of ways is n₁ × n₂.
+When a procedure consists of **sequential steps**, first do task A, then do task B, the total number of ways is n₁ × n₂.
 
 More generally: n₁ × n₂ × n₃ × ... × nₖ for k sequential, independent tasks.
 
@@ -967,7 +967,7 @@ C(5 + 4 − 1, 4) = C(8, 4) = 70
 ---
 
 <!-- kind: activity -->
-## Exercise 6.1 — Sum and Product Rules
+## Exercise 6.1, Sum and Product Rules
 
 1. A menu has 23 dishes and 6 desserts. If you can choose only one item per day, how many days before you've tried everything?
 2. How many 3-digit numeric passwords (0–9) can be created (digits can repeat)?
@@ -976,7 +976,7 @@ C(5 + 4 − 1, 4) = C(8, 4) = 70
 
 ---
 
-## Exercise 6.2 — Permutations and Combinations
+## Exercise 6.2, Permutations and Combinations
 
 1. A house of 10 people: how many ordered arrangements of 4 can be made?
 2. 15 participants in a raffle: how many ways can 3 names be drawn (order matters)?
@@ -1077,7 +1077,7 @@ $$S = a \cdot \frac{r^n - 1}{r - 1}$$
 ---
 
 <!-- kind: activity -->
-## Exercise 7.1 — Arithmetic Sequences
+## Exercise 7.1, Arithmetic Sequences
 
 A. Find the next three terms:
 1. {3, 6, 9, 12, 15, ...}
@@ -1090,7 +1090,7 @@ B. Find the common difference:
 
 ---
 
-## Exercise 7.2 — Geometric Sequences
+## Exercise 7.2, Geometric Sequences
 
 1. Given a₁ = 10 and r = −1, find a₂, a₃, a₄, a₅.
 2. Given a₁ = 45 and r = 5, find the 10th term.
@@ -1099,7 +1099,7 @@ B. Find the common difference:
 
 ---
 
-## Exercise 7.3 — Fibonacci
+## Exercise 7.3, Fibonacci
 
 1. Find the 15th term of the Fibonacci sequence.
 2. Find the 10th term.
@@ -1109,7 +1109,7 @@ B. Find the common difference:
 
 ---
 
-## Exercise 7.4 — Summation Evaluation
+## Exercise 7.4, Summation Evaluation
 
 Evaluate:
 
@@ -1134,10 +1134,10 @@ It works on the same logic as dominos: if the first domino falls (base case), an
 
 ### The Two Steps of Mathematical Induction
 
-**Step 1 — Basis Step:**
+**Step 1, Basis Step:**
 Show that the statement P(1) is true (or P(0), depending on the starting value).
 
-**Step 2 — Inductive Step:**
+**Step 2, Inductive Step:**
 Assume P(k) is true for an arbitrary natural number k (this assumption is called the **inductive hypothesis**). Then prove that P(k+1) must also be true.
 
 **Formal expression:**
@@ -1185,12 +1185,12 @@ Using the inductive hypothesis:
 = (k+1)²[(k² + 4k + 4) / 4]
 = (k+1)²(k+2)² / 4 ✓
 
-Both steps verified — the formula holds for all n.
+Both steps verified, the formula holds for all n.
 
 ---
 
 <!-- kind: activity -->
-## Exercise 8.1 — Concept Check
+## Exercise 8.1, Concept Check
 
 Answer True or False and explain:
 1. Mathematical induction confirms a statement is true for every natural number k.
@@ -1201,7 +1201,7 @@ Answer True or False and explain:
 
 ---
 
-## Exercise 8.2 — Prove Using Induction
+## Exercise 8.2, Prove Using Induction
 
 1. Prove: n³ + 2n is divisible by 3 for any integer n.
 2. Prove: 1³ + 2³ + 3³ + ... + n³ = n²(n+1)² / 4
@@ -1301,7 +1301,7 @@ Each vertex stores a list of its neighbors. More space-efficient for sparse grap
 
 ### Trees
 
-A **tree** is a connected, acyclic graph — it has no simple circuits.
+A **tree** is a connected, acyclic graph, it has no simple circuits.
 
 Properties:
 - A tree with n vertices has exactly n − 1 edges.
@@ -1332,7 +1332,7 @@ Applications: Efficient searching, sorting algorithms, game trees, decision tree
 ---
 
 <!-- kind: activity -->
-## Exercise 9.1 — Graph Types and Terminology
+## Exercise 9.1, Graph Types and Terminology
 
 1. A graph's vertex set and edge set are both finite in a ______ graph.
 2. In a directed graph modeling a round-robin tournament, what do in-degree and out-degree represent?
@@ -1341,14 +1341,14 @@ Applications: Efficient searching, sorting algorithms, game trees, decision tree
 
 ---
 
-## Exercise 9.2 — Handshaking Theorem
+## Exercise 9.2, Handshaking Theorem
 
 1. How many edges does a graph have if it has 10 vertices each of degree 4?
 2. Can a graph have exactly 5 vertices with odd degree? Explain why or why not.
 
 ---
 
-## Exercise 9.3 — Application Problems
+## Exercise 9.3, Application Problems
 
 1. A tournament uses single-elimination (lose once and you're out). If 1000 people enter, how many games must be played to determine a champion?
 

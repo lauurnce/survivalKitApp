@@ -1,7 +1,7 @@
 -- ============================================================
--- Information Assurance and Security 1 — Modules & Sections
+-- Information Assurance and Security 1, Modules & Sections
 -- Subject ID: 30000000-0003-0002-0001-000000000004
--- 3rd Year, Semester 2 — major
+-- 3rd Year, Semester 2, major
 --
 -- Free/paid split: per lesson, sections 1-2 are FREE (kind='content'),
 -- sections 3-4 plus the practice drills are PAID (kind='activity').
@@ -169,18 +169,18 @@ INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
 --   S10: e44d8491-3cfa-5c15-ae96-70d4ea24a399  <- reserve last for kind='activity'
 
 -- ============================================================
--- IMPORT TEMPLATE — one INSERT per module. Replace placeholders.
+-- IMPORT TEMPLATE, one INSERT per module. Replace placeholders.
 -- content sections are FREE; the final activity section is PAID.
 -- ide_language (python|sql|java|c), starter_code, topology_data are
--- all OPTIONAL columns — include only when the section needs them.
+-- all OPTIONAL columns, include only when the section needs them.
 -- ============================================================
 --
 -- INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 -- ('5ccb51da-75cd-5814-af37-e74b8452fe4e','content','<Heading>',$md$
--- <full markdown teaching body — free tier>
+-- <full markdown teaching body, free tier>
 -- $md$, 1),
--- ('5ccb51da-75cd-5814-af37-e74b8452fe4e','activity','Practice & Exam Drills — Lesson 1',$md$
--- <review questions, worked exam problems w/ solutions, how-to-pass tips — paid tier>
+-- ('5ccb51da-75cd-5814-af37-e74b8452fe4e','activity','Practice & Exam Drills, Lesson 1',$md$
+-- <review questions, worked exam problems w/ solutions, how-to-pass tips, paid tier>
 -- $md$, 2);
 --
 -- With an interactive playground, use the 5-column form instead:
@@ -212,10 +212,10 @@ A registrar database is a good local example. Student grades should not be reada
 
 Modern organizations also care about these supporting ideas:
 
-- **Authenticity** — proving that a user, message, or system is genuine.
-- **Accountability** — making actions traceable to a user or process.
-- **Non-repudiation** — preventing a sender or actor from denying an action they actually performed.
-- **Privacy** — protecting personal and sensitive information from improper collection, use, or disclosure.
+- **Authenticity**, proving that a user, message, or system is genuine.
+- **Accountability**, making actions traceable to a user or process.
+- **Non-repudiation**, preventing a sender or actor from denying an action they actually performed.
+- **Privacy**, protecting personal and sensitive information from improper collection, use, or disclosure.
 
 Security is not only about stopping hackers. It also addresses careless behavior, weak passwords, missing backups, poor network design, unpatched software, and weak policies. In other words, many security failures start with ordinary IT mistakes.
 $md$, 1),
@@ -280,7 +280,7 @@ This is why organizations patch systems, rotate credentials, review logs, revisi
 
 For students, the key exam idea is this: security is not a product you buy once; it is a discipline you maintain over time.
 $md$, 4),
-('5ccb51da-75cd-5814-af37-e74b8452fe4e','activity','Practice & Exam Drills — Lesson 1',$md$
+('5ccb51da-75cd-5814-af37-e74b8452fe4e','activity','Practice & Exam Drills, Lesson 1',$md$
 ### Review Questions
 
 1. Differentiate information assurance from information security.
@@ -305,10 +305,10 @@ A state university stores: final grades, faculty login accounts, enrollment sche
 
 *Step-by-Step Solution*
 
-1. Unreachable website during enrollment → **Availability** — the service is not accessible when needed.
-2. Unauthorized grade change → **Integrity** — data was altered improperly.
-3. Payment records accessible to all staff → **Confidentiality** — sensitive data is exposed to unauthorized persons.
-4. User denies approving a transaction → **Non-repudiation** (with accountability related) — the system must prove who performed the action.
+1. Unreachable website during enrollment → **Availability**, the service is not accessible when needed.
+2. Unauthorized grade change → **Integrity**, data was altered improperly.
+3. Payment records accessible to all staff → **Confidentiality**, sensitive data is exposed to unauthorized persons.
+4. User denies approving a transaction → **Non-repudiation** (with accountability related), the system must prove who performed the action.
 
 **Problem B: Identify the Security Chain**
 
@@ -336,11 +336,11 @@ Why can a system be considered insecure even if it has a firewall?
 
 ### Hands-On Exercises
 
-**Exercise A: Asset Inventory Starter** — Create a mini asset inventory for one of: school LMS, barangay records system, small online shop, student organization website. Use the format: Asset | Why valuable | Main threat | Possible vulnerability | Possible impact. Write at least five assets.
+**Exercise A: Asset Inventory Starter**, Create a mini asset inventory for one of: school LMS, barangay records system, small online shop, student organization website. Use the format: Asset | Why valuable | Main threat | Possible vulnerability | Possible impact. Write at least five assets.
 
-**Exercise B: CIA Analysis Drill** — Choose one Philippine-context system such as a hospital record system, e-commerce delivery app, BPO attendance system, or university enrollment portal. Write one paragraph each for why confidentiality, integrity, and availability matter.
+**Exercise B: CIA Analysis Drill**, Choose one Philippine-context system such as a hospital record system, e-commerce delivery app, BPO attendance system, or university enrollment portal. Write one paragraph each for why confidentiality, integrity, and availability matter.
 
-**Exercise C: Security Process Reflection** — Describe one real or imagined incident where a system was initially secure but later became vulnerable because of change. Explain what changed and why continuous review was necessary.
+**Exercise C: Security Process Reflection**, Describe one real or imagined incident where a system was initially secure but later became vulnerable because of change. Explain what changed and why continuous review was necessary.
 
 ### How to Pass This Topic
 
@@ -374,11 +374,11 @@ $md$, 1),
 ('8b714a41-f183-5465-9aff-8a3287f8c916','content','Types of Vulnerabilities',$md$
 A vulnerability is a weakness that makes a system easier to compromise. Vulnerabilities often appear in these categories:
 
-- **Technical vulnerabilities** — unpatched software, insecure services, misconfigured firewalls
-- **Human vulnerabilities** — weak passwords, lack of awareness, social engineering susceptibility
-- **Physical vulnerabilities** — unlocked server rooms, exposed network ports, stolen devices
-- **Process vulnerabilities** — no backup plan, no change approval, unclear incident reporting
-- **Design vulnerabilities** — systems built without security requirements from the start
+- **Technical vulnerabilities**, unpatched software, insecure services, misconfigured firewalls
+- **Human vulnerabilities**, weak passwords, lack of awareness, social engineering susceptibility
+- **Physical vulnerabilities**, unlocked server rooms, exposed network ports, stolen devices
+- **Process vulnerabilities**, no backup plan, no change approval, unclear incident reporting
+- **Design vulnerabilities**, systems built without security requirements from the start
 
 A strong exam point here is that a vulnerability does not automatically mean a breach has happened. It means the system is susceptible. Once exploited, it becomes part of an attack.
 $md$, 2),
@@ -387,9 +387,9 @@ A **security control** is a safeguard that reduces risk. Controls are often grou
 
 **By nature**
 
-- **Administrative controls** — policies, training, procedures, standards, job separation
-- **Technical controls** — firewalls, encryption, MFA, antivirus, access control lists
-- **Physical controls** — locks, CCTV, guards, ID checks, equipment cages
+- **Administrative controls**, policies, training, procedures, standards, job separation
+- **Technical controls**, firewalls, encryption, MFA, antivirus, access control lists
+- **Physical controls**, locks, CCTV, guards, ID checks, equipment cages
 
 **By purpose**
 
@@ -428,14 +428,14 @@ A basic risk assessment process:
 
 Typical treatment choices are:
 
-- **Mitigate** — reduce the risk using controls
-- **Transfer** — shift part of the financial burden, for example through contracts or insurance
-- **Avoid** — stop the risky activity
-- **Accept** — tolerate the risk if it is low or unavoidable
+- **Mitigate**, reduce the risk using controls
+- **Transfer**, shift part of the financial burden, for example through contracts or insurance
+- **Avoid**, stop the risky activity
+- **Accept**, tolerate the risk if it is low or unavoidable
 
 A school may decide that a public announcement kiosk can operate with moderate risk, but student records cannot. Risk assessment helps justify that decision.
 $md$, 4),
-('8b714a41-f183-5465-9aff-8a3287f8c916','activity','Practice & Exam Drills — Lesson 2',$md$
+('8b714a41-f183-5465-9aff-8a3287f8c916','activity','Practice & Exam Drills, Lesson 2',$md$
 ### Review Questions
 
 1. Name four major sources of security threats.
@@ -449,18 +449,18 @@ $md$, 4),
 
 ### Worked Exam-Style Problems
 
-**Problem A: Classify Each Item** — Classify each item as threat, vulnerability, control, or asset.
+**Problem A: Classify Each Item**, Classify each item as threat, vulnerability, control, or asset.
 
-1. Unpatched web server → **Vulnerability** — weakness that can be exploited.
-2. Customer database → **Asset** — valuable information resource.
-3. Security awareness training → **Control** — administrative safeguard.
-4. Flood affecting the data center → **Threat** — potential cause of harm.
-5. Shared admin password → **Vulnerability** — weak practice that increases exposure.
-6. CCTV at the server room entrance → **Control** — physical and detective safeguard.
+1. Unpatched web server → **Vulnerability**, weakness that can be exploited.
+2. Customer database → **Asset**, valuable information resource.
+3. Security awareness training → **Control**, administrative safeguard.
+4. Flood affecting the data center → **Threat**, potential cause of harm.
+5. Shared admin password → **Vulnerability**, weak practice that increases exposure.
+6. CCTV at the server room entrance → **Control**, physical and detective safeguard.
 
 **Problem B: Risk Matrix Computation**
 
-A university portal has: Vulnerability — no MFA for administrator accounts; Likelihood — 4 of 5; Impact — 5 of 5. Compute the risk score and interpret it using this scale:
+A university portal has: Vulnerability, no MFA for administrator accounts; Likelihood, 4 of 5; Impact, 5 of 5. Compute the risk score and interpret it using this scale:
 
 | Score | Interpretation |
 |---|---|
@@ -473,7 +473,7 @@ A university portal has: Vulnerability — no MFA for administrator accounts; Li
 
 $$ \text{Risk Score} = \text{Likelihood} \times \text{Impact} = 4 \times 5 = 20 $$
 
-20 falls under **Critical**. The organization should mitigate immediately — enable MFA, limit admin exposure, and review logs.
+20 falls under **Critical**. The organization should mitigate immediately, enable MFA, limit admin exposure, and review logs.
 
 **Problem C: Choose the Best Treatment**
 
@@ -485,11 +485,11 @@ If the service is rarely used, expensive to secure, internet-facing, and not bus
 
 ### Hands-On Exercises
 
-**Exercise A: Build a Risk Register** — Create a risk register with five entries for a fictional university system using the template: Asset | Threat | Vulnerability | Likelihood | Impact | Risk Score | Suggested Control.
+**Exercise A: Build a Risk Register**, Create a risk register with five entries for a fictional university system using the template: Asset | Threat | Vulnerability | Likelihood | Impact | Risk Score | Suggested Control.
 
-**Exercise B: Control Mapping** — For each incident (stolen laptop, phishing email, accidental data deletion, power interruption in a server room), assign one preventive, one detective, and one corrective control.
+**Exercise B: Control Mapping**, For each incident (stolen laptop, phishing email, accidental data deletion, power interruption in a server room), assign one preventive, one detective, and one corrective control.
 
-**Exercise C: Short Case Analysis** — A BPO company stores attendance data in a shared spreadsheet accessible through a public link. Discuss the asset, the vulnerability, the likely threat, the impact, and one appropriate treatment decision.
+**Exercise C: Short Case Analysis**, A BPO company stores attendance data in a shared spreadsheet accessible through a public link. Discuss the asset, the vulnerability, the likely threat, the impact, and one appropriate treatment decision.
 
 ### How to Pass This Topic
 
@@ -511,16 +511,16 @@ Security starts by answering a simple question: Who is using the system, and wha
 
 A user's digital identity may be represented by a username, employee number, email account, certificate, token, or other credential. Security systems then apply the **AAA model**:
 
-- **Authentication** — proving identity
-- **Authorization** — determining permissions after identity is proven
-- **Accounting** — recording actions for auditing and review
+- **Authentication**, proving identity
+- **Authorization**, determining permissions after identity is proven
+- **Accounting**, recording actions for auditing and review
 
 Example:
 
 - A student logs into the university portal using a username and password.
-- The portal verifies the student's identity — **authentication**.
-- The student can view subjects but cannot edit grades — **authorization**.
-- The system stores login history and activity logs — **accounting**.
+- The portal verifies the student's identity, **authentication**.
+- The student can view subjects but cannot edit grades, **authorization**.
+- The system stores login history and activity logs, **accounting**.
 
 Many exam questions ask students to separate these three clearly. The easiest way is:
 
@@ -529,11 +529,11 @@ $md$, 1),
 ('6d38cc43-8053-5840-830b-9a3af3115ea4','content','Authentication Methods',$md$
 Authentication factors are usually grouped into categories:
 
-- **Something you know** — password, PIN, security answer
-- **Something you have** — token, phone, smart card, OTP app
-- **Something you are** — fingerprint, face, iris, voice
-- **Somewhere you are** — location-based checks
-- **Something you do** — behavioral patterns such as typing rhythm
+- **Something you know**, password, PIN, security answer
+- **Something you have**, token, phone, smart card, OTP app
+- **Something you are**, fingerprint, face, iris, voice
+- **Somewhere you are**, location-based checks
+- **Something you do**, behavioral patterns such as typing rhythm
 
 Using more than one factor gives **multi-factor authentication** or MFA. For example, password + OTP is stronger than password alone.
 
@@ -553,10 +553,10 @@ After authentication, a system decides what the subject is allowed to access. Th
 
 Common access control ideas include:
 
-- **Least privilege** — users get only the access they need
-- **Need to know** — sensitive information is shared only when necessary
-- **Separation of duties** — critical tasks are split so one person cannot abuse the whole process
-- **Default deny** — deny access unless explicitly allowed
+- **Least privilege**, users get only the access they need
+- **Need to know**, sensitive information is shared only when necessary
+- **Separation of duties**, critical tasks are split so one person cannot abuse the whole process
+- **Default deny**, deny access unless explicitly allowed
 
 Common access control models:
 
@@ -593,7 +593,7 @@ A simple secure account life cycle includes:
 
 For introductory security, remember this principle: most access problems are management problems before they become technical incidents.
 $md$, 4),
-('6d38cc43-8053-5840-830b-9a3af3115ea4','activity','Practice & Exam Drills — Lesson 3',$md$
+('6d38cc43-8053-5840-830b-9a3af3115ea4','activity','Practice & Exam Drills, Lesson 3',$md$
 ### Review Questions
 
 1. What does the AAA model stand for?
@@ -607,12 +607,12 @@ $md$, 4),
 
 ### Worked Exam-Style Problems
 
-**Problem A: AAA Identification** — For each statement, identify Authentication, Authorization, or Accounting.
+**Problem A: AAA Identification**, For each statement, identify Authentication, Authorization, or Accounting.
 
-1. The system checks whether the entered OTP is correct → **Authentication** — identity is being verified.
-2. A faculty member can encode grades but cannot release payroll → **Authorization** — access rights are defined.
-3. The system stores the timestamp and IP address of a login → **Accounting** — activity is recorded.
-4. A user presents a fingerprint to access a secure workstation → **Authentication** — biometric factor verifies identity.
+1. The system checks whether the entered OTP is correct → **Authentication**, identity is being verified.
+2. A faculty member can encode grades but cannot release payroll → **Authorization**, access rights are defined.
+3. The system stores the timestamp and IP address of a login → **Accounting**, activity is recorded.
+4. A user presents a fingerprint to access a secure workstation → **Authentication**, biometric factor verifies identity.
 
 **Problem B: Choose the Access Control Model**
 
@@ -632,11 +632,11 @@ This violates **least privilege** because the staff member keeps more access tha
 
 ### Hands-On Exercises
 
-**Exercise A: Create an RBAC Table** — Design an RBAC matrix. Roles: Student, Faculty, Registrar, Cashier, IT Admin. Resources: Grades, Enrollment Records, Payment Records, User Accounts, Course Schedule. Use the format: Role | View Grades | Edit Grades | View Payments | Manage Accounts | Edit Schedule.
+**Exercise A: Create an RBAC Table**, Design an RBAC matrix. Roles: Student, Faculty, Registrar, Cashier, IT Admin. Resources: Grades, Enrollment Records, Payment Records, User Accounts, Course Schedule. Use the format: Role | View Grades | Edit Grades | View Payments | Manage Accounts | Edit Schedule.
 
-**Exercise B: Access Control Critique** — Evaluate this setup: all department staff use one shared account; the password is changed only once per year; logs do not show which individual edited a file. Write a one-paragraph security critique.
+**Exercise B: Access Control Critique**, Evaluate this setup: all department staff use one shared account; the password is changed only once per year; logs do not show which individual edited a file. Write a one-paragraph security critique.
 
-**Exercise C: Authentication Upgrade Plan** — A small business currently uses only passwords. Recommend a better authentication setup and explain why it improves security.
+**Exercise C: Authentication Upgrade Plan**, A small business currently uses only passwords. Recommend a better authentication setup and explain why it improves security.
 
 ### How to Pass This Topic
 
@@ -658,23 +658,23 @@ Cryptography protects information by transforming it so that unauthorized users 
 
 Important terms:
 
-- **Plaintext** — original readable data
-- **Ciphertext** — encrypted unreadable output
-- **Encryption** — converting plaintext to ciphertext
-- **Decryption** — restoring ciphertext to plaintext
-- **Key** — secret or controlled value used by an algorithm
+- **Plaintext**, original readable data
+- **Ciphertext**, encrypted unreadable output
+- **Encryption**, converting plaintext to ciphertext
+- **Decryption**, restoring ciphertext to plaintext
+- **Key**, secret or controlled value used by an algorithm
 
 Cryptography is not magic. If keys are poorly managed, even strong algorithms can fail in practice.
 $md$, 1),
 ('965ef740-b656-5b14-88da-3520be07e937','content','Symmetric and Asymmetric Encryption',$md$
 There are two broad encryption approaches.
 
-**Symmetric encryption** — the same key is used to encrypt and decrypt.
+**Symmetric encryption**, the same key is used to encrypt and decrypt.
 
 - Advantages: fast, efficient for large amounts of data.
 - Challenge: both parties must protect and share the same secret key securely.
 
-**Asymmetric encryption** — a pair of keys is used: a **public key** for sharing and a **private key** kept secret.
+**Asymmetric encryption**, a pair of keys is used: a **public key** for sharing and a **private key** kept secret.
 
 - Advantages: supports secure key exchange, helps with digital signatures.
 - Challenge: slower than symmetric methods.
@@ -733,7 +733,7 @@ In daily IT practice, cryptography also appears in:
 
 For beginners, the safest summary is this: encryption hides data, hashing checks data, signatures prove trusted origin and integrity.
 $md$, 4),
-('965ef740-b656-5b14-88da-3520be07e937','activity','Practice & Exam Drills — Lesson 4',$md$
+('965ef740-b656-5b14-88da-3520be07e937','activity','Practice & Exam Drills, Lesson 4',$md$
 ### Review Questions
 
 1. Define plaintext, ciphertext, encryption, and key.
@@ -747,7 +747,7 @@ $md$, 4),
 
 ### Worked Exam-Style Problems
 
-**Problem A: Identify the Correct Technique** — Match each need to the most appropriate concept.
+**Problem A: Identify the Correct Technique**, Match each need to the most appropriate concept.
 
 1. Hide the contents of a confidential file → **Encryption**
 2. Check whether a downloaded file was modified → **Hashing**
@@ -775,11 +775,11 @@ Successful verification suggests: the message matches the signed digest → **in
 
 ### Hands-On Exercises
 
-**Exercise A: Crypto Comparison Table** — Create a summary table with columns: Technique | Reversible? | Main Purpose | Typical Use. Fill in rows for symmetric encryption, asymmetric encryption, hashing, and digital signatures.
+**Exercise A: Crypto Comparison Table**, Create a summary table with columns: Technique | Reversible? | Main Purpose | Typical Use. Fill in rows for symmetric encryption, asymmetric encryption, hashing, and digital signatures.
 
-**Exercise B: Integrity Check Scenario** — A school distributes a software installer to multiple computer labs. Explain how hashing can help verify that the installer in every lab is the correct and untampered copy.
+**Exercise B: Integrity Check Scenario**, A school distributes a software installer to multiple computer labs. Explain how hashing can help verify that the installer in every lab is the correct and untampered copy.
 
-**Exercise C: Password Storage Reflection** — Write a short explanation to a non-technical office manager on why storing passwords in an Excel file or plain database column is dangerous.
+**Exercise C: Password Storage Reflection**, Write a short explanation to a non-technical office manager on why storing passwords in an Excel file or plain database column is dangerous.
 
 ### How to Pass This Topic
 
@@ -872,7 +872,7 @@ For Philippine environments where staff may work from homes, cafés, or shared s
 
 A simple office topology diagram would help here: an internet edge, firewall, DMZ/public server zone, internal office LAN, server LAN, and guest Wi-Fi separated from the internal network.
 $md$, 4),
-('b10d9b37-46f8-5eaa-88a6-3c521db59d4b','activity','Practice & Exam Drills — Lesson 5',$md$
+('b10d9b37-46f8-5eaa-88a6-3c521db59d4b','activity','Practice & Exam Drills, Lesson 5',$md$
 ### Review Questions
 
 1. Why does networking increase the attack surface?
@@ -886,7 +886,7 @@ $md$, 4),
 
 ### Worked Exam-Style Problems
 
-**Problem A: Choose the Best Device** — Match each need with the most suitable component.
+**Problem A: Choose the Best Device**, Match each need with the most suitable component.
 
 1. Detect suspicious scanning behavior on a network → **IDS**
 2. Filter inbound and outbound traffic using rules → **Firewall**
@@ -911,11 +911,11 @@ Allow inbound HTTPS traffic to the public web server; deny unnecessary inbound s
 
 ### Hands-On Exercises
 
-**Exercise A: Segment a Small Network** — Draw or describe a secure layout for: one internet connection, one firewall, one web server, one file server, 20 office PCs, guest Wi-Fi, and one admin workstation. Explain which parts should communicate and which should not.
+**Exercise A: Segment a Small Network**, Draw or describe a secure layout for: one internet connection, one firewall, one web server, one file server, 20 office PCs, guest Wi-Fi, and one admin workstation. Explain which parts should communicate and which should not.
 
-**Exercise B: Remote Access Policy Draft** — Write five basic rules for employees accessing company systems from home or public networks.
+**Exercise B: Remote Access Policy Draft**, Write five basic rules for employees accessing company systems from home or public networks.
 
-**Exercise C: Protocol Risk Reflection** — List three examples of risky networking behavior and one safer alternative for each.
+**Exercise C: Protocol Risk Reflection**, List three examples of risky networking behavior and one safer alternative for each.
 
 ### How to Pass This Topic
 
@@ -1001,7 +1001,7 @@ Applications must also be secure by design. Introductory application security co
 - insecure storage of secrets,
 - unsafe database queries.
 
-The big idea is **secure SDLC thinking**: security should be considered during requirements, design, coding, testing, deployment, and maintenance — not only after release.
+The big idea is **secure SDLC thinking**: security should be considered during requirements, design, coding, testing, deployment, and maintenance, not only after release.
 
 When students hear "application security," they should think of this question:
 
@@ -1009,7 +1009,7 @@ When students hear "application security," they should think of this question:
 
 That mindset is more valuable than memorizing long vulnerability lists without understanding the logic behind them.
 $md$, 4),
-('7c237496-0d80-5409-a25c-133364679759','activity','Practice & Exam Drills — Lesson 6',$md$
+('7c237496-0d80-5409-a25c-133364679759','activity','Practice & Exam Drills, Lesson 6',$md$
 ### Review Questions
 
 1. What is host security?
@@ -1040,11 +1040,11 @@ A staff laptop suddenly shows encrypted files and a ransom note. What immediate 
 
 *Step-by-Step Solution*
 
-1. Isolate the laptop from the network — prevent spread
-2. Report the incident according to procedure — ensure coordinated response
-3. Preserve relevant evidence such as logs and timestamps when possible — support investigation
-4. Check backups and scope — determine recoverability and whether more systems are affected
-5. Do not casually use the device further — avoid worsening the damage
+1. Isolate the laptop from the network, prevent spread
+2. Report the incident according to procedure, ensure coordinated response
+3. Preserve relevant evidence such as logs and timestamps when possible, support investigation
+4. Check backups and scope, determine recoverability and whether more systems are affected
+5. Do not casually use the device further, avoid worsening the damage
 
 This is introductory incident thinking connected to host security.
 
@@ -1058,11 +1058,11 @@ The system lacks proper input handling and safe query design. An attacker may su
 
 ### Hands-On Exercises
 
-**Exercise A: Hardening Checklist** — Write a 10-point hardening checklist for a newly installed office workstation.
+**Exercise A: Hardening Checklist**, Write a 10-point hardening checklist for a newly installed office workstation.
 
-**Exercise B: Malware Prevention Plan** — A small school computer lab has frequent infections from USB drives. Propose a practical prevention plan using technical controls, user rules, and administrative actions.
+**Exercise B: Malware Prevention Plan**, A small school computer lab has frequent infections from USB drives. Propose a practical prevention plan using technical controls, user rules, and administrative actions.
 
-**Exercise C: Secure App Reflection** — Choose a simple application such as an online registration form or inventory system. List one authentication risk, one authorization risk, one data handling risk, and one logging/auditing need.
+**Exercise C: Secure App Reflection**, Choose a simple application such as an online registration form or inventory system. List one authentication risk, one authorization risk, one data handling risk, and one logging/auditing need.
 
 ### How to Pass This Topic
 
@@ -1156,7 +1156,7 @@ For practical study, remember these legal angles:
 
 In exam answers, do not try to act like a lawyer. Instead, show that you understand the principle: security work must be technically sound, ethically responsible, and legally aware.
 $md$, 4),
-('2f4923a6-20df-5b29-bdf1-a8e7ad5a8f6f','activity','Practice & Exam Drills — Lesson 7',$md$
+('2f4923a6-20df-5b29-bdf1-a8e7ad5a8f6f','activity','Practice & Exam Drills, Lesson 7',$md$
 ### Review Questions
 
 1. What is security governance?
@@ -1170,12 +1170,12 @@ $md$, 4),
 
 ### Worked Exam-Style Problems
 
-**Problem A: Policy Classification** — Classify each statement as policy, standard, procedure, or guideline.
+**Problem A: Policy Classification**, Classify each statement as policy, standard, procedure, or guideline.
 
-1. "All employees must use company-approved channels for reporting incidents." → **Policy** — broad rule statement
-2. "Passwords must be at least 12 characters long." → **Standard** — specific required rule
-3. "To request an account, fill out Form A, secure approval, then submit to IT." → **Procedure** — step-by-step instruction
-4. "When working from home, avoid public Wi-Fi when possible." → **Guideline** — recommended good practice
+1. "All employees must use company-approved channels for reporting incidents." → **Policy**, broad rule statement
+2. "Passwords must be at least 12 characters long." → **Standard**, specific required rule
+3. "To request an account, fill out Form A, secure approval, then submit to IT." → **Procedure**, step-by-step instruction
+4. "When working from home, avoid public Wi-Fi when possible." → **Guideline**, recommended good practice
 
 **Problem B: Ethics Case**
 
@@ -1199,11 +1199,11 @@ Why should a company handling customer personal data take security controls seri
 
 ### Hands-On Exercises
 
-**Exercise A: Draft a Mini Password Policy** — Write a short password and authentication policy for a student organization managing member records. Include password basics, account responsibility, reset handling, and an MFA recommendation.
+**Exercise A: Draft a Mini Password Policy**, Write a short password and authentication policy for a student organization managing member records. Include password basics, account responsibility, reset handling, and an MFA recommendation.
 
-**Exercise B: Ethical Reflection** — Write one paragraph answering: If you accidentally discover a weakness in your school's system, what is the ethical way to respond?
+**Exercise B: Ethical Reflection**, Write one paragraph answering: If you accidentally discover a weakness in your school's system, what is the ethical way to respond?
 
-**Exercise C: Policy Audit Check** — Take any everyday process such as email use, shared drive access, or student record handling. List one missing policy, one missing standard, one missing procedure, and one missing awareness point.
+**Exercise C: Policy Audit Check**, Take any everyday process such as email use, shared drive access, or student record handling. List one missing policy, one missing standard, one missing procedure, and one missing awareness point.
 
 ### How to Pass This Topic
 
@@ -1239,12 +1239,12 @@ $md$, 1),
 ('d633a3b4-38a6-5dee-9d0e-d65b489ae3dc','content','Basic Incident Response Process',$md$
 An introductory incident response flow often includes:
 
-1. **Preparation** — policies, roles, tools, contacts, backups, training
-2. **Identification** — determine whether an incident is occurring
-3. **Containment** — limit spread and damage
-4. **Eradication** — remove the cause
-5. **Recovery** — restore normal service safely
-6. **Lessons learned** — improve after the incident
+1. **Preparation**, policies, roles, tools, contacts, backups, training
+2. **Identification**, determine whether an incident is occurring
+3. **Containment**, limit spread and damage
+4. **Eradication**, remove the cause
+5. **Recovery**, restore normal service safely
+6. **Lessons learned**, improve after the incident
 
 A practical example:
 
@@ -1274,8 +1274,8 @@ $md$, 3),
 
 Two common metrics:
 
-- **RTO — Recovery Time Objective** — how quickly a service should be restored
-- **RPO — Recovery Point Objective** — how much data loss is tolerable in time terms
+- **RTO, Recovery Time Objective**, how quickly a service should be restored
+- **RPO, Recovery Point Objective**, how much data loss is tolerable in time terms
 
 Example:
 
@@ -1290,7 +1290,7 @@ A simple exam summary:
 - Business continuity keeps essential functions running.
 - Disaster recovery restores systems after serious disruption.
 $md$, 4),
-('d633a3b4-38a6-5dee-9d0e-d65b489ae3dc','activity','Practice & Exam Drills — Lesson 8',$md$
+('d633a3b4-38a6-5dee-9d0e-d65b489ae3dc','activity','Practice & Exam Drills, Lesson 8',$md$
 ### Review Questions
 
 1. What makes an event a security incident?
@@ -1304,7 +1304,7 @@ $md$, 4),
 
 ### Worked Exam-Style Problems
 
-**Problem A: Identify the Incident Response Phase** — For each action, identify the phase.
+**Problem A: Identify the Incident Response Phase**, For each action, identify the phase.
 
 1. The team disconnects an infected PC from the network → **Containment**
 2. The company prepares contact lists and response playbooks in advance → **Preparation**
@@ -1318,8 +1318,8 @@ A university enrollment system has RTO = 6 hours and RPO = 1 hour. Explain both.
 
 *Step-by-Step Solution*
 
-- **RTO = 6 hours** — the enrollment system should be restored within 6 hours after disruption.
-- **RPO = 1 hour** — the organization should not lose more than 1 hour of enrollment data.
+- **RTO = 6 hours**, the enrollment system should be restored within 6 hours after disruption.
+- **RPO = 1 hour**, the organization should not lose more than 1 hour of enrollment data.
 
 Interpretation: recovery planning must support restoration within 6 hours, and backups or replication must be frequent enough that data loss stays within 1 hour.
 
@@ -1340,11 +1340,11 @@ If ransomware is suspected, immediate isolation becomes a priority.
 
 ### Hands-On Exercises
 
-**Exercise A: Mini Incident Response Plan** — Write a one-page response outline for a phishing-based account compromise in a school office. Include who reports, who receives the report, immediate steps, containment ideas, recovery actions, and documentation needs.
+**Exercise A: Mini Incident Response Plan**, Write a one-page response outline for a phishing-based account compromise in a school office. Include who reports, who receives the report, immediate steps, containment ideas, recovery actions, and documentation needs.
 
-**Exercise B: Continuity Ranking** — A small organization has these services: payroll, company website, internal chat, CCTV archive, online ordering, HR records. Rank them from most to least critical for recovery and briefly justify.
+**Exercise B: Continuity Ranking**, A small organization has these services: payroll, company website, internal chat, CCTV archive, online ordering, HR records. Rank them from most to least critical for recovery and briefly justify.
 
-**Exercise C: BCP/DR Reflection** — Assume a regional office loses power and internet during a typhoon. Write a short paragraph describing one business continuity action, one disaster recovery action, and one long-term lesson learned.
+**Exercise C: BCP/DR Reflection**, Assume a regional office loses power and internet during a typhoon. Write a short paragraph describing one business continuity action, one disaster recovery action, and one long-term lesson learned.
 
 ### How to Pass This Topic
 
@@ -1356,7 +1356,7 @@ If ransomware is suspected, immediate isolation becomes a priority.
 - If a question involves operations during disasters, connect technical recovery to business impact.
 $md$, 5);
 
--- SOURCES (metadata — not inserted): UP Diliman CS 153 Intro to Computer
+-- SOURCES (metadata, not inserted): UP Diliman CS 153 Intro to Computer
 -- Security; PUP BSIT/CS; FEU Institute of Technology BSIT Cybersecurity; Adamson
 -- University BSIT 2022; Ateneo de Manila CSCI 61; DLSU ITSECUR; CHED CMO 25
 -- s. 2015 (IAS101/IAS102 outcomes).

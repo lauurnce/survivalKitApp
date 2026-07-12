@@ -1,4 +1,4 @@
-# Introduction to Computing — Complete Study Guide
+# Introduction to Computing, Complete Study Guide
 <!-- subject: Introduction to Computing | year: 1st -->
 
 ---
@@ -8,13 +8,13 @@
 <!-- kind: content -->
 ## What Is a Computer?
 
-A computer is an electronic system that accepts raw data, processes it through a set of instructions, and returns meaningful results. The word itself traces back to "compute" — originally, computers were seen primarily as calculation machines. Today they do much more: sorting, selecting, comparing, and transforming all kinds of data — numeric, alphabetic, and otherwise.
+A computer is an electronic system that accepts raw data, processes it through a set of instructions, and returns meaningful results. The word itself traces back to "compute", originally, computers were seen primarily as calculation machines. Today they do much more: sorting, selecting, comparing, and transforming all kinds of data, numeric, alphabetic, and otherwise.
 
-A working definition: a computer is a fast, accurate data-processing system that can accept data, apply operations to it, store results, and produce output — all driven by step-by-step instructions provided in advance.
+A working definition: a computer is a fast, accurate data-processing system that can accept data, apply operations to it, store results, and produce output, all driven by step-by-step instructions provided in advance.
 
 **Key terms:**
-- **Data** — raw, unorganized facts and figures with no context applied yet.
-- **Information** — data that has been processed and organized into something useful and meaningful.
+- **Data**, raw, unorganized facts and figures with no context applied yet.
+- **Information**, data that has been processed and organized into something useful and meaningful.
 
 ---
 
@@ -24,13 +24,13 @@ A working definition: a computer is a fast, accurate data-processing system that
 Every computer system has three essential components that must work together:
 
 ### Hardware
-Hardware is the physical, tangible side of a computer — the machinery you can touch. It includes electronic components like integrated circuits (ICs), storage media, input devices (keyboard, mouse, scanner), and output devices (monitor, printer, speakers). All of these physical parts link together to form a functional system. Hardware has evolved enormously over time, from room-filling vacuum tubes to today's microscopic chips.
+Hardware is the physical, tangible side of a computer, the machinery you can touch. It includes electronic components like integrated circuits (ICs), storage media, input devices (keyboard, mouse, scanner), and output devices (monitor, printer, speakers). All of these physical parts link together to form a functional system. Hardware has evolved enormously over time, from room-filling vacuum tubes to today's microscopic chips.
 
 ### Software
-Hardware on its own cannot do anything useful — it needs instructions. Software is the collection of programs, procedures, and documentation that tells the hardware what to do. It controls and extends everything the hardware is physically capable of. Without software, the hardware just sits idle.
+Hardware on its own cannot do anything useful, it needs instructions. Software is the collection of programs, procedures, and documentation that tells the hardware what to do. It controls and extends everything the hardware is physically capable of. Without software, the hardware just sits idle.
 
 ### Peopleware
-Peopleware refers to the human side of computing — the people who conceive, build, program, operate, maintain, and use computer systems. It is often considered the most critical element: without human involvement, no hardware would ever be designed, no software would ever be written, and no outputs would mean anything. Pioneers like Charles Babbage, Ada Lovelace, and Alan Turing are among those who made modern computing possible through their foundational contributions.
+Peopleware refers to the human side of computing, the people who conceive, build, program, operate, maintain, and use computer systems. It is often considered the most critical element: without human involvement, no hardware would ever be designed, no software would ever be written, and no outputs would mean anything. Pioneers like Charles Babbage, Ada Lovelace, and Alan Turing are among those who made modern computing possible through their foundational contributions.
 
 ---
 
@@ -43,7 +43,7 @@ Computers can be grouped in several ways depending on what you're measuring.
 
 **Supercomputers** are the highest-performance machines available. Their speed is measured in FLOPS (Floating Point Operations Per Second) rather than the MIPS used for everyday computers. They handle the most demanding computational tasks: weather forecasting, climate research, molecular simulations, quantum mechanics, oil and gas exploration, and cryptanalysis. Nearly all top-ranked supercomputers run Linux-based operating systems.
 
-**Mainframe computers** — sometimes called "big iron" — are large, high-throughput systems used by major organizations for bulk data processing like census computations, large-scale financial transactions, and statistical analysis. The basic mainframe architecture was established in the 1960s and has been continuously refined since.
+**Mainframe computers**, sometimes called "big iron", are large, high-throughput systems used by major organizations for bulk data processing like census computations, large-scale financial transactions, and statistical analysis. The basic mainframe architecture was established in the 1960s and has been continuously refined since.
 
 **Minicomputers** appeared in the mid-1960s at much lower prices than mainframes. They were designed primarily for control systems, instrumentation, and human-machine interaction rather than large-scale batch processing. They typically occupied one or a few rack cabinets, far smaller than the room-sized mainframes of the era. The term "minicomputer" was coined to describe these smaller machines made possible by transistor and core memory technology.
 
@@ -51,7 +51,7 @@ Computers can be grouped in several ways depending on what you're measuring.
 
 ### By Functionality
 
-**Servers** are dedicated machines configured to provide specific services — file storage, web hosting, email, databases — to other machines (clients) on a network. They are named after the type of service they provide.
+**Servers** are dedicated machines configured to provide specific services, file storage, web hosting, email, databases, to other machines (clients) on a network. They are named after the type of service they provide.
 
 **Workstations** are high-performance machines designed for use by one person at a time. They run multi-user operating systems and are used for professional or commercial work.
 
@@ -61,15 +61,15 @@ Computers can be grouped in several ways depending on what you're measuring.
 
 ### By Data Handling Type
 
-**Analog computers** work with continuously varying physical quantities — electrical voltage, mechanical motion, hydraulic pressure — to model and solve problems. An analog clock is a simple example: the hands move continuously, representing time through physical position.
+**Analog computers** work with continuously varying physical quantities, electrical voltage, mechanical motion, hydraulic pressure, to model and solve problems. An analog clock is a simple example: the hands move continuously, representing time through physical position.
 
 **Digital computers** operate on discrete values, typically in binary (0s and 1s). By processing combinations of these values, they can perform calculations, organize data, control systems, and simulate complex systems like weather patterns.
 
-**Hybrid computers** combine both analog and digital processing. They accept analog input signals, convert them to digital form, and then process them digitally — useful in environments where real-world signals need precise computational analysis.
+**Hybrid computers** combine both analog and digital processing. They accept analog input signals, convert them to digital form, and then process them digitally, useful in environments where real-world signals need precise computational analysis.
 
 ### By Purpose
 
-**General-purpose computers** handle a wide variety of ordinary tasks — word processing, record keeping, database management, report generation. Most personal computers fall into this category.
+**General-purpose computers** handle a wide variety of ordinary tasks, word processing, record keeping, database management, report generation. Most personal computers fall into this category.
 
 **Special-purpose computers** are designed and optimized for one specific function. Their hardware (and sometimes additional processors) is tailored to that task. Examples include navigation computers in aircraft, medical imaging equipment, or industrial control systems.
 
@@ -80,25 +80,25 @@ Computers can be grouped in several ways depending on what you're measuring.
 
 ### What Computers Do Well
 
-**Speed** — Computers complete operations far faster than humans ever could. Performance is measured in MIPS (Million Instructions Per Second), and different machines are compared and classified on this basis.
+**Speed**, Computers complete operations far faster than humans ever could. Performance is measured in MIPS (Million Instructions Per Second), and different machines are compared and classified on this basis.
 
-**Accuracy** — With correct input and a properly written program, computers perform operations with near-perfect precision. Errors in output almost always trace back to errors in the input data or the program itself.
+**Accuracy**, With correct input and a properly written program, computers perform operations with near-perfect precision. Errors in output almost always trace back to errors in the input data or the program itself.
 
-**Reliability** — Computers don't get fatigued, bored, or distracted. They can repeat the same operation indefinitely without decline in quality. Most systems also include backup mechanisms to protect data if hardware fails.
+**Reliability**, Computers don't get fatigued, bored, or distracted. They can repeat the same operation indefinitely without decline in quality. Most systems also include backup mechanisms to protect data if hardware fails.
 
-**Versatility** — The same machine can serve scientific research, financial accounting, communication, entertainment, and creative work — simply by running different software.
+**Versatility**, The same machine can serve scientific research, financial accounting, communication, entertainment, and creative work, simply by running different software.
 
-**Storage** — Computers can hold vast amounts of data in various media: hard drives, SSDs, optical discs, RAM, ROM, and cloud storage.
+**Storage**, Computers can hold vast amounts of data in various media: hard drives, SSDs, optical discs, RAM, ROM, and cloud storage.
 
 ### What Computers Cannot Do
 
-**Think independently** — Computers only do what they are explicitly programmed to do. Every behavior must be defined in advance by a human programmer. They cannot generate new approaches to problems without instruction.
+**Think independently**, Computers only do what they are explicitly programmed to do. Every behavior must be defined in advance by a human programmer. They cannot generate new approaches to problems without instruction.
 
-**Make genuine decisions** — True decision-making requires judgment, contextual understanding, and wisdom — none of which computers possess on their own. They can follow decision rules coded by humans, but they cannot exercise real independent judgment.
+**Make genuine decisions**, True decision-making requires judgment, contextual understanding, and wisdom, none of which computers possess on their own. They can follow decision rules coded by humans, but they cannot exercise real independent judgment.
 
-**Feel** — Computers process data about emotions but experience nothing themselves. They have no subjective inner life.
+**Feel**, Computers process data about emotions but experience nothing themselves. They have no subjective inner life.
 
-**Implement policy** — Even with access to enormous information stores, only humans can determine how that information should be acted upon and then carry those decisions out in the real world.
+**Implement policy**, Even with access to enormous information stores, only humans can determine how that information should be acted upon and then carry those decisions out in the real world.
 
 ---
 
@@ -124,25 +124,25 @@ Long before electronic machines, humans developed mechanical tools to assist wit
 
 ### Generations of Computers
 
-**First Generation (1946–1959) — Vacuum Tubes**
-These machines used vacuum tubes as their core electronic components and magnetic drums for memory. They were massive — some weighed around 30 tons — consumed huge amounts of electricity, needed large cooling systems, and broke down frequently. Programming relied on punch cards. Despite their limitations, they could calculate in milliseconds, a tremendous leap at the time.
+**First Generation (1946–1959), Vacuum Tubes**
+These machines used vacuum tubes as their core electronic components and magnetic drums for memory. They were massive, some weighed around 30 tons, consumed huge amounts of electricity, needed large cooling systems, and broke down frequently. Programming relied on punch cards. Despite their limitations, they could calculate in milliseconds, a tremendous leap at the time.
 
-**Second Generation (1959–1965) — Transistors**
+**Second Generation (1959–1965), Transistors**
 Transistors replaced vacuum tubes, dramatically shrinking size and power consumption. These machines were faster (operating in microseconds), more reliable, and cheaper. Assembly language replaced raw machine code as the primary way to program them. Cooling and maintenance were still required but less intensively.
 
-**Third Generation (1965–1971) — Integrated Circuits**
+**Third Generation (1965–1971), Integrated Circuits**
 The invention of the integrated circuit (IC) by Robert Noyce and Jack Kilby in 1958–1959 packed many transistors onto a single chip. Computers shrank further, became faster (now operating in nanoseconds), and dropped in cost. Operating systems emerged, enabling time-sharing and multiprogramming. Keyboards and mice replaced punch cards as the primary input method.
 
-**Fourth Generation (1971–1980) — Microprocessors**
-The microprocessor — a complete CPU on a single chip — defined this era. Computers became small enough to sit on a desk and be affordable to individuals. Graphical User Interfaces (GUIs) made computers accessible to people without technical training. Features like multiprocessing, virtual storage, and time-sharing became standard.
+**Fourth Generation (1971–1980), Microprocessors**
+The microprocessor, a complete CPU on a single chip, defined this era. Computers became small enough to sit on a desk and be affordable to individuals. Graphical User Interfaces (GUIs) made computers accessible to people without technical training. Features like multiprocessing, virtual storage, and time-sharing became standard.
 
-**Fifth Generation (1980–present) — Artificial Intelligence**
-Built on Ultra Large Scale Integration (ULSI) technology, with chips containing tens of millions of components. The defining ambition of this era is machines that can learn, adapt, and respond to natural language — artificial intelligence. Computers now appear in countless form factors and are embedded in nearly every aspect of daily life.
+**Fifth Generation (1980–present), Artificial Intelligence**
+Built on Ultra Large Scale Integration (ULSI) technology, with chips containing tens of millions of components. The defining ambition of this era is machines that can learn, adapt, and respond to natural language, artificial intelligence. Computers now appear in countless form factors and are embedded in nearly every aspect of daily life.
 
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit I
+## Practice Exercises, Unit I
 
 1. In your own words, explain how hardware, software, and peopleware depend on each other. What happens if any one of the three is missing?
 2. For each classification category (size, functionality, data handling, purpose), identify one type of computer not covered in the examples above and describe where it fits.
@@ -159,7 +159,7 @@ Built on Ultra Large Scale Integration (ULSI) technology, with chips containing 
 <!-- kind: content -->
 ## Number Systems
 
-Computers and digital systems work with several number systems. Each is defined by its **base** (or radix) — the number of unique digits it uses.
+Computers and digital systems work with several number systems. Each is defined by its **base** (or radix), the number of unique digits it uses.
 
 | System | Base | Digits Used |
 |---|---|---|
@@ -274,7 +274,7 @@ So 0.2₁₀ ≈ 0.001100110011...₂
 ## Number System Arithmetic
 
 ### Addition
-Addition in any base works the same way as decimal — add column by column from right to left, carrying when the sum reaches or exceeds the base.
+Addition in any base works the same way as decimal, add column by column from right to left, carrying when the sum reaches or exceeds the base.
 
 Binary carries when the sum reaches 2:
 ```
@@ -293,7 +293,7 @@ Hexadecimal carries when the sum reaches 16:
 ```
 
 ### Subtraction: Direct Method
-Borrow from the next higher position when the digit being subtracted is larger than the digit above it — exactly as in decimal subtraction.
+Borrow from the next higher position when the digit being subtracted is larger than the digit above it, exactly as in decimal subtraction.
 
 ### Binary Subtraction Using Complements
 
@@ -317,20 +317,20 @@ Borrow from the next higher position when the digit being subtracted is larger t
 **Subtraction via 2's Complement:**
 1. Find the 2's complement of the number being subtracted.
 2. Add it to the other number.
-3. If a carry results, discard it — the remaining bits are the answer.
+3. If a carry results, discard it, the remaining bits are the answer.
 4. If no carry, the result is in 2's complement form (negative).
 
 The reason computers use 2's complement for negative numbers: subtraction can be performed entirely using addition circuits, eliminating the need for dedicated subtraction hardware and simplifying the CPU design.
 
 ### Multiplication and Division
-Binary multiplication is repeated addition of partial products — simpler than decimal since each partial product is either 0 or the multiplicand itself. Binary division follows the same long-division procedure as decimal division.
+Binary multiplication is repeated addition of partial products, simpler than decimal since each partial product is either 0 or the multiplicand itself. Binary division follows the same long-division procedure as decimal division.
 
 ---
 
 <!-- kind: content -->
 ## Data Representation
 
-Everything a computer stores and processes is ultimately represented as binary sequences. The same bit pattern can mean different things depending on which encoding is being used — context and the agreed-upon code are what give the bits their meaning.
+Everything a computer stores and processes is ultimately represented as binary sequences. The same bit pattern can mean different things depending on which encoding is being used, context and the agreed-upon code are what give the bits their meaning.
 
 ### Decimal Digit Representation
 
@@ -394,14 +394,14 @@ Real numbers (numbers with fractional parts) are stored in a format similar to s
 
 **True value = (−1)ˢ × 1.F × 2^(E−127)**
 
-**Example — converting 64.2₁₀ to single precision:**
+**Example, converting 64.2₁₀ to single precision:**
 1. Convert: 64 = 1000000₂; 0.2 ≈ 0.001100110011...₂ → combined: 1000000.00110011...₂
 2. Normalize: 1.00000000110011... × 2⁶
 3. Biased exponent: 6 + 127 = 133 → `10000101` in binary
 4. Mantissa (23 bits after the point): `00000000110011001100110`
 5. Final: `0 10000101 00000000110011001100110`
 
-**Overflow** occurs when a computed value is too large to fit in the available bits. For example, in an unsigned 3-bit system, the value 9 requires 4 bits and cannot be represented — any arithmetic that produces it has overflowed.
+**Overflow** occurs when a computed value is too large to fit in the available bits. For example, in an unsigned 3-bit system, the value 9 requires 4 bits and cannot be represented, any arithmetic that produces it has overflowed.
 
 ---
 
@@ -442,7 +442,7 @@ Parity detection can catch single-bit errors but cannot correct them, and it can
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit II
+## Practice Exercises, Unit II
 
 **Number conversion table:** Convert each of the following to all four bases (binary, octal, decimal, hexadecimal):
 - 101101102, 7628, 78510, BEE16
@@ -470,45 +470,45 @@ Parity detection can catch single-bit errors but cannot correct them, and it can
 # Unit III: Hardware
 
 <!-- kind: content -->
-## Part 1 — Components of the System Unit
+## Part 1, Components of the System Unit
 
 ### Main Units of a Computer
 
 A physical computer system consists of four main functional units working together:
 
-**Processor (CPU)** — interprets and executes instructions. It contains:
-- **Control Unit** — acts like a traffic controller, directing the flow of data and instructions throughout the CPU and coordinating operations.
-- **Arithmetic and Logic Unit (ALU)** — performs all arithmetic calculations (addition, subtraction, etc.) and logical comparisons (AND, OR, NOT, etc.).
-- **Registers** — tiny, high-speed storage locations inside the processor that temporarily hold data and instructions currently being processed.
-- **System Clock** — generates regular electronic pulses (ticks) that set the operating pace for all components in the system unit.
+**Processor (CPU)**, interprets and executes instructions. It contains:
+- **Control Unit**, acts like a traffic controller, directing the flow of data and instructions throughout the CPU and coordinating operations.
+- **Arithmetic and Logic Unit (ALU)**, performs all arithmetic calculations (addition, subtraction, etc.) and logical comparisons (AND, OR, NOT, etc.).
+- **Registers**, tiny, high-speed storage locations inside the processor that temporarily hold data and instructions currently being processed.
+- **System Clock**, generates regular electronic pulses (ticks) that set the operating pace for all components in the system unit.
 
-**Main Storage (Memory)** — holds the data and instructions currently in use. Memory stores three types of content: the operating system and system software, application programs, and the data being processed.
+**Main Storage (Memory)**, holds the data and instructions currently in use. Memory stores three types of content: the operating system and system software, application programs, and the data being processed.
 
 Types of memory:
-- **RAM (Random Access Memory)** — stores data and instructions currently in use; volatile (contents are lost when power is removed).
-- **Cache Memory** — a small, very fast holding area for data the CPU uses frequently, reducing the time needed to fetch it from regular RAM.
-- **ROM (Read-Only Memory)** — contains the basic instructions a computer needs to start up; non-volatile (retained without power).
-- **CMOS** — stores configuration information (RAM capacity, date/time, drive types) that is read every time the computer is powered on.
+- **RAM (Random Access Memory)**, stores data and instructions currently in use; volatile (contents are lost when power is removed).
+- **Cache Memory**, a small, very fast holding area for data the CPU uses frequently, reducing the time needed to fetch it from regular RAM.
+- **ROM (Read-Only Memory)**, contains the basic instructions a computer needs to start up; non-volatile (retained without power).
+- **CMOS**, stores configuration information (RAM capacity, date/time, drive types) that is read every time the computer is powered on.
 
-**Input Devices** — hardware used to send data into a computer. Examples: keyboard, mouse, scanner, optical mark reader, touch screen, light pen, microphone, MICR (Magnetic Ink Character Recognition) readers used for processing bank checks.
+**Input Devices**, hardware used to send data into a computer. Examples: keyboard, mouse, scanner, optical mark reader, touch screen, light pen, microphone, MICR (Magnetic Ink Character Recognition) readers used for processing bank checks.
 
-**Output Devices** — hardware used to send processed data out from the computer. Examples: monitor, printer, speakers, projector.
+**Output Devices**, hardware used to send processed data out from the computer. Examples: monitor, printer, speakers, projector.
 
 ### Secondary (Auxiliary) Storage
 Secondary storage holds data permanently, outside of the main memory. It exists because RAM can only hold limited data and loses everything when power is cut.
 
 Types of secondary storage:
-- **Magnetic tape** — serial access; data can only be read in order; high capacity; inexpensive.
-- **Magnetic disk** — direct access; data can be read from any location quickly; uses electromagnetic read/write heads.
-- **Optical disc (CD, DVD, Blu-ray)** — reads and writes data using laser beams.
-- **Solid State Drive (SSD)** — uses integrated circuit assemblies with no moving parts; faster and more durable than magnetic disks.
-- **Flash drives and external drives** — portable storage.
-- **Cloud storage** — data stored on remote servers accessible over the internet.
+- **Magnetic tape**, serial access; data can only be read in order; high capacity; inexpensive.
+- **Magnetic disk**, direct access; data can be read from any location quickly; uses electromagnetic read/write heads.
+- **Optical disc (CD, DVD, Blu-ray)**, reads and writes data using laser beams.
+- **Solid State Drive (SSD)**, uses integrated circuit assemblies with no moving parts; faster and more durable than magnetic disks.
+- **Flash drives and external drives**, portable storage.
+- **Cloud storage**, data stored on remote servers accessible over the internet.
 
 ---
 
 <!-- kind: content -->
-## Part 2 — Digital Logic System
+## Part 2, Digital Logic System
 
 ### Boolean Algebra
 
@@ -545,7 +545,7 @@ Logic circuits are often called gates. Each gate takes one or more binary input 
 
 **OR Gate:** Output is 1 when AT LEAST ONE input is 1.
 
-**NAND Gate:** AND followed by NOT. Output is 0 only when all inputs are 1 (the inverse of AND). NAND is a universal gate — any other gate can be built from NAND gates alone.
+**NAND Gate:** AND followed by NOT. Output is 0 only when all inputs are 1 (the inverse of AND). NAND is a universal gate, any other gate can be built from NAND gates alone.
 
 **NOR Gate:** OR followed by NOT. Output is 1 only when all inputs are 0 (the inverse of OR). NOR is also a universal gate.
 
@@ -597,7 +597,7 @@ Double inversion has no effect: inverting a signal twice returns it to its origi
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit III
+## Practice Exercises, Unit III
 
 1. Differentiate primary storage from secondary storage.
 2. Differentiate RAM from ROM.
@@ -620,55 +620,55 @@ Double inversion has no effect: inverting a signal twice returns it to its origi
 <!-- kind: content -->
 ## People in ICT
 
-Peopleware — the human element of computing — is considered the most important component of any computer and communications system. Without people, no hardware would be designed, no software would be written, and no output would carry any meaning. As ICT continues to evolve, a wide range of professional roles has emerged to design, operate, maintain, and use these systems.
+Peopleware, the human element of computing, is considered the most important component of any computer and communications system. Without people, no hardware would be designed, no software would be written, and no output would carry any meaning. As ICT continues to evolve, a wide range of professional roles has emerged to design, operate, maintain, and use these systems.
 
 Most professional ICT work falls into three broad areas: **Information Systems / Information Technology**, **Computer Systems Engineering**, and **Computer Science**.
 
 ### ICT Career Categories
 
 **Business Analysis**
-- *Business Analyst* — evaluates customer business needs and recommends solutions using data analysis. They bridge the gap between business requirements and technical implementation.
-- *Business Systems Analyst* — addresses organizational information problems by analyzing requirements and designing systems that meet those needs.
+- *Business Analyst*, evaluates customer business needs and recommends solutions using data analysis. They bridge the gap between business requirements and technical implementation.
+- *Business Systems Analyst*, addresses organizational information problems by analyzing requirements and designing systems that meet those needs.
 
 **Computer Engineering**
-- *Computer Engineer* — designs, tests, and maintains both hardware and software systems, including processors, circuit boards, and networks.
-- *Hardware Design Engineer* — develops, tests, and improves physical components like processors, memory cards, and circuit boards.
-- *Technical Support Engineer* — resolves technical issues across software, hardware, and network systems.
-- *Computer Systems Engineer* — combines engineering, computer science, and mathematics to develop and evaluate computing systems.
+- *Computer Engineer*, designs, tests, and maintains both hardware and software systems, including processors, circuit boards, and networks.
+- *Hardware Design Engineer*, develops, tests, and improves physical components like processors, memory cards, and circuit boards.
+- *Technical Support Engineer*, resolves technical issues across software, hardware, and network systems.
+- *Computer Systems Engineer*, combines engineering, computer science, and mathematics to develop and evaluate computing systems.
 
 **Database Administration**
-- *Database Administrator* — maintains a secure and efficient database environment, managing data storage, access, and security.
+- *Database Administrator*, maintains a secure and efficient database environment, managing data storage, access, and security.
 
 **ICT Education**
-- *IT Lecturer* — teaches how computers work, from foundational science and mathematics to hardware and software.
-- *Training Officer* — identifies staff development needs and plans and delivers appropriate training programs.
-- *Education Manager* — develops policy, manages educational systems, and oversees curricula and resources.
+- *IT Lecturer*, teaches how computers work, from foundational science and mathematics to hardware and software.
+- *Training Officer*, identifies staff development needs and plans and delivers appropriate training programs.
+- *Education Manager*, develops policy, manages educational systems, and oversees curricula and resources.
 
 **Internet and E-Commerce**
-- *Web Architect* — designs and implements the structural foundation of web applications.
-- *Web Designer* — creates the visual layout and user experience of websites.
-- *Web Programmer* — writes code in various programming languages to build web applications.
-- *Web Administrator* — maintains, updates, and ensures the reliability of websites.
+- *Web Architect*, designs and implements the structural foundation of web applications.
+- *Web Designer*, creates the visual layout and user experience of websites.
+- *Web Programmer*, writes code in various programming languages to build web applications.
+- *Web Administrator*, maintains, updates, and ensures the reliability of websites.
 
 **Multimedia**
-- *Multimedia Graphics Designer* — creates visual content combining text, audio, animation, photography, and video.
-- *Multimedia Content Author* — develops and produces cohesive multimedia programs from diverse media types.
-- *Animator* — creates sequences of images that form animation for films, games, commercials, and television.
+- *Multimedia Graphics Designer*, creates visual content combining text, audio, animation, photography, and video.
+- *Multimedia Content Author*, develops and produces cohesive multimedia programs from diverse media types.
+- *Animator*, creates sequences of images that form animation for films, games, commercials, and television.
 
 **Software Development**
-- *Programmer* — writes and tests code for software applications and mobile apps.
-- *Software Engineer* — analyzes problems, designs solutions, and develops and installs software systems.
+- *Programmer*, writes and tests code for software applications and mobile apps.
+- *Software Engineer*, analyzes problems, designs solutions, and develops and installs software systems.
 
 **Project Management**
-- *Project Manager* — defines project scope, plans deliverables, manages resources, and leads cross-functional teams to deliver on requirements.
+- *Project Manager*, defines project scope, plans deliverables, manages resources, and leads cross-functional teams to deliver on requirements.
 
 **Systems Analysis and Design**
-- *Systems Analyst* — works with clients to understand their needs, designs system solutions, and tests the results.
-- *Systems Architect* — designs, implements, and maintains the overall technical architecture of computer systems, customized to specific organizational needs.
+- *Systems Analyst*, works with clients to understand their needs, designs system solutions, and tests the results.
+- *Systems Architect*, designs, implements, and maintains the overall technical architecture of computer systems, customized to specific organizational needs.
 
 **Systems Management and Administration**
-- *Systems Administrator* — handles network setup, server maintenance (mail servers, file servers), and ensures a reliable multi-user computing environment.
-- *Network Administrator* — assists in network design and implementation, installs and configures network equipment, and maintains connectivity for all workstations.
+- *Systems Administrator*, handles network setup, server maintenance (mail servers, file servers), and ensures a reliable multi-user computing environment.
+- *Network Administrator*, assists in network design and implementation, installs and configures network equipment, and maintains connectivity for all workstations.
 
 ---
 
@@ -682,7 +682,7 @@ ICT professionals carry significant responsibilities because of the power their 
 - Complying with intellectual property laws, patent laws, and other related regulations.
 - Accepting full responsibility for the work undertaken and delivering it with competence.
 - Making truthful statements about one's own capabilities and the capabilities of one's products.
-- Protecting confidential information obtained through professional work — not disclosing it without consent, except as required by law.
+- Protecting confidential information obtained through professional work, not disclosing it without consent, except as required by law.
 - Striving for the highest quality in all products and services.
 - Not participating in the development of systems that facilitate fraud or unlawful acts.
 - Pursuing continuing professional development to keep skills and standards current.
@@ -690,7 +690,7 @@ ICT professionals carry significant responsibilities because of the power their 
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit IV
+## Practice Exercises, Unit IV
 
 1. Identify five ICT job titles not covered above and describe their specific responsibilities.
 2. In your own words, why is peopleware considered the most important element of a computer system?
@@ -706,7 +706,7 @@ ICT professionals carry significant responsibilities because of the power their 
 <!-- kind: content -->
 ## What Is Software?
 
-Software is the collection of programs — sets of step-by-step instructions — that tell hardware what to do. Hardware cannot function usefully on its own; it needs software to direct its operations.
+Software is the collection of programs, sets of step-by-step instructions, that tell hardware what to do. Hardware cannot function usefully on its own; it needs software to direct its operations.
 
 Software falls into two main categories: **system software** and **application software**.
 
@@ -723,20 +723,20 @@ An operating system is a collection of programs that coordinates all computer ha
 **Functions of an Operating System:**
 
 **1. Boot Operation**
-When a computer is powered on, it relies on firmware stored in ROM called the BIOS (Basic Input/Output System). The BIOS performs POST (Power-On Self Test) — checking hardware components like RAM, the clock, keyboard, and adapter cards. POST results are compared against configuration data stored in CMOS. If POST passes, the BIOS loads the OS kernel from storage into memory, and the OS takes over control.
+When a computer is powered on, it relies on firmware stored in ROM called the BIOS (Basic Input/Output System). The BIOS performs POST (Power-On Self Test), checking hardware components like RAM, the clock, keyboard, and adapter cards. POST results are compared against configuration data stored in CMOS. If POST passes, the BIOS loads the OS kernel from storage into memory, and the OS takes over control.
 
 **2. User Interface**
 The OS provides the means by which users interact with the computer. Three types:
-- *Command-line interface* — the user types text commands; the computer displays text output.
-- *Menu-driven interface* — the user selects from a list of options.
-- *Graphical User Interface (GUI)* — uses windows, icons, pointers, and menus for visual interaction.
+- *Command-line interface*, the user types text commands; the computer displays text output.
+- *Menu-driven interface*, the user selects from a list of options.
+- *Graphical User Interface (GUI)*, uses windows, icons, pointers, and menus for visual interaction.
 
 **3. Program Management**
 The OS controls how programs run:
-- *Single-user/single-tasking* — one user, one program at a time.
-- *Single-user/multitasking* — one user, multiple programs simultaneously.
-- *Multiuser* — multiple users running programs at the same time.
-- *Multiprocessing* — multiple processors running programs simultaneously.
+- *Single-user/single-tasking*, one user, one program at a time.
+- *Single-user/multitasking*, one user, multiple programs simultaneously.
+- *Multiuser*, multiple users running programs at the same time.
+- *Multiprocessing*, multiple processors running programs simultaneously.
 
 **4. Memory Management**
 The OS allocates RAM to programs and data while they are being processed and releases memory when it is no longer needed, optimizing the use of available RAM.
@@ -748,7 +748,7 @@ The OS determines the order in which jobs (input processing, instruction executi
 A device driver is a small program that tells the OS how to communicate with a specific device. Each peripheral has its own driver, which is loaded during boot.
 
 **7. File Management and Utilities**
-The OS provides file management capabilities — creating, organizing, copying, moving, and deleting files — as well as other utility functions like disk scanning and image viewing.
+The OS provides file management capabilities, creating, organizing, copying, moving, and deleting files, as well as other utility functions like disk scanning and image viewing.
 
 **8. Network Control**
 A network OS coordinates how multiple users access and share resources over a network. It can be standalone (works with or without a network) or dedicated network OS (resides on a server).
@@ -760,28 +760,28 @@ The network OS allows administrators to set permissions that control which users
 The OS tracks and reports usage of the processor, memory, disk, and network to help identify bottlenecks.
 
 ### Utility Programs
-Utility programs are a second type of system software focused on maintenance tasks — managing the computer, its devices, or its programs. Examples include antivirus software, spyware removers, and file compression tools. While the OS includes built-in utilities, standalone utilities often offer more features.
+Utility programs are a second type of system software focused on maintenance tasks, managing the computer, its devices, or its programs. Examples include antivirus software, spyware removers, and file compression tools. While the OS includes built-in utilities, standalone utilities often offer more features.
 
 ---
 
 <!-- kind: content -->
 ## Application Software
 
-Application software (end-user software) consists of programs that help users accomplish specific tasks — creating documents, managing finances, playing games, communicating, and so on.
+Application software (end-user software) consists of programs that help users accomplish specific tasks, creating documents, managing finances, playing games, communicating, and so on.
 
 ### Categories of Application Software
-- **Business** — word processing, spreadsheets, databases, project management, accounting.
-- **Graphics and Multimedia** — CAD (computer-aided design), desktop publishing, image/video editing, web page authoring.
-- **Home/Personal/Educational** — photo editing, personal finance, educational games, entertainment.
-- **Communications** — email clients, chat tools, video conferencing.
+- **Business**, word processing, spreadsheets, databases, project management, accounting.
+- **Graphics and Multimedia**, CAD (computer-aided design), desktop publishing, image/video editing, web page authoring.
+- **Home/Personal/Educational**, photo editing, personal finance, educational games, entertainment.
+- **Communications**, email clients, chat tools, video conferencing.
 
 ### How Application Software Is Distributed
-- **Packaged software** — mass-produced, copyrighted software sold commercially.
-- **Custom software** — developed specifically for one organization's unique needs.
-- **Open source software** — provided free for use, modification, and redistribution; the copyright holder imposes no restrictions on modification.
-- **Shareware** — copyrighted software distributed free for a trial period; payment required to continue using it.
-- **Freeware** — copyrighted software provided at no cost; the creator retains all rights but makes it freely available.
-- **Public-domain software** — no copyright, trademark, or patent applies; anyone can use, modify, distribute, or sell it without restriction.
+- **Packaged software**, mass-produced, copyrighted software sold commercially.
+- **Custom software**, developed specifically for one organization's unique needs.
+- **Open source software**, provided free for use, modification, and redistribution; the copyright holder imposes no restrictions on modification.
+- **Shareware**, copyrighted software distributed free for a trial period; payment required to continue using it.
+- **Freeware**, copyrighted software provided at no cost; the creator retains all rights but makes it freely available.
+- **Public-domain software**, no copyright, trademark, or patent applies; anyone can use, modify, distribute, or sell it without restriction.
 
 ---
 
@@ -789,23 +789,23 @@ Application software (end-user software) consists of programs that help users ac
 ## Programming Languages
 
 **Low-Level Languages**
-- *Machine Language (1st generation)* — instructions in raw binary (0s and 1s); directly executable by the hardware.
-- *Assembly Language (2nd generation)* — uses short English-like abbreviations to represent machine code instructions; more readable than binary but still hardware-specific.
+- *Machine Language (1st generation)*, instructions in raw binary (0s and 1s); directly executable by the hardware.
+- *Assembly Language (2nd generation)*, uses short English-like abbreviations to represent machine code instructions; more readable than binary but still hardware-specific.
 
 **Procedural Languages (3rd generation)**
 Use English-like words to write instructions. Examples: COBOL, C.
 
 **Object-Oriented Programming Languages**
-Organize code around objects — bundles of data and behavior — that can be reused across many projects. Examples: Java, C++, C#.
+Organize code around objects, bundles of data and behavior, that can be reused across many projects. Examples: Java, C++, C#.
 
 ### Compiler vs. Interpreter
-- **Compiler** — converts the entire source program into machine code (object code) at once. The resulting program runs independently and typically faster, but errors are reported all at once after full compilation.
-- **Interpreter** — translates and executes one statement at a time. Errors appear immediately when encountered, making debugging easier, but interpreted programs run more slowly than compiled ones.
+- **Compiler**, converts the entire source program into machine code (object code) at once. The resulting program runs independently and typically faster, but errors are reported all at once after full compilation.
+- **Interpreter**, translates and executes one statement at a time. Errors appear immediately when encountered, making debugging easier, but interpreted programs run more slowly than compiled ones.
 
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit V
+## Practice Exercises, Unit V
 
 1. List 10 available operating systems and describe what each is primarily used for.
 2. Explain the difference between a compiler and an interpreter.
@@ -847,10 +847,10 @@ Data communications refers to the transmission of digital data between two or mo
 ## Computer Network Elements
 
 The key elements of a computer network are:
-- **Protocols** — rules and agreements governing how devices communicate. A protocol stack is the ordered set of protocols a system uses.
-- **Data and Messages** — the information being transmitted across the network.
-- **Communications Medium** — the physical or wireless channels connecting devices (e.g., copper cables, fiber optic cables, radio waves).
-- **Devices** — the hardware in the network: computers, routers, switches, hubs, bridges.
+- **Protocols**, rules and agreements governing how devices communicate. A protocol stack is the ordered set of protocols a system uses.
+- **Data and Messages**, the information being transmitted across the network.
+- **Communications Medium**, the physical or wireless channels connecting devices (e.g., copper cables, fiber optic cables, radio waves).
+- **Devices**, the hardware in the network: computers, routers, switches, hubs, bridges.
 
 ---
 
@@ -870,9 +870,9 @@ The key elements of a computer network are:
 <!-- kind: content -->
 ## Network Models
 
-**Peer-to-Peer** — all computers in the network share their resources equally with all other computers. No dedicated server.
+**Peer-to-Peer**, all computers in the network share their resources equally with all other computers. No dedicated server.
 
-**Client-Server** — one or more powerful machines act as servers, with the rest as clients. The server manages and provides resources; clients request and use those resources.
+**Client-Server**, one or more powerful machines act as servers, with the rest as clients. The server manages and provides resources; clients request and use those resources.
 
 ---
 
@@ -881,8 +881,8 @@ The key elements of a computer network are:
 
 A network topology describes how the devices in a network are arranged and connected.
 
-**Physical topology** — the actual physical layout of devices and cables.  
-**Logical topology** — how data actually flows through the network, which may differ from the physical arrangement.
+**Physical topology**, the actual physical layout of devices and cables.  
+**Logical topology**, how data actually flows through the network, which may differ from the physical arrangement.
 
 ### Point-to-Point
 Two devices connected directly. Simple and always available for those two stations, but only those two can communicate directly.
@@ -898,7 +898,7 @@ All devices share a single cable.
 - **Disadvantages:** cable break disrupts the whole network; collisions occur when multiple devices transmit simultaneously.
 
 ### Ring Topology
-Devices connect in a closed loop — each device connects to exactly two others.
+Devices connect in a closed loop, each device connects to exactly two others.
 - **Advantages:** less cable than mesh; relatively easy installation.
 - **Disadvantages:** a break anywhere in the ring disrupts the whole network; slower for non-adjacent stations.
 
@@ -935,9 +935,9 @@ The Internet is a global network of networks that allows any connected device to
 The Web is a collection of interlinked multimedia documents stored on the Internet, accessed using HTTP. Each document is a web page; a collection of web pages is a website.
 
 Sir Tim Berners-Lee invented the World Wide Web in 1989 and defined its three core technologies:
-- **HTML** (HyperText Markup Language) — the formatting language for web pages.
-- **URI/URL** (Uniform Resource Identifier/Locator) — a unique address identifying each resource on the web.
-- **HTTP** (HyperText Transfer Protocol) — the protocol for retrieving linked resources across the web.
+- **HTML** (HyperText Markup Language), the formatting language for web pages.
+- **URI/URL** (Uniform Resource Identifier/Locator), a unique address identifying each resource on the web.
+- **HTTP** (HyperText Transfer Protocol), the protocol for retrieving linked resources across the web.
 
 The World Wide Web Consortium (W3C), with about 350 member organizations, sets standards and guidelines for the web.
 
@@ -946,38 +946,38 @@ The World Wide Web Consortium (W3C), with about 350 member organizations, sets s
 <!-- kind: content -->
 ## Key Internet Concepts
 
-**IP Address** — a unique numerical label identifying every device on the Internet. IPv4 addresses consist of four groups of numbers (0–255) separated by dots. Example: `72.48.108.101`
+**IP Address**, a unique numerical label identifying every device on the Internet. IPv4 addresses consist of four groups of numbers (0–255) separated by dots. Example: `72.48.108.101`
 
-**Domain Name** — a human-readable text name for an IP address. The Domain Name System (DNS) translates domain names to their corresponding IP addresses. Example: `www.google.com`
+**Domain Name**, a human-readable text name for an IP address. The Domain Name System (DNS) translates domain names to their corresponding IP addresses. Example: `www.google.com`
 
-**URL (Uniform Resource Locator)** — the complete address of a specific resource on the web. Structure:
+**URL (Uniform Resource Locator)**, the complete address of a specific resource on the web. Structure:
 ```
 https://www.example.com/path/filename
 ```
 
-**ISP (Internet Service Provider)** — a company that provides Internet access using connections such as dial-up, DSL, cable modem, or wireless.
+**ISP (Internet Service Provider)**, a company that provides Internet access using connections such as dial-up, DSL, cable modem, or wireless.
 
 ---
 
 <!-- kind: content -->
 ## Internet Protocols
 
-**TCP/IP (Transmission Control Protocol / Internet Protocol)** — the foundational protocols of the Internet; manage how data is packaged, addressed, transmitted, and received.
+**TCP/IP (Transmission Control Protocol / Internet Protocol)**, the foundational protocols of the Internet; manage how data is packaged, addressed, transmitted, and received.
 
-**HTTP (HyperText Transfer Protocol)** — the protocol browsers and web servers use to exchange web pages and resources. Operates between client (browser) and server.
+**HTTP (HyperText Transfer Protocol)**, the protocol browsers and web servers use to exchange web pages and resources. Operates between client (browser) and server.
 
-**HTTPS (HTTP Secure)** — an encrypted version of HTTP that protects data in transit from eavesdropping. Used for secure transactions (e.g., online banking, shopping).
+**HTTPS (HTTP Secure)**, an encrypted version of HTTP that protects data in transit from eavesdropping. Used for secure transactions (e.g., online banking, shopping).
 
-**FTP (File Transfer Protocol)** — used for transferring files between systems interactively.
+**FTP (File Transfer Protocol)**, used for transferring files between systems interactively.
 
-**SMTP (Simple Mail Transfer Protocol)** — handles the transmission of email messages and attachments.
+**SMTP (Simple Mail Transfer Protocol)**, handles the transmission of email messages and attachments.
 
-**Intranet** — a private network using the same basic technologies as the Internet, accessible only to authorized members of an organization (e.g., employees).
+**Intranet**, a private network using the same basic technologies as the Internet, accessible only to authorized members of an organization (e.g., employees).
 
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit VI
+## Practice Exercises, Unit VI
 
 1. Differentiate LAN, MAN, WAN, and GAN with examples of each.
 2. Compare peer-to-peer and client-server network models. When would you use each?
@@ -999,12 +999,12 @@ https://www.example.com/path/filename
 Technology in the 21st century has been shaped significantly by information and communication technology. ICT has become integral to business, government, education, and daily personal life.
 
 ### 1. Cloud Computing
-Cloud computing means accessing computing services — software, storage, and processing power — over a network (typically the Internet) rather than running them locally on your own hardware.
+Cloud computing means accessing computing services, software, storage, and processing power, over a network (typically the Internet) rather than running them locally on your own hardware.
 
 Organizations adopt cloud computing to offload data management and back-end operations, letting their teams focus on higher-value work. Cloud services come in three broad forms:
-- **IaaS (Infrastructure as a Service)** — virtual hardware (servers, storage, networking).
-- **PaaS (Platform as a Service)** — a development environment in the cloud.
-- **SaaS (Software as a Service)** — fully deployed applications accessible via a browser.
+- **IaaS (Infrastructure as a Service)**, virtual hardware (servers, storage, networking).
+- **PaaS (Platform as a Service)**, a development environment in the cloud.
+- **SaaS (Software as a Service)**, fully deployed applications accessible via a browser.
 
 Key benefits: reduced IT infrastructure costs, virtualization of resources, easier software maintenance (no installation on each user's device). Key concerns: privacy, compliance, security, and governance.
 
@@ -1014,7 +1014,7 @@ The IoT refers to the network of physical objects embedded with sensors, softwar
 Examples range from micro-cameras that image the inside of the body, to sensors that monitor crop health on farms, to smart home devices that control lighting or temperature. The rapid drop in the cost of IoT components has allowed people and businesses to innovate at an unprecedented pace.
 
 ### 3. Mobile Applications
-Mobile apps — software designed to run on smartphones, tablets, and similar devices — represent one of the most significant computing shifts of recent decades. They are distributed through platform app stores (Apple App Store, Google Play, etc.), with revenue shared between the app distributor and developer.
+Mobile apps, software designed to run on smartphones, tablets, and similar devices, represent one of the most significant computing shifts of recent decades. They are distributed through platform app stores (Apple App Store, Google Play, etc.), with revenue shared between the app distributor and developer.
 
 ### 4. Human-Computer Interaction (HCI)
 HCI is a multidisciplinary field studying how people interact with computers, with the goal of making that interaction as effective and natural as possible. It emerged in the 1980s alongside the rise of personal computing, and has expanded from desktop computers to mobile devices, wearables, voice interfaces, and beyond.
@@ -1023,9 +1023,9 @@ Research in HCI draws on computer science, cognitive science, and human-factors 
 
 ### 5. Data Analytics
 Analytics is the process of discovering patterns in data to support better decisions.
-- **Data analytics** — converts raw data into actionable insights for decision-making.
-- **Predictive analytics** — uses historical and current data to forecast future events.
-- **Social media analytics** — helps organizations understand customer behavior and sentiment from social platform data.
+- **Data analytics**, converts raw data into actionable insights for decision-making.
+- **Predictive analytics**, uses historical and current data to forecast future events.
+- **Social media analytics**, helps organizations understand customer behavior and sentiment from social platform data.
 
 ### 6. Artificial Intelligence
 AI brings together cloud computing resources (for scale), machine learning algorithms (for learning), and contextual data (from IoT or large datasets) to add intelligent behavior to technical systems. Companies are incorporating AI to manage more complex IT architectures and solve problems that would be impractical to address through traditional programming.
@@ -1053,7 +1053,7 @@ In the Philippines, the **Cybercrime Prevention Act (Republic Act No. 10175)** p
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit VII
+## Practice Exercises, Unit VII
 
 1. What new technology in the next 10 years do you think will most disrupt the global IT industry? Explain your reasoning.
 2. Describe how cloud computing is being applied in education. What are the benefits and risks for students?
@@ -1069,11 +1069,11 @@ In the Philippines, the **Cybercrime Prevention Act (Republic Act No. 10175)** p
 # Unit VIII: Special Interest Topics in ICT
 
 <!-- kind: content -->
-## Part 1 — Artificial Intelligence
+## Part 1, Artificial Intelligence
 
 ### What Is Artificial Intelligence?
 
-Artificial Intelligence (AI) refers to the design and development of computer systems that can perform tasks typically associated with human intelligence — reasoning, recognizing patterns, learning from experience, understanding natural language, and making decisions.
+Artificial Intelligence (AI) refers to the design and development of computer systems that can perform tasks typically associated with human intelligence, reasoning, recognizing patterns, learning from experience, understanding natural language, and making decisions.
 
 John McCarthy, widely credited as one of AI's founding figures, defined it as "the science and engineering of making intelligent machines."
 
@@ -1087,15 +1087,15 @@ Other working definitions:
 | Year | Event |
 |---|---|
 | 1943 | Warren McCulloch and Walter Pitts proposed the first mathematical model of artificial neurons. |
-| 1949 | Donald Hebb described a learning rule for updating neuron connection strengths — now called Hebbian learning. |
-| 1950 | Alan Turing published a test for machine intelligence — later called the Turing Test. |
+| 1949 | Donald Hebb described a learning rule for updating neuron connection strengths, now called Hebbian learning. |
+| 1950 | Alan Turing published a test for machine intelligence, later called the Turing Test. |
 | 1955 | Allen Newell and Herbert A. Simon created the "Logic Theorist," the first AI program. |
 | 1956 | John McCarthy coined the term "Artificial Intelligence" at the Dartmouth Conference. |
 | 1966 | Joseph Weizenbaum created ELIZA, the first chatbot. |
 | 1972 | WABOT-1, the first intelligent humanoid robot, was built in Japan. |
-| 1974–1980 | First "AI winter" — funding and interest declined due to unmet expectations. |
+| 1974–1980 | First "AI winter", funding and interest declined due to unmet expectations. |
 | 1980 | Expert systems revived AI; first US national AI conference held at Stanford. |
-| 1987–1993 | Second "AI winter" — costs exceeded results, funding dropped again. |
+| 1987–1993 | Second "AI winter", costs exceeded results, funding dropped again. |
 | 1997 | IBM's Deep Blue beat world chess champion Garry Kasparov. |
 | 2002 | Roomba, the first AI-based consumer robot vacuum, launched. |
 | 2011 | IBM's Watson won Jeopardy!, demonstrating natural language understanding. |
@@ -1106,17 +1106,17 @@ Other working definitions:
 
 AI is being applied across virtually every sector:
 
-- **Healthcare** — AI systems analyze patient data to generate diagnostic hypotheses (e.g., IBM Watson Health).
-- **Finance** — fraud detection, algorithm-driven trading, chatbots for customer service.
-- **Business** — robotic process automation, CRM analytics, customer-facing chatbots.
-- **Education** — automated grading, adaptive learning systems that adjust to each student's pace.
-- **Automotive** — self-driving car systems using radar, cameras, and LiDAR to perceive and navigate the environment.
-- **Gaming** — AI opponents that think ahead and adapt to player behavior.
-- **Data Security** — AI-driven systems that detect software vulnerabilities and cyberattacks in real time.
-- **Social Media** — content organization, trend identification, and personalized feed curation for billions of profiles.
-- **Travel** — AI chatbots for booking, route recommendations, and real-time travel assistance.
-- **Robotics** — intelligent humanoid robots (e.g., Sophia) capable of autonomous, experience-based learning.
-- **Entertainment** — recommendation systems on streaming platforms (Netflix, Amazon) powered by ML algorithms.
+- **Healthcare**, AI systems analyze patient data to generate diagnostic hypotheses (e.g., IBM Watson Health).
+- **Finance**, fraud detection, algorithm-driven trading, chatbots for customer service.
+- **Business**, robotic process automation, CRM analytics, customer-facing chatbots.
+- **Education**, automated grading, adaptive learning systems that adjust to each student's pace.
+- **Automotive**, self-driving car systems using radar, cameras, and LiDAR to perceive and navigate the environment.
+- **Gaming**, AI opponents that think ahead and adapt to player behavior.
+- **Data Security**, AI-driven systems that detect software vulnerabilities and cyberattacks in real time.
+- **Social Media**, content organization, trend identification, and personalized feed curation for billions of profiles.
+- **Travel**, AI chatbots for booking, route recommendations, and real-time travel assistance.
+- **Robotics**, intelligent humanoid robots (e.g., Sophia) capable of autonomous, experience-based learning.
+- **Entertainment**, recommendation systems on streaming platforms (Netflix, Amazon) powered by ML algorithms.
 
 ---
 
@@ -1129,22 +1129,22 @@ A machine learning algorithm improves its performance on a task (T), as measured
 
 ### Categories of Machine Learning
 
-**Supervised Learning** — the algorithm is trained on labeled examples (input paired with the correct output). The goal is to learn a general rule that maps new inputs to outputs. Example: training a spam filter on emails labeled "spam" or "not spam."
+**Supervised Learning**, the algorithm is trained on labeled examples (input paired with the correct output). The goal is to learn a general rule that maps new inputs to outputs. Example: training a spam filter on emails labeled "spam" or "not spam."
 
-**Unsupervised Learning** — no labels are provided. The algorithm finds structure or patterns in the data on its own. Example: grouping customers into segments based on purchasing behavior without predefined categories.
+**Unsupervised Learning**, no labels are provided. The algorithm finds structure or patterns in the data on its own. Example: grouping customers into segments based on purchasing behavior without predefined categories.
 
-**Reinforcement Learning** — the algorithm interacts with an environment and receives feedback (rewards or penalties) based on its actions. It learns to maximize rewards over time. Example: teaching a program to play a game by rewarding it for winning moves.
+**Reinforcement Learning**, the algorithm interacts with an environment and receives feedback (rewards or penalties) based on its actions. It learns to maximize rewards over time. Example: teaching a program to play a game by rewarding it for winning moves.
 
 ---
 
 <!-- kind: content -->
 ## Deep Learning
 
-Deep learning is a subset of machine learning that uses multi-layered artificial neural networks — structures loosely inspired by biological neurons in the brain. Data flows through multiple layers, with each layer transforming the output of the previous one. The deeper the network, the more abstract the patterns it can detect.
+Deep learning is a subset of machine learning that uses multi-layered artificial neural networks, structures loosely inspired by biological neurons in the brain. Data flows through multiple layers, with each layer transforming the output of the previous one. The deeper the network, the more abstract the patterns it can detect.
 
 Key characteristics:
 - Networks can process enormous amounts of unstructured or unlabeled data.
-- Accuracy typically improves as more data is processed — the network "learns" from its results.
+- Accuracy typically improves as more data is processed, the network "learns" from its results.
 - Hidden layers perform the mathematical transformations that convert raw input into meaningful output.
 
 Deep learning powers many of the most impressive modern AI applications: image recognition, speech recognition, language translation, and autonomous driving.
@@ -1152,31 +1152,31 @@ Deep learning powers many of the most impressive modern AI applications: image r
 ---
 
 <!-- kind: content -->
-## Part 2 — Data Science
+## Part 2, Data Science
 
 ### What Is Data Science?
 
-Data science combines statistics, computer programming, and domain expertise to extract useful knowledge from large, complex datasets — especially from "big data." It supports decision-making by turning unstructured, high-volume data into actionable insights.
+Data science combines statistics, computer programming, and domain expertise to extract useful knowledge from large, complex datasets, especially from "big data." It supports decision-making by turning unstructured, high-volume data into actionable insights.
 
-Data is generated from countless sources: mobile phones, social media, e-commerce platforms, healthcare systems, search engines, and more. As the volume of data grew, traditional analysis methods became insufficient — giving rise to data science as a distinct professional discipline.
+Data is generated from countless sources: mobile phones, social media, e-commerce platforms, healthcare systems, search engines, and more. As the volume of data grew, traditional analysis methods became insufficient, giving rise to data science as a distinct professional discipline.
 
 ### What Is Big Data?
 
 Big data refers to datasets so large, fast-moving, and varied that conventional data-processing tools cannot handle them. It is characterized by three V's:
-- **Volume** — the sheer amount of data.
-- **Velocity** — the speed at which data is generated and collected.
-- **Variety** — the diversity of data types and sources (text, images, video, sensor readings, etc.).
+- **Volume**, the sheer amount of data.
+- **Velocity**, the speed at which data is generated and collected.
+- **Variety**, the diversity of data types and sources (text, images, video, sensor readings, etc.).
 
-Companies that successfully harness big data — Amazon, Google, Facebook, Twitter — use it to gain competitive advantages and serve users better.
+Companies that successfully harness big data, Amazon, Google, Facebook, Twitter, use it to gain competitive advantages and serve users better.
 
 ### Brief History of Data Science
 
-- **1962** — John Tukey wrote that data analysis should be treated as an empirical science.
-- **1974** — Peter Naur defined "data science" as the discipline of working with data after it has been collected.
-- **1989** — First Knowledge Discovery in Databases (KDD) workshop organized.
-- **1997** — Professor C.F. Jeff Wu proposed that "statistics" be renamed "data science."
-- **2009** — Google's Chief Economist described the ability to understand and extract value from data as a critical skill for the coming decades.
-- **2012** — "Data Scientist: The Sexiest Job of the 21st Century" published in the Harvard Business Review.
+- **1962**, John Tukey wrote that data analysis should be treated as an empirical science.
+- **1974**, Peter Naur defined "data science" as the discipline of working with data after it has been collected.
+- **1989**, First Knowledge Discovery in Databases (KDD) workshop organized.
+- **1997**, Professor C.F. Jeff Wu proposed that "statistics" be renamed "data science."
+- **2009**, Google's Chief Economist described the ability to understand and extract value from data as a critical skill for the coming decades.
+- **2012**, "Data Scientist: The Sexiest Job of the 21st Century" published in the Harvard Business Review.
 
 ### The Data Scientist
 
@@ -1193,52 +1193,52 @@ Data scientists are critical to organizations pursuing machine learning and AI a
 ---
 
 <!-- kind: content -->
-## Part 3 — Social Networking and Society
+## Part 3, Social Networking and Society
 
 ### What Is Social Networking?
 
-A social networking service is an online platform where people build networks and relationships with others who share similar interests, backgrounds, or real-life connections. These platforms let users share ideas, photos, videos, and updates — connecting people globally in ways previously impossible.
+A social networking service is an online platform where people build networks and relationships with others who share similar interests, backgrounds, or real-life connections. These platforms let users share ideas, photos, videos, and updates, connecting people globally in ways previously impossible.
 
 ### Major Social Media Platforms
 
-- **Facebook** — the largest social network by monthly active users (2.3+ billion as of recent data). Widely used by individuals and businesses alike for communication and marketing.
-- **Twitter** — a micro-blogging platform centered on short posts; used for news, commentary, and real-time communication.
-- **YouTube** — the dominant video-sharing platform; the second most-used search engine globally.
-- **Instagram** — image and video-focused platform owned by Meta; widely used for lifestyle, fashion, travel, and brand content.
-- **TikTok** — a short-form video platform popular especially with younger audiences; known for viral, music-driven content.
-- **WhatsApp** — a cross-platform instant messaging app used globally for personal and business communication.
-- **Pinterest** — a visual discovery platform organized around "boards"; heavily used for design inspiration, recipes, and DIY content.
-- **Reddit** — a community-based platform where users submit and vote on content; organized into topic-specific communities ("subreddits").
-- **Snapchat** — an image and video messaging app where content disappears after viewing; popular among younger users.
-- **Tumblr** — a microblogging platform supporting multiple post formats (text, images, video, audio).
-- **Flickr** — an image and video hosting platform popular with photographers.
+- **Facebook**, the largest social network by monthly active users (2.3+ billion as of recent data). Widely used by individuals and businesses alike for communication and marketing.
+- **Twitter**, a micro-blogging platform centered on short posts; used for news, commentary, and real-time communication.
+- **YouTube**, the dominant video-sharing platform; the second most-used search engine globally.
+- **Instagram**, image and video-focused platform owned by Meta; widely used for lifestyle, fashion, travel, and brand content.
+- **TikTok**, a short-form video platform popular especially with younger audiences; known for viral, music-driven content.
+- **WhatsApp**, a cross-platform instant messaging app used globally for personal and business communication.
+- **Pinterest**, a visual discovery platform organized around "boards"; heavily used for design inspiration, recipes, and DIY content.
+- **Reddit**, a community-based platform where users submit and vote on content; organized into topic-specific communities ("subreddits").
+- **Snapchat**, an image and video messaging app where content disappears after viewing; popular among younger users.
+- **Tumblr**, a microblogging platform supporting multiple post formats (text, images, video, audio).
+- **Flickr**, an image and video hosting platform popular with photographers.
 
 ### Impact of Social Media on Society
 
-Research shows that social media has produced significant effects — both positive and negative — on individuals and society.
+Research shows that social media has produced significant effects, both positive and negative, on individuals and society.
 
 **Positive effects:**
-- **Connectivity** — enables communication with people anywhere in the world regardless of geography.
-- **Education** — experts can teach and share knowledge freely across borders.
-- **Community** — brings together people with shared interests or identities who might never meet otherwise.
-- **Information** — rapid access to news and current events.
-- **Advertising** — cost-effective way for businesses of all sizes to reach large audiences.
-- **Charitable causes** — effective for fundraising and organizing support for those in need.
+- **Connectivity**, enables communication with people anywhere in the world regardless of geography.
+- **Education**, experts can teach and share knowledge freely across borders.
+- **Community**, brings together people with shared interests or identities who might never meet otherwise.
+- **Information**, rapid access to news and current events.
+- **Advertising**, cost-effective way for businesses of all sizes to reach large audiences.
+- **Charitable causes**, effective for fundraising and organizing support for those in need.
 
 **Negative effects:**
-- **Cyberbullying** — anonymity online makes harassment easier.
-- **Hacking and privacy breaches** — personal information can be stolen or misused.
-- **Addiction** — users may spend far more time than intended, reducing productivity.
-- **Fraud and scams** — financial deception takes many forms online.
-- **Reputation damage** — false information spreads quickly and can irreparably harm individuals or organizations.
-- **Polarization** — research suggests social media may contribute to increased societal polarization by reinforcing existing beliefs.
+- **Cyberbullying**, anonymity online makes harassment easier.
+- **Hacking and privacy breaches**, personal information can be stolen or misused.
+- **Addiction**, users may spend far more time than intended, reducing productivity.
+- **Fraud and scams**, financial deception takes many forms online.
+- **Reputation damage**, false information spreads quickly and can irreparably harm individuals or organizations.
+- **Polarization**, research suggests social media may contribute to increased societal polarization by reinforcing existing beliefs.
 
-Responsible use — strong passwords, limited sharing of personal details, critical evaluation of content, and setting time boundaries — can mitigate many of the negative effects.
+Responsible use, strong passwords, limited sharing of personal details, critical evaluation of content, and setting time boundaries, can mitigate many of the negative effects.
 
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit VIII
+## Practice Exercises, Unit VIII
 
 **Artificial Intelligence:**
 1. Explain the difference between AI, machine learning, and deep learning using your own words.

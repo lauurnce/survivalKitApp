@@ -1,7 +1,7 @@
 -- ============================================================
--- Fundamentals of Research — Modules & Sections
+-- Fundamentals of Research, Modules & Sections
 -- Subject ID: 30000000-0003-0001-0001-000000000003
--- 3rd Year, Semester 1 — minor
+-- 3rd Year, Semester 1, minor
 -- 6 lessons. Split: S1+S2 = content (FREE); remaining teaching blocks + drill = activity (PAID).
 --   Lesson 1 has 4 content blocks + drill -> 2 free / 3 paid.
 --   Lessons 2-6 have 3 content blocks + drill -> 2 free / 2 paid.
@@ -29,12 +29,12 @@ $md$, 1),
 Good research is systematic, meaning it follows a clear plan of action. It is empirical: based on observed or measured data. It aims to be objective, minimizing bias in how data are collected and interpreted. Quality research also tends to be analytical: it breaks down complex problems into parts and examines them carefully. Overall, a well-designed research project will be reliable and trustworthy because it handles variables carefully and sticks to logical methods.
 $md$, 2),
 ('78f694b1-5d38-5bdb-8b3d-13baad91bb40','activity','Why Research Matters',$md$
-Research is important because it helps us understand and solve real problems. For example, a BSIT student might research how Filipinos use mobile banking to help design more user-friendly apps. On a larger scale, research guides government and businesses to make informed decisions (like using data to plan better internet coverage in rural areas). For students, learning research skills also builds critical thinking and communication ability—skills that are valuable in any IT career.
+Research is important because it helps us understand and solve real problems. For example, a BSIT student might research how Filipinos use mobile banking to help design more user-friendly apps. On a larger scale, research guides government and businesses to make informed decisions (like using data to plan better internet coverage in rural areas). For students, learning research skills also builds critical thinking and communication ability, skills that are valuable in any IT career.
 $md$, 3),
 ('78f694b1-5d38-5bdb-8b3d-13baad91bb40','activity','The Research Process',$md$
 A typical research process has several stages. First, you identify a clear question or problem to study. Next, you review what others have already learned about the topic. Then you design your own study (choosing methods and tools) and collect data (like conducting surveys or experiments). After data collection, you analyze the information to find patterns or answers. Finally, you draw conclusions and share your findings, often in a report. This step-by-step approach keeps a research project organized and focused.
 $md$, 4),
-('78f694b1-5d38-5bdb-8b3d-13baad91bb40','activity','Practice & Exam Drills — Lesson 1',$md$
+('78f694b1-5d38-5bdb-8b3d-13baad91bb40','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions**
 
 1. What is the definition of research? Provide an example of research in IT.
@@ -77,9 +77,9 @@ $md$, 1),
 A problem statement is a concise description of the issue your research will address. It clearly explains what is wrong or what gap exists, and why it matters. For example: "Local software developers lack a standard task management tool, causing inefficiency in team collaboration." This tells us who (local developers), what (lack a tool), and why it matters (inefficiency). A clear problem statement guides your research direction and helps readers immediately understand the purpose of your study.
 $md$, 2),
 ('2bdab8a7-b762-566a-ab7c-8328a1de5b94','activity','Research Questions and Objectives',$md$
-After defining the problem, break it into specific research questions and objectives. A research question focuses on one part of the problem (often phrased with "What" or "How"). From the example above, a question might be "What task management tools do local software teams currently use, and how satisfied are they with these tools?" Objectives are the goals or steps of your study (like "to survey the most common tools among Filipino developers"). If your study is quantitative, you might also form a hypothesis—a prediction you will test. Well-formulated questions and objectives keep your research focused and make it easier to plan the study.
+After defining the problem, break it into specific research questions and objectives. A research question focuses on one part of the problem (often phrased with "What" or "How"). From the example above, a question might be "What task management tools do local software teams currently use, and how satisfied are they with these tools?" Objectives are the goals or steps of your study (like "to survey the most common tools among Filipino developers"). If your study is quantitative, you might also form a hypothesis, a prediction you will test. Well-formulated questions and objectives keep your research focused and make it easier to plan the study.
 $md$, 3),
-('2bdab8a7-b762-566a-ab7c-8328a1de5b94','activity','Practice & Exam Drills — Lesson 2',$md$
+('2bdab8a7-b762-566a-ab7c-8328a1de5b94','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions**
 
 1. What factors make a good research topic? List two and explain.
@@ -124,7 +124,7 @@ $md$, 2),
 ('9911257f-768f-5c34-898e-35bd469c7eff','activity','Citing Sources and Avoiding Plagiarism',$md$
 Always give credit when you use someone else's ideas or words. Use a standard citation style like APA. For instance, you might write: According to Garcia (2022), e-learning improves students' performance. If you quote directly, use quotation marks and a page number (for example, Garcia (2022) found that "e-learning improves performance" (p. 45).). Even when you paraphrase (put information in your own words), include a citation like (Garcia, 2022). Plagiarism (copying without credit) is a serious academic offense. A good rule is: if an idea or fact is not your own, cite it. For example: "AI can improve local disaster warnings" (Ramos, 2020) clearly attributes the idea to Ramos.
 $md$, 3),
-('9911257f-768f-5c34-898e-35bd469c7eff','activity','Practice & Exam Drills — Lesson 3',$md$
+('9911257f-768f-5c34-898e-35bd469c7eff','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions**
 
 1. What is the purpose of a literature review in a research project?
@@ -169,7 +169,7 @@ $md$, 2),
 ('529e7ab3-78b0-5ae0-9b4f-7957d4fad674','activity','Choosing a Research Design',$md$
 Your research question determines the design. If you want to test cause-and-effect (for example, "Does using a coding app improve students' grades?"), you might use an experimental design with a control group. If you want to describe a situation ("How many students use the library's computers?"), a descriptive survey is enough. Other designs include correlational studies (examining relationships, like stress vs. screen time) and case studies (deep dive into one example, such as developing a prototype). Always consider how you will collect data ethically. A clear plan for methods and analysis ensures your study can answer the research questions.
 $md$, 3),
-('529e7ab3-78b0-5ae0-9b4f-7957d4fad674','activity','Practice & Exam Drills — Lesson 4',$md$
+('529e7ab3-78b0-5ae0-9b4f-7957d4fad674','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions**
 
 1. What is the main difference between quantitative and qualitative research?
@@ -216,7 +216,7 @@ $md$, 2),
 ('ac389336-c0b6-51db-9b1e-53542f2bbc78','activity','Data Analysis: Descriptive Statistics',$md$
 After collecting data, organize and summarize it. If you have numerical data, calculate descriptive statistics: the mean (average), median (middle value), and mode (most frequent value). For example, if students studied 3, 5, 2, 6, and 4 hours, the mean is (3+5+2+6+4)/5 = 4, and the median (middle when sorted 2,3,4,5,6) is 4. Use tables and graphs to present findings: bar charts or pie charts for categories, histograms for distributions, etc. If your data is categorical (like yes/no responses), use counts and percentages. Even without advanced statistics, presenting clear summaries of your data is a crucial part of analysis.
 $md$, 3),
-('ac389336-c0b6-51db-9b1e-53542f2bbc78','activity','Practice & Exam Drills — Lesson 5',$md$
+('ac389336-c0b6-51db-9b1e-53542f2bbc78','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. What is the difference between a population and a sample?
@@ -256,7 +256,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 Research must respect participants and follow laws. Always obtain informed consent: explain the study's purpose and procedures, and get agreement from participants (or guardians, if minors). Ensure confidentiality: protect personal information (for example, the Philippine Data Privacy Act of 2012 requires secure handling of data). If your study involves people, seek approval from an ethics review board (like a university IRB). Avoid harming participants physically, emotionally, or legally. For instance, if asking sensitive questions, allow participants to skip them. Always be honest and transparent about your research.
 $md$, 1),
 ('396fb7c8-3e88-510e-91a0-e3be427e2e7e','content','Responsible Research Conduct',$md$
-Be honest and fair throughout your research process. Do not fabricate or falsify data, and never plagiarize others' work. Keep raw data secure and use it only for the stated purpose. If working with collaborators, give proper credit and discuss author order beforehand. If you make a mistake, report it. Avoid conflicts of interest (for example, disclose if a sponsor could benefit from your results). Essentially, do what you say you will do in your research plan, and report results truthfully—even if they don't support your hypothesis.
+Be honest and fair throughout your research process. Do not fabricate or falsify data, and never plagiarize others' work. Keep raw data secure and use it only for the stated purpose. If working with collaborators, give proper credit and discuss author order beforehand. If you make a mistake, report it. Avoid conflicts of interest (for example, disclose if a sponsor could benefit from your results). Essentially, do what you say you will do in your research plan, and report results truthfully, even if they don't support your hypothesis.
 $md$, 2),
 ('396fb7c8-3e88-510e-91a0-e3be427e2e7e','activity','Writing a Research Proposal',$md$
 A research proposal is a detailed plan for a study. It typically includes:
@@ -271,7 +271,7 @@ A research proposal is a detailed plan for a study. It typically includes:
 
 Write in clear, formal language. Follow any guidelines your school provides for length or format. A well-organized proposal (with clear headings and realistic plans) shows that your research can be done successfully.
 $md$, 3),
-('396fb7c8-3e88-510e-91a0-e3be427e2e7e','activity','Practice & Exam Drills — Lesson 6',$md$
+('396fb7c8-3e88-510e-91a0-e3be427e2e7e','activity','Practice & Exam Drills, Lesson 6',$md$
 **Review Questions**
 
 1. What is informed consent and why is it important in research?
@@ -309,5 +309,5 @@ Write a sample consent statement for a survey where participants answer question
 $md$, 4);
 
 -- SOURCES:
---   Polytechnic University of the Philippines (DIP-IT) — COMP 015: Fundamentals of Research course syllabus (BSIT program)
---   CHED CMO No. 25, s. 2015 — Revised policies, standards, and guidelines for BSIT programs
+--   Polytechnic University of the Philippines (DIP-IT), COMP 015: Fundamentals of Research course syllabus (BSIT program)
+--   CHED CMO No. 25, s. 2015, Revised policies, standards, and guidelines for BSIT programs

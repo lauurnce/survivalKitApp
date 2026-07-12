@@ -1,4 +1,4 @@
-# Purposive Communication — Complete Study Guide
+# Purposive Communication, Complete Study Guide
 <!-- subject: Purposive Communication | year: 1st -->
 
 ---
@@ -35,7 +35,7 @@ To understand how communication functions, we can break it down into its fundame
 
 - **Sender:** The creator who initiates the interaction because of a need or intent to share information.
 - **Encoding:** The internal process where the sender converts thoughts into transmittable symbols, words, or gestures.
-- **Message:** The physical or behavioral outcome of encoding — whether spoken words, written text, or body language.
+- **Message:** The physical or behavioral outcome of encoding, whether spoken words, written text, or body language.
 - **Medium or Channel:** The vehicle through which the message travels (such as face-to-face dialogue, phone calls, text messages, or formal documents).
 - **Receiver:** The intended audience who catches the message.
 - **Decoding:** The mental process where the receiver translates the symbols back into meaningful concepts.
@@ -88,7 +88,7 @@ Interactions often hit roadblocks. Understanding these barriers helps you active
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit I
+## Practice Exercises, Unit I
 
 **Part 1: Matching Scenarios**
 
@@ -175,7 +175,7 @@ The global distribution of words for tea shows early historical globalization tr
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit II
+## Practice Exercises, Unit II
 
 **Intercultural Interaction Mapping**
 
@@ -198,13 +198,13 @@ The evolution of modern communication technology can be split into two primary s
 
 ### The First Media Age (Broadcast Paradigm)
 
-- **Architecture:** Completely centralized — one primary source transmits messages to a large, passive mass audience.
+- **Architecture:** Completely centralized, one primary source transmits messages to a large, passive mass audience.
 - **Flow:** Primarily linear, one-way communication with very limited options for immediate public feedback.
 - **Social Impact:** Solidifies social hierarchies, limits access to information distribution channels, and controls public awareness through selected media outlets.
 
 ### The Second Media Age (Interactive Paradigm)
 
-- **Architecture:** Fully decentralized — many-to-many networks where any user can act as both a consumer and a publisher.
+- **Architecture:** Fully decentralized, many-to-many networks where any user can act as both a consumer and a publisher.
 - **Flow:** Multi-directional, dynamic, and highly interactive.
 - **Social Impact:** Democratizes public discourse, values individual expression, and breaks down traditional barriers of time and geographic distance.
 
@@ -224,7 +224,7 @@ Modern communication systems rely on three interconnected pillars:
 ```
 
 - **Connectivity:** Continuous access to global communication channels via digital devices (smartphones, laptops, tablets).
-- **Convergence:** Merging distinct communication modes — such as text, video-conferencing, audio tracking, and data sharing — into single, unified platforms.
+- **Convergence:** Merging distinct communication modes, such as text, video-conferencing, audio tracking, and data sharing, into single, unified platforms.
 - **Interactivity:** Real-time engagement capabilities that allow users to actively manipulate content, participate in live digital spaces, and receive instant feedback.
 
 ---
@@ -232,7 +232,7 @@ Modern communication systems rely on three interconnected pillars:
 <!-- kind: content -->
 ## Digital Artifacts: Theories of Internet Memetics
 
-From a professional communication perspective, internet **memes** are much more than jokes — they serve as high-speed packets of cultural information. The term stems from biological evolutionary theory (originally coined by Richard Dawkins as a unit of cultural replication and imitation).
+From a professional communication perspective, internet **memes** are much more than jokes, they serve as high-speed packets of cultural information. The term stems from biological evolutionary theory (originally coined by Richard Dawkins as a unit of cultural replication and imitation).
 
 In modern digital spaces, memetic content relies on three fundamental structural pillars to spread:
 
@@ -243,7 +243,7 @@ In modern digital spaces, memetic content relies on three fundamental structural
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit III
+## Practice Exercises, Unit III
 
 **Exercise 1: Structural Differentiation**
 
@@ -367,7 +367,7 @@ A clean, scannable summary of your career and academic history. For early-career
 ---
 
 <!-- kind: activity -->
-## Practice Exercises — Unit IV
+## Practice Exercises, Unit IV
 
 **Part 1: Precision Editing**
 

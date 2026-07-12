@@ -1,4 +1,4 @@
-# Object-Oriented Programming with Java — Markdown Lesson Set
+# Object-Oriented Programming with Java, Markdown Lesson Set
 <!-- subject: Object-Oriented Programming with Java | year: 2nd -->
 
 <!-- kind: content -->

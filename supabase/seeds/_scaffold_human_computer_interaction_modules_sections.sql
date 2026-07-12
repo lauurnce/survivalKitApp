@@ -1,10 +1,10 @@
 -- ============================================================
--- Human Computer Interaction — Modules & Sections
+-- Human Computer Interaction, Modules & Sections
 -- Subject ID: 20000000-0002-0002-0001-000000000004
--- 2nd Year, Semester 2 — major
+-- 2nd Year, Semester 2, major
 -- 8 lessons. Each lesson has 2 content blocks + 1 Practice & Exam Drills.
 --   Split: S1+S2 = content (FREE); the drill = activity (PAID) -> 2 free / 1 paid.
--- No IDE playgrounds (design subject — drills are conceptual/design exercises).
+-- No IDE playgrounds (design subject, drills are conceptual/design exercises).
 -- Re-running is safe (DELETE clears prior rows for this subject first).
 -- ============================================================
 
@@ -32,7 +32,7 @@ HCI matters because poor interface design causes errors and frustration. For exa
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a live design exercise.*
 $md$, 2),
-('4e4b0aba-40fb-5aa0-947b-e879ccb5b50c','activity','Practice & Exam Drills — Lesson 1',$md$
+('4e4b0aba-40fb-5aa0-947b-e879ccb5b50c','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions**
 
 1. What is Human–Computer Interaction (HCI) and why is it important?
@@ -49,13 +49,13 @@ A student is designing an online student portal for a university. The menu has t
 
 **Hands-On Exercise**
 
-Imagine you are tasked to improve the design of a busy Barangay services website. Sketch (on paper or digital) a simple homepage layout that uses large icons and Filipino labels. Focus on clarity and explain your design choices. (This is a practical exercise — discuss it in a study group or with peers.)
+Imagine you are tasked to improve the design of a busy Barangay services website. Sketch (on paper or digital) a simple homepage layout that uses large icons and Filipino labels. Focus on clarity and explain your design choices. (This is a practical exercise, discuss it in a study group or with peers.)
 
 **How to Pass Tips**
 
 - Study and remember key terms (usability, affordance, consistency, etc.). In exams, expect definition questions (e.g. "Define usability") and scenario questions ("Identify interface issues in this example").
 - Professors often test on Nielsen's or Shneiderman's design principles, so know them by heart.
-- Avoid the mistake of thinking HCI is just coding — focus instead on concepts like user needs and design rules.
+- Avoid the mistake of thinking HCI is just coding, focus instead on concepts like user needs and design rules.
 - Be able to compare good vs bad interfaces with reasons.
 $md$, 3);
 
@@ -71,7 +71,7 @@ $md$, 1),
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and an interactive quiz.*
 $md$, 2),
-('85677651-8ff2-5ab6-aaac-d357bacec61e','activity','Practice & Exam Drills — Lesson 2',$md$
+('85677651-8ff2-5ab6-aaac-d357bacec61e','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions**
 
 1. What is the typical limit of items a person can remember in short-term memory?
@@ -110,7 +110,7 @@ Apply design principles to layout and flow. For example, "place the most importa
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a checklist of design heuristics.*
 $md$, 2),
-('f69a8ee9-ecc8-594b-a29b-4c3601f7240c','activity','Practice & Exam Drills — Lesson 3',$md$
+('f69a8ee9-ecc8-594b-a29b-4c3601f7240c','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions**
 
 1. List any three of Nielsen's usability heuristics or Shneiderman's rules.
@@ -149,7 +149,7 @@ After analysis, design **low-fidelity prototypes**: sketches or paper mock-ups t
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a prototyping activity.*
 $md$, 2),
-('51a681a2-a833-57e5-bda9-10631c7aec61','activity','Practice & Exam Drills — Lesson 4',$md$
+('51a681a2-a833-57e5-bda9-10631c7aec61','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions**
 
 1. What are the main stages of a user-centered design process?
@@ -173,7 +173,7 @@ Practice making a persona: list demographic info (age, job, tech comfort), goals
 - Be ready to outline design steps in order (analysis, design, evaluation). Professors might give you a mini scenario ("You want to improve a banking app; what's your first step?"). Always start with user research, not coding.
 - Remember that surveys, interviews, and persona-building are common term questions.
 - A typical mistake is saying "Ask user what they want" without specifics; instead mention concrete methods (e.g. "conduct focus group of representative users").
-- Emphasize the iterative nature — exams like answers with phases repeated.
+- Emphasize the iterative nature, exams like answers with phases repeated.
 $md$, 3);
 
 -- ============================================================
@@ -188,7 +188,7 @@ Interface layout also uses graphic design principles. Key ideas: **Contrast** (m
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a visual layout drill.*
 $md$, 2),
-('ae19b157-8db3-5a49-8ae6-5bcee96486d2','activity','Practice & Exam Drills — Lesson 5',$md$
+('ae19b157-8db3-5a49-8ae6-5bcee96486d2','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. What is a wireframe, and how is it different from a mockup?
@@ -227,7 +227,7 @@ During tests, we measure metrics like **time on task**, **error rate**, and **sa
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a usability evaluation plan.*
 $md$, 2),
-('7114db28-6196-5bf7-b061-46940060698b','activity','Practice & Exam Drills — Lesson 6',$md$
+('7114db28-6196-5bf7-b061-46940060698b','activity','Practice & Exam Drills, Lesson 6',$md$
 **Review Questions**
 
 1. What is the difference between formative and summative evaluation?
@@ -249,8 +249,8 @@ Pick a website (e.g. a local government site) and do a quick "heuristic review."
 **How to Pass Tips**
 
 - Remember key terms (formative/summative, SUS). Exams love asking about steps in a usability test ("how many users is ideal?" or "why measure time on task?").
-- One trick: 5 users usually find ~75% of problems (Nielsen's rule of thumb) — common exam knowledge.
-- Mistake to avoid: saying testing is optional — in HCI, it's mandatory. Emphasize the iterative nature (test–fix–test again).
+- One trick: 5 users usually find ~75% of problems (Nielsen's rule of thumb), common exam knowledge.
+- Mistake to avoid: saying testing is optional, in HCI, it's mandatory. Emphasize the iterative nature (test–fix–test again).
 - Always connect findings to design improvements in your answers ("We will improve X because users had issues with Y.").
 $md$, 3);
 
@@ -266,7 +266,7 @@ Think about older adults: they may prefer simpler layouts, larger fonts, and cle
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and an accessibility audit exercise.*
 $md$, 2),
-('1dac1e42-0b66-541d-acec-c9bf65a35c00','activity','Practice & Exam Drills — Lesson 7',$md$
+('1dac1e42-0b66-541d-acec-c9bf65a35c00','activity','Practice & Exam Drills, Lesson 7',$md$
 **Review Questions**
 
 1. What does "universal design" mean in HCI?
@@ -288,7 +288,7 @@ Check a local government website or an app on your phone for accessibility. For 
 **How to Pass Tips**
 
 - Key exam points include WCAG levels (A, AA) and specific guidelines (alt text, keyboard access). Often a question will ask for design fixes: e.g. "How to improve this interface for visually impaired users?" Always mention concrete fixes (increase font, use larger contrast buttons).
-- Don't confuse general "design for good UX" with accessibility specifics — they want disability-focused fixes.
+- Don't confuse general "design for good UX" with accessibility specifics, they want disability-focused fixes.
 - Familiarize yourself with Philippine laws too: some projects may mention the Magna Carta for Persons with Disability (Republic Act 7277) requiring accessibility.
 - In exams, listing recognized guidelines or acts (WCAG, Republic Act 7277) can score points.
 $md$, 3);
@@ -305,7 +305,7 @@ Beyond mobile, HCI also explores new modalities. **Voice interfaces** (like Siri
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions and a design sketch exercise for mobile layouts.*
 $md$, 2),
-('5474918a-c771-51ce-9db7-daac8c7a71d0','activity','Practice & Exam Drills — Lesson 8',$md$
+('5474918a-c771-51ce-9db7-daac8c7a71d0','activity','Practice & Exam Drills, Lesson 8',$md$
 **Review Questions**
 
 1. Why must mobile buttons be large enough for touch?
@@ -327,14 +327,14 @@ Take a desktop website and view it on your phone (or shrink your browser). Ident
 **How to Pass Tips**
 
 - Know differences: e.g. desktop can use hover effects, mobile cannot. Exams may ask: "Name two mobile design constraints."
-- A common error is thinking desktop knowledge works the same on mobile — always mention touch, orientation, limited screen.
+- A common error is thinking desktop knowledge works the same on mobile, always mention touch, orientation, limited screen.
 - Remember hot topics: voice UX (e.g. clarity in voice prompts) and VR usability (like avoiding fast camera movement).
 - Use Philippine examples (e.g. mobile-first for rural users with cheap phones). Professors appreciate it if you mention technical terms (e.g. media queries in responsive design) when relevant.
 $md$, 3);
 
 -- ============================================================
 -- SOURCES
--- Polytechnic University of the Philippines — Course syllabus for Human-Computer Interaction
+-- Polytechnic University of the Philippines, Course syllabus for Human-Computer Interaction
 -- Far Eastern University – Institute of Technology, BSIT program outcomes (includes HCI knowledge)
--- CHED CMO No. 25 s.2015 — BSIT program standards (mentions HCI topics such as usability)
+-- CHED CMO No. 25 s.2015, BSIT program standards (mentions HCI topics such as usability)
 -- ============================================================

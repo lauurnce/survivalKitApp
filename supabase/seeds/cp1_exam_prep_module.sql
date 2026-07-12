@@ -1,8 +1,8 @@
 -- ============================================================
--- Computer Programming 1 — Exam Prep: Prelims & Finals
+-- Computer Programming 1, Exam Prep: Prelims & Finals
 -- Subject ID: 10000000-0001-0001-0001-000000000001
 -- Module ID:  a1000001-0001-0001-0001-0000000000e1
--- Purpose: exam-review module — 2 free sections (blueprint +
+-- Purpose: exam-review module, 2 free sections (blueprint +
 --          15-item practice set) and 8 activity sections
 --          (4 x 30-item mock exams, keys, traps, review sheet).
 -- Idempotent: deletes only this module's row (sections cascade),
@@ -23,11 +23,11 @@ INSERT INTO modules (id, subject_id, title, slug, sort_order) VALUES
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a1000001-0001-0001-0001-0000000000e1','content','Prelim Exam Blueprint & Study Plan',$md$
-Your CP1 prelim covers the first three lessons of this subject — nothing more:
+Your CP1 prelim covers the first three lessons of this subject, nothing more:
 
-- **Lesson 1: Programming Concepts** — hardware vs. software, the five-step programming process, syntax vs. logic errors, flowcharts, pseudocode
-- **Lesson 2: Introduction to C** — history, compilation, identifiers, data types, variables, constants, operators, precedence
-- **Lesson 3: Input/Output and Program Structure** — `printf`, `scanf`, format specifiers, escape sequences, `conio.h` functions, the anatomy of a C program
+- **Lesson 1: Programming Concepts**, hardware vs. software, the five-step programming process, syntax vs. logic errors, flowcharts, pseudocode
+- **Lesson 2: Introduction to C**, history, compilation, identifiers, data types, variables, constants, operators, precedence
+- **Lesson 3: Input/Output and Program Structure**, `printf`, `scanf`, format specifiers, escape sequences, `conio.h` functions, the anatomy of a C program
 
 ### How a Typical CP1 Prelim Is Built
 
@@ -54,11 +54,11 @@ If it is in a table in the lessons, it is fair game. Before the exam you should 
 
 ### Top Mistakes That Cost Prelim Points
 
-1. Writing `1.5` for `3/2` — integer division truncates to `1`.
+1. Writing `1.5` for `3/2`, integer division truncates to `1`.
 2. Forgetting `&` in `scanf("%d", &num);` on fill-in-the-blank items.
-3. Calling `integer` a keyword — the keyword is `int`; `integer` is a valid identifier.
+3. Calling `integer` a keyword, the keyword is `int`; `integer` is a valid identifier.
 4. Pairing the wrong flowchart shape (parallelogram is I/O, **not** process).
-5. Ignoring field widths — `%5d` questions are graded space by space.
+5. Ignoring field widths, `%5d` questions are graded space by space.
 
 ### 7-Day Study Plan
 
@@ -72,10 +72,10 @@ If it is in a table in the lessons, it is fair game. Before the exam you should 
 | 6 | Take the free 15-item practice set below under time pressure (20 minutes, no notes). |
 | 7 | Take a full mock exam under exam conditions, mark it with the answer key, and restudy only the items you missed. |
 
-Light review the night before, sleep, and bring two pens. Kaya mo 'yan — the prelim is the most predictable exam of the semester.
+Light review the night before, sleep, and bring two pens. Kaya mo 'yan, the prelim is the most predictable exam of the semester.
 $md$, 1),
 
-('a1000001-0001-0001-0001-0000000000e1','content','Free Practice Set — 15 Items with Answer Key',$md$
+('a1000001-0001-0001-0001-0000000000e1','content','Free Practice Set, 15 Items with Answer Key',$md$
 Answer all 15 on paper before scrolling to the key. Target: 20 minutes, closed notes. Scope: Lessons 1–3 only.
 
 ### Items
@@ -102,34 +102,34 @@ Answer all 15 on paper before scrolling to the key. Target: 20 minutes, closed n
 
 ### Answer Key
 
-1. **c) diamond** — the diamond is the decision symbol; the rectangle is process, the parallelogram is I/O.
-2. **TRUE** — syntax errors break language rules and the compiler catches them; only testing catches logic errors.
-3. **b) Dennis Ritchie** — Thompson made B (1970), Richards made BCPL (1967), Borland made Turbo C (1987).
-4. **c) `2ndYear`** — identifiers cannot start with a digit; the rest are all legal.
-5. **5** — integer division truncates; there is no 5.5 in `int` math.
-6. **1** — modulus gives the remainder of 11 ÷ 2.
-7. **c) `%lf`** — `%f` is for `float`; a `double` in `scanf` needs `%lf`.
-8. **`   42`** — three spaces then 42: `%5d` right-justifies the number in a field of width 5.
-9. **FALSE** — `int` is a keyword; `integer` is not (it is actually a valid identifier).
-10. **`&`** — `scanf` needs the address-of operator before a plain variable.
-11. **`\t`** — backslash-t; `\n` is newline, `\a` is the bell.
-12. **y = 10, x = 11** — postfix `x++` hands over the old value first, then increments.
-13. **Sequence, selection, repetition** — per Lesson 1, these three are sufficient for any logic.
-14. **`char`** — single quotes mean a single character; `"A"` in double quotes would be a string.
-15. **4** — `*` and `%` share the same level, left to right: `3*4=12`, `12%5=2`, then `2+2=4`.
+1. **c) diamond**, the diamond is the decision symbol; the rectangle is process, the parallelogram is I/O.
+2. **TRUE**, syntax errors break language rules and the compiler catches them; only testing catches logic errors.
+3. **b) Dennis Ritchie**, Thompson made B (1970), Richards made BCPL (1967), Borland made Turbo C (1987).
+4. **c) `2ndYear`**, identifiers cannot start with a digit; the rest are all legal.
+5. **5**, integer division truncates; there is no 5.5 in `int` math.
+6. **1**, modulus gives the remainder of 11 ÷ 2.
+7. **c) `%lf`**, `%f` is for `float`; a `double` in `scanf` needs `%lf`.
+8. **`   42`**, three spaces then 42: `%5d` right-justifies the number in a field of width 5.
+9. **FALSE**, `int` is a keyword; `integer` is not (it is actually a valid identifier).
+10. **`&`**, `scanf` needs the address-of operator before a plain variable.
+11. **`\t`**, backslash-t; `\n` is newline, `\a` is the bell.
+12. **y = 10, x = 11**, postfix `x++` hands over the old value first, then increments.
+13. **Sequence, selection, repetition**, per Lesson 1, these three are sufficient for any logic.
+14. **`char`**, single quotes mean a single character; `"A"` in double quotes would be a string.
+15. **4**, `*` and `%` share the same level, left to right: `3*4=12`, `12%5=2`, then `2+2=4`.
 
-Scored 12 or better? You are on track. Below that, redo the lesson the missed items came from before trying a full mock. The four full 30-item mock exams below — two prelim and two final, each with a fully explained answer key — are included when you unlock this subject.
+Scored 12 or better? You are on track. Below that, redo the lesson the missed items came from before trying a full mock. The four full 30-item mock exams below, two prelim and two final, each with a fully explained answer key, are included when you unlock this subject.
 $md$, 2);
 
 -- ============================================================
--- LOCKED ACTIVITIES — PRELIM (sort 3-6)
+-- LOCKED ACTIVITIES, PRELIM (sort 3-6)
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
-('a1000001-0001-0001-0001-0000000000e1','activity','Prelim Mock Exam A — 30 Items',$md$
-Simulate the real thing: 45 minutes, closed notes, answers on paper. Scope: Lessons 1–3. Assume needed headers and declarations are in place unless shown. The full key with explanations is in the **Answer Key** section — no peeking until you finish.
+('a1000001-0001-0001-0001-0000000000e1','activity','Prelim Mock Exam A, 30 Items',$md$
+Simulate the real thing: 45 minutes, closed notes, answers on paper. Scope: Lessons 1–3. Assume needed headers and declarations are in place unless shown. The full key with explanations is in the **Answer Key** section, no peeking until you finish.
 
-### Part I — Multiple Choice (1–10)
+### Part I, Multiple Choice (1–10)
 
 1. In the five-step programming process, which step comes immediately after "design the solution"?
    a) define the problem  b) code the program  c) test the program  d) document the program
@@ -152,7 +152,7 @@ Simulate the real thing: 45 minutes, closed notes, answers on paper. Scope: Less
 10. In C, false is represented by:
     a) 0  b) −1  c) any non-zero value  d) the character 'F'
 
-### Part II — True or False (11–16)
+### Part II, True or False (11–16)
 
 11. A flowchart parallelogram represents a process.
 12. Global variables are automatically initialized to zero if unspecified.
@@ -161,7 +161,7 @@ Simulate the real thing: 45 minutes, closed notes, answers on paper. Scope: Less
 15. `getch()` waits for the Enter key before returning the character.
 16. A logic error is caught by the compiler.
 
-### Part III — Predict the Output (17–22)
+### Part III, Predict the Output (17–22)
 
 Write the exact output, spaces included.
 
@@ -196,14 +196,14 @@ printf("%.1f", f);
 printf("%3d%3d", 5, 25);
 ```
 
-### Part IV — Fill in the Code (23–26)
+### Part IV, Fill in the Code (23–26)
 
 23. `price` is a `float`. Complete: `scanf("____", &price);`
 24. Define a preprocessor constant `RATE` with value 0.12: `#define RATE ____`
 25. Declare a character array that holds `"CCMIT"` including its terminator: `char college[____] = "CCMIT";`
 26. Complete the ternary so `y` gets 1 when `x` is positive, else 0: `y = (x > 0) ____ 1 ____ 0;`
 
-### Part V — Flowchart & Pseudocode (27–30)
+### Part V, Flowchart & Pseudocode (27–30)
 
 27. The oval symbol in a flowchart marks:
     a) a computation  b) start or stop  c) user input  d) a decision
@@ -219,10 +219,10 @@ OUTPUT S
 30. What is the circle (connector) symbol used for in a flowchart?
 $md$, 3),
 
-('a1000001-0001-0001-0001-0000000000e1','activity','Prelim Mock Exam B — 30 Items',$md$
+('a1000001-0001-0001-0001-0000000000e1','activity','Prelim Mock Exam B, 30 Items',$md$
 Same scope (Lessons 1–3), all-new items, one notch harder. 45 minutes, closed notes. Take this a day or two after Mock A so the key from A has sunk in.
 
-### Part I — Multiple Choice (1–10)
+### Part I, Multiple Choice (1–10)
 
 1. Which runs FIRST when a `.c` file is built?
    a) linker  b) compiler  c) preprocessor  d) loader
@@ -248,7 +248,7 @@ Same scope (Lessons 1–3), all-new items, one notch harder. 45 minutes, closed 
     c) `getche()` waits for Enter; `getch()` does not
     d) there is none
 
-### Part II — True or False (11–16)
+### Part II, True or False (11–16)
 
 11. In the Lesson 2 data-type table, `long int` has the same size as `int` (4 bytes).
 12. When reading a string into a char array with `scanf("%s", name);`, no `&` is needed.
@@ -257,7 +257,7 @@ Same scope (Lessons 1–3), all-new items, one notch harder. 45 minutes, closed 
 15. `const float version = 3.20;` is handled by the preprocessor.
 16. `puts()` writes the string to the screen and adds a newline.
 
-### Part III — Predict the Output (17–22)
+### Part III, Predict the Output (17–22)
 
 17.
 ```c
@@ -291,14 +291,14 @@ printf("%d %d", p, q);
 printf("%d", 8 + 2 * 5 < 2 * 2 * 5 && 3 > 1);
 ```
 
-### Part IV — Fill in the Code (23–26)
+### Part IV, Fill in the Code (23–26)
 
 23. `y` is a `double`. Complete: `scanf("%____", &y);`
-24. Complete the statement so it prints exactly `He said "hi"` — quotes included: `printf("He said ______");`
+24. Complete the statement so it prints exactly `He said "hi"`, quotes included: `printf("He said ______");`
 25. Subtract 5 from `total` using a shorthand operator: `total ____ 5;`
 26. `getch()` and `clrscr()` need which header? `#include <____>`
 
-### Part V — Flowchart & Pseudocode (27–30)
+### Part V, Flowchart & Pseudocode (27–30)
 
 27. Trace this pseudocode. What is the output?
 ```
@@ -323,61 +323,61 @@ OUTPUT N
 30. In a flowchart, what does the arrow symbol represent, and what is its proper name?
 $md$, 4),
 
-('a1000001-0001-0001-0001-0000000000e1','activity','Prelim Mock Exams — Answer Key with Explanations',$md$
-Mark your paper honestly — the explanation matters more than the score. Every trap answer here is one your professor will also offer as a choice.
+('a1000001-0001-0001-0001-0000000000e1','activity','Prelim Mock Exams, Answer Key with Explanations',$md$
+Mark your paper honestly, the explanation matters more than the score. Every trap answer here is one your professor will also offer as a choice.
 
 ## Mock Exam A
 
-### Part I — Multiple Choice
+### Part I, Multiple Choice
 
 1. **b) code the program.** Order: define → design → **code** → test → document. Choice (c) tempts because coding and testing feel simultaneous in the lab, but the process lists them separately and in order.
-2. **b) information.** Data is raw facts; information is processed data. "Input" tempts because data enters as input — but the question asks what it becomes.
-3. **c) Ken Thompson.** He built B for early UNIX. Ritchie (a) is the trap — he made C (1972), not B.
+2. **b) information.** Data is raw facts; information is processed data. "Input" tempts because data enters as input, but the question asks what it becomes.
+3. **c) Ken Thompson.** He built B for early UNIX. Ritchie (a) is the trap, he made C (1972), not B.
 4. **c) linker.** The linker combines object code with library code to produce the executable. The compiler (b) only gets you to object code.
 5. **c) `_total`.** A leading underscore is legal. `4you` starts with a digit, `qty-sold` has a hyphen, and `int` is a keyword.
 6. **a) `char`.** Single quotes = single character. "String" tempts, but strings use double quotes.
-7. **b) `%`.** Modulus returns the remainder. `/` (a) is the trap — it returns the quotient.
-8. **b) `char`** — 1 byte. `short int` (d) tempts but is 2 bytes.
+7. **b) `%`.** Modulus returns the remainder. `/` (a) is the trap, it returns the quotient.
+8. **b) `char`**, 1 byte. `short int` (d) tempts but is 2 bytes.
 9. **c) `stdio.h`.** Standard input/output. `conio.h` (a) is console extras like `getch` and `clrscr`.
-10. **a) 0.** False is exactly zero; TRUE is any non-zero value — which is why (c) describes true, not false.
+10. **a) 0.** False is exactly zero; TRUE is any non-zero value, which is why (c) describes true, not false.
 
-### Part II — True or False
+### Part II, True or False
 
 11. **FALSE.** The parallelogram is input/output; the rectangle is process. Most-swapped pair in symbol questions.
 12. **TRUE.** Globals default to zero; it is *locals* that hold garbage until assigned.
-13. **FALSE.** `#define` is a preprocessor directive, not a statement — no semicolon. Adding one pastes the `;` into every use site.
+13. **FALSE.** `#define` is a preprocessor directive, not a statement, no semicolon. Adding one pastes the `;` into every use site.
 14. **TRUE.** `Sname`, `SNAME`, and `sname` are three different identifiers.
 15. **FALSE.** `getch()` returns immediately without echo and without Enter. The function that *does* wait for Enter is `getchar()`.
 16. **FALSE.** Logic errors compile and run fine but produce wrong results; only testing reveals them.
 
-### Part III — Predict the Output
+### Part III, Predict the Output
 
-17. **`3`** — integer division: 7/2 truncates. Writing 3.5 is the classic mark-loser.
-18. **`11 11`** — prefix `++a` increments first, so `b` receives the already-incremented 11.
+17. **`3`**, integer division: 7/2 truncates. Writing 3.5 is the classic mark-loser.
+18. **`11 11`**, prefix `++a` increments first, so `b` receives the already-incremented 11.
 19. Two lines:
 ```
 Sum:	8
 "Done"
 ```
 `\t` prints a tab, `\n` ends line 1, and `\"` prints literal double quotes around Done.
-20. **`3`** — `%` and `/` outrank `+`: `9%4 = 1`, `12/5 = 2` (truncated), `1 + 2 = 3`. Answering 4 means you computed 12/5 as 2.4.
-21. **`3.0`** — the trap: `7 / 2` is integer division and yields 3 *before* being stored in the float. `3.5` is exactly the wrong answer this item is fishing for.
-22. **`  5 25`** — `%3d` pads 5 to `  5` (two spaces) and 25 to ` 25` (one space). Total: two spaces, 5, one space, 25.
+20. **`3`**, `%` and `/` outrank `+`: `9%4 = 1`, `12/5 = 2` (truncated), `1 + 2 = 3`. Answering 4 means you computed 12/5 as 2.4.
+21. **`3.0`**, the trap: `7 / 2` is integer division and yields 3 *before* being stored in the float. `3.5` is exactly the wrong answer this item is fishing for.
+22. **`  5 25`**, `%3d` pads 5 to `  5` (two spaces) and 25 to ` 25` (one space). Total: two spaces, 5, one space, 25.
 
-### Part IV — Fill in the Code
+### Part IV, Fill in the Code
 
-23. **`%f`** — `float` uses `%f` in `scanf`; `%lf` is for `double`.
-24. **`0.12`** — just the value: `#define RATE 0.12`. No `=` and no `;` — both are traps.
-25. **`6`** — five letters plus `'\0'`. Writing 5 compiles but drops the terminator.
-26. **`?`** then **`:`** — `y = (x > 0) ? 1 : 0;`
+23. **`%f`**, `float` uses `%f` in `scanf`; `%lf` is for `double`.
+24. **`0.12`**, just the value: `#define RATE 0.12`. No `=` and no `;`, both are traps.
+25. **`6`**, five letters plus `'\0'`. Writing 5 compiles but drops the terminator.
+26. **`?`** then **`:`**, `y = (x > 0) ? 1 : 0;`
 27. **b) start or stop.** The oval is the terminal symbol.
-28. **`10`** — S accumulates 1+2+3+4 while N goes 1→5. If you got 15, you looped once too many (N ≤ 4 stops before adding 5).
-29. **Selection** — a decision chooses between two paths; nothing repeats.
-30. **Connecting parts of a flowchart** — e.g., continuing the flow across pages, so you avoid long crossing arrows.
+28. **`10`**, S accumulates 1+2+3+4 while N goes 1→5. If you got 15, you looped once too many (N ≤ 4 stops before adding 5).
+29. **Selection**, a decision chooses between two paths; nothing repeats.
+30. **Connecting parts of a flowchart**, e.g., continuing the flow across pages, so you avoid long crossing arrows.
 
 ## Mock Exam B
 
-### Part I — Multiple Choice
+### Part I, Multiple Choice
 
 1. **c) preprocessor.** It handles `#include`/`#define` before the compiler runs; the linker (a) is last, not first.
 2. **b) the machine-language translation of source code.** Also called binary or machine code. (a) describes *source* code.
@@ -386,56 +386,56 @@ Sum:	8
 5. **b) never negative.** Unsigned types trade the sign for a bigger positive range.
 6. **b) `"A"`.** Double quotes make a string (even one character long); `'A'` is a char constant.
 7. **b) `*`, higher precedence.** Multiplication outranks addition, so it evaluates first regardless of position.
-8. **a) `x = x % 3;`** — shorthand expands with `x` on the left. (b) reverses the operands, which matters for `%`.
-9. **b) `%e`** — scientific notation. `%lf` (c) is double in normal notation.
+8. **a) `x = x % 3;`**, shorthand expands with `x` on the left. (b) reverses the operands, which matters for `%`.
+9. **b) `%e`**, scientific notation. `%lf` (c) is double in normal notation.
 10. **a).** `getche()` = "get char with **e**cho"; neither one waits for Enter, which kills choice (c).
 
-### Part II — True or False
+### Part II, True or False
 
 11. **TRUE.** The lesson's table lists `long int` at 4 bytes, same as `int`.
 12. **TRUE.** An array name already refers to the address of its first element, so `&` is not needed.
 13. **TRUE.** `\a` is the bell/alert.
 14. **FALSE.** The lesson says the first **63** characters are significant.
 15. **FALSE.** `const` is a language keyword handled by the compiler; `#define` is the preprocessor mechanism.
-16. **TRUE.** `puts` writes the string plus a newline — that trailing newline is the difference from `printf("%s", ...)`.
+16. **TRUE.** `puts` writes the string plus a newline, that trailing newline is the difference from `printf("%s", ...)`.
 
-### Part III — Predict the Output
+### Part III, Predict the Output
 
-17. **`21`** — shorthand in sequence: `x = 5+2 = 7`, then `x = 7*3 = 21`. If you got 11, you applied `*=` before `+=`; statements run top to bottom.
-18. **`5`** — `4 > 9` is false, so the ternary takes the third expression: `b - a = 9 - 4 = 5`. Getting −5 means you took the true branch.
-19. **`3 1`** — quotient 3 (truncated), remainder 1. The pair `/` and `%` together recover the whole division.
-20. **`  3.14`** — width 6, 2 decimals: "3.14" is 4 characters, padded with 2 leading spaces. Count the spaces; `3.14` alone loses the width point.
-21. **`3 6`** — prefix: p becomes 3 first, then q = 3*2 = 6. Postfix would have given q = 4 with p = 3 — the difference is the entire question.
-22. **`1`** — precedence: `8+2*5 = 18`, `2*2*5 = 20`, `18 < 20` → 1; `3 > 1` → 1; `1 && 1` → 1. Relational operators bind before `&&`, so no parentheses are needed.
+17. **`21`**, shorthand in sequence: `x = 5+2 = 7`, then `x = 7*3 = 21`. If you got 11, you applied `*=` before `+=`; statements run top to bottom.
+18. **`5`**, `4 > 9` is false, so the ternary takes the third expression: `b - a = 9 - 4 = 5`. Getting −5 means you took the true branch.
+19. **`3 1`**, quotient 3 (truncated), remainder 1. The pair `/` and `%` together recover the whole division.
+20. **`  3.14`**, width 6, 2 decimals: "3.14" is 4 characters, padded with 2 leading spaces. Count the spaces; `3.14` alone loses the width point.
+21. **`3 6`**, prefix: p becomes 3 first, then q = 3*2 = 6. Postfix would have given q = 4 with p = 3, the difference is the entire question.
+22. **`1`**, precedence: `8+2*5 = 18`, `2*2*5 = 20`, `18 < 20` → 1; `3 > 1` → 1; `1 && 1` → 1. Relational operators bind before `&&`, so no parentheses are needed.
 
-### Part IV — Fill in the Code
+### Part IV, Fill in the Code
 
-23. **`lf`** — a `double` in `scanf` must use `%lf`; plain `%f` corrupts the value.
-24. **`\"hi\"`** — full statement: `printf("He said \"hi\"");` — the escape `\"` prints the quote instead of ending the string.
-25. **`-=`** — `total -= 5;` is `total = total - 5;`
-26. **`conio.h`** — the console I/O header (Turbo C).
+23. **`lf`**, a `double` in `scanf` must use `%lf`; plain `%f` corrupts the value.
+24. **`\"hi\"`**, full statement: `printf("He said \"hi\"");`, the escape `\"` prints the quote instead of ending the string.
+25. **`-=`**, `total -= 5;` is `total = total - 5;`
+26. **`conio.h`**, the console I/O header (Turbo C).
 
-### Part V — Flowchart & Pseudocode
+### Part V, Flowchart & Pseudocode
 
-27. **`X`** — `8 > 3` is true, enter the inner IF; `8 % 3 = 2`, so the condition holds and X prints. Answering Y means you computed the remainder wrong; Z means you misread the outer condition.
-28. **`-2`** — N: 10 → 7 → 4 → 1 → −2. The subtle part: at N = 1 the condition `N > 0` is still true, so one more subtraction runs *before* the test can fail. Answering 1 means you stopped a step early.
-29. **c)** — sequence, selection, and repetition; Lesson 1 states these three are sufficient for any program logic.
+27. **`X`**, `8 > 3` is true, enter the inner IF; `8 % 3 = 2`, so the condition holds and X prints. Answering Y means you computed the remainder wrong; Z means you misread the outer condition.
+28. **`-2`**, N: 10 → 7 → 4 → 1 → −2. The subtle part: at N = 1 the condition `N > 0` is still true, so one more subtraction runs *before* the test can fail. Answering 1 means you stopped a step early.
+29. **c)**, sequence, selection, and repetition; Lesson 1 states these three are sufficient for any program logic.
 30. **Direction of execution; it is called a flow line.** Both halves are needed for full credit.
 
 ### Scoring Guide (per 30-item exam)
 
 - **27–30:** exam-ready; just do a light review the night before.
-- **21–26:** solid — restudy only the lessons your misses came from.
+- **21–26:** solid, restudy only the lessons your misses came from.
 - **Below 21:** reread the weakest lesson end to end, redo its practice set, then retake the other mock cold.
 $md$, 5);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('a1000001-0001-0001-0001-0000000000e1','activity','Common Prelim Traps & How to Avoid Them',$md$
-Professors reuse the same six traps every semester because they keep working. Learn to smell each one and you pick up 5–10 points without learning anything new. Each trap comes with a mini-drill — answer before reading the solution line.
+Professors reuse the same six traps every semester because they keep working. Learn to smell each one and you pick up 5–10 points without learning anything new. Each trap comes with a mini-drill, answer before reading the solution line.
 
 ### Trap 1: `=` vs `==`
 
-`=` assigns; `==` compares. Inside an `if`, an assignment still "works" — the condition becomes the assigned value, and any non-zero value is true.
+`=` assigns; `==` compares. Inside an `if`, an assignment still "works", the condition becomes the assigned value, and any non-zero value is true.
 
 **Drill:** What prints, and what is `x` afterward?
 ```c
@@ -449,7 +449,7 @@ else
 
 ### Trap 2: Integer division
 
-When both operands are integers, `/` throws away the decimal part — even if the result is stored in a `float`.
+When both operands are integers, `/` throws away the decimal part, even if the result is stored in a `float`.
 
 **Drill:** What is stored in `avg`?
 ```c
@@ -459,7 +459,7 @@ float avg = (80 + 85) / 2;
 
 ### Trap 3: Missing `&` in `scanf`
 
-`scanf` needs the **address** of a plain variable — that is what `&` provides. Forget it and the program compiles but reads into a garbage location.
+`scanf` needs the **address** of a plain variable, that is what `&` provides. Forget it and the program compiles but reads into a garbage location.
 
 **Drill:** Spot the error:
 ```c
@@ -470,9 +470,9 @@ scanf("%d", num);
 
 ### Trap 4: `%d` vs `%f` mismatch
 
-The specifier must match the type. Printing a `float` with `%d` (or reading a `double` with `%f`) produces garbage — the lesson calls this undefined behavior.
+The specifier must match the type. Printing a `float` with `%d` (or reading a `double` with `%f`) produces garbage, the lesson calls this undefined behavior.
 
-**Drill:** `y` is a `double`. Which specifier is correct in `scanf("%__", &y);` — `d`, `f`, or `lf`?
+**Drill:** `y` is a `double`. Which specifier is correct in `scanf("%__", &y);`, `d`, `f`, or `lf`?
 **Answer:** `lf`. In scanf, `%f` is only for `float`; `%d` is only for integers.
 
 ### Trap 5: Off-by-one loop counts
@@ -484,22 +484,22 @@ The specifier must match the type. Printing a `float` with `%d` (or reading a `d
 for (i = 1; i < 5; i++)   /* (a) */
 for (i = 0; i <= 10; i++) /* (b) */
 ```
-**Answer:** (a) **4** times (i = 1,2,3,4); (b) **11** times (i = 0 through 10 — counting zero is what people forget).
+**Answer:** (a) **4** times (i = 1,2,3,4); (b) **11** times (i = 0 through 10, counting zero is what people forget).
 
 ### Trap 6: Semicolon after `if`
 
-A `;` right after the condition is an **empty statement** — the `if` controls nothing, and the "body" below always runs.
+A `;` right after the condition is an **empty statement**, the `if` controls nothing, and the "body" below always runs.
 
 **Drill:** What prints when `score` is 60?
 ```c
 if (score >= 75);
     printf("Passed");
 ```
-**Answer:** `Passed` prints anyway. The `if` executed the empty statement; the `printf` is just the next statement, indented or not. Same trap works on `while (...);` — that one becomes an infinite or do-nothing loop.
+**Answer:** `Passed` prints anyway. The `if` executed the empty statement; the `printf` is just the next statement, indented or not. Same trap works on `while (...);`, that one becomes an infinite or do-nothing loop.
 
 ### Drill Lab
 
-The playground below contains Traps 1, 2, and 6 planted in one program. Fix all three so it prints `half = 3.5` and only the messages that should appear for a score of 80 — then rerun with `score = 100` and check it still behaves.
+The playground below contains Traps 1, 2, and 6 planted in one program. Fix all three so it prints `half = 3.5` and only the messages that should appear for a score of 80, then rerun with `score = 100` and check it still behaves.
 $md$, 6, 'c', $code$#include <stdio.h>
 
 int main(void) {
@@ -522,12 +522,12 @@ int main(void) {
 }$code$);
 
 -- ============================================================
--- LOCKED ACTIVITIES — FINALS (sort 7-10)
+-- LOCKED ACTIVITIES, FINALS (sort 7-10)
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('a1000001-0001-0001-0001-0000000000e1','activity','Final Exam Blueprint & Rapid Review Sheet',$md$
-The final is **cumulative** — Lessons 1 through 7 — but weighted hard toward the second half. Expect something close to:
+The final is **cumulative**, Lessons 1 through 7, but weighted hard toward the second half. Expect something close to:
 
 | Coverage | Typical weight |
 |---|---|
@@ -537,15 +537,15 @@ The final is **cumulative** — Lessons 1 through 7 — but weighted hard toward
 | Lesson 6: Functions | 15–20% |
 | Lesson 7: String, Character, and Math Functions | 10–15% |
 
-Code tracing dominates. If the prelim asked "what is the rule," the final asks "what does this code print" — so practice tracing on paper, line by line, with a variables table.
+Code tracing dominates. If the prelim asked "what is the rule," the final asks "what does this code print", so practice tracing on paper, line by line, with a variables table.
 
 ### Rapid Review: Loops (Lesson 4)
 
-- `while` — tests **before**; body may run zero times.
-- `do-while` — tests **after**; body always runs at least once; ends with `;` after the condition.
-- `for (init; condition; increment)` — init once, test before each pass, increment after each pass.
+- `while`, tests **before**; body may run zero times.
+- `do-while`, tests **after**; body always runs at least once; ends with `;` after the condition.
+- `for (init; condition; increment)`, init once, test before each pass, increment after each pass.
 - `break` exits the innermost loop (or a `switch`); `continue` skips to the next iteration.
-- `switch`: expression must be `int` or `char`; `case` labels must be constants; a missing `break` falls through; `default` catches the rest. Ranges need if/else-if ladders — `case` cannot match `age <= 12`.
+- `switch`: expression must be `int` or `char`; `case` labels must be constants; a missing `break` falls through; `default` catches the rest. Ranges need if/else-if ladders, `case` cannot match `age <= 12`.
 
 **Three loop patterns to know cold:**
 ```c
@@ -563,7 +563,7 @@ for (i = 1; i < n; i++) if (a[i] > max) max = a[i];
 
 - Indexes run **0 to size − 1**; `int x[10]` ends at `x[9]`.
 - Partial initializer zero-fills the rest: `int a[5] = {1, 2};` → a[2..4] are 0. Uninitialized locals are garbage; `static` and globals start at zero.
-- A string is a char array ending in `'\0'` — "NORTH" needs 6 slots.
+- A string is a char array ending in `'\0'`, "NORTH" needs 6 slots.
 - Arrays cannot be assigned with `=`; copy element by element in a loop.
 - Reverse/mirror index formula: `n - 1 - i`.
 - Bubble sort ascending: compare `num[i] > num[i+1]`, swap through a `temp`.
@@ -576,9 +576,9 @@ return_type name(parameter list) {   /* definition */
     return value;                    /* omit for void */
 }
 ```
-- Prototype before `main`, definition anywhere after — or define the whole function first.
+- Prototype before `main`, definition anywhere after, or define the whole function first.
 - **Call by value:** the function gets a copy; the caller's variable never changes.
-- **Call by reference:** pass `&x`, receive `int *p`, write through `*p` — the caller's variable changes.
+- **Call by reference:** pass `&x`, receive `int *p`, write through `*p`, the caller's variable changes.
 - `&x` = "address of x"; `*p` = "value at the address in p".
 - Locals die at return; globals live for the whole program and default to zero.
 
@@ -589,7 +589,7 @@ return_type name(parameter list) {   /* definition */
 | `string.h` | `strcpy`, `strncpy` (copies n chars, adds no terminator), `strcat`/`strncat`, `strcmp` (0 = equal), `strlen` (excludes the terminator), `strrev`, `strupr`, `strlwr` |
 | `ctype.h` | `isdigit`, `isalpha`, `isalnum`, `isupper`, `islower`, `ispunct`, `isspace`, `toupper`, `tolower` |
 | `math.h` | `abs` (int), `fabs` (double), `ceil` (round up), `floor` (round down), `fmod` (float remainder), `pow`, `sqrt` |
-| `stdlib.h` | `atoi`, `atof`, `atol` — string to number |
+| `stdlib.h` | `atoi`, `atof`, `atol`, string to number |
 
 Watch-outs: `strlen("BSIT")` is 4, not 5; `strcmp` returning 0 means EQUAL (feels backwards); `isdigit('5')` tests the character symbol, not the number; work nested calls inside-out (`sqrt(floor(25.12))` → `sqrt(25.0)` → `5.0`); `strrev`/`strupr`/`strlwr`/`stricmp` are Turbo C extensions, not standard C.
 
@@ -604,10 +604,10 @@ Watch-outs: `strlen("BSIT")` is 4, not 5; `strcmp` returning 0 means EQUAL (feel
 | 5 | Take Final Mock Exam B cold. Skim Lessons 1–3 tables (specifiers, escapes, precedence) for the carried-over 20%. |
 $md$, 7),
 
-('a1000001-0001-0001-0001-0000000000e1','activity','Final Mock Exam A — 30 Items',$md$
-Cumulative, weighted to Lessons 4–7, heavy on tracing and debugging — exactly like the real final. 60 minutes, closed notes, trace on paper with a variables table. Assume `stdio.h`, `string.h`, `ctype.h`, and `math.h` are included and variables are declared unless shown.
+('a1000001-0001-0001-0001-0000000000e1','activity','Final Mock Exam A, 30 Items',$md$
+Cumulative, weighted to Lessons 4–7, heavy on tracing and debugging, exactly like the real final. 60 minutes, closed notes, trace on paper with a variables table. Assume `stdio.h`, `string.h`, `ctype.h`, and `math.h` are included and variables are declared unless shown.
 
-### Part I — Multiple Choice (1–8)
+### Part I, Multiple Choice (1–8)
 
 1. Which loop always executes its body at least once?
    a) `for`  b) `while`  c) `do-while`  d) none of these
@@ -626,7 +626,7 @@ Cumulative, weighted to Lessons 4–7, heavy on tracing and debugging — exactl
 8. In `scanf("%s", name);` for a char array, no `&` is written because:
    a) strings cannot use `&`  b) the array name is already an address  c) `%s` forbids it  d) it is a syntax error otherwise
 
-### Part II — True or False (9–14)
+### Part II, True or False (9–14)
 
 9. Without `break`, a matched `switch` case falls through into the next case.
 10. The body of `while (0) { ... }` executes exactly once.
@@ -635,7 +635,7 @@ Cumulative, weighted to Lessons 4–7, heavy on tracing and debugging — exactl
 13. `strlen("BSIT")` returns 5.
 14. `isdigit('7')` is true.
 
-### Part III — Trace the Code (15–24)
+### Part III, Trace the Code (15–24)
 
 Write the exact output.
 
@@ -720,7 +720,7 @@ strcat(s, "IT");
 printf("%.0f %.0f", floor(4.7), ceil(4.1));
 ```
 
-### Part IV — Find and Fix the Bug (25–28)
+### Part IV, Find and Fix the Bug (25–28)
 
 State what goes wrong and give the one-line fix.
 
@@ -753,7 +753,7 @@ void total(int a, int b) {    /* definition */
 }
 ```
 
-### Part V — Fill in the Code (29–30)
+### Part V, Fill in the Code (29–30)
 
 29. Complete the classic swap through pointers:
 ```c
@@ -773,10 +773,10 @@ for (i = 1; i < n; i++)
 ```
 $md$, 8),
 
-('a1000001-0001-0001-0001-0000000000e1','activity','Final Mock Exam B — 30 Items',$md$
+('a1000001-0001-0001-0001-0000000000e1','activity','Final Mock Exam B, 30 Items',$md$
 All-new items, same cumulative scope weighted to Lessons 4–7. Take it a day or two after marking Mock A. 60 minutes, closed notes. Assume the usual headers and declarations unless shown.
 
-### Part I — Multiple Choice (1–8)
+### Part I, Multiple Choice (1–8)
 
 1. Which loop tests its condition BEFORE each iteration and may therefore run zero times?
    a) `do-while`  b) `while`  c) both a and b  d) neither
@@ -787,7 +787,7 @@ All-new items, same cumulative scope weighted to Lessons 4–7. Take it a day or
 4. Per Lesson 5, the address of element `i` equals the array address plus:
    a) `i`  b) `sizeof(element) * i`  c) `sizeof(array)`  d) `i / sizeof(element)`
 5. Which is an advantage of functions listed in Lesson 6?
-   a) faster compilation  b) reusability — write once, call anywhere  c) no need for variables  d) automatic error correction
+   a) faster compilation  b) reusability, write once, call anywhere  c) no need for variables  d) automatic error correction
 6. The pitfall of `strncpy(target, source, n)` when the source is longer than n:
    a) it crashes  b) it copies nothing  c) it does not add a null terminator  d) it reverses the string
 7. `fmod(7.0, 2.0)` returns:
@@ -795,16 +795,16 @@ All-new items, same cumulative scope weighted to Lessons 4–7. Take it a day or
 8. `toupper('a')` returns:
    a) `'A'`  b) `"A"`  c) 1  d) `'a'`
 
-### Part II — True or False (9–14)
+### Part II, True or False (9–14)
 
-9. `for (i = 0, j = 10; i < j; i++)` — initializing two variables with the comma operator is legal.
+9. `for (i = 0, j = 10; i < j; i++)`, initializing two variables with the comma operator is legal.
 10. A `do-while` statement ends with a semicolon after the condition.
 11. You can copy one array into another with a single assignment: `b = a;`
 12. A local variable is automatically initialized to zero.
 13. `stricmp("BSIT", "bsit")` returns 0.
 14. `abs()` takes a `double` argument.
 
-### Part III — Trace the Code (15–24)
+### Part III, Trace the Code (15–24)
 
 Write the exact output.
 
@@ -885,7 +885,7 @@ while (i++ < 3)
     printf("%d", i);
 ```
 
-### Part IV — Find and Fix the Bug (25–28)
+### Part IV, Find and Fix the Bug (25–28)
 
 State what goes wrong and give the one-line fix.
 
@@ -912,7 +912,7 @@ if (ch == 'a' || 'e')
     printf("vowel");
 ```
 
-### Part V — Fill in the Code (29–30)
+### Part V, Fill in the Code (29–30)
 
 29. Complete the bubble-sort comparison for ASCENDING order:
 ```c
@@ -930,109 +930,109 @@ for (i = 0; i < n; i++)
 $md$, 9);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('a1000001-0001-0001-0001-0000000000e1','activity','Final Mock Exams — Answer Key with Explanations',$md$
-Mark one mock at a time. For every trace you missed, redo it on paper with a variables table before reading the explanation — the retrace teaches more than the answer.
+('a1000001-0001-0001-0001-0000000000e1','activity','Final Mock Exams, Answer Key with Explanations',$md$
+Mark one mock at a time. For every trace you missed, redo it on paper with a variables table before reading the explanation, the retrace teaches more than the answer.
 
 ## Final Mock Exam A
 
-### Part I — Multiple Choice
+### Part I, Multiple Choice
 
 1. **c) `do-while`.** It tests *after* the body. Both `for` and `while` test first and can run zero times.
 2. **c) `float`.** A `switch` works on `int` or `char` only. (d) tempts, but case labels being constant expressions is exactly what IS required.
-3. **b) skips the rest of the current iteration.** Exiting the loop entirely (a) is `break` — the classic swap.
+3. **b) skips the rest of the current iteration.** Exiting the loop entirely (a) is `break`, the classic swap.
 4. **c) 0 to 7.** Size 8 means last index 7. Choosing (b) is the off-by-one this item exists to catch.
-5. **b) returns no value.** `void` says nothing about parameters (c) — `void f(int x)` is perfectly fine.
+5. **b) returns no value.** `void` says nothing about parameters (c), `void f(int x)` is perfectly fine.
 6. **b) 0.** `strcmp` returns 0 for EQUAL strings. Answer (a) tempts because "equal feels like true = 1", but the return convention is negative/zero/positive.
-7. **c) `ceil()`.** Rounds up. `floor()` (a) is the mirror trap — largest integer ≤ num.
-8. **b) the array name is already an address.** That is also why plain variables DO need `&` — scanf always wants addresses.
+7. **c) `ceil()`.** Rounds up. `floor()` (a) is the mirror trap, largest integer ≤ num.
+8. **b) the array name is already an address.** That is also why plain variables DO need `&`, scanf always wants addresses.
 
-### Part II — True or False
+### Part II, True or False
 
 9. **TRUE.** Fall-through is the whole reason `break` exists in a `switch`.
 10. **FALSE.** `while` tests first; 0 is false, so the body never runs. The loop that guarantees one pass is `do-while`.
-11. **TRUE.** A partial initializer zero-fills the remaining elements — a[2], a[3], a[4] are all 0.
+11. **TRUE.** A partial initializer zero-fills the remaining elements, a[2], a[3], a[4] are all 0.
 12. **FALSE.** The function receives a copy; only call by *reference* (an address plus `*`) can modify the caller's variable.
-13. **FALSE.** 4 — `strlen` never counts the `'\0'`.
+13. **FALSE.** 4, `strlen` never counts the `'\0'`.
 14. **TRUE.** `'7'` is a digit character, which is precisely what `isdigit` tests.
 
-### Part III — Trace the Code
+### Part III, Trace the Code
 
-15. **`15`** — s accumulates 1+2+3+4+5. `<=` includes the 5; misreading it as `<` gives the trap answer 10.
-16. **`6 4 2 `** — n prints then drops by 2: 6, 4, 2; at n = 0 the test `0 > 1` fails. Printing the 0 means you tested after printing instead of before.
-17. **`BC`** — x matches `case 3`, prints B, and with no `break` falls through to print C, where the `break` finally stops it. `B` alone ignores fall-through; `BCD` ignores the `break`.
-18. **`0 3 6 9 `** — `continue` skips every i not divisible by 3; 0 counts because 0 % 3 is 0. Leaving out the 0 is the usual miss.
-19. **`18`** — the loop starts at index **1**, so it sums a[1]+a[2]+a[3] = 4+6+8. The trap answer 20 (2+4+6+8) starts at index 0.
-20. **`135`** — the condition tests the INDEX i, not the value: indexes 0, 2, 4 hold 1, 3, 5. Answering 24 (2+4... wrong altogether) or picking even VALUES (2, 4) means you fell into the value-vs-index trap from Lesson 5.
-21. **`5`** — inside out: f(7) → 7 > 5 → 6; then f(6) → 6 > 5 → 5. Stopping after one call gives the trap answer 6.
-22. **`1 11`** — `a` is a copy (x stays 1); `*b` writes through the address (y becomes 11). If you answered `11 11`, reread call by value; `1 1`, reread call by reference.
-23. **`s` contains `"BSIT"`, `strlen(s)` returns `4`** — `strcat` appends onto the existing "BS"; the terminator is never counted by `strlen`.
-24. **`4 5`** — `floor(4.7)` drops to 4; `ceil(4.1)` rises to 5. Swapping them is the standard confusion — floor goes down like the floor, ceil goes up like the ceiling.
+15. **`15`**, s accumulates 1+2+3+4+5. `<=` includes the 5; misreading it as `<` gives the trap answer 10.
+16. **`6 4 2 `**, n prints then drops by 2: 6, 4, 2; at n = 0 the test `0 > 1` fails. Printing the 0 means you tested after printing instead of before.
+17. **`BC`**, x matches `case 3`, prints B, and with no `break` falls through to print C, where the `break` finally stops it. `B` alone ignores fall-through; `BCD` ignores the `break`.
+18. **`0 3 6 9 `**, `continue` skips every i not divisible by 3; 0 counts because 0 % 3 is 0. Leaving out the 0 is the usual miss.
+19. **`18`**, the loop starts at index **1**, so it sums a[1]+a[2]+a[3] = 4+6+8. The trap answer 20 (2+4+6+8) starts at index 0.
+20. **`135`**, the condition tests the INDEX i, not the value: indexes 0, 2, 4 hold 1, 3, 5. Answering 24 (2+4... wrong altogether) or picking even VALUES (2, 4) means you fell into the value-vs-index trap from Lesson 5.
+21. **`5`**, inside out: f(7) → 7 > 5 → 6; then f(6) → 6 > 5 → 5. Stopping after one call gives the trap answer 6.
+22. **`1 11`**, `a` is a copy (x stays 1); `*b` writes through the address (y becomes 11). If you answered `11 11`, reread call by value; `1 1`, reread call by reference.
+23. **`s` contains `"BSIT"`, `strlen(s)` returns `4`**, `strcat` appends onto the existing "BS"; the terminator is never counted by `strlen`.
+24. **`4 5`**, `floor(4.7)` drops to 4; `ceil(4.1)` rises to 5. Swapping them is the standard confusion, floor goes down like the floor, ceil goes up like the ceiling.
 
-### Part IV — Find and Fix the Bug
+### Part IV, Find and Fix the Bug
 
 25. **Infinite loop printing `0` forever.** Without braces, only the `printf` belongs to the `while`; `i++` sits outside and never runs. Fix: wrap both statements in `{ }`.
-26. **It prints `AB`** — case 90 matches, then falls through into case 80. Fix: add `break;` after `printf("A");` (and after "B" for good style).
+26. **It prints `AB`**, case 90 matches, then falls through into case 80. Fix: add `break;` after `printf("A");` (and after "B" for good style).
 27. **Out-of-bounds read.** `i <= 3` accesses `nums[3]`, one past the last valid index (2). Fix: `i < 3`.
 28. **The prototype says `int` but the definition says `void`, and a void function cannot `return a + b;`.** Fix: make the definition `int total(int a, int b)`.
-29. **`temp`** — the saved original of `*a` completes the three-line swap: temp = *a; *a = *b; *b = temp;
-30. **`arr[i] > max`** — strictly greater keeps the first occurrence of the maximum and still finds the largest value.
+29. **`temp`**, the saved original of `*a` completes the three-line swap: temp = *a; *a = *b; *b = temp;
+30. **`arr[i] > max`**, strictly greater keeps the first occurrence of the maximum and still finds the largest value.
 
 ## Final Mock Exam B
 
-### Part I — Multiple Choice
+### Part I, Multiple Choice
 
 1. **b) `while`.** `do-while` (a) always runs once, which rules out (c) too.
-2. **b) constants.** That is why range conditions like `days <= 4` can never be `case` labels — ranges need an if/else-if ladder.
+2. **b) constants.** That is why range conditions like `days <= 4` can never be `case` labels, ranges need an if/else-if ladder.
 3. **b) only the innermost loop.** Escaping both loops (a) needs an extra mechanism; a single `break` never does it.
-4. **b) `sizeof(element) * i`** — straight from the element address formula in Lesson 5.
-5. **b) reusability.** The lesson's advantages are cleaner design, reusability, team development, easier debugging — nothing about speed (a).
-6. **c) it does not add a null terminator** — printing that target as a string then runs past the end. Mentioning this is the lesson's "bonus point" fact.
-7. **c) 1.0** — floating-point remainder of 7 ÷ 2 (7 = 3×2 + 1). Answer (b) 3.0 is the *quotient*, not the remainder.
-8. **a) `'A'`** — a character result, not a string (b) and not a truth value (c) — the is/to confusion in one item.
+4. **b) `sizeof(element) * i`**, straight from the element address formula in Lesson 5.
+5. **b) reusability.** The lesson's advantages are cleaner design, reusability, team development, easier debugging, nothing about speed (a).
+6. **c) it does not add a null terminator**, printing that target as a string then runs past the end. Mentioning this is the lesson's "bonus point" fact.
+7. **c) 1.0**, floating-point remainder of 7 ÷ 2 (7 = 3×2 + 1). Answer (b) 3.0 is the *quotient*, not the remainder.
+8. **a) `'A'`**, a character result, not a string (b) and not a truth value (c), the is/to confusion in one item.
 
-### Part II — True or False
+### Part II, True or False
 
-9. **TRUE.** The comma operator lets `for` initialize (or update) several variables — shown in Lesson 4.
-10. **TRUE.** `} while (condition);` — forgetting that semicolon is Bug 25 in Mock B, so this pair of items should have paid for itself.
+9. **TRUE.** The comma operator lets `for` initialize (or update) several variables, shown in Lesson 4.
+10. **TRUE.** `} while (condition);`, forgetting that semicolon is Bug 25 in Mock B, so this pair of items should have paid for itself.
 11. **FALSE.** Arrays cannot be assigned directly; copy element by element in a loop.
 12. **FALSE.** Locals hold garbage until you assign them; it is GLOBALS (and `static` arrays) that default to zero.
 13. **TRUE.** `stricmp` compares ignoring case, so "BSIT" vs "bsit" are equal → 0. (Turbo C extension, like `strrev`.)
 14. **FALSE.** `abs()` is for `int`; the double version is `fabs()`.
 
-### Part III — Trace the Code
+### Part III, Trace the Code
 
-15. **`4 6`** — passes: (s=1, i=2), (s=3, i=3), (s=6, i=4); then `4 < 4` fails. Note i finishes at 4, not 3 — the increment runs before the test.
-16. **`6`** — the inner loop runs i times per pass: 1 + 2 + 3. This triangle pattern is the standard nested-loop counter.
-17. **`three`** — the switch evaluates `x + 1 = 3` first. Answering "two" means you matched on x instead of the switch expression.
-18. **`15 0`** — a[2] is 15 from the initializer; a[4] was zero-filled because the initializer was partial. "Garbage" is wrong precisely because SOME values were given.
-19. **`2`** — negatives are −2 and −9. Zero is not negative; counting it gives the trap answer 3.
-20. **`24`** — r multiplies 1×2×3×4: this is factorial in disguise (Lesson 6's exercise). Answering 10 means you added instead of multiplied.
-21. **`24`** — 6 doubled through the pointer twice: 12, then 24. If you said 6, the `*` writes did not register — reread call by reference.
-22. **`w` contains `"Exam"`, `strlen(w)` returns `4`** — only w[0] is uppercased; length is unchanged (the terminator is not counted).
-23. **`11.0`** — inside out: `pow(2,3) = 8.0`, `sqrt(9) = 3.0`, sum 11.0, printed with one decimal.
-24. **`123`** — the tricky one. Each test increments i *after* comparing: test 0<3 (i becomes 1) print 1; test 1<3 (i→2) print 2; test 2<3 (i→3) print 3; test 3<3 fails. Answering `012` means you printed before the increment took effect.
+15. **`4 6`**, passes: (s=1, i=2), (s=3, i=3), (s=6, i=4); then `4 < 4` fails. Note i finishes at 4, not 3, the increment runs before the test.
+16. **`6`**, the inner loop runs i times per pass: 1 + 2 + 3. This triangle pattern is the standard nested-loop counter.
+17. **`three`**, the switch evaluates `x + 1 = 3` first. Answering "two" means you matched on x instead of the switch expression.
+18. **`15 0`**, a[2] is 15 from the initializer; a[4] was zero-filled because the initializer was partial. "Garbage" is wrong precisely because SOME values were given.
+19. **`2`**, negatives are −2 and −9. Zero is not negative; counting it gives the trap answer 3.
+20. **`24`**, r multiplies 1×2×3×4: this is factorial in disguise (Lesson 6's exercise). Answering 10 means you added instead of multiplied.
+21. **`24`**, 6 doubled through the pointer twice: 12, then 24. If you said 6, the `*` writes did not register, reread call by reference.
+22. **`w` contains `"Exam"`, `strlen(w)` returns `4`**, only w[0] is uppercased; length is unchanged (the terminator is not counted).
+23. **`11.0`**, inside out: `pow(2,3) = 8.0`, `sqrt(9) = 3.0`, sum 11.0, printed with one decimal.
+24. **`123`**, the tricky one. Each test increments i *after* comparing: test 0<3 (i becomes 1) print 1; test 1<3 (i→2) print 2; test 2<3 (i→3) print 3; test 3<3 fails. Answering `012` means you printed before the increment took effect.
 
-### Part IV — Find and Fix the Bug
+### Part IV, Find and Fix the Bug
 
-25. **Missing semicolon** — a `do-while` must end `while (n != 0);`. Without it the compiler complains at the next line.
-26. **Missing `&` on a single element** — `scores[0]` is a value, not an address. Fix: `scanf("%f", &scores[0]);`. (The no-`&` rule covers the array NAME, not an indexed element.)
-27. **No `return`** — the function computes `s` and throws it away; callers get garbage. Fix: add `return s;`.
-28. **`ch == 'a' || 'e'` is ALWAYS true** — `'e'` is a non-zero value, so the `||` succeeds no matter what ch is. Fix: `ch == 'a' || ch == 'e'`. Each side of `||` needs its own complete comparison.
-29. **`>`** — for ascending order you swap when the left neighbor is BIGGER. Using `<` sorts descending, which is the mirror trap.
-30. **`n - 1 - i`** — check the endpoints: i = 0 reads the last element (n−1), i = n−1 reads the first (0). Endpoint-testing the formula is how you derive it under exam pressure.
+25. **Missing semicolon**, a `do-while` must end `while (n != 0);`. Without it the compiler complains at the next line.
+26. **Missing `&` on a single element**, `scores[0]` is a value, not an address. Fix: `scanf("%f", &scores[0]);`. (The no-`&` rule covers the array NAME, not an indexed element.)
+27. **No `return`**, the function computes `s` and throws it away; callers get garbage. Fix: add `return s;`.
+28. **`ch == 'a' || 'e'` is ALWAYS true**, `'e'` is a non-zero value, so the `||` succeeds no matter what ch is. Fix: `ch == 'a' || ch == 'e'`. Each side of `||` needs its own complete comparison.
+29. **`>`**, for ascending order you swap when the left neighbor is BIGGER. Using `<` sorts descending, which is the mirror trap.
+30. **`n - 1 - i`**, check the endpoints: i = 0 reads the last element (n−1), i = n−1 reads the first (0). Endpoint-testing the formula is how you derive it under exam pressure.
 
 ### Scoring Guide (per 30-item exam)
 
-- **27–30:** ready — do the Rapid Review Sheet once the night before and stop there.
+- **27–30:** ready, do the Rapid Review Sheet once the night before and stop there.
 - **21–26:** trace practice is what you need; redo every Part III item you missed by hand.
 - **Below 21:** go back to the lesson the misses cluster in (usually Lesson 4 or 5), redo its exercises, then retake the other mock cold.
 
 ### Trace Checker
 
-Not convinced by an answer? Retype the item into the playground below and run it. It starts loaded with Mock A item 17 (the switch fall-through) — predict on paper first, then press Run and compare.
+Not convinced by an answer? Retype the item into the playground below and run it. It starts loaded with Mock A item 17 (the switch fall-through), predict on paper first, then press Run and compare.
 $md$, 10, 'c', $code$#include <stdio.h>
 
-/* Trace checker — starts with Final Mock A, item 17.
+/* Trace checker, starts with Final Mock A, item 17.
    Predict the output on paper FIRST, then press Run.
    Swap in any other trace item you want to verify. */
 

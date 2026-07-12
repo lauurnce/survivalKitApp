@@ -1,7 +1,7 @@
 -- ============================================================
--- The Life and Works of Rizal — Modules & Sections
+-- The Life and Works of Rizal, Modules & Sections
 -- Subject ID: 6c302241-54af-4da4-9078-d1c65c1ce6e7
--- 2nd Year, Semester 2 — minor
+-- 2nd Year, Semester 2, minor
 -- 6 lessons. Split: S1+S2 = content (FREE); remaining teaching blocks + drill
 --   = activity (PAID). L1-L5 have 3 content blocks -> 2 free / 2 paid;
 --   L6 has 4 content blocks -> 2 free / 3 paid.
@@ -41,7 +41,7 @@ Understanding nationalism helps explain Rizal's role. He inspired pride and crit
 
 *Ready to apply this? The practice set below walks through exam-style questions with guided answers.*
 $md$, 3),
-('dea97086-e17e-5982-9083-c9a9376b37f9','activity','Practice & Exam Drills — Lesson 1',$md$
+('dea97086-e17e-5982-9083-c9a9376b37f9','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions**
 
 1. What is Republic Act 1425 (the Rizal Law) and why was it enacted?
@@ -84,7 +84,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 ('d2a72c3b-74c2-5b37-94c2-7c1748823e4e','content','Family Background and Childhood',$md$
 José Rizal was born on **June 19, 1861**, in Calamba, Laguna. He was the seventh of 11 children in a middle-class family. His parents, **Don Francisco Mercado** and **Doña Teodora Alonso**, were educated and taught Rizal the value of learning. From a young age, Rizal showed genius in many fields: he learned to speak Tagalog, Spanish, Latin, and other languages as a child; he was an excellent student in history, science, and the arts; and he loved drawing and sketching his surroundings (even making an eye glass out of coconut when he was only 5!).
 
-Rizal's family was well-connected: his older brother **Paciano** introduced him to Filipino patriots and political ideas. The close-knit Mercado family also faced challenges: under Spanish rule, they had to pay high taxes and risked being accused by unfair authorities. These experiences in childhood—seeing injustice and also being nurtured by a loving family—helped shape Rizal's sense of responsibility to his country.
+Rizal's family was well-connected: his older brother **Paciano** introduced him to Filipino patriots and political ideas. The close-knit Mercado family also faced challenges: under Spanish rule, they had to pay high taxes and risked being accused by unfair authorities. These experiences in childhood, seeing injustice and also being nurtured by a loving family, helped shape Rizal's sense of responsibility to his country.
 $md$, 1),
 ('d2a72c3b-74c2-5b37-94c2-7c1748823e4e','content','Education in the Philippines (Ateneo and UST)',$md$
 Rizal's formal education took place in Manila. At age 11, he passed the entrance exam for the **Ateneo Municipal de Manila** (run by Jesuits), where he excelled in Latin, philosophy, and literature, graduating with honors. Later, he enrolled at the **University of Santo Tomas (UST)** to study medicine. Here he first encountered discrimination: Spanish professors often insulted Filipino students and Catholic friars controlled much of campus life. Rizal even wrote a letter protesting unfair fees to the rector of UST.
@@ -98,7 +98,7 @@ His exposure to Europe's freedom helped Rizal develop nationalist ideas. He saw 
 
 *Ready to apply this? The practice set below walks through exam-style questions with step-by-step guidance.*
 $md$, 3),
-('d2a72c3b-74c2-5b37-94c2-7c1748823e4e','activity','Practice & Exam Drills — Lesson 2',$md$
+('d2a72c3b-74c2-5b37-94c2-7c1748823e4e','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions**
 
 1. Name Rizal's parents and describe their influence on him.
@@ -158,7 +158,7 @@ The impact was huge. Filipinos who read *Noli* felt a sense of shared suffering 
 
 *Ready to apply this? The practice set below walks through exam-style questions with step-by-step solutions and analytical prompts.*
 $md$, 3),
-('8d98f980-8131-52bf-a2c0-09abffc87aa6','activity','Practice & Exam Drills — Lesson 3',$md$
+('8d98f980-8131-52bf-a2c0-09abffc87aa6','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions**
 
 1. In what year was *Noli Me Tangere* published, and why was this significant?
@@ -221,7 +221,7 @@ $md$, 2),
 
 *Ready to apply this? The practice set below includes detailed Q&A and scenario analyses.*
 $md$, 3),
-('243cbf27-b3bc-5465-9e7b-f391da3184f9','activity','Practice & Exam Drills — Lesson 4',$md$
+('243cbf27-b3bc-5465-9e7b-f391da3184f9','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions**
 
 1. What is the alter ego of Crisóstomo Ibarra in *El Filibusterismo*, and what is his mission?
@@ -288,7 +288,7 @@ These last writings underscore Rizal's unwavering patriotism and sacrifice. They
 
 *Ready to apply this? The practice set below contains targeted questions and analytical problems to deepen your understanding.*
 $md$, 3),
-('f6fadc56-2224-5b7d-9510-40bc86ccdcd1','activity','Practice & Exam Drills — Lesson 5',$md$
+('f6fadc56-2224-5b7d-9510-40bc86ccdcd1','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. What was Rizal's argument in "The Indolence of the Filipinos"?
@@ -354,7 +354,7 @@ Rizal's example also reminds citizens to value honesty, benevolence, and critica
 
 *Ready to apply this? The final practice set drills key facts and pushes you to analyze Rizal's impact with guided exercises.*
 $md$, 4),
-('aa5af8b0-2bec-5dfc-987d-ca07895784ce','activity','Practice & Exam Drills — Lesson 6',$md$
+('aa5af8b0-2bec-5dfc-987d-ca07895784ce','activity','Practice & Exam Drills, Lesson 6',$md$
 **Review Questions**
 
 1. What was La Liga Filipina and what happened to Rizal because of it?
@@ -392,7 +392,7 @@ $md$, 5);
 
 -- ============================================================
 -- SOURCES
--- Polytechnic University of the Philippines — Instructional Materials for GEED 10013: Life and Works of Rizal
--- Adamson University — HIST 23 Life and Works of Rizal Course Syllabus
--- CHED CMO No. 25 s.2015 — Revised PSG (includes Rizal as a mandated general education course)
+-- Polytechnic University of the Philippines, Instructional Materials for GEED 10013: Life and Works of Rizal
+-- Adamson University, HIST 23 Life and Works of Rizal Course Syllabus
+-- CHED CMO No. 25 s.2015, Revised PSG (includes Rizal as a mandated general education course)
 -- ============================================================

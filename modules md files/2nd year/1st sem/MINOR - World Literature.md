@@ -346,8 +346,8 @@ Choose two works from different regions and write a comparative essay. Your essa
 
 Suggested comparison pairs:
 
-- *War and Peace* and *This Earth of Mankind* — history, nation, and personal life
-- “America” and “Ordinaryong Tao” — political voice and poetic address
-- “The Language of African Literature” and “Where in the World Is the Filipino Writer?” — language, decolonization, and literary visibility
-- “A Mother in a Refugee Camp” and “We Are Many” — the self under pressure
-- *My Name Is Red* and *The Storyteller* — storytelling, culture, and historical memory
+- *War and Peace* and *This Earth of Mankind*, history, nation, and personal life
+- “America” and “Ordinaryong Tao”, political voice and poetic address
+- “The Language of African Literature” and “Where in the World Is the Filipino Writer?”, language, decolonization, and literary visibility
+- “A Mother in a Refugee Camp” and “We Are Many”, the self under pressure
+- *My Name Is Red* and *The Storyteller*, storytelling, culture, and historical memory

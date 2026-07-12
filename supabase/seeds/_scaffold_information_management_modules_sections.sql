@@ -1,7 +1,7 @@
 -- ============================================================
--- Information Management — Modules & Sections
+-- Information Management, Modules & Sections
 -- Subject ID: 20000000-0002-0002-0001-000000000003
--- 2nd Year, Semester 2 — major
+-- 2nd Year, Semester 2, major
 -- 10 lessons. Split: S1+S2 = content (FREE); remaining teaching blocks
 --   (S3, S4) + the Practice & Exam Drills activity = activity (PAID).
 --   Each lesson -> 2 free / 3 paid.
@@ -51,7 +51,7 @@ In practice, most information management systems today use the relational model.
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('9ae38391-0460-5ea5-a8f2-2401ab1b110e','activity','Practice & Exam Drills — Lesson 1',$md$
+('9ae38391-0460-5ea5-a8f2-2401ab1b110e','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions**
 
 1. What is the difference between data and information? Give a local example.
@@ -167,9 +167,9 @@ An Entity-Relationship Diagram (ERD) visually shows entities as boxes and relati
 
 A typical ERD for this would model three tables:
 
-- **STUDENT** — `student_id` (PK), `name`, `program`, `year`
-- **ENROLLMENT** — `enrollment_id` (PK), `student_id` (FK), `course_id` (FK), `semester`, `year`, `grade`
-- **COURSE** — `course_id` (PK), `course_name`, `credits`
+- **STUDENT**, `student_id` (PK), `name`, `program`, `year`
+- **ENROLLMENT**, `enrollment_id` (PK), `student_id` (FK), `course_id` (FK), `semester`, `year`, `grade`
+- **COURSE**, `course_id` (PK), `course_name`, `credits`
 
 A student can enroll in many courses, and each course can have many students; the ENROLLMENT table breaks the many-to-many relationship into two one-to-many links.
 $md$, 2),
@@ -183,7 +183,7 @@ In the relational model, a **primary key** uniquely identifies each record in a 
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('458c437f-cf15-591b-8a21-a0899a839158','activity','Practice & Exam Drills — Lesson 2',$md$
+('458c437f-cf15-591b-8a21-a0899a839158','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions**
 
 1. Define an entity and a relationship in data modeling. Give an example of each.
@@ -209,7 +209,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_languag
 
 Identify the flaw in this design. How would you fix it?
 
-*Solution:* Redundancy — StudentName repeats for each Exam. Fix by separating STUDENT into its own table (StudentID, StudentName), and have the grade table reference StudentID only.
+*Solution:* Redundancy, StudentName repeats for each Exam. Fix by separating STUDENT into its own table (StudentID, StudentName), and have the grade table reference StudentID only.
 
 **Hands-On Exercises** (using the SQL playground)
 
@@ -281,7 +281,7 @@ This design eliminates the repeated instructor and location values, and ensures 
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('b0ace7f9-03ae-5c15-b397-b319d705bc24','activity','Practice & Exam Drills — Lesson 3',$md$
+('b0ace7f9-03ae-5c15-b397-b319d705bc24','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions**
 
 1. What is a functional dependency? Give an example using student records.
@@ -304,7 +304,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_languag
 
 **Hands-On Exercises** (using the SQL playground)
 
-1. Check normalization: query the sample tables and see if any redundancy is obvious. (For example, in Course, the dept_id repeats — but we already have a Department table.)
+1. Check normalization: query the sample tables and see if any redundancy is obvious. (For example, in Course, the dept_id repeats, but we already have a Department table.)
 2. (Bonus) Try inserting a duplicate primary key row into any table (e.g. `INSERT INTO Course VALUES (101, 'Algo2', 3, 1);` twice) and observe the error. Why is this important?
 
 **How to Pass Normalization Topics**
@@ -351,17 +351,17 @@ $md$, 1),
 ('44be57f8-adf1-57d2-80cd-39d62aa91636','content','SQL Data Manipulation Language (DML)',$md$
 DML statements let us manage the data inside tables. The main commands are **INSERT**, **UPDATE**, **DELETE**, and **SELECT** (SELECT is technically a query but used in DML context to retrieve data). Examples:
 
-**INSERT** — Add new rows:
+**INSERT**, Add new rows:
 ```sql
 INSERT INTO Student VALUES (1, 'Ana Lopez', 'BSIT');
 ```
 
-**UPDATE** — Change existing rows:
+**UPDATE**, Change existing rows:
 ```sql
 UPDATE Student SET program = 'BSCS' WHERE student_id = 1;
 ```
 
-**DELETE** — Remove rows:
+**DELETE**, Remove rows:
 ```sql
 DELETE FROM Student WHERE student_id = 1;
 ```
@@ -385,7 +385,7 @@ A typical workflow is: first design the table (DDL), then insert data (DML), and
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('44be57f8-adf1-57d2-80cd-39d62aa91636','activity','Practice & Exam Drills — Lesson 4',$md$
+('44be57f8-adf1-57d2-80cd-39d62aa91636','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions**
 
 1. What is the difference between DDL and DML in SQL? Give an example of each.
@@ -516,7 +516,7 @@ WHERE year > (SELECT AVG(year) FROM Student);
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('21829336-6581-56fb-866e-61c03652d346','activity','Practice & Exam Drills — Lesson 5',$md$
+('21829336-6581-56fb-866e-61c03652d346','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. What does JOIN do in SQL? What is the difference between INNER JOIN and LEFT JOIN?
@@ -585,7 +585,7 @@ WHERE student_id = (SELECT MAX(student_id) FROM Student);
 - For joins, qualify column names with table aliases to avoid ambiguity. Professors might give multiple tables, so always write `table.column`.
 - Practice grouping queries: every column in SELECT must be either aggregated or in GROUP BY.
 - For subqueries, ensure your logic is clear. A common exam pattern is "find X not in Y" or "find X greater than average of Y." Write it out step by step.
-- Know functions like COUNT, SUM, AVG, MIN, MAX by memory — they often appear in questions.
+- Know functions like COUNT, SUM, AVG, MIN, MAX by memory, they often appear in questions.
 $md$, 5, 'sql', $code$-- Same sample database as Lesson 1 (Department, Student, Course, Enrollment).
 CREATE TABLE Department (dept_id INT PRIMARY KEY, dept_name VARCHAR(100));
 CREATE TABLE Student (student_id INT PRIMARY KEY, name VARCHAR(50), program VARCHAR(50), year INT, dept_id INT REFERENCES Department(dept_id));
@@ -633,7 +633,7 @@ If the second update fails (e.g. account 456 doesn't exist), the DBMS will `ROLL
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('b3cfdb35-2b57-59c7-9388-4007215630eb','activity','Practice & Exam Drills — Lesson 6',$md$
+('b3cfdb35-2b57-59c7-9388-4007215630eb','activity','Practice & Exam Drills, Lesson 6',$md$
 **Review Questions**
 
 1. What are the four ACID properties of transactions? Why is each important?
@@ -644,7 +644,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_languag
 
 **[Scenario]** Two transactions run concurrently: T1 reads Account A balance and then updates it; T2 updates Account A balance at the same time. What problem could occur if isolation is at Read Uncommitted?
 
-*Solution:* Dirty read — T1 might see T2's uncommitted change and use it, even if T2 later rolls back.
+*Solution:* Dirty read, T1 might see T2's uncommitted change and use it, even if T2 later rolls back.
 
 **[ACID]** In your own words, what does Durability ensure after a transaction commits?
 
@@ -709,7 +709,7 @@ A **view** is a virtual table defined by a query (e.g. `CREATE VIEW Sophomores A
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('40f4d906-7c40-5024-abb5-a5b883c02237','activity','Practice & Exam Drills — Lesson 7',$md$
+('40f4d906-7c40-5024-abb5-a5b883c02237','activity','Practice & Exam Drills, Lesson 7',$md$
 **Review Questions**
 
 1. Why are indexes used in databases? What is a potential downside?
@@ -788,7 +788,7 @@ Managing information also involves legal rules. The Philippines' **Data Privacy 
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('a7ecc400-acc1-5fb4-a3a0-2698e5f59bab','activity','Practice & Exam Drills — Lesson 8',$md$
+('a7ecc400-acc1-5fb4-a3a0-2698e5f59bab','activity','Practice & Exam Drills, Lesson 8',$md$
 **Review Questions**
 
 1. Describe the stages of the information life cycle. Why is archiving important?
@@ -820,7 +820,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_languag
 - Know the difference between data (content) and metadata (documentation). Clear examples get you credit.
 - Emphasize "why" policies exist (e.g. preventing data loss, ensuring accuracy). Generic answers may lose marks.
 - If given a policy question (e.g. retention period), tie it to standards or laws if you can.
-$md$, 5, 'sql', $code$-- This lesson is conceptual — no SQL is strictly required.
+$md$, 5, 'sql', $code$-- This lesson is conceptual, no SQL is strictly required.
 -- You may still explore the sample database to practice describing metadata:
 CREATE TABLE Department (dept_id INT PRIMARY KEY, dept_name VARCHAR(100));
 CREATE TABLE Student (student_id INT PRIMARY KEY, name VARCHAR(50), program VARCHAR(50), year INT, dept_id INT REFERENCES Department(dept_id));
@@ -856,7 +856,7 @@ $md$, 3),
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('bc4465f2-dd0f-515b-b0e3-6a55a7f04e11','activity','Practice & Exam Drills — Lesson 9',$md$
+('bc4465f2-dd0f-515b-b0e3-6a55a7f04e11','activity','Practice & Exam Drills, Lesson 9',$md$
 **Review Questions**
 
 1. What is the difference between an OLTP database and an OLAP (data warehouse) system?
@@ -867,11 +867,11 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_languag
 
 **[ETL]** An online retailer collects sales data in multiple regional databases. Outline the steps you would take to consolidate this into a single analysis database.
 
-*Solution:* Use ETL — Extract daily sales from each region, Transform currency/units to a common format, Load into a central data warehouse with dimensions like Product, Region.
+*Solution:* Use ETL, Extract daily sales from each region, Transform currency/units to a common format, Load into a central data warehouse with dimensions like Product, Region.
 
 **[Star Schema]** A company's sales fact table includes (SaleID, ProductID, StoreID, Date, Quantity, Amount). List what dimension tables you might create.
 
-*Solution:* Dimensions — Product (ProductID, Name, Category), Store (StoreID, Location, Manager), Date (Date, Month, Quarter, Year), etc.
+*Solution:* Dimensions, Product (ProductID, Name, Category), Store (StoreID, Location, Manager), Date (Date, Month, Quarter, Year), etc.
 
 **[Cube Query]** Explain how you would use an OLAP cube to find total sales per month.
 
@@ -926,7 +926,7 @@ Certain records have mandated retention periods. For example, presidential paper
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('8886ec70-db30-591b-be11-4085b1169cfd','activity','Practice & Exam Drills — Lesson 10',$md$
+('8886ec70-db30-591b-be11-4085b1169cfd','activity','Practice & Exam Drills, Lesson 10',$md$
 **Review Questions**
 
 1. What does the Data Privacy Act (RA 10173) require organizations to do with personal data?
@@ -957,7 +957,7 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_languag
 - Explicitly mention RA 10173 when asked about privacy or security laws in the Philippines. Include key terms (consent, NPC, breach notification).
 - Ethics questions often have "explain what you should do" answers. Show awareness of confidentiality and professional standards.
 - For retention questions, link them to actual laws or regulations if possible. If unsure, say "as per guidelines" to show you recall that such rules exist.
-$md$, 5, 'sql', $code$-- This lesson is conceptual — no SQL is strictly required.
+$md$, 5, 'sql', $code$-- This lesson is conceptual, no SQL is strictly required.
 -- You may still explore the sample Student table to reason about personal data:
 CREATE TABLE Student (student_id INT PRIMARY KEY, name VARCHAR(50), program VARCHAR(50), year INT, dept_id INT);
 INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BSCS',2,1);
@@ -967,8 +967,8 @@ INSERT INTO Student VALUES (1,'Juan dela Cruz','BSIT',3,2),(2,'Maria Santos','BS
 
 -- ============================================================
 -- SOURCES
--- CHED CMO 25 s.2015 — revised policies for BSIT/BSIS/BSCS (Information Management course specification)
--- Polytechnic University of the Philippines — BSIT program description
--- Cavite State University — Information Management (BSIT 2D) course summary
--- Isabela State University — IT221 Information Management syllabus (2nd Sem SY 2023–2024)
+-- CHED CMO 25 s.2015, revised policies for BSIT/BSIS/BSCS (Information Management course specification)
+-- Polytechnic University of the Philippines, BSIT program description
+-- Cavite State University, Information Management (BSIT 2D) course summary
+-- Isabela State University, IT221 Information Management syllabus (2nd Sem SY 2023–2024)
 -- ============================================================

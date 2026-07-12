@@ -1,7 +1,7 @@
 -- ============================================================
--- The Contemporary World — Modules & Sections
+-- The Contemporary World, Modules & Sections
 -- Subject ID: 34687e6e-77e9-4b25-a4d9-8d0fd7c05582
--- 1st/2nd Year, Semester 2 — minor
+-- 1st/2nd Year, Semester 2, minor
 -- 5 lessons. Split: S1+S2 = content (FREE); remaining teaching blocks + drill
 --   = activity (PAID). Paid count follows each lesson's real section count:
 --   L1 -> 2/3; L2-L5 -> 2/4.
@@ -35,7 +35,7 @@ Several key forces drive globalization. **Technological innovation** is a big on
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
 $md$, 4),
-('29fdcab7-f5b8-5523-b943-f966655eec69','activity','Practice & Exam Drills — Lesson 1',$md$
+('29fdcab7-f5b8-5523-b943-f966655eec69','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions**
 
 1. Define globalization in your own words.
@@ -61,7 +61,7 @@ $md$, 4),
 
 *Problem:* Describe one historical period of globalization and its impact on the Philippines.
 
-*Solution:* Step 1: Pick an era, e.g., Spanish colonial era (16th–19th century). Step 2: Describe trade routes (the Manila Galleon connected Manila and Acapulco, Mexico). Step 3: Explain outcomes (exchange of goods: Philippine sugar and spices were exported; Mexico's silver came in, also cultural exchange—mestizo culture, Catholicism brought from Spain). Step 4: Connect to today (legacy of Catholicism, Filipino cuisine influences like use of tomatoes). Step 5: Show pattern: global connection brought economic and cultural changes to the Philippines.
+*Solution:* Step 1: Pick an era, e.g., Spanish colonial era (16th–19th century). Step 2: Describe trade routes (the Manila Galleon connected Manila and Acapulco, Mexico). Step 3: Explain outcomes (exchange of goods: Philippine sugar and spices were exported; Mexico's silver came in, also cultural exchange, mestizo culture, Catholicism brought from Spain). Step 4: Connect to today (legacy of Catholicism, Filipino cuisine influences like use of tomatoes). Step 5: Show pattern: global connection brought economic and cultural changes to the Philippines.
 
 **Hands-On Exercise**
 
@@ -97,7 +97,7 @@ Globalization doesn't mean all countries are equal. **International relations** 
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
 $md$, 5),
-('c6ba1766-bc83-5306-879c-ff88e833e684','activity','Practice & Exam Drills — Lesson 2',$md$
+('c6ba1766-bc83-5306-879c-ff88e833e684','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions**
 
 1. What is a multinational corporation? Give an example in the Philippines.
@@ -159,7 +159,7 @@ In recent decades, several **"emerging economies"** (like China, India, Brazil, 
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
 $md$, 5),
-('f72e1372-aea9-5c3f-915d-3c8b054522cd','activity','Practice & Exam Drills — Lesson 3',$md$
+('f72e1372-aea9-5c3f-915d-3c8b054522cd','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions**
 
 1. Explain the terms "Global North" and "Global South." Where does the Philippines fit?
@@ -221,7 +221,7 @@ Global issues like climate change, pandemics, or human rights connect people wor
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
 $md$, 5),
-('d9f734ea-286e-5602-88f2-768603d69c51','activity','Practice & Exam Drills — Lesson 4',$md$
+('d9f734ea-286e-5602-88f2-768603d69c51','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions**
 
 1. Define "glocalization" and give an example involving the Philippines.
@@ -283,7 +283,7 @@ The culmination of The Contemporary World is understanding one's role as a **glo
 
 *Ready to apply this? The practice set below walks through exam-style problems with step-by-step solutions.*
 $md$, 5),
-('f28eaacf-7bb3-520b-8de8-9a078649b220','activity','Practice & Exam Drills — Lesson 5',$md$
+('f28eaacf-7bb3-520b-8de8-9a078649b220','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. What is a "global city"? Name one characteristic and an example.
@@ -326,10 +326,10 @@ $md$, 6);
 
 -- ============================================================
 -- SOURCES
--- Ateneo de Manila University — SocSci 12 The Contemporary World (course syllabus)
--- Polytechnic University of the Philippines — GEED The Contemporary World (course outline)
--- Far Eastern University — General Education curriculum (The Filipino in the Contemporary World)
--- Adamson University — The Contemporary World (soc sci course guide)
--- De La Salle University — GEWORLD The Contemporary World (course syllabus)
--- CHED CMO No. 25, s.2015 — The Contemporary World (course description and outline)
+-- Ateneo de Manila University, SocSci 12 The Contemporary World (course syllabus)
+-- Polytechnic University of the Philippines, GEED The Contemporary World (course outline)
+-- Far Eastern University, General Education curriculum (The Filipino in the Contemporary World)
+-- Adamson University, The Contemporary World (soc sci course guide)
+-- De La Salle University, GEWORLD The Contemporary World (course syllabus)
+-- CHED CMO No. 25, s.2015, The Contemporary World (course description and outline)
 -- ============================================================

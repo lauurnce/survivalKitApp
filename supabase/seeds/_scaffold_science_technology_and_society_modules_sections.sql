@@ -1,7 +1,7 @@
 -- ============================================================
--- Science, Technology and Society — Modules & Sections
+-- Science, Technology and Society, Modules & Sections
 -- Subject ID: 2ffc307f-4e05-4ef3-a033-1f6b3ed200d9
--- 1st Year, Semester 2 — minor
+-- 1st Year, Semester 2, minor
 -- 5 lessons. Each has 4 content blocks + 1 Practice & Exam Drills.
 --   Split: S1+S2 = content (FREE); remaining teaching blocks + drill = activity
 --   (PAID) -> 2 free / 3 paid every lesson.
@@ -39,7 +39,7 @@ A local example: the advent of mobile money apps (a technology) was enabled by s
 
 *Ready to apply this? The practice set below includes example questions and reflections on how science and tech influence society.*
 $md$, 3),
-('0dc1d96d-33be-59fe-8ccb-32a0d19301fb','activity','Practice & Exam Drills — Lesson 1',$md$
+('0dc1d96d-33be-59fe-8ccb-32a0d19301fb','activity','Practice & Exam Drills, Lesson 1',$md$
 **Review Questions**
 
 1. Define science, technology, and society in your own words.
@@ -89,7 +89,7 @@ The Philippines contributed to S&T history too. Filipino scientists and engineer
 
 *Ready to apply this? The practice set below includes timeline exercises and cause-effect analyses of tech milestones.*
 $md$, 4),
-('9c0b9c7b-9380-567e-a5d0-f9b993976d69','activity','Practice & Exam Drills — Lesson 2',$md$
+('9c0b9c7b-9380-567e-a5d0-f9b993976d69','activity','Practice & Exam Drills, Lesson 2',$md$
 **Review Questions**
 
 1. List one major invention from the Industrial Revolution and its effect on society.
@@ -130,17 +130,17 @@ INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
 Science and technology are engines of national development. They create better industries (e.g., manufacturing electronics, call centers) and higher-paying jobs. For example, advances in agricultural science (like new rice strains from IRRI) helped boost Filipino food production, feeding millions. Technology enables modern infrastructure: building bridges, roads, ports, and telecommunications networks relies on engineering and materials science. The **Department of Science and Technology (DOST)** in the Philippines promotes research (like disaster-resilient buildings) that protects and uplifts communities. Emphasize: when a country invests in science (education, research labs) and technology (factories, digital connectivity), its economy and people's quality of life improve.
 $md$, 1),
 ('95967eae-8e5f-54e6-9249-68fbae92a030','content','Science in Health, Education, and Society',$md$
-Scientific progress directly benefits public health: Filipinos now live longer because vaccines and medicines combat diseases (smallpox, polio, dengue). For instance, the development and local production of the measles vaccine greatly reduced child mortality. Education-wise, science promotes innovation: science-based curricula (physics, biology) train future engineers and doctors. Society adapts as well: medical devices (X-ray, ECG machines) in Philippine hospitals reflect global scientific advances. In daily life, technology like refrigeration and the internet has changed homes and workplaces. Students should recognize that nation-building involves lifting living standards through science (better healthcare, nutrition) and making knowledge accessible (libraries, internet access) — all science-driven developments.
+Scientific progress directly benefits public health: Filipinos now live longer because vaccines and medicines combat diseases (smallpox, polio, dengue). For instance, the development and local production of the measles vaccine greatly reduced child mortality. Education-wise, science promotes innovation: science-based curricula (physics, biology) train future engineers and doctors. Society adapts as well: medical devices (X-ray, ECG machines) in Philippine hospitals reflect global scientific advances. In daily life, technology like refrigeration and the internet has changed homes and workplaces. Students should recognize that nation-building involves lifting living standards through science (better healthcare, nutrition) and making knowledge accessible (libraries, internet access), all science-driven developments.
 $md$, 2),
 ('95967eae-8e5f-54e6-9249-68fbae92a030','activity','Government Initiatives and Policies',$md$
-The Philippine government creates policies to integrate S&T with development goals. Examples: laws that fund science education and research, and programs like **One Town, One Product** that promote local technology-based industries. The **Philippine Innovation Act** encourages R&D in high-tech fields. Government science institutions like **PAGASA** (weather service) and **NAMRIA** (maps, geodesy) use technology to serve communities (e.g., weather forecasts for farmers). Highlight: Nation-building isn't just economics; it's also environmental and social—S&T policies address climate adaptation (like building typhoon shelters) and sustainable development. Students should be aware of these frameworks as part of the "big picture" of STS in the Philippines.
+The Philippine government creates policies to integrate S&T with development goals. Examples: laws that fund science education and research, and programs like **One Town, One Product** that promote local technology-based industries. The **Philippine Innovation Act** encourages R&D in high-tech fields. Government science institutions like **PAGASA** (weather service) and **NAMRIA** (maps, geodesy) use technology to serve communities (e.g., weather forecasts for farmers). Highlight: Nation-building isn't just economics; it's also environmental and social, S&T policies address climate adaptation (like building typhoon shelters) and sustainable development. Students should be aware of these frameworks as part of the "big picture" of STS in the Philippines.
 $md$, 3),
 ('95967eae-8e5f-54e6-9249-68fbae92a030','activity','Local Innovations and Challenges',$md$
 Filipinos have contributed their own innovations. For instance, **Gavino Trono's** work in marine science advanced seaweed farming, benefiting coastal communities. In tech, local companies developed OFW-focused apps for remittances. At the same time, challenges remain: many bright Filipino scientists move abroad (**"brain drain"**), and R&D funding is low compared to neighboring countries. Infrastructure gaps (like slow internet in rural areas) show uneven tech adoption. Studying STS includes these issues: how can the Philippines harness S&T for all? For example, e-learning platforms expanded during COVID to reach remote areas, showing both innovation and the need for better tech access. Understanding these successes and hurdles helps students think critically about using science and tech to solve national problems.
 
 *Ready to apply this? The practice set below includes scenario questions on Philippine S&T policies and local innovation.*
 $md$, 4),
-('95967eae-8e5f-54e6-9249-68fbae92a030','activity','Practice & Exam Drills — Lesson 3',$md$
+('95967eae-8e5f-54e6-9249-68fbae92a030','activity','Practice & Exam Drills, Lesson 3',$md$
 **Review Questions**
 
 1. Name one Philippine law or agency that promotes science and explain its purpose.
@@ -191,7 +191,7 @@ Not everyone benefits equally from technology. **"Digital divide"** refers to ga
 
 *Ready to apply this? The practice set below has scenarios on social media ethics and case studies on e-payments.*
 $md$, 4),
-('662a726b-5cd6-5445-80c0-1424d009453d','activity','Practice & Exam Drills — Lesson 4',$md$
+('662a726b-5cd6-5445-80c0-1424d009453d','activity','Practice & Exam Drills, Lesson 4',$md$
 **Review Questions**
 
 1. What is the "digital divide"? Give one example from a Philippine context.
@@ -242,7 +242,7 @@ Medical science and health technologies have immense social impact. Vaccination 
 
 *Ready to apply this? The practice set below has case studies on climate action and ethical dilemmas, plus disaster response planning scenarios.*
 $md$, 4),
-('7db57f56-5374-5d53-8d61-b7adad07b83e','activity','Practice & Exam Drills — Lesson 5',$md$
+('7db57f56-5374-5d53-8d61-b7adad07b83e','activity','Practice & Exam Drills, Lesson 5',$md$
 **Review Questions**
 
 1. Give one example of how technology can help reduce environmental damage in the Philippines.
@@ -277,9 +277,9 @@ $md$, 5);
 
 -- ============================================================
 -- SOURCES
--- City of Malabon University — Science, Technology and Society course syllabus
--- Polytechnic University of the Philippines — Science and Technology (Enhanced) course outline
--- Far Eastern University — Science, Technology and Society module facilitation guide (GED0104)
--- CHED — Science, Technology and Society GE course description (CMO 20, s.2013)
--- CHED CMO No. 25, s.2015 — PSGs for BSIT programs
+-- City of Malabon University, Science, Technology and Society course syllabus
+-- Polytechnic University of the Philippines, Science and Technology (Enhanced) course outline
+-- Far Eastern University, Science, Technology and Society module facilitation guide (GED0104)
+-- CHED, Science, Technology and Society GE course description (CMO 20, s.2013)
+-- CHED CMO No. 25, s.2015, PSGs for BSIT programs
 -- ============================================================
