@@ -3,35 +3,30 @@
 @tailwind utilities;
 
 :root {
-  --color-paper: #F7F5F3;
-  --color-ink: #1A1F23;
-  --color-ink-muted: #6B6F75;
-  --color-ink-faint: #A8ADB5;
-  --color-accent: #E0492B;
-  --color-navy: #1A1A1A;
-  --color-taupe: #BDB9B2;
+  --color-paper: 247 245 243;
+  --color-ink: 26 31 35;
+  --color-ink-muted: 107 111 117;
+  --color-ink-faint: 168 173 181;
+  --color-accent: 224 73 43;
+  --color-accent-dark: 184 56 32;
+  --color-navy: 26 26 26;
+  --color-taupe: 189 185 178;
 }
 
 .dark {
-  --color-paper: #1A1F23;
-  --color-ink: #F7F5F3;
-  --color-ink-muted: #A8ADB5;
-  --color-ink-faint: #6B6F75;
-  --color-accent: #E0492B;
-  --color-navy: #F0EDE9;
-  --color-taupe: #4A4740;
-}
-
-.dark ::-webkit-scrollbar-track {
-  background: #1A1F23;
-}
-.dark ::-webkit-scrollbar-thumb {
-  background: #6B6F75;
+  --color-paper: 26 31 35;
+  --color-ink: 247 245 243;
+  --color-ink-muted: 168 173 181;
+  --color-ink-faint: 107 111 117;
+  --color-accent: 224 73 43;
+  --color-accent-dark: 184 56 32;
+  --color-navy: 240 237 233;
+  --color-taupe: 74 71 64;
 }
 
 html {
-  background-color: var(--color-paper);
-  color: var(--color-ink);
+  background-color: rgb(var(--color-paper));
+  color: rgb(var(--color-ink));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -51,7 +46,7 @@ a, button, input, select, textarea {
 
 /* Selection color */
 ::selection {
-  background-color: var(--color-accent);
+  background-color: rgb(var(--color-accent));
   color: white;
 }
 
@@ -60,10 +55,10 @@ a, button, input, select, textarea {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-paper);
+  background: rgb(var(--color-paper));
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-ink-faint);
+  background: rgb(var(--color-ink-faint));
   border-radius: 0;
 }
 

@@ -10,14 +10,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        paper: "#F7F5F3",
-        ink: "#1A1F23",
-        "ink-muted": "#6B6F75",
-        "ink-faint": "#A8ADB5",
-        accent: "#E0492B",
-        "accent-dark": "#B83820",
-        navy: "#1A1A1A",
-        taupe: "#BDB9B2",
+        paper: "rgb(var(--color-paper) / <alpha-value>)",
+        ink: "rgb(var(--color-ink) / <alpha-value>)",
+        "ink-muted": "rgb(var(--color-ink-muted) / <alpha-value>)",
+        "ink-faint": "rgb(var(--color-ink-faint) / <alpha-value>)",
+        accent: "rgb(var(--color-accent) / <alpha-value>)",
+        "accent-dark": "rgb(var(--color-accent-dark) / <alpha-value>)",
+        navy: "rgb(var(--color-navy) / <alpha-value>)",
+        taupe: "rgb(var(--color-taupe) / <alpha-value>)",
       },
       fontFamily: {
         serif: ["var(--font-fraunces)", "Georgia", "serif"],
