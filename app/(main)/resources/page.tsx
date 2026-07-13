@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { ReviewQuiz } from "@/components/account/ReviewQuiz";
+
+// Session-aware (the review quiz is gated on sign-in) but still public —
+// anonymous visitors are never redirected away.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Resources",
@@ -28,7 +33,9 @@ const CARDS: ResourceCard[] = [
   },
 ];
 
-export default function ResourcesPage() {
+export default async function ResourcesPage() {
+  const userId = await getCurrentUserId();
+
   return (
     <main className="mx-auto max-w-wide px-4 sm:px-8 py-12 space-y-10">
       <header className="space-y-2">
@@ -56,7 +63,21 @@ export default function ResourcesPage() {
           <p className="label-sm">Review</p>
           <h2 className="font-serif text-lg text-ink">Quiz yourself on finished modules</h2>
         </div>
-        <ReviewQuiz />
+        {userId ? (
+          <ReviewQuiz />
+        ) : (
+          <div className="rounded-xl border border-taupe/30 p-6 space-y-3">
+            <p className="text-sm text-ink-muted">
+              Sign in to quiz yourself on the modules you&apos;ve finished.
+            </p>
+            <Link
+              href="/login?next=/resources"
+              className="inline-block text-sm text-accent underline underline-offset-2 hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            >
+              Sign in &rarr;
+            </Link>
+          </div>
+        )}
       </section>
     </main>
   );
