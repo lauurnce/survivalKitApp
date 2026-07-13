@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 const WIDTH = 1080;
 const HEIGHT = 1920;
 const VERMILLION = "#E0492B";
-const SHADOW = "0 2px 12px rgba(0,0,0,0.5)";
+const SHADOW = "0 2px 6px rgba(0,0,0,0.55), 0 4px 24px rgba(0,0,0,0.35)";
 
 // Fonts load once per server instance, not per request.
 const fontsPromise = Promise.all([
@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
               fontSize: 360,
               lineHeight: 0.95,
               color: VERMILLION,
-              textShadow: "0 6px 32px rgba(0,0,0,0.45)",
+              textShadow: "0 4px 12px rgba(0,0,0,0.5), 0 8px 40px rgba(0,0,0,0.35)",
             }}
           >
             {count}
