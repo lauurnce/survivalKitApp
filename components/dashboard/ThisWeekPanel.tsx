@@ -2,31 +2,10 @@
 import Link from "next/link";
 import type { Recommendation } from "@/lib/dashboard";
 import { continueHref } from "@/lib/dashboard";
+import { StatusChip } from "./StatusChip";
 
 interface Props {
   recs: Recommendation[];
-}
-
-function StatusChip({ status }: { status: Recommendation["status"] }) {
-  if (status === "in-progress") {
-    return (
-      <span className="rounded bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
-        In progress
-      </span>
-    );
-  }
-  if (status === "done") {
-    return (
-      <span className="rounded border border-taupe/40 px-2 py-0.5 text-xs text-ink-muted">
-        Done
-      </span>
-    );
-  }
-  return (
-    <span className="rounded border border-taupe/40 px-2 py-0.5 text-xs text-ink-muted">
-      Ready to start
-    </span>
-  );
 }
 
 export function ThisWeekPanel({ recs }: Props) {
