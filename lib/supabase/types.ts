@@ -59,9 +59,32 @@ export interface Database {
         Update: Partial<{ label: string; sort_order: number; coming_soon: boolean }>;
       };
       subjects: {
-        Row: { id: string; year_id: string; title: string; slug: string; sort_order: number };
-        Insert: { id?: string; year_id: string; title: string; slug: string; sort_order: number };
-        Update: Partial<{ year_id: string; title: string; slug: string; sort_order: number }>;
+        Row: {
+          id: string;
+          year_id: string;
+          title: string;
+          slug: string;
+          sort_order: number;
+          semester: number;
+          kind: "major" | "minor";
+        };
+        Insert: {
+          id?: string;
+          year_id: string;
+          title: string;
+          slug: string;
+          sort_order: number;
+          semester?: number;
+          kind?: "major" | "minor";
+        };
+        Update: Partial<{
+          year_id: string;
+          title: string;
+          slug: string;
+          sort_order: number;
+          semester: number;
+          kind: "major" | "minor";
+        }>;
       };
       modules: {
         Row: { id: string; subject_id: string; title: string; slug: string; sort_order: number };
@@ -107,6 +130,7 @@ export interface Database {
           id: string;
           module_id: string;
           device_id: string;
+          user_id: string | null;
           gcash_ref: string;
           status: UnlockStatus;
           amount: number;
@@ -116,6 +140,7 @@ export interface Database {
           id?: string;
           module_id: string;
           device_id: string;
+          user_id?: string | null;
           gcash_ref: string;
           status?: UnlockStatus;
           amount: number;
@@ -127,6 +152,7 @@ export interface Database {
         Row: {
           id: string;
           device_id: string;
+          user_id: string | null;
           year_id: string;
           subject_id: string | null;
           paymongo_link_id: string;
@@ -137,6 +163,7 @@ export interface Database {
         Insert: {
           id?: string;
           device_id: string;
+          user_id?: string | null;
           year_id: string;
           subject_id?: string | null;
           paymongo_link_id: string;
@@ -151,6 +178,7 @@ export interface Database {
           id: string;
           paymongo_link_id: string;
           device_id: string;
+          user_id: string | null;
           year_id: string;
           subject_id: string | null;
           amount: number;
@@ -162,6 +190,7 @@ export interface Database {
           id?: string;
           paymongo_link_id: string;
           device_id: string;
+          user_id?: string | null;
           year_id: string;
           subject_id?: string | null;
           amount: number;
@@ -206,11 +235,13 @@ export interface Database {
       module_progress: {
         Row: {
           device_id: string;
+          user_id: string | null;
           module_id: string;
           completed_at: string;
         };
         Insert: {
           device_id: string;
+          user_id?: string | null;
           module_id: string;
           completed_at?: string;
         };
