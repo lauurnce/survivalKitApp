@@ -83,8 +83,12 @@ export function ShareProgressCard({
         await navigator.share({ files: [file] });
         void logEvent("share_card_share", { subject_id: subjectId, module_id: moduleId });
       }
-    } catch {
-      // User cancelled the share sheet — keep the dialog open, Download remains.
+    } catch (err) {
+      // User cancel (AbortError) stays silent; a real failure (card fetch,
+      // blob conversion) must at least be visible in the console.
+      if (!(err instanceof DOMException && err.name === "AbortError")) {
+        console.error("share card failed:", err);
+      }
     } finally {
       setSharing(false);
     }
