@@ -60,6 +60,11 @@ const pyodideWorkerHeaders = [
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@supabase/supabase-js", "@supabase/auth-js", "@vercel/sandbox"],
+  // The share-card OG route reads these at runtime with fs — without this,
+  // Vercel's output tracing would omit them and the route 500s in prod only.
+  outputFileTracingIncludes: {
+    "/api/card/progress": ["./assets/fonts/**/*"],
+  },
   async headers() {
     return [
       // Worker-specific CSP must come first so its Content-Security-Policy wins
