@@ -1,8 +1,10 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
+import Image from "next/image";
 import { GENDERS, PATHWAYS, type Profile } from "@/lib/profile";
 import { saveProfileAction, type ProfileFormState } from "@/app/account/actions";
+import { universityImagePath } from "@/lib/universities";
 import { UniversityCombobox } from "./UniversityCombobox";
 
 const inputClass =
@@ -165,7 +167,17 @@ export function ProfileCard({ profile }: { profile: Profile | null }) {
   return (
     <section>
       {profile ? (
-        <div className="rounded-xl border border-taupe/30 bg-taupe/5 p-4 space-y-3">
+        <div className="rounded-xl border border-taupe/30 bg-taupe/5 overflow-hidden">
+          <div className="relative aspect-[16/9] w-full bg-taupe/10">
+            <Image
+              src={universityImagePath(profile.university)}
+              alt={profile.university || "University landmark"}
+              fill
+              className="object-cover"
+              sizes="256px"
+            />
+          </div>
+          <div className="p-4 space-y-3">
           <div className="flex items-start justify-between gap-2">
             <div>
               <h2 className="font-serif text-lg text-ink leading-snug">
@@ -203,6 +215,7 @@ export function ProfileCard({ profile }: { profile: Profile | null }) {
               ))}
             </div>
           )}
+          </div>
         </div>
       ) : (
         <div className="rounded-xl border border-dashed border-taupe/50 p-4 text-center space-y-2">

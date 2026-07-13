@@ -48,3 +48,64 @@ describe("ProfileCard edit modal", () => {
     expect(input.value).toBe("University of Santo Tomas");
   });
 });
+
+describe("ProfileCard landmark banner", () => {
+  it("renders the matched university's landmark image when populated", () => {
+    render(
+      <ProfileCard
+        profile={{
+          firstName: "Juan",
+          lastName: "Dela Cruz",
+          age: null,
+          gender: null,
+          university: "University of Santo Tomas",
+          major: null,
+          pathways: [],
+        }}
+      />
+    );
+    const img = screen.getByRole("img", { name: /university of santo tomas/i });
+    expect(img).toHaveAttribute("src", expect.stringContaining("ust"));
+  });
+
+  it("renders the default landmark image when university is unmatched", () => {
+    render(
+      <ProfileCard
+        profile={{
+          firstName: "Juan",
+          lastName: "Dela Cruz",
+          age: null,
+          gender: null,
+          university: "Cavite State University",
+          major: null,
+          pathways: [],
+        }}
+      />
+    );
+    const img = screen.getByRole("img", { name: /cavite state university/i });
+    expect(img).toHaveAttribute("src", expect.stringContaining("default"));
+  });
+
+  it("renders the default landmark image when university is null", () => {
+    render(
+      <ProfileCard
+        profile={{
+          firstName: "Juan",
+          lastName: "Dela Cruz",
+          age: null,
+          gender: null,
+          university: null,
+          major: null,
+          pathways: [],
+        }}
+      />
+    );
+    const img = screen.getByRole("img", { name: /university landmark/i });
+    expect(img).toHaveAttribute("src", expect.stringContaining("default"));
+  });
+
+  it("renders no landmark image in the empty/no-profile state", () => {
+    render(<ProfileCard profile={null} />);
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+});
