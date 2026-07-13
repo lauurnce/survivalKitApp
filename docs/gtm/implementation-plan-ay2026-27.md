@@ -1,7 +1,9 @@
 # 🛠 Implementation Plan — GTM Calendar AY 2026–27
 
-**Compiled July 13, 2026 · MVP stage · web-first**
+**Compiled July 13, 2026 · MVP stage · web-first · last status update July 14, 2026**
 Companion to [academic-calendars-ay2026-27.md](academic-calendars-ay2026-27.md) and [user-personas-icp.md](user-personas-icp.md).
+
+**Status so far:** Track C started ahead of schedule — the Progress Card (card #2) shipped to production July 13 with share/download tracking live (see Track C for details). Tracks A, B, D, E not yet started.
 
 **Operating principle:** every phase must move one of three numbers — (1) teaser→click rate, (2) organic sales, (3) MRR vs. infra burn. Anything that doesn't move one of these waits.
 
@@ -56,7 +58,7 @@ Sequence is deliberately **manual-first**: sell one block by hand before buildin
 5. **B5 (Jul 24): Member-facing touch (half day).** Badge on subject page: "Unlocked for [class name] 🎓" — social proof inside the section, and the reason a rival section's student asks their own rep to buy.
 6. **B6 (Jul 25–31): First sale attempt.** Offer to the warmest channels: the 82-waitlist + 92 accounts (see Phase 1 email — a teaser line goes in early), and any known class-rep contact. **Success = 1 paying class before Aug 10.** If zero bites by Aug 15 despite the freshman wave, the price or the pitch is wrong — run 3 Messenger interviews with reps before touching code again.
 
-### Track C — PLG share cards ("Strava for studying") (est. 3 days, Jul 27–29)
+### Track C — PLG share cards ("Strava for studying") (est. 3 days, Jul 27–29) — **STARTED EARLY; card #2 LIVE Jul 13**
 
 **The catalog — what's downloadable as a story-format PNG (1080×1920, 9:16) + square (1080×1080), all with logo watermark + QR/short-link:**
 
@@ -71,11 +73,12 @@ Sequence is deliberately **manual-first**: sell one block by hand before buildin
 | 7 | **Class Card** (rep-only) | Weekly, from rep dashboard | "BSIT 1-A finished 212 modules this week · Top class in CP1" | Inter-section rivalry — sells blocks to *other* sections |
 
 **Design & build steps:**
-1. **C1 (Jul 27):** Card design system: brand paper/ink/vermillion, Fraunces display numbers, logo wordmark bottom-right + short-link/QR (`bsitkit.app/s/xxxx` style). One template layout, 7 content variants. (Logo is "future" — ship v1 with the text wordmark; swap the asset later, cards are generated so old shares keep the old mark, fine.)
-2. **C2 (Jul 27–28):** Renderer: `@vercel/og` (satori) route — `/api/card/[type]` returns PNG. Server-side = consistent fonts, no canvas quirks, and the URL itself is shareable.
-3. **C3 (Jul 28–29):** Ship cards **#1 and #2 only** for MVP (quiz score + module completion — they trigger on existing events). "Share your score" button on the quiz-result screen: Web Share API on mobile (native share sheet → IG/TikTok/FB story), download-PNG fallback on desktop. Log `share_card_click` + `share_card_download` events (check the CHECK constraint again).
-4. **C4 (defer):** Cards #3–#7 ship with Phase 1/2 as their triggers become real (streaks need streak tracking; readiness needs the exam-date table; class card ships with rep dashboard B4 if time allows).
-5. **Success metric:** ≥5% of quiz completions produce a share action by Aug 31; ≥3% of new devices arrive via card short-links (utm) by Sep 30.
+1. ✅ **C1 (DONE Jul 13):** Card design system shipped — with one deliberate change from the original spec: the card is a **transparent-background story sticker** (Strava-style, drops onto the student's own photo) instead of a paper-background card. White text with shadow halos, vermillion Fraunces display number, text wordmark + domain bottom-center. No QR/short-link in v1 (plain domain text; short-link domain still future).
+2. ✅ **C2 (DONE Jul 13):** Renderer live — `GET /api/card/progress` (next/og/satori), transparent 1080×1920 PNG, pure function of query params, rate-limited 30/min/IP, immutable-cached. Param contract in `lib/shareCard.ts`; fonts repo-bundled (satori can't use next/font or WOFF2). Square 1080×1080 variant deferred.
+3. 🔶 **C3 (PARTIAL — card #2 DONE Jul 13, card #1 NOT started):** Progress/Module-Completion card is live with two entry points: completion-moment snackbar on the done-toggle (both reader pages) and a persistent "✦ Share progress" button on subject pages. Web Share API on mobile, download fallback on desktop. Events `share_card_open`/`share_card_share`/`share_card_download` live end-to-end (CHECK constraint widened to 13 types, verified against the live DB). **Remaining: Quiz Score card (#1)** — blocked on a design choice: quiz scores aren't persisted server-side today, so #1 either trusts URL params or needs score persistence first.
+4. **C4 (defer, unchanged):** Cards #3–#7 ship with Phase 1/2 as their triggers become real (streaks need streak tracking; readiness needs the exam-date table; class card ships with rep dashboard B4 if time allows).
+5. **Success metric (now measurable):** ≥5% of module completions produce a share action by Aug 31 (query: `select event_type, count(*) from events where event_type like 'share_card_%' group by 1` vs completions); ≥3% of new devices arrive via card short-links (utm) by Sep 30 — needs the short-link/utm piece, not built yet.
+6. **Follow-ups logged (non-blocking):** real-phone IG-story share test still to do; dialog Escape-key/focus-trap a11y; desktop Share button can silently no-op where `canShare({files})` fails. Engineering ledger: `.superpowers/sdd/progress.md`.
 
 ### Track D — Freshman Survival Guide page (1 day, Jul 30)
 
@@ -91,7 +94,7 @@ Sequence is deliberately **manual-first**: sell one block by hand before buildin
 
 - [ ] Teaser CTR ≥ 6% (10% is the stretch)
 - [ ] Block flow live end-to-end: code join + rep dashboard v1 + manual payment path
-- [ ] Share cards #1–#2 live with share/download tracking
+- [ ] Share cards #1–#2 live with share/download tracking — **halfway: card #2 live with tracking (Jul 13); card #1 (quiz score) still open**
 - [ ] Survival guide live with UTM links
 - [ ] ≥1 block sale closed or 3 rep conversations in progress
 
