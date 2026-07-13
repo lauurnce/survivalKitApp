@@ -115,3 +115,25 @@ describe("POST /api/events — insert error visibility", () => {
     expect(logged).toContain("events_event_type_check");
   });
 });
+
+describe("POST /api/events — share card event types", () => {
+  it("accepts the three share_card_* types", async () => {
+    for (const event_type of ["share_card_open", "share_card_share", "share_card_download"]) {
+      const res = await POST(
+        makeReq({
+          device_id: DEVICE,
+          event_type,
+          subject_id: "11111111-2222-3333-4444-555555555555",
+        })
+      );
+      const json = await res.json();
+      expect(json.ok, `${event_type} should be accepted`).toBe(true);
+    }
+    expect(inserts).toHaveLength(3);
+  });
+
+  it("still rejects unknown event types", async () => {
+    const res = await POST(makeReq({ device_id: DEVICE, event_type: "share_card_bogus" }));
+    expect(res.status).toBe(400);
+  });
+});
