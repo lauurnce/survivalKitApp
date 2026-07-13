@@ -77,7 +77,9 @@ export function ShareProgressCard({
     if (!cardUrl || sharing) return;
     setSharing(true);
     try {
-      const blob = await (await fetch(cardUrl)).blob();
+      const res = await fetch(cardUrl);
+      if (!res.ok) throw new Error(`card fetch failed: ${res.status}`);
+      const blob = await res.blob();
       const file = new File([blob], filename, { type: "image/png" });
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file] });
@@ -102,7 +104,10 @@ export function ShareProgressCard({
       role="dialog"
       aria-modal="true"
       aria-label="Share your progress"
-      onClick={onClose}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClose();
+      }}
     >
       <div
         className="w-full max-w-sm bg-paper p-6 flex flex-col gap-4"
@@ -167,8 +172,11 @@ export function ShareProgressCard({
             href={cardUrl ?? "#"}
             download={filename}
             aria-disabled={!cardUrl}
-            onClick={() => {
-              if (!cardUrl) return;
+            onClick={(e) => {
+              if (!cardUrl) {
+                e.preventDefault();
+                return;
+              }
               void logEvent("share_card_download", {
                 subject_id: subjectId,
                 module_id: moduleId,

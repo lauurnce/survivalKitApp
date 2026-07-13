@@ -88,7 +88,10 @@ export function ModuleDoneToggle({ moduleId, share }: Props) {
 
       {share && prompt && typeof document !== "undefined" &&
         createPortal(
-          <div className="fixed bottom-6 inset-x-0 z-40 flex justify-center px-4">
+          <div
+            className="fixed bottom-6 inset-x-0 z-40 flex justify-center px-4"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center gap-3 bg-navy text-paper px-5 py-3 shadow-lg">
               <span className="font-sans text-sm">🎉 Nice! One more down.</span>
               <button

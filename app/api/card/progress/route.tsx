@@ -3,8 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { parseProgressCardParams, ACADEMIC_YEAR_LABEL } from "@/lib/shareCard";
+import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
+
+// Satori renders cost real CPU; keep the public route from being farmed.
+const limiter = createRateLimiter(30);
 
 const WIDTH = 1080;
 const HEIGHT = 1920;
@@ -27,6 +31,10 @@ const fontsPromise = Promise.all([
 void fontsPromise.catch(() => {});
 
 export async function GET(req: NextRequest) {
+  if (limiter.check(getClientIp(req))) {
+    return NextResponse.json({ error: "Rate limited" }, { status: 429 });
+  }
+
   const parsed = parseProgressCardParams(req.nextUrl.searchParams);
   if (!parsed.ok) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
