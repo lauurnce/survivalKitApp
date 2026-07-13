@@ -766,13 +766,161 @@ git commit -m "feat: show matched university landmark banner on dashboard profil
 
 ---
 
+### Task 5b: Retire the superseded lib/landmarks.ts system, repoint HeroCard at lib/universities.ts
+
+**Context:** while this plan was being implemented, a separate long-running branch (`feature/dashboard-redesign`) was merged into `main`. It shipped its own, unpopulated school-landmark system: `lib/landmarks.ts` (10 schools, containment/fuzzy matching, no real art — only `public/landmarks/fallback.svg` exists), `components/dashboard/LandmarkArt.tsx`, rendered by `components/dashboard/HeroCard.tsx` on the new `/account` dashboard hero. This task consolidates onto the single system this plan built (`lib/universities.ts`, 25 schools, real art in `public/university-landmarks/`), removing the duplicate.
+
+**Files:**
+- Modify: `components/dashboard/LandmarkArt.tsx` (swap its data source)
+- Modify: `components/dashboard/HeroCard.tsx:6,23` (drop the now-unused `findLandmark`/`landmarkArt` import and the `landmarkLabel` line — `LandmarkArt` will own its own label internally)
+- Remove: `lib/landmarks.ts`, `lib/landmarks.test.ts`, `public/landmarks/` (entire directory: `fallback.svg`, `README.md`)
+
+**Interfaces:**
+- Consumes: `universityImagePath` and `matchUniversity` from `lib/universities.ts` (Task 2).
+- Produces: `LandmarkArt`'s public props (`{ university: string | null; className?: string }`) are unchanged — `HeroCard` and any other caller need no prop changes.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `components/dashboard/LandmarkArt.test.tsx`:
+
+```tsx
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { LandmarkArt } from "./LandmarkArt";
+
+describe("LandmarkArt", () => {
+  it("renders the matched school's landmark image", () => {
+    render(<LandmarkArt university="University of Santo Tomas" />);
+    const img = screen.getByRole("img");
+    expect(img).toHaveAttribute("src", expect.stringContaining("ust"));
+  });
+
+  it("renders the default image for an unmatched school", () => {
+    render(<LandmarkArt university="Cavite State University" />);
+    const img = screen.getByRole("img");
+    expect(img).toHaveAttribute("src", expect.stringContaining("default"));
+  });
+
+  it("renders the default image for null university", () => {
+    render(<LandmarkArt university={null} />);
+    const img = screen.getByRole("img");
+    expect(img).toHaveAttribute("src", expect.stringContaining("default"));
+  });
+});
+```
+
+- [ ] **Step 2: Run the test to verify it fails**
+
+```bash
+npx vitest run components/dashboard/LandmarkArt.test.tsx
+```
+
+Expected: FAIL — the current implementation renders an `.svg` fallback via a plain `<img>` for unmatched schools (no `next/image`), and matched schools resolve through the old `lib/landmarks.ts` catalog, so `src` won't contain "ust" or "default" the way the new test expects.
+
+- [ ] **Step 3: Rewrite LandmarkArt to use the universities catalog**
+
+Replace the full contents of `components/dashboard/LandmarkArt.tsx`:
+
+```tsx
+// components/dashboard/LandmarkArt.tsx
+import Image from "next/image";
+import { matchUniversity, universityImagePath } from "@/lib/universities";
+
+interface Props {
+  university: string | null;
+  className?: string;
+}
+
+export function LandmarkArt({ university, className = "" }: Props) {
+  const src = universityImagePath(university);
+  const label = matchUniversity(university)?.name ?? "Campus building";
+  return (
+    <div className={`pointer-events-none select-none ${className}`} aria-hidden="true">
+      <Image
+        src={src}
+        alt=""
+        width={480}
+        height={360}
+        title={label}
+        className="h-full w-full object-contain"
+        priority
+      />
+    </div>
+  );
+}
+```
+
+Note: every file in `public/university-landmarks/` is a PNG (no SVGs), so the old `isSvg` branch is no longer needed — `next/image` handles every case here.
+
+- [ ] **Step 4: Update HeroCard to drop the now-removed imports**
+
+In `components/dashboard/HeroCard.tsx`, remove this line:
+
+```tsx
+import { findLandmark, landmarkArt } from "@/lib/landmarks";
+```
+
+and remove this line from inside the `HeroCard` function:
+
+```tsx
+  const landmarkLabel = landmarkArt(findLandmark(profile?.university ?? null)).label;
+```
+
+and remove the now-orphaned accessibility span that referenced it:
+
+```tsx
+          <span className="sr-only">Illustration: {landmarkLabel}</span>
+```
+
+`LandmarkArt` itself is `aria-hidden="true"` (decorative, per its own div wrapper), so no replacement sr-only text is needed — this matches how the component already treated the image as non-content-bearing.
+
+- [ ] **Step 5: Run the test to verify it passes**
+
+```bash
+npx vitest run components/dashboard/LandmarkArt.test.tsx
+```
+
+Expected: PASS — all 3 tests green.
+
+- [ ] **Step 6: Delete the superseded landmark system**
+
+```bash
+git rm lib/landmarks.ts lib/landmarks.test.ts
+git rm -r public/landmarks
+```
+
+- [ ] **Step 7: Run the full test suite to confirm no regressions**
+
+```bash
+npx vitest run
+```
+
+Expected: all tests pass (in particular no leftover import of `lib/landmarks` anywhere — if this fails with a missing-module error, grep for `from "@/lib/landmarks"` or `from "./landmarks"` and fix the remaining call site).
+
+- [ ] **Step 8: Confirm the app builds**
+
+```bash
+npm run build
+```
+
+Expected: build succeeds — confirms no dangling reference to the deleted files (Next.js build fails on unresolved imports).
+
+- [ ] **Step 9: Commit**
+
+```bash
+git add components/dashboard/LandmarkArt.tsx components/dashboard/LandmarkArt.test.tsx components/dashboard/HeroCard.tsx
+git commit -m "refactor(dashboard): consolidate school landmark art onto lib/universities catalog"
+```
+
+---
+
 ### Task 6: Manual verification in the running app, then remove the old asset folder
 
 **Files:**
 - Remove: `assets/university_landmark/` (entire directory, including the empty `list_of_uni.txt`)
 
 **Interfaces:**
-- Consumes: the running dev server, Task 1's `public/university-landmarks/` files, Task 2-5's code.
+- Consumes: the running dev server, Task 1's `public/university-landmarks/` files, Task 2-5b's code.
 - Produces: nothing (cleanup + verification task).
 
 - [ ] **Step 1: Start the dev server**
@@ -802,6 +950,10 @@ Edit the profile again, set University to "Cavite State University" (not in the 
 - [ ] **Step 6: Verify the picker dropdown behavior live**
 
 Open the edit modal, click into the University field with it empty — confirm a scrollable dropdown of ~25 schools appears. Type "up" — confirm the list filters down to entries containing "up" (e.g. "University of the Philippines Diliman", "University of the Philippines Cebu", "University of the Philippines Visayas"). Click one — confirm the field fills with that canonical name.
+
+- [ ] **Step 6b: Verify the dashboard hero (HeroCard) shows the same matched image**
+
+Navigate to `/account` (the main dashboard, distinct from `/account/profile`). With the university still set to "University of Santo Tomas" from Step 3, confirm the hero card's landmark illustration (top-right of the hero, per `HeroCard.tsx`) shows the UST image — the same art the `ProfileCard` banner shows, confirming both surfaces read from the same `lib/universities.ts` catalog. Set university to an unmatched school and confirm the hero falls back to `default.png` (not the old `fallback.svg`, which no longer exists after Task 5b).
 
 - [ ] **Step 7: Stop the dev server, then remove the old unused asset folder**
 
