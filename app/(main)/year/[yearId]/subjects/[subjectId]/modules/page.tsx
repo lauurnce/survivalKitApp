@@ -7,6 +7,7 @@ import { PageTracker } from "@/components/PageTracker";
 import { ModuleDoneToggle } from "@/components/ModuleDoneToggle";
 import { SubjectComingSoon } from "@/components/SubjectComingSoon";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
+import { ShareProgressButton } from "@/components/share/ShareProgressButton";
 import { formatCount } from "@/lib/counters";
 import { sectionLabel } from "@/lib/sectionLabel";
 
@@ -89,14 +90,23 @@ export default async function ModulesPage({ params }: Props) {
       <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
         <div className="max-w-wide mx-auto">
           {modules && modules.length > 0 && (
-            <PaywallTeaser
-              yearId={yearId}
-              subjectId={subjectId}
-              yearLabel={year?.label}
-              subjectTitle={subject.title}
-              ctaHref={`/year/${yearId}/subjects/${subjectId}/modules/${modules[0].id}#subscribe`}
-              reviewerCount={reviewerCount ?? undefined}
-            />
+            <>
+              <PaywallTeaser
+                yearId={yearId}
+                subjectId={subjectId}
+                yearLabel={year?.label}
+                subjectTitle={subject.title}
+                ctaHref={`/year/${yearId}/subjects/${subjectId}/modules/${modules[0].id}#subscribe`}
+                reviewerCount={reviewerCount ?? undefined}
+              />
+              <div className="mt-6 flex justify-end">
+                <ShareProgressButton
+                  subjectId={subjectId}
+                  subjectTitle={subject.title}
+                  moduleIds={moduleIds}
+                />
+              </div>
+            </>
           )}
         </div>
         <div className="flex flex-col divide-y divide-ink-faint/30 max-w-wide mx-auto">
