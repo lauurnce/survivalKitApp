@@ -74,7 +74,7 @@ export function HeroCard({ term, topPick, profile }: Props) {
             {term && (
               <Link
                 href={`/year/${term.yearId}/subjects`}
-                className="text-sm text-ink-muted underline hover:text-ink"
+                className="text-sm text-ink-muted underline hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 View semester details
               </Link>

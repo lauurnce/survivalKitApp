@@ -2,7 +2,7 @@ import crypto from "crypto";
 
 // ── Plans ─────────────────────────────────────────────────────────────────────
 // The single source of truth for what we sell. Display labels in
-// SubscribeGate.tsx, PaywallTeaser.tsx, and account/AccountSidebar.tsx must be
+// SubscribeGate.tsx, PaywallTeaser.tsx, and account/SubscribeModals.tsx must be
 // kept in sync with these amounts (client components can't import this file —
 // it pulls in node:crypto).
 export type PlanKey = "subject_month" | "subject_sem" | "year_sem";

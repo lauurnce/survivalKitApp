@@ -42,7 +42,8 @@ export function findLandmark(university: string | null | undefined): Landmark | 
     if (normalize(l.school) === q) return l;
     if (l.aliases.some((a) => normalize(a) === q)) return l;
   }
-  // Containment pass for campus-suffixed variants ("UST Manila"). Longest
+  // Containment pass for campus-suffixed variants ("University of Santo
+  // Tomas Manila", which contains the full canonical name). Longest
   // canonical name first so PUP wins over UP's substring.
   const byLength = [...LANDMARKS].sort(
     (a, b) => normalize(b.school).length - normalize(a.school).length,
