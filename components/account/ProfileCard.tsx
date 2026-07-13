@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { GENDERS, PATHWAYS, type Profile } from "@/lib/profile";
 import { saveProfileAction, type ProfileFormState } from "@/app/account/actions";
+import { UniversityCombobox } from "./UniversityCombobox";
 
 const inputClass =
   "mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-sm text-ink";
@@ -101,11 +102,9 @@ function EditProfileModal({
 
           <label className="block text-sm text-ink-muted">
             University
-            <input
+            <UniversityCombobox
               name="university"
-              maxLength={120}
               defaultValue={profile?.university ?? ""}
-              placeholder="e.g. Cavite State University"
               className={inputClass}
             />
           </label>
