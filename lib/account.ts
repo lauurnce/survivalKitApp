@@ -48,6 +48,7 @@ export interface SubjectSummary {
   id: string; title: string; yearId: string;
   unlocked: boolean; doneCount: number; totalCount: number;
   modules: ModuleSummary[];
+  semester: number; kind: "major" | "minor";
 }
 
 export interface YearGroup {
@@ -74,7 +75,7 @@ export async function getAccountOverview(userId: string): Promise<AccountOvervie
   const [subjectsRes, progressRes, modulesRes, subsRes] = await Promise.all([
     supabase
       .from("subjects")
-      .select("id, title, year_id, years(id, label, sort_order)")
+      .select("id, title, year_id, semester, kind, years(id, label, sort_order)")
       .order("sort_order"),
     supabase.from("module_progress").select("module_id").eq("user_id", userId),
     supabase.from("modules").select("id, title, subject_id").order("sort_order"),
@@ -116,6 +117,7 @@ export async function getAccountOverview(userId: string): Promise<AccountOvervie
     const summary: SubjectSummary = {
       id: s.id, title: s.title, yearId: s.year_id,
       unlocked, doneCount, totalCount, modules: moduleSummaries,
+      semester: s.semester, kind: s.kind,
     };
     summaries.push(summary);
 
