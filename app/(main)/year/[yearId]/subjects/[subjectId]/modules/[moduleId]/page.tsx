@@ -218,7 +218,15 @@ export default async function ReaderPage({ params }: Props) {
           <p className="font-sans text-sm text-ink-muted">
             Done with this module? Track it — your progress shows on the subject list.
           </p>
-          <ModuleDoneToggle moduleId={moduleId} />
+          <ModuleDoneToggle
+            moduleId={moduleId}
+            share={{
+              subjectId,
+              subjectTitle: subject.title,
+              moduleTitle: mod.title,
+              moduleIds: siblings.map((m) => m.id),
+            }}
+          />
         </div>
         {nextModule ? (
           <>

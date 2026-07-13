@@ -13,7 +13,10 @@ export type EventType =
   | "paywall_teaser_view"
   | "paywall_teaser_click"
   | "unlock_click"
-  | "unlock_submitted";
+  | "unlock_submitted"
+  | "share_card_open"
+  | "share_card_share"
+  | "share_card_download";
 
 export interface Database {
   public: {

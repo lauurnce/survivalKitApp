@@ -7,6 +7,7 @@ const VALID_EVENT_TYPES = new Set<EventType>([
   "enter", "year_select", "subject_open", "module_open",
   "section_view", "subscribe_click", "paywall_teaser_view",
   "paywall_teaser_click", "unlock_click", "unlock_submitted",
+  "share_card_open", "share_card_share", "share_card_download",
 ]);
 
 // IP-based rate limiter — bounded map to prevent unbounded memory growth
