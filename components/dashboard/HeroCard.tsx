@@ -3,7 +3,6 @@ import Link from "next/link";
 import type { CurrentTerm, Recommendation } from "@/lib/dashboard";
 import { continueHref } from "@/lib/dashboard";
 import type { Profile } from "@/lib/profile";
-import { findLandmark, landmarkArt } from "@/lib/landmarks";
 import { LandmarkArt } from "./LandmarkArt";
 
 function greeting(): string {
@@ -20,8 +19,6 @@ interface Props {
 }
 
 export function HeroCard({ term, topPick, profile }: Props) {
-  const landmarkLabel = landmarkArt(findLandmark(profile?.university ?? null)).label;
-
   return (
     <div>
       <p className="font-serif text-lg text-ink mb-4">
@@ -84,7 +81,6 @@ export function HeroCard({ term, topPick, profile }: Props) {
 
         <div className="hidden sm:block w-56 lg:w-72 shrink-0">
           <LandmarkArt university={profile?.university ?? null} className="w-full" />
-          <span className="sr-only">Illustration: {landmarkLabel}</span>
         </div>
       </div>
     </div>
