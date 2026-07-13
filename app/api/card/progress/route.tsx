@@ -22,6 +22,10 @@ const fontsPromise = Promise.all([
   { name: "InterTight", data: interMedium, weight: 500 as const, style: "normal" as const },
 ]);
 
+// A missing font must fail the request (500 via the handler's try/catch),
+// not crash the process with an unhandled rejection at import time.
+void fontsPromise.catch(() => {});
+
 export async function GET(req: NextRequest) {
   const parsed = parseProgressCardParams(req.nextUrl.searchParams);
   if (!parsed.ok) {
