@@ -27,6 +27,10 @@ describe("findLandmark", () => {
     expect(findLandmark(null)).toBeNull();
     expect(findLandmark(undefined)).toBeNull();
   });
+  it("does not let generic aliases steal unrelated institutions", () => {
+    expect(findLandmark("Ateneo de Davao University")).toBeNull();
+    expect(findLandmark("La Salle Green Hills")).toBeNull();
+  });
 });
 
 describe("landmarkArt", () => {

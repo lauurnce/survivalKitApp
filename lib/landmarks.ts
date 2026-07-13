@@ -50,7 +50,6 @@ export function findLandmark(university: string | null | undefined): Landmark | 
   for (const l of byLength) {
     const c = normalize(l.school);
     if (q.includes(c)) return l;
-    if (l.aliases.some((a) => q.startsWith(normalize(a) + " "))) return l;
   }
   return null;
 }
