@@ -133,7 +133,15 @@ export default async function ModulesPage({ params }: Props) {
                   </span>
                 )}
               </div>
-              <ModuleDoneToggle moduleId={mod.id} />
+              <ModuleDoneToggle
+                moduleId={mod.id}
+                share={{
+                  subjectId,
+                  subjectTitle: subject.title,
+                  moduleTitle: mod.title,
+                  moduleIds,
+                }}
+              />
               <span className="font-sans text-sm text-ink-faint group-hover:text-ink transition-colors mt-1">
                 →
               </span>
