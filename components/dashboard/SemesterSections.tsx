@@ -8,6 +8,7 @@ import type { SubjectSummary, YearGroup } from "@/lib/account";
 import { pct } from "@/lib/account";
 import { YearSubscribeModal, SubjectSubscribeModal } from "@/components/account/SubscribeModals";
 import { StatusChip } from "./StatusChip";
+import { SubjectIcon } from "./SubjectIcon";
 
 interface Props {
   terms: TermGroup[];
@@ -105,29 +106,38 @@ function TermSection({
         )}
       </summary>
 
-      <ul className="mt-2 divide-y divide-taupe/20 border-t border-taupe/20">
+      <ul className="mt-3 grid gap-3 sm:grid-cols-2">
         {term.subjects.map((s) => {
           const progress = pct(s.doneCount, s.totalCount);
+
           if (s.unlocked) {
+            const status = subjectStatus(s);
+            const inProgress = status === "in-progress";
             return (
               <li key={s.id}>
                 <Link
                   href={`/year/${term.yearId}/subjects/${s.id}/modules`}
-                  className="flex items-center justify-between gap-4 px-1 py-3 hover:bg-taupe/5 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+                  className={
+                    "flex items-center gap-3 rounded-xl border px-3 py-3 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent " +
+                    (inProgress
+                      ? "border-accent/30 bg-accent/5 hover:bg-accent/10"
+                      : "border-taupe/30 bg-paper hover:bg-taupe/5")
+                  }
                 >
+                  <SubjectIcon title={s.title} />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-ink truncate">{s.title}</p>
                     <div className="mt-1.5 flex items-center gap-2">
-                      <div className="flex-1 h-1.5 rounded-full bg-taupe/20 overflow-hidden max-w-[8rem]">
+                      <div className="h-1.5 flex-1 max-w-[7rem] overflow-hidden rounded-full bg-taupe/20">
                         <div className="h-full rounded-full bg-accent" style={{ width: `${progress}%` }} />
                       </div>
-                      <span className="text-xs text-ink-muted shrink-0">
+                      <span className="shrink-0 text-xs text-ink-muted">
                         {s.doneCount}/{s.totalCount}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 shrink-0">
-                    <StatusChip status={subjectStatus(s)} />
+                  <div className="flex shrink-0 items-center gap-2">
+                    <StatusChip status={status} />
                     <ChevronRight />
                   </div>
                 </Link>
@@ -136,21 +146,26 @@ function TermSection({
           }
 
           return (
-            <li key={s.id} className="flex items-center justify-between gap-4 px-1 py-3">
-              <div className="min-w-0 flex-1 flex items-center gap-2">
-                <LockIcon />
-                <p className="text-sm font-medium text-ink-muted truncate">
-                  {s.title}
-                  <span className="sr-only">Locked</span>
-                </p>
+            <li key={s.id}>
+              <div className="flex items-center gap-3 rounded-xl border border-taupe/30 bg-paper px-3 py-3">
+                <SubjectIcon title={s.title} className="w-10 h-10 opacity-50" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <LockIcon />
+                    <p className="truncate text-sm font-medium text-ink-muted">
+                      {s.title}
+                      <span className="sr-only">Locked</span>
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onOpenModal({ kind: "subject", subject: s })}
+                  className="shrink-0 text-xs underline text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                >
+                  Unlock
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => onOpenModal({ kind: "subject", subject: s })}
-                className="shrink-0 text-xs underline text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-              >
-                Unlock
-              </button>
             </li>
           );
         })}
