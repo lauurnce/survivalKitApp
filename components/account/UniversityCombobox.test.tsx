@@ -21,17 +21,17 @@ describe("UniversityCombobox", () => {
     expect(screen.queryByRole("option")).not.toBeInTheDocument();
   });
 
-  it("shows all 25 options when focused with empty input", () => {
+  it("shows all 50 options when focused with empty input", () => {
     render(<UniversityCombobox name="university" defaultValue="" className="" />);
     fireEvent.focus(screen.getByRole("combobox"));
-    expect(screen.getAllByRole("option")).toHaveLength(25);
+    expect(screen.getAllByRole("option")).toHaveLength(50);
   });
 
   it("filters options live by substring, case-insensitively", () => {
     render(<UniversityCombobox name="university" defaultValue="" className="" />);
     const input = screen.getByRole("combobox");
     fireEvent.focus(input);
-    fireEvent.change(input, { target: { value: "santo" } });
+    fireEvent.change(input, { target: { value: "santo tomas" } });
     const options = screen.getAllByRole("option");
     expect(options).toHaveLength(1);
     expect(options[0]).toHaveTextContent("University of Santo Tomas");
@@ -50,7 +50,7 @@ describe("UniversityCombobox", () => {
     render(<UniversityCombobox name="university" defaultValue="" className="" />);
     const input = screen.getByRole("combobox") as HTMLInputElement;
     fireEvent.focus(input);
-    fireEvent.change(input, { target: { value: "santo" } });
+    fireEvent.change(input, { target: { value: "santo tomas" } });
     fireEvent.mouseDown(screen.getByRole("option"));
     expect(input.value).toBe("University of Santo Tomas");
     expect(screen.queryByRole("option")).not.toBeInTheDocument();
