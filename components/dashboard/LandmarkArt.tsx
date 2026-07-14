@@ -1,6 +1,6 @@
 // components/dashboard/LandmarkArt.tsx
 import Image from "next/image";
-import { matchUniversity, universityImagePath } from "@/lib/universities";
+import { matchUniversity, universityImagePath, landmarkLabel } from "@/lib/universities";
 
 interface Props {
   university: string | null;
@@ -9,7 +9,7 @@ interface Props {
 
 export function LandmarkArt({ university, className = "" }: Props) {
   const src = universityImagePath(university);
-  const label = matchUniversity(university)?.name ?? "Campus building";
+  const label = landmarkLabel(matchUniversity(university));
   return (
     <div className={`pointer-events-none select-none ${className}`} aria-hidden="true">
       <Image

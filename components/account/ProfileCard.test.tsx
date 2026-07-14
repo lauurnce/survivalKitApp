@@ -82,7 +82,7 @@ describe("ProfileCard landmark banner", () => {
         }}
       />
     );
-    const img = screen.getByRole("img", { name: /cavite state university/i });
+    const img = screen.getByRole("img", { name: /campus building/i });
     expect(img).toHaveAttribute("src", expect.stringContaining("default"));
   });
 
@@ -100,12 +100,30 @@ describe("ProfileCard landmark banner", () => {
         }}
       />
     );
-    const img = screen.getByRole("img", { name: /university landmark/i });
+    const img = screen.getByRole("img", { name: /campus building/i });
     expect(img).toHaveAttribute("src", expect.stringContaining("default"));
   });
 
   it("renders no landmark image in the empty/no-profile state", () => {
     render(<ProfileCard profile={null} />);
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("uses the specific landmark name as alt text when the school has one", () => {
+    render(
+      <ProfileCard
+        profile={{
+          firstName: "Juan",
+          lastName: "Dela Cruz",
+          age: null,
+          gender: null,
+          university: "Bohol Island State University",
+          major: null,
+          pathways: [],
+        }}
+      />
+    );
+    const img = screen.getByRole("img", { name: /bisu main admin building/i });
+    expect(img).toHaveAttribute("src", expect.stringContaining("bisu"));
   });
 });

@@ -20,4 +20,16 @@ describe("LandmarkArt", () => {
     const img = screen.getByRole("presentation", { hidden: true });
     expect(img).toHaveAttribute("src", expect.stringContaining("default"));
   });
+
+  it("uses the specific landmark name as the image title when available", () => {
+    render(<LandmarkArt university="Bohol Island State University" />);
+    const img = screen.getByRole("presentation", { hidden: true });
+    expect(img).toHaveAttribute("title", "BISU Main Admin Building");
+  });
+
+  it("falls back to the school name as title for entries without a landmark label", () => {
+    render(<LandmarkArt university="University of Santo Tomas" />);
+    const img = screen.getByRole("presentation", { hidden: true });
+    expect(img).toHaveAttribute("title", "University of Santo Tomas");
+  });
 });

@@ -4,7 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import Image from "next/image";
 import { GENDERS, PATHWAYS, type Profile } from "@/lib/profile";
 import { saveProfileAction, type ProfileFormState } from "@/app/account/actions";
-import { universityImagePath } from "@/lib/universities";
+import { universityImagePath, matchUniversity, landmarkLabel } from "@/lib/universities";
 import { UniversityCombobox } from "./UniversityCombobox";
 
 const inputClass =
@@ -171,7 +171,7 @@ export function ProfileCard({ profile }: { profile: Profile | null }) {
           <div className="relative aspect-[16/9] w-full bg-taupe/10">
             <Image
               src={universityImagePath(profile.university)}
-              alt={profile.university || "University landmark"}
+              alt={landmarkLabel(matchUniversity(profile.university))}
               fill
               className="object-cover"
               sizes="256px"
