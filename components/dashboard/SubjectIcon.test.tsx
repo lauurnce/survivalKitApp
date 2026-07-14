@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render } from "@testing-library/react";
 import { SubjectIcon } from "./SubjectIcon";
 
@@ -9,8 +9,11 @@ describe("SubjectIcon", () => {
   });
 
   it("renders (fallback svg) for an unknown subject without crashing", () => {
+    const spy = vi.spyOn(console, "warn").mockImplementation(() => {});
     const { container } = render(<SubjectIcon title="Totally Made Up Subject" />);
     expect(container.querySelector("svg")).not.toBeNull();
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
   });
 
   it("applies a custom className to the tile", () => {
