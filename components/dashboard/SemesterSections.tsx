@@ -106,7 +106,7 @@ function TermSection({
         )}
       </summary>
 
-      <ul className="mt-3 grid gap-3 sm:grid-cols-2">
+      <ul className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {term.subjects.map((s) => {
           const progress = pct(s.doneCount, s.totalCount);
 
@@ -118,7 +118,7 @@ function TermSection({
                 <Link
                   href={`/year/${term.yearId}/subjects/${s.id}/modules`}
                   className={
-                    "flex items-center gap-3 rounded-xl border px-3 py-3 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent " +
+                    "flex items-start gap-3 rounded-xl border px-3 py-3 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent " +
                     (inProgress
                       ? "border-accent/30 bg-accent/5 hover:bg-accent/10"
                       : "border-taupe/30 bg-paper hover:bg-taupe/5")
@@ -126,19 +126,21 @@ function TermSection({
                 >
                   <SubjectIcon title={s.title} />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-ink truncate">{s.title}</p>
-                    <div className="mt-1.5 flex items-center gap-2">
-                      <div className="h-1.5 flex-1 max-w-[7rem] overflow-hidden rounded-full bg-taupe/20">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="min-w-0 flex-1 text-sm font-medium text-ink">{s.title}</p>
+                      <ChevronRight />
+                    </div>
+                    <div className="mt-2 flex items-center gap-2">
+                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-taupe/20">
                         <div className="h-full rounded-full bg-accent" style={{ width: `${progress}%` }} />
                       </div>
-                      <span className="shrink-0 text-xs text-ink-muted">
+                      <span className="shrink-0 text-xs tabular-nums text-ink-muted">
                         {s.doneCount}/{s.totalCount}
                       </span>
                     </div>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    <StatusChip status={status} />
-                    <ChevronRight />
+                    <div className="mt-2">
+                      <StatusChip status={status} />
+                    </div>
                   </div>
                 </Link>
               </li>
@@ -152,7 +154,7 @@ function TermSection({
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
                     <LockIcon />
-                    <p className="truncate text-sm font-medium text-ink-muted">
+                    <p className="min-w-0 text-sm font-medium text-ink-muted">
                       {s.title}
                       <span className="sr-only">Locked</span>
                     </p>

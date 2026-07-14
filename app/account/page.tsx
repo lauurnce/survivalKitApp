@@ -59,7 +59,7 @@ export default async function AccountPage({ searchParams }: Props) {
           </div>
         )}
 
-        <main className="px-4 sm:px-8 py-6 mx-auto max-w-wide space-y-8">
+        <main className="px-4 sm:px-8 py-6 mx-auto max-w-[90rem] space-y-8">
           <HeroCard term={current} topPick={recs[0]} profile={profile} />
 
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
