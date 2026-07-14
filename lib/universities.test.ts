@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { existsSync } from "fs";
 import path from "path";
-import { UNIVERSITIES, matchUniversity, universityImagePath } from "./universities";
+import { UNIVERSITIES, matchUniversity, universityImagePath, landmarkLabel } from "./universities";
 
 describe("UNIVERSITIES catalog", () => {
   it("has exactly 25 entries", () => {
-    expect(UNIVERSITIES).toHaveLength(25);
+    expect(UNIVERSITIES).toHaveLength(50);
   });
 
   it("every entry has a unique slug", () => {
@@ -84,5 +84,66 @@ describe("universityImagePath", () => {
 
   it("returns the default image path for null input", () => {
     expect(universityImagePath(null)).toBe("/university-landmarks/default.png");
+  });
+});
+
+describe("UNIVERSITIES catalog — expansion", () => {
+  it("has exactly 50 entries after the expansion", () => {
+    expect(UNIVERSITIES).toHaveLength(50);
+  });
+
+  it("still has all unique slugs", () => {
+    const slugs = UNIVERSITIES.map((u) => u.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+  });
+
+  it("tca has a distinct canonical name from usjr (no collision)", () => {
+    const usjr = UNIVERSITIES.find((u) => u.slug === "usjr");
+    const tca = UNIVERSITIES.find((u) => u.slug === "tca");
+    expect(usjr?.name).toBe("University of San Jose–Recoletos");
+    expect(tca?.name).toBe("University of San Jose–Recoletos – Talavera Campus");
+    expect(usjr?.name).not.toBe(tca?.name);
+  });
+
+  it("every new entry's image file exists in public/university-landmarks", () => {
+    const newSlugs = [
+      "bisu", "norsu", "asu", "ssu", "isatu", "evsu", "uc", "hnu", "lnu", "vsu",
+      "siascc", "tca", "uep", "ndu", "fsuu", "jrmsu", "zppsu", "usm", "ldcu",
+      "xu", "addu", "adzu", "cmu", "sksu", "msugensan",
+    ];
+    for (const slug of newSlugs) {
+      const file = path.join(process.cwd(), "public", "university-landmarks", `${slug}.png`);
+      expect(existsSync(file), `missing image for ${slug}`).toBe(true);
+    }
+  });
+});
+
+describe("matchUniversity — expansion", () => {
+  it("matches a new school by exact canonical name", () => {
+    expect(matchUniversity("Bohol Island State University")?.slug).toBe("bisu");
+  });
+
+  it("matches tca specifically, not usjr, for its distinct name", () => {
+    expect(matchUniversity("University of San Jose–Recoletos – Talavera Campus")?.slug).toBe("tca");
+  });
+
+  it("matching the plain USJR name still resolves to usjr, not tca", () => {
+    expect(matchUniversity("University of San Jose–Recoletos")?.slug).toBe("usjr");
+  });
+});
+
+describe("landmarkLabel", () => {
+  it("returns the specific landmark name when present", () => {
+    const bisu = UNIVERSITIES.find((u) => u.slug === "bisu")!;
+    expect(landmarkLabel(bisu)).toBe("BISU Main Admin Building");
+  });
+
+  it("falls back to the school name when no landmark is set (original 25 entries)", () => {
+    const ust = UNIVERSITIES.find((u) => u.slug === "ust")!;
+    expect(landmarkLabel(ust)).toBe("University of Santo Tomas");
+  });
+
+  it("returns a generic label when given null", () => {
+    expect(landmarkLabel(null)).toBe("Campus building");
   });
 });
