@@ -126,6 +126,11 @@ Replace the single-column `<ul>` list with the reference's responsive
   (left) · column with `title`, then a row of `{done}/{total} modules`,
   progress bar, and `%` · right side `StatusChip` + chevron. Reuses existing
   `subjectStatus`, `pct`, `StatusChip`, `ChevronRight`.
+  - **In-progress highlight:** when `subjectStatus(s) === "in-progress"`, the
+    whole card gets an accent-tinted background + border
+    (`bg-accent/5 border-accent/30`) to match the reference, instead of the
+    default transparent/hover treatment. Ready/Done cards stay neutral
+    (`border-taupe/30` with hover tint).
 - **Locked:** same card shape, muted; `SubjectIcon` tile still shown (muted via
   wrapper opacity), `LockIcon` + title, and an "Unlock" button that opens the
   existing `SubjectSubscribeModal`.
