@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { formatCount } from "@/lib/counters";
 import { SubjectProgressBar } from "@/components/SubjectProgressBar";
+import { SubjectIcon } from "@/components/dashboard/SubjectIcon";
 
 export interface SubjectModule {
   id: string;
@@ -43,6 +44,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
       <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mt-1 w-8 shrink-0 text-right">
         {String(index + 1).padStart(2, "0")}
       </span>
+      <SubjectIcon title={subject.title} className="w-9 h-9 mt-0.5" />
       <div className="flex-1">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">

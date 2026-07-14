@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Recommendation } from "@/lib/dashboard";
 import { continueHref } from "@/lib/dashboard";
 import { StatusChip } from "./StatusChip";
+import { SubjectIcon } from "./SubjectIcon";
 
 interface Props {
   recs: Recommendation[];
@@ -34,11 +35,14 @@ export function ThisWeekPanel({ recs }: Props) {
             <li key={rec.moduleId}>
               <Link
                 href={continueHref(rec)}
-                className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-taupe/5 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+                className="flex items-center justify-between gap-3 px-6 py-4 hover:bg-taupe/5 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
               >
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-ink truncate">{rec.moduleTitle}</p>
-                  <p className="text-xs text-ink-muted truncate">{rec.subjectTitle}</p>
+                <div className="flex min-w-0 items-center gap-3">
+                  <SubjectIcon title={rec.subjectTitle} className="w-9 h-9" />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-ink truncate">{rec.moduleTitle}</p>
+                    <p className="text-xs text-ink-muted truncate">{rec.subjectTitle}</p>
+                  </div>
                 </div>
                 <StatusChip status={rec.status} />
               </Link>
