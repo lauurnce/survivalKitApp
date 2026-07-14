@@ -130,20 +130,24 @@ function SectionBand({
   );
 }
 
+const PHP_TO_USD_RATE = 58;
+
 function Stat({
   value,
   label,
   accent,
   dot,
+  subValue,
 }: {
   value: number | string;
   label: string;
   accent?: boolean;
   dot?: boolean;
+  subValue?: string;
 }) {
   return (
     <div
-      className={`border p-6 transition-colors duration-150 ${
+      className={`relative border p-6 transition-colors duration-150 ${
         accent
           ? "border-accent/40 bg-accent/5 hover:border-accent/70"
           : "border-ink-faint/30 hover:border-ink/40"
@@ -159,6 +163,11 @@ function Stat({
         <p className={`font-serif text-4xl ${accent ? "text-accent" : "text-ink"}`}>{value}</p>
       </div>
       <p className="label-sm text-ink-muted">{label}</p>
+      {subValue && (
+        <p className="absolute bottom-2 right-3 font-mono text-[10px] text-ink-faint">
+          {subValue}
+        </p>
+      )}
     </div>
   );
 }
@@ -784,7 +793,11 @@ export function AdminDashboard({
         />
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           <Stat value={activeSubscribers} label="Active Subscribers" accent />
-          <Stat value={`₱${totalRevenue}`} label="Monthly Revenue" />
+          <Stat
+            value={`₱${totalRevenue}`}
+            label="Monthly Revenue"
+            subValue={`≈ $${(totalRevenue / PHP_TO_USD_RATE).toFixed(2)}`}
+          />
           <Stat value={newSubscribersToday} label="Payments Today" />
         </div>
       </section>
