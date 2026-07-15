@@ -119,6 +119,24 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  // Defense-in-depth for the admin API surface: each /api/admin/* route
+  // already calls getAdminSession() itself, so this isn't currently a live
+  // bypass — but it means a future route added without remembering that
+  // check would be silently unauthenticated with no safety net at this
+  // layer. /login (issues the session) and /logout (must work even with an
+  // expired/invalid session, to let the cookie be cleared) are exempt.
+  const isAdminApi =
+    pathname.startsWith("/api/admin") &&
+    pathname !== "/api/admin/login" &&
+    pathname !== "/api/admin/logout";
+  if (isAdminApi) {
+    const token = req.cookies.get("admin_session")?.value ?? "";
+    const valid = await verifyAdminToken(token);
+    if (!valid) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  }
+
   return res;
 }
 
