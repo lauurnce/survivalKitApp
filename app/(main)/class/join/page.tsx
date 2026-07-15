@@ -28,7 +28,9 @@ export default function ClassJoinPage() {
               ? "That code doesn't match an active class."
               : json.error === "rate_limited"
                 ? "Too many attempts. Try again in a minute."
-                : "Something went wrong. Try again."
+                : json.error === "invalid_code"
+                  ? "That code doesn't look right — check for typos."
+                  : "Something went wrong. Try again."
         );
         return;
       }

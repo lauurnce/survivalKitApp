@@ -22,8 +22,8 @@ export async function POST(req: NextRequest) {
   }
 
   const body = (await req.json().catch(() => null)) as { code?: string } | null;
-  const code = body?.code;
-  if (!code || typeof code !== "string" || code.length !== 6) {
+  const code = (typeof body?.code === "string" ? body.code : "").trim();
+  if (code.length !== 6) {
     return NextResponse.json({ error: "invalid_code" }, { status: 400 });
   }
 
@@ -38,6 +38,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
 
+  // This count check is a fast-path convenience, NOT the enforcement — it
+  // returns a clean 409 in the common case, but two concurrent requests can
+  // both read a count below seat_cap and both pass it (classic check-then-act
+  // race). The actual backstop is the `class_members_seat_cap_trigger`
+  // Postgres trigger (see supabase/migrations/20260716010000_class_members_seat_cap_trigger.sql),
+  // which locks the parent classes row and re-checks the count inside the
+  // insert's transaction, so it cannot be raced. If the trigger fires (race
+  // lost against this pre-check), the insert below throws a Postgres error
+  // with SQLSTATE P0001, which we map to the same 409 response below.
   const { count } = await supabase
     .from("class_members")
     .select("id", { count: "exact", head: true })
@@ -54,6 +63,13 @@ export async function POST(req: NextRequest) {
     .upsert({ class_id: cls.id, device_id: deviceId }, { onConflict: "class_id,device_id" });
 
   if (joinError) {
+    // P0001 here means the class_members_seat_cap_trigger fired: this
+    // request lost a race against another join that filled the last seat
+    // after our count check above passed. Report it the same way as the
+    // pre-check "full" case rather than a generic 500.
+    if ((joinError as { code?: string }).code === "P0001") {
+      return NextResponse.json({ error: "full" }, { status: 409 });
+    }
     return NextResponse.json({ error: joinError.message }, { status: 500 });
   }
 
