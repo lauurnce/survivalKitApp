@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
 import { getDeviceType } from "@/lib/deviceType";
 import { PRIVACY_POLICY_VERSION } from "@/lib/privacyPolicy";
+import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 
 // IP-based rate limiter — bounded map to prevent unbounded memory growth
 const rateLimitMap = new Map<string, number[]>();
@@ -47,7 +49,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { email, name, device_id, source, willing_to_pay, needs_capstone, year_label, subject_title, module_title, screen_width, max_touch_points } = body;
+  const { email, name, source, willing_to_pay, needs_capstone, year_label, subject_title, module_title, screen_width, max_touch_points } = body;
+
+  // Prefer the signed device cookie over the client-supplied device_id in the
+  // body, so a signup can't be attributed to a device_id the caller doesn't
+  // own. Falls back to the body value only when there's no cookie yet
+  // (first-time visitor) — same pattern as /api/events and /api/progress.
+  const cookieStore = await cookies();
+  const cookieDeviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+  const bodyDeviceId = (body as { device_id?: unknown })?.device_id;
+  const device_id = cookieDeviceId ?? bodyDeviceId;
 
   if (!email || !name || !device_id || !source) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
