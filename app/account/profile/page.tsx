@@ -7,6 +7,7 @@ import { signOutAction } from "../../(auth)/actions";
 import { ThemeToggleInline } from "@/components/ThemeToggle";
 import { NavRail } from "@/components/dashboard/NavRail";
 import { ProfileCard } from "@/components/account/ProfileCard";
+import { DeleteAccountButton } from "@/components/account/DeleteAccountButton";
 
 export const dynamic = "force-dynamic";
 
@@ -40,8 +41,11 @@ export default async function ProfilePage() {
             <h1 className="font-serif text-display-md text-ink">Profile</h1>
           </header>
 
-          <div className="max-w-md">
+          <div className="max-w-md space-y-6">
             <ProfileCard profile={profile} />
+            <div className="border-t border-taupe/20 pt-4">
+              <DeleteAccountButton />
+            </div>
           </div>
         </main>
       </div>
