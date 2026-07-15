@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
+import {
+  DEVICE_COOKIE,
+  DEVICE_COOKIE_OPTIONS,
+  signDeviceCookie,
+  verifyDeviceCookie,
+} from "@/lib/auth/deviceCookie";
+import { isUuid } from "@/lib/validation";
 
 // IP-based rate limiter — bounded map to prevent unbounded memory growth.
 // Mirrors the approach used by app/api/events/route.ts.
@@ -40,8 +48,17 @@ function isRateLimited(key: string): boolean {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const device_id = searchParams.get("device_id");
     const moduleIdsParam = searchParams.get("module_ids");
+
+    // Trust only the signed device cookie — a raw ?device_id= query param let
+    // anyone read another device's completed-modules list by guessing/copying
+    // a UUID. Fall back to the query param ONLY when no cookie exists yet
+    // (first-time visitor whose /api/device sync hasn't landed); there's
+    // nothing to leak for a device with no established cookie/progress yet.
+    const cookieStore = await cookies();
+    const cookieDeviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+    const queryDeviceId = searchParams.get("device_id");
+    const device_id = cookieDeviceId ?? (isUuid(queryDeviceId) ? queryDeviceId : null);
 
     if (!device_id) {
       return NextResponse.json({ error: "Missing device_id" }, { status: 400 });
@@ -74,11 +91,23 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { device_id, module_id, completed } = body as {
+    const { module_id, completed } = body as {
       device_id: string;
       module_id: string;
       completed?: boolean;
     };
+
+    // Same trust model as GET: the signed cookie wins over whatever device_id
+    // the client claims in the body. This is the write path, so a spoofed
+    // device_id here is what let an attacker mark modules complete/incomplete
+    // on a victim's device — bind to the cookie, only fall back to the body
+    // for a first-time visitor with no cookie (and no existing progress to
+    // tamper with) yet.
+    const cookieStore = await cookies();
+    const cookieDeviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+    const bodyDeviceId = (body as { device_id?: string })?.device_id;
+    const device_id = cookieDeviceId ?? (isUuid(bodyDeviceId) ? bodyDeviceId : null);
+    const needsCookie = !cookieDeviceId && isUuid(bodyDeviceId);
 
     if (!device_id || !module_id) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -121,7 +150,11 @@ export async function POST(req: NextRequest) {
         .eq("module_id", module_id);
     }
 
-    return NextResponse.json({ ok: true, completed: nextCompleted });
+    const res = NextResponse.json({ ok: true, completed: nextCompleted });
+    if (needsCookie) {
+      res.cookies.set(DEVICE_COOKIE, signDeviceCookie(device_id), DEVICE_COOKIE_OPTIONS);
+    }
+    return res;
   } catch {
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
