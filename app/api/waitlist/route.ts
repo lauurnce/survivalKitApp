@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { getDeviceType } from "@/lib/deviceType";
+import { PRIVACY_POLICY_VERSION } from "@/lib/privacyPolicy";
 
 // IP-based rate limiter — bounded map to prevent unbounded memory growth
 const rateLimitMap = new Map<string, number[]>();
@@ -100,6 +101,9 @@ export async function POST(req: NextRequest) {
       year_label: typeof year_label === "string" ? year_label.slice(0, 100) : null,
       subject_title: typeof subject_title === "string" ? subject_title.slice(0, 200) : null,
       module_title: typeof module_title === "string" ? module_title.slice(0, 200) : null,
+      // RA 10173 audit trail: which policy version was live when this
+      // voluntary submission (our lawful basis) happened.
+      privacy_policy_version: PRIVACY_POLICY_VERSION,
     },
     { onConflict: "email,source,subject_title", ignoreDuplicates: true }
   );
