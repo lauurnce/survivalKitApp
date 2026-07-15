@@ -41,6 +41,9 @@ const pyodideWorkerHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Stop leaking "X-Powered-By: Next.js" on every response — free framework
+  // fingerprinting for an attacker with no benefit to us.
+  poweredByHeader: false,
   serverExternalPackages: ["@supabase/supabase-js", "@supabase/auth-js", "@vercel/sandbox"],
   // The share-card OG route reads these at runtime with fs — without this,
   // Vercel's output tracing would omit them and the route 500s in prod only.
