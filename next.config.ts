@@ -1,11 +1,14 @@
 import type { NextConfig } from "next";
 
-// Next.js dev mode (react-refresh / HMR) evaluates code via eval(), which the
-// hardened production CSP forbids. Allow 'unsafe-eval' ONLY in development so
-// the dev server hydrates; production keeps the strict policy (no eval).
-const isDev = process.env.NODE_ENV !== "production";
-const devEval = isDev ? " 'unsafe-eval'" : "";
-
+// Content-Security-Policy is NOT set here for normal page routes — middleware.ts
+// generates a fresh per-request nonce and sets script-src there (nonce-based CSP
+// requires a value that changes every request, which this static config can't
+// produce). Next.js gives a middleware-set header priority over a matching
+// next.config.ts header, so leaving CSP out of securityHeaders below avoids two
+// conflicting policies landing on the same response. /pyodideWorker.js is the
+// one path that keeps its CSP here (see pyodideWorkerHeaders) — middleware
+// deliberately excludes it from its own CSP so this narrower, eval-permitting
+// policy stays authoritative there.
 const securityHeaders = [
   { key: "X-Content-Type-Options",    value: "nosniff" },
   { key: "X-Frame-Options",           value: "DENY" },
@@ -18,27 +21,6 @@ const securityHeaders = [
   {
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=(), payment=()",
-  },
-  {
-    key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      // 'wasm-unsafe-eval' permits WebAssembly compilation (Pyodide, sql.js) WITHOUT
-      // enabling JavaScript eval()/new Function(). 'unsafe-eval' is intentionally NOT
-      // here — the only code that still needs it (the Pyodide worker on Safari, which
-      // lacks wasm-unsafe-eval support) gets a narrowly-scoped policy on
-      // /pyodideWorker.js below, so no page document permits JS eval.
-      `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${devEval} https://cdn.jsdelivr.net`,
-      "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
-      "font-src 'self' https://cdn.jsdelivr.net",
-      // Pyodide runs in a Web Worker; sql.js loads its wasm from its CDN.
-      "worker-src 'self' blob:",
-      "connect-src 'self' https://*.supabase.co https://cdn.jsdelivr.net https://sql.js.org",
-      "img-src 'self' data:",
-      "frame-ancestors 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-    ].join("; "),
   },
 ];
 

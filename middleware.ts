@@ -1,6 +1,33 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 
+// Nonce-based CSP for scripts: 'unsafe-inline' on script-src would defeat most
+// of CSP's XSS value (any injected <script> would execute freely). A fresh
+// nonce per request lets the one legitimate inline script (the dark-mode
+// bootstrap in app/layout.tsx) run while nothing else can. style-src keeps
+// 'unsafe-inline' — React's style={{}} prop compiles to inline style
+// attributes with no nonce support, and CSS-only injection is a much
+// narrower attack surface than script injection.
+function buildCsp(nonce: string): string {
+  const isDev = process.env.NODE_ENV !== "production";
+  const devEval = isDev ? " 'unsafe-eval'" : "";
+  return [
+    "default-src 'self'",
+    // 'wasm-unsafe-eval' permits WebAssembly compilation (Pyodide, sql.js)
+    // WITHOUT enabling JS eval()/new Function(). The Pyodide worker itself
+    // gets a separate, narrowly-scoped CSP in next.config.ts.
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'${devEval} https://cdn.jsdelivr.net`,
+    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+    "font-src 'self' https://cdn.jsdelivr.net",
+    "worker-src 'self' blob:",
+    "connect-src 'self' https://*.supabase.co https://cdn.jsdelivr.net https://sql.js.org",
+    "img-src 'self' data:",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join("; ");
+}
+
 // Middleware runs in Edge Runtime — use Web Crypto API (not Node's crypto module)
 async function verifyAdminToken(token: string): Promise<boolean> {
   try {
@@ -46,7 +73,22 @@ async function verifyAdminToken(token: string): Promise<boolean> {
 }
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next({ request: req });
+  // Web Crypto (Edge Runtime) — 16 random bytes, base64-encoded, per request.
+  const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
+
+  // Forward the nonce as a request header so Server Components (layout.tsx)
+  // can read it via next/headers and stamp it onto the inline script tag.
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-csp-nonce", nonce);
+
+  const res = NextResponse.next({ request: { headers: requestHeaders } });
+
+  // /pyodideWorker.js keeps its own narrowly-scoped, eval-permitting CSP set
+  // in next.config.ts (needed for Safari's lack of 'wasm-unsafe-eval' support)
+  // — don't overwrite it with the nonce-based page policy.
+  if (req.nextUrl.pathname !== "/pyodideWorker.js") {
+    res.headers.set("Content-Security-Policy", buildCsp(nonce));
+  }
 
   // Refresh the Supabase auth session cookie on every request.
   const supabase = createServerClient(

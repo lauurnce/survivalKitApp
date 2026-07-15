@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
@@ -50,11 +51,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Set by middleware.ts per request; required to run under the nonce-based
+  // CSP script-src (see middleware.ts for why 'unsafe-inline' isn't used).
+  const nonce = (await headers()).get("x-csp-nonce") ?? undefined;
+
   return (
     <html
       lang="en"
@@ -63,6 +68,7 @@ export default function RootLayout({
     >
       <head>
         <script
+          nonce={nonce}
           // First visit follows the device's dark-mode setting; an explicit
           // toggle choice (stored under 'theme') always wins afterwards.
           // localStorage can throw in private browsing — fall back to system.
