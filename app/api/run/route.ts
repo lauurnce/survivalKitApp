@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { truncateOutput } from "@/lib/ide/format";
 import type { LanguageId } from "@/lib/ide/types";
+import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -15,6 +17,11 @@ const JUDGE0_LANG: Partial<Record<LanguageId, number>> = {
   java: 91,  // Java (JDK 17.0.6)
 };
 
+// Rate-limited by BOTH IP and device: IP alone is trivially rotated by an
+// abuser proxying through this endpoint for free compute on a shared public
+// Judge0 instance; device alone doesn't stop many devices behind one IP.
+// Requiring a valid device identity also denies fully anonymous/scripted
+// callers that never picked up the bsit_device_id cookie in the first place.
 const runRateMap = new Map<string, number[]>();
 const RUN_WINDOW_MS = 60_000;
 const RUN_MAX_PER_WINDOW = 10;
@@ -28,7 +35,7 @@ function getIp(req: NextRequest): string {
   );
 }
 
-function isRateLimited(ip: string): boolean {
+function isRateLimited(key: string): boolean {
   const now = Date.now();
   if (runRateMap.size >= MAX_MAP_SIZE) {
     for (const [k, ts] of runRateMap) {
@@ -36,10 +43,10 @@ function isRateLimited(ip: string): boolean {
       if (runRateMap.size < MAX_MAP_SIZE * 0.8) break;
     }
   }
-  const ts = (runRateMap.get(ip) ?? []).filter((t) => now - t < RUN_WINDOW_MS);
+  const ts = (runRateMap.get(key) ?? []).filter((t) => now - t < RUN_WINDOW_MS);
   if (ts.length >= RUN_MAX_PER_WINDOW) return true;
   ts.push(now);
-  runRateMap.set(ip, ts);
+  runRateMap.set(key, ts);
   return false;
 }
 
@@ -49,8 +56,20 @@ function prepareJavaCode(code: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  // Require a valid device identity — denies fully anonymous/scripted abuse
+  // of this endpoint (it proxies to a free, shared public Judge0 instance
+  // with no API key of our own; an unauthenticated open proxy risks the
+  // whole app getting banned from the shared instance, or being used for
+  // compute abuse under our reputation). Any real visitor already has this
+  // cookie from normal page loads.
+  const cookieStore = await cookies();
+  const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+  if (!deviceId) {
+    return NextResponse.json({ error: "Missing device identity" }, { status: 401 });
+  }
+
   const ip = getIp(req);
-  if (isRateLimited(ip)) {
+  if (isRateLimited(ip) || isRateLimited(`device:${deviceId}`)) {
     return NextResponse.json(
       { error: "Rate limit exceeded — try again in a minute" },
       { status: 429, headers: { "Retry-After": "60" } }
