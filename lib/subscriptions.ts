@@ -48,5 +48,20 @@ export async function isSubscribed(
     .limit(1)
     .maybeSingle();
 
-  return !!subjectPlan;
+  if (subjectPlan) return true;
+
+  // Class membership: a joined class with an active, unexpired grant for
+  // this exact subject unlocks every member (block sales via class rep).
+  const { data: membership } = await supabase
+    .from("class_members")
+    .select("class_id, classes!inner(subject_id, year_id, status, current_period_end)")
+    .eq("device_id", deviceId)
+    .eq("classes.subject_id", subjectId)
+    .eq("classes.year_id", yearId)
+    .eq("classes.status", "active")
+    .gt("classes.current_period_end", now)
+    .limit(1)
+    .maybeSingle();
+
+  return !!membership;
 }

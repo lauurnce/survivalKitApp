@@ -82,3 +82,71 @@ describe("isSubscribed", () => {
     expect(eqCalls.some(([c]) => c === "device_id")).toBe(false);
   });
 });
+
+describe("isSubscribed - class membership branch", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    delete process.env.UNLOCK_ALL;
+  });
+
+  // subscriptions table always misses (no direct plan); class_members table
+  // is the one under test here. Dispatch per-table like payments.test.ts does.
+  function mockSupabaseWithClassMembership(membershipData: unknown) {
+    const subsBuilder: Record<string, unknown> = {};
+    for (const m of ["select", "eq", "is", "gt", "limit"]) {
+      subsBuilder[m] = vi.fn().mockReturnValue(subsBuilder);
+    }
+    subsBuilder.maybeSingle = vi.fn().mockResolvedValue({ data: null, error: null });
+
+    const classMembersBuilder: Record<string, unknown> = {};
+    for (const m of ["select", "eq", "gt", "limit"]) {
+      classMembersBuilder[m] = vi.fn().mockReturnValue(classMembersBuilder);
+    }
+    classMembersBuilder.maybeSingle = vi
+      .fn()
+      .mockResolvedValue({ data: membershipData, error: null });
+
+    vi.mocked(createServerClient).mockReturnValue({
+      from: vi.fn((table: string) =>
+        table === "class_members" ? classMembersBuilder : subsBuilder
+      ),
+    } as never);
+
+    return { subsBuilder, classMembersBuilder };
+  }
+
+  it("returns true when device joined an active class for that subject", async () => {
+    const { classMembersBuilder } = mockSupabaseWithClassMembership({
+      class_id: "class-1",
+    });
+
+    const result = await isSubscribed("device-1", "year-1", "subject-1");
+
+    expect(result).toBe(true);
+    expect(classMembersBuilder.eq).toHaveBeenCalledWith("device_id", "device-1");
+    expect(classMembersBuilder.eq).toHaveBeenCalledWith("classes.subject_id", "subject-1");
+    expect(classMembersBuilder.eq).toHaveBeenCalledWith("classes.year_id", "year-1");
+    expect(classMembersBuilder.eq).toHaveBeenCalledWith("classes.status", "active");
+  });
+
+  it("returns false when the joined class has expired", async () => {
+    // current_period_end in the past: the .gt() filter excludes it at the
+    // query level, so the mock returns no row for this case.
+    mockSupabaseWithClassMembership(null);
+
+    const result = await isSubscribed("device-1", "year-1", "subject-1");
+
+    expect(result).toBe(false);
+  });
+
+  it("does not check class membership when no subjectId is supplied", async () => {
+    const { classMembersBuilder } = mockSupabaseWithClassMembership({
+      class_id: "class-1",
+    });
+
+    const result = await isSubscribed("device-1", "year-1");
+
+    expect(result).toBe(false);
+    expect(classMembersBuilder.select).not.toHaveBeenCalled();
+  });
+});
