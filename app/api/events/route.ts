@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
 import type { EventType } from "@/lib/supabase/types";
 import { isUuid } from "@/lib/validation";
+import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 
 const VALID_EVENT_TYPES = new Set<EventType>([
   "enter", "year_select", "subject_open", "module_open",
@@ -53,7 +55,6 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const {
-      device_id,
       event_type,
       year_id = null,
       subject_id = null,
@@ -67,6 +68,16 @@ export async function POST(req: NextRequest) {
       module_id?: string | null;
       section_id?: string | null;
     };
+
+    // Prefer the signed device cookie over whatever device_id the client
+    // claims in the body — otherwise a caller can attribute analytics
+    // events (and the visit-counter RPC below) to a device_id they don't
+    // own. Fall back to the body value only for a first-time visitor with
+    // no cookie yet; there is no per-device data to pollute in that case.
+    const cookieStore = await cookies();
+    const cookieDeviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+    const bodyDeviceId = (body as { device_id?: string })?.device_id;
+    const device_id = cookieDeviceId ?? bodyDeviceId;
 
     if (!device_id || !event_type) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });

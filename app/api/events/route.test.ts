@@ -1,5 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
+// No device cookie by default — mirrors a first-time visitor whose
+// fire-and-forget /api/device sync hasn't landed yet, so the route falls
+// back to the body-supplied device_id (matching pre-existing test behavior).
+let mockCookieValue: string | undefined;
+vi.mock("next/headers", () => ({
+  cookies: () => Promise.resolve({ get: () => (mockCookieValue ? { value: mockCookieValue } : undefined) }),
+}));
+
 // ── Captured insert payloads + controllable insert result ───────────────────
 type InsertPayload = Record<string, unknown>;
 const inserts: InsertPayload[] = [];
@@ -37,6 +45,8 @@ const DEVICE = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
 beforeEach(() => {
   inserts.length = 0;
   insertResult = { error: null };
+  mockCookieValue = undefined;
+  process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
 });
 
 afterEach(() => {
@@ -135,5 +145,18 @@ describe("POST /api/events — share card event types", () => {
   it("still rejects unknown event types", async () => {
     const res = await POST(makeReq({ device_id: DEVICE, event_type: "share_card_bogus" }));
     expect(res.status).toBe(400);
+  });
+});
+
+describe("POST /api/events — device_id trust", () => {
+  it("attributes the event to the signed cookie's device, not a spoofed body value", async () => {
+    const { signDeviceCookie } = await import("@/lib/auth/deviceCookie");
+    mockCookieValue = signDeviceCookie(DEVICE);
+    const spoofed = "ffffffff-ffff-4fff-8fff-ffffffffffff";
+
+    const res = await POST(makeReq({ device_id: spoofed, event_type: "enter" }));
+    expect((await res.json()).ok).toBe(true);
+    expect(inserts[0].device_id).toBe(DEVICE);
+    expect(inserts[0].device_id).not.toBe(spoofed);
   });
 });
