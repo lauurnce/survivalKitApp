@@ -26,7 +26,7 @@ export default function PrivacyPage() {
           Privacy Policy
         </h1>
         <p className="font-sans text-sm text-ink-faint mb-12">
-          Last updated: June 2026 &mdash; Compliant with the Philippine Data Privacy Act of 2012 (RA 10173)
+          Last updated: July 2026 &mdash; Compliant with the Philippine Data Privacy Act of 2012 (RA 10173)
         </p>
 
         <div className="font-sans text-base text-ink-muted leading-relaxed space-y-10">
@@ -58,8 +58,17 @@ export default function PrivacyPage() {
               <div>
                 <p className="font-sans font-medium text-ink mb-1">Name and email address</p>
                 <p>
-                  Collected when you join our waitlist or sign up for a coming-soon
-                  notification. We do not collect this unless you voluntarily submit it.
+                  Your email is collected when you create an account. Your name, and
+                  optionally your age, gender, school, and course, are collected only
+                  if you fill in your profile — all of it is optional and you can
+                  delete your account and this data yourself at any time from your
+                  Profile page.
+                </p>
+                <p className="mt-2 text-ink-faint text-sm">
+                  We previously ran a &quot;notify me&quot; waitlist for subjects that
+                  had no content yet. That is finished: every subject now has content,
+                  everyone who signed up was emailed, and their names and emails were
+                  deleted.
                 </p>
               </div>
 
@@ -107,9 +116,10 @@ export default function PrivacyPage() {
             <h2 className="font-serif text-xl text-ink mb-3">3. Why We Collect It</h2>
             <div className="space-y-3">
               <p>
-                <span className="text-ink font-medium">Waitlist name and email</span> —
-                to notify you when content becomes available or when we launch. We will
-                not use your email for anything else without your permission.
+                <span className="text-ink font-medium">Account email and profile</span> —
+                to sign you in, keep your unlocked subjects tied to your account across
+                devices, and personalize your dashboard. We will not use your email for
+                anything else without your permission.
               </p>
               <p>
                 <span className="text-ink font-medium">Device ID and behavioral data</span> —
@@ -225,8 +235,11 @@ export default function PrivacyPage() {
             <div className="space-y-3">
               <p>
                 <span className="text-ink font-medium">Waitlist name and email</span> —
-                kept until the product launches or until you request deletion, whichever
-                comes first.
+                deleted once the subject you signed up for has content and we have
+                notified you, since that is the only purpose we collected it for.
+                All notify-me signups from the 2026 waitlist were deleted in July
+                2026 after everyone was emailed. The signup form is no longer in
+                use.
               </p>
               <p>
                 <span className="text-ink font-medium">Behavioral and analytics data</span> —
