@@ -50,3 +50,7 @@ docs/NEXT_STEPS.md
 
 # Local preview stores (PROFILE_STORE=file)
 .dev/
+
+# Local data exports — these contain personal data (names, emails) pulled
+# from the live database. Never commit them; delete once you're done.
+waitlist-backup-*.json
