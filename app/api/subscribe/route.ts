@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createPaymongoLink, PLANS, type PlanKey } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { buildSuccessUrl } from "@/lib/subscribeRedirect";
+import {
+  DEVICE_COOKIE,
+  DEVICE_COOKIE_OPTIONS,
+  signDeviceCookie,
+  verifyDeviceCookie,
+} from "@/lib/auth/deviceCookie";
 
 const limiter = createRateLimiter(5);
 
@@ -21,7 +28,20 @@ export async function POST(req: NextRequest) {
 
   const yearId = body?.yearId;
   const subjectId = body?.subjectId ?? null; // null = year plan
-  const deviceId = body?.deviceId;
+
+  // Trust only the signed device cookie for granting access — a client-supplied
+  // deviceId in the body can never override it, or an attacker could plant a
+  // victim's device UUID and have the payment grant land on that device
+  // instead of their own. If no cookie exists yet (first visit, or the
+  // fire-and-forget /api/device sync hasn't landed), mint one from the body's
+  // UUID now, mirroring /api/device's own trust model — this only ever signs
+  // a cookie for the UUID the CALLER supplied, never lets them adopt someone
+  // else's already-established device identity.
+  const cookieStore = await cookies();
+  const cookieDeviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+  const bodyDeviceId = body?.deviceId;
+  const deviceId = cookieDeviceId ?? (isUuid(bodyDeviceId) ? bodyDeviceId : undefined);
+  const needsCookie = !cookieDeviceId && isUuid(bodyDeviceId);
 
   if (!isUuid(yearId) || !isUuid(deviceId)) {
     return NextResponse.json(
@@ -101,7 +121,11 @@ export async function POST(req: NextRequest) {
       userId ?? undefined,
       plan
     );
-    return NextResponse.json({ checkoutUrl });
+    const res = NextResponse.json({ checkoutUrl });
+    if (needsCookie) {
+      res.cookies.set(DEVICE_COOKIE, signDeviceCookie(deviceId), DEVICE_COOKIE_OPTIONS);
+    }
+    return res;
   } catch (err) {
     console.error("createPaymongoLink failed:", err);
     return NextResponse.json(
