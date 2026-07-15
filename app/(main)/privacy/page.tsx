@@ -181,7 +181,7 @@ export default function PrivacyPage() {
                 ["Right to be informed", "You have the right to know what data we collect and why. This policy is how we fulfill that."],
                 ["Right to access", "You can request a copy of the personal data we hold about you."],
                 ["Right to rectify", "You can ask us to correct inaccurate or incomplete data."],
-                ["Right to erasure", "You can ask us to delete your personal data. We will comply unless we are legally required to retain it."],
+                ["Right to erasure", "You can delete your account and personal data yourself, any time, from your Profile page — or email us and we will do it for you. We will comply unless we are legally required to retain it (see Section 7)."],
                 ["Right to object", "You can object to how we process your data, including for analytics purposes."],
                 ["Right to data portability", "You can request your data in a structured, commonly used format."],
                 ["Right to file a complaint", "If you believe your rights have been violated, you can file a complaint with the National Privacy Commission at privacy.gov.ph."],
@@ -199,8 +199,14 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="font-serif text-xl text-ink mb-3">6. How to Exercise Your Rights</h2>
+            <p className="mb-3">
+              <span className="text-ink font-medium">To delete your account</span> — sign in,
+              go to your Profile page, and use the &quot;Delete my account&quot; option. This
+              removes your profile and unlinks your name from your subscription and progress
+              history immediately.
+            </p>
             <p>
-              Email us at{" "}
+              For anything else (access, correction, or if you can&apos;t sign in), email us at{" "}
               <a
                 href="mailto:paneslawrence8@gmail.com?subject=Data%20Privacy%20Request"
                 className="text-ink hover:text-accent transition-colors underline underline-offset-2"
