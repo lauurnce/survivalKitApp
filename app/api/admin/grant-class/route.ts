@@ -3,18 +3,7 @@ import { getAdminSession } from "@/lib/auth/adminSession";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import { randomUUID } from "crypto";
-
-// Excludes 0/O/1/I/L to avoid Messenger-transcription errors when reps
-// read the code aloud or retype it from a screenshot.
-const CODE_ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
-
-function generateClassCode(): string {
-  let code = "";
-  for (let i = 0; i < 6; i++) {
-    code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
-  }
-  return code;
-}
+import { generateClassCode } from "@/lib/classCode";
 
 export async function POST(req: NextRequest) {
   const authed = await getAdminSession();
