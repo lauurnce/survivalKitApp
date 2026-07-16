@@ -22,16 +22,21 @@ export async function POST(req: NextRequest) {
   }
 
   const body = (await req.json().catch(() => null)) as { code?: string } | null;
-  const code = (typeof body?.code === "string" ? body.code : "").trim();
-  if (code.length !== 6) {
+  const rawCode = (typeof body?.code === "string" ? body.code : "").trim();
+  // Exact alphabet match (same set grant-class generates from) rejects any
+  // input containing SQL wildcard characters (%, _) before it ever reaches
+  // the query, so switching ilike -> eq below can't be bypassed by a code
+  // that "looks" 6 chars but smuggles wildcards.
+  if (!/^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{6}$/i.test(rawCode)) {
     return NextResponse.json({ error: "invalid_code" }, { status: 400 });
   }
+  const code = rawCode.toUpperCase();
 
   const supabase = createServerClient();
   const { data: cls } = await supabase
     .from("classes")
     .select("id, subject_id, year_id, seat_cap, status, current_period_end")
-    .ilike("code", code)
+    .eq("code", code)
     .maybeSingle();
 
   if (!cls || cls.status !== "active" || new Date(cls.current_period_end) < new Date()) {

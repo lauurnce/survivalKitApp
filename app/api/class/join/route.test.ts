@@ -20,7 +20,7 @@ vi.mock("@/lib/supabase/server", () => ({
       if (table === "classes") {
         return {
           select: () => ({
-            ilike: () => ({
+            eq: () => ({
               maybeSingle: () => Promise.resolve({ data: mockClassRow }),
             }),
           }),
@@ -148,6 +148,29 @@ describe("POST /api/class/join", () => {
     mockCookieValue = signDeviceCookie(DEV);
     const res = await POST(makeReq({ code: "AB" }));
     expect(res.status).toBe(400);
+  });
+
+  it("rejects a 6-char code containing SQL wildcard characters (%, _) as invalid, never reaching the DB", async () => {
+    mockCookieValue = signDeviceCookie(DEV);
+    // Regression test: the alphabet check must reject these before any query
+    // runs, since %/_ are SQL LIKE wildcards and would otherwise let an
+    // attacker match classes without knowing a real code. Each call gets its
+    // own fixed IP (rather than the shared makeReq() counter) so this loop
+    // doesn't consume shared rate-limit budget from the module-level limiter
+    // that persists across every test in this file.
+    let wildcardIp = 0;
+    const wildcardReq = (code: string) =>
+      ({
+        json: () => Promise.resolve({ code }),
+        headers: { get: (h: string) => (h === "x-real-ip" ? `10.3.0.${wildcardIp++}` : null) },
+      }) as unknown as import("next/server").NextRequest;
+
+    for (const code of ["%%%%%%", "A%B%C%", "AB__EF", "______"]) {
+      const res = await POST(wildcardReq(code));
+      expect(res.status).toBe(400);
+      const json = await res.json();
+      expect(json.error).toBe("invalid_code");
+    }
   });
 
   it("trims whitespace from a pasted code before validating/looking it up", async () => {
