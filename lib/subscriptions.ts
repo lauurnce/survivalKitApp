@@ -50,6 +50,13 @@ export async function isSubscribed(
 
   if (subjectPlan) return true;
 
+  // subjectId is string-interpolated into the PostgREST .or() filter below,
+  // so only a strict UUID may ever reach it — a crafted value could
+  // otherwise inject extra filter branches (e.g. "x,subject_id.not.is.null"
+  // widens the OR and bypasses the subject match). Callers today validate
+  // this upstream, but this guard must not depend on them.
+  if (!isUuid(subjectId)) return false;
+
   // Class membership: a joined class with an active, unexpired grant for
   // this exact subject (or an all-subjects class for this year, where
   // classes.subject_id IS NULL) unlocks every member (block sales via class

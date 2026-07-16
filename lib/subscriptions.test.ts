@@ -85,6 +85,11 @@ describe("isSubscribed", () => {
 });
 
 describe("isSubscribed - class membership branch", () => {
+  // The class-membership branch requires a strict UUID subjectId (it is
+  // interpolated into the PostgREST .or() filter), matching what production
+  // callers pass.
+  const SUBJECT_ID = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+
   beforeEach(() => {
     vi.clearAllMocks();
     delete process.env.UNLOCK_ALL;
@@ -121,14 +126,14 @@ describe("isSubscribed - class membership branch", () => {
       class_id: "class-1",
     });
 
-    const result = await isSubscribed("device-1", "year-1", "subject-1");
+    const result = await isSubscribed("device-1", "year-1", SUBJECT_ID);
 
     expect(result).toBe(true);
     expect(classMembersBuilder.eq).toHaveBeenCalledWith("device_id", "device-1");
     expect(classMembersBuilder.eq).toHaveBeenCalledWith("classes.year_id", "year-1");
     expect(classMembersBuilder.eq).toHaveBeenCalledWith("classes.status", "active");
     expect(classMembersBuilder.or).toHaveBeenCalledWith(
-      "subject_id.eq.subject-1,subject_id.is.null",
+      `subject_id.eq.${SUBJECT_ID},subject_id.is.null`,
       { referencedTable: "classes" }
     );
   });
@@ -138,7 +143,7 @@ describe("isSubscribed - class membership branch", () => {
     // query level, so the mock returns no row for this case.
     mockSupabaseWithClassMembership(null);
 
-    const result = await isSubscribed("device-1", "year-1", "subject-1");
+    const result = await isSubscribed("device-1", "year-1", SUBJECT_ID);
 
     expect(result).toBe(false);
   });
@@ -156,6 +161,10 @@ describe("isSubscribed - class membership branch", () => {
 });
 
 describe("isSubscribed - all-subjects class membership", () => {
+  // Must be a strict UUID: non-UUID subjectIds are rejected before the
+  // class-membership query (see the injection-guard test below).
+  const SUBJECT_ID = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+
   beforeEach(() => {
     vi.clearAllMocks();
     delete process.env.UNLOCK_ALL;
@@ -195,14 +204,14 @@ describe("isSubscribed - all-subjects class membership", () => {
       class_id: "class-1",
     });
 
-    const result = await isSubscribed("device-1", "year-1", "subject-1");
+    const result = await isSubscribed("device-1", "year-1", SUBJECT_ID);
 
     expect(result).toBe(true);
     expect(classMembersBuilder.eq).toHaveBeenCalledWith("device_id", "device-1");
     expect(classMembersBuilder.eq).toHaveBeenCalledWith("classes.year_id", "year-1");
     expect(classMembersBuilder.eq).toHaveBeenCalledWith("classes.status", "active");
     expect(classMembersBuilder.or).toHaveBeenCalledWith(
-      "subject_id.eq.subject-1,subject_id.is.null",
+      `subject_id.eq.${SUBJECT_ID},subject_id.is.null`,
       { referencedTable: "classes" }
     );
   });
@@ -212,8 +221,27 @@ describe("isSubscribed - all-subjects class membership", () => {
     // excludes it at the query level, so the mock returns no row.
     mockSupabaseWithClassMembership(null);
 
-    const result = await isSubscribed("device-1", "year-1", "subject-1");
+    const result = await isSubscribed("device-1", "year-1", SUBJECT_ID);
 
     expect(result).toBe(false);
+  });
+
+  it("rejects a non-UUID subjectId before it can reach the interpolated .or() filter", async () => {
+    // subjectId is string-interpolated into the PostgREST .or() filter, so a
+    // crafted value could inject extra filter branches (e.g. widening the OR
+    // to bypass the subject match). A strict UUID guard must return false
+    // without ever querying class_members.
+    const { classMembersBuilder } = mockSupabaseWithClassMembership({
+      class_id: "class-1",
+    });
+
+    const result = await isSubscribed(
+      "device-1",
+      "year-1",
+      "x,subject_id.not.is.null"
+    );
+
+    expect(result).toBe(false);
+    expect(classMembersBuilder.select).not.toHaveBeenCalled();
   });
 });
