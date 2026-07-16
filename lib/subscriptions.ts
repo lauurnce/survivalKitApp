@@ -51,13 +51,17 @@ export async function isSubscribed(
   if (subjectPlan) return true;
 
   // Class membership: a joined class with an active, unexpired grant for
-  // this exact subject unlocks every member (block sales via class rep).
+  // this exact subject (or an all-subjects class for this year, where
+  // classes.subject_id IS NULL) unlocks every member (block sales via class
+  // rep). A plain .eq("classes.subject_id", subjectId) can never match a
+  // NULL subject_id row (SQL "= NULL" never matches), so an .or() covering
+  // both cases is required.
   const { data: membership } = await supabase
     .from("class_members")
     .select("class_id, classes!inner(subject_id, year_id, status, current_period_end)")
     .eq("device_id", deviceId)
-    .eq("classes.subject_id", subjectId)
     .eq("classes.year_id", yearId)
+    .or(`subject_id.eq.${subjectId},subject_id.is.null`, { referencedTable: "classes" })
     .eq("classes.status", "active")
     .gt("classes.current_period_end", now)
     .limit(1)
