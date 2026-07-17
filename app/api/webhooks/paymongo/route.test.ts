@@ -202,4 +202,26 @@ describe("POST /api/webhooks/paymongo - class purchase branch", () => {
     expect(json).toEqual({ ok: true, deduped: true });
     expect(classesInserts).toHaveLength(0);
   });
+
+  it("rejects remarks with seats:0 (below minimum 11)", async () => {
+    const res = await POST(
+      signedRequest(`block:1 year:${YEAR} subject:${SUBJ} seats:0 rep:${REP_DEVICE}`, 79900)
+    );
+    expect(res.status).toBe(400);
+    const json = await res.json();
+    expect(json.error).toBe("Malformed remarks");
+    expect(paymentsInserts).toHaveLength(0);
+    expect(classesInserts).toHaveLength(0);
+  });
+
+  it("rejects remarks with a non-UUID rep device ID", async () => {
+    const res = await POST(
+      signedRequest(`block:1 year:${YEAR} subject:${SUBJ} seats:11 rep:not-a-uuid`, 79900)
+    );
+    expect(res.status).toBe(400);
+    const json = await res.json();
+    expect(json.error).toBe("Malformed remarks");
+    expect(paymentsInserts).toHaveLength(0);
+    expect(classesInserts).toHaveLength(0);
+  });
 });

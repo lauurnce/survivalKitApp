@@ -104,7 +104,11 @@ export async function POST(req: NextRequest) {
     const [, classYearId, classSubjectId, seatsStr, repDeviceId] = classMatch;
     const seats = parseInt(seatsStr, 10);
 
-    if (!isUuid(classYearId) || (classSubjectId && !isUuid(classSubjectId))) {
+    if (seats < 11) {
+      return NextResponse.json({ error: "Malformed remarks" }, { status: 400 });
+    }
+
+    if (!isUuid(classYearId) || (classSubjectId && !isUuid(classSubjectId)) || !isUuid(repDeviceId)) {
       return NextResponse.json({ error: "Malformed remarks" }, { status: 400 });
     }
     if (typeof paidStatus !== "string" || paidStatus !== "paid") {
