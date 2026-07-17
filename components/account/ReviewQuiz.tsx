@@ -204,7 +204,7 @@ export function ReviewQuiz() {
   if (finished) {
     const verdict =
       score === total
-        ? "Perfect — you know this material cold."
+        ? "Perfect score — you got every term right."
         : score / total >= 0.7
           ? "Good work — a couple of terms to revisit."
           : "Keep reviewing — reread the modules below and try again.";
