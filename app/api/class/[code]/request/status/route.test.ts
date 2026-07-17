@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Controllable per-test: set to a signed cookie value to simulate a returning
 // visitor, or leave undefined to simulate no device identity at all.
-// Mirrors app/api/class/join/route.test.ts's cookie-mocking pattern.
+// Mirrors app/api/class/[code]/request/route.test.ts's cookie-mocking pattern.
 let mockCookieValue: string | undefined;
 vi.mock("next/headers", () => ({
   cookies: () => Promise.resolve({ get: () => (mockCookieValue ? { value: mockCookieValue } : undefined) }),

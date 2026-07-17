@@ -1,6 +1,6 @@
 -- supabase/migrations/20260716010000_class_members_seat_cap_trigger.sql
--- Closes the seat_cap race condition: app/api/class/join/route.ts does a
--- count-then-insert, which is inherently racy under concurrent requests
+-- Closes the seat_cap race condition: app/api/class/[code]/rep/decide/route.ts
+-- does a count-then-insert, which is inherently racy under concurrent requests
 -- (two requests can both read count < seat_cap and both insert, overshooting
 -- the cap). The application-level check stays in place for the common case
 -- (fast, clean 409 without round-tripping through a failed insert), but this

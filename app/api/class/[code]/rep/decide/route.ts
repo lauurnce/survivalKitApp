@@ -58,9 +58,8 @@ export async function POST(
 
   // Approve: create the class_members row. The class_members_seat_cap_trigger
   // (supabase/migrations/20260716010000_class_members_seat_cap_trigger.sql)
-  // enforces the cap here, same as the prior iteration's join endpoint did —
-  // map its P0001 error to a clear 409, not a generic 500. Only flip the
-  // request to 'approved' after this insert succeeds.
+  // enforces the cap here — map its P0001 error to a clear 409, not a generic
+  // 500. Only flip the request to 'approved' after this insert succeeds.
   const { error: memberError } = await supabase
     .from("class_members")
     .upsert({ class_id: cls.id, device_id: reqRow.device_id }, { onConflict: "class_id,device_id" });

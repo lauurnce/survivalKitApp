@@ -5,9 +5,8 @@ import { createServerClient } from "@/lib/supabase/server";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
 import { isValidClassCodeShape } from "@/lib/classCode";
 
-// Mirrors app/api/class/join/route.ts's rate-limit reasoning: this is the
-// only throttle standing between a 6-char code (887M-combination space,
-// Math.random-generated) and brute-force guessing. Do not remove or weaken.
+// This is the only throttle standing between a 6-char code (887M-combination
+// space, Math.random-generated) and brute-force guessing. Do not remove or weaken.
 const limiter = createRateLimiter(10);
 
 export async function POST(
