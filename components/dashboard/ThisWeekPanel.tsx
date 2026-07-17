@@ -14,13 +14,13 @@ export function ThisWeekPanel({ recs }: Props) {
     <div className="rounded-xl border border-taupe/30 bg-paper">
       <div className="px-6 pt-6">
         <p className="label-sm">This week</p>
-        <h2 className="font-serif text-lg text-ink mt-1">Recommended for you</h2>
+        <h2 className="font-serif text-lg text-ink mt-1">Your next modules</h2>
       </div>
 
       {recs.length === 0 ? (
         <div className="px-6 py-6">
           <p className="text-sm text-ink-muted">
-            You&apos;re all caught up. Explore what&apos;s next.{" "}
+            You&apos;re all caught up. Browse subjects to unlock your next one.{" "}
             <Link
               href="/year"
               className="underline hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
