@@ -31,12 +31,12 @@ export function HeroCard({ term, topPick, profile }: Props) {
           <p className="label-sm mb-3">Current semester</p>
 
           <h1 className="font-serif text-display-md text-ink">
-            {term ? `${term.yearLabel} · ${term.semester === 1 ? "1st" : "2nd"} Semester` : "Start your roadmap"}
+            {term ? `${term.yearLabel} · ${term.semester === 1 ? "1st" : "2nd"} Semester` : "No subjects unlocked yet"}
           </h1>
 
           <p className="mt-2 text-sm text-ink-muted">
             {term
-              ? "Build your foundation one module at a time."
+              ? "Here's where your semester stands. Pick up where you left off below."
               : "Unlock a subject to begin your first semester."}
           </p>
 
