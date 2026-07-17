@@ -130,6 +130,20 @@ describe("POST /api/class/[code]/rep/decide", () => {
     expect((statusUpdateCalls[0][0] as { decided_at?: string }).decided_at).toBeTruthy();
   });
 
+  it("returns 409 'already_decided' for a request that is not pending, touching nothing", async () => {
+    mockCookieValue = signDeviceCookie(REP_DEV);
+    mockClassRow = { id: CLASS_ID, rep_device_id: REP_DEV };
+    mockRequestRow = { id: REQUEST_ID, device_id: MEMBER_DEV, status: "rejected" };
+
+    const res = await POST(makeReq({ requestId: REQUEST_ID, decision: "approve" }), makeParams("ABC234"));
+    expect(res.status).toBe(409);
+    const json = await res.json();
+    expect(json.error).toBe("already_decided");
+
+    expect(memberUpsertCalls.length).toBe(0);
+    expect(statusUpdateCalls.length).toBe(0);
+  });
+
   it("rejects a pending request: flips status, does NOT create a class_members row", async () => {
     mockCookieValue = signDeviceCookie(REP_DEV);
     mockClassRow = { id: CLASS_ID, rep_device_id: REP_DEV };

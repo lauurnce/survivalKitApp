@@ -47,6 +47,14 @@ export async function POST(
 
   if (!reqRow) return NextResponse.json({ error: "not_found" }, { status: 404 });
 
+  // A request can only be decided once. If it has already been approved or
+  // rejected, don't silently re-run the decision (which could re-admit a
+  // rejected classmate or re-process an approved one) — surface a 409 so the
+  // dashboard can refresh its now-stale view.
+  if (reqRow.status !== "pending") {
+    return NextResponse.json({ error: "already_decided" }, { status: 409 });
+  }
+
   if (decision === "reject") {
     const { error } = await supabase
       .from("class_join_requests")
