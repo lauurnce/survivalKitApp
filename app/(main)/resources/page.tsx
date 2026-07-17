@@ -28,7 +28,7 @@ const CARDS: ResourceCard[] = [
   {
     kicker: "Find",
     title: "Search the kit",
-    description: "Find any lesson, module, or topic in seconds.",
+    description: "Find any lesson, module, or topic by keyword.",
     href: "/search",
   },
 ];
@@ -41,7 +41,7 @@ export default async function ResourcesPage() {
       <header className="space-y-2">
         <p className="label-sm">Study tools</p>
         <h1 className="font-serif text-display-md text-ink">Resources</h1>
-        <p className="text-ink-muted">Practice tools to sharpen what you&apos;ve learned.</p>
+        <p className="text-ink-muted">Run code and quiz yourself on the modules you&apos;ve finished.</p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">
