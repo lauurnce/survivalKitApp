@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   createPaymongoLink,
+  createDynamicPaymongoLink,
   verifyPaymongoWebhook,
   parseLinkRemarks,
   getLinkByReference,
@@ -97,6 +98,90 @@ describe("createPaymongoLink", () => {
 
     await expect(
       createPaymongoLink("year-1", "device-1", "https://example.com/success")
+    ).rejects.toThrow("PayMongo error");
+  });
+});
+
+describe("createDynamicPaymongoLink", () => {
+  beforeEach(() => {
+    process.env.PAYMONGO_SECRET_KEY = FAKE_SECRET;
+    vi.stubGlobal("fetch", vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    delete process.env.PAYMONGO_SECRET_KEY;
+  });
+
+  it("calls the PayMongo links API with the exact caller-supplied amount and remarks", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: {
+          id: "link_dyn123",
+          attributes: { checkout_url: "https://checkout.paymongo.com/dyn" },
+        },
+      }),
+    } as Response);
+
+    const result = await createDynamicPaymongoLink(
+      12345,
+      "BSIT Survival Kit — Class block (25 seats)",
+      "class:abc-123 seats:25",
+      "https://example.com/success",
+      "idem-key-1"
+    );
+
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.paymongo.com/v1/links",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          Authorization: expect.stringContaining("Basic"),
+          "Idempotency-Key": "idem-key-1",
+        }),
+      })
+    );
+
+    const sentBody = JSON.parse(
+      vi.mocked(fetch).mock.calls[0][1]!.body as string
+    );
+    expect(sentBody.data.attributes.amount).toBe(12345);
+    expect(sentBody.data.attributes.description).toBe(
+      "BSIT Survival Kit — Class block (25 seats)"
+    );
+    expect(sentBody.data.attributes.remarks).toBe("class:abc-123 seats:25");
+    expect(result.checkoutUrl).toBe("https://checkout.paymongo.com/dyn");
+    expect(result.linkId).toBe("link_dyn123");
+  });
+
+  it("throws when PAYMONGO_SECRET_KEY is not set", async () => {
+    delete process.env.PAYMONGO_SECRET_KEY;
+    await expect(
+      createDynamicPaymongoLink(
+        12345,
+        "desc",
+        "remarks",
+        "https://example.com/success",
+        "idem-key-2"
+      )
+    ).rejects.toThrow("PAYMONGO_SECRET_KEY");
+  });
+
+  it("throws with the PayMongo error detail on a non-ok response", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ errors: [{ detail: "Invalid API key" }] }),
+    } as Response);
+
+    await expect(
+      createDynamicPaymongoLink(
+        12345,
+        "desc",
+        "remarks",
+        "https://example.com/success",
+        "idem-key-3"
+      )
     ).rejects.toThrow("PayMongo error");
   });
 });

@@ -98,6 +98,54 @@ export async function createPaymongoLink(
   };
 }
 
+// For purchases whose amount is computed dynamically (e.g. class-rep block
+// sales, priced by seat count) rather than looked up from the fixed PLANS
+// table. Caller is responsible for computing `amount` (centavos) and
+// `remarks` correctly — this function does no plan resolution, unlike
+// createPaymongoLink.
+export async function createDynamicPaymongoLink(
+  amount: number,
+  description: string,
+  remarks: string,
+  successUrl: string,
+  idempotencyKey: string
+): Promise<{ checkoutUrl: string; linkId: string }> {
+  const secretKey = process.env.PAYMONGO_SECRET_KEY;
+  if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
+
+  const encoded = Buffer.from(`${secretKey}:`).toString("base64");
+
+  const res = await fetch("https://api.paymongo.com/v1/links", {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${encoded}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": idempotencyKey,
+    },
+    body: JSON.stringify({
+      data: {
+        attributes: {
+          amount,
+          description,
+          remarks,
+          redirect: { success: successUrl, failed: successUrl },
+        },
+      },
+    }),
+  });
+
+  const json = await res.json();
+  if (!res.ok) {
+    const detail = json?.errors?.[0]?.detail ?? "Unknown error";
+    throw new Error(`PayMongo error: ${detail}`);
+  }
+
+  return {
+    checkoutUrl: json.data.attributes.checkout_url as string,
+    linkId: json.data.id as string,
+  };
+}
+
 // ── Reconciliation: list paid links from PayMongo to catch payments that never
 //    reflected (webhook dropped/rejected). Used by the admin reconcile view. ──
 
