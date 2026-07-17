@@ -91,6 +91,11 @@ describe("POST /api/admin/grant-class", () => {
     expect(res.status).toBe(400);
   });
 
+  it("rejects a non-UUID repDeviceId", async () => {
+    const res = await POST(makeReq({ ...validBody, repDeviceId: "not-a-uuid" }));
+    expect(res.status).toBe(400);
+  });
+
   it("rejects a missing/invalid amount", async () => {
     const res = await POST(makeReq({ ...validBody, amount: 0 }));
     expect(res.status).toBe(400);

@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     !name ||
     !isUuid(subjectId) ||
     !isUuid(yearId) ||
-    !repDeviceId ||
+    !isUuid(repDeviceId) ||
     typeof amount !== "number" ||
     amount <= 0 ||
     !periodEnd
