@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { createDynamicPaymongoLink } from "@/lib/paymongo";
+import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import crypto from "crypto";
 
@@ -38,6 +39,39 @@ export async function POST(req: NextRequest) {
   }
   if (scope === "subject" && !isUuid(subjectId)) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
+  }
+
+  // Verify the year/subject pair actually exists (and, for scope='subject',
+  // that the subject belongs to that year) before creating a real payment
+  // link. Without this, a tampered request with fabricated-but-valid UUIDs,
+  // or a mismatched subject/year pair, still produces a working checkout —
+  // and after payment the webhook creates a classes row with a dangling or
+  // inconsistent subject/year pair that isSubscribed's class check (which
+  // filters on BOTH subject_id and year_id matching the page's real pair)
+  // will never unlock. That's real money paid for a dead class. The webhook
+  // doesn't need its own check: only this route can create links under our
+  // PayMongo secret, and webhook signature verification ensures events are
+  // about our links, so validating here closes the pipeline.
+  const supabase = createServerClient();
+  if (scope === "subject") {
+    const { data: subject } = await supabase
+      .from("subjects")
+      .select("id")
+      .eq("id", subjectId)
+      .eq("year_id", yearId)
+      .maybeSingle();
+    if (!subject) {
+      return NextResponse.json({ error: "invalid_request" }, { status: 400 });
+    }
+  } else {
+    const { data: year } = await supabase
+      .from("years")
+      .select("id")
+      .eq("id", yearId)
+      .maybeSingle();
+    if (!year) {
+      return NextResponse.json({ error: "invalid_request" }, { status: 400 });
+    }
   }
 
   const amount = computeAmount(scope, seats);

@@ -20,6 +20,27 @@ vi.mock("@/lib/paymongo", async (importOriginal) => {
   };
 });
 
+// Controllable per-test: defaults to "valid" fixtures (subject belongs to
+// year, year exists) so existing tests keep passing without opting in.
+// Individual tests override to simulate a nonexistent/mismatched row.
+let mockSubjectRow: { id: string } | null = { id: "x" };
+let mockYearRow: { id: string } | null = { id: "x" };
+vi.mock("@/lib/supabase/server", () => ({
+  createServerClient: () => ({
+    from: (table: string) => ({
+      select: () => ({
+        eq: () => ({
+          maybeSingle: () =>
+            Promise.resolve({ data: table === "years" ? mockYearRow : mockSubjectRow }),
+          eq: () => ({
+            maybeSingle: () => Promise.resolve({ data: mockSubjectRow }),
+          }),
+        }),
+      }),
+    }),
+  }),
+}));
+
 import { POST } from "./route";
 import { signDeviceCookie } from "@/lib/auth/deviceCookie";
 
@@ -39,6 +60,8 @@ beforeEach(() => {
   linkCalls.length = 0;
   process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
   mockCookieValue = signDeviceCookie(REP_DEVICE);
+  mockSubjectRow = { id: "x" };
+  mockYearRow = { id: "x" };
 });
 
 describe("POST /api/class/checkout", () => {
@@ -109,6 +132,22 @@ describe("POST /api/class/checkout", () => {
       makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 })
     );
     expect(res.status).toBe(401);
+    expect(linkCalls).toHaveLength(0);
+  });
+
+  it("rejects scope='subject' when the subject doesn't belong to yearId", async () => {
+    mockSubjectRow = null; // simulates a subject/year mismatch or fabricated UUIDs
+    const res = await POST(
+      makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 })
+    );
+    expect(res.status).toBe(400);
+    expect(linkCalls).toHaveLength(0);
+  });
+
+  it("rejects scope='all' when yearId doesn't exist", async () => {
+    mockYearRow = null; // simulates a fabricated-but-valid yearId UUID
+    const res = await POST(makeReq({ scope: "all", yearId: YEAR, seats: 11 }));
+    expect(res.status).toBe(400);
     expect(linkCalls).toHaveLength(0);
   });
 });
