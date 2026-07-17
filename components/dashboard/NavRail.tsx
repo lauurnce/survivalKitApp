@@ -123,7 +123,7 @@ export function NavRail({ overallDone, overallTotal }: NavRailProps) {
         </div>
         <span className="label-sm text-center">Modules done</span>
         <p className="text-center text-xs italic text-ink-muted font-serif">
-          Small steps today, big wins later.
+          Across every year and subject you&apos;ve unlocked.
         </p>
       </div>
     </nav>
