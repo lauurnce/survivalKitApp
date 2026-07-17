@@ -15,6 +15,7 @@ interface Props {
 export function UniversityCombobox({ name, defaultValue, className }: Props) {
   const [value, setValue] = useState(defaultValue);
   const [open, setOpen] = useState(false);
+  const listboxId = `${name}-university-listbox`;
 
   const filtered = useMemo(() => {
     const needle = value.trim().toLowerCase();
@@ -22,11 +23,14 @@ export function UniversityCombobox({ name, defaultValue, className }: Props) {
     return UNIVERSITIES.filter((u) => u.name.toLowerCase().includes(needle));
   }, [value]);
 
+  const listboxOpen = open && filtered.length > 0;
+
   return (
     <div className="relative">
       <input
         role="combobox"
-        aria-expanded={open}
+        aria-expanded={listboxOpen}
+        aria-controls={listboxId}
         aria-autocomplete="list"
         autoComplete="off"
         name={name}
@@ -36,8 +40,12 @@ export function UniversityCombobox({ name, defaultValue, className }: Props) {
         onBlur={() => setOpen(false)}
         className={className}
       />
-      {open && filtered.length > 0 && (
-        <ul className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded border border-taupe bg-paper shadow-lg">
+      {listboxOpen && (
+        <ul
+          id={listboxId}
+          role="listbox"
+          className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded border border-taupe bg-paper shadow-lg"
+        >
           {filtered.map((u) => (
             <li
               key={u.slug}
