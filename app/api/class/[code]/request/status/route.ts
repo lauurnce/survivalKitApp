@@ -2,29 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { createServerClient } from "@/lib/supabase/server";
-import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
 import { isValidClassCodeShape } from "@/lib/classCode";
 
-// This route also does a code lookup (`.eq("code", code)`), so it shares the
-// same class-code brute-force surface as app/api/class/join/route.ts and
-// app/api/class/[code]/request/route.ts (887M-combination Math.random-
-// generated space, defended only by rate limiting). A modest limit here
-// closes that gap without breaking the waiting-room's ~3s poll cadence
-// (a legitimate poller hits ~20 requests/min; 30/min leaves headroom).
-const limiter = createRateLimiter(30);
-
+// Deliberately NOT rate-limited, unlike the POST routes that look up codes:
+// this route is not a brute-force oracle — it returns { status: "none" }
+// uniformly for nonexistent classes AND for valid classes where this device
+// has no request, so an attacker learns nothing per guess (the real oracle,
+// POST, is throttled at 10/min). A limiter here would also break the target
+// scenario: classmates poll every ~3s (20 req/min each) and campus WiFi puts
+// many students behind one NAT'd IP, so even two simultaneous pollers would
+// collide with any modest per-IP limit.
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ code: string }> }
 ) {
-  // Rate-limited requests still get the same { status: "none" } shape as
-  // every other "nothing to see here" case below, so this endpoint never
-  // leaks information (existence of a code, rate-limit state, etc.) via a
-  // differently-shaped response.
-  if (limiter.check(getClientIp(req))) {
-    return NextResponse.json({ status: "none" }, { status: 429 });
-  }
-
   const jar = await cookies();
   const deviceId = verifyDeviceCookie(jar.get(DEVICE_COOKIE)?.value);
   if (!deviceId) {

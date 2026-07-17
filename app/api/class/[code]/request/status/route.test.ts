@@ -131,26 +131,25 @@ describe("GET /api/class/[code]/request/status", () => {
     expect(json).toEqual({ status: "rejected" });
   });
 
-  it("is rate-limited per IP, generously enough to accommodate 3s polling", async () => {
-    // This route also performs a code lookup (`.eq("code", code)`), so it
-    // shares the same class_join_requests brute-force surface described in
-    // app/api/class/join/route.ts — a modest limiter here closes that gap
-    // without breaking the waiting-room's ~3s poll cadence (limit set well
-    // above what a legitimate poller would ever hit in a 60s window).
+  it("is NOT rate-limited: sustained polling from one IP keeps succeeding", async () => {
+    // Deliberate (reviewer-adjudicated): this route is not a brute-force
+    // oracle — { status: "none" } is returned uniformly whether a code exists
+    // or not, so per-guess information gain is zero (the real oracle, POST,
+    // is throttled). A per-IP limiter here would break classmates polling
+    // every ~3s from behind one campus NAT IP.
     mockCookieValue = signDeviceCookie(DEV);
-    mockClassRow = null;
+    mockClassRow = { id: CLASS_ID };
+    mockRequestRow = { status: "pending" };
     const fixedIp = "10.9.9.7";
     const req = () =>
       ({
         headers: { get: (h: string) => (h === "x-real-ip" ? fixedIp : null) },
       }) as unknown as import("next/server").NextRequest;
 
-    let lastRes;
-    for (let i = 0; i < 31; i++) {
-      lastRes = await GET(req(), makeParams("ABC234"));
+    for (let i = 0; i < 50; i++) {
+      const res = await GET(req(), makeParams("ABC234"));
+      expect(res.status).toBe(200);
+      expect((await res.json()).status).toBe("pending");
     }
-    expect(lastRes!.status).toBe(429);
-    const json = await lastRes!.json();
-    expect(json.status).toBe("none");
   });
 });
