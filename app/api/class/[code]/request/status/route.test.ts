@@ -45,6 +45,8 @@ import { signDeviceCookie } from "@/lib/auth/deviceCookie";
 
 const DEV = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
 const CLASS_ID = "20000000-0002-0002-0002-000000000002";
+const SUBJECT_ID = "30000000-0003-0003-0003-000000000003";
+const YEAR_ID = "40000000-0004-0004-0004-000000000004";
 
 let ipCounter = 0;
 function makeReq() {
@@ -93,7 +95,7 @@ describe("GET /api/class/[code]/request/status", () => {
 
   it("returns 'none' when this device has no request for the class", async () => {
     mockCookieValue = signDeviceCookie(DEV);
-    mockClassRow = { id: CLASS_ID };
+    mockClassRow = { id: CLASS_ID, subject_id: SUBJECT_ID, year_id: YEAR_ID };
     mockRequestRow = null;
     const res = await GET(makeReq(), makeParams("ABC234"));
     expect(res.status).toBe(200);
@@ -101,34 +103,48 @@ describe("GET /api/class/[code]/request/status", () => {
     expect(json).toEqual({ status: "none" });
   });
 
-  it("returns 'pending' when a request is awaiting approval", async () => {
+  it("returns 'pending' when a request is awaiting approval, without subjectId/yearId", async () => {
     mockCookieValue = signDeviceCookie(DEV);
-    mockClassRow = { id: CLASS_ID };
+    mockClassRow = { id: CLASS_ID, subject_id: SUBJECT_ID, year_id: YEAR_ID };
     mockRequestRow = { status: "pending" };
     const res = await GET(makeReq(), makeParams("ABC234"));
     expect(res.status).toBe(200);
     const json = await res.json();
     expect(json).toEqual({ status: "pending" });
+    expect(json).not.toHaveProperty("subjectId");
+    expect(json).not.toHaveProperty("yearId");
   });
 
-  it("returns 'approved' once the rep has approved it", async () => {
+  it("returns 'approved' plus subjectId/yearId once the rep has approved it", async () => {
     mockCookieValue = signDeviceCookie(DEV);
-    mockClassRow = { id: CLASS_ID };
+    mockClassRow = { id: CLASS_ID, subject_id: SUBJECT_ID, year_id: YEAR_ID };
     mockRequestRow = { status: "approved" };
     const res = await GET(makeReq(), makeParams("ABC234"));
     expect(res.status).toBe(200);
     const json = await res.json();
-    expect(json).toEqual({ status: "approved" });
+    expect(json).toEqual({ status: "approved", subjectId: SUBJECT_ID, yearId: YEAR_ID });
   });
 
-  it("returns 'rejected' when the rep rejected it", async () => {
+  it("returns 'approved' with a null subjectId for an all-subjects class", async () => {
     mockCookieValue = signDeviceCookie(DEV);
-    mockClassRow = { id: CLASS_ID };
+    mockClassRow = { id: CLASS_ID, subject_id: null, year_id: YEAR_ID };
+    mockRequestRow = { status: "approved" };
+    const res = await GET(makeReq(), makeParams("ABC234"));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json).toEqual({ status: "approved", subjectId: null, yearId: YEAR_ID });
+  });
+
+  it("returns 'rejected' when the rep rejected it, without subjectId/yearId", async () => {
+    mockCookieValue = signDeviceCookie(DEV);
+    mockClassRow = { id: CLASS_ID, subject_id: SUBJECT_ID, year_id: YEAR_ID };
     mockRequestRow = { status: "rejected" };
     const res = await GET(makeReq(), makeParams("ABC234"));
     expect(res.status).toBe(200);
     const json = await res.json();
     expect(json).toEqual({ status: "rejected" });
+    expect(json).not.toHaveProperty("subjectId");
+    expect(json).not.toHaveProperty("yearId");
   });
 
   it("is NOT rate-limited: sustained polling from one IP keeps succeeding", async () => {
@@ -138,7 +154,7 @@ describe("GET /api/class/[code]/request/status", () => {
     // is throttled). A per-IP limiter here would break classmates polling
     // every ~3s from behind one campus NAT IP.
     mockCookieValue = signDeviceCookie(DEV);
-    mockClassRow = { id: CLASS_ID };
+    mockClassRow = { id: CLASS_ID, subject_id: SUBJECT_ID, year_id: YEAR_ID };
     mockRequestRow = { status: "pending" };
     const fixedIp = "10.9.9.7";
     const req = () =>

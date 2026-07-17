@@ -31,7 +31,7 @@ export async function GET(
   const supabase = createServerClient();
   const { data: cls } = await supabase
     .from("classes")
-    .select("id")
+    .select("id, subject_id, year_id")
     .eq("code", code)
     .maybeSingle();
 
@@ -44,5 +44,18 @@ export async function GET(
     .eq("device_id", deviceId)
     .maybeSingle();
 
-  return NextResponse.json({ status: reqRow?.status ?? "none" });
+  const status = reqRow?.status ?? "none";
+
+  // Only leak the class's scope once approved — the classmate needs it to
+  // redirect into the right subject/year, but there's no reason to expose it
+  // earlier (matches this route's existing "leak nothing per guess" stance).
+  if (status === "approved") {
+    return NextResponse.json({
+      status,
+      subjectId: cls.subject_id,
+      yearId: cls.year_id,
+    });
+  }
+
+  return NextResponse.json({ status });
 }
