@@ -1,0 +1,99 @@
+import { createClient } from '@supabase/supabase-js';
+import { checkFeedbackQuality, generateCouponCode } from '@/lib/feedback';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const {
+      device_id,
+      user_id,
+      module_id,
+      app_rating,
+      module_rating,
+      feedback_text = '',
+      is_anonymous,
+    } = body;
+
+    // Validation
+    if (!device_id || !module_id || app_rating === undefined || app_rating === null || module_rating === undefined || module_rating === null) {
+      return Response.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    if (typeof app_rating !== 'number' || typeof module_rating !== 'number' ||
+        app_rating < 1 || app_rating > 5 || module_rating < 1 || module_rating > 5) {
+      return Response.json(
+        { error: 'Ratings must be between 1 and 5' },
+        { status: 400 }
+      );
+    }
+
+    // Check feedback quality
+    const isQualityApproved = checkFeedbackQuality(feedback_text);
+
+    // Generate coupon if approved
+    let coupon_code = null;
+    let coupon_expires_at = null;
+
+    if (isQualityApproved) {
+      coupon_code = generateCouponCode();
+      // 30 days from now
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      coupon_expires_at = expiryDate.toISOString();
+    }
+
+    // Insert feedback
+    const { data, error } = await supabase
+      .from('user_feedback')
+      .insert({
+        device_id,
+        user_id: is_anonymous ? null : user_id || null,
+        module_id,
+        app_rating,
+        module_rating,
+        feedback_text,
+        is_anonymous,
+        is_quality_approved: isQualityApproved,
+        coupon_code,
+        coupon_expires_at,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Feedback insert error:', error);
+      return Response.json(
+        { error: 'Failed to save feedback' },
+        { status: 500 }
+      );
+    }
+
+    // Response message
+    let message = 'Thanks for your feedback!';
+    if (isQualityApproved && coupon_code) {
+      message = `Thanks! Your feedback helps us improve. You've earned a ₱100 discount code: ${coupon_code} (valid 30 days)`;
+    }
+
+    return Response.json({
+      id: data.id,
+      coupon_code: isQualityApproved ? coupon_code : null,
+      coupon_expires_at: isQualityApproved ? coupon_expires_at : null,
+      is_quality_approved: isQualityApproved,
+      message,
+    });
+  } catch (error) {
+    console.error('Feedback API error:', error);
+    return Response.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
