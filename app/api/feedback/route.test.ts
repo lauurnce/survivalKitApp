@@ -176,7 +176,7 @@ describe('POST /api/feedback', () => {
     const json = await res.json();
 
     expect(res.status).toBe(200);
-    expect(json.coupon_code).toMatch(/^FEEDBACK-[A-Z0-9]{6}$/);
+    expect(json.coupon_code).toMatch(/^FEEDBACK-[0-9ABCDEFGHJKMNPQRSTVWXYZ]{8}$/);
     expect(json.is_quality_approved).toBe(true);
     expect(json.id).toBe('test-id-123');
     expect(json.message).toContain('₱100 discount code');
@@ -222,7 +222,7 @@ describe('POST /api/feedback', () => {
 
     expect(res.status).toBe(200);
     expect(json.is_quality_approved).toBe(true);
-    expect(json.coupon_code).toMatch(/^FEEDBACK-[A-Z0-9]{6}$/);
+    expect(json.coupon_code).toMatch(/^FEEDBACK-[0-9ABCDEFGHJKMNPQRSTVWXYZ]{8}$/);
   });
 
   it('validates rating bounds - app_rating too high', async () => {

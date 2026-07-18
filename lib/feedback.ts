@@ -1,3 +1,5 @@
+import { randomBytes } from "crypto";
+
 /**
  * Check if feedback passes quality approval.
  * Rules:
@@ -32,12 +34,17 @@ export function checkFeedbackQuality(text: string): boolean {
 }
 
 /**
- * Generate a unique coupon code in format FEEDBACK-XXXXXX
- * Uses 6 random alphanumeric characters (base36)
+ * Generate a coupon code: FEEDBACK- + 8 chars from a 32-char alphabet
+ * (Crockford-style, no I/L/O/U). crypto-random; 32 = 2^5 so `& 31` is
+ * unbiased. 40 bits of entropy.
  */
+const COUPON_ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+
 export function generateCouponCode(): string {
-  const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
-  return `FEEDBACK-${randomPart}`;
+  const bytes = randomBytes(8);
+  let code = "";
+  for (let i = 0; i < 8; i++) code += COUPON_ALPHABET[bytes[i] & 31];
+  return `FEEDBACK-${code}`;
 }
 
 /**

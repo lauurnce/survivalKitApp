@@ -35,16 +35,13 @@ describe('checkFeedbackQuality', () => {
 });
 
 describe('generateCouponCode', () => {
-  it('generates code in FEEDBACK-XXXXXX format', () => {
+  it('generates 8-char codes from the unambiguous alphabet', () => {
     const code = generateCouponCode();
-    expect(code).toMatch(/^FEEDBACK-[A-Z0-9]{6}$/);
+    expect(code).toMatch(/^FEEDBACK-[0-9ABCDEFGHJKMNPQRSTVWXYZ]{8}$/);
   });
 
-  it('generates unique codes', () => {
-    const codes = new Set();
-    for (let i = 0; i < 100; i++) {
-      codes.add(generateCouponCode());
-    }
-    expect(codes.size).toBe(100); // All unique (extremely unlikely collision)
+  it('does not repeat across many generations', () => {
+    const codes = new Set(Array.from({ length: 1000 }, generateCouponCode));
+    expect(codes.size).toBe(1000);
   });
 });
