@@ -280,4 +280,27 @@ describe("POST /api/subscribe amount validation security", () => {
     expect(finalAmount).toBe(29900 - 10000); // 19900
     expect(finalAmount).toBeGreaterThan(10000);
   });
+
+  it("rejects coupon on second use (atomic redemption prevents reuse)", async () => {
+    mockCouponValid = true;
+    mockCouponExpired = false;
+
+    // First request: coupon should be valid and atomically marked as redeemed
+    const res1 = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-UNIQUE" }));
+    expect(res1.status).toBe(200);
+    const body1 = await res1.json();
+    expect(body1.discountApplied).toBe(true);
+    expect(dynamicLinkCalls).toHaveLength(1);
+
+    // Simulate coupon being marked as redeemed
+    mockCouponRedeemed = true;
+
+    // Second request: same coupon should be rejected because it's already redeemed
+    const res2 = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-UNIQUE" }));
+    expect(res2.status).toBe(200);
+    const body2 = await res2.json();
+    expect(body2.discountApplied).toBe(false); // Coupon not applied
+    expect(dynamicLinkCalls).toHaveLength(1); // No new dynamic link created
+    expect(linkCalls).toHaveLength(1); // Standard link used instead (no discount)
+  });
 });
