@@ -66,8 +66,14 @@ create policy "admins select all feedback"
   on user_feedback for select
   using (auth.role() = 'service_role');
 
--- Policy 6: Prevent updates/deletes (immutable)
-drop policy if exists "no updates or deletes" on user_feedback;
-create policy "no updates or deletes"
-  on user_feedback for update, delete
+-- Policy 6: Prevent updates/deletes (immutable).
+-- A policy covers exactly one command, so update and delete are separate.
+drop policy if exists "no updates" on user_feedback;
+create policy "no updates"
+  on user_feedback for update
+  using (false);
+
+drop policy if exists "no deletes" on user_feedback;
+create policy "no deletes"
+  on user_feedback for delete
   using (false);

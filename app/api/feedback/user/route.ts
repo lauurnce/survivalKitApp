@@ -34,7 +34,7 @@ export async function GET(request: Request) {
       .select(`
         id,
         module_id,
-        modules!inner(name),
+        modules!inner(title),
         app_rating,
         module_rating,
         feedback_text,
@@ -61,7 +61,7 @@ export async function GET(request: Request) {
       return {
         id: item.id,
         module_id: item.module_id,
-        module_name: modules?.name || 'Unknown Module',
+        module_name: modules?.title || 'Unknown Module',
         app_rating: item.app_rating,
         module_rating: item.module_rating,
         feedback_text: item.feedback_text,

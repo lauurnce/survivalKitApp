@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
         id,
         created_at,
         module_id,
-        modules!inner(name),
+        modules!inner(title),
         app_rating,
         module_rating,
         feedback_text,
@@ -81,7 +81,7 @@ export async function GET(req: NextRequest) {
       // Escape PostgREST reserved operators before interpolation
       const escapedSearch = escapePostgRESTOperators(search);
       query = query.or(
-        `feedback_text.ilike.%${escapedSearch}%,modules.name.ilike.%${escapedSearch}%`
+        `feedback_text.ilike.%${escapedSearch}%,modules.title.ilike.%${escapedSearch}%`
       );
     }
 
@@ -187,7 +187,7 @@ export async function GET(req: NextRequest) {
         id: item.id,
         created_at: item.created_at,
         module_id: item.module_id,
-        module_name: item.modules?.name || "Unknown Module",
+        module_name: item.modules?.title || "Unknown Module",
         app_rating: item.app_rating,
         module_rating: item.module_rating,
         feedback_text: item.feedback_text,
