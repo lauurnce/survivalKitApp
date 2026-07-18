@@ -70,7 +70,7 @@ The 25 entries (confirmed with user):
 | msuiit | Mindanao State University – Iligan Institute of Technology |
 | nu | National University |
 | plm | Pamantasan ng Lungsod ng Maynila |
-| pup | Polytechnic University of the Philippines |
+| pup | Polytechnic University of the Philippines - Main Campus|
 | siliman | Silliman University |
 | tup | Technological University of the Philippines |
 | unor | Universidad de Negros Oriental |

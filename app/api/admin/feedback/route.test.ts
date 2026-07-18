@@ -217,4 +217,270 @@ describe("GET /api/admin/feedback", () => {
     expect(json.stats.total_feedback).toBe(0);
     expect(json.stats.avg_app_rating).toBe(0);
   });
+
+  describe("PostgREST operator injection tests", () => {
+    it("escapes comma operator in search", async () => {
+      const { supabase, selectMock } = makeSupabase({});
+      mockSupabase = supabase;
+
+      // Create a mock that captures the .or() call
+      let orCalledWith = "";
+      selectMock.mockReturnValue({
+        eq: vi.fn().mockReturnThis(),
+        not: vi.fn().mockReturnThis(),
+        is: vi.fn().mockReturnThis(),
+        or: vi.fn((filterStr: string) => {
+          orCalledWith = filterStr;
+          return {
+            order: vi.fn().mockReturnValue({
+              range: vi
+                .fn()
+                .mockResolvedValue({
+                  data: [],
+                  error: null,
+                  count: 0,
+                }),
+            }),
+          };
+        }),
+        order: vi.fn().mockReturnValue({
+          range: vi
+            .fn()
+            .mockResolvedValue({
+              data: [],
+              error: null,
+              count: 0,
+            }),
+        }),
+      });
+
+      const req = makeReq("/api/admin/feedback?search=hello,world");
+      const res = await GET(req as any);
+
+      expect(res.status).toBe(200);
+      // Verify comma was escaped
+      expect(orCalledWith).toContain("\\,");
+      expect(orCalledWith).not.toContain("hello,world");
+    });
+
+    it("escapes parentheses operators in search", async () => {
+      const { supabase, selectMock } = makeSupabase({});
+      mockSupabase = supabase;
+
+      let orCalledWith = "";
+      selectMock.mockReturnValue({
+        eq: vi.fn().mockReturnThis(),
+        not: vi.fn().mockReturnThis(),
+        is: vi.fn().mockReturnThis(),
+        or: vi.fn((filterStr: string) => {
+          orCalledWith = filterStr;
+          return {
+            order: vi.fn().mockReturnValue({
+              range: vi
+                .fn()
+                .mockResolvedValue({
+                  data: [],
+                  error: null,
+                  count: 0,
+                }),
+            }),
+          };
+        }),
+        order: vi.fn().mockReturnValue({
+          range: vi
+            .fn()
+            .mockResolvedValue({
+              data: [],
+              error: null,
+              count: 0,
+            }),
+        }),
+      });
+
+      const req = makeReq("/api/admin/feedback?search=hello(world)");
+      const res = await GET(req as any);
+
+      expect(res.status).toBe(200);
+      // Verify parentheses were escaped
+      expect(orCalledWith).toContain("\\(");
+      expect(orCalledWith).toContain("\\)");
+      expect(orCalledWith).not.toContain("hello(world)");
+    });
+
+    it("escapes colon operator in search", async () => {
+      const { supabase, selectMock } = makeSupabase({});
+      mockSupabase = supabase;
+
+      let orCalledWith = "";
+      selectMock.mockReturnValue({
+        eq: vi.fn().mockReturnThis(),
+        not: vi.fn().mockReturnThis(),
+        is: vi.fn().mockReturnThis(),
+        or: vi.fn((filterStr: string) => {
+          orCalledWith = filterStr;
+          return {
+            order: vi.fn().mockReturnValue({
+              range: vi
+                .fn()
+                .mockResolvedValue({
+                  data: [],
+                  error: null,
+                  count: 0,
+                }),
+            }),
+          };
+        }),
+        order: vi.fn().mockReturnValue({
+          range: vi
+            .fn()
+            .mockResolvedValue({
+              data: [],
+              error: null,
+              count: 0,
+            }),
+        }),
+      });
+
+      const req = makeReq("/api/admin/feedback?search=text:value");
+      const res = await GET(req as any);
+
+      expect(res.status).toBe(200);
+      // Verify colon was escaped
+      expect(orCalledWith).toContain("\\:");
+      expect(orCalledWith).not.toContain("text:value");
+    });
+
+    it("escapes asterisk operator in search", async () => {
+      const { supabase, selectMock } = makeSupabase({});
+      mockSupabase = supabase;
+
+      let orCalledWith = "";
+      selectMock.mockReturnValue({
+        eq: vi.fn().mockReturnThis(),
+        not: vi.fn().mockReturnThis(),
+        is: vi.fn().mockReturnThis(),
+        or: vi.fn((filterStr: string) => {
+          orCalledWith = filterStr;
+          return {
+            order: vi.fn().mockReturnValue({
+              range: vi
+                .fn()
+                .mockResolvedValue({
+                  data: [],
+                  error: null,
+                  count: 0,
+                }),
+            }),
+          };
+        }),
+        order: vi.fn().mockReturnValue({
+          range: vi
+            .fn()
+            .mockResolvedValue({
+              data: [],
+              error: null,
+              count: 0,
+            }),
+        }),
+      });
+
+      const req = makeReq("/api/admin/feedback?search=text*value");
+      const res = await GET(req as any);
+
+      expect(res.status).toBe(200);
+      // Verify asterisk was escaped
+      expect(orCalledWith).toContain("\\*");
+      expect(orCalledWith).not.toContain("text*value");
+    });
+
+    it("escapes multiple PostgREST operators in single search", async () => {
+      const { supabase, selectMock } = makeSupabase({});
+      mockSupabase = supabase;
+
+      let orCalledWith = "";
+      selectMock.mockReturnValue({
+        eq: vi.fn().mockReturnThis(),
+        not: vi.fn().mockReturnThis(),
+        is: vi.fn().mockReturnThis(),
+        or: vi.fn((filterStr: string) => {
+          orCalledWith = filterStr;
+          return {
+            order: vi.fn().mockReturnValue({
+              range: vi
+                .fn()
+                .mockResolvedValue({
+                  data: [],
+                  error: null,
+                  count: 0,
+                }),
+            }),
+          };
+        }),
+        order: vi.fn().mockReturnValue({
+          range: vi
+            .fn()
+            .mockResolvedValue({
+              data: [],
+              error: null,
+              count: 0,
+            }),
+        }),
+      });
+
+      const req = makeReq("/api/admin/feedback?search=test,data(query):value*");
+      const res = await GET(req as any);
+
+      expect(res.status).toBe(200);
+      // Verify all operators were escaped
+      expect(orCalledWith).toContain("\\,");
+      expect(orCalledWith).toContain("\\(");
+      expect(orCalledWith).toContain("\\)");
+      expect(orCalledWith).toContain("\\:");
+      expect(orCalledWith).toContain("\\*");
+    });
+
+    it("allows legitimate search strings without operators", async () => {
+      const { supabase, selectMock } = makeSupabase({});
+      mockSupabase = supabase;
+
+      let orCalledWith = "";
+      selectMock.mockReturnValue({
+        eq: vi.fn().mockReturnThis(),
+        not: vi.fn().mockReturnThis(),
+        is: vi.fn().mockReturnThis(),
+        or: vi.fn((filterStr: string) => {
+          orCalledWith = filterStr;
+          return {
+            order: vi.fn().mockReturnValue({
+              range: vi
+                .fn()
+                .mockResolvedValue({
+                  data: [],
+                  error: null,
+                  count: 0,
+                }),
+            }),
+          };
+        }),
+        order: vi.fn().mockReturnValue({
+          range: vi
+            .fn()
+            .mockResolvedValue({
+              data: [],
+              error: null,
+              count: 0,
+            }),
+        }),
+      });
+
+      const req = makeReq(
+        "/api/admin/feedback?search=normal search string with spaces"
+      );
+      const res = await GET(req as any);
+
+      expect(res.status).toBe(200);
+      // Verify legitimate search term passes through
+      expect(orCalledWith).toContain("normal search string with spaces");
+    });
+  });
 });

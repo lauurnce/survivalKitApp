@@ -1,0 +1,31 @@
+0. default 
+1. Polytechnic University of the Philippines (PUP) — the PUP Obelisk (primary). Optionally also do the PUP Pylon (three tall columns) as a second option. 
+2. University of the Philippines Diliman (UP) — the Oblation statue. 
+3. University of Santo Tomas (UST) — the UST Main Building with its central tower (Benavides), or the Arch of the Centuries. 
+4. De La Salle University (DLSU) — St. La Salle Hall (the iconic Taft Ave facade). 
+5. Far Eastern University (FEU) — its Art Deco campus (Nicanor Reyes Hall / the Art Deco auditorium). 
+6. Mapúa University — the Intramuros campus building. 
+7. National University (NU) — the historic NU Main Building in Sampaloc. 
+8. Adamson University — the St. Vincent de Paul / Ozanam building. 
+9. Technological University of the Philippines (TUP Manila). 
+10. Pamantasan ng Lungsod ng Maynila (PLM) — the Intramuros campus.
+
+VISAYAS 
+1. [silliman] Silliman University (Dumaguete) — Silliman Hall, the historic Stick-Style wooden building. Alt: the Gate of Knowledge portal. 
+2. [usc] University of San Carlos (Cebu City) — the USC Main Building facade. 
+3. [citu] Cebu Institute of Technology – University (Cebu City) — the CIT-U Main Building. 
+4. [wvsu] West Visayas State University (Iloilo City) — the WVSU main / administration building. 
+5. [cpu] Central Philippine University (Iloilo City) — a heritage American-era building or the historic main gate. 
+
+MINDANAO 
+6. [msuiit] MSU – Iligan Institute of Technology (Iligan City) — the MSU-IIT main entrance gate / arch with campus signage. 
+7. [msu] Mindanao State University – Main (Marawi City) — the King Faisal Mosque, with its green domes and minarets. Alt: the Aga Khan Museum. 
+8. [usep] University of Southeastern Philippines (Davao City) — the USeP main administration building / entrance gate. 
+9. [wmsu] Western Mindanao State University (Zamboanga City) — the WMSU main building / entrance gate. 
+10. [caraga] Caraga State University (Butuan City) — the CSU main administration building / entrance gate
+
+11. [upv] Visayas University of the Philippines Visayas UPV Main Building Facade
+12. [usls] Visayas University of St. La Salle Montelibano Chapel Modernist Brutalism
+13. [usjr] Visayas University of San Jose - Recoletos San Nicolas Building
+14. [upcebu] Visayas University of the Philippines Cebu UP Cebu Admin Building
+15. [unor] Visayas University of Negros Occidental - Recoletos Lizares Hall[unor] Visayas University of Negros Occidental - Recoletos Lizares Hall

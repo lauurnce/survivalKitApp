@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/auth/adminSession";
 import { createServerClient } from "@/lib/supabase/server";
 
+/**
+ * Escape PostgREST reserved characters in search strings.
+ * PostgREST operators: , ( ) : *
+ * These characters have special meaning in PostgREST query syntax and must be escaped.
+ */
+function escapePostgRESTOperators(input: string): string {
+  // Escape PostgREST reserved characters: , ( ) : *
+  return input.replace(/[,():\*]/g, (match) => "\\" + match);
+}
+
 export async function GET(req: NextRequest) {
   // Check admin access
   const authed = await getAdminSession();
@@ -68,8 +78,10 @@ export async function GET(req: NextRequest) {
     }
 
     if (search) {
+      // Escape PostgREST reserved operators before interpolation
+      const escapedSearch = escapePostgRESTOperators(search);
       query = query.or(
-        `feedback_text.ilike.%${search}%,modules.name.ilike.%${search}%`
+        `feedback_text.ilike.%${escapedSearch}%,modules.name.ilike.%${escapedSearch}%`
       );
     }
 
