@@ -10,6 +10,7 @@ import { HeroCard } from "@/components/dashboard/HeroCard";
 import { ThisWeekPanel } from "@/components/dashboard/ThisWeekPanel";
 import { RoadmapTimeline } from "@/components/dashboard/RoadmapTimeline";
 import { SemesterSections } from "@/components/dashboard/SemesterSections";
+import { DiscountCodesSectionWrapper } from "@/components/DiscountCodesSectionWrapper";
 import { groupByTerm, deriveCurrentTerm, pickRecommended, roadmapNodes } from "@/lib/dashboard";
 
 export const dynamic = "force-dynamic";
@@ -69,6 +70,10 @@ export default async function AccountPage({ searchParams }: Props) {
             </div>
             <ThisWeekPanel recs={recs} />
           </div>
+
+          <section className="border-t border-taupe/20 pt-6">
+            <DiscountCodesSectionWrapper />
+          </section>
         </main>
       </div>
     </div>
