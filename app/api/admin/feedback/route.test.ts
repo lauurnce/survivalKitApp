@@ -171,6 +171,40 @@ describe("GET /api/admin/feedback", () => {
     });
   });
 
+  it("counts redeemed coupons in stats", async () => {
+    const rows = [
+      {
+        app_rating: 5,
+        module_rating: 4,
+        is_quality_approved: true,
+        coupon_code: "FEEDBACK-AAA111",
+        redeemed_at: "2026-07-18T12:00:00Z",
+      },
+      {
+        app_rating: 4,
+        module_rating: 3,
+        is_quality_approved: true,
+        coupon_code: "FEEDBACK-BBB222",
+        redeemed_at: null,
+      },
+      {
+        app_rating: 3,
+        module_rating: 3,
+        is_quality_approved: false,
+        coupon_code: null,
+        redeemed_at: null,
+      },
+    ];
+    mockSupabase = makeSupabase({ statsData: rows }).supabase;
+
+    const req = makeReq("/api/admin/feedback");
+    const res = await GET(req as any);
+    const json = await res.json();
+
+    expect(json.stats.total_codes_generated).toBe(2);
+    expect(json.stats.total_codes_redeemed).toBe(1);
+  });
+
   it("applies pagination parameters", async () => {
     const req = makeReq("/api/admin/feedback?page=2&limit=10");
     const res = await GET(req as any);

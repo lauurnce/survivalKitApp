@@ -103,7 +103,7 @@ export async function GET(req: NextRequest) {
     // Fetch stats from full dataset
     const { data: statsData, error: statsError } = await supabase
       .from("user_feedback")
-      .select("app_rating, module_rating, is_quality_approved, coupon_code");
+      .select("app_rating, module_rating, is_quality_approved, coupon_code, redeemed_at");
 
     if (statsError) {
       console.error("Admin feedback stats error:", statsError);
@@ -118,6 +118,7 @@ export async function GET(req: NextRequest) {
       module_rating: number;
       is_quality_approved: boolean;
       coupon_code: string | null;
+      redeemed_at: string | null;
     }
 
     type AdminFeedbackItem = {
@@ -168,8 +169,9 @@ export async function GET(req: NextRequest) {
               : 0,
           total_codes_generated: statsData.filter((r: FeedbackRow) => r.coupon_code)
             .length,
-          // Note: tracking redemptions requires additional column or separate tracking
-          total_codes_redeemed: 0, // TODO: add redemption tracking
+          total_codes_redeemed: statsData.filter(
+            (r: FeedbackRow) => r.coupon_code && r.redeemed_at
+          ).length,
         }
       : {
           total_feedback: 0,
