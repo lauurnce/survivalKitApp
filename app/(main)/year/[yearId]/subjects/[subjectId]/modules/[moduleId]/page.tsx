@@ -12,6 +12,7 @@ import { SectionRenderer } from "@/components/SectionRenderer";
 import { PageTracker } from "@/components/PageTracker";
 import { LastModuleTracker } from "@/components/LastModuleTracker";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
+import { ModuleReaderClient } from "@/components/ModuleReaderClient";
 import { pickFirstActivity } from "@/lib/freeSample";
 import { sectionLabel } from "@/lib/sectionLabel";
 
@@ -146,7 +147,8 @@ export default async function ReaderPage({ params }: Props) {
   const year = subject.years as { label: string; sort_order: number } | null;
 
   return (
-    <main className="min-h-screen bg-paper">
+    <ModuleReaderClient moduleId={moduleId} userId={userId}>
+      <main className="min-h-screen bg-paper">
       <PageTracker event="module_open" yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
       <LastModuleTracker
         moduleId={moduleId}
@@ -279,6 +281,7 @@ export default async function ReaderPage({ params }: Props) {
         )}
         </div>
       </div>
-    </main>
+      </main>
+    </ModuleReaderClient>
   );
 }
