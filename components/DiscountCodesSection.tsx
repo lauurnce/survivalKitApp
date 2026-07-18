@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import { useDiscountCodes } from '@/hooks/useDiscountCodes';
 
 interface DiscountCodesSectionProps {
@@ -8,6 +9,21 @@ interface DiscountCodesSectionProps {
 
 export function DiscountCodesSection({ userToken }: DiscountCodesSectionProps) {
   const { codes, loading, error } = useDiscountCodes(userToken);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const copyResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyResetTimer.current) clearTimeout(copyResetTimer.current);
+    };
+  }, []);
+
+  const handleCopy = async (code: string) => {
+    await navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+    if (copyResetTimer.current) clearTimeout(copyResetTimer.current);
+    copyResetTimer.current = setTimeout(() => setCopiedCode(null), 2000);
+  };
 
   if (loading) {
     return <div className="text-gray-600 dark:text-gray-400">Loading discount codes...</div>;
@@ -29,7 +45,7 @@ export function DiscountCodesSection({ userToken }: DiscountCodesSectionProps) {
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">My Discount Codes</h3>
       <div className="space-y-2">
-        {codes
+        {[...codes]
           .sort((a, b) => new Date(a.coupon_expires_at).getTime() - new Date(b.coupon_expires_at).getTime())
           .map((code) => {
             const expiresAt = new Date(code.coupon_expires_at);
@@ -63,10 +79,7 @@ export function DiscountCodesSection({ userToken }: DiscountCodesSectionProps) {
                 </p>
 
                 <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(code.coupon_code);
-                    alert('Code copied to clipboard!');
-                  }}
+                  onClick={() => handleCopy(code.coupon_code)}
                   disabled={isExpired}
                   className={`w-full py-2 rounded text-sm font-medium transition ${
                     isExpired
@@ -74,7 +87,11 @@ export function DiscountCodesSection({ userToken }: DiscountCodesSectionProps) {
                       : 'bg-green-600 dark:bg-green-700 text-white hover:bg-green-700'
                   }`}
                 >
-                  {isExpired ? 'Expired' : 'Copy Code'}
+                  {isExpired
+                    ? 'Expired'
+                    : copiedCode === code.coupon_code
+                      ? 'Copied!'
+                      : 'Copy Code'}
                 </button>
               </div>
             );
