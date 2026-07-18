@@ -5,6 +5,22 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+// Shape of one row from the query below. The untyped Supabase client misinfers
+// the embedded `modules!inner(title)` join, so the query pins its result type
+// with `.returns<UserFeedbackItem[]>()` instead of casting the data.
+type UserFeedbackItem = {
+  id: string;
+  module_id: string;
+  modules: { title: string } | null;
+  app_rating: number;
+  module_rating: number;
+  feedback_text: string;
+  created_at: string;
+  coupon_code: string | null;
+  coupon_expires_at: string | null;
+  is_quality_approved: boolean;
+};
+
 export async function GET(request: Request) {
   try {
     // Get authenticated user from request headers
@@ -44,7 +60,8 @@ export async function GET(request: Request) {
         is_quality_approved
       `)
       .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .returns<UserFeedbackItem[]>();
 
     if (error) {
       console.error('Feedback fetch error:', error);
@@ -55,22 +72,18 @@ export async function GET(request: Request) {
     }
 
     // Transform response
-    const typedData = (data as unknown as Array<Record<string, unknown>>) || [];
-    const feedback = typedData?.map((item: Record<string, unknown>) => {
-      const modules = item.modules as Record<string, unknown> | null | undefined;
-      return {
-        id: item.id,
-        module_id: item.module_id,
-        module_name: modules?.title || 'Unknown Module',
-        app_rating: item.app_rating,
-        module_rating: item.module_rating,
-        feedback_text: item.feedback_text,
-        created_at: item.created_at,
-        coupon_code: item.coupon_code,
-        coupon_expires_at: item.coupon_expires_at,
-        is_quality_approved: item.is_quality_approved,
-      };
-    }) || [];
+    const feedback = (data ?? []).map((item) => ({
+      id: item.id,
+      module_id: item.module_id,
+      module_name: item.modules?.title || 'Unknown Module',
+      app_rating: item.app_rating,
+      module_rating: item.module_rating,
+      feedback_text: item.feedback_text,
+      created_at: item.created_at,
+      coupon_code: item.coupon_code,
+      coupon_expires_at: item.coupon_expires_at,
+      is_quality_approved: item.is_quality_approved,
+    }));
 
     return Response.json({ feedback });
   } catch (error) {
