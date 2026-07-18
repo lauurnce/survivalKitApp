@@ -222,7 +222,28 @@ describe('POST /api/feedback', () => {
 
     expect(res.status).toBe(200);
     expect(json.is_quality_approved).toBe(true);
-    expect(json.coupon_code).toMatch(/^FEEDBACK-[0-9ABCDEFGHJKMNPQRSTVWXYZ]{8}$/);
+    // Anonymous: approved but never a coupon (device_ids are client-generated).
+    expect(json.coupon_code).toBeNull();
+  });
+
+  it('does not issue a coupon for anonymous submissions', async () => {
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: 'module-789',
+        app_rating: 5,
+        module_rating: 5,
+        feedback_text: 'Great examples, very clear and helpful!',
+        is_anonymous: true,
+      }),
+    });
+    const res = await POST(req);
+    const json = await res.json();
+    expect(res.status).toBe(200);
+    expect(json.coupon_code).toBeNull();
+    expect(json.is_quality_approved).toBe(true);
+    expect(json.message).toContain('Sign in');
   });
 
   it('validates rating bounds - app_rating too high', async () => {

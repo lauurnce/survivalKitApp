@@ -116,11 +116,16 @@ export async function POST(request: Request) {
     // Check feedback quality
     const isQualityApproved = checkFeedbackQuality(feedback_text);
 
-    // Generate coupon if approved
+    // Coupons only for signed-in, non-anonymous feedback: anonymous device_ids
+    // are client-generated, so anonymous coupons are farmable by construction.
+    // The (user_id, module_id) unique index caps this at one coupon per user
+    // per module.
+    const couponEligible = !is_anonymous && authenticatedUserId !== null;
+
     let coupon_code = null;
     let coupon_expires_at = null;
 
-    if (isQualityApproved) {
+    if (isQualityApproved && couponEligible) {
       coupon_code = generateCouponCode();
       // 30 days from now
       const expiryDate = new Date();
@@ -166,14 +171,16 @@ export async function POST(request: Request) {
 
     // Response message
     let message = 'Thanks for your feedback!';
-    if (isQualityApproved && coupon_code) {
+    if (coupon_code) {
       message = `Thanks! Your feedback helps us improve. You've earned a ₱100 discount code: ${coupon_code} (valid 30 days)`;
+    } else if (isQualityApproved && !couponEligible) {
+      message = 'Thanks for your feedback! Sign in next time to earn a ₱100 discount code.';
     }
 
     return Response.json({
       id: data.id,
-      coupon_code: isQualityApproved ? coupon_code : null,
-      coupon_expires_at: isQualityApproved ? coupon_expires_at : null,
+      coupon_code,
+      coupon_expires_at,
       is_quality_approved: isQualityApproved,
       message,
     });
