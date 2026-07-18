@@ -113,6 +113,28 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    interface FeedbackRow {
+      app_rating: number;
+      module_rating: number;
+      is_quality_approved: boolean;
+      coupon_code: string | null;
+    }
+
+    type AdminFeedbackItem = {
+      id: string;
+      created_at: string;
+      module_id: string;
+      modules: Record<string, unknown> | null;
+      app_rating: number;
+      module_rating: number;
+      feedback_text: string;
+      user_id: string | null;
+      is_anonymous: boolean;
+      is_quality_approved: boolean;
+      coupon_code: string | null;
+      coupon_expires_at: string | null;
+    };
+
     const stats = statsData
       ? {
           total_feedback: statsData.length,
@@ -120,7 +142,7 @@ export async function GET(req: NextRequest) {
             statsData.length > 0
               ? parseFloat(
                   (
-                    statsData.reduce((sum: number, r: any) => sum + r.app_rating, 0) /
+                    statsData.reduce((sum: number, r: FeedbackRow) => sum + r.app_rating, 0) /
                     statsData.length
                   ).toFixed(2)
                 )
@@ -130,7 +152,7 @@ export async function GET(req: NextRequest) {
               ? parseFloat(
                   (
                     statsData.reduce(
-                      (sum: number, r: any) => sum + r.module_rating,
+                      (sum: number, r: FeedbackRow) => sum + r.module_rating,
                       0
                     ) / statsData.length
                   ).toFixed(2)
@@ -139,12 +161,12 @@ export async function GET(req: NextRequest) {
           pct_approved:
             statsData.length > 0
               ? Math.round(
-                  (statsData.filter((r: any) => r.is_quality_approved).length /
+                  (statsData.filter((r: FeedbackRow) => r.is_quality_approved).length /
                     statsData.length) *
                     100
                 )
               : 0,
-          total_codes_generated: statsData.filter((r: any) => r.coupon_code)
+          total_codes_generated: statsData.filter((r: FeedbackRow) => r.coupon_code)
             .length,
           // Note: tracking redemptions requires additional column or separate tracking
           total_codes_redeemed: 0, // TODO: add redemption tracking
@@ -159,8 +181,9 @@ export async function GET(req: NextRequest) {
         };
 
     // Transform response
+    const typedData = (data as unknown as AdminFeedbackItem[]) || [];
     const transformedData =
-      data?.map((item: any) => ({
+      typedData?.map((item: AdminFeedbackItem) => ({
         id: item.id,
         created_at: item.created_at,
         module_id: item.module_id,

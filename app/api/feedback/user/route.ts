@@ -55,18 +55,22 @@ export async function GET(request: Request) {
     }
 
     // Transform response
-    const feedback = data?.map((item: any) => ({
-      id: item.id,
-      module_id: item.module_id,
-      module_name: item.modules?.name || 'Unknown Module',
-      app_rating: item.app_rating,
-      module_rating: item.module_rating,
-      feedback_text: item.feedback_text,
-      created_at: item.created_at,
-      coupon_code: item.coupon_code,
-      coupon_expires_at: item.coupon_expires_at,
-      is_quality_approved: item.is_quality_approved,
-    })) || [];
+    const typedData = (data as unknown as Array<Record<string, unknown>>) || [];
+    const feedback = typedData?.map((item: Record<string, unknown>) => {
+      const modules = item.modules as Record<string, unknown> | null | undefined;
+      return {
+        id: item.id,
+        module_id: item.module_id,
+        module_name: modules?.name || 'Unknown Module',
+        app_rating: item.app_rating,
+        module_rating: item.module_rating,
+        feedback_text: item.feedback_text,
+        created_at: item.created_at,
+        coupon_code: item.coupon_code,
+        coupon_expires_at: item.coupon_expires_at,
+        is_quality_approved: item.is_quality_approved,
+      };
+    }) || [];
 
     return Response.json({ feedback });
   } catch (error) {
