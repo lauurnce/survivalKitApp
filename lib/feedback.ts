@@ -33,10 +33,14 @@ export function checkFeedbackQuality(text: string): boolean {
 
 /**
  * Generate a unique coupon code in format FEEDBACK-XXXXXX
- * Uses 6 random alphanumeric characters (base36)
+ * Uses 6 random alphanumeric characters from crypto.randomBytes for security
  */
 export function generateCouponCode(): string {
-  const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const { randomBytes } = require('crypto');
+  const randomPart = randomBytes(4)
+    .toString('hex')
+    .substring(0, 6)
+    .toUpperCase();
   return `FEEDBACK-${randomPart}`;
 }
 
