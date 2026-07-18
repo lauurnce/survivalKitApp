@@ -8,6 +8,16 @@ vi.mock("next/headers", () => ({
   cookies: () => Promise.resolve({ get: () => (mockCookieValue ? { value: mockCookieValue } : undefined) }),
 }));
 
+// Controllable distributed rate limiter (real one is Supabase-backed).
+let rateLimited = false;
+const rateLimitCalls: Array<{ key: string; max: number; windowSeconds: number }> = [];
+vi.mock("@/lib/serverRateLimit", () => ({
+  isServerRateLimited: vi.fn(async (key: string, opts: { max: number; windowSeconds: number }) => {
+    rateLimitCalls.push({ key, ...opts });
+    return rateLimited;
+  }),
+}));
+
 // ── Captured upsert payloads / GET device_id filters ─────────────────────────
 type UpsertPayload = Record<string, unknown>;
 const upserts: UpsertPayload[] = [];
@@ -74,6 +84,8 @@ beforeEach(() => {
   upserts.length = 0;
   selectDeviceIdFilters.length = 0;
   mockCookieValue = undefined;
+  rateLimited = false;
+  rateLimitCalls.length = 0;
   process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
 });
 
@@ -140,5 +152,23 @@ describe("device_id trust (IDOR regression)", () => {
     expect(json.ok).toBe(true);
     expect(upserts[0].device_id).toBe(DEVICE);
     expect(upserts[0].device_id).not.toBe(VICTIM_DEVICE);
+  });
+});
+
+describe("POST /api/progress — distributed rate limiting", () => {
+  it("checks the shared limiter with a namespaced per-IP key", async () => {
+    const res = await POST(makeReq({ device_id: DEVICE, module_id: MODULE, completed: true }));
+    expect(res.status).toBe(200);
+    expect(rateLimitCalls).toHaveLength(1);
+    expect(rateLimitCalls[0].key).toBe("progress:ip:127.0.0.1");
+    expect(rateLimitCalls[0].max).toBe(120);
+    expect(rateLimitCalls[0].windowSeconds).toBe(60);
+  });
+
+  it("returns 429 and skips the write when the limiter rejects", async () => {
+    rateLimited = true;
+    const res = await POST(makeReq({ device_id: DEVICE, module_id: MODULE, completed: true }));
+    expect(res.status).toBe(429);
+    expect(upserts).toHaveLength(0);
   });
 });

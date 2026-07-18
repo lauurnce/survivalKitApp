@@ -9,38 +9,12 @@ import {
   verifyDeviceCookie,
 } from "@/lib/auth/deviceCookie";
 import { isUuid } from "@/lib/validation";
+import { getClientIp } from "@/lib/rateLimit";
+import { isServerRateLimited } from "@/lib/serverRateLimit";
 
-// IP-based rate limiter — bounded map to prevent unbounded memory growth.
-// Mirrors the approach used by app/api/events/route.ts.
-const rateLimitMap = new Map<string, number[]>();
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 120;
-const MAX_MAP_SIZE = 10_000;
-
-function getRateLimitKey(req: NextRequest): string {
-  return (
-    req.headers.get("x-real-ip") ??
-    req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
-    "unknown"
-  );
-}
-
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-
-  if (rateLimitMap.size >= MAX_MAP_SIZE) {
-    for (const [k, timestamps] of rateLimitMap) {
-      if (timestamps.every((t) => now - t >= WINDOW_MS)) rateLimitMap.delete(k);
-      if (rateLimitMap.size < MAX_MAP_SIZE * 0.8) break;
-    }
-  }
-
-  const timestamps = (rateLimitMap.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (timestamps.length >= MAX_PER_WINDOW) return true;
-  timestamps.push(now);
-  rateLimitMap.set(key, timestamps);
-  return false;
-}
+// Shared across all serverless instances via the check_rate_limit RPC — the
+// old per-instance Map gave each cold start a fresh 120/min allowance.
+const RATE_LIMIT_IP = { max: 120, windowSeconds: 60 };
 
 // GET /api/progress?device_id=...&module_ids=a,b,c
 // Returns the list of completed module_ids for the device, optionally filtered
@@ -113,7 +87,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    if (isRateLimited(getRateLimitKey(req))) {
+    if (await isServerRateLimited(`progress:ip:${getClientIp(req)}`, RATE_LIMIT_IP)) {
       return NextResponse.json({ error: "Rate limited" }, { status: 429 });
     }
 
