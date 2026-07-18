@@ -8,6 +8,16 @@ vi.mock("next/headers", () => ({
   cookies: () => Promise.resolve({ get: () => (mockCookieValue ? { value: mockCookieValue } : undefined) }),
 }));
 
+// Controllable distributed rate limiter (real one is Supabase-backed).
+let rateLimited = false;
+const rateLimitCalls: Array<{ key: string; max: number; windowSeconds: number }> = [];
+vi.mock("@/lib/serverRateLimit", () => ({
+  isServerRateLimited: vi.fn(async (key: string, opts: { max: number; windowSeconds: number }) => {
+    rateLimitCalls.push({ key, ...opts });
+    return rateLimited;
+  }),
+}));
+
 const linkCalls: unknown[][] = [];
 const dynamicLinkCalls: unknown[][] = [];
 vi.mock("@/lib/paymongo", async (importOriginal) => {
@@ -102,6 +112,8 @@ beforeEach(() => {
   mockCouponValid = false;
   mockCouponExpired = false;
   mockCouponRedeemed = false;
+  rateLimited = false;
+  rateLimitCalls.length = 0;
   process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
 });
 
@@ -302,5 +314,23 @@ describe("POST /api/subscribe amount validation security", () => {
     expect(body2.discountApplied).toBe(false); // Coupon not applied
     expect(dynamicLinkCalls).toHaveLength(1); // No new dynamic link created
     expect(linkCalls).toHaveLength(1); // Standard link used instead (no discount)
+  });
+});
+
+describe("POST /api/subscribe — distributed rate limiting", () => {
+  it("checks the shared limiter with a namespaced per-IP key", async () => {
+    await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_sem" }));
+    expect(rateLimitCalls).toHaveLength(1);
+    expect(rateLimitCalls[0].key).toMatch(/^subscribe:ip:/);
+    expect(rateLimitCalls[0].max).toBe(5);
+    expect(rateLimitCalls[0].windowSeconds).toBe(60);
+  });
+
+  it("returns 429 and never creates a payment link when the limiter rejects", async () => {
+    rateLimited = true;
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_sem" }));
+    expect(res.status).toBe(429);
+    expect(linkCalls).toHaveLength(0);
+    expect(dynamicLinkCalls).toHaveLength(0);
   });
 });

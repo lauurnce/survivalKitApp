@@ -4,7 +4,8 @@ import { createClient } from "@supabase/supabase-js";
 import { createPaymongoLink, createDynamicPaymongoLink, PLANS, type PlanKey } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
-import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
+import { getClientIp } from "@/lib/rateLimit";
+import { isServerRateLimited } from "@/lib/serverRateLimit";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { buildSuccessUrl } from "@/lib/subscribeRedirect";
 import {
@@ -14,7 +15,10 @@ import {
   verifyDeviceCookie,
 } from "@/lib/auth/deviceCookie";
 
-const limiter = createRateLimiter(5);
+// Shared across all serverless instances via the check_rate_limit RPC — the
+// old per-instance limiter gave each cold start a fresh 5/min allowance on
+// this payment-link endpoint.
+const RATE_LIMIT_IP = { max: 5, windowSeconds: 60 };
 
 // Minimum charge: ₱100 = 10000 centavos
 // Security: prevents negative or zero amounts from being sent to PayMongo
@@ -69,7 +73,7 @@ async function validateCouponCode(couponCode: string): Promise<{ valid: boolean;
 }
 
 export async function POST(req: NextRequest) {
-  if (limiter.check(getClientIp(req))) {
+  if (await isServerRateLimited(`subscribe:ip:${getClientIp(req)}`, RATE_LIMIT_IP)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
