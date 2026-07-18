@@ -9,6 +9,7 @@ vi.mock("next/headers", () => ({
 }));
 
 const linkCalls: unknown[][] = [];
+const dynamicLinkCalls: unknown[][] = [];
 vi.mock("@/lib/paymongo", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/paymongo")>();
   return {
@@ -17,8 +18,32 @@ vi.mock("@/lib/paymongo", async (importOriginal) => {
       linkCalls.push(args);
       return Promise.resolve({ checkoutUrl: "https://pm.link/x", linkId: "link_1" });
     },
+    createDynamicPaymongoLink: (...args: unknown[]) => {
+      dynamicLinkCalls.push(args);
+      return Promise.resolve({ checkoutUrl: "https://pm.link/dynamic", linkId: "link_dynamic" });
+    },
   };
 });
+// Mock to control coupon validation behavior per test
+let mockCouponValid = false;
+let mockCouponExpired = false;
+
+vi.mock("@supabase/supabase-js", () => ({
+  createClient: () => ({
+    from: (table: string) => ({
+      select: () => ({
+        eq: (column: string, value: string) => ({
+          single: () => Promise.resolve(
+            mockCouponValid && column === 'coupon_code'
+              ? { data: { coupon_code: value, coupon_expires_at: mockCouponExpired ? new Date(Date.now() - 1000).toISOString() : new Date(Date.now() + 86400000).toISOString() }, error: null }
+              : { data: null, error: { message: 'Not found' } }
+          ),
+        }),
+      }),
+    }),
+  }),
+}));
+
 vi.mock("@/lib/supabase/server", () => ({
   createServerClient: () => ({
     from: () => ({
@@ -52,7 +77,10 @@ function makeReq(body: Record<string, unknown>) {
 
 beforeEach(() => {
   linkCalls.length = 0;
+  dynamicLinkCalls.length = 0;
   mockCookieValue = undefined;
+  mockCouponValid = false;
+  mockCouponExpired = false;
   process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
 });
 
@@ -114,5 +142,61 @@ describe("POST /api/subscribe device-id trust (IDOR regression)", () => {
     expect(res.status).toBe(200);
     expect(linkCalls[0][1]).toBe(DEV);
     expect(linkCalls[0][1]).not.toBe(VICTIM_DEV);
+  });
+});
+
+describe("POST /api/subscribe coupon validation", () => {
+  it("uses standard link when no coupon provided", async () => {
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.discountApplied).toBe(false);
+    expect(linkCalls).toHaveLength(1);
+    expect(dynamicLinkCalls).toHaveLength(0);
+  });
+
+  it("uses standard link when coupon code is invalid", async () => {
+    mockCouponValid = false;
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "INVALID-CODE" }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.discountApplied).toBe(false);
+    expect(linkCalls).toHaveLength(1);
+    expect(dynamicLinkCalls).toHaveLength(0);
+  });
+
+  it("uses dynamic link with discount when coupon is valid", async () => {
+    mockCouponValid = true;
+    mockCouponExpired = false;
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.discountApplied).toBe(true);
+    expect(dynamicLinkCalls).toHaveLength(1);
+    expect(linkCalls).toHaveLength(0);
+    // First arg to createDynamicPaymongoLink is amount (should be base - discount)
+    // subject_month base is 4900, discount is 10000, so final should be -5100 (but we should still send it)
+    expect(dynamicLinkCalls[0][0]).toBe(4900 - 10000);
+  });
+
+  it("uses standard link when coupon is expired", async () => {
+    mockCouponValid = true;
+    mockCouponExpired = true;
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-EXPIRED" }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.discountApplied).toBe(false);
+    expect(linkCalls).toHaveLength(1);
+    expect(dynamicLinkCalls).toHaveLength(0);
+  });
+
+  it("includes coupon code in remarks when coupon valid", async () => {
+    mockCouponValid = true;
+    mockCouponExpired = false;
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
+    expect(res.status).toBe(200);
+    // 3rd arg to createDynamicPaymongoLink is remarks
+    const remarks = dynamicLinkCalls[0][2] as string;
+    expect(remarks).toContain("coupon:FEEDBACK-ABC123");
   });
 });

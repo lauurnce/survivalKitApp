@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { createPaymongoLink, PLANS, type PlanKey } from "@/lib/paymongo";
+import { createClient } from "@supabase/supabase-js";
+import { createPaymongoLink, createDynamicPaymongoLink, PLANS, type PlanKey } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
@@ -15,6 +16,36 @@ import {
 
 const limiter = createRateLimiter(5);
 
+// Helper function to validate coupon codes
+async function validateCouponCode(couponCode: string): Promise<{ valid: boolean; discount: number }> {
+  if (!couponCode) {
+    return { valid: false, discount: 0 };
+  }
+
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { data, error } = await supabaseAdmin
+    .from('user_feedback')
+    .select('coupon_code, coupon_expires_at')
+    .eq('coupon_code', couponCode)
+    .single();
+
+  if (error || !data) {
+    return { valid: false, discount: 0 };
+  }
+
+  // Check expiry
+  if (new Date(data.coupon_expires_at) < new Date()) {
+    return { valid: false, discount: 0 };
+  }
+
+  // Coupon is valid
+  return { valid: true, discount: 10000 }; // 10000 centavos = ₱100
+}
+
 export async function POST(req: NextRequest) {
   if (limiter.check(getClientIp(req))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
@@ -23,11 +54,12 @@ export async function POST(req: NextRequest) {
   const userId = await getCurrentUserId();
 
   const body = (await req.json().catch(() => null)) as
-    | { yearId?: string; subjectId?: string; deviceId?: string; returnPath?: string; plan?: string }
+    | { yearId?: string; subjectId?: string; deviceId?: string; returnPath?: string; plan?: string; couponCode?: string }
     | null;
 
   const yearId = body?.yearId;
   const subjectId = body?.subjectId ?? null; // null = year plan
+  const couponCode = body?.couponCode;
 
   // Trust only the signed device cookie for granting access — a client-supplied
   // deviceId in the body can never override it, or an attacker could plant a
@@ -113,21 +145,58 @@ export async function POST(req: NextRequest) {
   });
 
   try {
-    const { checkoutUrl } = await createPaymongoLink(
-      yearId,
-      deviceId,
-      successUrl,
-      subjectId,
-      userId ?? undefined,
-      plan
-    );
-    const res = NextResponse.json({ checkoutUrl });
+    // Validate coupon if provided
+    const couponResult = await validateCouponCode(couponCode ?? '');
+    const resolvedPlan: PlanKey = plan ?? (subjectId ? "subject_month" : "year_sem");
+    const baseAmount = PLANS[resolvedPlan].amount;
+    const finalAmount = baseAmount - (couponResult.valid ? couponResult.discount : 0);
+
+    let checkoutUrl: string;
+
+    if (couponResult.valid) {
+      // Use dynamic link for coupon-discounted purchases
+      const description = PLANS[resolvedPlan].description;
+      let remarks = subjectId
+        ? `year:${yearId} subject:${subjectId} device:${deviceId}`
+        : `year:${yearId} device:${deviceId}`;
+      if (userId) remarks += ` user:${userId}`;
+      remarks += ` plan:${resolvedPlan} coupon:${couponCode}`;
+
+      // Idempotency key for coupon purchases (includes coupon code)
+      const crypto = await import("crypto");
+      const idempotencyKey = crypto.default
+        .createHash("sha256")
+        .update(`subscribe:${deviceId}:${yearId}:${subjectId ?? "year"}:${resolvedPlan}:${couponCode}`)
+        .digest("hex");
+
+      const { checkoutUrl: url } = await createDynamicPaymongoLink(
+        finalAmount,
+        `${description} (coupon applied)`,
+        remarks,
+        successUrl,
+        idempotencyKey
+      );
+      checkoutUrl = url;
+    } else {
+      // Use standard link for full-price purchases
+      const { checkoutUrl: url } = await createPaymongoLink(
+        yearId,
+        deviceId,
+        successUrl,
+        subjectId,
+        userId ?? undefined,
+        plan
+      );
+      checkoutUrl = url;
+    }
+
+    const res = NextResponse.json({ checkoutUrl, discountApplied: couponResult.valid });
     if (needsCookie) {
       res.cookies.set(DEVICE_COOKIE, signDeviceCookie(deviceId), DEVICE_COOKIE_OPTIONS);
     }
     return res;
   } catch (err) {
-    console.error("createPaymongoLink failed:", err);
+    console.error("Payment setup failed:", err);
     return NextResponse.json(
       { error: "Payment setup failed" },
       { status: 500 }
