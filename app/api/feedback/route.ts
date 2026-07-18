@@ -67,6 +67,30 @@ export async function POST(request: Request) {
       );
     }
 
+    // One feedback per user per module (authenticated) or per device per module
+    // (anonymous). The DB unique indexes are the real guarantee; this pre-check
+    // exists to return a friendly 409 instead of a raw constraint error.
+    let dedupQuery = supabase
+      .from('user_feedback')
+      .select('id')
+      .eq('module_id', module_id)
+      .limit(1);
+    if (!is_anonymous && authenticatedUserId) {
+      dedupQuery = dedupQuery.eq('user_id', authenticatedUserId);
+    } else {
+      dedupQuery = dedupQuery.is('user_id', null).eq('device_id', device_id);
+    }
+    const { data: existing } = await dedupQuery.maybeSingle();
+    if (existing) {
+      return Response.json(
+        {
+          error: 'already_submitted',
+          message: "You've already shared feedback for this module — thank you!",
+        },
+        { status: 409 }
+      );
+    }
+
     // Check feedback quality
     const isQualityApproved = checkFeedbackQuality(feedback_text);
 

@@ -15,6 +15,7 @@ vi.mock('@/lib/auth/deviceCookie', () => ({
 }));
 
 let lastInsert: Record<string, unknown> = {};
+let existingFeedback: { id: string } | null = null;
 
 vi.mock('@supabase/supabase-js', () => {
   const mockSupabase = {
@@ -29,6 +30,16 @@ vi.mock('@supabase/supabase-js', () => {
             })),
           })),
         };
+      }),
+      // Dedup pre-check chain: eq/is/limit are chainable in any order.
+      select: vi.fn(function chain() {
+        const q = {
+          eq: vi.fn(() => q),
+          is: vi.fn(() => q),
+          limit: vi.fn(() => q),
+          maybeSingle: vi.fn(async () => ({ data: existingFeedback, error: null })),
+        };
+        return q;
       }),
     })),
     auth: {
@@ -61,6 +72,26 @@ describe('POST /api/feedback', () => {
     vi.clearAllMocks();
     mockCookieDeviceId = null;
     lastInsert = {};
+    existingFeedback = null;
+  });
+
+  it('returns 409 when feedback already exists for this device+module', async () => {
+    existingFeedback = { id: 'prior-feedback' };
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: 'module-789',
+        app_rating: 4,
+        module_rating: 4,
+        feedback_text: '',
+        is_anonymous: true,
+      }),
+    });
+    const res = await POST(req);
+    const json = await res.json();
+    expect(res.status).toBe(409);
+    expect(json.error).toBe('already_submitted');
   });
 
   it('prefers the signed device cookie over the body device_id', async () => {
