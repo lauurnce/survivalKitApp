@@ -33,12 +33,15 @@ export function FeedbackPrompt({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [couponCode, setCouponCode] = useState<string | null>(null);
   const [submitMessage, setSubmitMessage] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   if (!isOpen || !moduleId) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMessage('');
 
     try {
       const deviceId = getDeviceId();
@@ -61,6 +64,7 @@ export function FeedbackPrompt({
       if (response.ok) {
         setCouponCode(data.coupon_code);
         setSubmitMessage(data.message);
+        setSubmitted(true);
         onSubmit?.(data);
 
         // Reset form and close after 3 seconds
@@ -70,21 +74,23 @@ export function FeedbackPrompt({
           setFeedback('');
           setCouponCode(null);
           setSubmitMessage('');
+          setSubmitted(false);
+          setErrorMessage('');
           onClose();
         }, 3000);
       } else {
-        alert(data.error || 'Failed to submit feedback');
+        setErrorMessage(data.message || data.error || 'Failed to submit feedback');
       }
     } catch (error) {
       console.error('Feedback submission error:', error);
-      alert('Error submitting feedback');
+      setErrorMessage('Error submitting feedback — please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   // Success state
-  if (couponCode) {
+  if (submitted) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-paper dark:bg-navy rounded-lg p-6 max-w-md">
@@ -106,7 +112,7 @@ export function FeedbackPrompt({
           )}
           {isAnonymous && (
             <p className="text-sm text-ink-muted mb-4">
-              Create an account to claim your discount and track your progress.
+              Sign in and submit non-anonymously next time to earn a ₱100 discount code.
             </p>
           )}
         </div>
@@ -196,6 +202,13 @@ export function FeedbackPrompt({
                 <span className="text-ink-muted">Submit anonymously</span>
               </label>
             </div>
+          )}
+
+          {/* Inline error (409 duplicate, 429 rate limit, network) */}
+          {errorMessage && (
+            <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+              {errorMessage}
+            </p>
           )}
 
           {/* Buttons */}
