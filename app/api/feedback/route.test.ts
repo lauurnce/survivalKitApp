@@ -16,6 +16,10 @@ vi.mock('@/lib/auth/deviceCookie', () => ({
 
 let lastInsert: Record<string, unknown> = {};
 let existingFeedback: { id: string } | null = null;
+let insertResult: { data: { id: string } | null; error: { code?: string } | null } = {
+  data: { id: 'test-id-123' },
+  error: null,
+};
 
 vi.mock('@supabase/supabase-js', () => {
   const mockSupabase = {
@@ -24,10 +28,7 @@ vi.mock('@supabase/supabase-js', () => {
         lastInsert = row;
         return {
           select: vi.fn(() => ({
-            single: vi.fn(async () => ({
-              data: { id: 'test-id-123' },
-              error: null,
-            })),
+            single: vi.fn(async () => insertResult),
           })),
         };
       }),
@@ -73,6 +74,24 @@ describe('POST /api/feedback', () => {
     mockCookieDeviceId = null;
     lastInsert = {};
     existingFeedback = null;
+    insertResult = { data: { id: 'test-id-123' }, error: null };
+  });
+
+  it('maps a unique-violation insert error to 409', async () => {
+    insertResult = { data: null, error: { code: '23505' } };
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: 'module-789',
+        app_rating: 4,
+        module_rating: 4,
+        feedback_text: '',
+        is_anonymous: true,
+      }),
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(409);
   });
 
   it('returns 409 when feedback already exists for this device+module', async () => {

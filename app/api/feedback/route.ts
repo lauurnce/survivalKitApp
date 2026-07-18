@@ -125,6 +125,16 @@ export async function POST(request: Request) {
       .single();
 
     if (error) {
+      // Unique index caught a concurrent duplicate the pre-check missed.
+      if (error.code === '23505') {
+        return Response.json(
+          {
+            error: 'already_submitted',
+            message: "You've already shared feedback for this module — thank you!",
+          },
+          { status: 409 }
+        );
+      }
       console.error('Feedback insert error:', error);
       return Response.json(
         { error: 'Failed to save feedback' },
