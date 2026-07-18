@@ -48,10 +48,14 @@ function makeSupabase(opts: {
   let orderCalled = false;
   let rangeCalled = false;
 
-  const rangeMock = vi.fn().mockResolvedValue({
-    data: selectData,
-    error: selectError,
-    count: selectData.length,
+  // The route ends its chain with .returns<T>() (type override), so range()
+  // yields one more chainable step before the awaited result.
+  const rangeMock = vi.fn().mockReturnValue({
+    returns: vi.fn().mockResolvedValue({
+      data: selectData,
+      error: selectError,
+      count: selectData.length,
+    }),
   });
 
   const orderMock = vi.fn().mockReturnValue({ range: rangeMock });
@@ -267,24 +271,24 @@ describe("GET /api/admin/feedback", () => {
           orCalledWith = filterStr;
           return {
             order: vi.fn().mockReturnValue({
-              range: vi
-                .fn()
-                .mockResolvedValue({
+              range: vi.fn().mockReturnValue({
+                returns: vi.fn().mockResolvedValue({
                   data: [],
                   error: null,
                   count: 0,
                 }),
+              }),
             }),
           };
         }),
         order: vi.fn().mockReturnValue({
-          range: vi
-            .fn()
-            .mockResolvedValue({
+          range: vi.fn().mockReturnValue({
+            returns: vi.fn().mockResolvedValue({
               data: [],
               error: null,
               count: 0,
             }),
+          }),
         }),
       });
 
@@ -310,24 +314,24 @@ describe("GET /api/admin/feedback", () => {
           orCalledWith = filterStr;
           return {
             order: vi.fn().mockReturnValue({
-              range: vi
-                .fn()
-                .mockResolvedValue({
+              range: vi.fn().mockReturnValue({
+                returns: vi.fn().mockResolvedValue({
                   data: [],
                   error: null,
                   count: 0,
                 }),
+              }),
             }),
           };
         }),
         order: vi.fn().mockReturnValue({
-          range: vi
-            .fn()
-            .mockResolvedValue({
+          range: vi.fn().mockReturnValue({
+            returns: vi.fn().mockResolvedValue({
               data: [],
               error: null,
               count: 0,
             }),
+          }),
         }),
       });
 
@@ -354,24 +358,24 @@ describe("GET /api/admin/feedback", () => {
           orCalledWith = filterStr;
           return {
             order: vi.fn().mockReturnValue({
-              range: vi
-                .fn()
-                .mockResolvedValue({
+              range: vi.fn().mockReturnValue({
+                returns: vi.fn().mockResolvedValue({
                   data: [],
                   error: null,
                   count: 0,
                 }),
+              }),
             }),
           };
         }),
         order: vi.fn().mockReturnValue({
-          range: vi
-            .fn()
-            .mockResolvedValue({
+          range: vi.fn().mockReturnValue({
+            returns: vi.fn().mockResolvedValue({
               data: [],
               error: null,
               count: 0,
             }),
+          }),
         }),
       });
 
@@ -397,24 +401,24 @@ describe("GET /api/admin/feedback", () => {
           orCalledWith = filterStr;
           return {
             order: vi.fn().mockReturnValue({
-              range: vi
-                .fn()
-                .mockResolvedValue({
+              range: vi.fn().mockReturnValue({
+                returns: vi.fn().mockResolvedValue({
                   data: [],
                   error: null,
                   count: 0,
                 }),
+              }),
             }),
           };
         }),
         order: vi.fn().mockReturnValue({
-          range: vi
-            .fn()
-            .mockResolvedValue({
+          range: vi.fn().mockReturnValue({
+            returns: vi.fn().mockResolvedValue({
               data: [],
               error: null,
               count: 0,
             }),
+          }),
         }),
       });
 
@@ -440,24 +444,24 @@ describe("GET /api/admin/feedback", () => {
           orCalledWith = filterStr;
           return {
             order: vi.fn().mockReturnValue({
-              range: vi
-                .fn()
-                .mockResolvedValue({
+              range: vi.fn().mockReturnValue({
+                returns: vi.fn().mockResolvedValue({
                   data: [],
                   error: null,
                   count: 0,
                 }),
+              }),
             }),
           };
         }),
         order: vi.fn().mockReturnValue({
-          range: vi
-            .fn()
-            .mockResolvedValue({
+          range: vi.fn().mockReturnValue({
+            returns: vi.fn().mockResolvedValue({
               data: [],
               error: null,
               count: 0,
             }),
+          }),
         }),
       });
 
@@ -486,24 +490,24 @@ describe("GET /api/admin/feedback", () => {
           orCalledWith = filterStr;
           return {
             order: vi.fn().mockReturnValue({
-              range: vi
-                .fn()
-                .mockResolvedValue({
+              range: vi.fn().mockReturnValue({
+                returns: vi.fn().mockResolvedValue({
                   data: [],
                   error: null,
                   count: 0,
                 }),
+              }),
             }),
           };
         }),
         order: vi.fn().mockReturnValue({
-          range: vi
-            .fn()
-            .mockResolvedValue({
+          range: vi.fn().mockReturnValue({
+            returns: vi.fn().mockResolvedValue({
               data: [],
               error: null,
               count: 0,
             }),
+          }),
         }),
       });
 

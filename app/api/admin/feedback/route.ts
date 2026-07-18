@@ -12,6 +12,24 @@ function escapePostgRESTOperators(input: string): string {
   return input.replace(/[,():\*]/g, (match) => "\\" + match);
 }
 
+// Shape of one row from the paginated query below. The untyped Supabase client
+// misinfers the embedded `modules!inner(title)` join, so the query pins its
+// result type with `.returns<AdminFeedbackItem[]>()` instead of casting data.
+type AdminFeedbackItem = {
+  id: string;
+  created_at: string;
+  module_id: string;
+  modules: { title: string } | null;
+  app_rating: number;
+  module_rating: number;
+  feedback_text: string;
+  user_id: string | null;
+  is_anonymous: boolean;
+  is_quality_approved: boolean;
+  coupon_code: string | null;
+  coupon_expires_at: string | null;
+};
+
 export async function GET(req: NextRequest) {
   // Check admin access
   const authed = await getAdminSession();
@@ -90,7 +108,7 @@ export async function GET(req: NextRequest) {
       .order(sort, { ascending: order === "asc" })
       .range(offset, offset + limit - 1);
 
-    const { data, error, count } = await query;
+    const { data, error, count } = await query.returns<AdminFeedbackItem[]>();
 
     if (error) {
       console.error("Admin feedback fetch error:", error);
@@ -120,21 +138,6 @@ export async function GET(req: NextRequest) {
       coupon_code: string | null;
       redeemed_at: string | null;
     }
-
-    type AdminFeedbackItem = {
-      id: string;
-      created_at: string;
-      module_id: string;
-      modules: Record<string, unknown> | null;
-      app_rating: number;
-      module_rating: number;
-      feedback_text: string;
-      user_id: string | null;
-      is_anonymous: boolean;
-      is_quality_approved: boolean;
-      coupon_code: string | null;
-      coupon_expires_at: string | null;
-    };
 
     const stats = statsData
       ? {
@@ -183,9 +186,9 @@ export async function GET(req: NextRequest) {
         };
 
     // Transform response
-    const typedData = (data as unknown as AdminFeedbackItem[]) || [];
+    const typedData = data ?? [];
     const transformedData =
-      typedData?.map((item: AdminFeedbackItem) => ({
+      typedData.map((item) => ({
         id: item.id,
         created_at: item.created_at,
         module_id: item.module_id,
