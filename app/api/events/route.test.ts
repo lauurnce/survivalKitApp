@@ -8,6 +8,16 @@ vi.mock("next/headers", () => ({
   cookies: () => Promise.resolve({ get: () => (mockCookieValue ? { value: mockCookieValue } : undefined) }),
 }));
 
+// Controllable distributed rate limiter (real one is Supabase-backed).
+let rateLimited = false;
+const rateLimitCalls: Array<{ key: string; max: number; windowSeconds: number }> = [];
+vi.mock("@/lib/serverRateLimit", () => ({
+  isServerRateLimited: vi.fn(async (key: string, opts: { max: number; windowSeconds: number }) => {
+    rateLimitCalls.push({ key, ...opts });
+    return rateLimited;
+  }),
+}));
+
 // ── Captured insert payloads + controllable insert result ───────────────────
 type InsertPayload = Record<string, unknown>;
 const inserts: InsertPayload[] = [];
@@ -46,6 +56,8 @@ beforeEach(() => {
   inserts.length = 0;
   insertResult = { error: null };
   mockCookieValue = undefined;
+  rateLimited = false;
+  rateLimitCalls.length = 0;
   process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
 });
 
@@ -158,5 +170,23 @@ describe("POST /api/events — device_id trust", () => {
     expect((await res.json()).ok).toBe(true);
     expect(inserts[0].device_id).toBe(DEVICE);
     expect(inserts[0].device_id).not.toBe(spoofed);
+  });
+});
+
+describe("POST /api/events — distributed rate limiting", () => {
+  it("checks the shared limiter with a namespaced per-IP key", async () => {
+    const res = await POST(makeReq({ device_id: DEVICE, event_type: "enter" }));
+    expect(res.status).toBe(200);
+    expect(rateLimitCalls).toHaveLength(1);
+    expect(rateLimitCalls[0].key).toMatch(/^events:ip:/);
+    expect(rateLimitCalls[0].max).toBe(60);
+    expect(rateLimitCalls[0].windowSeconds).toBe(60);
+  });
+
+  it("returns 429 and skips the insert when the limiter rejects", async () => {
+    rateLimited = true;
+    const res = await POST(makeReq({ device_id: DEVICE, event_type: "enter" }));
+    expect(res.status).toBe(429);
+    expect(inserts).toHaveLength(0);
   });
 });

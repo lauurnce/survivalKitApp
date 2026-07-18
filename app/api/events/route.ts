@@ -4,6 +4,8 @@ import { createServerClient } from "@/lib/supabase/server";
 import type { EventType } from "@/lib/supabase/types";
 import { isUuid } from "@/lib/validation";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
+import { getClientIp } from "@/lib/rateLimit";
+import { isServerRateLimited } from "@/lib/serverRateLimit";
 
 const VALID_EVENT_TYPES = new Set<EventType>([
   "enter", "year_select", "subject_open", "module_open",
@@ -12,37 +14,9 @@ const VALID_EVENT_TYPES = new Set<EventType>([
   "share_card_open", "share_card_share", "share_card_download",
 ]);
 
-// IP-based rate limiter — bounded map to prevent unbounded memory growth
-const rateLimitMap = new Map<string, number[]>();
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 60;
-const MAX_MAP_SIZE = 10_000;
-
-function getRateLimitKey(req: NextRequest): string {
-  return (
-    req.headers.get("x-real-ip") ??
-    req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
-    "unknown"
-  );
-}
-
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-
-  // Prune map if it gets too large to prevent memory leak
-  if (rateLimitMap.size >= MAX_MAP_SIZE) {
-    for (const [k, timestamps] of rateLimitMap) {
-      if (timestamps.every((t) => now - t >= WINDOW_MS)) rateLimitMap.delete(k);
-      if (rateLimitMap.size < MAX_MAP_SIZE * 0.8) break;
-    }
-  }
-
-  const timestamps = (rateLimitMap.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (timestamps.length >= MAX_PER_WINDOW) return true;
-  timestamps.push(now);
-  rateLimitMap.set(key, timestamps);
-  return false;
-}
+// Shared across all serverless instances via the check_rate_limit RPC — the
+// old per-instance Map gave each cold start a fresh 60/min allowance.
+const RATE_LIMIT_IP = { max: 60, windowSeconds: 60 };
 
 // Attribution fields are free-form client strings — cap their length and drop
 // anything that isn't a string so junk never reaches the events table.
@@ -100,7 +74,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    if (isRateLimited(getRateLimitKey(req))) {
+    if (await isServerRateLimited(`events:ip:${getClientIp(req)}`, RATE_LIMIT_IP)) {
       return NextResponse.json({ error: "Rate limited" }, { status: 429 });
     }
 
