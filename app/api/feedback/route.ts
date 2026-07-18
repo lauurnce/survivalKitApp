@@ -1,5 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
+import { cookies } from 'next/headers';
 import { checkFeedbackQuality, generateCouponCode } from '@/lib/feedback';
+import { DEVICE_COOKIE, verifyDeviceCookie } from '@/lib/auth/deviceCookie';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -10,13 +12,19 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const {
-      device_id,
+      device_id: bodyDeviceId,
       module_id,
       app_rating,
       module_rating,
       feedback_text = '',
       is_anonymous,
     } = body;
+
+    // Trust the signed HttpOnly device cookie over the client-supplied body
+    // value — the body is forgeable, the HMAC cookie is not.
+    const cookieStore = await cookies();
+    const cookieDeviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+    const device_id = cookieDeviceId ?? bodyDeviceId;
 
     // Validation
     if (!device_id || !module_id || app_rating === undefined || app_rating === null || module_rating === undefined || module_rating === null) {

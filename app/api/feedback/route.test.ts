@@ -1,16 +1,35 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+// Controllable signed-device-cookie mock: null = no cookie sent.
+let mockCookieDeviceId: string | null = null;
+vi.mock('next/headers', () => ({
+  cookies: () =>
+    Promise.resolve({
+      get: () => (mockCookieDeviceId ? { value: `${mockCookieDeviceId}.sig` } : undefined),
+    }),
+}));
+vi.mock('@/lib/auth/deviceCookie', () => ({
+  DEVICE_COOKIE: 'bsit_device_id',
+  verifyDeviceCookie: (value: string | undefined) =>
+    value ? value.slice(0, value.lastIndexOf('.')) : null,
+}));
+
+let lastInsert: Record<string, unknown> = {};
+
 vi.mock('@supabase/supabase-js', () => {
   const mockSupabase = {
     from: vi.fn(() => ({
-      insert: vi.fn(() => ({
-        select: vi.fn(() => ({
-          single: vi.fn(async () => ({
-            data: { id: 'test-id-123' },
-            error: null,
+      insert: vi.fn((row: Record<string, unknown>) => {
+        lastInsert = row;
+        return {
+          select: vi.fn(() => ({
+            single: vi.fn(async () => ({
+              data: { id: 'test-id-123' },
+              error: null,
+            })),
           })),
-        })),
-      })),
+        };
+      }),
     })),
     auth: {
       getUser: vi.fn(async (token) => {
@@ -40,6 +59,26 @@ import { POST } from './route';
 describe('POST /api/feedback', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockCookieDeviceId = null;
+    lastInsert = {};
+  });
+
+  it('prefers the signed device cookie over the body device_id', async () => {
+    mockCookieDeviceId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        device_id: '11111111-1111-1111-1111-111111111111', // spoofed
+        module_id: 'module-789',
+        app_rating: 5,
+        module_rating: 5,
+        feedback_text: '',
+        is_anonymous: true,
+      }),
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    expect(lastInsert.device_id).toBe('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee');
   });
 
   it('creates feedback with quality approval and coupon', async () => {
