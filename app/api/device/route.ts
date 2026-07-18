@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isUuid } from "@/lib/validation";
-import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
+import { getClientIp } from "@/lib/rateLimit";
+import { isServerRateLimited } from "@/lib/serverRateLimit";
 import {
   DEVICE_COOKIE,
   DEVICE_COOKIE_OPTIONS,
@@ -9,13 +10,15 @@ import {
 
 export const runtime = "nodejs";
 
-const limiter = createRateLimiter(20);
+// Shared across all serverless instances via the check_rate_limit RPC — the
+// old per-instance limiter gave each cold start a fresh 20/min allowance.
+const RATE_LIMIT_IP = { max: 20, windowSeconds: 60 };
 
 // Issues an HttpOnly, signed device cookie. The client posts its existing
 // localStorage UUID (or a freshly generated one); we sign it so the value
 // can't be forged or copied between browsers without the server secret.
 export async function POST(req: NextRequest) {
-  if (limiter.check(getClientIp(req))) {
+  if (await isServerRateLimited(`device:ip:${getClientIp(req)}`, RATE_LIMIT_IP)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
