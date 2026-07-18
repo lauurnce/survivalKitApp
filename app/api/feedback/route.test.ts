@@ -14,6 +14,11 @@ vi.mock('@/lib/auth/deviceCookie', () => ({
     value ? value.slice(0, value.lastIndexOf('.')) : null,
 }));
 
+let rateLimited = false;
+vi.mock('@/lib/serverRateLimit', () => ({
+  isServerRateLimited: vi.fn(async () => rateLimited),
+}));
+
 let lastInsert: Record<string, unknown> = {};
 let existingFeedback: { id: string } | null = null;
 let insertResult: { data: { id: string } | null; error: { code?: string } | null } = {
@@ -75,6 +80,26 @@ describe('POST /api/feedback', () => {
     lastInsert = {};
     existingFeedback = null;
     insertResult = { data: { id: 'test-id-123' }, error: null };
+    rateLimited = false;
+  });
+
+  it('returns 429 when rate limited', async () => {
+    rateLimited = true;
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: 'module-789',
+        app_rating: 4,
+        module_rating: 4,
+        feedback_text: '',
+        is_anonymous: true,
+      }),
+    });
+    const res = await POST(req);
+    const json = await res.json();
+    expect(res.status).toBe(429);
+    expect(json.error).toBe('rate_limited');
   });
 
   it('maps a unique-violation insert error to 409', async () => {

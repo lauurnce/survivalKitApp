@@ -2,6 +2,12 @@ import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { checkFeedbackQuality, generateCouponCode } from '@/lib/feedback';
 import { DEVICE_COOKIE, verifyDeviceCookie } from '@/lib/auth/deviceCookie';
+import { getClientIp } from '@/lib/rateLimit';
+import { isServerRateLimited } from '@/lib/serverRateLimit';
+
+// Coarse per-IP ceiling (campus NAT headroom) and a tight per-device budget.
+const RATE_LIMIT_IP = { max: 20, windowSeconds: 3600 };
+const RATE_LIMIT_DEVICE = { max: 5, windowSeconds: 3600 };
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -64,6 +70,22 @@ export async function POST(request: Request) {
       return Response.json(
         { error: 'Ratings must be between 1 and 5' },
         { status: 400 }
+      );
+    }
+
+    // Distributed rate limits, shared across all serverless instances.
+    const ip = getClientIp(request);
+    const [ipLimited, deviceLimited] = await Promise.all([
+      isServerRateLimited(`feedback:ip:${ip}`, RATE_LIMIT_IP),
+      isServerRateLimited(`feedback:device:${device_id}`, RATE_LIMIT_DEVICE),
+    ]);
+    if (ipLimited || deviceLimited) {
+      return Response.json(
+        {
+          error: 'rate_limited',
+          message: 'Too many submissions — please try again later.',
+        },
+        { status: 429 }
       );
     }
 
