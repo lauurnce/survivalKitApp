@@ -1,5 +1,3 @@
-import { NextRequest } from "next/server";
-
 // In-memory, per-IP sliding-window rate limiter. Mirrors the pattern already
 // used across the public POST routes (events, progress, waitlist, run), but as
 // a shared helper so new endpoints stay consistent. Each limiter instance owns
@@ -37,7 +35,8 @@ export function createRateLimiter(maxPerWindow: number, windowMs = 60_000): Rate
 // Prefer x-real-ip (set by Vercel, not client-spoofable). Fall back to the LAST
 // x-forwarded-for hop (the one added by our proxy), never the first
 // (client-controlled), then to a constant so a missing header can't bypass.
-export function getClientIp(req: NextRequest): string {
+// Accepts anything with a Headers object so plain Request handlers can use it.
+export function getClientIp(req: { headers: Headers }): string {
   return (
     req.headers.get("x-real-ip") ??
     req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??

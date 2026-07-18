@@ -51,4 +51,11 @@ describe("getClientIp", () => {
     const req = new NextRequest("https://x.test");
     expect(getClientIp(req)).toBe("unknown");
   });
+
+  it("accepts a plain Request", () => {
+    const req = new Request("http://localhost/", {
+      headers: { "x-real-ip": "203.0.113.9" },
+    });
+    expect(getClientIp(req)).toBe("203.0.113.9");
+  });
 });
