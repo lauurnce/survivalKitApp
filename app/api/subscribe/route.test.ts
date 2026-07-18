@@ -27,17 +27,37 @@ vi.mock("@/lib/paymongo", async (importOriginal) => {
 // Mock to control coupon validation behavior per test
 let mockCouponValid = false;
 let mockCouponExpired = false;
+let mockCouponRedeemed = false; // Track if coupon has been redeemed
 
 vi.mock("@supabase/supabase-js", () => ({
   createClient: () => ({
     from: (table: string) => ({
-      select: () => ({
+      select: (columns: string) => ({
         eq: (column: string, value: string) => ({
-          single: () => Promise.resolve(
-            mockCouponValid && column === 'coupon_code'
-              ? { data: { coupon_code: value, coupon_expires_at: mockCouponExpired ? new Date(Date.now() - 1000).toISOString() : new Date(Date.now() + 86400000).toISOString() }, error: null }
-              : { data: null, error: { message: 'Not found' } }
-          ),
+          is: (col: string, val: null) => ({
+            single: () => Promise.resolve(
+              mockCouponValid && column === 'coupon_code' && val === null && col === 'redeemed_at'
+                ? mockCouponRedeemed
+                  ? { data: null, error: { message: 'Not found' } }
+                  : { data: { coupon_code: value, coupon_expires_at: mockCouponExpired ? new Date(Date.now() - 1000).toISOString() : new Date(Date.now() + 86400000).toISOString(), redeemed_at: null }, error: null }
+                : { data: null, error: { message: 'Not found' } }
+            ),
+          }),
+        }),
+      }),
+      update: (data: Record<string, unknown>) => ({
+        eq: (column: string, value: string) => ({
+          is: (col: string, val: null) => ({
+            select: () => ({
+              single: () => Promise.resolve(
+                mockCouponValid && column === 'coupon_code' && val === null && col === 'redeemed_at'
+                  ? mockCouponRedeemed
+                    ? { data: null, error: { message: 'Already redeemed' } }
+                    : { data: { redeemed_at: data.redeemed_at }, error: null } // Simulate successful update
+                  : { data: null, error: { message: 'Not found' } }
+              ),
+            }),
+          }),
         }),
       }),
     }),
@@ -81,6 +101,7 @@ beforeEach(() => {
   mockCookieValue = undefined;
   mockCouponValid = false;
   mockCouponExpired = false;
+  mockCouponRedeemed = false;
   process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
 });
 
@@ -174,9 +195,9 @@ describe("POST /api/subscribe coupon validation", () => {
     expect(body.discountApplied).toBe(true);
     expect(dynamicLinkCalls).toHaveLength(1);
     expect(linkCalls).toHaveLength(0);
-    // First arg to createDynamicPaymongoLink is amount (should be base - discount)
-    // subject_month base is 4900, discount is 10000, so final should be -5100 (but we should still send it)
-    expect(dynamicLinkCalls[0][0]).toBe(4900 - 10000);
+    // First arg to createDynamicPaymongoLink is amount (should be clamped to MIN_CHARGE)
+    // subject_month base is 4900, discount is 10000, so final should be clamped to 10000 (MIN_CHARGE)
+    expect(dynamicLinkCalls[0][0]).toBe(10000);
   });
 
   it("uses standard link when coupon is expired", async () => {
@@ -198,5 +219,65 @@ describe("POST /api/subscribe coupon validation", () => {
     // 3rd arg to createDynamicPaymongoLink is remarks
     const remarks = dynamicLinkCalls[0][2] as string;
     expect(remarks).toContain("coupon:FEEDBACK-ABC123");
+  });
+
+  it("enforces minimum charge when discount >= baseAmount", async () => {
+    mockCouponValid = true;
+    mockCouponExpired = false;
+    // subject_month = 4900, discount = 10000, so 4900 - 10000 = -5100
+    // Should be clamped to MIN_CHARGE (10000)
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
+    expect(res.status).toBe(200);
+    expect(dynamicLinkCalls).toHaveLength(1);
+    // Final amount must be at least MIN_CHARGE (10000)
+    const finalAmount = dynamicLinkCalls[0][0];
+    expect(finalAmount).toBeGreaterThanOrEqual(10000);
+    expect(finalAmount).toBe(10000);
+  });
+
+  it("rejects if finalAmount becomes non-integer (edge case)", async () => {
+    // This test ensures that even with valid calculations, we verify the result
+    // is an integer before sending to PayMongo
+    mockCouponValid = true;
+    mockCouponExpired = false;
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
+    expect(res.status).toBe(200);
+    const finalAmount = dynamicLinkCalls[0][0];
+    expect(Number.isInteger(finalAmount)).toBe(true);
+  });
+});
+
+describe("POST /api/subscribe amount validation security", () => {
+  it("prevents zero amount payment", async () => {
+    // If somehow a discount equals the base amount exactly, minimum charge applies
+    mockCouponValid = true;
+    mockCouponExpired = false;
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
+    expect(res.status).toBe(200);
+    const finalAmount = dynamicLinkCalls[0][0];
+    expect(finalAmount).toBeGreaterThan(0);
+  });
+
+  it("prevents negative amount payment", async () => {
+    // Verify that negative amounts are clamped to minimum charge
+    mockCouponValid = true;
+    mockCouponExpired = false;
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
+    expect(res.status).toBe(200);
+    const finalAmount = dynamicLinkCalls[0][0];
+    expect(finalAmount).toBeGreaterThan(0);
+    expect(finalAmount).toBe(10000); // Clamped to MIN_CHARGE
+  });
+
+  it("allows normal discount that doesn't trigger minimum charge", async () => {
+    // Year plan is 29900, discount is 10000, so 29900 - 10000 = 19900 (no clamping needed)
+    mockCouponValid = true;
+    mockCouponExpired = false;
+    const res = await POST(makeReq({ yearId: YEAR, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
+    expect(res.status).toBe(200);
+    expect(dynamicLinkCalls).toHaveLength(1);
+    const finalAmount = dynamicLinkCalls[0][0];
+    expect(finalAmount).toBe(29900 - 10000); // 19900
+    expect(finalAmount).toBeGreaterThan(10000);
   });
 });

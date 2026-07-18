@@ -16,7 +16,11 @@ import {
 
 const limiter = createRateLimiter(5);
 
-// Helper function to validate coupon codes
+// Minimum charge: ₱100 = 10000 centavos
+// Security: prevents negative or zero amounts from being sent to PayMongo
+const MIN_CHARGE = 10000;
+
+// Helper function to validate coupon codes and atomically mark as redeemed
 async function validateCouponCode(couponCode: string): Promise<{ valid: boolean; discount: number }> {
   if (!couponCode) {
     return { valid: false, discount: 0 };
@@ -27,22 +31,40 @@ async function validateCouponCode(couponCode: string): Promise<{ valid: boolean;
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  const { data, error } = await supabaseAdmin
+  // Step 1: Look up coupon to verify it exists, is not expired, and not yet redeemed
+  const { data: couponData, error: lookupError } = await supabaseAdmin
     .from('user_feedback')
-    .select('coupon_code, coupon_expires_at')
+    .select('coupon_code, coupon_expires_at, redeemed_at')
     .eq('coupon_code', couponCode)
+    .is('redeemed_at', null) // Only non-redeemed coupons
     .single();
 
-  if (error || !data) {
+  if (lookupError || !couponData) {
     return { valid: false, discount: 0 };
   }
 
   // Check expiry
-  if (new Date(data.coupon_expires_at) < new Date()) {
+  if (new Date(couponData.coupon_expires_at) < new Date()) {
     return { valid: false, discount: 0 };
   }
 
-  // Coupon is valid
+  // Step 2: Atomically mark coupon as redeemed BEFORE creating PayMongo link
+  // This ensures concurrent requests cannot both redeem the same coupon.
+  // We only update if redeemed_at is still null (race condition defense).
+  const { data: updatedCoupon, error: updateError } = await supabaseAdmin
+    .from('user_feedback')
+    .update({ redeemed_at: new Date().toISOString() })
+    .eq('coupon_code', couponCode)
+    .is('redeemed_at', null) // Atomic condition: only if not already redeemed
+    .select('redeemed_at')
+    .single();
+
+  if (updateError || !updatedCoupon) {
+    // Update returned 0 rows: coupon was already redeemed by concurrent request
+    return { valid: false, discount: 0 };
+  }
+
+  // Coupon is valid and successfully marked as redeemed
   return { valid: true, discount: 10000 }; // 10000 centavos = ₱100
 }
 
@@ -149,7 +171,17 @@ export async function POST(req: NextRequest) {
     const couponResult = await validateCouponCode(couponCode ?? '');
     const resolvedPlan: PlanKey = plan ?? (subjectId ? "subject_month" : "year_sem");
     const baseAmount = PLANS[resolvedPlan].amount;
-    const finalAmount = baseAmount - (couponResult.valid ? couponResult.discount : 0);
+
+    // Security: clamp final amount to minimum charge, preventing negative or zero amounts
+    const finalAmount = Math.max(MIN_CHARGE, baseAmount - (couponResult.valid ? couponResult.discount : 0));
+
+    // Validate finalAmount is a positive integer
+    if (!Number.isInteger(finalAmount) || finalAmount <= 0) {
+      return NextResponse.json(
+        { error: "Invalid payment amount" },
+        { status: 400 }
+      );
+    }
 
     let checkoutUrl: string;
 
