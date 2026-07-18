@@ -11,7 +11,6 @@ export async function POST(request: Request) {
     const body = await request.json();
     const {
       device_id,
-      user_id,
       module_id,
       app_rating,
       module_rating,
@@ -24,6 +23,31 @@ export async function POST(request: Request) {
       return Response.json(
         { error: 'Missing required fields' },
         { status: 400 }
+      );
+    }
+
+    // Get authenticated user from Bearer token
+    let authenticatedUserId: string | null = null;
+    const authHeader = request.headers.get('authorization');
+
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+      if (authError || !user) {
+        return Response.json(
+          { error: 'Unauthorized' },
+          { status: 401 }
+        );
+      }
+      authenticatedUserId = user.id;
+    }
+
+    // For non-anonymous submissions, require Bearer token
+    if (!is_anonymous && !authenticatedUserId) {
+      return Response.json(
+        { error: 'Bearer token required for non-anonymous submissions' },
+        { status: 401 }
       );
     }
 
@@ -55,7 +79,7 @@ export async function POST(request: Request) {
       .from('user_feedback')
       .insert({
         device_id,
-        user_id: is_anonymous ? null : user_id || null,
+        user_id: is_anonymous ? null : authenticatedUserId,
         module_id,
         app_rating,
         module_rating,

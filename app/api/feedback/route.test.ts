@@ -12,6 +12,22 @@ vi.mock('@supabase/supabase-js', () => {
         })),
       })),
     })),
+    auth: {
+      getUser: vi.fn(async (token) => {
+        // Mock valid token
+        if (token === 'valid-token') {
+          return {
+            data: { user: { id: 'user-456' } },
+            error: null,
+          };
+        }
+        // Mock invalid token
+        return {
+          data: { user: null },
+          error: { message: 'Invalid token' },
+        };
+      }),
+    },
   };
 
   return {
@@ -29,9 +45,11 @@ describe('POST /api/feedback', () => {
   it('creates feedback with quality approval and coupon', async () => {
     const req = new Request('http://localhost/api/feedback', {
       method: 'POST',
+      headers: {
+        'authorization': 'Bearer valid-token',
+      },
       body: JSON.stringify({
         device_id: 'device-123',
-        user_id: 'user-456',
         module_id: 'module-789',
         app_rating: 5,
         module_rating: 4,
@@ -115,6 +133,9 @@ describe('POST /api/feedback', () => {
   it('validates rating bounds - module_rating too low', async () => {
     const req = new Request('http://localhost/api/feedback', {
       method: 'POST',
+      headers: {
+        'authorization': 'Bearer valid-token',
+      },
       body: JSON.stringify({
         device_id: 'device-123',
         module_id: 'module-789',
@@ -170,7 +191,6 @@ describe('POST /api/feedback', () => {
       method: 'POST',
       body: JSON.stringify({
         device_id: 'device-456',
-        user_id: 'user-789', // Provided but should be ignored
         module_id: 'module-101',
         app_rating: 4,
         module_rating: 4,
@@ -186,9 +206,55 @@ describe('POST /api/feedback', () => {
     expect(json.is_quality_approved).toBe(true);
   });
 
+  it('rejects non-anonymous submission without Bearer token', async () => {
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        device_id: 'device-456',
+        module_id: 'module-101',
+        app_rating: 4,
+        module_rating: 4,
+        feedback_text: 'Great explanations and helpful examples!',
+        is_anonymous: false,
+      }),
+    });
+
+    const res = await POST(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(401);
+    expect(json.error).toContain('Bearer token required');
+  });
+
+  it('rejects non-anonymous submission with invalid Bearer token', async () => {
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      headers: {
+        'authorization': 'Bearer invalid-token',
+      },
+      body: JSON.stringify({
+        device_id: 'device-456',
+        module_id: 'module-101',
+        app_rating: 4,
+        module_rating: 4,
+        feedback_text: 'Great explanations and helpful examples!',
+        is_anonymous: false,
+      }),
+    });
+
+    const res = await POST(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(401);
+    expect(json.error).toContain('Unauthorized');
+  });
+
   it('rejects feedback with spam (repeated chars)', async () => {
     const req = new Request('http://localhost/api/feedback', {
       method: 'POST',
+      headers: {
+        'authorization': 'Bearer valid-token',
+      },
       body: JSON.stringify({
         device_id: 'device-123',
         module_id: 'module-789',
