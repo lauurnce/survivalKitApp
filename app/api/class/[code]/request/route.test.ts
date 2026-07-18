@@ -8,6 +8,16 @@ vi.mock("next/headers", () => ({
   cookies: () => Promise.resolve({ get: () => (mockCookieValue ? { value: mockCookieValue } : undefined) }),
 }));
 
+// Controllable distributed rate limiter (real one is Supabase-backed).
+let rateLimited = false;
+const rateLimitCalls: Array<{ key: string; max: number; windowSeconds: number }> = [];
+vi.mock("@/lib/serverRateLimit", () => ({
+  isServerRateLimited: vi.fn(async (key: string, opts: { max: number; windowSeconds: number }) => {
+    rateLimitCalls.push({ key, ...opts });
+    return rateLimited;
+  }),
+}));
+
 // Controllable per-test fixtures for the Supabase mock.
 let mockClassRow: Record<string, unknown> | null;
 let mockExistingRequest: { status: string } | null;
@@ -79,6 +89,8 @@ beforeEach(() => {
   mockUpsertError = null;
   upsertCalls.length = 0;
   ipCounter = 0;
+  rateLimited = false;
+  rateLimitCalls.length = 0;
   process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
 });
 
@@ -177,22 +189,30 @@ describe("POST /api/class/[code]/request", () => {
     expect(upsertCalls[0][1]).toMatchObject({ onConflict: "class_id,device_id" });
   });
 
-  it("is rate-limited per IP, matching the existing class/join endpoint's threshold", async () => {
+  it("checks the shared distributed limiter with a namespaced per-IP key", async () => {
     mockCookieValue = signDeviceCookie(DEV);
     mockClassRow = null;
-    // Fixed IP across every call in this test so the limiter's window applies.
-    const fixedIp = "10.9.9.8";
-    const req = () =>
-      ({
-        headers: { get: (h: string) => (h === "x-real-ip" ? fixedIp : null) },
-      }) as unknown as import("next/server").NextRequest;
+    const req = {
+      headers: { get: (h: string) => (h === "x-real-ip" ? "10.9.9.8" : null) },
+    } as unknown as import("next/server").NextRequest;
 
-    let lastRes;
-    for (let i = 0; i < 11; i++) {
-      lastRes = await POST(req(), makeParams("ABC234"));
-    }
-    expect(lastRes!.status).toBe(429);
-    const json = await lastRes!.json();
+    await POST(req, makeParams("ABC234"));
+    expect(rateLimitCalls).toHaveLength(1);
+    expect(rateLimitCalls[0].key).toBe("class-request:ip:10.9.9.8");
+    expect(rateLimitCalls[0].max).toBe(10);
+    expect(rateLimitCalls[0].windowSeconds).toBe(60);
+  });
+
+  it("returns 429 when the shared limiter rejects", async () => {
+    mockCookieValue = signDeviceCookie(DEV);
+    rateLimited = true;
+    const req = {
+      headers: { get: (h: string) => (h === "x-real-ip" ? "10.9.9.8" : null) },
+    } as unknown as import("next/server").NextRequest;
+
+    const res = await POST(req, makeParams("ABC234"));
+    expect(res.status).toBe(429);
+    const json = await res.json();
     expect(json.error).toBe("rate_limited");
   });
 });

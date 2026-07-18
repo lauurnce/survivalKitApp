@@ -2,18 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { createServerClient } from "@/lib/supabase/server";
-import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
+import { getClientIp } from "@/lib/rateLimit";
+import { isServerRateLimited } from "@/lib/serverRateLimit";
 import { isValidClassCodeShape } from "@/lib/classCode";
 
 // This is the only throttle standing between a 6-char code (887M-combination
-// space, Math.random-generated) and brute-force guessing. Do not remove or weaken.
-const limiter = createRateLimiter(10);
+// space, Math.random-generated) and brute-force guessing. Do not remove or
+// weaken. Shared across all serverless instances via the check_rate_limit RPC
+// so an attacker can't multiply the allowance across cold starts.
+const RATE_LIMIT_IP = { max: 10, windowSeconds: 60 };
 
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ code: string }> }
 ) {
-  if (limiter.check(getClientIp(req))) {
+  if (await isServerRateLimited(`class-request:ip:${getClientIp(req)}`, RATE_LIMIT_IP)) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
