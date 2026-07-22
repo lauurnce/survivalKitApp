@@ -68,7 +68,7 @@ Everything above ultimately serves two overarching goals:
 1. **Make the computer convenient to use**, this matters most on personal devices, where the user experience is the priority.
 2. **Use the hardware efficiently**, this matters most when a machine is shared among many users or processes, where every wasted CPU cycle or byte of memory costs everyone.
 
-These two goals can pull in opposite directions, and different operating systems have historically leaned one way or the other. Windows has traditionally prioritized convenience, a smooth, approachable experience, even at some cost to efficiency. Unix-family systems, having grown up in multi-user, shared-machine environments, have traditionally leaned toward squeezing the most out of available hardware.
+These two goals can pull in opposite directions, and different operating systems have historically leaned one way or the other. Windows has traditionally prioritized convenience, a smooth, approachable experience, even at some cost to efficiency. UNIX-family systems, having grown up in multi-user, shared-machine environments, have traditionally leaned toward squeezing the most out of available hardware.
 
 <!-- kind: content -->
 ## A Short History of Operating Systems
@@ -107,7 +107,7 @@ There's no real-time interaction between user and computer. An operator collects
 - **Weaknesses:** Hard to predict how long any individual job will take; difficult to debug; one failed job can hold up everything queued behind it.
 
 ### Time-Sharing OS
-Also called a **multitasking** system. Each task gets a small, fixed slice of CPU time, a **quantum**, before control passes to the next task. Because these slices are so short, it *feels* like everything is running at once, even on a single CPU. Tasks can come from one user or be spread across many. Unix and Multics are classic examples.
+Also called a **multitasking** system. Each task gets a small, fixed slice of CPU time, a **quantum**, before control passes to the next task. Because these slices are so short, it *feels* like everything is running at once, even on a single CPU. Tasks can come from one user or be spread across many. UNIX and Multics are classic examples.
 
 - **Strengths:** Every task gets a fair share of the CPU; CPU idle time is reduced; less duplicated software since users share the same system.
 - **Weaknesses:** Reliability concerns; security and data integrity need careful handling since multiple users/programs share resources; inter-process communication adds overhead.
@@ -125,7 +125,7 @@ A server manages users, data, applications, and shared resources (files, printer
 - **Weaknesses:** Server hardware is costly; everything depends on that central server; ongoing maintenance and updates are required.
 
 ### Real-Time OS (RTOS)
-Built for systems where the gap between receiving an input and producing the right response, the **response time**, is critical. Air traffic control, networked multimedia, and industrial command-and-control systems are typical examples. RTOS come in two flavors:
+Built for systems where the gap between receiving an input and producing the right response, the **response time**, is critical. Air traffic control, networked multimedia, and industrial command-and-control systems are typical examples. RTOS comes in two flavors:
 
 - **Hard real-time:** Missing a deadline isn't just inconvenient, it's a failure, potentially a dangerous one. Automatic airbags and missile guidance systems fall here, where even the shortest delay is unacceptable. Virtual memory is essentially never used, since it introduces unpredictable delays.
 - **Soft real-time:** Deadlines matter, but occasionally missing one is tolerable, the system degrades a bit rather than failing outright. Personal computers, audio, and video systems are typical examples.
