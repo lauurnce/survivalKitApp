@@ -237,7 +237,7 @@ Simple propositions contain a single subject and a single predicate. We can comb
 
 ### 1. Conjunction ($p \wedge q$)
 
-A conjunction represents an logical "and" statement. The compound proposition $p \wedge q$ is true if and only if both component propositions $p$ and $q$ are true. If either statement is false, the entire conjunction is false.
+A conjunction represents a logical "and" statement. The compound proposition $p \wedge q$ is true if and only if both component propositions $p$ and $q$ are true. If either statement is false, the entire conjunction is false.
 
 ### 2. Disjunction ($p \vee q$)
 
