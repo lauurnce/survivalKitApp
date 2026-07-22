@@ -45,7 +45,7 @@ As global commerce has grown more complex, accounting has fragmented into specia
 
 | Branch of Accounting | Primary Scope and Objective | Target Audience |
 |---|---|---|
-| Financial Accounting | Categorizes and historical logs business transactions to construct standardized financial statements matching regulatory frameworks. | External stakeholders (regulators, lenders, public). |
+| Financial Accounting | Categorizes and historically logs business transactions to construct standardized financial statements matching regulatory frameworks. | External stakeholders (regulators, lenders, public). |
 | Cost Accounting | Tracks, reports, and analyzes specific manufacturing costs, breaking them down into fixed costs (e.g., rent) and variable costs (e.g., shipping). | Internal operations and production managers. |
 | Auditing | External: Independent verification of statement compliance with GAAP/IFRS. Internal: Evaluation of corporate policy, fraud control, and operational division of duties. | Shareholders, regulatory agencies, and executive boards. |
 | Managerial Accounting | Delivers specialized operating metrics, budgets, forecasts, and strategic transaction reviews without strict GAAP enforcement. | Internal company managers and executives. |
@@ -83,7 +83,7 @@ Generally Accepted Accounting Principles (GAAP) represent a unified structure co
 6. **Going Concern Principle:** Financial statements are prepared assuming that an enterprise will continue its operational activities long enough to satisfy its long-term project commitments and structural objectives, avoiding imminent liquidation. This justifies deferring prepaid asset expenses across future periods.
 7. **Matching Principle:** Mandates the use of the accrual basis of accounting. Expenses must be recognized and matched within the exact reporting period of the revenues they helped generate, regardless of when cash is paid out (e.g., logging employee wages during the week they worked rather than the week they are paid).
 8. **Revenue Recognition Principle:** Revenues must be officially logged into the ledger the exact moment a product is sold or a service is fully performed, regardless of the chronological timing of the actual cash receipt.
-9. **Materiality Principle:** An accountant is permitted to deviate from standard accounting principles if a transactional amount is small enough that it will not mislead the readers of the financial statements. For example, a multi-million-peso corporation can choose to immediately expense an entire asset purchase (like a computer printer) in year one rather than systematically depreciation it over five years.
+9. **Materiality Principle:** An accountant is permitted to deviate from standard accounting principles if a transactional amount is small enough that it will not mislead the readers of the financial statements. For example, a multi-million-peso corporation can choose to immediately expense an entire asset purchase (like a computer printer) in year one rather than systematically depreciating it over five years.
 10. **Conservatism Principle:** When choosing between two valid, acceptable accounting methodologies, an accountant must select the option that avoids overstating net income or asset values, ensuring potential operational losses are anticipated and disclosed while potential gains are ignored until they occur.
 
 ---
