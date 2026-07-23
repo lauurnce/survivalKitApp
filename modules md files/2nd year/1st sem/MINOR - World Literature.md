@@ -1,6 +1,5 @@
 # World Literature Study Guide
-⚠️ REVIEW: The uploaded PDF does not clearly state whether this is for 1st-year or 2nd-year students. Replace `Not specified` with the correct year level before importing to the app.
-<!-- subject: World Literature | year: Not specified -->
+<!-- subject: World Literature | year: 2nd -->
 
 <!-- kind: content -->
 ## Introduction to World Literature
