@@ -42,7 +42,7 @@ Several universities also maintain their own Filipiniana collections.
 
 **Foreign Repositories:**
 
-Because the Philippines spent over three centuries under Spanish rule, passed briefly through British hands (1762–1764), and later under American administration, significant Philippine historical records are scattered internationally:
+Because the Philippines spent over three centuries under Spanish rule, passed briefly through British hands (1762–1764), and later came under American administration, significant Philippine historical records are scattered internationally:
 
 | Country | Key Archives |
 |---|---|
