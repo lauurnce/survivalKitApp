@@ -214,7 +214,7 @@ The Kataas-taasang Kagalang-galangang Katipunan ng mga Anak ng Bayan, commonly c
 
 Tensions grew between Bonifacio and Emilio Aguinaldo over strategy and leadership. Bonifacio favored decisions made by consensus among senior members; Aguinaldo believed in centralized command. A series of Spanish military defeats further eroded Bonifacio's standing, especially in Cavite, and factional rivalry intensified.
 
-To resolve the conflict, the **Tejeros Convention** was held on March 22, 1897. Elections were held: Aguinaldo was elected President of the new revolutionary government, and Bonifacio was elected Director of the Interior. When Danielo Tirona challenged Bonifacio's qualification for the position he had been elected to, Bonifacio declared the proceedings null and void. He was later arrested, tried, and executed on charges of treason in Maragondon, Cavite, in May 1897.
+To resolve the conflict, the **Tejeros Convention** was held on March 22, 1897. Elections were held: Aguinaldo was elected President of the new revolutionary government, and Bonifacio was elected Director of the Interior. When Daniel Tirona challenged Bonifacio's qualification for the position he had been elected to, Bonifacio declared the proceedings null and void. He was later arrested, tried, and executed on charges of treason in Maragondon, Cavite, in May 1897.
 
 The Tejeros Convention is significant to historians not only for its political outcomes but because it illustrates how different sources record the same event very differently depending on the author's position, loyalties, and purpose.
 
