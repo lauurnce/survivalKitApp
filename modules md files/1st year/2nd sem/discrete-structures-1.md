@@ -21,7 +21,7 @@ These can be combined: P ∧ Q → R ("If a grizzly is a bear and a bear is a ma
 
 ### Simple vs. Complex Statements
 
-A **simple statement** contains only a single idea with no logical connectives. They are typically represented by uppercase letters (P, Q, R, ...).
+A **simple statement** contains only a single idea with no logical connectives. It is typically represented by an uppercase letter (P, Q, R, ...).
 
 A **complex statement** combines two or more simple statements using one or more logical connectives. There are five connective types in propositional logic:
 
