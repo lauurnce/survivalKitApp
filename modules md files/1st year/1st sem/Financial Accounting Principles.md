@@ -229,7 +229,7 @@ To facilitate recording, similar transactional line items are grouped into indiv
 - **Prepaid Expenses:** Upfront payments for benefits spanning future periods (e.g., Rent, Insurance).
 
 **Non-Current Assets** (Long-term operational hard assets):
-- **Property, Plant, and Equipment (Tangible):** Hard physical assets like Land, Buildings, Equipment, Machineries, and Furniture & Fixtures.
+- **Property, Plant, and Equipment (Tangible):** Hard physical assets like Land, Buildings, Equipment, Machinery, and Furniture & Fixtures.
 - **Intangible Assets:** Legal rights and non-physical values lacking physical form (e.g., Patents, Copyrights, Trademarks, Goodwill).
 - **Contra-Asset Accounts:** Reductions linked directly to long-term assets (e.g., Accumulated Depreciation).
 
