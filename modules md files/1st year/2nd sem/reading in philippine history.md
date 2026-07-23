@@ -1,5 +1,5 @@
 # Readings in Philippine History
-<!-- subject: Philippine History | year: 1st or 2nd (General Education) -->
+<!-- subject: Readings in Philippine History | year: 1st -->
 
 ---
 
