@@ -1,5 +1,5 @@
 # Discrete Structures 1
-<!-- subject: Discrete Mathematics | year: 2nd -->
+<!-- subject: Discrete Structures 1 | year: 1st -->
 
 ---
 
