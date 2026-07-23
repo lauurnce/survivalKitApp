@@ -57,7 +57,7 @@ Online archives such as **archive.org** and **Project Gutenberg** offer a growin
 
 #### Classification and Types of Historical Sources
 
-**Sources** are defined as artifacts left by the past. They fall into three broad categories: relics/remains, and testimonies.
+**Sources** are defined as artifacts left by the past. They fall into three broad categories: relics, remains, and testimonies.
 
 An **artifact** is any object made or modified by humans for their own purposes, tools, artworks, pottery, documents. An **ecofact** is archaeological evidence from nature (bones, seeds, shells) that was not shaped by humans but still tells us about past environments and cultures.
 
