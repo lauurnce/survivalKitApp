@@ -745,7 +745,7 @@ The most consequential result was the arrest, trial, and public execution on **F
 - **Fr. José Burgos** (age 35)
 - **Fr. Jacinto Zamora** (age 37)
 
-The three, known collectively as **GOMBURZA**, were executed by garrote at Bagumbayan (now Luneta). Many were deported to the Marianas and Caroline Islands.
+The three, known collectively as **GOMBURZA**, were executed by garrote at Bagumbayan (now Luneta). Many others were deported to the Marianas and Caroline Islands.
 
 The execution had profound historical consequences: it radicalized young Filipinos, including José Rizal, who dedicated his novel *El Filibusterismo* to their memory. GOMBURZA are remembered as martyrs of Filipino nationalism.
 
