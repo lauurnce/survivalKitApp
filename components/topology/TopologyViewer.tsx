@@ -1,4 +1,3 @@
-// components/topology/TopologyViewer.tsx
 "use client";
 
 import { useState } from 'react';
