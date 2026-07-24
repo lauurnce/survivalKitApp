@@ -12,6 +12,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "ingest": "tsx scripts/ingest.ts",
+    "ingest:md": "tsx scripts/ingest-md.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
