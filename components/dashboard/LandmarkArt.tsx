@@ -1,4 +1,3 @@
-// components/dashboard/LandmarkArt.tsx
 import Image from "next/image";
 import { matchUniversity, universityImagePath, landmarkLabel } from "@/lib/universities";
 
