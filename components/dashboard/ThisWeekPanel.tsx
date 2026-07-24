@@ -1,4 +1,3 @@
-// components/dashboard/ThisWeekPanel.tsx
 import Link from "next/link";
 import type { Recommendation } from "@/lib/dashboard";
 import { continueHref } from "@/lib/dashboard";
