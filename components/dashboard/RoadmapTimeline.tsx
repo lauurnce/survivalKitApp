@@ -1,4 +1,3 @@
-// components/dashboard/RoadmapTimeline.tsx
 import type { RoadmapNode } from "@/lib/dashboard";
 
 interface Props {
