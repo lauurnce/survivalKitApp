@@ -1,4 +1,3 @@
-// components/dashboard/HeroCard.tsx
 import Link from "next/link";
 import type { CurrentTerm, Recommendation } from "@/lib/dashboard";
 import { continueHref } from "@/lib/dashboard";
