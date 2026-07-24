@@ -16,6 +16,18 @@ Open the [Supabase Dashboard](https://app.supabase.com), navigate to **SQL Edito
 
 ---
 
+## Writing New Migrations — Workflow
+
+The live database and the repo's migration files have diverged before (some migrations were applied directly to the live project). To avoid writing a migration against a stale picture of the schema:
+
+1. **Check the live schema first** (Supabase MCP or Dashboard) before writing any migration — do not assume the repo's migration history reproduces the live state.
+2. **Apply to the live project** (via MCP `apply_migration` or the SQL Editor).
+3. **Mirror an idempotent copy in `supabase/migrations/`** (`IF NOT EXISTS` / `IF EXISTS` guards) so the file is safe to re-run and the repo stays a usable record.
+
+Some migrations have a companion `*.test.md` file documenting how the change was verified.
+
+---
+
 ## RLS Migration (`20260623_enable_rls.sql`)
 
 This migration enables Row-Level Security (RLS) on all tables and defines policies for the `anon` role.
