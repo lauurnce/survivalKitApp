@@ -1,4 +1,3 @@
-// components/dashboard/StatusChip.tsx
 import type { SubjectStatus } from "@/lib/dashboard";
 
 export function StatusChip({ status }: { status: SubjectStatus }) {
