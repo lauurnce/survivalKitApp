@@ -4,6 +4,8 @@ Study companion web app for BSIT (Bachelor of Science in Information Technology)
 
 **Live:** https://survival-kit-app.vercel.app
 
+**The story:** why this exists, the data behind it, and where it's going → [STORY.md](STORY.md)
+
 ## Stack
 
 - **Next.js** (App Router) + **React** + **Tailwind CSS**
