@@ -1,0 +1,32 @@
+{
+  "as_of": "2026-07-25",
+  "devices_total": 6668,
+  "events_total": 123075,
+  "accounts": 216,
+  "subjects_covered": 36,
+  "pct_no_referrer_enters": 89,
+  "pct_one_day_devices": 76,
+  "universities": [
+    { "name": "Polytechnic University of the Philippines", "short": "PUP", "type": "State university", "region": "NCR — Manila" },
+    { "name": "University of Science and Technology of Southern Philippines", "short": "USTP", "type": "State university", "region": "Northern Mindanao — Cagayan de Oro" },
+    { "name": "President Ramon Magsaysay State University", "short": "PRMSU", "type": "State university", "region": "Central Luzon — Iba, Zambales" },
+    { "name": "Catanduanes State University", "short": "CatSU", "type": "State university", "region": "Bicol — Virac" },
+    { "name": "Pamantasan ng Lungsod ng Valenzuela", "short": "PLV", "type": "Local university", "region": "NCR — Valenzuela" },
+    { "name": "University of Eastern Pangasinan", "short": "UEP", "type": "Local university", "region": "Ilocos — Binalonan" },
+    { "name": "Colegio de Montalban", "short": "CdM", "type": "Local college", "region": "Calabarzon — Rodriguez, Rizal" },
+    { "name": "Westmead International School", "short": "WIS", "type": "Private school", "region": "Calabarzon — Batangas City" }
+  ],
+  "devices_by_year": [
+    { "label": "1st Year", "value": 4827 },
+    { "label": "2nd Year", "value": 1333 },
+    { "label": "3rd Year", "value": 216 },
+    { "label": "4th Year", "value": 185 }
+  ],
+  "top_subjects": [
+    { "label": "Computer Programming 1", "value": 3483 },
+    { "label": "Intro to Computing", "value": 977 },
+    { "label": "Math in the Modern World", "value": 682 },
+    { "label": "Data Comm & Networking", "value": 462 },
+    { "label": "Purposive Communication", "value": 328 }
+  ]
+}
