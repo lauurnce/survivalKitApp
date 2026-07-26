@@ -43,6 +43,7 @@ npm run dev
 | Path | Contents |
 |---|---|
 | `app/` | Routes, pages, and API routes (App Router) |
+| `assets/` | Source art and data — fonts, subject icons, landmarks, STORY.md charts |
 | `components/` | React components |
 | `lib/` | Shared logic (payments, plans, quiz generation, share cards, …) |
 | `hooks/` | React hooks |
