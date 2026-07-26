@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   verifyPaymongoWebhook,
   parseLinkRemarks,
+  parseBlockRemarks,
   resolvePlan,
   periodEndFor,
   PLANS,
@@ -96,13 +97,10 @@ export async function POST(req: NextRequest) {
   // parseLinkRemarks/resolvePlan assume a PLANS-keyed purchase and would
   // misparse a class purchase's dynamically computed amount.
   // remarks format: "block:1 year:<yearId> [subject:<subjectId>] seats:<n> rep:<repDeviceId>"
-  // Built by app/api/class/checkout/route.ts.
-  const classMatch = remarks.match(
-    /^block:1 year:([^\s]+)(?: subject:([^\s]+))? seats:(\d+) rep:([^\s]+)/
-  );
-  if (classMatch) {
-    const [, classYearId, classSubjectId, seatsStr, repDeviceId] = classMatch;
-    const seats = parseInt(seatsStr, 10);
+  // Built by app/api/class/checkout/route.ts, parsed by lib/paymongo.
+  const block = parseBlockRemarks(remarks);
+  if (block) {
+    const { yearId: classYearId, subjectId: classSubjectId, seats, repDeviceId } = block;
 
     if (seats < 11) {
       return NextResponse.json({ error: "Malformed remarks" }, { status: 400 });
