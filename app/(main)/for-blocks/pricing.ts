@@ -1,5 +1,7 @@
-// Pricing formula — MUST match app/api/class/checkout/route.ts exactly
-// (that route is the source of truth; this is the client-side preview).
+// Pricing formula — this is the client-side preview, in pesos.
+// app/api/class/checkout/route.ts is the source of truth and prices the link
+// in centavos; app/api/webhooks/paymongo/route.ts recomputes the same formula
+// a third time to verify the amount actually paid. Change one, change all three.
 export const BASE_SUBJECT = 799;
 export const BASE_ALL = 999;
 export const PER_SEAT = 59;
