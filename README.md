@@ -35,6 +35,8 @@ npm run dev
 | `npm run test:watch` | Vitest in watch mode |
 | `npm run ingest` | Ingest 1st-year content into Supabase |
 | `npm run ingest:md` | Ingest 2nd-year markdown modules into Supabase |
+| `npm run story:svg` | Regenerate the STORY.md charts from `assets/story/story-data.json` |
+| `npm run story:check` | Assertion suite for the chart generator |
 
 ## Repository layout
 
