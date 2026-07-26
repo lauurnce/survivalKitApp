@@ -14,7 +14,9 @@
     "ingest": "tsx scripts/ingest.ts",
     "ingest:md": "tsx scripts/ingest-md.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "story:svg": "node scripts/gen-story-svgs.mjs",
+    "story:check": "node scripts/gen-story-svgs.check.mjs"
   },
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.3",
