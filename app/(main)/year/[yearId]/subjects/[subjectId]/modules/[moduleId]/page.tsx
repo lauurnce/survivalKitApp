@@ -205,7 +205,6 @@ export default async function ReaderPage({ params }: Props) {
             unlockAll={unlockActivities}
             yearLabel={year?.label}
             subjectTitle={subject.title}
-            moduleTitle={mod.title}
             freeSectionId={freeSectionId}
             reviewerCount={reviewerCount}
           />

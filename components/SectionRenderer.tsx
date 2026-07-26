@@ -40,14 +40,13 @@ interface Props {
   unlockAll: boolean;
   yearLabel?: string;
   subjectTitle?: string;
-  moduleTitle?: string;
   /** The subject's one free-sample reviewer; rendered in full even when locked. */
   freeSectionId?: string | null;
   /** Total gated reviewers in the subject — shown in the free-sample upsell. */
   reviewerCount?: number;
 }
 
-export function SectionRenderer({ section, index, moduleId, yearId, subjectId, unlockAll, yearLabel, subjectTitle, moduleTitle, freeSectionId, reviewerCount }: Props) {
+export function SectionRenderer({ section, index, moduleId, yearId, subjectId, unlockAll, yearLabel, subjectTitle, freeSectionId, reviewerCount }: Props) {
   useEffect(() => {
     if (section.kind === "content") {
       logSectionView(section.id, moduleId);
