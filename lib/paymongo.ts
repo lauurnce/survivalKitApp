@@ -187,6 +187,29 @@ export function parseLinkRemarks(remarks: string): {
   };
 }
 
+// Class-rep block sales (app/api/class/checkout/route.ts) use a DIFFERENT
+// remarks format from the per-device purchases parseLinkRemarks handles:
+//
+//   block:1 year:<yearId> [subject:<subjectId>] seats:<n> rep:<repDeviceId>
+//
+// Note there is no `device:` token — a block grants seats to a whole class, so
+// parseLinkRemarks reads a block link as having no device and no user at all.
+// Anything reconciling paid links must check this shape first. Returns null for
+// remarks that are not a block sale.
+export function parseBlockRemarks(remarks: string): {
+  yearId: string;
+  subjectId: string | null;
+  seats: number;
+  repDeviceId: string;
+} | null {
+  const m = remarks.match(
+    /^block:1 year:([^\s]+)(?: subject:([^\s]+))? seats:(\d+) rep:([^\s]+)/
+  );
+  if (!m) return null;
+  const [, yearId, subjectId, seatsStr, repDeviceId] = m;
+  return { yearId, subjectId: subjectId ?? null, seats: parseInt(seatsStr, 10), repDeviceId };
+}
+
 // PayMongo's Links API has NO "list all links" endpoint — GET /v1/links only
 // resolves a single link by reference_number. So to enumerate paid activity we
 // list PAYMENTS (GET /v1/payments, which IS a real list endpoint), then resolve

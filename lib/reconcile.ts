@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { listRecentPaidLinks, type PaidLink } from "./paymongo";
+import { listRecentPaidLinks, parseBlockRemarks, type PaidLink } from "./paymongo";
 
 // A paid PayMongo link that has NO matching active subscription in our DB.
 // These are the "paid but not reflected" cases the admin must resolve.
@@ -14,7 +14,7 @@ export interface UnreflectedPayment {
   deviceId: string | null;
   userId: string | null;
   // Why it's flagged, for the admin UI.
-  reason: "no_subscription" | "malformed_remarks";
+  reason: "no_subscription" | "malformed_remarks" | "class_block_unfulfilled";
   hasLedgerRow: boolean;   // payment was recorded but subscription missing
 }
 
@@ -46,6 +46,26 @@ export async function findUnreflectedPayments(
   const userIds = Array.from(
     new Set(paidLinks.map((l) => l.userId).filter((v): v is string => !!v))
   );
+
+  // Class-rep block sales are fulfilled by creating a row in `classes`, NOT a
+  // subscription, and their remarks carry no device:/user: token — so the
+  // subscription matching below can never vouch for them. Resolve them against
+  // `classes` by link id instead.
+  const blockLinkIds = paidLinks
+    .filter((l) => parseBlockRemarks(l.remarks) !== null)
+    .map((l) => l.linkId)
+    .filter(Boolean);
+
+  let fulfilledBlocks = new Set<string>();
+  if (blockLinkIds.length > 0) {
+    const { data: classRows } = await supabase
+      .from("classes")
+      .select("paymongo_link_id")
+      .in("paymongo_link_id", blockLinkIds);
+    fulfilledBlocks = new Set(
+      (classRows ?? []).map((r: { paymongo_link_id: string }) => r.paymongo_link_id)
+    );
+  }
 
   const { data: activeSubs } = await supabase
     .from("subscriptions")
@@ -85,26 +105,8 @@ export async function findUnreflectedPayments(
     });
   }
 
-  const out: UnreflectedPayment[] = [];
-  for (const link of paidLinks) {
-    if (!link.yearId || !link.deviceId) {
-      out.push({
-        linkId: link.linkId,
-        reference: link.reference,
-        amount: link.amount,
-        description: link.description,
-        paidAt: link.paidAt ? link.paidAt.toISOString() : null,
-        yearId: link.yearId,
-        subjectId: link.subjectId,
-        deviceId: link.deviceId,
-        userId: link.userId,
-        reason: "malformed_remarks",
-        hasLedgerRow: ledgered.has(link.linkId),
-      });
-      continue;
-    }
-    if (isReflected(link)) continue;
-    out.push({
+  function flag(link: PaidLink, reason: UnreflectedPayment["reason"]): UnreflectedPayment {
+    return {
       linkId: link.linkId,
       reference: link.reference,
       amount: link.amount,
@@ -114,9 +116,27 @@ export async function findUnreflectedPayments(
       subjectId: link.subjectId,
       deviceId: link.deviceId,
       userId: link.userId,
-      reason: "no_subscription",
+      reason,
       hasLedgerRow: ledgered.has(link.linkId),
-    });
+    };
+  }
+
+  const out: UnreflectedPayment[] = [];
+  for (const link of paidLinks) {
+    // Block sales first: they parse as device-less and would otherwise trip the
+    // malformed-remarks check below even when perfectly fulfilled.
+    if (parseBlockRemarks(link.remarks)) {
+      if (!fulfilledBlocks.has(link.linkId)) {
+        out.push(flag(link, "class_block_unfulfilled"));
+      }
+      continue;
+    }
+    if (!link.yearId || !link.deviceId) {
+      out.push(flag(link, "malformed_remarks"));
+      continue;
+    }
+    if (isReflected(link)) continue;
+    out.push(flag(link, "no_subscription"));
   }
 
   // Most recent first.

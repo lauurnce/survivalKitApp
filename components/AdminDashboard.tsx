@@ -527,13 +527,21 @@ function ReconcileSection({
                     {r.deviceId ? `${r.deviceId.slice(0, 8)}…` : "—"}
                   </td>
                   <td className="py-3 pr-6 font-sans text-xs text-ink-faint">
-                    {r.reason === "malformed_remarks" ? "Bad remarks" : r.hasLedgerRow ? "Sub missing" : "Not reflected"}
+                    {r.reason === "malformed_remarks"
+                      ? "Bad remarks"
+                      : r.reason === "class_block_unfulfilled"
+                        ? "Class not created"
+                        : r.hasLedgerRow ? "Sub missing" : "Not reflected"}
                   </td>
                   <td className="py-3 pr-6">
                     {st === "done" ? (
                       <span className="font-mono text-xs text-green-600">{msg[r.reference] ?? "Done"}</span>
                     ) : r.reason === "malformed_remarks" ? (
                       <span className="font-mono text-xs text-ink-faint">Manual — bad remarks</span>
+                    ) : r.reason === "class_block_unfulfilled" ? (
+                      // /api/admin/reconcile grants a device subscription; it
+                      // cannot mint the class row a block sale needs.
+                      <span className="font-mono text-xs text-ink-faint">Manual — create class</span>
                     ) : (
                       <div className="flex items-center gap-2">
                         <button
