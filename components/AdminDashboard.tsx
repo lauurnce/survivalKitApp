@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+// Type-only import: erased at compile time, so this client component never
+// pulls in lib/reconcile's server-side deps (node:crypto via lib/paymongo).
+import type { UnreflectedPayment } from "@/lib/reconcile";
 
 interface FunnelStep {
   type: string;
@@ -60,20 +63,6 @@ interface ProfilesAgg {
   by_pathway: { pathway: string; count: number }[] | null;
   by_university: { university: string; count: number }[] | null;
   by_major: { major: string; count: number }[] | null;
-}
-
-interface UnreflectedPayment {
-  linkId: string;
-  reference: string;
-  amount: number;          // centavos
-  description: string;
-  paidAt: string | null;
-  yearId: string | null;
-  subjectId: string | null;
-  deviceId: string | null;
-  userId: string | null;
-  reason: "no_subscription" | "malformed_remarks";
-  hasLedgerRow: boolean;
 }
 
 interface Props {
