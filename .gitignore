@@ -60,3 +60,9 @@ docs/POST-MORTEM.md
 # Hosting status reports — contain traffic volumes and route-level usage, the
 # same class of data as the post-mortem. Same disclosure rules.
 docs/vercel-status/
+.env*
+
+# Department agent reports — conversion, revenue, and security findings. A
+# security report in a public repo is a published attack surface. Same
+# disclosure rules as the post-mortem.
+docs/reports/
