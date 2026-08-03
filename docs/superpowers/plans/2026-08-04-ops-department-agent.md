@@ -894,11 +894,14 @@ function migrationInventory(): { count: number; latest: string | null } {
 function main(): void {
   const started = Date.now();
 
+  // No local build. `npm run build` needs Supabase credentials that .env.local
+  // deliberately does not carry, so it fails locally every time and would
+  // report a permanent false FAIL. Vercel builds every push with real env vars
+  // — PULSE reads that authoritative result via list_deployments.
   const commands = [
     runCommand("tests", "npm", ["test"]),
     runCommand("typecheck", "npm", ["run", "typecheck"]),
     runCommand("lint", "npm", ["run", "lint"]),
-    runCommand("build", "npm", ["run", "build"]),
   ];
 
   const routes = ROUTES.map(checkRoute);
@@ -916,7 +919,7 @@ function main(): void {
       label: command.name.charAt(0).toUpperCase() + command.name.slice(1),
       value: command.ok ? "pass" : "FAIL",
     })),
-    { label: "Build time", value: Math.round(commands[3].ms / 1000), unit: "s" },
+    { label: "Test suite time", value: Math.round(commands[0].ms / 1000), unit: "s" },
     { label: "Outdated packages", value: outdated.length },
     { label: "Migration files", value: migrations.count },
     // Read by eye at vercel.com/lauurnces-projects/~/usage. Never estimated.
@@ -954,7 +957,7 @@ In `package.json`, add to `scripts` immediately after the `story:check` line:
 - [ ] **Step 3: Run the collector**
 
 Run: `npm run report:ops`
-Expected: prints a path ending `docs/reports/ops/.data/<today>.json`. The run takes a couple of minutes because it executes the full build.
+Expected: prints a path ending `docs/reports/ops/.data/<today>.json`. Takes under a minute — the test suite is the slowest part.
 
 - [ ] **Step 4: Verify the output shape**
 
@@ -1029,9 +1032,15 @@ cat docs/reports/ops/.data/$(date +%F).json
 
 If it is missing, run `npm run report:ops` first. It costs nothing.
 
-This gives you route statuses, cache headers, build/test/lint/typecheck results,
-outdated packages, and migration inventory. It does **not** give you Vercel
-deployment state, runtime errors, or log counts — collect those yourself in Step 3.
+This gives you route statuses, cache headers, test/lint/typecheck results, outdated
+packages, and migration inventory. It does **not** give you Vercel deployment state,
+runtime errors, or log counts — collect those yourself in Step 3.
+
+**There is no local build check, by design.** `npm run build` needs Supabase
+credentials that `.env.local` deliberately does not carry, so it fails locally every
+time. Vercel builds every push with real env vars, and `list_deployments` gives you
+that authoritative result. Never report a build failure from the collector — it
+cannot see one.
 
 ## Step 3 — Collect what the script cannot
 
