@@ -111,18 +111,52 @@ export async function recordPayment(
   return { recorded: true, deduped: false };
 }
 
-// Sum ledger rows (centavos) to pesos for a given PH calendar month.
-export function sumRevenueForMonth(
+export interface MonthlyRevenue {
+  month: string; // "YYYY-MM" PH calendar month
+  revenue: number; // pesos
+  payments: number; // ledger rows that landed in the month
+}
+
+// Bucket ledger rows into a trailing window of PH calendar months.
+//
+// Returned NEWEST FIRST: index 0 is the month containing `now` (the current,
+// still-running month), index 1 is last month, and so on. Months with no
+// payments come back as zero rows so the window is always `count` long.
+//
+// This is the single source of revenue truth for the dashboard — the
+// current-month tile reads index 0 rather than summing the rows a second time.
+export function revenueByMonth(
   rows: { amount: number; paid_at: string }[],
-  year: number,
-  monthIndex0: number
-): number {
-  let centavos = 0;
+  count: number,
+  now: Date = new Date()
+): MonthlyRevenue[] {
+  const ph = new Date(now.getTime() + PH_OFFSET_MS);
+  const year = ph.getUTCFullYear();
+  const month = ph.getUTCMonth();
+
+  // Date.UTC rolls a negative month index back into the previous year.
+  const buckets = Array.from({ length: count }, (_, i) => ({
+    month: new Date(Date.UTC(year, month - i, 1)).toISOString().slice(0, 7),
+    centavos: 0,
+    payments: 0,
+  }));
+  const byMonth = new Map(buckets.map((b) => [b.month, b]));
+
   for (const r of rows) {
-    const ph = new Date(new Date(r.paid_at).getTime() + PH_OFFSET_MS);
-    if (ph.getUTCFullYear() === year && ph.getUTCMonth() === monthIndex0) {
-      centavos += r.amount;
-    }
+    const key = new Date(new Date(r.paid_at).getTime() + PH_OFFSET_MS)
+      .toISOString()
+      .slice(0, 7);
+    const bucket = byMonth.get(key);
+    // Rows outside the window (a wider query, a clock skew) are ignored.
+    if (!bucket) continue;
+    bucket.centavos += r.amount;
+    bucket.payments += 1;
   }
-  return centavos / 100;
+
+  // Divide once at the end so centavos stay integers while summing.
+  return buckets.map((b) => ({
+    month: b.month,
+    revenue: b.centavos / 100,
+    payments: b.payments,
+  }));
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { recordPayment, sumRevenueForMonth } from "./payments";
+import { recordPayment, revenueByMonth } from "./payments";
 
 // Chainable Supabase mock.
 // payments: select→eq→limit→maybeSingle for replay check; insert for ledger row.
@@ -200,17 +200,50 @@ describe("recordPayment", () => {
   });
 });
 
-describe("sumRevenueForMonth", () => {
-  it("sums centavos to pesos for rows in the given PH month", () => {
+describe("revenueByMonth", () => {
+  // 2026-06-24 11:00 PH — mid-June, so "now" sits inside the June bucket.
+  const now = new Date("2026-06-24T03:00:00Z");
+
+  it("buckets centavos into pesos per PH month, newest first", () => {
     const rows = [
       { amount: 5000, paid_at: "2026-06-24T03:00:00Z" }, // June PH
       { amount: 5000, paid_at: "2026-06-01T00:00:00Z" }, // June PH
-      { amount: 5000, paid_at: "2026-05-31T10:00:00Z" }, // May PH
+      { amount: 5000, paid_at: "2026-05-31T10:00:00Z" }, // May PH (18:00 PH)
     ];
-    expect(sumRevenueForMonth(rows, 2026, 5)).toBe(100);
+    const months = revenueByMonth(rows, 3, now);
+    expect(months).toEqual([
+      { month: "2026-06", revenue: 100, payments: 2 },
+      { month: "2026-05", revenue: 50, payments: 1 },
+      { month: "2026-04", revenue: 0, payments: 0 },
+    ]);
   });
 
-  it("returns 0 for an empty list", () => {
-    expect(sumRevenueForMonth([], 2026, 5)).toBe(0);
+  it("buckets by PH date, not UTC — a late-UTC payment counts as the next PH month", () => {
+    // 2026-05-31 17:00 UTC is 2026-06-01 01:00 PH.
+    const months = revenueByMonth([{ amount: 9900, paid_at: "2026-05-31T17:00:00Z" }], 2, now);
+    expect(months[0]).toEqual({ month: "2026-06", revenue: 99, payments: 1 });
+    expect(months[1]).toEqual({ month: "2026-05", revenue: 0, payments: 0 });
+  });
+
+  it("returns a full zero-filled window for an empty list", () => {
+    const months = revenueByMonth([], 12, now);
+    expect(months).toHaveLength(12);
+    expect(months.every(m => m.revenue === 0 && m.payments === 0)).toBe(true);
+  });
+
+  it("rolls the window back across a year boundary", () => {
+    const january = new Date("2026-01-15T03:00:00Z");
+    const months = revenueByMonth([{ amount: 29900, paid_at: "2025-12-20T03:00:00Z" }], 3, january);
+    expect(months.map(m => m.month)).toEqual(["2026-01", "2025-12", "2025-11"]);
+    expect(months[1]).toEqual({ month: "2025-12", revenue: 299, payments: 1 });
+  });
+
+  it("ignores rows that fall outside the window", () => {
+    const rows = [
+      { amount: 5000, paid_at: "2026-06-10T03:00:00Z" }, // in window
+      { amount: 5000, paid_at: "2025-01-10T03:00:00Z" }, // far older than 3 months
+    ];
+    const months = revenueByMonth(rows, 3, now);
+    expect(months.reduce((sum, m) => sum + m.revenue, 0)).toBe(50);
   });
 });

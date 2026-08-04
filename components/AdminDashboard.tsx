@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-// Type-only import: erased at compile time, so this client component never
+// Type-only imports: erased at compile time, so this client component never
 // pulls in lib/reconcile's server-side deps (node:crypto via lib/paymongo).
 import type { UnreflectedPayment } from "@/lib/reconcile";
+import type { MonthlyRevenue } from "@/lib/payments";
 
 interface FunnelStep {
   type: string;
@@ -79,6 +80,7 @@ interface Props {
   newUsers: number;
   recurringUsers: number;
   totalRevenue: number;
+  monthlyRevenue: MonthlyRevenue[];
   activeSubscribers: number;
   newSubscribersToday: number;
   waitlistEntries: WaitlistEntry[];
@@ -156,6 +158,111 @@ function Stat({
         <p className="absolute bottom-2 right-3 font-mono text-[10px] text-ink-faint">
           {subValue}
         </p>
+      )}
+    </div>
+  );
+}
+
+function formatPeso(pesos: number): string {
+  return `₱${pesos.toLocaleString("en-PH", { maximumFractionDigits: 2 })}`;
+}
+
+// "2026-08" → "Aug 2026"
+function monthLabel(month: string): string {
+  const [year, monthNum] = month.split("-");
+  return new Date(Number(year), Number(monthNum) - 1).toLocaleString("en-PH", {
+    month: "short",
+    year: "numeric",
+  });
+}
+
+/**
+ * Month-over-month revenue history, collapsed by default.
+ *
+ * The dashboard leads with the current month; this opens on demand so the
+ * headline number can be read against the months before it. `months` arrives
+ * newest-first, so index 0 is the current — still incomplete — month, and the
+ * row below each one is its comparison month.
+ */
+function MonthlyRevenueSection({ months }: { months: MonthlyRevenue[] }) {
+  const [expanded, setExpanded] = useState(false);
+
+  // Trim the empty months before the first peso ever earned so the panel isn't
+  // mostly zero rows early on — but always keep at least the current month and
+  // the one before it, otherwise there's nothing to compare against.
+  const lastFunded = months.reduce((last, m, i) => (m.revenue > 0 ? i : last), 0);
+  const visible = months.slice(0, Math.max(lastFunded + 1, 2));
+  const max = Math.max(...visible.map(m => m.revenue), 1);
+  const windowTotal = months.reduce((sum, m) => sum + m.revenue, 0);
+
+  return (
+    <div className="mt-6">
+      <button
+        type="button"
+        onClick={() => setExpanded(v => !v)}
+        aria-expanded={expanded}
+        className="font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150"
+      >
+        {expanded ? "Hide monthly revenue ↑" : "View monthly revenue ↓"}
+      </button>
+
+      {expanded && (
+        <div className="mt-6 max-w-wide mx-auto">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-4">
+            <p className="label">Revenue by Month</p>
+            <span className="font-sans text-[10px] text-ink-faint">
+              PH calendar months · {formatPeso(windowTotal)} over the last {months.length}
+            </span>
+          </div>
+          <div className="space-y-2">
+            {visible.map((m, i) => {
+              const prev = months[i + 1];
+              const pct =
+                prev && prev.revenue > 0
+                  ? Math.round(((m.revenue - prev.revenue) / prev.revenue) * 100)
+                  : null;
+              return (
+                <div key={m.month} className="group flex items-center gap-3">
+                  <span className="font-sans text-xs text-ink-muted w-24 sm:w-28 shrink-0 text-right">
+                    {monthLabel(m.month)}
+                    {i === 0 && (
+                      <span className="font-mono text-[9px] text-ink-faint ml-1">so far</span>
+                    )}
+                  </span>
+                  <div className="flex-1 bg-ink-faint/20 h-4">
+                    <div
+                      className="h-4 bg-accent transition-all duration-300 group-hover:bg-accent-dark"
+                      style={{ width: `${(m.revenue / max) * 100}%` }}
+                    />
+                  </div>
+                  <span className="font-mono text-xs text-ink w-20 text-right shrink-0">
+                    {formatPeso(m.revenue)}
+                  </span>
+                  <span className="hidden sm:block font-mono text-[10px] text-ink-faint w-16 text-right shrink-0">
+                    {m.payments} paid
+                  </span>
+                  <span className="font-mono text-[10px] w-20 text-right shrink-0">
+                    {pct === null ? (
+                      <span className="text-ink-faint">
+                        {prev && m.revenue > 0 ? "first" : "—"}
+                      </span>
+                    ) : pct > 0 ? (
+                      <span className="text-accent">▲ {pct}%</span>
+                    ) : pct < 0 ? (
+                      <span className="text-ink-muted">▼ {Math.abs(pct)}%</span>
+                    ) : (
+                      <span className="text-ink-faint">flat</span>
+                    )}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          <p className="font-sans text-[10px] text-ink-faint mt-4">
+            Change is against the month directly below. The top row is the month
+            in progress, so it will read low until the month closes.
+          </p>
+        </div>
       )}
     </div>
   );
@@ -752,7 +859,7 @@ function WaitlistSection({ entries, agg }: { entries: WaitlistEntry[]; agg: Wait
 export function AdminDashboard({
   funnel, dau, topSubjects, topModules, topSections,
   totalUniqueUsers, todayUsers, last7Sessions,
-  approvedUnlocks, activeNow, newUsers, recurringUsers, totalRevenue,
+  approvedUnlocks, activeNow, newUsers, recurringUsers, totalRevenue, monthlyRevenue,
   activeSubscribers, newSubscribersToday,
   waitlistEntries, waitlistAgg, profilesAgg, transactions,
   unreflectedPayments, reconcileError,
@@ -797,6 +904,7 @@ export function AdminDashboard({
           />
           <Stat value={newSubscribersToday} label="Payments Today" />
         </div>
+        <MonthlyRevenueSection months={monthlyRevenue} />
       </section>
 
       {/* ── Activity ────────────────────────────────────────── */}

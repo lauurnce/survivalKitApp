@@ -3,7 +3,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { getAdminSession } from "@/lib/auth/adminSession";
 import { AdminDashboard } from "@/components/AdminDashboard";
 import type { EventType } from "@/lib/supabase/types";
-import { sumRevenueForMonth, PH_OFFSET_MS } from "@/lib/payments";
+import { revenueByMonth, PH_OFFSET_MS } from "@/lib/payments";
 import { findUnreflectedPayments, type UnreflectedPayment } from "@/lib/reconcile";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +14,11 @@ function getTitle(rel: unknown): string {
   return (rel as { title?: string }).title ?? "unknown";
 }
 
+
+// How many PH calendar months of revenue the dashboard keeps on hand, counting
+// the current one. Drives both the ledger query window and the month-over-month
+// comparison panel.
+const REVENUE_MONTHS = 12;
 
 const FUNNEL_STEPS: { type: EventType; label: string; hint: string }[] = [
   { type: "enter",            label: "Opened App",        hint: "Unique devices that launched the app" },
@@ -34,14 +39,17 @@ export default async function AdminPage() {
 
   // Compute PH-month boundaries in UTC for the uncapped revenue query.
   // paid_at is timestamptz so we must filter using UTC instants that correspond
-  // to the start of the current PH calendar month and the start of the next.
+  // to the start of a PH calendar month. The window opens REVENUE_MONTHS - 1
+  // months before the current one so the dashboard can compare month over
+  // month, and closes at the start of next month.
   // We derive these BEFORE the Promise.all so we can use them in the query.
   const todayPHForBounds = new Date(Date.now() + PH_OFFSET_MS);
   const phYear = todayPHForBounds.getUTCFullYear();
   const phMonth = todayPHForBounds.getUTCMonth();
-  const monthStartUtcMs = Date.UTC(phYear, phMonth, 1) - PH_OFFSET_MS;
+  const windowStartUtcMs =
+    Date.UTC(phYear, phMonth - (REVENUE_MONTHS - 1), 1) - PH_OFFSET_MS;
   const nextMonthStartUtcMs = Date.UTC(phYear, phMonth + 1, 1) - PH_OFFSET_MS;
-  const monthStartUtcIso = new Date(monthStartUtcMs).toISOString();
+  const windowStartUtcIso = new Date(windowStartUtcMs).toISOString();
   const nextMonthStartUtcIso = new Date(nextMonthStartUtcMs).toISOString();
 
   const [
@@ -111,12 +119,12 @@ export default async function AdminPage() {
       .select("id, device_id, year_id, subject_id, amount, paymongo_link_id, paid_at")
       .order("paid_at", { ascending: false })
       .limit(100),
-    // Uncapped current-month fetch for revenue: only amount + paid_at are
-    // needed. No .limit() so all payments in the month are included.
+    // Uncapped trailing-window fetch for revenue: only amount + paid_at are
+    // needed. No .limit() so every payment in the window is included.
     supabase
       .from("payments")
       .select("amount, paid_at")
-      .gte("paid_at", monthStartUtcIso)
+      .gte("paid_at", windowStartUtcIso)
       .lt("paid_at", nextMonthStartUtcIso),
     // Aggregated waitlist stats: total + breakdowns by year and subject.
     // Runs entirely in Postgres so charts are never limited to the 500-row display cap.
@@ -227,20 +235,19 @@ export default async function AdminPage() {
     paid_at: string;
   }[];
 
-  // Revenue rows: uncapped set of all payments in the current PH month.
+  // Revenue rows: uncapped set of all payments in the trailing month window.
   // Using this instead of `payments` (which is capped at 100) ensures the
   // revenue tile stays accurate once lifetime payments exceed 100.
   const revenueRows = (revenueRaw ?? []) as { amount: number; paid_at: string }[];
 
-  // Real revenue = sum of ledger amounts in the current PH calendar month.
-  const totalRevenue = sumRevenueForMonth(
-    revenueRows,
-    todayPH.getUTCFullYear(),
-    todayPH.getUTCMonth()
-  );
+  // Real revenue per PH calendar month, newest first. monthlyRevenue[0] is the
+  // current (still-running) month, so the headline tile reads from it rather
+  // than summing the same rows a second time.
+  const monthlyRevenue = revenueByMonth(revenueRows, REVENUE_MONTHS);
+  const totalRevenue = monthlyRevenue[0]?.revenue ?? 0;
 
   // "Payments Today" counts payments (renewals included), not subscription rows.
-  // Uses the uncapped revenueRows (today is always within the current month).
+  // Uses the uncapped revenueRows (today is always within the window).
   const paymentsToday = revenueRows.filter(
     p => new Date(new Date(p.paid_at).getTime() + PH_OFFSET_MS).toISOString().slice(0, 10) === todayStrPH
   ).length;
@@ -322,6 +329,7 @@ export default async function AdminPage() {
       newUsers={newUsers}
       recurringUsers={recurringUsers}
       totalRevenue={totalRevenue}
+      monthlyRevenue={monthlyRevenue}
       activeSubscribers={activeSubscribers}
       newSubscribersToday={paymentsToday}
       waitlistEntries={waitlistEntries}
