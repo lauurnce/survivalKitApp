@@ -33,6 +33,8 @@ next-env.d.ts
 
 # claude code internals
 .superpowers/
+# Machine-local permission allowlist — not shared config.
+.claude/settings.local.json
 
 # content source PDFs (large files)
 /content-source/
@@ -54,3 +56,7 @@ waitlist-backup-*.json
 # Private retrospective — contains revenue/conversion numbers excluded from
 # public disclosure (see STORY.md disclosure rules).
 docs/POST-MORTEM.md
+
+# Hosting status reports — contain traffic volumes and route-level usage, the
+# same class of data as the post-mortem. Same disclosure rules.
+docs/vercel-status/
