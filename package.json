@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "story:svg": "node scripts/gen-story-svgs.mjs",
-    "story:check": "node scripts/gen-story-svgs.check.mjs"
+    "story:check": "node scripts/gen-story-svgs.check.mjs",
+    "report:ops": "tsx scripts/reports/ops.ts"
   },
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.3",
