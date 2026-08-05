@@ -1032,10 +1032,15 @@ so each one can be marked NEW, ONGOING, or CLOSED. If the directory is empty, sa
 ## Step 2 — Read the collector output
 
 ```sh
-cat docs/reports/ops/.data/$(date +%F).json
+cat "docs/reports/ops/.data/$(TZ=Asia/Manila date +%F).json"
 ```
 
 If it is missing, run `npm run report:ops` first. It costs nothing.
+
+**Always pass `TZ=Asia/Manila`.** The collector names its file with the Manila
+calendar date, not UTC and not the machine's timezone. A bare `date +%F` agrees only
+as long as the machine happens to be set to PH time — pin it explicitly so the two
+cannot drift apart.
 
 This gives you route statuses, cache headers, test/lint/typecheck results, outdated
 packages, and migration inventory. It does **not** give you Vercel deployment state,
@@ -1086,7 +1091,9 @@ projects with `list_projects` before blaming this one.
 
 ## Step 5 — Write the report
 
-Write `docs/reports/ops/<YYYY-MM-DD>.md` in exactly this layout:
+Write `docs/reports/ops/<YYYY-MM-DD>.md`, where the date is the **Manila** calendar
+date (`TZ=Asia/Manila date +%F`) so the report file and the collector's data file
+always carry the same date. Use exactly this layout:
 
 ```
 PULSE · OPERATIONS                                <YYYY-MM-DD> · daily
