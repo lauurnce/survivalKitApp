@@ -927,7 +927,12 @@ function main(): void {
   ];
 
   const collectMs = Date.now() - started;
-  const date = new Date().toISOString().slice(0, 10);
+  // Manila calendar date, not UTC: PULSE (Task 5) reads this filename back
+  // with `$(date +%F)` in Asia/Manila (UTC+8). Between midnight and 8am
+  // Manila, UTC and PH are on different calendar days — using UTC here would
+  // make PULSE look for a file this script never wrote. Do not "simplify"
+  // this to toISOString().slice(0, 10).
+  const date = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Manila" });
   const outDir = join(REPO_ROOT, "docs", "reports", "ops", ".data");
   mkdirSync(outDir, { recursive: true });
 
