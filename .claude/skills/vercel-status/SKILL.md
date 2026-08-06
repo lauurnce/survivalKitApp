@@ -16,11 +16,11 @@ exists.
 Before any tool call, any curl, any grep:
 
 ```sh
-ls -1 docs/vercel-status/*.md | grep -v -E 'README|TEMPLATE' | sort | tail -1
+ls -1 docs/reports/ops/hosting/*.md | grep -v -E 'README|TEMPLATE' | sort | tail -1
 ```
 
 Read that file. You need its metrics table (to fill the "Last scan" column) and its
-findings (to mark each as ONGOING or CLOSED). Also read `docs/vercel-status/README.md`
+findings (to mark each as ONGOING or CLOSED). Also read `docs/reports/ops/hosting/README.md`
 for the standing open items.
 
 If the directory is empty, say so — this is a baseline scan, and every metric is a
@@ -35,7 +35,7 @@ Don't rediscover these. `.vercel/project.json` does not exist locally.
 | Team | `team_oXH2hiibIrhhOSZvjv7btKbR` (lauurnce's projects, **Hobby**) |
 | Project | `prj_5oTgRygFk9QxzLTHVOuVDN8cqN3w` (survival-kit-app) |
 | Production URL | https://survival-kit-app.vercel.app |
-| Reports | `docs/vercel-status/` (gitignored — see Disclosure) |
+| Reports | `docs/reports/ops/hosting/` (gitignored — see Disclosure) |
 
 The 4h/month Active CPU allowance is **account-wide**, so if anything looks high, check
 the other projects with `list_projects` before blaming this one.
@@ -94,7 +94,7 @@ both an `edge-middleware` and a `serverless` line. Halve it for a request count.
 
 ## Step 5 — Write the report
 
-Copy `docs/vercel-status/TEMPLATE.md` to `docs/vercel-status/YYYY-MM-DD.md`.
+Copy `docs/reports/ops/hosting/TEMPLATE.md` to `docs/reports/ops/hosting/YYYY-MM-DD.md`.
 
 Required, in this order:
 
@@ -135,7 +135,7 @@ than dressing a backlog item as an incident.
 
 ## Disclosure
 
-`docs/vercel-status/` is gitignored. The repo is **public**, and these reports carry
+`docs/reports/ops/hosting/` is gitignored. The repo is **public**, and these reports carry
 traffic volumes — the same class of data that keeps `docs/POST-MORTEM.md` private.
 Don't move reports out of that directory, and don't paste traffic numbers into files
 that are tracked.

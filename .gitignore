@@ -57,8 +57,8 @@ waitlist-backup-*.json
 # public disclosure (see STORY.md disclosure rules).
 docs/POST-MORTEM.md
 
-# Hosting status reports — contain traffic volumes and route-level usage, the
-# same class of data as the post-mortem. Same disclosure rules.
+# Hosting status reports moved under docs/reports/ops/hosting/ — covered by the
+# docs/reports/ rule below. Entry kept so an old working copy stays ignored.
 docs/vercel-status/
 .env*
 
