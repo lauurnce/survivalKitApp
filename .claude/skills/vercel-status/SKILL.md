@@ -108,6 +108,18 @@ Required, in this order:
 
 Then update `README.md`: add the history row, and update the standing open items table.
 
+## Step 6 — Report in chat
+
+Writing the file is not the deliverable. Summarize in chat, in this order:
+
+1. **Verdict** — is anything on fire, yes or no. First line, not buried.
+2. **What changed since the previous scan** — the deltas that moved, and any finding
+   that opened or closed. If nothing moved, say "no change since <date>" plainly.
+3. **Anything urgent**, per the escalation list — or an explicit "nothing needs action
+   today" when there isn't.
+
+The user should never have to open the file to learn whether their site is healthy.
+
 ## Escalation — what is actually urgent
 
 Only these justify interrupting other work:
