@@ -261,7 +261,7 @@ git commit -m "feat(reports): add severity taxonomy for department findings"
 
 **Interfaces:**
 - Consumes: nothing.
-- Produces: `Metric`, `MetricDelta`, `diffMetrics(current: Metric[], previous: Metric[] | null): MetricDelta[]`, `renderMetricsTable(rows: MetricDelta[], heading: string): string`.
+- Produces: `Metric`, `MetricDelta`, `diffMetrics(current: Metric[], previous: Metric[] | null): MetricDelta[]`, `renderMetricsTable(rows: MetricDelta[], heading: string, columns?: { now: string; previous: string }): string`.
 
 A metric with `value: null` means "not read" and must never be given a computed delta.
 
@@ -407,6 +407,30 @@ describe("renderMetricsTable", () => {
     expect(table).toContain("HEALTH");
     expect(table.split("\n")).toHaveLength(2);
   });
+
+  it("defaults the column labels to NOW and LAST RUN", () => {
+    const table = renderMetricsTable([], "HEALTH");
+    const [header] = table.split("\n");
+    expect(header).toContain("NOW");
+    expect(header).toContain("LAST RUN");
+  });
+
+  it("uses custom column labels in the header when passed", () => {
+    const table = renderMetricsTable([], "HEALTH", { now: "TODAY", previous: "YESTERDAY" });
+    const [header] = table.split("\n");
+    expect(header).toContain("TODAY");
+    expect(header).toContain("YESTERDAY");
+    expect(header).not.toContain("LAST RUN");
+  });
+
+  it("renders a separator rule exactly as wide as a body row", () => {
+    const table = renderMetricsTable(
+      diffMetrics([{ label: "Live URL /", value: 200 }], null),
+      "HEALTH"
+    );
+    const [, rule, body] = table.split("\n");
+    expect(rule.length).toBe(body.length);
+  });
 });
 ```
 
@@ -493,13 +517,20 @@ export function diffMetrics(current: Metric[], previous: Metric[] | null): Metri
 
 const LABEL_WIDTH = 30;
 const COL_WIDTH = 11;
-const RULE_WIDTH = 69;
+// Derived, not hardcoded: a rendered row is LABEL_WIDTH + COL_WIDTH +
+// (COL_WIDTH + 4) + COL_WIDTH characters wide. A hardcoded rule width drifts
+// from that the moment either constant changes — deriving it means it can't.
+const RULE_WIDTH = LABEL_WIDTH + COL_WIDTH + (COL_WIDTH + 4) + COL_WIDTH;
 
-export function renderMetricsTable(rows: MetricDelta[], heading: string): string {
+export function renderMetricsTable(
+  rows: MetricDelta[],
+  heading: string,
+  columns: { now: string; previous: string } = { now: "NOW", previous: "LAST RUN" }
+): string {
   const header =
     heading.padEnd(LABEL_WIDTH) +
-    "NOW".padStart(COL_WIDTH) +
-    "LAST RUN".padStart(COL_WIDTH + 4) +
+    columns.now.padStart(COL_WIDTH) +
+    columns.previous.padStart(COL_WIDTH + 4) +
     "Δ".padStart(COL_WIDTH);
 
   const rule = "─".repeat(RULE_WIDTH);
@@ -519,7 +550,7 @@ export function renderMetricsTable(rows: MetricDelta[], heading: string): string
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run lib/reports/metrics.test.ts`
-Expected: PASS — 12 tests.
+Expected: PASS — 15 tests.
 
 - [ ] **Step 5: Commit**
 
@@ -763,10 +794,17 @@ git commit -m "feat(reports): record per-run cost in an append-only ledger"
 - Modify: `package.json` — add the `report:ops` script
 
 **Interfaces:**
-- Consumes: `Metric` from `lib/reports/metrics.ts`.
-- Produces: a JSON file at `docs/reports/ops/.data/<YYYY-MM-DD>.json` shaped as `{ collectedAt: string, collectMs: number, metrics: Metric[], raw: { routes: RouteCheck[], cache: CacheCheck, outdated: string[], migrations: { count: number, latest: string | null } } }`.
+- Consumes: `Metric`, `diffMetrics`, `renderMetricsTable` from `lib/reports/metrics.ts`; the previous run's JSON, if any, from `docs/reports/ops/.data/`.
+- Produces: a JSON file at `docs/reports/ops/.data/<YYYY-MM-DD>.json` shaped as `{ collectedAt: string, collectMs: number, metrics: Metric[], previousDate: string | null, table: string, raw: { routes: RouteCheck[], cache: CacheCheck, outdated: string[], migrations: { count: number, latest: string | null } } }`.
 
 The collector runs local commands and HTTP checks only. **It cannot call Vercel MCP tools** — those are available to the agent, not to a Node process — so deployment state, runtime errors, and log counts are gathered by PULSE in Task 5 and are absent from this JSON.
+
+The collector also owns the diff. It reads the most recent prior file in `.data/` (a
+`.json` file whose name sorts before today's), diffs its `metrics` against today's, and
+renders the finished `table` with `diffMetrics` and `renderMetricsTable` — the same
+tested helpers from Task 2. PULSE (Task 5) pastes `table` into the report verbatim and
+never computes a delta itself. A missing, unreadable, or malformed previous file
+degrades to a baseline run (`previousDate: null`) rather than crashing the collector.
 
 - [ ] **Step 1: Write the collector**
 
@@ -786,9 +824,9 @@ Create `scripts/reports/ops.ts`:
  */
 
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import type { Metric } from "../../lib/reports/metrics";
+import { diffMetrics, renderMetricsTable, type Metric } from "../../lib/reports/metrics";
 
 const PRODUCTION = "https://survival-kit-app.vercel.app";
 const ROUTES = ["/", "/login", "/year", "/for-blocks"];
@@ -891,6 +929,33 @@ function migrationInventory(): { count: number; latest: string | null } {
   }
 }
 
+/**
+ * Finds the most recent prior run and its metrics, if one exists and is
+ * readable. Any failure — no directory yet, no earlier file, unreadable
+ * file, malformed JSON, or a missing/non-array `metrics` field — degrades to
+ * a baseline run rather than crashing the collector. A previous run is a
+ * nice-to-have; it must never be a hard dependency.
+ */
+function readPreviousRun(outDir: string, todayFilename: string): { date: string; metrics: Metric[] } | null {
+  let files: string[];
+  try {
+    files = readdirSync(outDir).filter((name) => name.endsWith(".json"));
+  } catch {
+    return null;
+  }
+
+  const previousFile = files.filter((name) => name < todayFilename).sort().at(-1);
+  if (!previousFile) return null;
+
+  try {
+    const parsed = JSON.parse(readFileSync(join(outDir, previousFile), "utf8")) as { metrics?: unknown };
+    if (!Array.isArray(parsed.metrics)) return null;
+    return { date: previousFile.replace(/\.json$/, ""), metrics: parsed.metrics as Metric[] };
+  } catch {
+    return null;
+  }
+}
+
 function main(): void {
   const started = Date.now();
 
@@ -936,14 +1001,24 @@ function main(): void {
   const outDir = join(REPO_ROOT, "docs", "reports", "ops", ".data");
   mkdirSync(outDir, { recursive: true });
 
+  const outFilename = `${date}.json`;
+  const previous = readPreviousRun(outDir, outFilename);
+  const rows = diffMetrics(metrics, previous?.metrics ?? null);
+  // The collector renders the finished table so PULSE can paste it verbatim
+  // and never touch a number — every figure in the report traces back to
+  // this tested code, not to the agent's own arithmetic.
+  const table = renderMetricsTable(rows, "HEALTH", { now: "TODAY", previous: "YESTERDAY" });
+
   const payload = {
     collectedAt: new Date().toISOString(),
     collectMs,
     metrics,
+    previousDate: previous?.date ?? null,
+    table,
     raw: { routes, cache, outdated, migrations },
   };
 
-  const outPath = join(outDir, `${date}.json`);
+  const outPath = join(outDir, outFilename);
   writeFileSync(outPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
   console.log(outPath);
 }
@@ -1025,9 +1100,12 @@ Before any tool call:
 ls -1 docs/reports/ops/*.md 2>/dev/null | sort | tail -1
 ```
 
-Read it. You need its metrics table to fill the "LAST RUN" column, and its findings
-so each one can be marked NEW, ONGOING, or CLOSED. If the directory is empty, say so
-— this is a baseline scan and every metric has no delta.
+Read it. You need its findings so each one can be marked NEW, ONGOING, or CLOSED. If
+the directory is empty, say so — this is a baseline scan.
+
+You do **not** need its metrics table. The collector reads the previous run's data
+file itself, computes the diff, and hands you a finished HEALTH table in Step 2 —
+see the note there.
 
 ## Step 2 — Read the collector output
 
@@ -1045,6 +1123,15 @@ cannot drift apart.
 This gives you route statuses, cache headers, test/lint/typecheck results, outdated
 packages, and migration inventory. It does **not** give you Vercel deployment state,
 runtime errors, or log counts — collect those yourself in Step 3.
+
+**The JSON's `table` field is the finished HEALTH table** — the collector already read
+the previous run's data file (see `previousDate`, `null` on a baseline run), diffed it
+against today's metrics, and rendered the aligned columns. Paste it into the report
+verbatim in Step 5. **Never compute or edit a delta yourself, and never retype a
+number out of the table.** If a value in it looks wrong, that is a finding — write it
+up like any other defect — not something to quietly correct on the way to the report.
+Every number in the report must trace back to this tested code, never to your own
+arithmetic.
 
 **There is no local build check, by design.** `npm run build` needs Supabase
 credentials that `.env.local` deliberately does not carry, so it fails locally every
@@ -1100,10 +1187,7 @@ PULSE · OPERATIONS                                <YYYY-MM-DD> · daily
 ═══════════════════════════════════════════════════════════════════
 VERDICT   One line. Is anything on fire, and the single thing that moved.
 
-HEALTH                         TODAY      YESTERDAY        Δ
-───────────────────────────────────────────────────────────────────
-<identical row set every run, with deltas>
-───────────────────────────────────────────────────────────────────
+<the collector JSON's `table` field, pasted verbatim>
 
 FINDINGS
  [P1] NEW      <title>
@@ -1128,17 +1212,23 @@ DETAIL · <severity> · <title>
   → <choice, with the reasoning in a sentence>
 
 ───────────────────────────────────────────────────────────────────
-RUN          collect <n>s · interpret <n>s · <n> turns
+RUN          collect <n>s · interpret not read · turns not read
 COST         <$n or "not read">
 CUMULATIVE   <$n this month · n runs · $n avg>
 ```
+
+`collect <n>s` comes straight from the collector JSON's `collectMs` — write it.
+Interpret time and turn count are things PULSE cannot measure about itself from
+inside a session, so they are always **`not read`**, full stop — the same convention
+the Active CPU row uses. COST follows the same rule when nothing measured it: never
+estimate a value for RUN or COST — write `not read` instead.
 
 Rules:
 
 - **Detail is written for the top finding only, plus every P0 and P1.** P2 and below
   stay one-liners. A report nobody finishes reading has failed.
-- **The metrics row set never changes between runs.** Adding a row is deliberate and
-  resets that row's delta history.
+- **Paste the collector's `table` field verbatim.** Never compute or edit a delta —
+  see Step 2.
 - **Every finding from the previous report appears**, even if only to be CLOSED.
 - **ACCEPTED items list their reopen trigger** and are never re-argued until it fires.
   An ACCEPTED finding must never reappear as NEW.
@@ -1177,6 +1267,11 @@ Only these justify interrupting other work:
 5. Production alias accidentally behind deployment protection
 6. Supabase project paused or approaching an inactivity pause
 
+**PULSE cannot detect item 6 directly.** No tool here is granted Supabase access, and
+the collector only counts local migration files — neither can see whether the project
+itself is paused. It surfaces only indirectly, once the live site starts erroring. A
+clean report is not proof the database is awake.
+
 Everything else is planned work. Label it as such.
 
 ## Disclosure
@@ -1196,6 +1291,8 @@ figures from a report into a tracked file.
 | Dropping a finding that is still open | Every prior finding gets NEW/ONGOING/CLOSED. |
 | Re-arguing an ACCEPTED finding | Only its trigger reopens it. |
 | Reporting a known backlog item as urgent | Check it against the escalation list. |
+| Computing or retyping a delta by hand | Paste the collector's `table` field verbatim. A wrong-looking number is a finding, not something to quietly fix. |
+| Treating a clean report as proof Supabase is up | It isn't — see the escalation note on item 6. |
 | `grep --include=*.ts` unquoted | zsh expands the glob. Quote it: `--include="*.ts"`. |
 ```
 

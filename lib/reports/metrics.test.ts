@@ -135,4 +135,28 @@ describe("renderMetricsTable", () => {
     expect(table).toContain("HEALTH");
     expect(table.split("\n")).toHaveLength(2);
   });
+
+  it("defaults the column labels to NOW and LAST RUN", () => {
+    const table = renderMetricsTable([], "HEALTH");
+    const [header] = table.split("\n");
+    expect(header).toContain("NOW");
+    expect(header).toContain("LAST RUN");
+  });
+
+  it("uses custom column labels in the header when passed", () => {
+    const table = renderMetricsTable([], "HEALTH", { now: "TODAY", previous: "YESTERDAY" });
+    const [header] = table.split("\n");
+    expect(header).toContain("TODAY");
+    expect(header).toContain("YESTERDAY");
+    expect(header).not.toContain("LAST RUN");
+  });
+
+  it("renders a separator rule exactly as wide as a body row", () => {
+    const table = renderMetricsTable(
+      diffMetrics([{ label: "Live URL /", value: 200 }], null),
+      "HEALTH"
+    );
+    const [, rule, body] = table.split("\n");
+    expect(rule.length).toBe(body.length);
+  });
 });

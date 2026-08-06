@@ -26,9 +26,12 @@ Before any tool call:
 ls -1 docs/reports/ops/*.md 2>/dev/null | sort | tail -1
 ```
 
-Read it. You need its metrics table to fill the "LAST RUN" column, and its findings
-so each one can be marked NEW, ONGOING, or CLOSED. If the directory is empty, say so
-— this is a baseline scan and every metric has no delta.
+Read it. You need its findings so each one can be marked NEW, ONGOING, or CLOSED. If
+the directory is empty, say so — this is a baseline scan.
+
+You do **not** need its metrics table. The collector reads the previous run's data
+file itself, computes the diff, and hands you a finished HEALTH table in Step 2 —
+see the note there.
 
 ## Step 2 — Read the collector output
 
@@ -46,6 +49,15 @@ cannot drift apart.
 This gives you route statuses, cache headers, test/lint/typecheck results, outdated
 packages, and migration inventory. It does **not** give you Vercel deployment state,
 runtime errors, or log counts — collect those yourself in Step 3.
+
+**The JSON's `table` field is the finished HEALTH table** — the collector already read
+the previous run's data file (see `previousDate`, `null` on a baseline run), diffed it
+against today's metrics, and rendered the aligned columns. Paste it into the report
+verbatim in Step 5. **Never compute or edit a delta yourself, and never retype a
+number out of the table.** If a value in it looks wrong, that is a finding — write it
+up like any other defect — not something to quietly correct on the way to the report.
+Every number in the report must trace back to this tested code, never to your own
+arithmetic.
 
 **There is no local build check, by design.** `npm run build` needs Supabase
 credentials that `.env.local` deliberately does not carry, so it fails locally every
@@ -101,10 +113,7 @@ PULSE · OPERATIONS                                <YYYY-MM-DD> · daily
 ═══════════════════════════════════════════════════════════════════
 VERDICT   One line. Is anything on fire, and the single thing that moved.
 
-HEALTH                         TODAY      YESTERDAY        Δ
-───────────────────────────────────────────────────────────────────
-<identical row set every run, with deltas>
-───────────────────────────────────────────────────────────────────
+<the collector JSON's `table` field, pasted verbatim>
 
 FINDINGS
  [P1] NEW      <title>
@@ -129,17 +138,23 @@ DETAIL · <severity> · <title>
   → <choice, with the reasoning in a sentence>
 
 ───────────────────────────────────────────────────────────────────
-RUN          collect <n>s · interpret <n>s · <n> turns
+RUN          collect <n>s · interpret not read · turns not read
 COST         <$n or "not read">
 CUMULATIVE   <$n this month · n runs · $n avg>
 ```
+
+`collect <n>s` comes straight from the collector JSON's `collectMs` — write it.
+Interpret time and turn count are things PULSE cannot measure about itself from
+inside a session, so they are always **`not read`**, full stop — the same convention
+the Active CPU row uses. COST follows the same rule when nothing measured it: never
+estimate a value for RUN or COST — write `not read` instead.
 
 Rules:
 
 - **Detail is written for the top finding only, plus every P0 and P1.** P2 and below
   stay one-liners. A report nobody finishes reading has failed.
-- **The metrics row set never changes between runs.** Adding a row is deliberate and
-  resets that row's delta history.
+- **Paste the collector's `table` field verbatim.** Never compute or edit a delta —
+  see Step 2.
 - **Every finding from the previous report appears**, even if only to be CLOSED.
 - **ACCEPTED items list their reopen trigger** and are never re-argued until it fires.
   An ACCEPTED finding must never reappear as NEW.
@@ -178,6 +193,11 @@ Only these justify interrupting other work:
 5. Production alias accidentally behind deployment protection
 6. Supabase project paused or approaching an inactivity pause
 
+**PULSE cannot detect item 6 directly.** No tool here is granted Supabase access, and
+the collector only counts local migration files — neither can see whether the project
+itself is paused. It surfaces only indirectly, once the live site starts erroring. A
+clean report is not proof the database is awake.
+
 Everything else is planned work. Label it as such.
 
 ## Disclosure
@@ -197,4 +217,6 @@ figures from a report into a tracked file.
 | Dropping a finding that is still open | Every prior finding gets NEW/ONGOING/CLOSED. |
 | Re-arguing an ACCEPTED finding | Only its trigger reopens it. |
 | Reporting a known backlog item as urgent | Check it against the escalation list. |
+| Computing or retyping a delta by hand | Paste the collector's `table` field verbatim. A wrong-looking number is a finding, not something to quietly fix. |
+| Treating a clean report as proof Supabase is up | It isn't — see the escalation note on item 6. |
 | `grep --include=*.ts` unquoted | zsh expands the glob. Quote it: `--include="*.ts"`. |

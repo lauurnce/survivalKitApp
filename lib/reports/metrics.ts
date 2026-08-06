@@ -71,13 +71,20 @@ export function diffMetrics(current: Metric[], previous: Metric[] | null): Metri
 
 const LABEL_WIDTH = 30;
 const COL_WIDTH = 11;
-const RULE_WIDTH = 69;
+// Derived, not hardcoded: a rendered row is LABEL_WIDTH + COL_WIDTH +
+// (COL_WIDTH + 4) + COL_WIDTH characters wide. A hardcoded rule width drifts
+// from that the moment either constant changes — deriving it means it can't.
+const RULE_WIDTH = LABEL_WIDTH + COL_WIDTH + (COL_WIDTH + 4) + COL_WIDTH;
 
-export function renderMetricsTable(rows: MetricDelta[], heading: string): string {
+export function renderMetricsTable(
+  rows: MetricDelta[],
+  heading: string,
+  columns: { now: string; previous: string } = { now: "NOW", previous: "LAST RUN" }
+): string {
   const header =
     heading.padEnd(LABEL_WIDTH) +
-    "NOW".padStart(COL_WIDTH) +
-    "LAST RUN".padStart(COL_WIDTH + 4) +
+    columns.now.padStart(COL_WIDTH) +
+    columns.previous.padStart(COL_WIDTH + 4) +
     "Δ".padStart(COL_WIDTH);
 
   const rule = "─".repeat(RULE_WIDTH);
