@@ -27,12 +27,13 @@
 | `lib/reports/severity.test.ts` | Tests for the above. |
 | `lib/reports/metrics.ts` | Metric types, diffing current against previous, rendering the fixed-width table. Pure. |
 | `lib/reports/metrics.test.ts` | Tests for the above. |
-| `lib/reports/costLedger.ts` | Append and read `cost-ledger.jsonl`, summarize a month. |
+| `lib/reports/costLedger.ts` | Append and read `cost-ledger.jsonl`, summarize a month, format the `CUMULATIVE` line. |
 | `lib/reports/costLedger.test.ts` | Tests for the above. |
 | `scripts/reports/ops.ts` | The Ops collector. Runs local commands and HTTP checks, writes JSON. |
+| `scripts/reports/cost.ts` | Prints the current month's `CUMULATIVE` line from the cost ledger — the source PULSE pastes it from. |
 | `.claude/agents/pulse.md` | The PULSE interpreter agent definition. |
 | `.claude/skills/report/SKILL.md` | The `/report` command. |
-| `package.json` | Adds the `report:ops` script. |
+| `package.json` | Adds the `report:ops` and `report:cost` scripts. |
 
 `lib/reports/` holds only pure, testable logic. Anything touching the filesystem or the network lives in `scripts/reports/`, except the cost ledger, whose file I/O is simple enough to test directly with a temp directory.
 
@@ -1217,11 +1218,32 @@ COST         <$n or "not read">
 CUMULATIVE   <$n this month · n runs · $n avg>
 ```
 
-`collect <n>s` comes straight from the collector JSON's `collectMs` — write it.
+`collect <n>s` is the collector JSON's `collectMs` **divided by 1000 and rounded**.
+`collectMs` is milliseconds, not seconds — writing it literally turns a real
+`collectMs: 38558` into `collect 38558s` (about 10.7 hours) sitting next to a
+correctly-converted `Test suite time`. Divide first: `collectMs: 38558` becomes
+`collect 39s`.
+
 Interpret time and turn count are things PULSE cannot measure about itself from
 inside a session, so they are always **`not read`**, full stop — the same convention
 the Active CPU row uses. COST follows the same rule when nothing measured it: never
 estimate a value for RUN or COST — write `not read` instead.
+
+`CUMULATIVE` comes from a script, never from your own arithmetic:
+
+```sh
+npm run report:cost
+```
+
+It reads `docs/reports/cost-ledger.jsonl` with the same tested `readCostLedger` /
+`summarizeMonth` helpers `costLedger.ts` already carries tests for, computes the
+current **Asia/Manila** month, and prints one ready-to-paste line — either
+`CUMULATIVE   $0.42 this month · 6 runs · $0.07 avg` or, when no run this month has a
+measured cost, `CUMULATIVE   not read`. That second case is the common one: Step 6
+always writes `costUsd: null` for the run that is writing the report, since PULSE
+cannot measure its own cost. Paste the script's output verbatim — the same rule the
+`table` field uses in Step 2. Never hand-sum `cost-ledger.jsonl` with Bash, and never
+guess; that is exactly the arithmetic this architecture exists to keep off you.
 
 Rules:
 
@@ -1294,6 +1316,8 @@ figures from a report into a tracked file.
 | Computing or retyping a delta by hand | Paste the collector's `table` field verbatim. A wrong-looking number is a finding, not something to quietly fix. |
 | Treating a clean report as proof Supabase is up | It isn't — see the escalation note on item 6. |
 | `grep --include=*.ts` unquoted | zsh expands the glob. Quote it: `--include="*.ts"`. |
+| Writing `collectMs` straight into the RUN row | It's milliseconds. Divide by 1000 and round. |
+| Hand-summing `cost-ledger.jsonl` for CUMULATIVE | Run `npm run report:cost` and paste its output verbatim. |
 ```
 
 - [ ] **Step 2: Verify the agent is registered**

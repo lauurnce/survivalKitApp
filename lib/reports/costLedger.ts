@@ -28,6 +28,8 @@ export interface CostEntry {
 
 export interface MonthSummary {
   runs: number;
+  /** How many of `runs` had a measured (non-null) cost. */
+  measured: number;
   totalUsd: number;
   avgUsd: number;
   findings: number;
@@ -63,8 +65,28 @@ export function summarizeMonth(entries: CostEntry[], month: string): MonthSummar
 
   return {
     runs: inMonth.length,
+    measured: measured.length,
     totalUsd,
     avgUsd: measured.length > 0 ? totalUsd / measured.length : 0,
     findings: inMonth.reduce((sum, e) => sum + e.findingCount, 0),
   };
+}
+
+/**
+ * Renders the report's `CUMULATIVE` line, ready to paste verbatim.
+ *
+ * PULSE cannot measure its own run — the step that records cost always
+ * appends `costUsd: null` for the run currently writing the report — so an
+ * unguarded summary would print "$0.00 this month" and read as "this was
+ * free" when the truth is "nobody measured it". Render `not read` whenever
+ * nothing in the month has a measured cost, the same convention the Active
+ * CPU and COST rows use, rather than let a silent zero pass for a real
+ * number.
+ */
+export function formatCumulative(summary: MonthSummary): string {
+  if (summary.measured === 0) return "CUMULATIVE   not read";
+
+  const total = `$${summary.totalUsd.toFixed(2)}`;
+  const avg = `$${summary.avgUsd.toFixed(2)}`;
+  return `CUMULATIVE   ${total} this month · ${summary.runs} runs · ${avg} avg`;
 }

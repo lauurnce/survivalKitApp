@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   appendCostEntry,
+  formatCumulative,
   readCostLedger,
   summarizeMonth,
   type CostEntry,
@@ -95,6 +96,7 @@ describe("summarizeMonth", () => {
   it("returns zeroes for a month with no runs", () => {
     expect(summarizeMonth([entry()], "2026-01")).toEqual({
       runs: 0,
+      measured: 0,
       totalUsd: 0,
       avgUsd: 0,
       findings: 0,
@@ -107,5 +109,45 @@ describe("summarizeMonth", () => {
       "2026-08"
     );
     expect(summary.findings).toBe(7);
+  });
+
+  it("counts how many runs in the month had a measured cost", () => {
+    const summary = summarizeMonth(
+      [entry({ costUsd: null }), entry({ costUsd: null }), entry({ costUsd: 0.2 })],
+      "2026-08"
+    );
+    expect(summary.runs).toBe(3);
+    expect(summary.measured).toBe(1);
+  });
+});
+
+describe("formatCumulative", () => {
+  it("renders the total, run count, and average for a month with measured costs", () => {
+    const summary = summarizeMonth(
+      [
+        entry({ timestamp: "2026-08-01T00:00:00.000Z", costUsd: 0.1 }),
+        entry({ timestamp: "2026-08-15T00:00:00.000Z", costUsd: 0.3 }),
+      ],
+      "2026-08"
+    );
+    expect(formatCumulative(summary)).toBe(
+      "CUMULATIVE   $0.40 this month · 2 runs · $0.20 avg"
+    );
+  });
+
+  it("renders 'not read' when every entry in the month has a null cost", () => {
+    const summary = summarizeMonth(
+      [
+        entry({ timestamp: "2026-08-01T00:00:00.000Z", costUsd: null }),
+        entry({ timestamp: "2026-08-15T00:00:00.000Z", costUsd: null }),
+      ],
+      "2026-08"
+    );
+    expect(formatCumulative(summary)).toBe("CUMULATIVE   not read");
+  });
+
+  it("renders 'not read' when the month has no entries at all", () => {
+    const summary = summarizeMonth([entry()], "2026-01");
+    expect(formatCumulative(summary)).toBe("CUMULATIVE   not read");
   });
 });
