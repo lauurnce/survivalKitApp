@@ -14,6 +14,7 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { diffMetrics, renderMetricsTable, type Metric } from "../../lib/reports/metrics";
+import { archiveExistingRun } from "../../lib/reports/runArchive";
 
 const PRODUCTION = "https://survival-kit-app.vercel.app";
 const ROUTES = ["/", "/login", "/year", "/for-blocks"];
@@ -205,9 +206,17 @@ function main(): void {
     raw: { routes, cache, outdated, migrations },
   };
 
+  // A second run today would land on the same filename. Displace the earlier
+  // run instead of overwriting it, so a report already published from it can
+  // still be checked against the numbers it actually cited.
+  const superseded = archiveExistingRun(outDir, outFilename);
+
   const outPath = join(outDir, outFilename);
   writeFileSync(outPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
   console.log(outPath);
+  if (superseded) {
+    console.log(`superseded earlier run today -> ${superseded}`);
+  }
 }
 
 main();
