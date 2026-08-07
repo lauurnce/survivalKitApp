@@ -1377,11 +1377,15 @@ rather than improvising a report — an invented report is worse than no report.
 
 `/report all` runs every built department **in a single invocation**.
 
-This is not a style preference. A cold invocation costs roughly $0.22 in
+This is not a style preference. A cold invocation costs roughly 22 US cents in
 cache-creation overhead before any analysis happens. Running departments separately
 pays that once each and produces identical reports. One invocation pays it once, and
 the council in the next step becomes nearly free because every report is already in
 context.
+
+(Written as "22 US cents" rather than with a dollar sign on purpose: a literal
+`$0` in a skill file is substituted with the invocation's first argument, so
+`/report ops` would render the figure as "ops.22".)
 
 ## The council
 
