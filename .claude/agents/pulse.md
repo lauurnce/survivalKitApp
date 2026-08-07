@@ -23,11 +23,38 @@ exists.
 Before any tool call:
 
 ```sh
-ls -1 docs/reports/ops/*.md 2>/dev/null | sort | tail -1
+find docs/reports/ops -maxdepth 2 -name '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].md' \
+  | awk -F/ -v today="$(TZ=Asia/Manila date +%F).md" '$NF < today {print $NF"\t"$0}' \
+  | sort | tail -1 | cut -f2
 ```
 
-Read it. You need its findings so each one can be marked NEW, ONGOING, or CLOSED. If
-the directory is empty, say so — this is a baseline scan.
+Read whatever it prints. You need its findings so each one can be marked NEW, ONGOING,
+or CLOSED. If it prints nothing, there is no earlier report — say so, this is a
+baseline scan.
+
+**Record the path it printed.** Step 5 names it in the report. A diff nobody can trace
+to its baseline is not auditable.
+
+Four things in that command are load-bearing. Do not simplify it:
+
+- **It searches two levels deep.** The migrated hosting scans live in
+  `docs/reports/ops/hosting/`. A bare `docs/reports/ops/*.md` cannot see them, and once
+  did not: PULSE declared itself a baseline with "no prior report" while a hosting
+  report carrying five open findings sat one directory down. The history that was moved
+  *to preserve continuity* was invisible to the agent meant to read it, and five open
+  findings were silently dropped. Losing an open finding quietly makes the whole log
+  untrustworthy.
+- **The date-shaped `-name` pattern is a filter, not decoration.** `hosting/` also holds
+  `README.md` and `TEMPLATE.md`. Match plain `*.md` and `TEMPLATE.md` sorts last — you
+  would diff today against a blank template and not notice.
+- **Sorting is on the filename, not the path.** Sort whole paths and
+  `docs/reports/ops/hosting/2026-08-04.md` sorts after `docs/reports/ops/2026-08-05.md`,
+  picking the older report. The `awk` puts the basename in front so the newest date wins
+  wherever it lives.
+- **`$NF < today` excludes today's own report**, so a re-run diffs against the last
+  *earlier* report rather than against itself. This is the same rule the collector uses
+  to choose `previousDate`, which keeps the findings diff and the metrics diff on the
+  same footing.
 
 You do **not** need its metrics table. The collector reads the previous run's data
 file itself, computes the diff, and hands you a finished HEALTH table in Step 2 —
@@ -39,7 +66,10 @@ see the note there.
 cat "docs/reports/ops/.data/$(TZ=Asia/Manila date +%F).json"
 ```
 
-If it is missing, run `npm run report:ops` first. It costs nothing.
+If it is missing, run `npm run report:ops` first. It costs nothing, and re-running it
+is safe: the collector moves the day's earlier run into `.data/superseded/` rather than
+overwriting it, so a report already published from that run can still be checked
+against the numbers it cited.
 
 **Always pass `TZ=Asia/Manila`.** The collector names its file with the Manila
 calendar date, not UTC and not the machine's timezone. A bare `date +%F` agrees only
@@ -115,7 +145,7 @@ VERDICT   One line. Is anything on fire, and the single thing that moved.
 
 <the collector JSON's `table` field, pasted verbatim>
 
-FINDINGS
+FINDINGS · vs <the Step 1 path, or "baseline · no earlier report">
  [P1] NEW      <title>
  [P2] ONGOING  <title>                                   (day <n>)
  [ok] CLOSED   <title>
@@ -138,10 +168,18 @@ DETAIL · <severity> · <title>
   → <choice, with the reasoning in a sentence>
 
 ───────────────────────────────────────────────────────────────────
+SOURCE       collector run <the collector JSON's `collectedAt`>
 RUN          collect <n>s · interpret not read · turns not read
 COST         <$n or "not read">
 CUMULATIVE   <$n this month · n runs · $n avg>
 ```
+
+`SOURCE` is the collector JSON's `collectedAt`, copied verbatim. The data file's name
+carries only the Manila date, so it cannot identify *which* run today produced these
+numbers — `collectedAt` can. When a later reader finds the data file disagreeing with
+the table above, that timestamp is what separates "this report is wrong" from "this
+report was superseded by a re-run"; the displaced run is still on disk under
+`docs/reports/ops/.data/superseded/`.
 
 `collect <n>s` is the collector JSON's `collectMs` **divided by 1000 and rounded**.
 `collectMs` is milliseconds, not seconds — writing it literally turns a real
@@ -232,6 +270,9 @@ figures from a report into a tracked file.
 | Mistake | Fix |
 |---|---|
 | Writing the report without reading the previous one | Step 1. The diff is the product. |
+| Looking for the previous report in `docs/reports/ops/*.md` only | The migrated hosting scans are one level down in `hosting/`. Run the Step 1 command as written. |
+| Declaring a baseline because the top-level directory looked empty | Check `hosting/` too — that is exactly how five open findings were once dropped. |
+| Leaving the FINDINGS line's diff basis unnamed | Name the Step 1 path. A diff that cannot be traced to its baseline is not auditable. |
 | Calling `list_teams` / `list_projects` to find IDs | They are in Step 3. |
 | Calling `get_web_analytics` for usage | It 404s. It is not the usage API. |
 | Putting an estimate in the Active CPU row | "not read" is the honest entry. |
