@@ -33,9 +33,14 @@ pays that once each and produces identical reports. One invocation pays it once,
 the council in the next step becomes nearly free because every report is already in
 context.
 
-(Written as "22 US cents" rather than with a dollar sign on purpose: a literal
-`$0` in a skill file is substituted with the invocation's first argument, so
-`/report ops` would render the figure as "ops.22".)
+(Written as "22 US cents" rather than with a dollar sign on purpose. In a skill file a
+dollar sign immediately followed by a digit is an argument placeholder — the observed
+case was dollar-sign-zero being replaced with the invocation's first argument, which
+rendered the figure as "ops.22" under `/report ops`. This note spells the character out
+instead of quoting the sequence, because the first version of the warning quoted it
+literally and was mangled by the very bug it documents. It is only visible when the
+skill is actually invoked, so reading this file on disk will never show it. Do not
+restore the dollar sign here.)
 
 ## The council
 
