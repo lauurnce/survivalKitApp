@@ -24,8 +24,7 @@ Before any tool call:
 
 ```sh
 find docs/reports/ops -maxdepth 2 -name '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].md' \
-  | awk -F/ -v today="$(TZ=Asia/Manila date +%F).md" '$NF < today {print $NF"\t"$0}' \
-  | sort | tail -1 | cut -f2
+  | awk -F/ '{print $NF"\t"$0}' | sort | tail -1 | cut -f2
 ```
 
 Read whatever it prints. You need its findings so each one can be marked NEW, ONGOING,
@@ -35,7 +34,7 @@ baseline scan.
 **Record the path it printed.** Step 5 names it in the report. A diff nobody can trace
 to its baseline is not auditable.
 
-Four things in that command are load-bearing. Do not simplify it:
+Three things in that command are load-bearing. Do not simplify it:
 
 - **It searches two levels deep.** The migrated hosting scans live in
   `docs/reports/ops/hosting/`. A bare `docs/reports/ops/*.md` cannot see them, and once
@@ -51,10 +50,16 @@ Four things in that command are load-bearing. Do not simplify it:
   `docs/reports/ops/hosting/2026-08-04.md` sorts after `docs/reports/ops/2026-08-05.md`,
   picking the older report. The `awk` puts the basename in front so the newest date wins
   wherever it lives.
-- **`$NF < today` excludes today's own report**, so a re-run diffs against the last
-  *earlier* report rather than against itself. This is the same rule the collector uses
-  to choose `previousDate`, which keeps the findings diff and the metrics diff on the
-  same footing.
+- **Today's date is deliberately *not* excluded.** You read this before you write, so
+  a `<today>.md` that already exists is an earlier run's report, not yours — and it is
+  the closest thing to a previous report there is. Skipping it strands every finding it
+  opened. (An earlier version of this command filtered it out to match the collector's
+  `previousDate` rule. That was wrong: the collector is choosing a *metrics* baseline
+  and wants yesterday, while you are chasing *finding continuity* and want the most
+  recent report whenever it was written. The two diff bases can legitimately differ,
+  which is why the report labels both.) Reports displaced by a re-run are archived
+  under `superseded/` with a `.<n>` suffix that the date-shaped pattern above will not
+  match, so they never come back as a baseline.
 
 You do **not** need its metrics table. The collector reads the previous run's data
 file itself, computes the diff, and hands you a finished HEALTH table in Step 2 —
@@ -136,7 +141,28 @@ projects with `list_projects` before blaming this one.
 
 Write `docs/reports/ops/<YYYY-MM-DD>.md`, where the date is the **Manila** calendar
 date (`TZ=Asia/Manila date +%F`) so the report file and the collector's data file
-always carry the same date. Use exactly this layout:
+always carry the same date.
+
+**If that file already exists, move it aside before you write** — it is an earlier
+report from today and it is the only record of the findings it opened:
+
+```sh
+d=$(TZ=Asia/Manila date +%F); f=docs/reports/ops/$d.md
+if [ -e "$f" ]; then
+  mkdir -p docs/reports/ops/superseded
+  n=1; while [ -e "docs/reports/ops/superseded/$d.$n.md" ]; do n=$((n+1)); done
+  mv "$f" "docs/reports/ops/superseded/$d.$n.md"
+  echo "superseded -> docs/reports/ops/superseded/$d.$n.md"
+fi
+```
+
+This mirrors what the collector does with its data file. Never overwrite a published
+report: it is the only place some findings are written down, and destroying it to
+publish a newer one loses exactly the history this log exists to keep. The `.<n>`
+suffix keeps the archived copy out of Step 1's date-shaped pattern, so it can never
+come back as tomorrow's baseline.
+
+Use exactly this layout:
 
 ```
 PULSE · OPERATIONS                                <YYYY-MM-DD> · daily
