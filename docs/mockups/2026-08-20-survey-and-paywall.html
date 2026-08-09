@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Survey timing + locked paywall — mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── design tokens: copied verbatim from app/globals.css ─────────────── */
+:root{
+  --color-paper:247 245 243; --color-ink:26 31 35; --color-ink-muted:107 111 117;
+  --color-ink-faint:168 173 181; --color-accent:224 73 43; --color-accent-dark:184 56 32;
+  --color-navy:26 26 26; --color-taupe:189 185 178;
+}
+:root[data-theme="dark"]{
+  --color-paper:26 31 35; --color-ink:247 245 243; --color-ink-muted:168 173 181;
+  --color-ink-faint:107 111 117; --color-accent:224 73 43; --color-accent-dark:184 56 32;
+  --color-navy:240 237 233; --color-taupe:74 71 64;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:rgb(var(--color-paper)); color:rgb(var(--color-ink));
+  font-family:"Inter Tight",system-ui,sans-serif; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.serif{font-family:"Fraunces",Georgia,serif}
+.mono{font-family:"JetBrains Mono",monospace}
+.label{font-family:"JetBrains Mono",monospace;font-size:.6875rem;line-height:1;
+  letter-spacing:.12em;text-transform:uppercase}
+
+/* ─── mockup chrome (not part of the app) ─────────────────────────────── */
+.chrome{position:sticky;top:0;z-index:50;background:rgb(var(--color-ink));
+  color:rgb(var(--color-paper));padding:.75rem 1.25rem;display:flex;
+  gap:1.25rem;align-items:center;flex-wrap:wrap}
+.chrome .brand{font-family:"JetBrains Mono",monospace;font-size:.6875rem;
+  letter-spacing:.12em;text-transform:uppercase;opacity:.55}
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap}
+.tab{background:none;border:1px solid rgb(255 255 255 / .18);color:inherit;
+  font-family:"JetBrains Mono",monospace;font-size:.6875rem;letter-spacing:.1em;
+  text-transform:uppercase;padding:.45rem .8rem;cursor:pointer;transition:.15s}
+.tab:hover{border-color:rgb(255 255 255 / .5)}
+.tab[aria-selected="true"]{background:rgb(var(--color-accent));border-color:rgb(var(--color-accent))}
+.chrome .spacer{flex:1}
+.ghost{background:none;border:1px solid rgb(255 255 255 / .18);color:inherit;
+  font-family:"JetBrains Mono",monospace;font-size:.6875rem;letter-spacing:.1em;
+  text-transform:uppercase;padding:.45rem .8rem;cursor:pointer}
+
+.wrap{max-width:88ch;margin:0 auto;padding:2.5rem 1.5rem 6rem}
+.panel[hidden]{display:none}
+.note{border-left:2px solid rgb(var(--color-accent));padding:.35rem 0 .35rem .9rem;
+  margin:0 0 2rem;font-size:.875rem;color:rgb(var(--color-ink-muted))}
+.note b{color:rgb(var(--color-ink));font-weight:600}
+.ab{display:grid;gap:1.5rem;grid-template-columns:1fr}
+@media(min-width:900px){.ab{grid-template-columns:1fr 1fr}}
+.col > h3{font-family:"JetBrains Mono",monospace;font-size:.6875rem;letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:.75rem}
+.col.before > h3{color:rgb(var(--color-ink-faint))}
+.col.after  > h3{color:rgb(var(--color-accent))}
+.frame{border:1px solid rgb(var(--color-ink-faint)/.35);padding:1.25rem;
+  background:rgb(var(--color-paper))}
+.col.after .frame{border-color:rgb(var(--color-accent)/.45)}
+
+/* ─── app-like primitives ─────────────────────────────────────────────── */
+h1.display{font-family:"Fraunces",Georgia,serif;font-size:clamp(1.5rem,3.5vw,2.5rem);
+  line-height:1.05;letter-spacing:-.02em}
+h2.sec{font-family:"Fraunces",Georgia,serif;font-size:1.5rem;line-height:1.15}
+.secrow{display:flex;align-items:baseline;gap:1rem;margin-bottom:1rem}
+.secnum{font-family:"JetBrains Mono",monospace;font-size:.6875rem;letter-spacing:.12em;
+  color:rgb(var(--color-ink-faint));flex-shrink:0}
+.body{color:rgb(var(--color-ink-muted));font-size:.9375rem;margin-bottom:.85rem}
+.faint{color:rgb(var(--color-ink-faint));font-size:.8125rem}
+.navybar{background:rgb(var(--color-navy));color:rgb(var(--color-paper));
+  padding:1.5rem 1.25rem;margin:-1.25rem -1.25rem 1.5rem}
+:root[data-theme="dark"] .navybar{color:rgb(var(--color-ink))}
+.btn{display:inline-block;border:none;cursor:pointer;font-family:"Inter Tight",sans-serif;
+  font-size:.875rem;padding:.75rem 1rem;transition:.15s;text-decoration:none}
+.btn-accent{background:rgb(var(--color-accent));color:#F7F5F3}
+.btn-accent:hover{background:rgb(var(--color-ink));color:rgb(var(--color-paper))}
+.btn-ink{background:rgb(var(--color-ink));color:rgb(var(--color-paper))}
+.btn-ink:hover{background:rgb(var(--color-accent));color:#F7F5F3}
+.btn-quiet{background:none;color:rgb(var(--color-ink-muted));padding:.75rem .25rem;
+  text-decoration:underline;text-underline-offset:3px}
+.pill{display:inline-flex;align-items:center;gap:.5rem;border-radius:999px;
+  border:1px solid rgb(var(--color-ink-faint)/.4);color:rgb(var(--color-ink-faint));
+  background:none;padding:.4rem .8rem;cursor:pointer;
+  font-family:"JetBrains Mono",monospace;font-size:.6875rem;letter-spacing:.12em;
+  text-transform:uppercase;transition:.15s}
+.pill:hover{border-color:rgb(var(--color-ink));color:rgb(var(--color-ink))}
+.pill[aria-pressed="true"]{border-color:rgb(var(--color-accent));
+  background:rgb(var(--color-accent)/.1);color:rgb(var(--color-accent))}
+
+/* teaser */
+.teaser{border:1px solid rgb(var(--color-accent)/.4);background:rgb(var(--color-accent)/.03);
+  padding:1.25rem;margin-bottom:1.75rem}
+.teaser .label{color:rgb(var(--color-accent));margin-bottom:.6rem}
+.strike{text-decoration:line-through;text-decoration-color:rgb(var(--color-accent));
+  text-decoration-thickness:2px;opacity:.5}
+
+/* locked strip — the new compact state */
+.locked{border:1px solid rgb(var(--color-ink-faint)/.3);padding:1.1rem 1.25rem;
+  display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.locked .lk{font-size:1rem;opacity:.5;flex-shrink:0}
+.locked .txt{flex:1;min-width:14rem}
+.locked .label{color:rgb(var(--color-ink-faint));margin-bottom:.3rem}
+.locked .txt p{font-size:.875rem;color:rgb(var(--color-ink-muted))}
+
+/* old fat gate */
+.gate{border:1px solid rgb(var(--color-ink-faint)/.3);padding:1.25rem}
+.plans{display:grid;gap:.9rem;grid-template-columns:1fr;margin-top:1rem}
+@media(min-width:640px){.plans{grid-template-columns:repeat(3,1fr)}}
+.plan{border:1px solid rgb(var(--color-ink-faint)/.3);padding:1.1rem;
+  display:flex;flex-direction:column;gap:.85rem}
+.plan.pop{border-color:rgb(var(--color-accent)/.6)}
+.plan.best{border-color:rgb(var(--color-ink)/.6)}
+.plan .top{display:flex;justify-content:space-between;gap:.75rem;align-items:baseline}
+.plan .top .label{color:rgb(var(--color-ink-faint))}
+.plan .tag{font-family:"JetBrains Mono",monospace;font-size:.6875rem;letter-spacing:.1em;
+  text-transform:uppercase;color:rgb(var(--color-accent));flex-shrink:0}
+.plan .desc{font-size:.8125rem;color:rgb(var(--color-ink-muted))}
+.price{display:flex;align-items:baseline;gap:.4rem;margin-top:auto}
+.price .amt{font-family:"Fraunces",Georgia,serif;font-size:1.85rem}
+.price .per{font-size:.8125rem;color:rgb(var(--color-ink-muted))}
+
+/* survey */
+.survey{border:1px solid rgb(var(--color-accent)/.4);background:rgb(var(--color-accent)/.03);
+  padding:1.5rem}
+.survey .label{color:rgb(var(--color-accent));margin-bottom:.85rem}
+.q{font-size:.875rem;color:rgb(var(--color-ink-muted));margin:1rem 0 .5rem}
+.stars{display:flex;gap:.35rem}
+.star{background:none;border:none;cursor:pointer;font-size:1.5rem;line-height:1;
+  color:rgb(var(--color-ink-faint));padding:0;transition:.12s}
+.star:hover,.star.on{color:rgb(var(--color-accent))}
+textarea{width:100%;border:1px solid rgb(var(--color-ink-faint)/.4);background:transparent;
+  color:inherit;font-family:inherit;font-size:.875rem;padding:.7rem;min-height:5rem;resize:vertical}
+textarea:focus{outline:2px solid rgb(var(--color-accent)/.5);outline-offset:1px}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:1rem;flex-wrap:wrap}
+label.chk{display:flex;gap:.5rem;align-items:center;font-size:.8125rem;
+  color:rgb(var(--color-ink-muted));cursor:pointer;margin-top:.75rem}
+.modal-demo{position:relative;background:rgb(var(--color-ink)/.55);padding:2rem 1rem;
+  display:flex;justify-content:center}
+.modal-card{background:rgb(var(--color-paper));padding:1.5rem;max-width:26rem;width:100%;
+  box-shadow:0 10px 40px rgb(0 0 0 / .25)}
+.scrollhint{text-align:center;color:rgb(var(--color-ink-faint));font-size:.75rem;
+  font-family:"JetBrains Mono",monospace;letter-spacing:.12em;text-transform:uppercase;
+  padding:1.5rem 0;border-top:1px dashed rgb(var(--color-ink-faint)/.3);
+  border-bottom:1px dashed rgb(var(--color-ink-faint)/.3);margin:1.25rem 0}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <span class="brand">BSIT Survival Kit · mockup</span>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true"  data-p="p1">1 · Survey timing</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p2">2 · Locked reviewers</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p3">3 · Unlock page</button>
+  </div>
+  <span class="spacer"></span>
+  <button class="ghost" id="theme">◐ Theme</button>
+</div>
+
+<div class="wrap">
+
+<!-- ══ PANEL 1 ══════════════════════════════════════════════════════════ -->
+<section class="panel" id="p1">
+  <p class="note"><b>Change:</b> the survey no longer fires on page load. It renders as an
+  inline card at the very end of the module — and only after the reader taps
+  <b>Mark done</b>. No backdrop, nothing to dismiss.</p>
+
+  <div class="ab">
+    <div class="col before">
+      <h3>Before — fires on mount</h3>
+      <div class="frame" style="padding:0;overflow:hidden">
+        <div style="background:rgb(var(--color-navy));padding:1.25rem">
+          <p class="label" style="color:rgb(var(--color-taupe));margin-bottom:.6rem">§ 01 — Computer Programming 1</p>
+          <h1 class="display" style="color:rgb(var(--color-paper))">Lesson 1: Programming Concepts</h1>
+        </div>
+        <div class="modal-demo">
+          <div class="modal-card">
+            <h2 class="sec" style="margin-bottom:.75rem">Help us improve</h2>
+            <p class="q" style="margin-top:0">How would you rate this module?</p>
+            <div class="stars">★★★★★</div>
+            <p class="q">How would you rate the app overall?</p>
+            <div class="stars">★★★★★</div>
+            <div class="row"><span class="btn btn-accent">Submit</span>
+              <span class="btn" style="background:rgb(var(--color-taupe))">Cancel</span></div>
+          </div>
+        </div>
+        <div style="padding:1.25rem">
+          <p class="body" style="opacity:.4">A computer is an electronic device that accepts
+          data, processes it, produces results, and stores those results…</p>
+        </div>
+      </div>
+      <p class="faint" style="margin-top:.75rem">Reader has read <b>zero words</b> before being asked to rate.</p>
+    </div>
+
+    <div class="col after">
+      <h3>After — end of module, on Mark done</h3>
+      <div class="frame">
+        <p class="body">…desk check, debug, and run with real data to confirm correctness.</p>
+        <p class="body">Document the program — write user, operator, and programmer documentation.</p>
+
+        <div class="scrollhint">↓ end of module ↓</div>
+
+        <div style="display:flex;justify-content:space-between;gap:1rem;align-items:center;flex-wrap:wrap">
+          <p class="faint" style="flex:1;min-width:12rem">Done with this module? Track it — your
+          progress shows on the subject list.</p>
+          <button class="pill" id="doneBtn" aria-pressed="false">
+            <span id="doneIcon">○</span><span id="doneText">Mark done</span>
+          </button>
+        </div>
+
+        <div id="surveyCard" class="survey hidden" style="margin-top:1.5rem">
+          <p class="label">Help us improve</p>
+          <p class="body" style="margin-bottom:0">You just finished
+            <b style="color:rgb(var(--color-ink))">Lesson 1</b>. How was it?</p>
+          <p class="q">How would you rate this module?</p>
+          <div class="stars" data-stars>
+            <button class="star">★</button><button class="star">★</button><button class="star">★</button>
+            <button class="star">★</button><button class="star">★</button>
+          </div>
+          <p class="q">How would you rate the app overall?</p>
+          <div class="stars" data-stars>
+            <button class="star">★</button><button class="star">★</button><button class="star">★</button>
+            <button class="star">★</button><button class="star">★</button>
+          </div>
+          <p class="q">Any feedback? (optional)</p>
+          <textarea placeholder="Share your thoughts…"></textarea>
+          <label class="chk"><input type="checkbox"> Submit anonymously</label>
+          <div class="row">
+            <button class="btn btn-accent">Submit</button>
+            <button class="btn btn-quiet" id="notNow">Not now</button>
+          </div>
+        </div>
+
+        <div style="margin-top:2rem">
+          <p class="label" style="color:rgb(var(--color-ink-faint));margin-bottom:.6rem">Up next</p>
+          <div style="background:rgb(var(--color-navy));padding:1.25rem;display:flex;
+            justify-content:space-between;align-items:center;gap:1rem">
+            <span class="serif" style="font-size:1.35rem;color:rgb(var(--color-paper))">Lesson 2: Data Types</span>
+            <span style="color:rgb(var(--color-accent))">→</span>
+          </div>
+        </div>
+      </div>
+      <p class="faint" style="margin-top:.75rem">Try it: press <b>Mark done</b> above.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PANEL 2 ══════════════════════════════════════════════════════════ -->
+<section class="panel" id="p2" hidden>
+  <p class="note"><b>Change:</b> each locked reviewer becomes a one-line strip. The three
+  pricing cards no longer repeat per section — they live on <b>/unlock</b>. The top teaser
+  keeps its value message but drops the ₱ figures, so pricing appears in exactly one place.</p>
+
+  <div class="ab">
+    <div class="col before">
+      <h3>Before — pricing repeats per section</h3>
+      <div class="frame">
+        <div class="teaser">
+          <p class="label">Reviewers with answer keys</p>
+          <p class="body" style="margin-bottom:0">12 reviewers … The first one's free.
+          Unlock the rest for <b style="color:rgb(var(--color-ink))">₱99 until end of semester</b>,
+          or all of 1st Year for <b style="color:rgb(var(--color-ink))">₱299</b>.</p>
+        </div>
+        <div class="secrow"><span class="secnum">05</span><h2 class="sec">Worked Exam Solutions</h2></div>
+        <div class="gate">
+          <p class="label" style="color:rgb(var(--color-ink-faint));margin-bottom:.5rem">Reviewer — locked</p>
+          <p class="body">Reviewers with answer keys — drills, code labs, and full solutions.</p>
+          <div class="plans">
+            <div class="plan"><p class="label">1 Month</p><div class="price"><span class="amt">₱49</span><span class="per">/mo</span></div><span class="btn btn-accent">Unlock — ₱49</span></div>
+            <div class="plan pop"><p class="label">Semester</p><div class="price"><span class="amt">₱99</span><span class="per">/sem</span></div><span class="btn btn-accent">Unlock — ₱99</span></div>
+            <div class="plan best"><p class="label">Everything</p><div class="price"><span class="amt">₱299</span><span class="per">/sem</span></div><span class="btn btn-ink">Unlock — ₱299</span></div>
+          </div>
+        </div>
+        <div class="secrow" style="margin-top:1.5rem"><span class="secnum">06</span><h2 class="sec">Code Lab</h2></div>
+        <div class="gate">
+          <p class="label" style="color:rgb(var(--color-ink-faint));margin-bottom:.5rem">Reviewer — locked</p>
+          <p class="body">Reviewers with answer keys — drills, code labs, and full solutions.</p>
+          <div class="plans">
+            <div class="plan"><p class="label">1 Month</p><div class="price"><span class="amt">₱49</span><span class="per">/mo</span></div><span class="btn btn-accent">Unlock — ₱49</span></div>
+            <div class="plan pop"><p class="label">Semester</p><div class="price"><span class="amt">₱99</span><span class="per">/sem</span></div><span class="btn btn-accent">Unlock — ₱99</span></div>
+            <div class="plan best"><p class="label">Everything</p><div class="price"><span class="amt">₱299</span><span class="per">/sem</span></div><span class="btn btn-ink">Unlock — ₱299</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="faint" style="margin-top:.75rem">Prices shown <b>7×</b> on one page (1 teaser + 3 per gate × 2).</p>
+    </div>
+
+    <div class="col after">
+      <h3>After — locked strips only</h3>
+      <div class="frame">
+        <div class="teaser">
+          <p class="label">Reviewers with answer keys</p>
+          <p class="body" style="margin-bottom:.9rem">12 reviewers with answer keys in
+          Computer Programming 1 — drills, code labs, and full solutions.
+          <b style="color:rgb(var(--color-ink))">The first one's free.</b></p>
+          <a class="btn btn-accent" href="#" data-goto="p3">Unlock reviewers →</a>
+          <p class="faint" style="margin-top:.75rem">Buying for your block? See block pricing →</p>
+        </div>
+        <div class="secrow"><span class="secnum">05</span><h2 class="sec">Worked Exam Solutions</h2></div>
+        <div class="locked">
+          <span class="lk">🔒</span>
+          <div class="txt">
+            <p class="label">Reviewer — locked</p>
+            <p>Drills, code labs, and full solutions.</p>
+          </div>
+          <a class="btn btn-accent" href="#" data-goto="p3">Unlock →</a>
+        </div>
+        <div class="secrow" style="margin-top:1.5rem"><span class="secnum">06</span><h2 class="sec">Code Lab</h2></div>
+        <div class="locked">
+          <span class="lk">🔒</span>
+          <div class="txt">
+            <p class="label">Reviewer — locked</p>
+            <p>Drills, code labs, and full solutions.</p>
+          </div>
+          <a class="btn btn-accent" href="#" data-goto="p3">Unlock →</a>
+        </div>
+        <div class="secrow" style="margin-top:1.5rem"><span class="secnum">07</span><h2 class="sec">Practice Drills</h2></div>
+        <div class="locked">
+          <span class="lk">🔒</span>
+          <div class="txt">
+            <p class="label">Reviewer — locked</p>
+            <p>Drills, code labs, and full solutions.</p>
+          </div>
+          <a class="btn btn-accent" href="#" data-goto="p3">Unlock →</a>
+        </div>
+      </div>
+      <p class="faint" style="margin-top:.75rem">Prices shown <b>0×</b> here. Three locked
+      sections cost three lines. Click any <b>Unlock →</b>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PANEL 3 ══════════════════════════════════════════════════════════ -->
+<section class="panel" id="p3" hidden>
+  <p class="note"><b>New route:</b> <code class="mono">/unlock?year=…&amp;subject=…&amp;from=/year/…/modules/…</code>
+  — the one place pricing lives. <code class="mono">from</code> is what gets handed to
+  <code class="mono">buildSuccessUrl</code>, so payment returns the reader to the exact
+  lesson they left.</p>
+
+  <div class="frame">
+    <div class="navybar">
+      <p class="label" style="color:rgb(var(--color-taupe));margin-bottom:.6rem">
+        ← Back to Lesson 1: Programming Concepts</p>
+      <h1 class="display" style="color:rgb(var(--color-paper))">Unlock Computer Programming 1</h1>
+      <p style="color:rgb(var(--color-taupe));font-size:.9375rem;margin-top:.6rem">
+        12 reviewers with answer keys — drills, code labs, and full worked solutions.</p>
+    </div>
+
+    <div class="plans">
+      <div class="plan">
+        <div class="top"><p class="label">1 Month</p></div>
+        <p class="desc">Computer Programming 1 only</p>
+        <div class="price"><span class="amt">₱49</span><span class="per">/ month</span></div>
+        <button class="btn btn-accent">Unlock — ₱49</button>
+      </div>
+      <div class="plan pop">
+        <div class="top"><p class="label">Whole Semester</p><span class="tag">★ Most Popular</span></div>
+        <p class="desc">Computer Programming 1 until Dec 31 — covers prelims, midterms, and finals</p>
+        <div class="price"><span class="amt">₱99</span><span class="per">/ semester</span></div>
+        <button class="btn btn-accent">Unlock — ₱99</button>
+      </div>
+      <div class="plan best">
+        <div class="top"><p class="label">Everything</p><span class="tag">Best Value</span></div>
+        <p class="desc">All subjects in 1st Year until Dec 31</p>
+        <div class="price"><span class="amt">₱299</span><span class="per">/ semester</span></div>
+        <button class="btn btn-ink">Unlock everything — ₱299</button>
+      </div>
+    </div>
+
+    <p class="faint" style="margin-top:1.25rem">One-time payment via GCash, Maya, or card.
+    No auto-renew — access simply ends with the semester. Instant unlock after payment.</p>
+
+    <div style="margin-top:2rem;border-top:1px solid rgb(var(--color-ink-faint)/.25);padding-top:1.25rem">
+      <p class="faint">Buying for your block? <b style="color:rgb(var(--color-ink))">See block pricing →</b></p>
+    </div>
+  </div>
+
+  <p class="faint" style="margin-top:1rem">After paying, PayMongo returns to
+  <code class="mono">…/modules/&lt;id&gt;?payment=success</code> and the locked strips poll,
+  then swap themselves for the real reviewer content in place.</p>
+</section>
+
+</div>
+
+<script>
+// panel switching
+const tabs=[...document.querySelectorAll('.tab')];
+function show(id){
+  tabs.forEach(t=>t.setAttribute('aria-selected',String(t.dataset.p===id)));
+  document.querySelectorAll('.panel').forEach(p=>p.hidden=(p.id!==id));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+tabs.forEach(t=>t.addEventListener('click',()=>show(t.dataset.p)));
+document.querySelectorAll('[data-goto]').forEach(a=>
+  a.addEventListener('click',e=>{e.preventDefault();show(a.dataset.goto);}));
+
+// theme
+document.getElementById('theme').addEventListener('click',()=>{
+  const r=document.documentElement;
+  r.dataset.theme = r.dataset.theme==='dark' ? 'light' : 'dark';
+});
+
+// mark-done -> survey
+const doneBtn=document.getElementById('doneBtn'),
+      card=document.getElementById('surveyCard');
+doneBtn.addEventListener('click',()=>{
+  const now = doneBtn.getAttribute('aria-pressed')!=='true';
+  doneBtn.setAttribute('aria-pressed',String(now));
+  document.getElementById('doneIcon').textContent = now?'✓':'○';
+  document.getElementById('doneText').textContent = now?'Done':'Mark done';
+  // survey only on the transition INTO done, never on un-marking
+  if(now) card.classList.remove('hidden');
+});
+document.getElementById('notNow').addEventListener('click',()=>card.classList.add('hidden'));
+
+// star ratings
+document.querySelectorAll('[data-stars]').forEach(group=>{
+  const stars=[...group.querySelectorAll('.star')];
+  stars.forEach((s,i)=>s.addEventListener('click',()=>
+    stars.forEach((x,j)=>x.classList.toggle('on',j<=i))));
+});
+</script>
+</body>
+</html>
