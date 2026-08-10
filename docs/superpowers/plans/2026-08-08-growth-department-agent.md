@@ -803,6 +803,22 @@ export function phaseFor(
 }
 
 /**
+ * Add one day to a YYYY-MM-DD date string. Handles month and year rollover.
+ * Used to distinguish adjacent windows (contiguous coverage) from real gaps.
+ */
+function dayAfter(dateStr: string): string {
+  const [yearStr, monthStr, dayStr] = dateStr.split("-");
+  const year = Number(yearStr);
+  const month = Number(monthStr);
+  const day = Number(dayStr);
+  const d = new Date(Date.UTC(year, month - 1, day + 1));
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const dy = String(d.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${dy}`;
+}
+
+/**
  * The phase covering a report window. `mixed` is true when the window spans
  * more than one phase, which is a caveat the agent must state rather than
  * pick a winner for.
@@ -844,10 +860,12 @@ export function phaseForRange(
   if (sorted[0]!.startPhDate > startPhDate) {
     hasCoverageGap = true;
   } else {
-    // Check for gaps between consecutive windows and at the end
+    // Check for gaps between consecutive windows and at the end.
+    // A gap exists if the next window starts AFTER the day after the current end.
+    // Adjacent windows (one ends 2026-09-20, next starts 2026-09-21) are contiguous.
     let currentEnd = sorted[0]!.endPhDate;
     for (let i = 1; i < sorted.length; i++) {
-      if (sorted[i]!.startPhDate > currentEnd) {
+      if (sorted[i]!.startPhDate > dayAfter(currentEnd)) {
         // Gap between window i-1 and window i
         hasCoverageGap = true;
         break;
@@ -859,8 +877,8 @@ export function phaseForRange(
           : currentEnd;
     }
 
-    // Check if the range extends beyond all windows
-    if (!hasCoverageGap && endPhDate > currentEnd) {
+    // Check if the range extends beyond all windows (gaps at the end)
+    if (!hasCoverageGap && endPhDate > dayAfter(currentEnd)) {
       hasCoverageGap = true;
     }
   }
@@ -882,9 +900,9 @@ export function phaseForRange(
     if (startPhase !== "unknown") {
       phase = startPhase;
     } else {
-      // If start is unknown, use the first known phase in calendar order
-      const firstKnown = Array.from(phases).find((p) => p !== "unknown");
-      phase = firstKnown ?? "unknown";
+      // If start is unknown, use the first known phase in chronological order.
+      // All windows in sorted have non-unknown phases (by type), so use the first one.
+      phase = sorted[0]?.phase ?? "unknown";
     }
   }
 
@@ -892,9 +910,11 @@ export function phaseForRange(
 }
 
 /**
- * NOTE: This implementation detects windows fully enclosed by the range (not
- * touching endpoints), fixing a bug in the initial endpoint-only version. The
- * owner has ruled this scanning version as governing.
+ * NOTE: This implementation (round 2 fix):
+ * 1. Detects windows fully enclosed by the range (not touching endpoints).
+ * 2. Uses dayAfter() to properly distinguish adjacent windows from real gaps.
+ * 3. Returns the chronologically first known phase, not declaration order.
+ * The owner has ruled this scanning version as governing.
  */
 ```
 
