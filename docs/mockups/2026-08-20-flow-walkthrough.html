@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Full flow walkthrough — survey + locked paywall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-paper:247 245 243; --color-ink:26 31 35; --color-ink-muted:107 111 117;
+  --color-ink-faint:168 173 181; --color-accent:224 73 43; --color-navy:26 26 26;
+  --color-taupe:189 185 178;
+}
+:root[data-theme="dark"]{
+  --color-paper:26 31 35; --color-ink:247 245 243; --color-ink-muted:168 173 181;
+  --color-ink-faint:107 111 117; --color-accent:224 73 43; --color-navy:240 237 233;
+  --color-taupe:74 71 64;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:rgb(var(--color-paper));color:rgb(var(--color-ink));
+  font-family:"Inter Tight",system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+.serif{font-family:"Fraunces",Georgia,serif}
+.label{font-family:"JetBrains Mono",monospace;font-size:.6875rem;line-height:1;
+  letter-spacing:.12em;text-transform:uppercase}
+.mono{font-family:"JetBrains Mono",monospace}
+
+/* stepper chrome */
+.chrome{position:sticky;top:0;z-index:50;background:rgb(var(--color-ink));
+  color:rgb(var(--color-paper));padding:.7rem 1.1rem;display:flex;gap:.9rem;
+  align-items:center;flex-wrap:wrap}
+.chrome .brand{font-family:"JetBrains Mono",monospace;font-size:.6875rem;
+  letter-spacing:.12em;text-transform:uppercase;opacity:.5}
+.steps{display:flex;gap:.35rem;flex-wrap:wrap}
+.step{background:none;border:1px solid rgb(255 255 255/.16);color:inherit;
+  font-family:"JetBrains Mono",monospace;font-size:.65rem;letter-spacing:.08em;
+  text-transform:uppercase;padding:.4rem .7rem;cursor:pointer;transition:.15s;opacity:.65}
+.step:hover{opacity:1;border-color:rgb(255 255 255/.45)}
+.step[aria-current="true"]{background:rgb(var(--color-accent));
+  border-color:rgb(var(--color-accent));opacity:1}
+.spacer{flex:1}
+.ghost{background:none;border:1px solid rgb(255 255 255/.16);color:inherit;
+  font-family:"JetBrains Mono",monospace;font-size:.65rem;letter-spacing:.08em;
+  text-transform:uppercase;padding:.4rem .7rem;cursor:pointer}
+
+.urlbar{background:rgb(var(--color-ink-faint)/.14);padding:.5rem 1.1rem;
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;color:rgb(var(--color-ink-muted));
+  overflow-x:auto;white-space:nowrap;border-bottom:1px solid rgb(var(--color-ink-faint)/.25)}
+.hint{max-width:88ch;margin:1.25rem auto 0;padding:0 1.5rem}
+.hint p{border-left:2px solid rgb(var(--color-accent));padding:.3rem 0 .3rem .85rem;
+  font-size:.85rem;color:rgb(var(--color-ink-muted))}
+.hint b{color:rgb(var(--color-ink));font-weight:600}
+.screen[hidden]{display:none}
+
+/* page primitives */
+.navy{background:rgb(var(--color-navy));padding:2rem 1.5rem}
+.navy .inner{max-width:88ch;margin:0 auto}
+.on-navy{color:rgb(var(--color-paper))}
+:root[data-theme="dark"] .on-navy{color:rgb(var(--color-ink))}
+.taupe{color:rgb(var(--color-taupe))}
+.article{max-width:88ch;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.blk{margin-bottom:3rem}
+h1.d{font-family:"Fraunces",Georgia,serif;font-size:clamp(1.5rem,3.5vw,2.5rem);
+  line-height:1.05;letter-spacing:-.02em}
+h1.dl{font-family:"Fraunces",Georgia,serif;font-size:clamp(2rem,5vw,3.4rem);
+  line-height:1;letter-spacing:-.025em}
+h2.s{font-family:"Fraunces",Georgia,serif;font-size:1.6rem;line-height:1.15}
+.secrow{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.2rem}
+.num{font-family:"JetBrains Mono",monospace;font-size:.6875rem;letter-spacing:.12em;
+  color:rgb(var(--color-ink-faint));flex-shrink:0}
+.indent{padding-left:2.6rem}
+p.body{color:rgb(var(--color-ink-muted));font-size:1rem;margin-bottom:1rem}
+.faint{color:rgb(var(--color-ink-faint));font-size:.8125rem}
+.btn{display:inline-block;border:none;cursor:pointer;font-family:inherit;font-size:.875rem;
+  padding:.75rem 1rem;transition:.15s;text-decoration:none}
+.acc{background:rgb(var(--color-accent));color:#F7F5F3}
+.acc:hover{background:rgb(var(--color-ink));color:rgb(var(--color-paper))}
+.inkb{background:rgb(var(--color-ink));color:rgb(var(--color-paper))}
+.inkb:hover{background:rgb(var(--color-accent));color:#F7F5F3}
+.quiet{background:none;color:rgb(var(--color-ink-muted));padding:.75rem .25rem;
+  text-decoration:underline;text-underline-offset:3px;cursor:pointer;border:none;
+  font-family:inherit;font-size:.875rem}
+
+.teaser{border:1px solid rgb(var(--color-accent)/.4);background:rgb(var(--color-accent)/.03);
+  padding:1.25rem;margin-bottom:2.5rem}
+.locked{border:1px solid rgb(var(--color-ink-faint)/.3);padding:1.25rem;display:flex;
+  flex-wrap:wrap;align-items:center;gap:1rem}
+.locked .lk{font-size:1rem;opacity:.5;flex-shrink:0}
+.locked .txt{flex:1;min-width:14rem}
+.sample{border:1px solid rgb(var(--color-accent)/.4);background:rgb(var(--color-accent)/.03);
+  padding:1.25rem;margin-top:1.5rem}
+.reviewer{border:1px solid rgb(var(--color-accent)/.35);padding:1.25rem;
+  background:rgb(var(--color-accent)/.02)}
+.answer{background:rgb(var(--color-ink));color:rgb(var(--color-paper));
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;padding:.9rem;
+  margin-top:.75rem;overflow-x:auto;white-space:pre}
+
+/* plans */
+.plans{display:grid;gap:1rem;grid-template-columns:1fr}
+@media(min-width:700px){.plans{grid-template-columns:repeat(3,1fr)}}
+.plan{border:1px solid rgb(var(--color-ink-faint)/.3);padding:1.25rem;display:flex;
+  flex-direction:column;gap:1rem}
+.plan.pop{border-color:rgb(var(--color-accent)/.6)}
+.plan.best{border-color:rgb(var(--color-ink)/.6)}
+.ptop{display:flex;justify-content:space-between;gap:.75rem;align-items:baseline}
+.tag{font-family:"JetBrains Mono",monospace;font-size:.6875rem;letter-spacing:.1em;
+  text-transform:uppercase;color:rgb(var(--color-accent));flex-shrink:0}
+.desc{font-size:.875rem;color:rgb(var(--color-ink-muted))}
+.price{display:flex;align-items:baseline;gap:.4rem;margin-top:auto}
+.amt{font-family:"Fraunces",Georgia,serif;font-size:1.9rem}
+.per{font-size:.875rem;color:rgb(var(--color-ink-muted))}
+
+/* survey */
+.survey{border:1px solid rgb(var(--color-accent)/.4);background:rgb(var(--color-accent)/.03);
+  padding:1.5rem;margin-bottom:2.5rem}
+.q{font-size:.875rem;color:rgb(var(--color-ink-muted));margin:1.1rem 0 .5rem}
+.stars{display:flex;gap:.375rem}
+.star{background:none;border:none;cursor:pointer;font-size:1.5rem;line-height:1;
+  color:rgb(var(--color-ink-faint));padding:0;transition:.15s}
+.star:hover,.star.on{color:rgb(var(--color-accent))}
+textarea{width:100%;border:1px solid rgb(var(--color-ink-faint)/.4);background:transparent;
+  color:inherit;font-family:inherit;font-size:.875rem;padding:.6rem .75rem;min-height:5rem;resize:vertical}
+.pill{display:inline-flex;align-items:center;gap:.5rem;border-radius:999px;
+  border:1px solid rgb(var(--color-ink-faint)/.4);color:rgb(var(--color-ink-faint));
+  background:none;padding:.375rem .75rem;cursor:pointer;font-family:"JetBrains Mono",monospace;
+  font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase;transition:.15s}
+.pill:hover{border-color:rgb(var(--color-ink));color:rgb(var(--color-ink))}
+.pill[aria-pressed="true"]{border-color:rgb(var(--color-accent));
+  background:rgb(var(--color-accent)/.1);color:rgb(var(--color-accent))}
+.upnext{background:rgb(var(--color-navy));padding:1.5rem;display:flex;
+  justify-content:space-between;align-items:center;gap:1rem;margin-top:1rem}
+
+/* third-party checkout — deliberately schematic */
+.thirdparty{max-width:34rem;margin:2.5rem auto;border:2px dashed rgb(var(--color-ink-faint)/.7);
+  padding:0;background:rgb(var(--color-ink-faint)/.06)}
+.tp-banner{background:rgb(var(--color-ink-faint)/.22);padding:.85rem 1.1rem;
+  font-size:.8125rem;color:rgb(var(--color-ink-muted));
+  border-bottom:1px dashed rgb(var(--color-ink-faint)/.7)}
+.tp-banner b{color:rgb(var(--color-ink))}
+.tp-body{padding:1.5rem 1.1rem}
+.tp-row{display:flex;justify-content:space-between;gap:1rem;padding:.6rem 0;
+  border-bottom:1px solid rgb(var(--color-ink-faint)/.3);font-size:.875rem}
+.tp-row .k{color:rgb(var(--color-ink-muted))}
+.tp-row .v{font-family:"JetBrains Mono",monospace;text-align:right}
+.tp-methods{display:flex;gap:.5rem;flex-wrap:wrap;margin:1.1rem 0}
+.tp-method{border:1px solid rgb(var(--color-ink-faint)/.5);padding:.5rem .8rem;
+  font-size:.8125rem;color:rgb(var(--color-ink-muted))}
+.tp-ghost{border:1px dashed rgb(var(--color-ink-faint)/.7);padding:1.5rem;
+  text-align:center;color:rgb(var(--color-ink-faint));font-size:.8125rem;margin:1rem 0}
+.polling{display:flex;align-items:center;gap:.75rem;border:1px solid rgb(var(--color-ink-faint)/.3);
+  padding:.9rem;margin-bottom:1rem;font-size:.875rem;color:rgb(var(--color-ink-muted))}
+.spin{width:1rem;height:1rem;border:2px solid rgb(var(--color-accent)/.3);
+  border-top-color:rgb(var(--color-accent));border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+.hidden{display:none}
+.divider{border:0;border-top:1px solid rgb(var(--color-ink-faint)/.25);margin:2.5rem 0 1.5rem}
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <span class="brand">Flow walkthrough</span>
+  <div class="steps">
+    <button class="step" data-s="s1" aria-current="true">1 · Module (locked)</button>
+    <button class="step" data-s="s2">2 · Unlock page</button>
+    <button class="step" data-s="s3">3 · Checkout</button>
+    <button class="step" data-s="s4">4 · Back, unlocked</button>
+  </div>
+  <span class="spacer"></span>
+  <button class="ghost" id="reset">↺ Reset</button>
+  <button class="ghost" id="theme">◐ Theme</button>
+</div>
+<div class="urlbar" id="url">localhost:3000/year/…/subjects/…/modules/a3000001-…</div>
+
+<!-- ══ 1 · MODULE READER, LOCKED ═══════════════════════════════════════ -->
+<section class="screen" id="s1">
+  <div class="hint"><p><b>Scroll to the bottom</b> — the survey is not here yet, and won't be
+  until you press <b>Mark done</b>. Three reviewers are locked; none of them shows a price.</p></div>
+
+  <div class="navy" style="margin-top:1.25rem">
+    <div class="inner">
+      <p class="label taupe" style="margin-bottom:1rem">§ 01 — Computer Programming 2</p>
+      <h1 class="d on-navy">Unit 1: Arrays</h1>
+    </div>
+  </div>
+
+  <div class="article">
+    <div class="teaser">
+      <p class="label" style="color:rgb(var(--color-accent));margin-bottom:.6rem">Reviewers with Answer Keys</p>
+      <p class="body" style="margin-bottom:1rem">4 reviewers with answer keys in Computer
+      Programming 2 — drills, code labs, and full solutions.
+      <b style="color:rgb(var(--color-ink))">The first one's free.</b></p>
+      <a class="btn acc" href="#" data-go="s2">Unlock reviewers →</a>
+      <p class="faint" style="margin-top:.75rem">Buying for your block? See block pricing →</p>
+    </div>
+
+    <div class="blk">
+      <div class="secrow"><span class="num">01</span><h2 class="s">What Is an Array?</h2></div>
+      <div class="indent">
+        <p class="body">An array is a collection of elements of the same type, stored in
+        contiguous memory and reached by index. Declaring one fixes its length for its lifetime.</p>
+        <p class="body">Indexing starts at zero, so the last valid index of an array of length
+        <b>n</b> is <b>n − 1</b>. Reading past that is the single most common source of
+        runtime crashes in first-year code.</p>
+      </div>
+    </div>
+
+    <div class="blk">
+      <div class="secrow"><span class="num">02</span><h2 class="s">Declaring and Initialising</h2></div>
+      <div class="indent">
+        <p class="body">You can size an array up front and fill it later, or give it values
+        immediately and let the compiler count them for you.</p>
+      </div>
+    </div>
+
+    <div class="blk">
+      <div class="secrow"><span class="num">03</span><h2 class="s">Reviewer — Array Basics</h2></div>
+      <div class="indent">
+        <p class="body">Ten drills on declaration, indexing, and bounds. Worked answers follow
+        each question so you can check yourself as you go.</p>
+        <div class="sample">
+          <p class="label" style="color:rgb(var(--color-accent));margin-bottom:.6rem">Free Sample</p>
+          <p class="body" style="margin-bottom:1rem">That was 1 of 4 reviewers with answer keys
+          in Computer Programming 2. Unlock all of them for the semester.</p>
+          <a class="btn acc" href="#" data-go="s2">Unlock all reviewers →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="blk">
+      <div class="secrow"><span class="num">04</span><h2 class="s">Worked Exam Solutions</h2></div>
+      <div class="indent">
+        <div class="locked">
+          <span class="lk">🔒</span>
+          <div class="txt">
+            <p class="label" style="color:rgb(var(--color-ink-faint));margin-bottom:.35rem">Reviewer — locked</p>
+            <p class="desc">Drills, code labs, and full solutions.</p>
+          </div>
+          <a class="btn acc" href="#" data-go="s2">Unlock →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="blk">
+      <div class="secrow"><span class="num">05</span><h2 class="s">Code Lab — Run It Yourself</h2></div>
+      <div class="indent">
+        <div class="locked">
+          <span class="lk">🔒</span>
+          <div class="txt">
+            <p class="label" style="color:rgb(var(--color-ink-faint));margin-bottom:.35rem">Reviewer — locked</p>
+            <p class="desc">Drills, code labs, and full solutions.</p>
+          </div>
+          <a class="btn acc" href="#" data-go="s2">Unlock →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="blk">
+      <div class="secrow"><span class="num">06</span><h2 class="s">Practice Drills</h2></div>
+      <div class="indent">
+        <div class="locked">
+          <span class="lk">🔒</span>
+          <div class="txt">
+            <p class="label" style="color:rgb(var(--color-ink-faint));margin-bottom:.35rem">Reviewer — locked</p>
+            <p class="desc">Drills, code labs, and full solutions.</p>
+          </div>
+          <a class="btn acc" href="#" data-go="s2">Unlock →</a>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div style="display:flex;justify-content:space-between;gap:1rem;align-items:center;
+      flex-wrap:wrap;margin-bottom:2.5rem">
+      <p class="faint" style="flex:1;min-width:13rem">Done with this module? Track it — your
+      progress shows on the subject list.</p>
+      <button class="pill" id="doneBtn" aria-pressed="false">
+        <span id="doneIcon">○</span><span id="doneText">Mark done</span>
+      </button>
+    </div>
+
+    <div id="surveyCard" class="survey hidden">
+      <p class="label" style="color:rgb(var(--color-accent));margin-bottom:.7rem">Help us improve</p>
+      <p class="desc">You just finished
+        <span style="color:rgb(var(--color-ink));font-weight:500">Unit 1: Arrays</span>. How was it?</p>
+      <p class="q">How would you rate this module?</p>
+      <div class="stars" data-stars>
+        <button class="star">★</button><button class="star">★</button><button class="star">★</button>
+        <button class="star">★</button><button class="star">★</button>
+      </div>
+      <p class="q">How would you rate the app overall?</p>
+      <div class="stars" data-stars>
+        <button class="star">★</button><button class="star">★</button><button class="star">★</button>
+        <button class="star">★</button><button class="star">★</button>
+      </div>
+      <p class="q">Any feedback? (optional)</p>
+      <textarea id="fb" placeholder="Share your thoughts..." rows="4"></textarea>
+      <div class="faint" style="margin-top:.25rem"><span id="cc">0</span>/500</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin-top:1rem">
+        <button class="btn acc" id="submitFb">Submit</button>
+        <button class="quiet" id="notNow">Not now</button>
+      </div>
+    </div>
+
+    <div id="surveyDone" class="survey hidden">
+      <p class="label" style="color:rgb(var(--color-accent));margin-bottom:.7rem">Help us improve</p>
+      <p class="serif" style="font-size:1.25rem">✓ Thanks — that helps more than you'd think.</p>
+      <div style="border:1px solid rgb(var(--color-accent));background:rgb(var(--color-accent)/.1);
+        padding:1rem;margin-top:1rem">
+        <div class="desc" style="margin-bottom:.5rem">Your coupon code:</div>
+        <div class="mono" style="font-size:1.25rem;font-weight:700;margin-bottom:.75rem">BSIT-XXXX-XXXX</div>
+        <button class="btn acc" style="width:100%">Copy Code</button>
+      </div>
+    </div>
+
+    <p class="label" style="color:rgb(var(--color-ink-faint));margin-bottom:.6rem">Up next</p>
+    <div class="upnext">
+      <span class="serif on-navy" style="font-size:1.4rem">Unit 2: Multidimensional Arrays</span>
+      <span style="color:rgb(var(--color-accent))">→</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 2 · UNLOCK PAGE ═════════════════════════════════════════════════ -->
+<section class="screen" id="s2" hidden>
+  <div class="hint"><p>The <b>only</b> page in the app that quotes a price. The
+  <b>from</b> parameter in the URL above is what sends you back to Unit 1 after paying —
+  without it, PayMongo would drop you on /account.</p></div>
+
+  <div class="navy" style="margin-top:1.25rem;padding:3rem 1.5rem">
+    <div class="inner">
+      <p class="label taupe" style="margin-bottom:2rem">← Unit 1: Arrays</p>
+      <p class="label taupe" style="margin-bottom:1rem">§ 01 — Computer Programming 2</p>
+      <h1 class="dl on-navy">Unlock Computer Programming 2</h1>
+      <p class="taupe" style="margin-top:1rem">4 reviewers with answer keys — drills, code labs,
+      and full worked solutions.</p>
+    </div>
+  </div>
+
+  <div class="article">
+    <div class="plans">
+      <div class="plan">
+        <div class="ptop"><p class="label" style="color:rgb(var(--color-ink-faint))">1 Month</p></div>
+        <p class="desc">Computer Programming 2 only</p>
+        <div class="price"><span class="amt">₱49</span><span class="per">/ month</span></div>
+        <button class="btn acc" data-pay="subject_month">Unlock — ₱49</button>
+      </div>
+      <div class="plan pop">
+        <div class="ptop">
+          <p class="label" style="color:rgb(var(--color-ink-faint))">Whole Semester</p>
+          <span class="tag">★ Most Popular</span>
+        </div>
+        <p class="desc">Computer Programming 2 until Dec 31 — covers prelims, midterms, and finals</p>
+        <div class="price"><span class="amt">₱99</span><span class="per">/ semester</span></div>
+        <button class="btn acc" data-pay="subject_sem">Unlock — ₱99</button>
+      </div>
+      <div class="plan best">
+        <div class="ptop">
+          <p class="label" style="color:rgb(var(--color-ink-faint))">Everything</p>
+          <span class="tag">Best Value</span>
+        </div>
+        <p class="desc">All subjects in 1st Year until Dec 31</p>
+        <div class="price"><span class="amt">₱299</span><span class="per">/ semester</span></div>
+        <button class="btn inkb" data-pay="year_sem">Unlock everything — ₱299</button>
+      </div>
+    </div>
+
+    <p class="faint" style="margin-top:1rem">One-time payment via GCash, Maya, or card.
+    No auto-renew — access simply ends with the semester. Instant unlock after payment.</p>
+
+    <div style="margin-top:2.5rem;border-top:1px solid rgb(var(--color-ink-faint)/.25);padding-top:1.5rem">
+      <p class="faint">Buying for your block? <b style="color:rgb(var(--color-ink))">See block pricing →</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 3 · CHECKOUT (third-party) ══════════════════════════════════════ -->
+<section class="screen" id="s3" hidden>
+  <div class="hint"><p>This screen is <b>not ours to design</b> — clicking a plan calls
+  <span class="mono">/api/subscribe</span>, which creates a PayMongo Link and redirects the
+  browser to PayMongo's own hosted checkout. Shown below as a schematic: only the
+  <b>description</b>, <b>amount</b>, and <b>remarks</b> are ours.</p></div>
+
+  <div class="thirdparty">
+    <div class="tp-banner">
+      <b>PayMongo hosted checkout</b> — schematic placeholder, not a reproduction of their
+      real page. Their actual layout, branding, and payment form are controlled by PayMongo.
+    </div>
+    <div class="tp-body">
+      <div class="tp-row"><span class="k">description</span><span class="v" id="payDesc">—</span></div>
+      <div class="tp-row"><span class="k">amount</span><span class="v" id="payAmt">—</span></div>
+      <div class="tp-row"><span class="k">remarks</span>
+        <span class="v" style="font-size:.7rem">year:… subject:… device:… plan:…</span></div>
+
+      <div class="tp-methods">
+        <span class="tp-method">GCash</span>
+        <span class="tp-method">Maya</span>
+        <span class="tp-method">Card</span>
+      </div>
+
+      <div class="tp-ghost">PayMongo's payment form renders here</div>
+
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem">
+        <button class="btn acc" data-go="s4">Simulate successful payment →</button>
+        <button class="quiet" data-go="s2">Cancel, go back</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="article" style="padding-top:0">
+    <p class="faint">On success PayMongo redirects to
+    <span class="mono">…/modules/&lt;id&gt;?payment=success</span> — the module path carried
+    through as <span class="mono">from</span>, re-validated server-side against the plan
+    actually purchased.</p>
+  </div>
+</section>
+
+<!-- ══ 4 · BACK, UNLOCKED ══════════════════════════════════════════════ -->
+<section class="screen" id="s4" hidden>
+  <div class="hint"><p>Back on Unit 1 with <span class="mono">?payment=success</span>.
+  The strips poll for confirmation, then the page refreshes and the reviewers render in
+  full. The teaser is gone — a subscriber never sees it again.</p></div>
+
+  <div class="navy" style="margin-top:1.25rem">
+    <div class="inner">
+      <p class="label taupe" style="margin-bottom:1rem">§ 01 — Computer Programming 2</p>
+      <h1 class="d on-navy">Unit 1: Arrays</h1>
+    </div>
+  </div>
+
+  <div class="article">
+    <div id="pollBox">
+      <div class="polling"><span class="spin"></span>
+        <span>Payment received — unlocking access…</span></div>
+      <div class="blk">
+        <div class="secrow"><span class="num">04</span><h2 class="s">Worked Exam Solutions</h2></div>
+        <div class="indent"><div class="locked">
+          <span class="lk">🔒</span>
+          <div class="txt">
+            <p class="label" style="color:rgb(var(--color-ink-faint));margin-bottom:.35rem">Reviewer — locked</p>
+            <p class="desc">Drills, code labs, and full solutions.</p>
+          </div>
+          <p class="desc">Payment received — unlocking access…</p>
+        </div></div>
+      </div>
+    </div>
+
+    <div id="unlockedBox" class="hidden">
+      <div class="blk">
+        <div class="secrow"><span class="num">04</span><h2 class="s">Worked Exam Solutions</h2></div>
+        <div class="indent">
+          <div class="reviewer">
+            <p class="label" style="color:rgb(var(--color-accent));margin-bottom:.7rem">Reviewer — unlocked</p>
+            <p class="body"><b>Q1.</b> Given <span class="mono">int a[5] = {2,4,6,8,10};</span>
+            what does <span class="mono">a[5]</span> evaluate to?</p>
+            <div class="answer">Answer: undefined behaviour — a[5] is out of bounds.
+Valid indices are 0..4. Reading it may crash or
+return garbage; the compiler will not stop you.</div>
+          </div>
+        </div>
+      </div>
+      <div class="blk">
+        <div class="secrow"><span class="num">05</span><h2 class="s">Code Lab — Run It Yourself</h2></div>
+        <div class="indent">
+          <div class="reviewer">
+            <p class="label" style="color:rgb(var(--color-accent));margin-bottom:.7rem">Reviewer — unlocked</p>
+            <p class="body">Editable starter code with a run button renders here.</p>
+            <div class="answer">int main(void) {
+    int scores[5] = {88, 92, 79, 95, 84};
+    // TODO: print the highest score
+    return 0;
+}</div>
+          </div>
+        </div>
+      </div>
+      <div class="blk">
+        <div class="secrow"><span class="num">06</span><h2 class="s">Practice Drills</h2></div>
+        <div class="indent"><div class="reviewer">
+          <p class="label" style="color:rgb(var(--color-accent));margin-bottom:.7rem">Reviewer — unlocked</p>
+          <p class="body">Ten drills with full worked solutions.</p>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const URLS={
+  s1:"localhost:3000/year/…/subjects/…/modules/a3000001-…",
+  s2:"localhost:3000/unlock?year=…&subject=…&from=/year/…/modules/a3000001-…",
+  s3:"pm.link/…  ← PayMongo hosted, different origin",
+  s4:"localhost:3000/year/…/subjects/…/modules/a3000001-…?payment=success"
+};
+const PLANS={
+  subject_month:["BSIT Survival Kit — Subject (1 month)","4900 centavos  (₱49)"],
+  subject_sem:["BSIT Survival Kit — Subject (semester)","9900 centavos  (₱99)"],
+  year_sem:["BSIT Survival Kit — All subjects (semester)","29900 centavos  (₱299)"]
+};
+const steps=[...document.querySelectorAll('.step')];
+function show(id){
+  steps.forEach(s=>s.setAttribute('aria-current',String(s.dataset.s===id)));
+  document.querySelectorAll('.screen').forEach(p=>p.hidden=(p.id!==id));
+  document.getElementById('url').textContent=URLS[id];
+  window.scrollTo({top:0});
+  if(id==='s4') runPoll();
+}
+steps.forEach(s=>s.addEventListener('click',()=>show(s.dataset.s)));
+document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',e=>{
+  e.preventDefault(); show(el.dataset.go);
+}));
+document.querySelectorAll('[data-pay]').forEach(b=>b.addEventListener('click',()=>{
+  const [d,a]=PLANS[b.dataset.pay];
+  document.getElementById('payDesc').textContent=d;
+  document.getElementById('payAmt').textContent=a;
+  show('s3');
+}));
+
+// mark done -> survey
+const doneBtn=document.getElementById('doneBtn'),card=document.getElementById('surveyCard');
+doneBtn.addEventListener('click',()=>{
+  const on=doneBtn.getAttribute('aria-pressed')!=='true';
+  doneBtn.setAttribute('aria-pressed',String(on));
+  document.getElementById('doneIcon').textContent=on?'✓':'○';
+  document.getElementById('doneText').textContent=on?'Done':'Mark done';
+  if(on){ card.classList.remove('hidden');
+    card.scrollIntoView({behavior:'smooth',block:'center'}); }
+});
+document.getElementById('notNow').addEventListener('click',()=>card.classList.add('hidden'));
+document.getElementById('submitFb').addEventListener('click',()=>{
+  card.classList.add('hidden');
+  document.getElementById('surveyDone').classList.remove('hidden');
+});
+document.getElementById('fb').addEventListener('input',e=>{
+  document.getElementById('cc').textContent=e.target.value.length;
+});
+document.querySelectorAll('[data-stars]').forEach(g=>{
+  const st=[...g.querySelectorAll('.star')];
+  st.forEach((s,i)=>s.addEventListener('click',()=>
+    st.forEach((x,j)=>x.classList.toggle('on',j<=i))));
+});
+
+// poll -> unlocked
+let pollTimer=null;
+function runPoll(){
+  const p=document.getElementById('pollBox'),u=document.getElementById('unlockedBox');
+  p.classList.remove('hidden'); u.classList.add('hidden');
+  clearTimeout(pollTimer);
+  pollTimer=setTimeout(()=>{p.classList.add('hidden');u.classList.remove('hidden');},2600);
+}
+
+document.getElementById('theme').addEventListener('click',()=>{
+  const r=document.documentElement;
+  r.dataset.theme=r.dataset.theme==='dark'?'light':'dark';
+});
+document.getElementById('reset').addEventListener('click',()=>{
+  doneBtn.setAttribute('aria-pressed','false');
+  document.getElementById('doneIcon').textContent='○';
+  document.getElementById('doneText').textContent='Mark done';
+  card.classList.add('hidden');
+  document.getElementById('surveyDone').classList.add('hidden');
+  document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
+  document.getElementById('fb').value=''; document.getElementById('cc').textContent='0';
+  show('s1');
+});
+</script>
+</body>
+</html>
