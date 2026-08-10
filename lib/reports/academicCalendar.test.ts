@@ -73,4 +73,39 @@ describe("phaseForRange", () => {
       mixed: false,
     });
   });
+
+  it("detects a window fully enclosed by the range, touching neither endpoint", () => {
+    expect(phaseForRange("2026-08-05", "2026-09-25", sample)).toEqual({
+      phase: "classes",
+      mixed: true,
+    });
+  });
+
+  it("reports mixed when two distinct phases are both enclosed by the range", () => {
+    expect(phaseForRange("2026-08-15", "2026-09-25", sample)).toEqual({
+      phase: "classes",
+      mixed: true,
+    });
+  });
+
+  it("reports a single phase when the whole range sits inside one window", () => {
+    expect(phaseForRange("2026-08-05", "2026-09-10", sample)).toEqual({
+      phase: "classes",
+      mixed: false,
+    });
+  });
+
+  it("handles unknown start with a known end phase", () => {
+    expect(phaseForRange("2026-10-01", "2026-12-25", sample)).toEqual({
+      phase: "break",
+      mixed: true,
+    });
+  });
+
+  it("returns unknown and unmixed against an empty calendar", () => {
+    expect(phaseForRange("2026-08-01", "2026-08-07")).toEqual({
+      phase: "unknown",
+      mixed: false,
+    });
+  });
 });
