@@ -126,8 +126,10 @@ export function phaseForRange(
           : currentEnd;
     }
 
-    // Check if the range extends beyond all windows (gaps at the end)
-    if (!hasCoverageGap && endPhDate > dayAfter(currentEnd)) {
+    // Check if the range extends beyond all windows (gaps at the end).
+    // Note: no dayAfter() here—this compares a window boundary against the query's
+    // own fixed edge, not window-to-window adjacency.
+    if (!hasCoverageGap && endPhDate > currentEnd) {
       hasCoverageGap = true;
     }
   }

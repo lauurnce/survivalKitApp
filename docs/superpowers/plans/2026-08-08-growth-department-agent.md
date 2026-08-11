@@ -877,8 +877,10 @@ export function phaseForRange(
           : currentEnd;
     }
 
-    // Check if the range extends beyond all windows (gaps at the end)
-    if (!hasCoverageGap && endPhDate > dayAfter(currentEnd)) {
+    // Check if the range extends beyond all windows (gaps at the end).
+    // Note: no dayAfter() here—this compares a window boundary against the query's
+    // own fixed edge, not window-to-window adjacency.
+    if (!hasCoverageGap && endPhDate > currentEnd) {
       hasCoverageGap = true;
     }
   }
@@ -910,10 +912,12 @@ export function phaseForRange(
 }
 
 /**
- * NOTE: This implementation (round 2 fix):
+ * NOTE: This implementation incorporates three fix rounds:
  * 1. Detects windows fully enclosed by the range (not touching endpoints).
- * 2. Uses dayAfter() to properly distinguish adjacent windows from real gaps.
- * 3. Returns the chronologically first known phase, not declaration order.
+ * 2. dayAfter() is used ONLY for window-to-window adjacency at line 117.
+ *    The tail-of-range check (line 132) uses plain > to catch exact 1-day gaps.
+ * 3. Returns the chronologically first known phase (sorted by startPhDate),
+ *    not declaration order (using sorted[0]?.phase, never Array.from(phases)).
  * The owner has ruled this scanning version as governing.
  */
 ```

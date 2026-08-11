@@ -95,20 +95,38 @@ describe("phaseForRange", () => {
     });
   });
 
-  it("calendar declared out of order with unknown start and two phases", () => {
-    // Calendar windows are declared out of chronological order. Start is
-    // unknown (in a gap), and two phases are enclosed. The fix ensures we
-    // use chronologically-sorted windows to find the first known phase,
-    // not declaration order.
+  it("calendar declared out of order returns chronologically first phase", () => {
+    // Calendar windows are declared out of chronological order (midterms before
+    // classes), but both overlap the query range. The fix ensures we use
+    // chronologically-sorted windows to find the first known phase (classes,
+    // which starts 2026-08-01), not declaration order (midterms, declared first).
     const outOfOrder: readonly TermWindow[] = [
-      { phase: "finals", startPhDate: "2026-10-15", endPhDate: "2026-10-25" },
-      { phase: "classes", startPhDate: "2026-08-01", endPhDate: "2026-09-20" },
       { phase: "midterms", startPhDate: "2026-09-21", endPhDate: "2026-09-27" },
+      { phase: "classes", startPhDate: "2026-08-01", endPhDate: "2026-09-20" },
     ];
-    // Query range starts in a gap (after midterms, before finals) and spans
-    // to include finals. Both phases are present, start is unknown.
-    expect(phaseForRange("2026-10-01", "2026-10-30", outOfOrder)).toEqual({
-      phase: "finals",
+    // Query spans both windows; there is a gap at the end (2026-09-28 to 2026-10-05).
+    // Both phases present, so mixed: true. Returned phase is "classes" because it is
+    // chronologically first (starts 2026-08-01), despite being declared second.
+    expect(phaseForRange("2026-07-25", "2026-10-05", outOfOrder)).toEqual({
+      phase: "classes",
+      mixed: true,
+    });
+  });
+
+  it("exact 1-day tail gap is detected (regression for Bug 1)", () => {
+    // Query ends exactly 1 day after the last window. This is an uncovered day,
+    // so "unknown" must be in the phase set and mixed must be true.
+    // Bug 1 used dayAfter() on the tail check, which swallowed this exact case.
+    expect(
+      phaseForRange("2026-08-05", "2026-09-21", [
+        {
+          phase: "classes",
+          startPhDate: "2026-08-01",
+          endPhDate: "2026-09-20",
+        },
+      ])
+    ).toEqual({
+      phase: "classes",
       mixed: true,
     });
   });
