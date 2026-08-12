@@ -36,7 +36,7 @@ migrations applied before this one):
   function, but if it is missing, apply it first so the two `growth_*`
   aggregates land in the order they were written.
 
-## Step 1 — red: confirm the function and index do not exist yet
+## Step 1 — red: confirm the function does not exist yet
 
 ```sql
 select proname from pg_proc where proname = 'growth_funnel_agg';
@@ -46,56 +46,12 @@ Expected (before migration): 0 rows.
 
 Result: ☐ not yet run
 
-```sql
-select indexname from pg_indexes where indexname = 'events_type_created_idx';
-```
-
-Expected (before migration): 0 rows.
-
-Result: ☐ not yet run
-
-## Step 2 — baseline timing: `explain analyze` before the index exists
-
-Before applying the migration, get the current PH week's window boundaries:
-
-```bash
-npx tsx -e "
-import { phWeekWindows } from './lib/reports/phWeek';
-const [current] = phWeekWindows(new Date(), 1);
-console.log(current.sinceIso, current.untilIso);
-"
-```
-
-Substitute the two printed timestamps for `<since>` / `<until>` below and run
-this in the SQL editor. It reproduces the `steps` CTE's shape (a windowed
-scan of `events` sliced by `event_type`) without requiring the function to
-exist yet:
-
-```sql
-explain analyze
-select
-  count(distinct device_id) filter (where event_type = 'enter')                as enter,
-  count(distinct device_id) filter (where event_type = 'subject_open'
-                                      and subject_id is not null)              as subject_open,
-  count(distinct device_id) filter (where event_type = 'subscribe_click')      as subscribe_click,
-  count(distinct device_id)                                                    as any_event
-from events
-where created_at >= '<since>'
-  and created_at <  '<until>';
-```
-
-Record the plan's scan type and its "Execution Time" line. The scan type
-matters more than the millisecond figure — record both, but the number
-itself is not sensitive (it says nothing about traffic volume, only query
-cost) and may be written here:
-
-Result: ☐ not yet run — scan type: ☐ Seq Scan ☐ Index Scan ☐ Bitmap Heap Scan ☐ other: __________ — execution time: __________ ms
-
-## Step 3 — apply the migration
+## Step 2 — apply the migration
 
 Paste the full contents of `20260808000001_growth_funnel_agg.sql` into the
 Supabase Studio SQL editor (connected as `postgres`, which is how the SQL
-editor connects by default) and run it.
+editor connects by default) and run it. This migration adds no new index —
+it is the function definition only.
 
 **Record the date this was actually run**, in `YYYY-MM-DD` form:
 
@@ -111,26 +67,61 @@ actual role here instead of assuming:
 
 Result: ☐ not yet run — role that created the function: __________
 
-Re-running the migration a second time must succeed with no errors: `create
-index if not exists` is a no-op on the second run, the function body uses
-`create or replace function`, and the trailing `revoke`/`grant` statements
-are unconditional and idempotent by nature.
+Re-running the migration a second time must succeed with no errors: the
+function body uses `create or replace function`, and the trailing
+`revoke`/`grant` statements are unconditional and idempotent by nature.
 
 Result: ☐ not yet run
 
-## Step 4 — timing after the index exists
+## Step 3 — confirm the query plan matches what the function actually scans
 
-Re-run the **exact same** `explain analyze` query from Step 2, with the same
-`<since>` / `<until>` values, now that `events_type_created_idx` exists:
+This migration adds no new index. `growth_funnel_agg`'s `windowed` CTE
+filters only on `created_at` (`>= p_since and < p_until`) — the pre-existing
+`idx_events_created (created_at desc)` index (`001_initial_schema.sql`)
+already covers that predicate. `event_type` is applied afterward, inside the
+`steps` CTE's aggregate `FILTER (...)` clauses: a `FILTER` clause restricts
+which rows get counted into which bucket, not which rows the scan reads off
+disk, so an index leading with `event_type` would not narrow this scan —
+`steps` also computes an unfiltered `any_event` count, so every row in the
+window has to be visited regardless of its type. The `dead` CTE has no
+`WHERE` clause at all: it is deliberately all-time (see the migration's
+comment), so it always reads every row in `events`, independent of any
+index.
 
-Result: ☐ not yet run — scan type: ☐ Seq Scan ☐ Index Scan ☐ Bitmap Heap Scan ☐ other: __________ — execution time: __________ ms — faster than Step 2: ☐ yes ☐ no ☐ about the same
+Get the current PH week's window boundaries:
 
-Table size determines whether the planner switches plans at all: on a small
-table, Postgres may keep choosing a Seq Scan in both steps, and that is not
+```bash
+npx tsx -e "
+import { phWeekWindows } from './lib/reports/phWeek';
+const [current] = phWeekWindows(new Date(), 1);
+console.log(current.sinceIso, current.untilIso);
+"
+```
+
+Substitute the two printed timestamps for `<since>` / `<until>` below and run
+this in the SQL editor — it reproduces exactly what the `windowed` CTE scans,
+with no `event_type` predicate:
+
+```sql
+explain analyze
+select device_id, event_type, subject_id
+from events
+where created_at >= '<since>'
+  and created_at <  '<until>';
+```
+
+Record the plan's scan type and its "Execution Time" line. A healthy plan
+uses `idx_events_created` — an `Index Scan` or `Bitmap Heap Scan` naming it
+in the plan — to locate the window's rows and then reads each one; there is
+no further predicate left to filter by, so this is a range read, not a
+narrow lookup. On a table small enough that Postgres judges reading
+everything to be cheaper than consulting the index, a `Seq Scan` is not
 itself a failure — record what the plan actually says rather than assuming
-an Index Scan appears.
+an `Index Scan` appears:
 
-## Step 5 — green: the function exists and returns the contracted shape
+Result: ☐ not yet run — scan type: ☐ Seq Scan ☐ Index Scan ☐ Bitmap Heap Scan ☐ other: __________ — index named in the plan (if any): __________ — execution time: __________ ms
+
+## Step 4 — green: the function exists and returns the contracted shape
 
 ```bash
 npx tsx -e "
@@ -166,12 +157,13 @@ actual number here:
 - ☐ `dead_events.unlock_click_rows`
 - ☐ `dead_events.unlock_submitted_rows`
 - ☐ `dead_events.dead_last_seen` — ISO timestamp or `null` (`null` only if
-  neither dead event type has ever been recorded, which given Step 6 below
-  should not be the case)
+  neither dead event type has ever been recorded — Observation 2 in Step 8
+  below expects both row counts to be non-zero, which would make `null` here
+  unexpected)
 
 Result: ☐ not yet run
 
-## Step 6 — THE PERMISSION CHECK. Do not skip this one.
+## Step 5 — THE PERMISSION CHECK. Do not skip this one.
 
 This is the most important check in this document. The migration ends with:
 
@@ -217,19 +209,19 @@ this step until it prints an error, not `NONE`.
 
 Result: ☐ not yet run — anon call rejected: ☐ yes (error printed) ☐ NO — printed `NONE` (unresolved problem)
 
-## Step 7 — confirm the service role can call it
+## Step 6 — confirm the service role can call it
 
 This is how report collectors will actually reach this RPC (see
 `scripts/reports/supabaseAdmin.ts`, which uses the service-role key
 specifically because these aggregates are granted to `service_role` alone).
-This is the same call as Step 5 — if Step 5 already printed `ok: true` and
+This is the same call as Step 4 — if Step 4 already printed `ok: true` and
 `error: null`, this step is already satisfied and needs no separate run:
 
-Result: ☐ not yet run — same result as Step 5: ☐ yes
+Result: ☐ not yet run — same result as Step 4: ☐ yes
 
-## Step 8 — the window is half-open
+## Step 7 — the window is half-open
 
-Run the Step 5 script twice in the same process, once for the current PH
+Run the Step 4 script twice in the same process, once for the current PH
 week and once for the previous one:
 
 ```bash
@@ -259,9 +251,9 @@ passed through unchanged.
 
 Result: ☐ not yet run — all three lines print `true`: ☐ yes ☐ no (list which line failed: __________)
 
-## Step 9 — record the three funnel-shape observations, described not quoted
+## Step 8 — record the three funnel-shape observations, described not quoted
 
-Using the Step 5 output, record only the *relationship* between values below
+Using the Step 4 output, record only the *relationship* between values below
 — never the values themselves, which belong solely in a report collector's
 output under `docs/reports/growth/.data/` (gitignored), not in this tracked
 file.
@@ -279,18 +271,29 @@ that way.
 
 Result: ☐ not yet run — `subject_open_any` vs `subject_open`: ☐ greater (expected) ☐ equal (investigate — do not proceed) ☐ less (should not be possible — investigate)
 
-**Observation 2 — dead-event evidence.** Using the Step 5 output's
+**Observation 2 — dead-event evidence.** Using the Step 4 output's
 `dead_events` object: confirm `unlock_click_rows` and `unlock_submitted_rows`
 are both non-zero (there is historical data — these types were live before
-the pivot), and that `dead_last_seen` is a timestamp earlier than
-2026-06-23, the date the `subscriptions` table's migration
-(`20260623100000_subscriptions.sql`) landed — the closest dated proxy in
-this repo for when the subscription pivot took effect. A `dead_last_seen`
-at or after that date would mean something is still emitting one of these
-two event types post-pivot, which contradicts the "dead event" finding and
-must be investigated, not waved through.
+the pivot).
 
-Result: ☐ not yet run — both row counts non-zero: ☐ yes ☐ no — `dead_last_seen` before 2026-06-23: ☐ yes ☐ no (investigate if no)
+Treat 2026-06-23 — the date `subscriptions`'s migration
+(`20260623100000_subscriptions.sql`) landed — only as a **lower bound**, not
+a cutoff. `20260706150000_events_widen_type_add_attribution.sql`'s own
+comment records that `subscribe_click`, `paywall_teaser_view`, and
+`paywall_teaser_click` inserts were silently rejected by the live DB
+constraint from launch until that migration landed on **2026-07-06**, two
+weeks after `subscriptions` itself. So a `dead_last_seen` anywhere in the
+**2026-06-23 → 2026-07-06 window is plausible and not itself alarming**: the
+client's switch-over away from the old unlock flow had no reason to be
+instantaneous with either migration landing, and the new funnel events
+were not even acceptable to the database for those two weeks. Only a
+`dead_last_seen` **after 2026-07-06** — once the widened constraint made the
+live funnel fully insertable — means something is still emitting one of
+these two dead event types after the pivot was actually in place, which
+would contradict the "dead event" finding and must be investigated, not
+waved through.
+
+Result: ☐ not yet run — both row counts non-zero: ☐ yes ☐ no — `dead_last_seen` on or before 2026-07-06: ☐ yes ☐ no (investigate if no) — falls within 2026-06-23 → 2026-07-06 specifically: ☐ yes ☐ no ☐ n/a (before 2026-06-23)
 
 **Observation 3 — `steps.any_event` vs `steps.enter`.** `any_event` counts
 every device that emitted anything in the window; `enter` counts only
@@ -302,12 +305,12 @@ smaller.
 
 Result: ☐ not yet run — `any_event` >= `enter`: ☐ yes ☐ no (should not be possible — investigate)
 
-## Step 10 — hand off to Task 11
+## Step 9 — hand off to Task 11
 
-If Observation 2 above holds (both dead-event row counts non-zero, last seen
-before the pivot date), that is the evidence Task 11's admin-dashboard repair
-needs to justify removing `unlock_click` / `unlock_submitted` as rendered
-live funnel steps (`app/admin/page.tsx:29-30`,
+If Observation 2 above holds (both dead-event row counts non-zero,
+`dead_last_seen` on or before 2026-07-06), that is the evidence Task 11's
+admin-dashboard repair needs to justify removing `unlock_click` /
+`unlock_submitted` as rendered live funnel steps (`app/admin/page.tsx:29-30`,
 `components/AdminDashboard.tsx:867-868`). Note here only that the evidence
 was produced, not the figures themselves:
 
