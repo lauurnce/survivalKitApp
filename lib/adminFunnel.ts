@@ -8,8 +8,12 @@
  * lib/supabase/types.ts — removing them from those is a separate, riskier change
  * — but nothing may display them as live steps.
  *
- * The colocated test scans app/ and components/ and asserts every type here is
- * actually emitted, so this cannot rot the same way twice.
+ * The colocated test scans app/, components/, AND lib/ and asserts every type
+ * here is actually emitted, so this cannot rot the same way twice. lib/ is
+ * required, not incidental: section_view is emitted through the debounced
+ * logSectionView wrapper in lib/analytics.ts, not a direct logEvent(...) call
+ * at the component call site — narrowing the scan back to app/+components/
+ * would silently un-guard that step.
  */
 
 import type { EventType } from "./supabase/types";
