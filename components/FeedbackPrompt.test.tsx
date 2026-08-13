@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
+import { act, render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import { FeedbackPrompt } from './FeedbackPrompt';
 
 vi.mock('@/lib/device', () => ({
@@ -14,12 +14,40 @@ function fillAndSubmit() {
   fireEvent.click(screen.getByRole('button', { name: /submit/i }));
 }
 
+function mockSuccess() {
+  global.fetch = vi.fn(async () =>
+    new Response(
+      JSON.stringify({
+        id: 'f1',
+        coupon_code: null,
+        coupon_expires_at: null,
+        is_quality_approved: true,
+        message: 'Thanks for your feedback!',
+      }),
+      { status: 200 }
+    )
+  ) as unknown as typeof fetch;
+}
+
 afterEach(() => {
   cleanup();
+  vi.useRealTimers();
   vi.restoreAllMocks();
 });
 
 describe('FeedbackPrompt', () => {
+  it('renders as an inline card with no dimmed backdrop', () => {
+    const { container } = render(
+      <FeedbackPrompt isOpen moduleId="m1" moduleTitle="Lesson 1" onClose={() => {}} />
+    );
+
+    expect(container.querySelector('.fixed')).toBeNull();
+    expect(screen.getByText(/you just finished/i)).toBeInTheDocument();
+    expect(screen.getByText('Lesson 1')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /not now/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^cancel$/i })).not.toBeInTheDocument();
+  });
+
   it('shows an inline error on 409 instead of alerting', async () => {
     global.fetch = vi.fn(async () =>
       new Response(
@@ -59,5 +87,49 @@ describe('FeedbackPrompt', () => {
     await waitFor(() =>
       expect(screen.getByText(/Sign in next time/i)).toBeInTheDocument()
     );
+  });
+
+  it('closes itself three seconds after a successful submit', async () => {
+    vi.useFakeTimers();
+    mockSuccess();
+    const onClose = vi.fn();
+
+    render(<FeedbackPrompt isOpen moduleId="m1" onClose={onClose} />);
+    fillAndSubmit();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    expect(screen.getByText(/thanks for your feedback/i)).toBeInTheDocument();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(3000);
+    });
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not fire its auto-close after the reader leaves the page', async () => {
+    vi.useFakeTimers();
+    mockSuccess();
+    const onClose = vi.fn();
+
+    const view = render(<FeedbackPrompt isOpen moduleId="m1" onClose={onClose} />);
+    fillAndSubmit();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    expect(screen.getByText(/thanks for your feedback/i)).toBeInTheDocument();
+
+    // The reader taps "Up next" a second after submitting.
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1000);
+    });
+    view.unmount();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(10_000);
+    });
+
+    expect(onClose).not.toHaveBeenCalled();
   });
 });
