@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { fetchCompletedModules, setModuleCompleted } from "@/lib/progress";
 import { ShareProgressCard } from "@/components/share/ShareProgressCard";
+import { useModuleCompletion } from "@/hooks/useModuleCompletion";
 
 interface ShareContext {
   subjectId: string;
@@ -30,6 +31,7 @@ export function ModuleDoneToggle({ moduleId, share }: Props) {
   const [prompt, setPrompt] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const promptTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { notifyCompleted } = useModuleCompletion();
 
   useEffect(() => {
     let active = true;
@@ -66,7 +68,10 @@ export function ModuleDoneToggle({ moduleId, share }: Props) {
     setPending(false);
 
     // Celebrate only confirmed completions (not un-marks, not failures).
-    if (share && result === true) showPrompt();
+    if (result === true) {
+      notifyCompleted();
+      if (share) showPrompt();
+    }
   }
 
   return (
