@@ -7,16 +7,26 @@
 -- Referrers are stored as full URLs, so they are reduced to a host here.
 -- Fifty distinct deep links from one platform are one source, not fifty.
 
--- Supports the `enters` CTE just below: it filters `events` on
--- `event_type = 'enter'` AND a `created_at` range in the same WHERE clause,
--- before any aggregation happens. That is unlike growth_funnel_agg's
--- `windowed` CTE, where event_type only ever appears inside aggregate
--- FILTER clauses — filtering rows already read off disk, not narrowing the
--- scan itself. Here event_type gates the scan directly, so a composite
--- (event_type, created_at desc) index actually reduces what gets read.
--- `if not exists` because Task 8's `opens` CTE needs this identical index
--- and creates it again in its own migration; whichever migration runs
--- second finds it already there and does nothing.
+-- This migration is the SOLE creator of events_type_created_idx. No other
+-- migration creates it — confirmed by grepping
+-- 20260808000003_growth_retention_agg.sql, which consumes it but does not
+-- create it (see below).
+--
+-- It has two consumers. This file's `enters` CTE just below filters
+-- `events` on `event_type = 'enter'` AND a `created_at` range in the same
+-- WHERE clause, before any aggregation happens — a composite
+-- (event_type, created_at desc) index narrows that scan directly.
+-- `growth_content_agg`'s `opens` CTE in
+-- 20260808000003_growth_retention_agg.sql filters the identical shape
+-- (`event_type = 'module_open'` AND a `created_at` range against the base
+-- table) and relies on this same index existing, without creating it
+-- itself. `growth_funnel_agg`'s `windowed` CTE looked like a candidate
+-- consumer too, but its event_type predicates live only inside aggregate
+-- FILTER clauses, which restrict which already-scanned rows get counted,
+-- not which rows the scan reads — that mismatch is why the index was
+-- removed from that migration (commit af9ffc7) and landed here instead.
+-- `if not exists` is kept for safety if this migration is ever re-applied,
+-- not because a second migration also creates this index — none does.
 create index if not exists events_type_created_idx
   on events (event_type, created_at desc);
 
@@ -43,9 +53,13 @@ as $$
     -- search or a linked profile.
     'no_referrer', (select count(*) from enters
                       where referrer is null or referrer = ''),
+    -- Capped distributions below are wrapped as { rows, total_groups } so a
+    -- reader can tell "top 15 of 15" (complete) from "top 15 of 40"
+    -- (truncated) rather than the bare array implying completeness either
+    -- way. total_groups is the number of groups the GROUP BY would have
+    -- produced with no LIMIT applied.
     'by_referrer_host', (
-      select json_agg(row_to_json(t))
-      from (
+      with hosts as (
         select
           coalesce(
             nullif(split_part(split_part(referrer, '://', 2), '/', 1), ''),
@@ -54,33 +68,46 @@ as $$
           count(*)::int as count
         from enters
         group by 1
-        order by count desc
-        limit 15
-      ) t
+      )
+      select json_build_object(
+        'rows', (
+          select json_agg(row_to_json(t))
+          from (select host, count from hosts order by count desc limit 15) t
+        ),
+        'total_groups', (select count(*)::int from hosts)
+      )
     ),
     'by_utm_source', (
-      select json_agg(row_to_json(t))
-      from (
+      with sources as (
         select
           coalesce(utm_source, '(none)') as utm_source,
           coalesce(utm_medium, '(none)') as utm_medium,
           count(*)::int as count
         from enters
         group by 1, 2
-        order by count desc
-        limit 15
-      ) t
+      )
+      select json_build_object(
+        'rows', (
+          select json_agg(row_to_json(t))
+          from (select utm_source, utm_medium, count from sources order by count desc limit 15) t
+        ),
+        'total_groups', (select count(*)::int from sources)
+      )
     ),
     'by_utm_campaign', (
-      select json_agg(row_to_json(t))
-      from (
+      with campaigns as (
         select utm_campaign, count(*)::int as count
         from enters
         where utm_campaign is not null
         group by utm_campaign
-        order by count desc
-        limit 15
-      ) t
+      )
+      select json_build_object(
+        'rows', (
+          select json_agg(row_to_json(t))
+          from (select utm_campaign, count from campaigns order by count desc limit 15) t
+        ),
+        'total_groups', (select count(*)::int from campaigns)
+      )
     )
   );
 $$;
@@ -136,8 +163,7 @@ as $$
       ) t
     ),
     'by_subject', (
-      select json_agg(row_to_json(t))
-      from (
+      with subject_rows as (
         select
           s.title as subject_title,
           y.label as year_label,
@@ -145,16 +171,39 @@ as $$
             where w.event_type = 'module_open')::int          as module_open_devices,
           count(distinct w.device_id) filter (
             where w.event_type = 'paywall_teaser_view')::int  as paywall_devices,
+          -- NOT all paid devices for this subject — whole-year-plan payments
+          -- have subject_id IS NULL (20260624120000_payments_ledger.sql:11)
+          -- and can never match pd.subject_id = s.id, so this equality
+          -- excludes them BY CONSTRUCTION. isSubscribed() (lib/subscriptions.ts)
+          -- treats a null-subject year plan as unlocking every subject in
+          -- that year, so those payers are real conversions, just not
+          -- attributable to one subject out of the ~30 a year plan unlocks —
+          -- attributing one payment across all of them would inflate every
+          -- subject's count into a meaningless number. They are not missing:
+          -- by_year.paid_devices (above) counts them correctly, because that
+          -- join is on year_id, which a payment always has. Hence the name:
+          -- this counts only devices whose paid plan was scoped to this one
+          -- subject.
           (select count(distinct pd.device_id)
-             from paid_devices pd where pd.subject_id = s.id)::int as paid_devices
+             from paid_devices pd where pd.subject_id = s.id)::int as subject_plan_paid_devices
         from subjects s
         join years y on y.id = s.year_id
         left join windowed w on w.subject_id = s.id
         group by s.id, s.title, y.label
         having count(w.device_id) > 0
-        order by module_open_devices desc
-        limit 25
-      ) t
+      )
+      select json_build_object(
+        'rows', (
+          select json_agg(row_to_json(t))
+          from (
+            select subject_title, year_label, module_open_devices, paywall_devices, subject_plan_paid_devices
+            from subject_rows
+            order by module_open_devices desc
+            limit 25
+          ) t
+        ),
+        'total_groups', (select count(*)::int from subject_rows)
+      )
     )
   );
 $$;

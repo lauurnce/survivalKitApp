@@ -206,29 +206,46 @@ shape — do not write the actual number or any array contents here:
 - ☐ `devices` — a number, `<= enters` (a device can enter more than once in
   a window)
 - ☐ `no_referrer` — a number, `<= enters`
-- ☐ `by_referrer_host` — an array (or `null` if `enters` is 0) of objects
-  with `host` (string) and `count` (number) keys, at most 15 entries
-- ☐ `by_utm_source` — an array (or `null` if `enters` is 0) of objects with
-  `utm_source`, `utm_medium`, `count` keys, at most 15 entries
-- ☐ `by_utm_campaign` — an array (or `null` if no `enters` row has a
-  non-null `utm_campaign`) of objects with `utm_campaign`, `count` keys, at
-  most 15 entries
+- ☐ `by_referrer_host` — an **object** (not a bare array — see below) with
+  `rows` (an array of at most 15 `{host, count}` objects, or `null` if
+  `enters` is 0) and `total_groups` (a number: the count of distinct hosts
+  the window produced, computed *without* the 15-row cap)
+- ☐ `by_utm_source` — an object with `rows` (at most 15 `{utm_source,
+  utm_medium, count}` objects, or `null` if `enters` is 0) and
+  `total_groups` (number, uncapped)
+- ☐ `by_utm_campaign` — an object with `rows` (at most 15 `{utm_campaign,
+  count}` objects, or `null` if no `enters` row has a non-null
+  `utm_campaign`) and `total_groups` (number, uncapped)
 
 `growth_segment_agg`'s `data` is a single object with exactly two top-level
 keys:
 
 - ☐ `by_year` — an array with **one row per row in the `years` table**
-  (see Step 6 below for why this count matters), each an object with
+  (see Step 7 below for why this count matters), each an object with
   `year_label` (string), `module_open_devices` (number), `paywall_devices`
   (number), `paid_devices` (number) keys
-- ☐ `by_subject` — an array of at most 25 objects, each with `subject_title`
-  (string), `year_label` (string), `module_open_devices` (number),
-  `paywall_devices` (number), `paid_devices` (number) keys — subjects with
-  zero activity in the window are correctly absent here (the query's
-  `having count(w.device_id) > 0` excludes them on purpose; this is not the
-  same guarantee Step 6 checks for `by_year`)
+- ☐ `by_subject` — an object with `rows` (an array of at most 25 objects,
+  each with `subject_title` (string), `year_label` (string),
+  `module_open_devices` (number), `paywall_devices` (number), and
+  **`subject_plan_paid_devices`** (number — NOT the same population as
+  `by_year.paid_devices`; see Step 8 below before quoting this figure
+  anywhere) keys) and `total_groups` (number: the count of subjects with
+  any activity in the window, i.e. after the query's own `having
+  count(w.device_id) > 0` filter but before the 25-row cap — subjects with
+  zero activity are excluded from `total_groups` too, on purpose; this is
+  not the same "never drops a row" guarantee Step 7 checks for `by_year`)
 
-Result: ☐ not yet run
+**The relationship every capped distribution above must satisfy:**
+`total_groups >= length(rows ?? [])`, with equality meaning the cap did not
+truncate anything (15-or-fewer groups for the three acquisition
+distributions, 25-or-fewer active subjects for `by_subject`). A
+`total_groups` smaller than the row count is impossible and means the two
+subqueries have diverged — investigate, do not record as fine.
+
+Result: ☐ not yet run — `total_groups >= length(rows ?? [])` holds for all
+four capped distributions (`by_referrer_host`, `by_utm_source`,
+`by_utm_campaign`, `by_subject`): ☐ yes for all four ☐ no (name which key
+failed: __________)
 
 ## Step 5 — THE PERMISSION CHECK. Do not skip this one.
 
@@ -326,19 +343,54 @@ this check if every year had activity in the window):
 
 Result: ☐ not yet run — n/a (every year had activity) ☐ confirmed a quiet year shows zeroes, not absence ☐ a quiet year is missing from the array (fails the check above)
 
-## Step 8 — the referrer host is a bare hostname, never a URL
+## Step 8 — `by_subject.rows[].subject_plan_paid_devices` is not comparable to `by_year.paid_devices`
 
-Using the Step 4 output's `by_referrer_host` array (skip this step if it is
-`null` because `enters` was 0 for the window): every `host` value must be a
-bare hostname or the literal string `(none)` — no `https://` scheme prefix,
-no path, no query string. A row still containing `://` or a `/` means
-`split_part(split_part(referrer, '://', 2), '/', 1)` did not match the
-stored format for that row, and needs fixing before the interpreter agent
-starts reading it as a source name.
+This is a documented semantic gap, not a bug, and it must be understood
+before either figure is quoted anywhere. `payments.subject_id` is `NULL`
+for a whole-year-plan purchase (`20260624120000_payments_ledger.sql:11`),
+and `isSubscribed()` (`lib/subscriptions.ts`) treats that null-subject year
+plan as unlocking every subject in the year — a year-plan payer is a real
+conversion. `by_year.paid_devices` joins its `paid_devices` CTE on
+`year_id`, which every payment row has (whether year-plan or
+subject-plan), so it counts year-plan payers correctly. `by_subject.rows[].
+subject_plan_paid_devices` joins the same CTE on `subject_id`, which a
+year-plan payment never has — so that payment is excluded from *every*
+subject's count by construction, not lost or undercounted. That is also
+why the key is named `subject_plan_paid_devices` rather than
+`paid_devices`: attributing one year-plan payment across the ~30 subjects
+it unlocks would inflate every one of those subjects' conversion counts
+into a number nobody could act on.
 
-Result: ☐ not yet run — n/a (`by_referrer_host` was null) ☐ every host value is bare (no scheme, no path) ☐ at least one host value still contains `://` or `/` (investigate — list one example format, not the actual host: __________)
+The falsifiable consequence: summing `subject_plan_paid_devices` across
+every row in `by_subject.rows` that belongs to a given year will, in
+general, be **less than** that year's `by_year.paid_devices` — by exactly
+the number of whole-year-plan payers active in the window. That gap is
+expected, not evidence of an undercount. The two figures should never be
+added together or presented as if one decomposes into the other.
 
-## Step 9 — the window is half-open
+There is no query to run for this step — it is a comprehension check on
+the two functions' output, not a database check. Confirm you understand
+the above before this migration's `by_subject` figures are used in any
+report or dashboard:
+
+Result: ☐ not yet run — understood: `subject_plan_paid_devices` and
+`by_year.paid_devices` measure different (non-summable) populations, and
+`subject_plan_paid_devices` undercounting `by_year.paid_devices`'s
+year-plan share is expected, not a defect: ☐ yes
+
+## Step 9 — the referrer host is a bare hostname, never a URL
+
+Using the Step 4 output's `by_referrer_host.rows` array (skip this step if
+it is `null` because `enters` was 0 for the window): every `host` value
+must be a bare hostname or the literal string `(none)` — no `https://`
+scheme prefix, no path, no query string. A row still containing `://` or a
+`/` means `split_part(split_part(referrer, '://', 2), '/', 1)` did not
+match the stored format for that row, and needs fixing before the
+interpreter agent starts reading it as a source name.
+
+Result: ☐ not yet run — n/a (`by_referrer_host.rows` was null) ☐ every host value is bare (no scheme, no path) ☐ at least one host value still contains `://` or `/` (investigate — list one example format, not the actual host: __________)
+
+## Step 10 — the window is half-open
 
 Run the Step 4 script twice in the same process, once for the current PH
 week and once for the previous one, and confirm the `since`/`until` values
