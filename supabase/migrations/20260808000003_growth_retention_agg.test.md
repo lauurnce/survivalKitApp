@@ -95,6 +95,19 @@ before this one, but this migration does not depend on it existing to
 apply successfully — only Step 3's `growth_content_agg` plan discussion
 below depends on it.**
 
+**Each function's `revoke`/`grant` pair sits immediately after its own
+`create or replace function` in this file, not batched at the end.**
+Postgres default-grants `EXECUTE` on a newly created function to `PUBLIC`,
+so if this paste is not applied atomically and a later statement in the
+file errors — for instance the `waitlist.year_label`/`subject_title` drift
+flagged above tripping up `growth_demand_agg` — a batched-at-the-end layout
+would leave every function created *before* the error briefly exposed to
+the public anon key for the rest of the run. Interleaving means each
+function's own `revoke` runs in the very next statement after its `create`,
+so no failure elsewhere in the file can leave an already-created function
+unrevoked. **This does not remove the need for Step 5 — it only shrinks the
+exposure window. Read Step 5a below regardless of how Step 2 goes.**
+
 **Record the date this was actually run**, in `YYYY-MM-DD` form:
 
 Result: ☐ not yet run — date applied: __________
@@ -248,37 +261,66 @@ underlying JSON — do not write the actual values here:
 - ☐ `cohorts` — array of objects, each with `cohort_week` (date string),
   `size`, `returned_week_1`, `returned_week_2` (all numbers)
 
-**`growth_content_agg`** — a JSON array (not an object) of up to `p_limit`
-rows, each with:
-- ☐ `module_title`
-- ☐ `subject_title`
-- ☐ `open_devices`
-- ☐ `completed_devices` (never null — `coalesce`d to 0)
+**`growth_content_agg`** — object with exactly two top-level keys (NOT a
+bare array — this changed in fix round 1):
+- ☐ `rows` — array of up to `p_limit` objects, each with `module_title`,
+  `subject_title`, `open_devices`, `completed_devices` (never null —
+  `coalesce`d to 0)
+- ☐ `total_groups` — number, the count of modules with at least one
+  `module_open` in the window, before the `p_limit` cap
+
+Concrete relationship to check: `total_groups >= rows.length` always;
+equal only when the window had `p_limit` or fewer modules with any opens
+(nothing was actually truncated):
+
+Result: ☐ not yet run — `total_groups >= rows.length`: ☐ yes ☐ no (should not be possible — investigate) — equal (nothing truncated) or greater (truncated): ☐ equal ☐ greater
 
 **`growth_demand_agg`** — object with exactly seven top-level keys:
 - ☐ `signups_window`
 - ☐ `signups_all_time`
-- ☐ `by_source`
-- ☐ `by_year`
-- ☐ `by_subject`
-- ☐ `willing_to_pay`
-- ☐ `by_device_type`
+- ☐ `by_source` — array (small bounded value set, never capped)
+- ☐ `by_year` — array (small bounded value set, never capped)
+- ☐ `by_subject` — object (NOT a bare array — this changed in fix round 1),
+  with:
+  - ☐ `rows` — array of up to 20 objects, each with `subject_title`,
+    `year_label`, `count`
+  - ☐ `total_groups` — number, the count of distinct
+    `(subject_title, year_label)` groups in the window, before the
+    hardcoded top-20 cap
+- ☐ `willing_to_pay` — array (small bounded value set, never capped)
+- ☐ `by_device_type` — array (small bounded value set, never capped)
 
 Result: ☐ not yet run — actual top-level key count on `growth_demand_agg` matches seven: ☐ yes ☐ no (list the discrepancy: __________)
+
+Concrete relationship to check on `by_subject`: `total_groups >=
+rows.length` always; equal only when there were 20 or fewer distinct
+subject/year groups in the window:
+
+Result: ☐ not yet run — `by_subject.total_groups >= by_subject.rows.length`: ☐ yes ☐ no (should not be possible — investigate) — equal (nothing truncated) or greater (truncated): ☐ equal ☐ greater
 
 **`growth_feedback_agg`** — object with exactly five top-level keys:
 - ☐ `rows_window`
 - ☐ `rows_all_time`
 - ☐ `avg_app_rating` (number or null — null only if `windowed` is empty)
 - ☐ `avg_module_rating` (number or null — null only if `windowed` is empty)
-- ☐ `recent` — array (see Step 9 for what it must NOT contain)
+- ☐ `recent` — object (NOT a bare array — this changed in fix round 1), with:
+  - ☐ `rows` — array of up to `p_limit` objects (see Step 9 for what each
+    object must NOT contain)
+  - ☐ `total_groups` — number, the count of rows in the window with
+    non-empty `feedback_text`, before the `p_limit` cap. **Distinct from
+    the sibling `rows_window` key above** — `rows_window` also counts rows
+    with blank `feedback_text`, which `recent.rows` excludes entirely, so
+    the two numbers are not expected to match even when nothing is
+    truncated.
 
-Result: ☐ not yet run
+Result: ☐ not yet run — `recent.total_groups >= recent.rows.length`: ☐ yes ☐ no (should not be possible — investigate) — equal (nothing truncated) or greater (truncated): ☐ equal ☐ greater
 
 ## Step 5 — THE PERMISSION CHECK. Do not skip this one.
 
-This is the most important check in this document. The migration ends with
-four `revoke`/`grant` pairs, one per function:
+This is the most important check in this document. The migration contains
+four `revoke`/`grant` pairs, one per function — as of fix round 1, each pair
+sits immediately after its own function definition (see Step 2) rather than
+batched at the end, but the statements themselves are unchanged:
 
 ```sql
 revoke execute on function growth_cohort_agg(int) from public, anon, authenticated;
@@ -358,6 +400,37 @@ Result: ☐ not yet run — `growth_content_agg` rejected: ☐ yes ☐ NO (unres
 Result: ☐ not yet run — `growth_demand_agg` rejected: ☐ yes ☐ NO (unresolved problem)
 Result: ☐ not yet run — `growth_feedback_agg` rejected: ☐ yes ☐ NO (unresolved problem)
 
+## Step 5a — run Step 5 even if Step 2 reported an error partway through
+
+**Do not skip this step just because Step 2's apply hit an error.** If the
+paste stopped partway — for example on the `waitlist.year_label` /
+`subject_title` drift described above — the functions defined *before* the
+failing statement were still created, each with its own `revoke`/`grant`
+already run right behind it (Step 2's fix round 1 change). That combination
+is exactly the state the rest of this checklist is blind to: `pg_proc` will
+show the function exists (Step 1's query, re-run, would now return it), but
+nothing in Steps 3–4 tells you whether its own `revoke` actually executed
+before the batch aborted. **The anon-rejection check in Step 5 is the only
+check in this entire document that can tell "created and revoked" apart
+from "created and still world-executable."**
+
+Run Step 5's script against **every function that exists** after Step 2,
+regardless of how many of the four were actually created. If only two of
+the four functions exist because the batch stopped early, run the anon
+check against those two — do not wait until all four exist to check any of
+them, and do not assume the two that exist are safe just because Step 2
+"mostly worked":
+
+```sql
+select proname from pg_proc
+where proname in (
+  'growth_cohort_agg', 'growth_content_agg',
+  'growth_demand_agg', 'growth_feedback_agg'
+);
+```
+
+Result: ☐ not yet run — functions that exist after Step 2: __________ — Step 5 (or its subset) re-run against exactly those: ☐ yes ☐ no
+
 ## Step 6 — confirm the service role can call all four
 
 This is how report collectors will actually reach these RPCs (see
@@ -394,33 +467,79 @@ to each date, or simply eyeball that each date's day-of-week is Monday):
 
 Result: ☐ not yet run — every `active_week` and `cohort_week` is a Monday: ☐ yes ☐ no (list any offending date's weekday, not the date's meaning: __________)
 
+## Step 7a — confirm `weekly_active` is trimmed to exactly the trailing p_weeks complete weeks
+
+**This is the fix round 1 correction — verify it concretely, not "about
+right."** Before the fix, the `weekly` CTE aggregated the unfiltered
+`activity` CTE, which spans `p_weeks + 2` weeks with no upper bound, so a
+call with `p_weeks = 8` returned roughly 10–11 buckets instead of 8,
+including a partial reading of the current, still-in-progress week. The fix
+adds two bounds to `weekly`: `active_week >= this_week_start - (p_weeks *
+7)` and `active_week < this_week_start`. The upper bound is what excludes
+the current partial week; without it the newest bucket would always look
+smaller than the one before it, for no reason connected to real engagement.
+
+**Concrete expected row count, derived from the boundary — not "about 8":**
+for `p_weeks = 8`, the two bounds admit exactly the eight Monday dates
+`this_week_start - 7, this_week_start - 14, ... , this_week_start - 56`
+(seven days apart, from 56 days back up to but not including 0 days back).
+`weekly_active` must therefore contain **at most 8 rows** — never more,
+because there are only 8 possible `active_week` values in range. It will
+contain fewer than 8 only if at least one of those 8 specific weeks had
+zero active devices platform-wide, which is itself worth a second look for
+a live product, not something to wave through as normal jitter:
+
+```sql
+select date_trunc('week', now() at time zone 'Asia/Manila')::date - (n * 7) as expected_active_week
+from generate_series(1, 8) as n
+order by expected_active_week desc;
+```
+
+Run this alongside the Step 4 `growth_cohort_agg` call (`p_weeks: 8`) and
+compare its 8 printed dates against the `active_week` values actually
+present in `weekly_active`:
+
+Result: ☐ not yet run — `weekly_active` row count: ☐ exactly 8 ☐ fewer than 8 (list which of the 8 expected weeks is missing — plausible only if that week had zero platform-wide activity) ☐ more than 8 (the trim is broken — investigate immediately, this is a hard ceiling)
+
+**Confirm the current partial week is absent, not just under-counted.** Get
+this week's Monday (`date_trunc('week', now() at time zone 'Asia/Manila')::date`,
+with no offset) and confirm that exact date does **not** appear as an
+`active_week` value anywhere in `weekly_active`, even if devices have been
+active today:
+
+Result: ☐ not yet run — current week's Monday absent from `weekly_active`: ☐ yes (correct — partial week excluded by design) ☐ no (the upper bound isn't working — investigate)
+
 ## Step 8 — confirm `growth_content_agg` actually returns rows
 
 This is the check that the `m.id::text = c.module_id` join in the
 `completions` CTE isn't silently matching zero rows (or that `opens ⋈
-modules ⋈ subjects` isn't itself empty). Using the Step 4 output for
+modules ⋈ subjects` isn't itself empty). Since fix round 1, `growth_content_agg`
+returns `{ rows: [...], total_groups: N }` (see Step 4) — this step checks
+the `rows` array specifically. Using the Step 4 output for
 `growth_content_agg`:
 
-Result: ☐ not yet run — array length > 0: ☐ yes ☐ no (investigate — either no `module_open` events landed in the window, or the `opens ⋈ modules` join is broken)
+Result: ☐ not yet run — `rows.length` > 0: ☐ yes ☐ no (investigate — either no `module_open` events landed in the window, or the `opens ⋈ modules` join is broken)
 
-If the array is non-empty, confirm at least one row has `completed_devices >
+If `rows` is non-empty, confirm at least one row has `completed_devices >
 0` (proves the `module_progress.module_id::text` cast actually matched a
 live row rather than every device merely finishing zero modules that week
-— a non-empty array with `completed_devices` uniformly 0 across every row is
-not itself a failure, since `module_progress` is written on a different
-event than `module_open` and a given week can genuinely have zero
-completions, but it is the case worth a second look rather than an
+— a non-empty `rows` array with `completed_devices` uniformly 0 across
+every row is not itself a failure, since `module_progress` is written on a
+different event than `module_open` and a given week can genuinely have
+zero completions, but it is the case worth a second look rather than an
 automatic pass):
 
-Result: ☐ not yet run — at least one row has `completed_devices` > 0: ☐ yes ☐ no (no completions this window — plausible but re-check with a wider window before concluding the join is broken) ☐ n/a (array was empty per the check above)
+Result: ☐ not yet run — at least one row has `completed_devices` > 0: ☐ yes ☐ no (no completions this window — plausible but re-check with a wider window before concluding the join is broken) ☐ n/a (`rows` was empty per the check above)
 
 ## Step 9 — confirm `growth_feedback_agg` leaks nothing
 
-The `recent` array is the one place in this whole report that returns
+The `recent.rows` array is the one place in this whole report that returns
 verbatim user text, which is only safe because it is scoped to
-`docs/reports/growth/.data/` (gitignored) and never committed. Using the
-Step 4 output for `growth_feedback_agg`, inspect the **keys** present on
-each object inside `recent` — not their values:
+`docs/reports/growth/.data/` (gitignored) and never committed. Since fix
+round 1, `recent` is `{ rows: [...], total_groups: N }`, not a bare array
+(see Step 4) — this step reads `recent.rows` specifically. Using the Step 4
+output for `growth_feedback_agg`, inspect the **keys** present on each
+object inside `recent.rows` — not their values:
 
 ```bash
 npx tsx -e "
@@ -429,7 +548,7 @@ import { phWeekWindows } from './lib/reports/phWeek';
 const [w] = phWeekWindows(new Date(), 1);
 callRpc(createReportsClient(), 'growth_feedback_agg', { p_since: w.sinceIso, p_until: w.untilIso })
   .then(r => {
-    const rows = (r.data as any)?.recent ?? [];
+    const rows = (r.data as any)?.recent?.rows ?? [];
     const keys = new Set<string>();
     for (const row of rows) for (const k of Object.keys(row)) keys.add(k);
     console.log('keys seen:', [...keys].sort());
