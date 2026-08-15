@@ -102,7 +102,7 @@ Fields you will use beyond the tables:
 | `raw.segments.by_subject.rows` | Conversion by subject — capped at 25, see "Capped distributions" below. **Carries `subject_plan_paid_devices`, not `paid_devices` — read the callout below before you touch this field.** |
 | `raw.cohorts` | Weekly cohorts and the 8-week active series. Both `weekly_active` and `cohorts` are flat arrays, not capped. |
 | `raw.content` | Module opens versus completions. **The entire value is `{rows, total_groups}`** — not a sub-key inside a larger object. |
-| `raw.demand` | Waitlist — what people ask for that does not exist yet. `by_subject` is capped (`.rows` + `.total_groups`); `source`, `by_year`, `willing_to_pay`, `by_device_type` are flat arrays, not capped. |
+| `raw.demand` | Waitlist — what people ask for that does not exist yet. `by_subject` is capped (`.rows` + `.total_groups`); `by_source`, `by_year`, `willing_to_pay`, `by_device_type` are flat arrays, not capped. |
 | `raw.feedback.recent.rows` | Verbatim user text. Read for themes, not counts. `raw.feedback.recent.total_groups` is the untruncated count of non-blank-text rows in the window — it is **not** the same number as `raw.feedback.rows_window`, which also counts blank-text rows `recent` excludes. |
 | `errors` | RPCs that failed. Each one is a finding. |
 
@@ -141,7 +141,7 @@ Nested, capped fields — always go through `.rows`, always have a sibling
 Flat, uncapped arrays — small bounded value sets, no truncation to report:
 
 - `raw.segments.by_year` — one row per row in `years`
-- `raw.demand.source`, `raw.demand.by_year`, `raw.demand.willing_to_pay`,
+- `raw.demand.by_source`, `raw.demand.by_year`, `raw.demand.willing_to_pay`,
   `raw.demand.by_device_type` — each drawn from a small, inherently bounded set
 - `raw.cohorts.weekly_active`, `raw.cohorts.cohorts`
 
