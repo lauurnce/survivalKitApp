@@ -4,7 +4,9 @@
 
 **Goal:** Replace a dashboard that measures traffic with one that measures behaviour — where students exit the content, how paying subscribers actually use the product, and who the audience is — so the owner can tell which part of the product to fix next.
 
-**Architecture:** Three layers, built bottom-up. A schema layer bridges the two identity systems (`device_id` activity and `user_id` profiles) and adds device type to events. A Postgres aggregate layer replaces four unauditable production RPCs with migration-defined functions. A UI layer rebuilds the dashboard against those aggregates behind characterization tests written first.
+**Architecture:** Sequenced so the dashboard is never showing a number nobody can explain. **Phase 1 ships everything that needs no migration at all**, using data that already exists — this makes the page honest immediately. Later phases add a schema layer (bridging `device_id` activity to `user_id` profiles, device type on events, a general-feedback table), a Postgres aggregate layer replacing four unauditable production RPCs with migration-defined functions, and the dashboard sections that depend on them. Characterization tests come first, before anything is restructured.
+
+**Owner ruling on sequencing (2026-08-21):** ship the no-migration subset first. Every migration in this plan requires a manual apply through the Supabase Studio SQL editor, so anything depending on one is gated on the owner. Nothing in this plan may render invented data — the dashboard is the basis for product decisions.
 
 **Tech Stack:** Next.js App Router, React Server Components, TypeScript (target ES2017), Supabase/Postgres, Vitest, Tailwind.
 
@@ -26,6 +28,52 @@
 ## Prerequisite
 
 **This plan starts from `main` with `feat/growth-department-agent` already merged.** That branch modifies `app/admin/page.tsx` and `components/AdminDashboard.tsx`; starting before it merges guarantees conflicts. Branch: `feat/admin-dashboard-v2`.
+
+---
+
+## REVISED EXECUTION ORDER (owner ruling, 2026-08-21)
+
+**The phase headings below are the original grouping and are kept because each task's
+detail is written against them. Execute in THIS order instead.** The reordering exists
+because every migration needs a manual apply by the owner, so anything gated on one must
+not block work that is not.
+
+| Order | Task | Needs a migration? |
+|---|---|---|
+| 1 | Task 1 — characterization tests | no |
+| 2 | Task 8 — honest identity tiles (see amendment below) | **no** |
+| 3 | Task 10 — remove waitlist, add feedback summary | **no** |
+| 4 | Task 11 — full names + normalised breakdowns (read-side half only) | **no** |
+| 5 | Task 4 — canonical names (write-side combobox half) | no |
+| — | **SHIP HERE. The dashboard is now honest and fully real.** | |
+| 6 | Task 2 — `events.device_type` | yes |
+| 7 | Task 3 — `events.user_id` bridge | yes |
+| 8 | **Task 13 — `app_feedback` table** (new, below) | yes |
+| 9 | Task 5 — identity + exit aggregates | yes |
+| 10 | Task 6 — subscriber aggregate | yes |
+| 11 | Task 7 — survey fields | yes |
+| 12 | **Task 14 — floating feedback widget** (new, below) | consumes Task 13 |
+| 13 | Task 9 — exit + subscriber sections | consumes 5, 6 |
+| 14 | Task 12 — backdate and push | no |
+
+### Amendment to Task 8, forced by this ordering
+
+Task 8 as written sources its tiles from `dash_identity_agg`, which does not exist until
+step 9. **In step 2 it must not.** Do the half that needs nothing new:
+
+- **Delete** the `Recurring Users` tile. It is `total − new_3d`; a device that visited
+  once in March counts as recurring. It measures nothing, so it is removed rather than
+  re-sourced.
+- **Delete** the `Approved Unlocks` tile. It reads a dead event type and shows 0 forever.
+- **Relabel** `Total Users` to `Devices reached`. Same underlying number from the same
+  RPC — the figure was never wrong, the *word* was. Devices and accounts differ by
+  roughly two orders of magnitude here and must never share a noun.
+- **Delete** the dead pending-unlocks fetch at `app/admin/page.tsx:98-103`.
+- **Do NOT** add `Accounts created` or the device→account conversion yet. Those need
+  `dash_identity_agg`. Add them when step 9 lands.
+
+Relabelling rather than re-sourcing is the point: it makes the page honest today without
+waiting on an apply, and it does not invent a number to fill a tile.
 
 ---
 
@@ -655,6 +703,181 @@ Run: `npm test && npm run typecheck && npm run lint`
 git add components/AdminDashboard.tsx app/admin/page.tsx components/AdminDashboard.test.tsx
 git commit -m "fix(admin): show full names and merge duplicate program spellings"
 ```
+
+---
+
+## Phase 4b — General app feedback
+
+### Task 13: The `app_feedback` table
+
+**Files:**
+- Create: `supabase/migrations/20260821000000_app_feedback.sql`
+- Create: `supabase/migrations/20260821000000_app_feedback.test.md`
+
+**Interfaces:**
+- Produces: table `app_feedback` — `id uuid pk`, `device_id text not null`, `user_id uuid null references auth.users(id) on delete set null`, `comment text not null`, `page_path text`, `device_type text`, `created_at timestamptz not null default now()`.
+
+**Why a new table rather than reusing `user_feedback`.** That table requires `module_id` (a `NOT NULL` foreign key to `modules`) and `module_rating` (`NOT NULL`). A floating widget has neither — somebody on the account page is not rating a module. Relaxing those columns would also weaken the coupon cap, which keys on the `(user_id, module_id)` unique index. Two different kinds of feedback, two tables.
+
+- [ ] **Step 1: Write the migration**
+
+```sql
+-- app_feedback: unprompted comments about the app itself.
+--
+-- Separate from user_feedback on purpose. That table is a MODULE REVIEW: it
+-- requires module_id and module_rating and hands out a coupon capped by a
+-- (user_id, module_id) unique index. This one is a free-text comment from
+-- anywhere in the app, with no module, no rating, and no reward -- so the
+-- coupon cap has nothing to key on and no abuse path opens.
+--
+-- user_id is nullable because the widget deliberately does not require login:
+-- there are roughly two orders of magnitude more devices than accounts, and
+-- requiring an account would collect almost nothing.
+--
+-- `on delete set null` rather than cascade -- deleting an account must not
+-- silently delete the feedback it left.
+create table if not exists app_feedback (
+  id          uuid primary key default gen_random_uuid(),
+  device_id   text not null,
+  user_id     uuid references auth.users(id) on delete set null,
+  comment     text not null check (length(trim(comment)) between 1 and 2000),
+  page_path   text,
+  device_type text check (device_type is null or device_type in ('mobile', 'desktop')),
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists app_feedback_created_idx
+  on app_feedback (created_at desc);
+
+-- Rate limiting reads this: how many comments has this device left recently.
+create index if not exists app_feedback_device_created_idx
+  on app_feedback (device_id, created_at desc);
+
+alter table app_feedback enable row level security;
+
+-- Anonymous visitors INSERT their own comment and can never read the table.
+-- Without the select policy, one person's comments would be readable by anyone
+-- holding the public anon key.
+create policy app_feedback_insert_anon on app_feedback
+  for insert to anon, authenticated with check (true);
+```
+
+- [ ] **Step 2: Write the verification checklist**
+
+`20260821000000_app_feedback.test.md` with: RED (table absent), the apply step with date-applied and role blanks, GREEN (table present with every column and type), a constraint check (empty and 2001-character comments both rejected, `rollback` after), an RLS check confirming **anon can insert but cannot select** — run an actual `select` as anon and confirm it returns nothing or errors — and a deletion check (delete an auth user, confirm the comment survives with `user_id` null).
+
+The RLS select check is the highest-stakes step here: without it, user comments are readable by anyone holding the public anon key.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add supabase/migrations/20260821000000_app_feedback.sql supabase/migrations/20260821000000_app_feedback.test.md
+git commit -m "feat(feedback): add a table for unprompted app comments"
+```
+
+---
+
+### Task 14: The floating feedback widget
+
+**Files:**
+- Create: `components/AppFeedbackWidget.tsx`
+- Test: `components/AppFeedbackWidget.test.tsx`
+- Create: `app/api/app-feedback/route.ts`
+- Test: `app/api/app-feedback/route.test.ts`
+- Modify: `app/(main)/layout.tsx`
+
+**Interfaces:**
+- Consumes: `app_feedback` from Task 13; `getDeviceType` from `lib/deviceType.ts`; the device id helper in `lib/device.ts`.
+- Produces: `POST /api/app-feedback` accepting `{ comment, page_path }`.
+
+A dismissible button fixed to the side; clicking it opens a single textarea asking whether the reader has thoughts on improving the app. **No login, no rating, no reward** — response rate comes from removing friction, not from paying for it. That also means there is nothing to farm.
+
+- [ ] **Step 1: Write the failing component test**
+
+```tsx
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { AppFeedbackWidget } from "./AppFeedbackWidget";
+
+beforeEach(() => {
+  global.fetch = vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({}) })) as never;
+});
+
+describe("AppFeedbackWidget", () => {
+  it("is collapsed until opened", () => {
+    render(<AppFeedbackWidget />);
+    expect(screen.queryByRole("textbox")).toBeNull();
+  });
+
+  it("opens a single comment box", () => {
+    render(<AppFeedbackWidget />);
+    fireEvent.click(screen.getByRole("button", { name: /feedback/i }));
+    expect(screen.getByRole("textbox")).toBeInTheDocument();
+  });
+
+  it("does not submit an empty comment", () => {
+    render(<AppFeedbackWidget />);
+    fireEvent.click(screen.getByRole("button", { name: /feedback/i }));
+    fireEvent.click(screen.getByRole("button", { name: /send/i }));
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("posts the comment and thanks the reader", async () => {
+    render(<AppFeedbackWidget />);
+    fireEvent.click(screen.getByRole("button", { name: /feedback/i }));
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "search is slow" } });
+    fireEvent.click(screen.getByRole("button", { name: /send/i }));
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledWith(
+      "/api/app-feedback",
+      expect.objectContaining({ method: "POST" })
+    ));
+    expect(await screen.findByText(/thank/i)).toBeInTheDocument();
+  });
+});
+```
+
+- [ ] **Step 2: Run it and watch it fail**
+
+Run: `npx vitest run components/AppFeedbackWidget.test.tsx`
+Expected: FAIL — cannot resolve `./AppFeedbackWidget`.
+
+- [ ] **Step 3: Build the widget**
+
+Collapsed state is a fixed-position button reading "Feedback". Open state is one textarea labelled "Have any thoughts on improving the app?", a send button, and a dismiss. On success, replace the form with a thank-you and close after a moment. Submit is disabled while the comment is blank.
+
+Match the house aesthetic — read `components/ThemeToggle.tsx` for how an existing fixed-position control is styled and positioned, and reuse those tokens rather than inventing new ones. It must not cover the reader's content on a phone: check it against a narrow viewport.
+
+Give the trigger an accessible name, keep focus inside the panel while open, and close on Escape.
+
+- [ ] **Step 4: Build the API route**
+
+`POST /api/app-feedback` reads `comment` and `page_path`, resolves the device id the same way the events route does, derives `device_type` via `getDeviceType`, attaches `user_id` when a session exists, and inserts one row.
+
+Reject a blank comment and anything over 2000 characters with a 400 — matching the table's own check constraint, so the API and the schema cannot disagree.
+
+**Rate-limit it.** The endpoint is unauthenticated, so without a limit it is an open write path into your database. Reuse `lib/rateLimit.ts`, which already guards the waitlist route — read how that route calls it and follow the same shape rather than writing a second limiter.
+
+- [ ] **Step 5: Write the route test**
+
+Cover: a valid comment inserts one row with the right fields; a blank comment returns 400 and inserts nothing; an over-length comment returns 400; the rate limiter rejects a burst. Follow the mocking style in `app/api/waitlist/route.test.ts`.
+
+Run: `npx vitest run app/api/app-feedback/route.test.ts`
+Expected: FAIL first, then PASS.
+
+- [ ] **Step 6: Mount it**
+
+Add the widget to `app/(main)/layout.tsx` so it appears across the reading experience. **Do not mount it in the admin layout** — admin is not the audience.
+
+- [ ] **Step 7: Run the suite and commit**
+
+Run: `npm test && npm run typecheck && npm run lint`
+
+```bash
+git add components/AppFeedbackWidget.tsx components/AppFeedbackWidget.test.tsx app/api/app-feedback/route.ts app/api/app-feedback/route.test.ts app/\(main\)/layout.tsx
+git commit -m "feat(feedback): add a floating widget for unprompted app comments"
+```
+
+**Then extend the dashboard's feedback section** (Task 10) with an app-comments count and the three most recent, sourced from `app_feedback`. Quote sparingly, never attribute, and render no device id or user id.
 
 ---
 
