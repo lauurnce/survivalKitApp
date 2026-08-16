@@ -306,6 +306,31 @@ print an error, not `NONE`.
 
 Result: ☐ not yet run — date applied: __________ — role the editor connected as: __________ — `growth_acquisition_agg`: ☐ yes (error printed) ☐ NO — printed `NONE` (unresolved problem) — `growth_segment_agg`: ☐ yes (error printed) ☐ NO — printed `NONE` (unresolved problem)
 
+## Step 5a — run Step 5 even if Step 2 reported an error partway through
+
+**Do not skip this step just because Step 2's apply hit an error.** Postgres
+default-grants `EXECUTE` on a new function to `PUBLIC`. If the paste stopped
+partway, any function created *before* the failing statement exists in the
+database with that default grant still in place.
+
+This migration's `revoke`/`grant` pairs now sit immediately after their own
+`create or replace function`, so the exposure window is one statement wide
+rather than spanning both functions — but "narrow" is not "closed". A paste
+that dies between a `create` and its own `revoke` still leaves that function
+readable by **anyone holding the public anon key**: enter volume, referrer
+hosts, and utm campaigns for `growth_acquisition_agg`; year and subject
+conversion for `growth_segment_agg`.
+
+Run Step 5's check for **both** functions regardless of what Step 2 printed.
+A function created without its revoke is the one outcome the rest of this
+checklist cannot detect — every other step passes identically whether the
+revoke ran or not.
+
+If either reports `NONE`, re-run that function's `revoke`/`grant` pair alone
+before going further.
+
+Result: ☐ not yet run — Step 2 errored partway: ☐ yes ☐ no — re-checked both anyway: ☐ yes ☐ no
+
 ## Step 6 — confirm the service role can call both
 
 This is how report collectors will actually reach these RPCs (see

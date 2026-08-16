@@ -112,6 +112,10 @@ as $$
   );
 $$;
 
+revoke execute on function growth_acquisition_agg(timestamptz, timestamptz)
+  from public, anon, authenticated;
+grant execute on function growth_acquisition_agg(timestamptz, timestamptz) to service_role;
+
 -- growth_segment_agg: engagement and conversion split by year and by subject.
 --
 -- A blended average across a first-year-dominated audience hides everything
@@ -207,10 +211,6 @@ as $$
     )
   );
 $$;
-
-revoke execute on function growth_acquisition_agg(timestamptz, timestamptz)
-  from public, anon, authenticated;
-grant execute on function growth_acquisition_agg(timestamptz, timestamptz) to service_role;
 
 revoke execute on function growth_segment_agg(timestamptz, timestamptz)
   from public, anon, authenticated;

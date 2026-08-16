@@ -55,7 +55,7 @@ owning role's privileges make possible (see Step 4). If you ran this through
 anything other than the default `postgres` connection, note the actual role
 here instead of assuming:
 
-Result: ☐ not yet run — role that created the function: ___________
+Result: ☐ not yet run — date applied: __________ — role that created the function: ___________
 
 Re-running the migration a second time must succeed with no errors: the
 function body uses `create or replace function`, and the trailing

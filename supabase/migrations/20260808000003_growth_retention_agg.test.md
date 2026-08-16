@@ -147,7 +147,15 @@ from events
 where created_at >= now() - make_interval(weeks => 10);
 ```
 
-Result: ☐ not yet run — scan type: ☐ Seq Scan ☐ Index Scan ☐ Bitmap Heap Scan ☐ other: __________ — index named (if any): __________ — execution time: __________ ms
+PASS if the plan uses `idx_events_created`, OR if it reports a `Seq Scan`
+AND you have confirmed that index still exists
+(`select indexname from pg_indexes where tablename = 'events' and indexname = 'idx_events_created';`)
+— on a small table the planner may correctly judge a sequential scan cheaper.
+FAIL if that query returns no row: the predicate this CTE depends on has no
+index at all, and a *missing* index and a *judged-not-worth-using* index
+produce the same plan shape, so they must not be conflated.
+
+Result: ☐ not yet run — `idx_events_created` exists: ☐ yes ☐ no — scan type: ☐ Seq Scan ☐ Index Scan ☐ Bitmap Heap Scan ☐ other: __________ — index named (if any): __________ — execution time: __________ ms
 
 **3b — `growth_cohort_agg`'s `first_seen` CTE.** `select device_id,
 min(created_at) ... from events group by device_id` has no `WHERE` clause —
@@ -205,8 +213,11 @@ Result: ☐ not yet run — index exists: ☐ yes ☐ no — scan type: ☐ Seq 
 **3d — `growth_demand_agg` / `growth_feedback_agg`'s `windowed` CTEs.**
 Both filter only on `created_at` against `waitlist` and `user_feedback`
 respectively. Neither table has a plain `created_at` index today:
-`waitlist` has none (`20260620000000_create_waitlist.sql` only indexes
-`(email, source, subject_title)`); `user_feedback` has
+`waitlist` has none -- `20260620000000_create_waitlist.sql` declares
+`unique (email, source)`, which `20260623000003_waitlist_unique_per_subject.sql`
+later replaced with `waitlist_email_source_subject_key` on
+`(email, source, subject_title)`; neither leads on `created_at`.
+`user_feedback` has
 `user_feedback_approved_created_idx` on `(is_quality_approved, created_at desc)`,
 whose leading column these queries don't filter on, so it does not serve a
 `created_at`-only range predicate. A `Seq Scan` on both is therefore the

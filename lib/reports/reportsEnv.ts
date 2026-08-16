@@ -50,7 +50,7 @@ export function parseEnvFile(contents: string): Record<string, string> {
   return vars;
 }
 
-function require(vars: Record<string, string | undefined>, key: string): string {
+function requireVar(vars: Record<string, string | undefined>, key: string): string {
   const value = vars[key]?.trim();
   if (!value) {
     throw new Error(
@@ -66,8 +66,8 @@ function require(vars: Record<string, string | undefined>, key: string): string 
 export function readReportsCredentials(
   vars: Record<string, string | undefined>
 ): ReportsCredentials {
-  const url = require(vars, "NEXT_PUBLIC_SUPABASE_URL");
-  const serviceRoleKey = require(vars, "SUPABASE_SERVICE_ROLE_KEY");
+  const url = requireVar(vars, "NEXT_PUBLIC_SUPABASE_URL");
+  const serviceRoleKey = requireVar(vars, "SUPABASE_SERVICE_ROLE_KEY");
 
   // A local Supabase has none of the production data. A report built against it
   // would be internally consistent and completely wrong, which is worse than a

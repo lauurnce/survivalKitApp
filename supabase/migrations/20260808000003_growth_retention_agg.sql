@@ -1,4 +1,4 @@
--- growth_cohort_agg: weekly device cohorts, return rates, and the trailing
+-- growth_cohort_agg: weekly device cohorts, return counts, and the trailing
 -- weekly-active series.
 --
 -- Weeks are PH calendar weeks. `created_at at time zone 'Asia/Manila'`
@@ -60,6 +60,16 @@ as $$
     order by active_week desc
   ),
   cohorts as (
+    -- NO upper bound here, deliberately: the newest cohort's `size` is real
+    -- and wanted, and trimming to complete weeks would throw it away.
+    --
+    -- The cost is that the current, still-in-progress week ALWAYS appears as a
+    -- cohort whose returned_week_1 and returned_week_2 are STRUCTURALLY 0 --
+    -- the weeks those columns measure have not happened yet. That zero is the
+    -- calendar, not a retention collapse, and it will be zero every single run.
+    -- Read the newest one or two cohort rows for `size` only. This is the same
+    -- partial-period artifact `weekly_active` documents above, which solves it
+    -- by trimming because it has no per-row value worth keeping.
     select
       f.cohort_week,
       count(distinct f.device_id)::int as size,
