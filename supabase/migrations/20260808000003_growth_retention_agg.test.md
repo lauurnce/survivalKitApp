@@ -272,6 +272,23 @@ underlying JSON — do not write the actual values here:
 - ☐ `cohorts` — array of objects, each with `cohort_week` (date string),
   `size`, `returned_week_1`, `returned_week_2` (all numbers)
 
+> **The newest cohort's `returned_week_1` and `returned_week_2` WILL read 0,
+> and that is correct — do not report it as a retention collapse.** `cohorts`
+> has no upper bound, deliberately: trimming to complete weeks would throw away
+> the newest cohort's `size`, which is real and wanted. The cost is that the
+> current, still-in-progress week always appears as a cohort whose return
+> columns measure weeks that have not happened yet. Those columns will be 0 on
+> **every single run**, forever, for the newest row — and for the second-newest
+> row's `returned_week_2`.
+>
+> Read the newest one or two cohort rows for `size` only. This is the same
+> partial-period artifact `weekly_active` has, which solves it by trimming
+> because it has no per-row value worth keeping. Confirm you have understood
+> this before recording a pass:
+>
+> ☐ I understand the newest cohort's return columns are structurally 0 and are
+> not evidence of a decline.
+
 **`growth_content_agg`** — object with exactly two top-level keys (NOT a
 bare array — this changed in fix round 1):
 - ☐ `rows` — array of up to `p_limit` objects, each with `module_title`,
