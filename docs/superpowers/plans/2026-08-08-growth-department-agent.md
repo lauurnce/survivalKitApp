@@ -803,22 +803,123 @@ export function phaseFor(
 }
 
 /**
+ * Add one day to a YYYY-MM-DD date string. Handles month and year rollover.
+ * Used to distinguish adjacent windows (contiguous coverage) from real gaps.
+ */
+function dayAfter(dateStr: string): string {
+  const [yearStr, monthStr, dayStr] = dateStr.split("-");
+  const year = Number(yearStr);
+  const month = Number(monthStr);
+  const day = Number(dayStr);
+  const d = new Date(Date.UTC(year, month - 1, day + 1));
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const dy = String(d.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${dy}`;
+}
+
+/**
  * The phase covering a report window. `mixed` is true when the window spans
  * more than one phase, which is a caveat the agent must state rather than
  * pick a winner for.
+ *
+ * Scans the entire range for overlapping windows, not just endpoints, so that
+ * a window fully enclosed by the range (touching neither endpoint) is detected.
+ * If any date in [startPhDate, endPhDate] is not covered by an overlapping
+ * window, "unknown" is included in the phase set.
  */
 export function phaseForRange(
   startPhDate: string,
   endPhDate: string,
   calendar: readonly TermWindow[] = TERM_CALENDAR
 ): { phase: TermPhase; mixed: boolean } {
-  const start = phaseFor(startPhDate, calendar);
-  const end = phaseFor(endPhDate, calendar);
+  // Find all windows overlapping the range: w.start <= endPhDate && w.end >= startPhDate
+  const overlapping = calendar.filter(
+    (w) => w.startPhDate <= endPhDate && w.endPhDate >= startPhDate
+  );
 
-  if (start === end) return { phase: start, mixed: false };
-  if (start === "unknown") return { phase: end, mixed: true };
-  return { phase: start, mixed: true };
+  if (overlapping.length === 0) {
+    return { phase: "unknown", mixed: false };
+  }
+
+  // Collect all phases present in overlapping windows
+  const phases = new Set<TermPhase>();
+  for (const w of overlapping) {
+    phases.add(w.phase);
+  }
+
+  // Check if the overlapping windows cover the entire range [startPhDate, endPhDate]
+  // without gaps. If there are uncovered dates, include "unknown" in the phase set.
+  const sorted = overlapping.sort((a, b) =>
+    a.startPhDate.localeCompare(b.startPhDate)
+  );
+
+  let hasCoverageGap = false;
+
+  // Check if the first window starts after startPhDate (gap at the beginning)
+  if (sorted[0]!.startPhDate > startPhDate) {
+    hasCoverageGap = true;
+  } else {
+    // Check for gaps between consecutive windows and at the end.
+    // A gap exists if the next window starts AFTER the day after the current end.
+    // Adjacent windows (one ends 2026-09-20, next starts 2026-09-21) are contiguous.
+    let currentEnd = sorted[0]!.endPhDate;
+    for (let i = 1; i < sorted.length; i++) {
+      if (sorted[i]!.startPhDate > dayAfter(currentEnd)) {
+        // Gap between window i-1 and window i
+        hasCoverageGap = true;
+        break;
+      }
+      // Extend current end (ISO strings compare correctly)
+      currentEnd =
+        sorted[i]!.endPhDate > currentEnd
+          ? sorted[i]!.endPhDate
+          : currentEnd;
+    }
+
+    // Check if the range extends beyond all windows (gaps at the end).
+    // Note: no dayAfter() here—this compares a window boundary against the query's
+    // own fixed edge, not window-to-window adjacency.
+    if (!hasCoverageGap && endPhDate > currentEnd) {
+      hasCoverageGap = true;
+    }
+  }
+
+  if (hasCoverageGap) {
+    phases.add("unknown");
+  }
+
+  const mixed = phases.size > 1;
+
+  // Determine which phase to return
+  let phase: TermPhase;
+  if (!mixed) {
+    // Only one phase present
+    phase = Array.from(phases)[0]!;
+  } else {
+    // Multiple phases: prefer the phase at startPhDate
+    const startPhase = phaseFor(startPhDate, calendar);
+    if (startPhase !== "unknown") {
+      phase = startPhase;
+    } else {
+      // If start is unknown, use the first known phase in chronological order.
+      // All windows in sorted have non-unknown phases (by type), so use the first one.
+      phase = sorted[0]?.phase ?? "unknown";
+    }
+  }
+
+  return { phase, mixed };
 }
+
+/**
+ * NOTE: This implementation incorporates three fix rounds:
+ * 1. Detects windows fully enclosed by the range (not touching endpoints).
+ * 2. dayAfter() is used ONLY for window-to-window adjacency at line 117.
+ *    The tail-of-range check (line 132) uses plain > to catch exact 1-day gaps.
+ * 3. Returns the chronologically first known phase (sorted by startPhDate),
+ *    not declaration order (using sorted[0]?.phase, never Array.from(phases)).
+ * The owner has ruled this scanning version as governing.
+ */
 ```
 
 - [ ] **Step 4: Run test to verify it passes**

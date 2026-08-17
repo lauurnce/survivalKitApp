@@ -13,15 +13,25 @@ tokens). Run the collector first; it costs nothing and can be re-run freely.
 | Argument | Collector | Agent | Cadence |
 |---|---|---|---|
 | `ops` | `npm run report:ops` | `pulse` | daily |
+| `growth` | `npm run report:growth` | `vantage` | weekly |
 
-Growth, finance, and security are not built yet. If asked for one, say so plainly
-rather than improvising a report — an invented report is worse than no report.
+Finance and security are not built yet. If asked for one, say so plainly rather than
+improvising a report — an invented report is worse than no report.
+
+The growth collector needs production Supabase credentials in `.env.reports.local`.
+If it fails on a missing variable, that file is incomplete — get the values from the
+Supabase dashboard, never from `.env.local`, which deliberately holds none.
 
 ## Running one department
 
-1. Run the collector: `npm run report:ops`
-2. Dispatch the matching agent with the Agent tool, `subagent_type: "pulse"`.
+1. Run the department's collector from the table above. It costs nothing.
+2. Dispatch the matching agent with the Agent tool — `subagent_type: "pulse"` or
+   `subagent_type: "vantage"`.
 3. Relay the agent's chat summary — verdict first.
+
+**If you have just edited an agent definition, restart the session before dispatching
+it.** Definitions load at session start, so a subagent dispatched after a mid-session
+edit runs the old instructions. This has already cost one whole verification run.
 
 ## Running all departments
 
@@ -44,8 +54,14 @@ restore the dollar sign here.)
 
 ## The council
 
-**Only runs when two or more departments have reported in the same invocation.** With
-one department built, there is no council — say so rather than faking one.
+**Only runs when two or more departments have reported in the same invocation.**
+Operations and Growth both exist, so `/report all` now produces a council. A single
+`/report ops` or `/report growth` still does not — a council of one is just a report.
+
+The two departments overlap in a specific, useful way: PULSE sees route health and
+caching, VANTAGE knows which routes conversion depends on. A cache regression on a
+route nobody converts through and one on the paywall path are different severities,
+and only the combination reveals which is which.
 
 Once two or more exist, after all reports are written, produce a council section that
 does three things no single department can:

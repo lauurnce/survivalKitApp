@@ -2,9 +2,9 @@ import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 import { getAdminSession } from "@/lib/auth/adminSession";
 import { AdminDashboard } from "@/components/AdminDashboard";
-import type { EventType } from "@/lib/supabase/types";
 import { revenueByMonth, PH_OFFSET_MS } from "@/lib/payments";
 import { findUnreflectedPayments, type UnreflectedPayment } from "@/lib/reconcile";
+import { ADMIN_FUNNEL_STEPS } from "@/lib/adminFunnel";
 
 export const dynamic = "force-dynamic";
 
@@ -20,15 +20,7 @@ function getTitle(rel: unknown): string {
 // comparison panel.
 const REVENUE_MONTHS = 12;
 
-const FUNNEL_STEPS: { type: EventType; label: string; hint: string }[] = [
-  { type: "enter",            label: "Opened App",        hint: "Unique devices that launched the app" },
-  { type: "year_select",      label: "Selected Year",      hint: "Completed first onboarding step" },
-  { type: "subject_open",     label: "Opened Subject",     hint: "Navigated to a subject" },
-  { type: "module_open",      label: "Opened Module",      hint: "Went into a module" },
-  { type: "section_view",     label: "Read a Section",     hint: "Scrolled and read content" },
-  { type: "unlock_click",     label: "Tapped Unlock",      hint: "Showed payment intent" },
-  { type: "unlock_submitted", label: "Submitted Payment",  hint: "Completed GCash payment flow" },
-];
+const FUNNEL_STEPS = ADMIN_FUNNEL_STEPS;
 
 export default async function AdminPage() {
   // Session cookie auth — password never touches a URL or DOM

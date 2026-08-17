@@ -864,9 +864,6 @@ export function AdminDashboard({
   waitlistEntries, waitlistAgg, profilesAgg, transactions,
   unreflectedPayments, reconcileError,
 }: Props) {
-  const unlockClicks    = funnel.find(s => s.type === "unlock_click")?.unique ?? 0;
-  const unlockSubmitted = funnel.find(s => s.type === "unlock_submitted")?.unique ?? 0;
-
   return (
     <main className="min-h-screen bg-paper px-6 py-12 md:px-16 md:py-20">
 
@@ -960,27 +957,6 @@ export function AdminDashboard({
           title="Payments"
           summary={`${transactions.length} transactions`}
         />
-        <div className="mb-12">
-          <p className="label mb-6">Unlock Funnel</p>
-          <div className="grid grid-cols-3 gap-3 max-w-sm">
-            {[
-              { label: "Tapped Unlock", value: unlockClicks },
-              { label: "Submitted Payment", value: unlockSubmitted },
-              { label: "Approved", value: approvedUnlocks },
-            ].map(item => (
-              <div key={item.label} className="border border-ink-faint/30 p-5 text-center hover:border-ink/40 transition-colors">
-                <p className="font-serif text-3xl text-ink mb-1">{item.value}</p>
-                <p className="label-sm text-ink-muted">{item.label}</p>
-              </div>
-            ))}
-          </div>
-          {unlockClicks > 0 && (
-            <p className="font-sans text-xs text-ink-faint mt-3">
-              Conversion: {unlockSubmitted}/{unlockClicks} who tapped submitted
-              {approvedUnlocks > 0 && ` · ${approvedUnlocks}/${unlockSubmitted} approved`}
-            </p>
-          )}
-        </div>
         <p className="label mb-6">Transactions</p>
         <TransactionsSection rows={transactions} />
 
