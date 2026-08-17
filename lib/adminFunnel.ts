@@ -27,9 +27,22 @@ export interface AdminFunnelStep {
 /**
  * Pre-pivot event types. Present in the schema and the API allowlist, emitted
  * by nothing since the subscription pivot replaced the one-time unlock.
+ *
+ * `unlock_click` was on this list and has been REMOVED: the paywall rework
+ * revived it. components/SectionRenderer.tsx and components/LockedReviewer.tsx
+ * both call logEvent("unlock_click") to send readers to /unlock. It is a live
+ * event type again and listing it here would make the guard test assert
+ * something false.
+ *
+ * It is deliberately NOT in ADMIN_FUNNEL_STEPS either — whether the dashboard
+ * should show an unlock step now that the flow exists again is a product
+ * decision, not a mechanical consequence of the rename. Until that is decided
+ * the event is recorded but not charted.
+ *
+ * `unlock_submitted` remains genuinely dead: nothing emits it, and the only
+ * references are the API allowlist, the type union, and negative assertions.
  */
 export const DEAD_EVENT_TYPES: readonly string[] = [
-  "unlock_click",
   "unlock_submitted",
 ] as const;
 

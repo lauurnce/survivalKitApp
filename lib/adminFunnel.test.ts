@@ -82,7 +82,7 @@ describe("ADMIN_FUNNEL_STEPS", () => {
 
 describe("DEAD_EVENT_TYPES", () => {
   it("names the two pre-pivot types", () => {
-    expect([...DEAD_EVENT_TYPES].sort()).toEqual(["unlock_click", "unlock_submitted"]);
+    expect([...DEAD_EVENT_TYPES].sort()).toEqual(["unlock_submitted"]);
   });
 
   it("confirms nothing emits them, so the list stays honest", () => {
