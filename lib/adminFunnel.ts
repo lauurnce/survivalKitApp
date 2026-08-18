@@ -34,10 +34,10 @@ export interface AdminFunnelStep {
  * event type again and listing it here would make the guard test assert
  * something false.
  *
- * It is deliberately NOT in ADMIN_FUNNEL_STEPS either — whether the dashboard
- * should show an unlock step now that the flow exists again is a product
- * decision, not a mechanical consequence of the rename. Until that is decided
- * the event is recorded but not charted.
+ * It is charted again as "Reached Unlock", sitting between the paywall teaser
+ * and checkout. The /unlock page is where a price is first quoted, so a device
+ * that taps the teaser but never reaches unlock is a different loss from one
+ * that reaches it and does not check out.
  *
  * `unlock_submitted` remains genuinely dead: nothing emits it, and the only
  * references are the API allowlist, the type union, and negative assertions.
@@ -54,5 +54,6 @@ export const ADMIN_FUNNEL_STEPS: readonly AdminFunnelStep[] = [
   { type: "section_view",         label: "Read a Section",   hint: "Scrolled and read content" },
   { type: "paywall_teaser_view",  label: "Saw Paywall",      hint: "The subscribe teaser rendered" },
   { type: "paywall_teaser_click", label: "Tapped Paywall",   hint: "Showed payment intent" },
+  { type: "unlock_click",         label: "Reached Unlock",   hint: "Opened the page that quotes a price" },
   { type: "subscribe_click",      label: "Started Checkout", hint: "Left for the PayMongo link" },
 ] as const;
