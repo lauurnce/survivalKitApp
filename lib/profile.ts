@@ -1,6 +1,8 @@
 // Profile types + validation (pure — no IO). Lists must stay in sync with the
 // check constraints in supabase/migrations/20260706000000_profiles.sql.
 
+import { canonicalProgram, canonicalUniversity } from "./academicPrograms";
+
 export const PATHWAYS = [
   "Data",
   "AI / Machine Learning",
@@ -48,13 +50,17 @@ export type ValidateResult =
   | { ok: true; profile: Profile }
   | { ok: false; error: string };
 
-function optionalText(raw: string, label: string, max: number):
-  | { value: string | null }
-  | { error: string } {
+function optionalText(
+  raw: string,
+  label: string,
+  max: number,
+  canonicalize?: (value: string) => string,
+): { value: string | null } | { error: string } {
   const v = raw.trim();
   if (!v) return { value: null };
-  if (v.length > max) return { error: `${label} must be ${max} characters or fewer.` };
-  return { value: v };
+  const canonical = canonicalize ? canonicalize(v) : v;
+  if (canonical.length > max) return { error: `${label} must be ${max} characters or fewer.` };
+  return { value: canonical };
 }
 
 export function validateProfile(input: RawProfileInput): ValidateResult {
@@ -84,9 +90,9 @@ export function validateProfile(input: RawProfileInput): ValidateResult {
     gender = input.gender as Gender;
   }
 
-  const university = optionalText(input.university, "University", 120);
+  const university = optionalText(input.university, "University", 120, canonicalUniversity);
   if ("error" in university) return { ok: false, error: university.error };
-  const major = optionalText(input.major, "Major", 120);
+  const major = optionalText(input.major, "Major", 120, canonicalProgram);
   if ("error" in major) return { ok: false, error: major.error };
 
   const pathways: Pathway[] = [];
