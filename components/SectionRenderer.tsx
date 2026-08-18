@@ -2,12 +2,14 @@
 
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import { SubscribeGate } from "./SubscribeGate";
-import { logSectionView } from "@/lib/analytics";
+import { LockedReviewer } from "./LockedReviewer";
+import { logEvent, logSectionView } from "@/lib/analytics";
+import { buildUnlockHref, modulePath } from "@/lib/subscribeRedirect";
 import type { TopologyData } from "@/lib/topology/types";
 
 const Playground = dynamic(
@@ -38,7 +40,6 @@ interface Props {
   yearId: string;
   subjectId: string;
   unlockAll: boolean;
-  yearLabel?: string;
   subjectTitle?: string;
   /** The subject's one free-sample reviewer; rendered in full even when locked. */
   freeSectionId?: string | null;
@@ -46,7 +47,7 @@ interface Props {
   reviewerCount?: number;
 }
 
-export function SectionRenderer({ section, index, moduleId, yearId, subjectId, unlockAll, yearLabel, subjectTitle, freeSectionId, reviewerCount }: Props) {
+export function SectionRenderer({ section, index, moduleId, yearId, subjectId, unlockAll, subjectTitle, freeSectionId, reviewerCount }: Props) {
   useEffect(() => {
     if (section.kind === "content") {
       logSectionView(section.id, moduleId);
@@ -56,15 +57,22 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
   const isFreeSample =
     section.kind === "activity" && !unlockAll && section.id === freeSectionId;
 
+  // Where payment should drop the reader back — this very module page.
+  const returnPath = modulePath(yearId, subjectId, moduleId);
+
+  function handleUnlockClick() {
+    void logEvent("unlock_click", { year_id: yearId, subject_id: subjectId });
+  }
+
   if (section.kind === "activity" && !unlockAll && !isFreeSample) {
     return (
-      <section id="subscribe" className="scroll-mt-24">
+      <section>
         <div className="flex items-baseline gap-4 mb-6">
           <span className="label-sm shrink-0">{String(index + 1).padStart(2, "0")}</span>
           <h2 className="font-serif text-2xl md:text-3xl text-ink leading-tight">{section.heading}</h2>
         </div>
         <div className="pl-10 md:pl-12">
-          <SubscribeGate yearId={yearId} subjectId={subjectId} yearLabel={yearLabel} subjectTitle={subjectTitle} />
+          <LockedReviewer yearId={yearId} subjectId={subjectId} from={returnPath} />
         </div>
       </section>
     );
@@ -107,12 +115,13 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
               That was 1 of {reviewerCount || "several"} reviewers with answer keys in{" "}
               {subjectTitle ?? "this subject"}. Unlock all of them for the semester.
             </p>
-            <a
-              href="#subscribe"
+            <Link
+              href={buildUnlockHref({ yearId, subjectId, from: returnPath })}
+              onClick={handleUnlockClick}
               className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
             >
               Unlock all reviewers →
-            </a>
+            </Link>
           </div>
         </div>
       )}
