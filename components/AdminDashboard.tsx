@@ -111,7 +111,7 @@ function SectionBand({
   return (
     <div className="sticky top-4 z-20 mb-8">
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border border-ink/30 bg-paper px-5 py-4 shadow-sm">
-        <span className="label-sm text-ink-faint font-mono">{eyebrow}</span>
+        <span className="label-sm text-ink-faint font-mono" data-testid="section-band-eyebrow">{eyebrow}</span>
         <h2 className="font-serif text-2xl md:text-3xl text-ink leading-none">{title}</h2>
         {summary && (
           <span className="ml-auto font-mono text-xs text-ink-muted">{summary}</span>
