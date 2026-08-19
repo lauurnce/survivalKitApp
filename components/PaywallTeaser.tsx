@@ -1,54 +1,30 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { getDeviceId } from "@/lib/device";
+import { usePathname } from "next/navigation";
 import { logEvent } from "@/lib/analytics";
+import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
+import { buildUnlockHref } from "@/lib/subscribeRedirect";
 
 interface Props {
   yearId: string;
   subjectId: string;
-  yearLabel?: string;
   subjectTitle?: string;
   /**
-   * Where "Unlock reviewers" sends the user. Use "#subscribe" on the module
-   * detail page (scrolls to the SubscribeGate); use the first module's URL with
-   * a "#subscribe" hash on the modules-list page.
+   * Module path payment should return the reader to. Defaults to the current
+   * path, which is already a module route on the reader page; the modules-list
+   * page passes its first module instead, since its own path is not one.
    */
-  ctaHref: string;
+  from?: string;
   /** Number of gated reviewer sections in this subject, when the page knows it. */
   reviewerCount?: number;
 }
 
-// Keep prices in sync with PLANS in lib/paymongo.ts (₱99 subject_sem, ₱299 year_sem).
-export function PaywallTeaser({ yearId, subjectId, yearLabel, subjectTitle, ctaHref, reviewerCount }: Props) {
-  // null = still checking; true = subscribed (render nothing); false = show teaser
-  const [subscribed, setSubscribed] = useState<boolean | null>(null);
+export function PaywallTeaser({ yearId, subjectId, subjectTitle, from, reviewerCount }: Props) {
+  const pathname = usePathname();
+  const { subscribed } = useSubscriptionStatus(yearId, subjectId);
   const viewLogged = useRef(false);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function check() {
-      // Mint the signed device cookie if needed; the server reads identity from
-      // that cookie, not from a client-supplied header.
-      getDeviceId();
-      try {
-        const params = new URLSearchParams({ yearId, subjectId });
-        const res = await fetch(`/api/subscription-status?${params.toString()}`);
-        const data = res.ok ? ((await res.json()) as { subscribed?: boolean }) : { subscribed: false };
-        if (cancelled) return;
-        setSubscribed(data.subscribed === true);
-      } catch {
-        if (!cancelled) setSubscribed(false);
-      }
-    }
-
-    void check();
-    return () => {
-      cancelled = true;
-    };
-  }, [yearId, subjectId]);
 
   // Fire a one-time view event once we know the teaser is actually shown.
   useEffect(() => {
@@ -60,6 +36,10 @@ export function PaywallTeaser({ yearId, subjectId, yearLabel, subjectTitle, ctaH
 
   // Hide while checking, and permanently for already-subscribed users.
   if (subscribed !== false) return null;
+
+  // /unlock is the single pricing entry point — there is deliberately no way
+  // for a caller to point this CTA somewhere else.
+  const href = buildUnlockHref({ yearId, subjectId, from: from ?? pathname });
 
   function handleClick() {
     void logEvent("paywall_teaser_click", { year_id: yearId, subject_id: subjectId });
@@ -74,13 +54,10 @@ export function PaywallTeaser({ yearId, subjectId, yearLabel, subjectTitle, ctaH
         {reviewerCount
           ? `${reviewerCount} reviewers with answer keys in ${subjectTitle ?? "this subject"} — drills, code labs, and full solutions.`
           : `Reviewers with answer keys in ${subjectTitle ?? "this subject"} — drills, code labs, and full solutions.`}{" "}
-        The first one&apos;s free. Unlock the rest for{" "}
-        <span className="text-ink font-semibold">₱99 until end of semester</span>,
-        or all of {yearLabel ?? "this year"} for{" "}
-        <span className="text-ink font-semibold">₱299 until end of semester</span>.
+        <span className="text-ink font-semibold">The first one&apos;s free.</span>
       </p>
       <Link
-        href={ctaHref}
+        href={href}
         onClick={handleClick}
         className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
       >
