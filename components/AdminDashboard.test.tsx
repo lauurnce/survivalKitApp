@@ -26,8 +26,16 @@ function makeDashboardProps(overrides: Partial<DashboardProps> = {}): DashboardP
     monthlyRevenue: [],
     activeSubscribers: 0,
     newSubscribersToday: 0,
-    waitlistEntries: [],
-    waitlistAgg: { total: 0, by_year: [], by_subject: [] },
+    feedbackAgg: {
+      total: 214,
+      avg_app_rating: 4.32,
+      avg_module_rating: 4.1,
+      recent_comments: [
+        { feedback_text: "Really helped me review for finals!", created_at: "2026-08-19T10:00:00Z" },
+        { feedback_text: "More practice questions please", created_at: "2026-08-18T09:00:00Z" },
+        { feedback_text: "Clean layout, easy to navigate", created_at: "2026-08-17T08:00:00Z" },
+      ],
+    },
     profilesAgg: {
       total: 12,
       by_pathway: [{ pathway: "IT Support", count: 7 }],
@@ -76,5 +84,29 @@ describe("AdminDashboard (characterization)", () => {
     render(<AdminDashboard {...makeDashboardProps()} />);
     const label = screen.getByTitle("Polytechnic University of the Philippines");
     expect(label).toBeInTheDocument();
+  });
+
+  it("does not render the removed Waitlist section", () => {
+    render(<AdminDashboard {...makeDashboardProps()} />);
+    expect(screen.queryByText(/Waitlist/i)).toBeNull();
+  });
+
+  it("renders the feedback summary with counts, average ratings and recent comments", () => {
+    render(<AdminDashboard {...makeDashboardProps()} />);
+    expect(screen.getAllByText(/Feedback/i).length).toBeGreaterThan(0);
+    expect(screen.getByText("214")).toBeInTheDocument();
+    expect(screen.getByText("4.32")).toBeInTheDocument();
+    expect(screen.getByText("4.1")).toBeInTheDocument();
+    expect(screen.getByText(/Really helped me review for finals!/i)).toBeInTheDocument();
+    expect(screen.getByText(/More practice questions please/i)).toBeInTheDocument();
+    expect(screen.getByText(/Clean layout, easy to navigate/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /feedback/i })).toHaveAttribute("href", "/admin/feedback");
+  });
+
+  it("does not render anything identifying in the feedback summary", () => {
+    render(<AdminDashboard {...makeDashboardProps()} />);
+    expect(screen.queryByText(/device_id/i)).toBeNull();
+    expect(screen.queryByText(/user_id/i)).toBeNull();
+    expect(screen.queryByText(/coupon/i)).toBeNull();
   });
 });

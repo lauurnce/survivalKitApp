@@ -39,24 +39,11 @@ interface TransactionRow {
   paymongo_link_id: string;
 }
 
-interface WaitlistEntry {
-  id: string;
-  email: string;
-  name: string;
-  source: "coming_soon" | "paywall";
-  device_type: "mobile" | "desktop";
-  willing_to_pay: "yes" | "no" | "maybe" | null;
-  needs_capstone: boolean | null;
-  year_label: string | null;
-  subject_title: string | null;
-  module_title: string | null;
-  created_at: string;
-}
-
-interface WaitlistAgg {
+interface FeedbackAgg {
   total: number;
-  by_year: { year_label: string; count: number }[] | null;
-  by_subject: { subject_title: string; year_label: string; count: number }[] | null;
+  avg_app_rating: number | null;
+  avg_module_rating: number | null;
+  recent_comments: { feedback_text: string; created_at: string }[] | null;
 }
 
 interface ProfilesAgg {
@@ -81,8 +68,7 @@ interface Props {
   monthlyRevenue: MonthlyRevenue[];
   activeSubscribers: number;
   newSubscribersToday: number;
-  waitlistEntries: WaitlistEntry[];
-  waitlistAgg: WaitlistAgg;
+  feedbackAgg: FeedbackAgg;
   profilesAgg: ProfilesAgg;
   transactions: TransactionRow[];
   unreflectedPayments: UnreflectedPayment[];
@@ -406,93 +392,6 @@ function FunnelChart({ steps }: { steps: FunnelStep[] }) {
   );
 }
 
-function WaitlistPieChart({ byYear, total }: { byYear: { year_label: string; count: number }[]; total: number }) {
-  if (total === 0 || byYear.length === 0) return null;
-
-  const slices = byYear.map((r) => ({
-    label: r.year_label,
-    count: r.count,
-    pct: Math.round((r.count / total) * 100),
-  }));
-
-  const COLORS = ["#1a1a2e", "#4a90a4", "#c9a84c", "#8b5e3c", "#6b8c6b", "#9b6b9b"];
-  let cumPct = 0;
-  const gradientStops = slices.map((s, i) => {
-    const start = cumPct;
-    cumPct += s.pct;
-    return `${COLORS[i % COLORS.length]} ${start}% ${cumPct}%`;
-  });
-
-  return (
-    <div className="mb-8">
-      <p className="label-sm text-ink-muted mb-4">Signups by Year Level</p>
-      <div className="flex flex-col sm:flex-row gap-8 items-start">
-        <div
-          className="shrink-0 w-36 h-36 rounded-full"
-          style={{ background: `conic-gradient(${gradientStops.join(", ")})` }}
-          title="Waitlist source breakdown"
-        />
-        <div className="flex flex-col gap-2">
-          {slices.map((s, i) => (
-            <div key={s.label} className="flex items-center gap-3">
-              <span
-                className="w-3 h-3 shrink-0 inline-block"
-                style={{ background: COLORS[i % COLORS.length] }}
-              />
-              <span className="font-sans text-sm text-ink">{s.label}</span>
-              <span className="font-mono text-xs text-ink-muted">{s.count} ({s.pct}%)</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function WaitlistSubjectDemand({ bySubject }: { bySubject: { subject_title: string; year_label: string; count: number }[] }) {
-  const [expanded, setExpanded] = useState(false);
-
-  if (bySubject.length === 0) return null;
-
-  const max = bySubject[0].count;
-  const visible = expanded ? bySubject : bySubject.slice(0, 5);
-  const hasMore = bySubject.length > 5;
-
-  return (
-    <div className="mb-8 max-w-wide mx-auto">
-      <p className="label-sm text-ink-muted mb-4">Most Requested Subjects</p>
-      <div className="flex flex-col gap-2">
-        {visible.map((r) => (
-          <div key={r.subject_title} className="group flex items-center gap-3">
-            <div className="w-48 shrink-0 text-right">
-              <span className="font-sans text-sm text-ink">{r.subject_title}</span>
-              {r.year_label && (
-                <span className="font-mono text-[10px] text-ink-faint ml-2">{r.year_label}</span>
-              )}
-            </div>
-            <div className="flex-1 flex items-center gap-2">
-              <div
-                className="h-4 bg-navy transition-all duration-300 group-hover:bg-accent"
-                style={{ width: `${Math.max((r.count / max) * 100, 4)}%` }}
-              />
-              <span className="font-mono text-xs text-ink-muted">{r.count}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-      {hasMore && (
-        <button
-          type="button"
-          onClick={() => setExpanded(v => !v)}
-          className="mt-4 font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150"
-        >
-          {expanded ? `Minimize ↑` : `Reveal all (${bySubject.length - 5} more) ↓`}
-        </button>
-      )}
-    </div>
-  );
-}
-
 function TransactionsSection({ rows }: { rows: TransactionRow[] }) {
   const [expanded, setExpanded] = useState(false);
   const visible = expanded ? rows : rows.slice(0, 5);
@@ -672,184 +571,59 @@ function ReconcileSection({
   );
 }
 
-function WaitlistTable({ entries }: { entries: WaitlistEntry[] }) {
-  const [expanded, setExpanded] = useState(false);
-  const visible = expanded ? entries : entries.slice(0, 5);
-  const hasMore = entries.length > 5;
-
-  return (
-    <div className="overflow-x-auto max-w-wide mx-auto">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="border-b border-ink-faint/30">
-            {["Name", "Email", "Year", "Subject", "Module", "Device", "Date"].map(h => (
-              <th key={h} className="text-left py-2 pr-6 label-sm text-ink-muted font-normal">{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {visible.map(e => (
-            <tr key={e.id} className="border-b border-ink-faint/15 hover:bg-ink-faint/5 transition-colors">
-              <td className="py-3 pr-6 font-sans text-sm text-ink">{e.name}</td>
-              <td className="py-3 pr-6 font-sans text-sm text-ink-muted">{e.email}</td>
-              <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{e.year_label ?? "—"}</td>
-              <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{e.subject_title ?? "—"}</td>
-              <td className="py-3 pr-6 font-sans text-xs text-ink-muted">{e.module_title ?? "—"}</td>
-              <td className="py-3 pr-6 font-mono text-xs text-ink-muted">{e.device_type}</td>
-              <td className="py-3 pr-6 font-sans text-xs text-ink-muted">
-                {new Date(e.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {hasMore && (
-        <button
-          type="button"
-          onClick={() => setExpanded(v => !v)}
-          className="mt-4 font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150"
-        >
-          {expanded ? `Show less ↑` : `Show all ${entries.length} entries ↓`}
-        </button>
-      )}
-    </div>
-  );
+/**
+ * Feedback summary tile — counts, average ratings, and a few recent comments,
+ * linking through to the full /admin/feedback page. Deliberately renders
+ * nothing identifying: no device id, user id, or coupon code, and only the
+ * comment text and its date.
+ */
+// Quote comments sparingly on the summary tile — long ones are truncated
+// here; the full text is still available on /admin/feedback.
+const COMMENT_PREVIEW_MAX = 160;
+function previewComment(text: string): string {
+  const trimmed = text.trim();
+  return trimmed.length > COMMENT_PREVIEW_MAX
+    ? `${trimmed.slice(0, COMMENT_PREVIEW_MAX).trimEnd()}…`
+    : trimmed;
 }
 
-function WaitlistSection({ entries, agg }: { entries: WaitlistEntry[]; agg: WaitlistAgg }) {
-  const displayCount = entries.length;
-  const comingSoon = entries.filter(e => e.source === "coming_soon").length;
-  const paywall = entries.filter(e => e.source === "paywall").length;
-  const mobile = entries.filter(e => e.device_type === "mobile").length;
-  const desktop = entries.filter(e => e.device_type === "desktop").length;
-  const wtp = { yes: 0, no: 0, maybe: 0 };
-  entries.filter(e => e.source === "paywall" && e.willing_to_pay).forEach(e => {
-    if (e.willing_to_pay) wtp[e.willing_to_pay]++;
-  });
-  const capstoneYes = entries.filter(e => e.source === "coming_soon" && e.needs_capstone === true).length;
-  const capstoneNo  = entries.filter(e => e.source === "coming_soon" && e.needs_capstone === false).length;
+function FeedbackSummary({ agg }: { agg: FeedbackAgg }) {
+  const comments = agg.recent_comments ?? [];
 
-  // Build sorted list of unique "YYYY-MM" months present in the data
-  const months = Array.from(
-    new Set(entries.map(e => e.created_at.slice(0, 7)))
-  ).sort().reverse();
-
-  const [selectedMonth, setSelectedMonth] = useState<string>(months[0] ?? "");
-
-  function buildCSV(rows: WaitlistEntry[]) {
-    const cell = (value: string) => {
-      const safe = /^[=+\-@]/.test(value) ? `'${value}` : value;
-      return `"${safe.replace(/"/g, '""')}"`;
-    };
-    const header = "Name,Email,Source,Device,Year,Subject,Module,Willing to Pay,Needs Capstone,Date";
-    const lines = rows.map(e =>
-      [
-        cell(e.name),
-        cell(e.email),
-        cell(e.source ?? ""),
-        cell(e.device_type ?? ""),
-        cell(e.year_label ?? ""),
-        cell(e.subject_title ?? ""),
-        cell(e.module_title ?? ""),
-        cell(e.willing_to_pay ?? ""),
-        cell(e.needs_capstone === null ? "" : String(e.needs_capstone)),
-        cell(new Date(e.created_at).toLocaleDateString("en-PH")),
-      ].join(",")
-    );
-    return [header, ...lines].join("\n");
-  }
-
-  function triggerDownload(csv: string, filename: string) {
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function downloadMonth() {
-    if (!selectedMonth) return;
-    const filtered = entries.filter(e => e.created_at.startsWith(selectedMonth));
-    triggerDownload(buildCSV(filtered), `waitlist-${selectedMonth}.csv`);
-  }
-
-  if (displayCount === 0) {
-    return <p className="font-sans text-xs text-ink-faint">No signups yet.</p>;
+  if (agg.total === 0) {
+    return <p className="font-sans text-xs text-ink-faint">No feedback yet.</p>;
   }
 
   return (
     <div>
-      <div className="flex flex-wrap items-baseline gap-4 mb-6">
-        <div className="flex items-center gap-2 ml-auto">
-          <select
-            value={selectedMonth}
-            onChange={e => setSelectedMonth(e.target.value)}
-            className="font-mono text-xs text-ink bg-paper border border-ink-faint/30 px-2 py-1 outline-none focus:border-ink transition-colors duration-150"
-          >
-            {months.map(m => {
-              const [y, mo] = m.split("-");
-              const label = new Date(Number(y), Number(mo) - 1).toLocaleString("en-PH", { month: "long", year: "numeric" });
-              const count = entries.filter(e => e.created_at.startsWith(m)).length;
-              return <option key={m} value={m}>{label} ({count})</option>;
-            })}
-          </select>
-          <button
-            type="button"
-            onClick={downloadMonth}
-            disabled={!selectedMonth}
-            className="font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150 disabled:opacity-40"
-          >
-            Download CSV
-          </button>
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8 max-w-wide mx-auto">
+        <Stat value={agg.total} label="Total Responses" />
+        <Stat value={agg.avg_app_rating ?? "—"} label="Avg App Rating" />
+        <Stat value={agg.avg_module_rating ?? "—"} label="Avg Module Rating" />
       </div>
 
-      {/* Summary stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 max-w-wide mx-auto">
-        <Stat value={comingSoon} label="Coming Soon Signups" />
-        <Stat value={paywall} label="Paywall Signups" />
-        <Stat value={mobile} label="Mobile" />
-        <Stat value={desktop} label="Desktop" />
-      </div>
-
-      {/* Pie chart — signups by year level */}
-      <WaitlistPieChart byYear={agg.by_year ?? []} total={agg.total} />
-
-      {/* Ranked demand — which subjects to focus on */}
-      <WaitlistSubjectDemand bySubject={agg.by_subject ?? []} />
-
-      {paywall > 0 && (
-        <div className="mb-6">
-          <p className="label-sm text-ink-muted mb-3">Willing to Pay (paywall group)</p>
-          <div className="flex gap-4">
-            {(["yes", "no", "maybe"] as const).map(k => (
-              <div key={k} className="border border-ink-faint/30 px-5 py-4 text-center min-w-[72px]">
-                <p className="font-serif text-2xl text-ink mb-1">{wtp[k]}</p>
-                <p className="label-sm text-ink-muted capitalize">{k}</p>
-              </div>
+      {comments.length > 0 && (
+        <div className="mb-8 max-w-wide mx-auto">
+          <p className="label-sm text-ink-muted mb-3">Recent Comments</p>
+          <div className="flex flex-col gap-3">
+            {comments.map((c, i) => (
+              <blockquote key={i} className="border-l-2 border-ink-faint/30 pl-4">
+                <p className="font-sans text-sm text-ink italic">&ldquo;{previewComment(c.feedback_text)}&rdquo;</p>
+                <p className="font-mono text-[10px] text-ink-faint mt-1">
+                  {new Date(c.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
+                </p>
+              </blockquote>
             ))}
           </div>
         </div>
       )}
 
-      {comingSoon > 0 && (
-        <div className="mb-8">
-          <p className="label-sm text-ink-muted mb-3">Needs Capstone Resources (coming-soon group)</p>
-          <div className="flex gap-4">
-            {([["Yes", capstoneYes], ["No", capstoneNo]] as [string, number][]).map(([label, count]) => (
-              <div key={label} className="border border-ink-faint/30 px-5 py-4 text-center min-w-[72px]">
-                <p className="font-serif text-2xl text-ink mb-1">{count}</p>
-                <p className="label-sm text-ink-muted">{label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Table */}
-      <WaitlistTable entries={entries} />
+      <a
+        href="/admin/feedback"
+        className="font-mono text-xs text-ink-muted border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150 inline-block"
+      >
+        View all feedback →
+      </a>
     </div>
   );
 }
@@ -859,7 +633,7 @@ export function AdminDashboard({
   totalUniqueUsers, todayUsers, last7Sessions,
   activeNow, newUsers, totalRevenue, monthlyRevenue,
   activeSubscribers, newSubscribersToday,
-  waitlistEntries, waitlistAgg, profilesAgg, transactions,
+  feedbackAgg, profilesAgg, transactions,
   unreflectedPayments, reconcileError,
 }: Props) {
   return (
@@ -969,14 +743,14 @@ export function AdminDashboard({
         </div>
       </section>
 
-      {/* ── Waitlist ────────────────────────────────────────── */}
+      {/* ── Feedback ────────────────────────────────────────── */}
       <section className="mb-20">
         <SectionBand
           eyebrow="06"
-          title="Waitlist"
-          summary={`${waitlistAgg.total} total signups`}
+          title="Feedback"
+          summary={`${feedbackAgg.total} responses`}
         />
-        <WaitlistSection entries={waitlistEntries} agg={waitlistAgg} />
+        <FeedbackSummary agg={feedbackAgg} />
       </section>
 
       {/* ── Student profiles — who our users are and where they

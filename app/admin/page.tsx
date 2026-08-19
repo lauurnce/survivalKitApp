@@ -52,15 +52,14 @@ export default async function AdminPage() {
     { data: topSectionsRaw },
     { data: activeRaw },
     { data: userTotalsRaw },
-    { data: waitlistRaw },
     { data: activeSubscribersRaw },
     { data: paymentsRaw },
     // Revenue query is SEPARATE from paymentsRaw and has NO row cap. The
     // transactions list (paymentsRaw) is capped at 100 for display; using it
     // for revenue would silently undercount once lifetime payments exceed 100.
     { data: revenueRaw },
-    { data: waitlistAggRaw },
     { data: profilesAggRaw },
+    { data: feedbackAggRaw },
   ] = await Promise.all([
     // Funnel distinct-device counts per event_type, aggregated in Postgres
     // (the old raw .limit() was capped at 1000 rows and undercounted).
@@ -93,11 +92,6 @@ export default async function AdminPage() {
     // deliberately does not read: it counts a device that visited once months
     // ago as "recurring", which is arithmetic wearing a behaviour label.
     supabase.rpc("admin_user_totals", { p_new_days: 3 }),
-    supabase
-      .from("waitlist")
-      .select("id, email, name, source, device_type, willing_to_pay, needs_capstone, year_label, subject_title, module_title, created_at")
-      .order("created_at", { ascending: false })
-      .limit(500),
     supabase.rpc("admin_active_subscribers"),
     supabase
       .from("payments")
@@ -111,12 +105,13 @@ export default async function AdminPage() {
       .select("amount, paid_at")
       .gte("paid_at", windowStartUtcIso)
       .lt("paid_at", nextMonthStartUtcIso),
-    // Aggregated waitlist stats: total + breakdowns by year and subject.
-    // Runs entirely in Postgres so charts are never limited to the 500-row display cap.
-    supabase.rpc("admin_waitlist_agg"),
     // Aggregated student profiles: pathway / university / major breakdowns
     // for deciding which future tracks to build.
     supabase.rpc("admin_profiles_agg"),
+    // Aggregated feedback stats: total responses, average app/module ratings,
+    // and the 3 most recent comments. Runs entirely in Postgres so the counts
+    // are never subject to PostgREST's 1000-row default cap.
+    supabase.rpc("admin_feedback_agg"),
   ]);
 
   const funnelCounts = new Map<string, number>();
@@ -259,12 +254,6 @@ export default async function AdminPage() {
     paymongo_link_id: p.paymongo_link_id,
   }));
 
-  const waitlistAgg = (waitlistAggRaw ?? { total: 0, by_year: [], by_subject: [] }) as {
-    total: number;
-    by_year: { year_label: string; count: number }[] | null;
-    by_subject: { subject_title: string; year_label: string; count: number }[] | null;
-  };
-
   const profilesAgg = (profilesAggRaw ?? { total: 0, by_pathway: [], by_university: [], by_major: [] }) as {
     total: number;
     by_pathway: { pathway: string; count: number }[] | null;
@@ -272,19 +261,17 @@ export default async function AdminPage() {
     by_major: { major: string; count: number }[] | null;
   };
 
-  const waitlistEntries = (waitlistRaw ?? []) as {
-    id: string;
-    email: string;
-    name: string;
-    source: "coming_soon" | "paywall";
-    device_type: "mobile" | "desktop";
-    willing_to_pay: "yes" | "no" | "maybe" | null;
-    needs_capstone: boolean | null;
-    year_label: string | null;
-    subject_title: string | null;
-    module_title: string | null;
-    created_at: string;
-  }[];
+  const feedbackAgg = (feedbackAggRaw ?? {
+    total: 0,
+    avg_app_rating: null,
+    avg_module_rating: null,
+    recent_comments: [],
+  }) as {
+    total: number;
+    avg_app_rating: number | null;
+    avg_module_rating: number | null;
+    recent_comments: { feedback_text: string; created_at: string }[] | null;
+  };
 
   // Reconcile: paid PayMongo links with no matching active subscription
   // ("paid but not reflected"). Calls the PayMongo API; if it fails (network,
@@ -314,8 +301,7 @@ export default async function AdminPage() {
       monthlyRevenue={monthlyRevenue}
       activeSubscribers={activeSubscribers}
       newSubscribersToday={paymentsToday}
-      waitlistEntries={waitlistEntries}
-      waitlistAgg={waitlistAgg}
+      feedbackAgg={feedbackAgg}
       profilesAgg={profilesAgg}
       transactions={transactions}
       unreflectedPayments={unreflectedPayments}
