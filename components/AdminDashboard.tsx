@@ -75,10 +75,8 @@ interface Props {
   totalUniqueUsers: number;
   todayUsers: number;
   last7Sessions: number;
-  approvedUnlocks: number;
   activeNow: number;
   newUsers: number;
-  recurringUsers: number;
   totalRevenue: number;
   monthlyRevenue: MonthlyRevenue[];
   activeSubscribers: number;
@@ -859,7 +857,7 @@ function WaitlistSection({ entries, agg }: { entries: WaitlistEntry[]; agg: Wait
 export function AdminDashboard({
   funnel, dau, topSubjects, topModules, topSections,
   totalUniqueUsers, todayUsers, last7Sessions,
-  approvedUnlocks, activeNow, newUsers, recurringUsers, totalRevenue, monthlyRevenue,
+  activeNow, newUsers, totalRevenue, monthlyRevenue,
   activeSubscribers, newSubscribersToday,
   waitlistEntries, waitlistAgg, profilesAgg, transactions,
   unreflectedPayments, reconcileError,
@@ -913,12 +911,10 @@ export function AdminDashboard({
         />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
           <Stat value={activeNow} label="Active Now (15 min)" dot />
-          <Stat value={totalUniqueUsers.toLocaleString()} label="Total Users" />
+          <Stat value={totalUniqueUsers.toLocaleString()} label="Devices reached" />
           <Stat value={newUsers} label="New Users (3 days)" />
-          <Stat value={recurringUsers} label="Recurring Users" />
           <Stat value={todayUsers} label="Active Today (PH)" />
           <Stat value={last7Sessions} label="Active User-Days (7d)" />
-          <Stat value={approvedUnlocks} label="Approved Unlocks" />
         </div>
         <div className="max-w-wide mx-auto">
           <DauChart data={dau} />

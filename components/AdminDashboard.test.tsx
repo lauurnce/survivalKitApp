@@ -20,10 +20,8 @@ function makeDashboardProps(overrides: Partial<DashboardProps> = {}): DashboardP
     totalUniqueUsers: 5668,
     todayUsers: 73,
     last7Sessions: 624,
-    approvedUnlocks: 0,
     activeNow: 1,
     newUsers: 66,
-    recurringUsers: 5602,
     totalRevenue: 0,
     monthlyRevenue: [],
     activeSubscribers: 0,
@@ -52,10 +50,20 @@ describe("AdminDashboard (characterization)", () => {
     expect(bands).toEqual(["01", "02", "03", "04", "05", "06", "07"]);
   });
 
-  it("renders a stat tile's value and label as given", () => {
+  it("renders the Devices reached tile sourced from the same total", () => {
     render(<AdminDashboard {...makeDashboardProps()} />);
     expect(screen.getByText("5,668")).toBeInTheDocument();
-    expect(screen.getByText(/Total Users/i)).toBeInTheDocument();
+    expect(screen.getByText(/Devices reached/i)).toBeInTheDocument();
+  });
+
+  it("does not render the deleted Recurring Users tile", () => {
+    render(<AdminDashboard {...makeDashboardProps()} />);
+    expect(screen.queryByText(/Recurring/i)).toBeNull();
+  });
+
+  it("does not render the deleted Approved Unlocks tile", () => {
+    render(<AdminDashboard {...makeDashboardProps()} />);
+    expect(screen.queryByText(/Approved Unlocks/i)).toBeNull();
   });
 
   it("renders one BarChart row per datum with its count", () => {

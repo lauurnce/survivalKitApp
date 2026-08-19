@@ -50,9 +50,6 @@ export default async function AdminPage() {
     { data: subjectCounters },
     { data: moduleCounters },
     { data: topSectionsRaw },
-    // Pending-unlocks result isn't consumed on the dashboard (only approvedRaw is).
-    {},
-    { data: approvedRaw },
     { data: activeRaw },
     { data: userTotalsRaw },
     { data: waitlistRaw },
@@ -87,18 +84,14 @@ export default async function AdminPage() {
       .order("read_count", { ascending: false })
       .limit(8),
     supabase.rpc("admin_top_sections", { p_limit: 8 }),
-    supabase
-      .from("unlocks")
-      .select("id, device_id, gcash_ref, amount, created_at, modules(title)")
-      .eq("status", "pending")
-      .order("created_at", { ascending: false })
-      .limit(50),
-    supabase.from("unlocks").select("id, amount").eq("status", "approved"),
     // "Active now" = distinct devices with any event in the last 15 min,
     // counted in Postgres (avoids the row cap and counts users still reading).
     supabase.rpc("admin_active_since", { p_minutes: 15 }),
-    // Total users + new-vs-recurring split, aggregated in Postgres so it
-    // counts all devices (the old raw enter query was capped at 1000 rows).
+    // Total devices + new-devices split, aggregated in Postgres so it counts
+    // all devices (the old raw enter query was capped at 1000 rows). The RPC
+    // also returns a recurring_users figure (total - new) that the dashboard
+    // deliberately does not read: it counts a device that visited once months
+    // ago as "recurring", which is arithmetic wearing a behaviour label.
     supabase.rpc("admin_user_totals", { p_new_days: 3 }),
     supabase
       .from("waitlist")
@@ -205,15 +198,14 @@ export default async function AdminPage() {
   // activeRaw is a single bigint from admin_active_since() (returned as a number)
   const activeNow = Number(activeRaw ?? 0);
 
-  // userTotalsRaw is a single row from admin_user_totals(): total / new / recurring
+  // userTotalsRaw is a single row from admin_user_totals(): total / new / recurring.
+  // recurring_users is intentionally not read here — see the RPC call comment above.
   const userTotals = ((userTotalsRaw ?? [])[0] ?? {}) as {
     total_users?: number;
     new_users?: number;
-    recurring_users?: number;
   };
   const totalUniqueUsers = Number(userTotals.total_users ?? 0);
   const newUsers = Number(userTotals.new_users ?? 0);
-  const recurringUsers = Number(userTotals.recurring_users ?? 0);
 
   const activeSubscribers = Number(activeSubscribersRaw ?? 0);
 
@@ -316,10 +308,8 @@ export default async function AdminPage() {
       totalUniqueUsers={totalUniqueUsers}
       todayUsers={todayUsers}
       last7Sessions={last7Sessions}
-      approvedUnlocks={approvedRaw?.length ?? 0}
       activeNow={activeNow}
       newUsers={newUsers}
-      recurringUsers={recurringUsers}
       totalRevenue={totalRevenue}
       monthlyRevenue={monthlyRevenue}
       activeSubscribers={activeSubscribers}
