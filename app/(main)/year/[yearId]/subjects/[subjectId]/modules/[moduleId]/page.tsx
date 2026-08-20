@@ -13,6 +13,7 @@ import { PageTracker } from "@/components/PageTracker";
 import { LastModuleTracker } from "@/components/LastModuleTracker";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
 import { ModuleReaderClient } from "@/components/ModuleReaderClient";
+import { ModuleSurveyCard } from "@/components/ModuleSurveyCard";
 import { pickFirstActivity } from "@/lib/freeSample";
 import { sectionLabel } from "@/lib/sectionLabel";
 
@@ -26,7 +27,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { subjectId, moduleId } = await params;
   const supabase = createServerClient();
   const [{ data: mod }, { data: subject }] = await Promise.all([
-    supabase.from("modules").select("title").eq("id", moduleId).single(),
+    supabase
+      .from("modules")
+      .select("title")
+      .eq("id", moduleId)
+      .eq("subject_id", subjectId)
+      .single(),
     supabase.from("subjects").select("title").eq("id", subjectId).single(),
   ]);
   if (!mod) return {};
@@ -41,7 +47,11 @@ export default async function ReaderPage({ params }: Props) {
   const supabase = createServerClient();
 
   const [{ data: mod }, { data: subject }, { data: siblingModules }] = await Promise.all([
-    supabase.from("modules").select("*").eq("id", moduleId).single(),
+    // Bind the module to the subject in the URL. Without this, a paid
+    // subject_month for one subject unlocked every module in the year: the
+    // subscription check below tests the URL's subject, not the module's, so
+    // swapping in another subject's moduleId rendered its gated reviewers.
+    supabase.from("modules").select("*").eq("id", moduleId).eq("subject_id", subjectId).single(),
     supabase.from("subjects").select("*, years(label, sort_order)").eq("id", subjectId).single(),
     supabase
       .from("modules")
@@ -147,7 +157,7 @@ export default async function ReaderPage({ params }: Props) {
   const year = subject.years as { label: string; sort_order: number } | null;
 
   return (
-    <ModuleReaderClient moduleId={moduleId} userId={userId}>
+    <ModuleReaderClient moduleId={moduleId} moduleTitle={mod.title} userId={userId}>
       <main className="min-h-screen bg-paper">
       <PageTracker event="module_open" yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
       <LastModuleTracker
@@ -188,9 +198,7 @@ export default async function ReaderPage({ params }: Props) {
           <PaywallTeaser
             yearId={yearId}
             subjectId={subjectId}
-            yearLabel={year?.label}
             subjectTitle={subject.title}
-            ctaHref="#subscribe"
             reviewerCount={reviewerCount || undefined}
           />
         )}
@@ -203,7 +211,6 @@ export default async function ReaderPage({ params }: Props) {
             yearId={yearId}
             subjectId={subjectId}
             unlockAll={unlockActivities}
-            yearLabel={year?.label}
             subjectTitle={subject.title}
             freeSectionId={freeSectionId}
             reviewerCount={reviewerCount}
@@ -229,6 +236,7 @@ export default async function ReaderPage({ params }: Props) {
             }}
           />
         </div>
+        <ModuleSurveyCard />
         {nextModule ? (
           <>
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-ink-faint mb-4">
