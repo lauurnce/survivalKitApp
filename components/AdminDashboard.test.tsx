@@ -49,6 +49,46 @@ function makeDashboardProps(overrides: Partial<DashboardProps> = {}): DashboardP
   };
 }
 
+describe("AdminDashboard (label and normalisation)", () => {
+  it("renders a long university name in full, not only in a title attribute", () => {
+    const full = "Polytechnic University of the Philippines";
+    render(<AdminDashboard {...makeDashboardProps({
+      profilesAgg: {
+        total: 2,
+        by_pathway: [],
+        by_university: [{ university: full, count: 2 }],
+        by_major: [],
+      },
+    })} />);
+    // jsdom cannot see CSS clipping -- `truncate` hides text visually while
+    // leaving it in the DOM, so getByText passes either way and would guard
+    // nothing. Assert the mechanism instead: the label must not carry
+    // `truncate`, and must keep `shrink-0` so the bar column stays aligned.
+    const label = screen.getByText(full);
+    expect(label.className).not.toMatch(/\btruncate\b/);
+    expect(label.className).toMatch(/\bshrink-0\b/);
+  });
+
+  it("merges the four observed BSIT spellings into one row of 12", () => {
+    render(<AdminDashboard {...makeDashboardProps({
+      profilesAgg: {
+        total: 12,
+        by_pathway: [],
+        by_university: [],
+        by_major: [
+          { major: "BS Information Technology", count: 9 },
+          { major: "BS INFORMATION TECHNOLOGY", count: 1 },
+          { major: "BSIT", count: 1 },
+          { major: "BS Information technology", count: 1 },
+        ],
+      },
+    })} />);
+    expect(screen.getAllByText("BS Information Technology")).toHaveLength(1);
+    expect(screen.getByText("12")).toBeInTheDocument();
+    expect(screen.queryByText("BSIT")).toBeNull();
+  });
+});
+
 describe("AdminDashboard (characterization)", () => {
   it("renders every numbered section band in order", () => {
     render(<AdminDashboard {...makeDashboardProps()} />);

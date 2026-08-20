@@ -5,6 +5,7 @@ import { useState } from "react";
 // pulls in lib/reconcile's server-side deps (node:crypto via lib/paymongo).
 import type { UnreflectedPayment } from "@/lib/reconcile";
 import type { MonthlyRevenue } from "@/lib/payments";
+import { canonicalProgram, canonicalUniversity } from "@/lib/academicPrograms";
 
 interface FunnelStep {
   type: string;
@@ -253,6 +254,42 @@ function MonthlyRevenueSection({ months }: { months: MonthlyRevenue[] }) {
   );
 }
 
+/**
+ * Free-text profile fields arrive unnormalised: the same program appears as
+ * "BS Information Technology", "BSIT" and "BS Information technology", which
+ * the dashboard would otherwise draw as three separate programs.
+ *
+ * Canonicalise, then RE-SUM. Relabelling alone leaves several rows that merely
+ * share a label, which reads worse than the original split. Re-sort after
+ * merging, because combining counts changes the ranking.
+ *
+ * This lives in the component rather than the page so the guarantee cannot be
+ * bypassed by a future caller passing raw rows.
+ */
+function mergeByLabel<T>(
+  rows: T[] | null,
+  label: (row: T) => string,
+  count: (row: T) => number,
+  canonical: (raw: string) => string
+): TopItem[] {
+  const totals = new Map<string, number>();
+  for (const row of rows ?? []) {
+    const key = canonical(label(row));
+    totals.set(key, (totals.get(key) ?? 0) + count(row));
+  }
+  return [...totals.entries()]
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+/**
+ * The label column keeps a FIXED width on purpose. The row is
+ * `flex items-center gap-3` with a shrink-0 label and a flex-1 bar, so that
+ * width is what makes every row's bar start at the same x. Dropping it to fit
+ * long names lets each bar begin at a different offset and the bar column stops
+ * forming a straight edge. So the fix for clipped names is a WIDER column plus
+ * a two-line clamp -- never removing the width.
+ */
 function BarChart({ data, label }: { data: TopItem[]; label: string }) {
   if (!data.length) return (
     <div>
@@ -267,7 +304,7 @@ function BarChart({ data, label }: { data: TopItem[]; label: string }) {
       <div className="space-y-2">
         {data.map(item => (
           <div key={item.label} className="group flex items-center gap-3">
-            <span className="font-sans text-xs text-ink-muted w-28 sm:w-40 truncate shrink-0" title={item.label}>{item.label}</span>
+            <span className="font-sans text-xs text-ink-muted w-40 sm:w-56 shrink-0 leading-tight line-clamp-2" title={item.label}>{item.label}</span>
             <div className="flex-1 bg-ink-faint/20 h-4">
               <div className="h-4 bg-accent transition-all duration-300 group-hover:bg-accent-dark" style={{ width: `${(item.count / max) * 100}%` }} />
             </div>
@@ -788,11 +825,11 @@ export function AdminDashboard({
               label="Preferred Pathways"
             />
             <BarChart
-              data={(profilesAgg.by_university ?? []).map(u => ({ label: u.university, count: u.count }))}
+              data={mergeByLabel(profilesAgg.by_university, u => u.university, u => u.count, canonicalUniversity)}
               label="Universities"
             />
             <BarChart
-              data={(profilesAgg.by_major ?? []).map(m => ({ label: m.major, count: m.count }))}
+              data={mergeByLabel(profilesAgg.by_major, m => m.major, m => m.count, canonicalProgram)}
               label="Majors / Programs"
             />
           </div>
