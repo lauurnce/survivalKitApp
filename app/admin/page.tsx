@@ -261,12 +261,11 @@ export default async function AdminPage() {
     by_major: { major: string; count: number }[] | null;
   };
 
-  const feedbackAgg = (feedbackAggRaw ?? {
-    total: 0,
-    avg_app_rating: null,
-    avg_module_rating: null,
-    recent_comments: [],
-  }) as {
+  // NOT defaulted to zeros. admin_feedback_agg is an unapplied migration, so
+  // an absent result is the normal case today -- and user_feedback holds real
+  // rows. Zeroing here would render "0 responses" over live data. An unmeasured
+  // value is null and renders as "not read"; it is never given a number.
+  const feedbackAgg = (feedbackAggRaw ?? null) as null | {
     total: number;
     avg_app_rating: number | null;
     avg_module_rating: number | null;

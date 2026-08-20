@@ -103,6 +103,27 @@ describe("AdminDashboard (characterization)", () => {
     expect(screen.getByRole("link", { name: /feedback/i })).toHaveAttribute("href", "/admin/feedback");
   });
 
+  it("renders 'not read' when the feedback aggregate is absent, never a zero", () => {
+    // The RPC behind this is unapplied, so absent is the CURRENT state, not a
+    // hypothetical. A zero here would be indistinguishable from genuinely
+    // having no feedback -- and user_feedback holds real rows.
+    render(<AdminDashboard {...makeDashboardProps({ feedbackAgg: null })} />);
+    // Both the section header and the body say it — the header must not claim
+    // a response count it does not have either.
+    expect(screen.getAllByText(/not read/i).length).toBeGreaterThanOrEqual(2);
+    expect(screen.queryByText(/No feedback yet/i)).toBeNull();
+    expect(screen.queryByText("0 responses")).toBeNull();
+  });
+
+  it("still says 'no feedback yet' when the aggregate really is zero", () => {
+    // Absent and zero must stay distinguishable in both directions.
+    render(<AdminDashboard {...makeDashboardProps({
+      feedbackAgg: { total: 0, avg_app_rating: null, avg_module_rating: null, recent_comments: [] },
+    })} />);
+    expect(screen.getByText(/No feedback yet/i)).toBeInTheDocument();
+    expect(screen.queryByText(/not read/i)).toBeNull();
+  });
+
   it("does not render anything identifying in the feedback summary", () => {
     render(<AdminDashboard {...makeDashboardProps()} />);
     expect(screen.queryByText(/device_id/i)).toBeNull();

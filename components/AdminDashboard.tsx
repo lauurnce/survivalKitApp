@@ -68,7 +68,8 @@ interface Props {
   monthlyRevenue: MonthlyRevenue[];
   activeSubscribers: number;
   newSubscribersToday: number;
-  feedbackAgg: FeedbackAgg;
+  /** null means the aggregate could not be read — renders as "not read", never 0. */
+  feedbackAgg: FeedbackAgg | null;
   profilesAgg: ProfilesAgg;
   transactions: TransactionRow[];
   unreflectedPayments: UnreflectedPayment[];
@@ -587,7 +588,21 @@ function previewComment(text: string): string {
     : trimmed;
 }
 
-function FeedbackSummary({ agg }: { agg: FeedbackAgg }) {
+function FeedbackSummary({ agg }: { agg: FeedbackAgg | null }) {
+  // Absent and empty are different facts and must not collapse into one
+  // message. `null` means the aggregate did not come back -- currently the
+  // normal state, because admin_feedback_agg is an unapplied migration. Saying
+  // "No feedback yet" there would assert something false about the product;
+  // rendering 0 would be worse still, because a zero looks like a measurement.
+  if (agg === null) {
+    return (
+      <p className="font-sans text-xs text-ink-faint">
+        not read — <span className="font-mono">admin_feedback_agg</span> did not return.
+        Apply <span className="font-mono">20260821000000_admin_feedback_agg.sql</span>, then reload.
+      </p>
+    );
+  }
+
   const comments = agg.recent_comments ?? [];
 
   if (agg.total === 0) {
@@ -748,7 +763,7 @@ export function AdminDashboard({
         <SectionBand
           eyebrow="06"
           title="Feedback"
-          summary={`${feedbackAgg.total} responses`}
+          summary={feedbackAgg === null ? "not read" : `${feedbackAgg.total} responses`}
         />
         <FeedbackSummary agg={feedbackAgg} />
       </section>
