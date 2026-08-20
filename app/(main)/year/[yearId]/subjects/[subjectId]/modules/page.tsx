@@ -10,6 +10,7 @@ import { PaywallTeaser } from "@/components/PaywallTeaser";
 import { ShareProgressButton } from "@/components/share/ShareProgressButton";
 import { formatCount } from "@/lib/counters";
 import { sectionLabel } from "@/lib/sectionLabel";
+import { modulePath } from "@/lib/subscribeRedirect";
 
 export const revalidate = 300;
 
@@ -94,9 +95,8 @@ export default async function ModulesPage({ params }: Props) {
               <PaywallTeaser
                 yearId={yearId}
                 subjectId={subjectId}
-                yearLabel={year?.label}
                 subjectTitle={subject.title}
-                ctaHref={`/year/${yearId}/subjects/${subjectId}/modules/${modules[0].id}#subscribe`}
+                from={modulePath(yearId, subjectId, modules[0].id)}
                 reviewerCount={reviewerCount ?? undefined}
               />
               <div className="mt-6 flex justify-end">
@@ -113,7 +113,7 @@ export default async function ModulesPage({ params }: Props) {
           {modules?.map((mod, i) => (
             <Link
               key={mod.id}
-              href={`/year/${yearId}/subjects/${subjectId}/modules/${mod.id}`}
+              href={modulePath(yearId, subjectId, mod.id)}
               className="group flex items-start gap-6 py-8 hover:bg-ink/[0.02] -mx-4 px-4 transition-colors duration-150"
             >
               <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mt-1 w-8 shrink-0 text-right">
