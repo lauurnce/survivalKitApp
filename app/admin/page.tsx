@@ -50,20 +50,16 @@ export default async function AdminPage() {
     { data: subjectCounters },
     { data: moduleCounters },
     { data: topSectionsRaw },
-    // Pending-unlocks result isn't consumed on the dashboard (only approvedRaw is).
-    {},
-    { data: approvedRaw },
     { data: activeRaw },
     { data: userTotalsRaw },
-    { data: waitlistRaw },
     { data: activeSubscribersRaw },
     { data: paymentsRaw },
     // Revenue query is SEPARATE from paymentsRaw and has NO row cap. The
     // transactions list (paymentsRaw) is capped at 100 for display; using it
     // for revenue would silently undercount once lifetime payments exceed 100.
     { data: revenueRaw },
-    { data: waitlistAggRaw },
     { data: profilesAggRaw },
+    { data: feedbackAggRaw },
   ] = await Promise.all([
     // Funnel distinct-device counts per event_type, aggregated in Postgres
     // (the old raw .limit() was capped at 1000 rows and undercounted).
@@ -87,24 +83,15 @@ export default async function AdminPage() {
       .order("read_count", { ascending: false })
       .limit(8),
     supabase.rpc("admin_top_sections", { p_limit: 8 }),
-    supabase
-      .from("unlocks")
-      .select("id, device_id, gcash_ref, amount, created_at, modules(title)")
-      .eq("status", "pending")
-      .order("created_at", { ascending: false })
-      .limit(50),
-    supabase.from("unlocks").select("id, amount").eq("status", "approved"),
     // "Active now" = distinct devices with any event in the last 15 min,
     // counted in Postgres (avoids the row cap and counts users still reading).
     supabase.rpc("admin_active_since", { p_minutes: 15 }),
-    // Total users + new-vs-recurring split, aggregated in Postgres so it
-    // counts all devices (the old raw enter query was capped at 1000 rows).
+    // Total devices + new-devices split, aggregated in Postgres so it counts
+    // all devices (the old raw enter query was capped at 1000 rows). The RPC
+    // also returns a recurring_users figure (total - new) that the dashboard
+    // deliberately does not read: it counts a device that visited once months
+    // ago as "recurring", which is arithmetic wearing a behaviour label.
     supabase.rpc("admin_user_totals", { p_new_days: 3 }),
-    supabase
-      .from("waitlist")
-      .select("id, email, name, source, device_type, willing_to_pay, needs_capstone, year_label, subject_title, module_title, created_at")
-      .order("created_at", { ascending: false })
-      .limit(500),
     supabase.rpc("admin_active_subscribers"),
     supabase
       .from("payments")
@@ -118,12 +105,13 @@ export default async function AdminPage() {
       .select("amount, paid_at")
       .gte("paid_at", windowStartUtcIso)
       .lt("paid_at", nextMonthStartUtcIso),
-    // Aggregated waitlist stats: total + breakdowns by year and subject.
-    // Runs entirely in Postgres so charts are never limited to the 500-row display cap.
-    supabase.rpc("admin_waitlist_agg"),
     // Aggregated student profiles: pathway / university / major breakdowns
     // for deciding which future tracks to build.
     supabase.rpc("admin_profiles_agg"),
+    // Aggregated feedback stats: total responses, average app/module ratings,
+    // and the 3 most recent comments. Runs entirely in Postgres so the counts
+    // are never subject to PostgREST's 1000-row default cap.
+    supabase.rpc("admin_feedback_agg"),
   ]);
 
   const funnelCounts = new Map<string, number>();
@@ -205,15 +193,14 @@ export default async function AdminPage() {
   // activeRaw is a single bigint from admin_active_since() (returned as a number)
   const activeNow = Number(activeRaw ?? 0);
 
-  // userTotalsRaw is a single row from admin_user_totals(): total / new / recurring
+  // userTotalsRaw is a single row from admin_user_totals(): total / new / recurring.
+  // recurring_users is intentionally not read here — see the RPC call comment above.
   const userTotals = ((userTotalsRaw ?? [])[0] ?? {}) as {
     total_users?: number;
     new_users?: number;
-    recurring_users?: number;
   };
   const totalUniqueUsers = Number(userTotals.total_users ?? 0);
   const newUsers = Number(userTotals.new_users ?? 0);
-  const recurringUsers = Number(userTotals.recurring_users ?? 0);
 
   const activeSubscribers = Number(activeSubscribersRaw ?? 0);
 
@@ -267,12 +254,6 @@ export default async function AdminPage() {
     paymongo_link_id: p.paymongo_link_id,
   }));
 
-  const waitlistAgg = (waitlistAggRaw ?? { total: 0, by_year: [], by_subject: [] }) as {
-    total: number;
-    by_year: { year_label: string; count: number }[] | null;
-    by_subject: { subject_title: string; year_label: string; count: number }[] | null;
-  };
-
   const profilesAgg = (profilesAggRaw ?? { total: 0, by_pathway: [], by_university: [], by_major: [] }) as {
     total: number;
     by_pathway: { pathway: string; count: number }[] | null;
@@ -280,19 +261,16 @@ export default async function AdminPage() {
     by_major: { major: string; count: number }[] | null;
   };
 
-  const waitlistEntries = (waitlistRaw ?? []) as {
-    id: string;
-    email: string;
-    name: string;
-    source: "coming_soon" | "paywall";
-    device_type: "mobile" | "desktop";
-    willing_to_pay: "yes" | "no" | "maybe" | null;
-    needs_capstone: boolean | null;
-    year_label: string | null;
-    subject_title: string | null;
-    module_title: string | null;
-    created_at: string;
-  }[];
+  // NOT defaulted to zeros. admin_feedback_agg is an unapplied migration, so
+  // an absent result is the normal case today -- and user_feedback holds real
+  // rows. Zeroing here would render "0 responses" over live data. An unmeasured
+  // value is null and renders as "not read"; it is never given a number.
+  const feedbackAgg = (feedbackAggRaw ?? null) as null | {
+    total: number;
+    avg_app_rating: number | null;
+    avg_module_rating: number | null;
+    recent_comments: { feedback_text: string; created_at: string }[] | null;
+  };
 
   // Reconcile: paid PayMongo links with no matching active subscription
   // ("paid but not reflected"). Calls the PayMongo API; if it fails (network,
@@ -316,16 +294,13 @@ export default async function AdminPage() {
       totalUniqueUsers={totalUniqueUsers}
       todayUsers={todayUsers}
       last7Sessions={last7Sessions}
-      approvedUnlocks={approvedRaw?.length ?? 0}
       activeNow={activeNow}
       newUsers={newUsers}
-      recurringUsers={recurringUsers}
       totalRevenue={totalRevenue}
       monthlyRevenue={monthlyRevenue}
       activeSubscribers={activeSubscribers}
       newSubscribersToday={paymentsToday}
-      waitlistEntries={waitlistEntries}
-      waitlistAgg={waitlistAgg}
+      feedbackAgg={feedbackAgg}
       profilesAgg={profilesAgg}
       transactions={transactions}
       unreflectedPayments={unreflectedPayments}

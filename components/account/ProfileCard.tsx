@@ -6,6 +6,7 @@ import { GENDERS, PATHWAYS, type Profile } from "@/lib/profile";
 import { saveProfileAction, type ProfileFormState } from "@/app/account/actions";
 import { universityImagePath, matchUniversity, landmarkLabel } from "@/lib/universities";
 import { UniversityCombobox } from "./UniversityCombobox";
+import { MajorCombobox } from "./MajorCombobox";
 
 const inputClass =
   "mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-sm text-ink";
@@ -113,11 +114,9 @@ function EditProfileModal({
 
           <label className="block text-sm text-ink-muted">
             Major / program
-            <input
+            <MajorCombobox
               name="major"
-              maxLength={120}
               defaultValue={profile?.major ?? ""}
-              placeholder="e.g. BS Information Technology"
               className={inputClass}
             />
           </label>
