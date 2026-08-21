@@ -86,7 +86,11 @@ vi.mock("@/lib/supabase/server", () => ({
     }),
   }),
 }));
-vi.mock("@/lib/auth/currentUser", () => ({ getCurrentUserId: () => Promise.resolve(null) }));
+// Controllable per-test: the signed-out test overrides this to null. Every
+// other test in this file predates the sign-in requirement and assumed an
+// anonymous caller could check out, so they default to a signed-in user below.
+const { getCurrentUserIdMock } = vi.hoisted(() => ({ getCurrentUserIdMock: vi.fn() }));
+vi.mock("@/lib/auth/currentUser", () => ({ getCurrentUserId: getCurrentUserIdMock }));
 
 import { POST } from "./route";
 import { signDeviceCookie } from "@/lib/auth/deviceCookie";
@@ -95,6 +99,7 @@ const YEAR = "00000000-0000-0000-0000-000000000001";
 const SUBJ = "10000000-0001-0001-0001-000000000001";
 const DEV = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
 const VICTIM_DEV = "ffffffff-ffff-4fff-8fff-ffffffffffff";
+const USER = "11111111-1111-1111-1111-111111111111";
 
 let ipCounter = 0;
 function makeReq(body: Record<string, unknown>) {
@@ -115,6 +120,26 @@ beforeEach(() => {
   rateLimited = false;
   rateLimitCalls.length = 0;
   process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
+  getCurrentUserIdMock.mockReset();
+  getCurrentUserIdMock.mockResolvedValue(USER);
+});
+
+describe("POST /api/subscribe — requires sign-in", () => {
+  it("refuses to create a payment link for a signed-out caller", async () => {
+    getCurrentUserIdMock.mockResolvedValue(null);
+    const res = await POST(makeReq({ yearId: YEAR, deviceId: DEV }));
+    expect(res.status).toBe(401);
+    expect(await res.json()).toMatchObject({ error: expect.stringContaining("sign in") });
+    expect(linkCalls).toHaveLength(0);
+    expect(dynamicLinkCalls).toHaveLength(0);
+  });
+
+  it("creates the link for a signed-in caller", async () => {
+    getCurrentUserIdMock.mockResolvedValue(USER);
+    const res = await POST(makeReq({ yearId: YEAR, deviceId: DEV }));
+    expect(res.status).toBe(200);
+    expect(linkCalls).toHaveLength(1);
+  });
 });
 
 describe("POST /api/subscribe plan validation", () => {

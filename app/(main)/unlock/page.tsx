@@ -78,6 +78,14 @@ export default async function UnlockPage({ searchParams }: Props) {
   const returnPath = returnModule ? candidatePath : null;
   const backHref = returnPath ?? `/year/${yearId}/subjects/${subjectId}/modules`;
 
+  // Bring a signed-out payer straight back to this unlock page after they sign
+  // in, so they land on the plans again instead of restarting from the module
+  // list.
+  const fromValue = single(fromParam);
+  const returnHref = fromValue
+    ? `/unlock?year=${yearId}&subject=${subjectId}&from=${encodeURIComponent(fromValue)}`
+    : `/unlock?year=${yearId}&subject=${subjectId}`;
+
   // Nothing below depends on anything above, so pay for one round trip instead
   // of three on the app's highest-intent screen.
   const [cookieStore, userId, { count: reviewerCount }] = await Promise.all([
@@ -146,6 +154,22 @@ export default async function UnlockPage({ searchParams }: Props) {
                 className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
               >
                 Back to {returnModule?.title ?? subject.title} →
+              </Link>
+            </div>
+          ) : !userId ? (
+            <div className="border border-ink-faint/30 p-6">
+              <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-2">
+                Sign in required
+              </p>
+              <p className="font-sans text-base text-ink-muted mb-4">
+                Create a free account so we can email your receipt and keep this unlock
+                on every device.
+              </p>
+              <Link
+                href={`/login?next=${encodeURIComponent(returnHref)}`}
+                className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
+              >
+                Sign in to unlock →
               </Link>
             </div>
           ) : (
