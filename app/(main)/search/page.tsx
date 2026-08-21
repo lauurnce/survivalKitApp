@@ -59,7 +59,7 @@ export default async function SearchPage() {
       {/* Page header — dark navy */}
       <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
         <div className="max-w-wide mx-auto">
-          <BackLink href="/year" label="Select Year" className="text-taupe hover:text-paper" />
+          <BackLink href="/account" label="Dashboard" className="text-taupe hover:text-paper" />
           <div className="mt-10">
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
               § Search
