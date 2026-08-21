@@ -5,7 +5,9 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 // serverless instances and survives cold starts. Keys are namespaced by the
 // caller, e.g. "feedback:ip:203.0.113.9".
 //
-// Fails open: a limiter outage must never take down the endpoint it protects.
+// Fail closed when the limiter cannot make a decision. The protected database
+// routes cannot complete during that outage anyway, while allowing requests
+// would remove abuse protection from endpoints such as the code runner.
 
 let client: SupabaseClient | null = null;
 function getClient(): SupabaseClient {
@@ -34,7 +36,7 @@ export async function isServerRateLimited(
   });
   if (error) {
     console.error("check_rate_limit RPC error:", error);
-    return false;
+    return true;
   }
   return data === true;
 }

@@ -25,8 +25,15 @@ describe("isServerRateLimited", () => {
     expect(await isServerRateLimited("t:1", { max: 5, windowSeconds: 60 })).toBe(false);
   });
 
-  it("fails open when the RPC errors", async () => {
+  it("fails closed when the RPC errors", async () => {
     rpcMock.mockResolvedValue({ data: null, error: { message: "boom" } });
-    expect(await isServerRateLimited("t:1", { max: 5, windowSeconds: 60 })).toBe(false);
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    try {
+      expect(await isServerRateLimited("t:1", { max: 5, windowSeconds: 60 })).toBe(true);
+      expect(consoleError).toHaveBeenCalled();
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 });
