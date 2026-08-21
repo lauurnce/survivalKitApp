@@ -18,7 +18,7 @@ const {
   SESSION_COOKIE,
 } = await import("./adminSession");
 
-const SECRET = "test-admin-session-secret";
+const SECRET = "test-admin-session-secret-at-least-32";
 const TTL_MS = 8 * 60 * 60 * 1000;
 
 // Mint a token the way the module does, but with an arbitrary payload, so we
@@ -48,6 +48,11 @@ describe("adminSession", () => {
     it("throws rather than issuing an unsigned token when the secret is unset", () => {
       delete process.env.ADMIN_SESSION_SECRET;
       expect(() => createSessionToken()).toThrow(/ADMIN_SESSION_SECRET/);
+    });
+
+    it("throws rather than using a short signing secret", () => {
+      process.env.ADMIN_SESSION_SECRET = "too-short";
+      expect(() => createSessionToken()).toThrow(/at least 32/);
     });
 
     it("rejects a token whose payload was edited to extend its expiry", () => {

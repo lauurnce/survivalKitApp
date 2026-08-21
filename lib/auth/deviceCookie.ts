@@ -6,7 +6,9 @@ const DEVICE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 function getSecret(): string {
   const s = process.env.DEVICE_COOKIE_SECRET;
-  if (!s) throw new Error("DEVICE_COOKIE_SECRET env var is not set");
+  if (!s || s.length < 32) {
+    throw new Error("DEVICE_COOKIE_SECRET must be at least 32 characters");
+  }
   return s;
 }
 

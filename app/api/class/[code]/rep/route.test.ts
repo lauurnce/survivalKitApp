@@ -96,7 +96,7 @@ beforeEach(() => {
   mockPending = [];
   mockModules = [];
   mockProgressByDevice = {};
-  process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
+  process.env.DEVICE_COOKIE_SECRET = "test-device-secret-at-least-32-bytes";
 });
 
 describe("GET /api/class/[code]/rep", () => {

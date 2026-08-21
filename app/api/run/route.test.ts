@@ -42,7 +42,7 @@ function mockJudge0Response(overrides: Record<string, unknown> = {}) {
 
 beforeEach(() => {
   mockCookieValue = undefined;
-  process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
+  process.env.DEVICE_COOKIE_SECRET = "test-device-secret-at-least-32-bytes";
   fetchMock.mockReset();
 });
 
