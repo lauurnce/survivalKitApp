@@ -3,7 +3,6 @@
 import { RoadmapTimeline } from "@/components/dashboard/RoadmapTimeline";
 import { ActivityGraph } from "@/components/dashboard/ActivityGraph";
 import { SubscriptionTimeline } from "@/components/dashboard/SubscriptionTimeline";
-import { BackButton } from "@/components/ui/BackButton";
 import type { DashboardData } from "@/lib/dashboard";
 
 interface Props {
@@ -15,16 +14,12 @@ export function RoadmapPageClient({ initialData }: Props) {
 
   return (
     <div className="min-h-screen bg-paper">
-      {/* Back button + header */}
+      {/* Header */}
       <header className="border-b border-taupe/30 bg-paper/80 backdrop-blur sticky top-0 z-10">
         <div className="mx-auto max-w-4xl px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <BackButton fallbackHref="/account" label="Dashboard" />
-            <div className="flex-1 text-center">
-              <h1 className="font-serif text-lg text-ink">Academic Roadmap</h1>
-              <p className="text-xs text-ink-muted">Your complete journey overview</p>
-            </div>
-            <div className="w-20" /> {/* spacer for centering */}
+          <div className="text-center">
+            <h1 className="font-serif text-lg text-ink">Academic Roadmap</h1>
+            <p className="text-xs text-ink-muted">Your complete journey overview</p>
           </div>
         </div>
       </header>
