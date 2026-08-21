@@ -84,7 +84,7 @@ export function SchoolFields({
             onSchoolChange={onSchoolChange}
           />
           <span className="mt-1 block text-xs text-ink-faint">
-            Not on the list? Type it in — we still save it.
+            Not on the list? Just type it.
           </span>
         </label>
 
@@ -118,7 +118,7 @@ export function SchoolFields({
           </div>
           <span id={sectorHintId} className="mt-1 block text-xs text-ink-faint">
             {auto
-              ? "Auto-filled — change it if we got it wrong."
+              ? "Auto-filled — change if wrong."
               : "State school, or private?"}
           </span>
           {/* The buttons carry the state; this is what the form actually submits. */}

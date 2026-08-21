@@ -38,8 +38,12 @@ export function AuthForm({
   const title = mode === "login" ? "Log in" : "Create account";
   const pendingLabel = mode === "login" ? "Signing in…" : "Creating account…";
 
+  // Signup carries the school + sector pair side by side; at max-w-sm the two
+  // columns squeeze the sector buttons and wrap their hint onto three lines.
+  const width = mode === "signup" ? "max-w-md" : "max-w-sm";
+
   return (
-    <div className="mx-auto mt-16 max-w-sm px-6">
+    <div className={`mx-auto mt-16 ${width} px-6`}>
       <div className="mb-10 flex flex-col gap-6">
         <Link
           href="/"
