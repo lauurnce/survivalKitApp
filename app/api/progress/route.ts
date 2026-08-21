@@ -15,6 +15,7 @@ import { isServerRateLimited } from "@/lib/serverRateLimit";
 // Shared across all serverless instances via the check_rate_limit RPC — the
 // old per-instance Map gave each cold start a fresh 120/min allowance.
 const RATE_LIMIT_IP = { max: 120, windowSeconds: 60 };
+const MAX_MODULE_IDS = 100;
 
 // GET /api/progress?device_id=...&module_ids=a,b,c
 // Returns the list of completed module_ids for the device, optionally filtered
@@ -48,6 +49,9 @@ export async function GET(req: NextRequest) {
       const moduleIds = moduleIdsParam.split(",").map((m) => m.trim()).filter(Boolean);
       if (moduleIds.length === 0) {
         return NextResponse.json({ completed: [] });
+      }
+      if (moduleIds.length > MAX_MODULE_IDS || moduleIds.some((id) => !isUuid(id))) {
+        return NextResponse.json({ error: "Invalid module_ids" }, { status: 400 });
       }
       query = query.in("module_id", moduleIds);
     }
@@ -85,6 +89,14 @@ export async function POST(req: NextRequest) {
 
     if (!device_id || !module_id) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    if (!isUuid(module_id)) {
+      return NextResponse.json({ error: "Invalid module_id" }, { status: 400 });
+    }
+
+    if (completed !== undefined && typeof completed !== "boolean") {
+      return NextResponse.json({ error: "completed must be a boolean" }, { status: 400 });
     }
 
     if (await isServerRateLimited(`progress:ip:${getClientIp(req)}`, RATE_LIMIT_IP)) {
