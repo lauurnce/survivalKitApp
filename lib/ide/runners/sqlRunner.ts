@@ -3,15 +3,23 @@ import type { SqlJsStatic } from "sql.js";
 
 let sqlPromise: Promise<SqlJsStatic> | null = null;
 
+async function initFrom(base: string): Promise<SqlJsStatic> {
+  const initSqlJs = (await import("sql.js")).default;
+  return initSqlJs({ locateFile: (f: string) => `${base}${f}` });
+}
+
+// sql.js ships its wasm separately. It is self-hosted at /sqljs/ because the
+// sql.js.org GitHub-Pages CDN intermittently fails with "both async and sync
+// fetching of the wasm failed"; the CDN is kept only as a fallback. On total
+// failure the cached promise is reset so the next call can retry.
 async function loadSql(): Promise<SqlJsStatic> {
   if (!sqlPromise) {
-    sqlPromise = (async () => {
-      const initSqlJs = (await import("sql.js")).default;
-      return initSqlJs({
-        // sql.js ships its wasm separately; load from CDN (or self-host in /public).
-        locateFile: (f: string) => `https://sql.js.org/dist/${f}`,
+    sqlPromise = initFrom("/sqljs/")
+      .catch(() => initFrom("https://sql.js.org/dist/"))
+      .catch((e: unknown) => {
+        sqlPromise = null;
+        throw e;
       });
-    })();
   }
   return sqlPromise;
 }
