@@ -83,7 +83,7 @@ beforeEach(() => {
   mockMemberUpsertError = null;
   memberUpsertCalls.length = 0;
   statusUpdateCalls.length = 0;
-  process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
+  process.env.DEVICE_COOKIE_SECRET = "test-device-secret-at-least-32-bytes";
 });
 
 describe("POST /api/class/[code]/rep/decide", () => {

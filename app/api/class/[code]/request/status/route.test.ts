@@ -65,7 +65,7 @@ beforeEach(() => {
   mockClassRow = null;
   mockRequestRow = null;
   ipCounter = 0;
-  process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
+  process.env.DEVICE_COOKIE_SECRET = "test-device-secret-at-least-32-bytes";
 });
 
 describe("GET /api/class/[code]/request/status", () => {

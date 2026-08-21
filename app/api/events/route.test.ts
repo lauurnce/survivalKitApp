@@ -58,7 +58,7 @@ beforeEach(() => {
   mockCookieValue = undefined;
   rateLimited = false;
   rateLimitCalls.length = 0;
-  process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
+  process.env.DEVICE_COOKIE_SECRET = "test-device-secret-at-least-32-bytes";
 });
 
 afterEach(() => {

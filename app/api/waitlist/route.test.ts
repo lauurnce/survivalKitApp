@@ -39,7 +39,7 @@ function makeReq(body: Record<string, unknown>) {
 beforeEach(() => {
   upserts.length = 0;
   mockCookieValue = undefined;
-  process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
+  process.env.DEVICE_COOKIE_SECRET = "test-device-secret-at-least-32-bytes";
 });
 
 describe("POST /api/waitlist — validation", () => {

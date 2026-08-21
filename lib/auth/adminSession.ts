@@ -6,7 +6,9 @@ const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
 
 function getSecret(): string {
   const s = process.env.ADMIN_SESSION_SECRET;
-  if (!s) throw new Error("ADMIN_SESSION_SECRET env var is not set");
+  if (!s || s.length < 32) {
+    throw new Error("ADMIN_SESSION_SECRET must be at least 32 characters");
+  }
   return s;
 }
 

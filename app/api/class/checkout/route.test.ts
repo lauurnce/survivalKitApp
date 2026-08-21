@@ -58,7 +58,7 @@ function makeReq(body: Record<string, unknown>) {
 
 beforeEach(() => {
   linkCalls.length = 0;
-  process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
+  process.env.DEVICE_COOKIE_SECRET = "test-device-secret-at-least-32-bytes";
   mockCookieValue = signDeviceCookie(REP_DEVICE);
   mockSubjectRow = { id: "x" };
   mockYearRow = { id: "x" };

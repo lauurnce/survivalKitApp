@@ -5,7 +5,7 @@ const UUID = "11111111-2222-4333-8444-555555555555";
 
 describe("deviceCookie", () => {
   beforeEach(() => {
-    process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
+    process.env.DEVICE_COOKIE_SECRET = "test-device-secret-at-least-32-bytes";
   });
   afterEach(() => {
     delete process.env.DEVICE_COOKIE_SECRET;
@@ -27,12 +27,12 @@ describe("deviceCookie", () => {
 
   it("rejects a valid signature from a different secret", () => {
     const signed = signDeviceCookie(UUID);
-    process.env.DEVICE_COOKIE_SECRET = "different-secret";
+    process.env.DEVICE_COOKIE_SECRET = "different-device-secret-at-least-32-bytes";
     expect(verifyDeviceCookie(signed)).toBeNull();
   });
 
   it("rejects a non-uuid payload even if signed", () => {
-    process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
+    process.env.DEVICE_COOKIE_SECRET = "test-device-secret-at-least-32-bytes";
     // Sign a non-uuid then confirm verify still refuses it.
     const notUuid = signDeviceCookie("not-a-uuid");
     expect(verifyDeviceCookie(notUuid)).toBeNull();
@@ -41,5 +41,10 @@ describe("deviceCookie", () => {
   it("returns null for undefined / empty", () => {
     expect(verifyDeviceCookie(undefined)).toBeNull();
     expect(verifyDeviceCookie("")).toBeNull();
+  });
+
+  it("refuses to sign with a short secret", () => {
+    process.env.DEVICE_COOKIE_SECRET = "too-short";
+    expect(() => signDeviceCookie(UUID)).toThrow(/at least 32/);
   });
 });
