@@ -13,9 +13,9 @@ the Subjects page.
 
 The user generated a set of icon reference images (grey thin-line monochrome
 glyphs) under `assets/subject icons/`. A guide file
-(`batch list of subjects.txt`, note the trailing space in the filename) maps
-each glyph to a subject and describes its motif. These raster images are the
-**visual reference only** — we redraw each as a single-color inline SVG so the
+(`batch list of subjects.txt`) maps each glyph to a subject and describes its
+motif. These raster images are the **visual reference only** — we redraw each
+as a single-color inline SVG so the
 icons are crisp at any size, tint with the theme's `accent` color, and add no
 bundle weight.
 
@@ -168,5 +168,3 @@ layout; no behavioral change.
   to the book glyph and the dev warning fires. The test guards the current 36.
 - **Grid on narrow screens:** single column below the `sm` breakpoint, matching
   the existing mobile-first layout.
-- **Filename gotcha:** the guide file has a trailing space in its name; it is
-  reference-only and not read at runtime.
