@@ -16,9 +16,14 @@ import { generateClassCode } from "@/lib/classCode";
 
 export const runtime = "nodejs";
 
-// PAYMONGO_LIVEMODE=true → only accept live payments; false/unset → only test.
 // Decoupled from NODE_ENV so preview/staging can still receive test webhooks.
-const EXPECTED_LIVEMODE = process.env.PAYMONGO_LIVEMODE === "true";
+// Requiring an explicit value prevents a missing production setting from
+// silently acknowledging and discarding every live payment as a test mismatch.
+function getExpectedLivemode(): boolean | null {
+  if (process.env.PAYMONGO_LIVEMODE === "true") return true;
+  if (process.env.PAYMONGO_LIVEMODE === "false") return false;
+  return null;
+}
 
 // Bound unauthenticated flood against the signature-verification work. Real
 // PayMongo deliveries are well under this; it only stops abuse.
@@ -51,6 +56,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
+  const expectedLivemode = getExpectedLivemode();
+  if (expectedLivemode === null) {
+    console.error('PAYMONGO_LIVEMODE must be explicitly set to "true" or "false"');
+    return NextResponse.json({ error: "Webhook unavailable" }, { status: 503 });
+  }
+
   const rawBody = await req.text();
   const signature = req.headers.get("paymongo-signature") ?? "";
 
@@ -71,7 +82,7 @@ export async function POST(req: NextRequest) {
   const { type: eventType, livemode } = event.data.attributes;
 
   // livemode mismatch: acknowledge (2xx) so PayMongo stops retrying, but don't act.
-  if (livemode !== EXPECTED_LIVEMODE) {
+  if (livemode !== expectedLivemode) {
     return NextResponse.json({ ok: true, ignored: "livemode" });
   }
 
