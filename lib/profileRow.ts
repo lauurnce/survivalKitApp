@@ -1,33 +1,57 @@
 // Row <-> Profile mapping for the `profiles` table (pure — no IO), kept out of
-// profileStore so the shape can be tested without a database. The column list
-// is shared with the select so the two cannot drift apart silently.
+// profileStore so the shape can be tested without a database.
+//
+// The read path deliberately does NOT pin a column list. A hardcoded
+// `select("first_name,...,school_type,...")` fails the WHOLE query with a 400
+// when any one column is missing, so a migration that has not been applied
+// yet takes the student's name, major and campus art down with the column
+// that is actually absent. Selecting * and mapping defensively costs a few
+// unused bytes and turns that outage into one missing field.
+//
+// Tolerant reads are a safety net, not a licence to deploy ahead of a
+// migration: writes cannot degrade the same way (you cannot upsert into a
+// column that does not exist), which is what scripts/db/schema-check.ts is
+// for.
 
 import type { Gender, Pathway, Profile } from "./profile";
 import type { Sector } from "./universities";
 
-export const PROFILE_COLUMNS =
-  "first_name,last_name,age,gender,university,school_type,major,pathways";
+/**
+ * The columns this code needs `profiles` to have. Not used to build the
+ * select — it is the contract the schema preflight checks before a deploy.
+ */
+export const REQUIRED_PROFILE_COLUMNS = [
+  "first_name",
+  "last_name",
+  "age",
+  "gender",
+  "university",
+  "school_type",
+  "major",
+  "pathways",
+] as const;
 
+/** Every field optional: a lagging schema simply omits the key. */
 export interface ProfileRow {
-  first_name: string | null;
-  last_name: string | null;
-  age: number | null;
-  gender: string | null;
-  university: string | null;
-  school_type: string | null;
-  major: string | null;
-  pathways: string[] | null;
+  first_name?: string | null;
+  last_name?: string | null;
+  age?: number | null;
+  gender?: string | null;
+  university?: string | null;
+  school_type?: string | null;
+  major?: string | null;
+  pathways?: string[] | null;
 }
 
 export function profileFromRow(row: ProfileRow): Profile {
   return {
-    firstName: row.first_name,
-    lastName: row.last_name,
-    age: row.age,
-    gender: row.gender as Gender | null,
-    university: row.university,
-    schoolType: row.school_type as Sector | null,
-    major: row.major,
+    firstName: row.first_name ?? null,
+    lastName: row.last_name ?? null,
+    age: row.age ?? null,
+    gender: (row.gender ?? null) as Gender | null,
+    university: row.university ?? null,
+    schoolType: (row.school_type ?? null) as Sector | null,
+    major: row.major ?? null,
     pathways: (row.pathways ?? []) as Pathway[],
   };
 }

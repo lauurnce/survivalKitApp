@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit",
     "ingest": "tsx scripts/ingest.ts",
     "ingest:md": "tsx scripts/ingest-md.ts",
+    "db:check": "tsx scripts/db/schema-check.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "story:svg": "node scripts/gen-story-svgs.mjs",

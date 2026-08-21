@@ -12,7 +12,7 @@ import { createSSRServerClient } from "@/lib/supabase/ssrServer";
 import { createServerClient } from "@/lib/supabase/server";
 import type { Profile } from "./profile";
 import type { Sector } from "./universities";
-import { PROFILE_COLUMNS, profileFromRow, signupSchoolRow } from "./profileRow";
+import { profileFromRow, signupSchoolRow } from "./profileRow";
 
 const FILE_STORE = path.join(process.cwd(), ".dev", "profile-store.json");
 
@@ -37,7 +37,10 @@ export async function getProfile(userId: string): Promise<Profile | null> {
   const supabase = await createSSRServerClient();
   const { data, error } = await supabase
     .from("profiles")
-    .select(PROFILE_COLUMNS)
+    // select("*") rather than a pinned column list: one column missing from
+    // the live schema would otherwise 400 the whole query and blank the
+    // profile. See the note at the top of profileRow.ts.
+    .select("*")
     .eq("user_id", userId)
     .maybeSingle();
   if (error || !data) return null;
