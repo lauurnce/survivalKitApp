@@ -11,6 +11,7 @@ const BASE_ALL_CENTAVOS = 99900; // ₱999
 const PER_SEAT_CENTAVOS = 5900; // ₱59
 const INCLUDED_SEATS = 11;
 const MIN_SEATS = 11;
+const MAX_SEATS = 55;
 
 function computeAmount(scope: "subject" | "all", seats: number): number {
   const base = scope === "all" ? BASE_ALL_CENTAVOS : BASE_SUBJECT_CENTAVOS;
@@ -34,7 +35,14 @@ export async function POST(req: NextRequest) {
   const scope = body?.scope === "all" ? "all" : body?.scope === "subject" ? "subject" : null;
   const { subjectId, yearId, seats } = body ?? {};
 
-  if (!scope || !isUuid(yearId) || typeof seats !== "number" || seats < MIN_SEATS) {
+  if (
+    !scope ||
+    !isUuid(yearId) ||
+    typeof seats !== "number" ||
+    !Number.isInteger(seats) ||
+    seats < MIN_SEATS ||
+    seats > MAX_SEATS
+  ) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
   if (scope === "subject" && !isUuid(subjectId)) {

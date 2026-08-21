@@ -73,6 +73,22 @@ describe("POST /api/class/checkout", () => {
     expect(linkCalls).toHaveLength(0);
   });
 
+  it("rejects fractional seat counts", async () => {
+    const res = await POST(
+      makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11.5 })
+    );
+    expect(res.status).toBe(400);
+    expect(linkCalls).toHaveLength(0);
+  });
+
+  it("rejects seat counts above the checkout maximum", async () => {
+    const res = await POST(
+      makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 56 })
+    );
+    expect(res.status).toBe(400);
+    expect(linkCalls).toHaveLength(0);
+  });
+
   it("computes the correct total for a subject-scope purchase at the 11-seat minimum", async () => {
     const res = await POST(
       makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 })
