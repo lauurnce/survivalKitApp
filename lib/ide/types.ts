@@ -30,6 +30,8 @@ export interface RunResult {
   durationMs: number;
   /** Tabular result for SQL; undefined otherwise. */
   table?: { columns: string[]; rows: unknown[][] };
+  /** Per-statement transcript populated by runners that support it; UI renders when present. */
+  statements?: Array<{ sql: string; columns?: string[]; rows?: unknown[][] }>;
 }
 
 export interface Runner {
