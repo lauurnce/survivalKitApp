@@ -5,7 +5,7 @@ import Image from "next/image";
 import { GENDERS, PATHWAYS, type Profile } from "@/lib/profile";
 import { saveProfileAction, type ProfileFormState } from "@/app/account/actions";
 import { universityImagePath, matchUniversity, landmarkLabel } from "@/lib/universities";
-import { UniversityCombobox } from "./UniversityCombobox";
+import { UniversityCombobox } from "../UniversityCombobox";
 import { MajorCombobox } from "./MajorCombobox";
 
 const inputClass =
