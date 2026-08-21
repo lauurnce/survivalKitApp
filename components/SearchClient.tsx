@@ -15,9 +15,11 @@ export interface SearchItem {
 
 interface Props {
   items: SearchItem[];
+  /** Pre-computed keyword chips shown before the student types anything. */
+  suggestions?: string[];
 }
 
-export function SearchClient({ items }: Props) {
+export function SearchClient({ items, suggestions = [] }: Props) {
   const router = useRouter();
   const [query, setQuery] = useState("");
 
@@ -62,9 +64,29 @@ export function SearchClient({ items }: Props) {
 
       {/* Results */}
       {trimmed === "" ? (
-        <p className="font-sans text-sm text-ink-muted">
-          Start typing to find a subject or module by name.
-        </p>
+        suggestions.length > 0 ? (
+          <div className="flex flex-col gap-4">
+            <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
+              Popular topics
+            </p>
+            <div className="flex flex-wrap gap-2" aria-label="Popular searches">
+              {suggestions.map((keyword) => (
+                <button
+                  key={keyword}
+                  type="button"
+                  onClick={() => setQuery(keyword)}
+                  className="border border-ink-faint/40 px-3 py-1.5 font-mono text-label-sm uppercase tracking-[0.12em] text-ink-muted transition-colors duration-150 hover:border-navy hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                >
+                  {keyword}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <p className="font-sans text-sm text-ink-muted">
+            Start typing to find a subject or module by name.
+          </p>
+        )
       ) : results.length === 0 ? (
         <div className="flex flex-col gap-4">
           <p className="font-sans text-sm text-ink-muted">

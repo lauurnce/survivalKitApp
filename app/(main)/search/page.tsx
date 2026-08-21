@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
+import { popularKeywords } from "@/lib/searchSuggestions";
 import { SearchClient, type SearchItem } from "@/components/SearchClient";
 
 export const revalidate = 300;
@@ -72,7 +73,7 @@ export default async function SearchPage() {
       {/* Search body — cream */}
       <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
         <div className="max-w-wide mx-auto">
-          <SearchClient items={items} />
+          <SearchClient items={items} suggestions={popularKeywords(items)} />
         </div>
       </div>
     </main>
