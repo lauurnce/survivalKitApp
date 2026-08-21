@@ -38,8 +38,10 @@ function makeDashboardProps(overrides: Partial<DashboardProps> = {}): DashboardP
     },
     profilesAgg: {
       total: 12,
+      named: 12,
       by_pathway: [{ pathway: "IT Support", count: 7 }],
       by_university: [{ university: "Polytechnic University of the Philippines", count: 2 }],
+      by_school_type: [{ school_type: "Public", count: 12 }],
       by_major: [{ major: "BS Information Technology", count: 9 }],
     },
     transactions: [],
@@ -55,8 +57,10 @@ describe("AdminDashboard (label and normalisation)", () => {
     render(<AdminDashboard {...makeDashboardProps({
       profilesAgg: {
         total: 2,
+        named: 2,
         by_pathway: [],
         by_university: [{ university: full, count: 2 }],
+        by_school_type: [],
         by_major: [],
       },
     })} />);
@@ -73,8 +77,10 @@ describe("AdminDashboard (label and normalisation)", () => {
     render(<AdminDashboard {...makeDashboardProps({
       profilesAgg: {
         total: 12,
+        named: 12,
         by_pathway: [],
         by_university: [],
+        by_school_type: [],
         by_major: [
           { major: "BS Information Technology", count: 9 },
           { major: "BS INFORMATION TECHNOLOGY", count: 1 },
@@ -169,5 +175,87 @@ describe("AdminDashboard (characterization)", () => {
     expect(screen.queryByText(/device_id/i)).toBeNull();
     expect(screen.queryByText(/user_id/i)).toBeNull();
     expect(screen.queryByText(/coupon/i)).toBeNull();
+  });
+});
+
+describe("AdminDashboard — student profiles after signup starts creating rows", () => {
+  it("does not call every profile row a completed profile", () => {
+    render(<AdminDashboard {...makeDashboardProps({
+      profilesAgg: {
+        total: 40,
+        named: 12,
+        by_pathway: [],
+        by_university: [],
+        by_school_type: [],
+        by_major: [],
+      },
+    })} />);
+    // 40 rows, 12 of them filled in. Reporting "40 profiles completed" would
+    // inflate the number the day signup ships.
+    // Exact match, not a regex: "12 of 40 profiles completed" contains
+    // "40 profiles completed" as a substring and must not trip this guard.
+    expect(screen.queryByText("40 profiles completed")).not.toBeInTheDocument();
+  });
+
+  it("reports the completed count alongside the row count", () => {
+    render(<AdminDashboard {...makeDashboardProps({
+      profilesAgg: {
+        total: 40,
+        named: 12,
+        by_pathway: [],
+        by_university: [],
+        by_school_type: [],
+        by_major: [],
+      },
+    })} />);
+    expect(screen.getByText(/12 of 40/)).toBeInTheDocument();
+  });
+
+  it("says the completed count is not read when the aggregate does not return it", () => {
+    render(<AdminDashboard {...makeDashboardProps({
+      profilesAgg: {
+        total: 40,
+        named: null,
+        by_pathway: [],
+        by_university: [],
+        by_school_type: [],
+        by_major: [],
+      },
+    })} />);
+    // The migration adding `named` may not be applied yet. An unmeasured
+    // value is never given a number.
+    expect(screen.getByText(/not read/)).toBeInTheDocument();
+  });
+
+  it("charts the public/private split", () => {
+    render(<AdminDashboard {...makeDashboardProps({
+      profilesAgg: {
+        total: 3,
+        named: 3,
+        by_pathway: [],
+        by_university: [],
+        by_school_type: [
+          { school_type: "Public", count: 2 },
+          { school_type: "Private", count: 1 },
+        ],
+        by_major: [],
+      },
+    })} />);
+    expect(screen.getByText("Public")).toBeInTheDocument();
+    expect(screen.getByText("Private")).toBeInTheDocument();
+  });
+
+  it("omits the sector chart entirely when the aggregate does not return it", () => {
+    render(<AdminDashboard {...makeDashboardProps({
+      profilesAgg: {
+        total: 3,
+        named: 3,
+        by_pathway: [],
+        by_university: [],
+        by_school_type: null,
+        by_major: [],
+      },
+    })} />);
+    expect(screen.queryByText("School Type")).not.toBeInTheDocument();
   });
 });

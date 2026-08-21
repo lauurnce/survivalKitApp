@@ -48,9 +48,17 @@ interface FeedbackAgg {
 }
 
 interface ProfilesAgg {
+  /** Every profile row, including the school-only ones signup creates. */
   total: number;
+  /**
+   * Rows where the student has filled in the profile form. Null means the
+   * aggregate could not be read — renders as "not read", never 0. Before
+   * signup collected schools this equalled `total`; it no longer does.
+   */
+  named: number | null;
   by_pathway: { pathway: string; count: number }[] | null;
   by_university: { university: string; count: number }[] | null;
+  by_school_type: { school_type: string; count: number }[] | null;
   by_major: { major: string; count: number }[] | null;
 }
 
@@ -811,7 +819,11 @@ export function AdminDashboard({
         <SectionBand
           eyebrow="07"
           title="Student Profiles"
-          summary={`${profilesAgg.total} profiles completed`}
+          summary={
+            profilesAgg.named === null
+              ? `${profilesAgg.total} rows — completed not read`
+              : `${profilesAgg.named} of ${profilesAgg.total} profiles completed`
+          }
         />
         {profilesAgg.total === 0 ? (
           <p className="font-sans text-xs text-ink-faint">
@@ -819,7 +831,7 @@ export function AdminDashboard({
             profile card on their account page.
           </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-wide mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 max-w-wide mx-auto">
             <BarChart
               data={(profilesAgg.by_pathway ?? []).map(p => ({ label: p.pathway, count: p.count }))}
               label="Preferred Pathways"
@@ -828,6 +840,14 @@ export function AdminDashboard({
               data={mergeByLabel(profilesAgg.by_university, u => u.university, u => u.count, canonicalUniversity)}
               label="Universities"
             />
+            {/* Omitted rather than drawn empty when the aggregate does not
+                return it — an absent breakdown is not a zero one. */}
+            {profilesAgg.by_school_type && profilesAgg.by_school_type.length > 0 && (
+              <BarChart
+                data={profilesAgg.by_school_type.map(s => ({ label: s.school_type, count: s.count }))}
+                label="School Type"
+              />
+            )}
             <BarChart
               data={mergeByLabel(profilesAgg.by_major, m => m.major, m => m.count, canonicalProgram)}
               label="Majors / Programs"
