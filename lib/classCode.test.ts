@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { generateClassCode, isValidClassCodeShape, CODE_ALPHABET } from "./classCode";
 
 describe("generateClassCode", () => {
@@ -7,6 +7,18 @@ describe("generateClassCode", () => {
       const code = generateClassCode();
       expect(code).toHaveLength(6);
       expect([...code].every((c) => CODE_ALPHABET.includes(c))).toBe(true);
+    }
+  });
+
+  it("does not rely on Math.random for access-code entropy", () => {
+    const random = vi.spyOn(Math, "random").mockImplementation(() => {
+      throw new Error("Math.random must not generate access codes");
+    });
+
+    try {
+      expect(() => generateClassCode()).not.toThrow();
+    } finally {
+      random.mockRestore();
     }
   });
 });
