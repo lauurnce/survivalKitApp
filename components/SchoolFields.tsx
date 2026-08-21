@@ -17,6 +17,12 @@ const inputClass =
 interface Props {
   defaultUniversity?: string;
   defaultSchoolType?: Sector | null;
+  /**
+   * Signup insists on both answers. The profile form does not — a school has
+   * always been optional there, and tightening it would lock existing students
+   * out of saving unrelated edits.
+   */
+  required?: boolean;
   /** Prefix for the field ids, so two instances can coexist on one page. */
   idPrefix?: string;
 }
@@ -34,6 +40,7 @@ interface Props {
 export function SchoolFields({
   defaultUniversity = "",
   defaultSchoolType = null,
+  required = true,
   idPrefix = "school",
 }: Props) {
   const [sector, setSector] = useState<Sector | null>(defaultSchoolType);
@@ -67,11 +74,11 @@ export function SchoolFields({
     <div className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-[1.55fr_1fr] sm:items-start">
         <label className="block text-sm text-ink-muted" htmlFor={`${idPrefix}-university`}>
-          School / University <span className="text-accent">*</span>
+          School / University {required && <span className="text-accent">*</span>}
           <UniversityCombobox
             id={`${idPrefix}-university`}
             name="university"
-            required
+            required={required}
             defaultValue={defaultUniversity}
             className={inputClass}
             onSchoolChange={onSchoolChange}
@@ -83,7 +90,7 @@ export function SchoolFields({
 
         <div className="text-sm text-ink-muted">
           <span id={`${idPrefix}-sector-label`}>
-            Sector <span className="text-accent">*</span>
+            Sector {required && <span className="text-accent">*</span>}
           </span>
           <div
             role="group"

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { GENDERS, PATHWAYS, type Profile } from "@/lib/profile";
 import { saveProfileAction, type ProfileFormState } from "@/app/account/actions";
 import { universityImagePath, matchUniversity, landmarkLabel } from "@/lib/universities";
-import { UniversityCombobox } from "../UniversityCombobox";
+import { SchoolFields } from "../SchoolFields";
 import { MajorCombobox } from "./MajorCombobox";
 
 const inputClass =
@@ -103,14 +103,12 @@ function EditProfileModal({
             </label>
           </div>
 
-          <label className="block text-sm text-ink-muted">
-            University
-            <UniversityCombobox
-              name="university"
-              defaultValue={profile?.university ?? ""}
-              className={inputClass}
-            />
-          </label>
+          <SchoolFields
+            required={false}
+            idPrefix="profile"
+            defaultUniversity={profile?.university ?? ""}
+            defaultSchoolType={profile?.schoolType ?? null}
+          />
 
           <label className="block text-sm text-ink-muted">
             Major / program
@@ -180,7 +178,13 @@ export function ProfileCard({ profile }: { profile: Profile | null }) {
           <div className="flex items-start justify-between gap-2">
             <div>
               <h2 className="font-serif text-lg text-ink leading-snug">
-                {profile.firstName} {profile.lastName}
+                {profile.firstName || profile.lastName ? (
+                  [profile.firstName, profile.lastName].filter(Boolean).join(" ")
+                ) : (
+                  // A profile created at signup knows the school but not the
+                  // name. Say so rather than rendering an empty heading.
+                  <span className="text-ink-faint">Name not set</span>
+                )}
               </h2>
               {(profile.major || profile.university) && (
                 <p className="text-xs text-ink-muted mt-0.5">

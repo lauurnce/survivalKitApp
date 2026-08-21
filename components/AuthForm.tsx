@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
+import { SchoolFields } from "./SchoolFields";
 
 // The server action returns { error?: string } on failure, or redirects on
 // success. useActionState wires it directly to the form, so submission works
@@ -95,6 +96,9 @@ export function AuthForm({
           </span>
         )}
       </label>
+      {/* Signup only: a returning student's school is already on their
+          profile, and re-asking at login would be noise. */}
+      {mode === "signup" && <SchoolFields idPrefix="signup" />}
       {state?.error && (
         <p role="alert" className="text-sm text-accent">
           {state.error}

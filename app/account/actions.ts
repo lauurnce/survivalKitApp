@@ -21,6 +21,7 @@ export async function saveProfileAction(
     age: String(formData.get("age") ?? ""),
     gender: String(formData.get("gender") ?? ""),
     university: String(formData.get("university") ?? ""),
+    schoolType: String(formData.get("schoolType") ?? ""),
     major: String(formData.get("major") ?? ""),
     pathways: formData.getAll("pathways").map(String),
   });

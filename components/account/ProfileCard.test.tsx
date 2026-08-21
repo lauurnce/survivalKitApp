@@ -37,6 +37,7 @@ describe("ProfileCard edit modal", () => {
           lastName: "Dela Cruz",
           age: null,
           gender: null,
+          schoolType: null,
           university: "University of Santo Tomas",
           major: null,
           pathways: [],
@@ -58,6 +59,7 @@ describe("ProfileCard landmark banner", () => {
           lastName: "Dela Cruz",
           age: null,
           gender: null,
+          schoolType: null,
           university: "University of Santo Tomas",
           major: null,
           pathways: [],
@@ -76,6 +78,7 @@ describe("ProfileCard landmark banner", () => {
           lastName: "Dela Cruz",
           age: null,
           gender: null,
+          schoolType: null,
           university: "Cavite State University",
           major: null,
           pathways: [],
@@ -94,6 +97,7 @@ describe("ProfileCard landmark banner", () => {
           lastName: "Dela Cruz",
           age: null,
           gender: null,
+          schoolType: null,
           university: null,
           major: null,
           pathways: [],
@@ -117,6 +121,7 @@ describe("ProfileCard landmark banner", () => {
           lastName: "Dela Cruz",
           age: null,
           gender: null,
+          schoolType: null,
           university: "Bohol Island State University",
           major: null,
           pathways: [],
@@ -125,5 +130,73 @@ describe("ProfileCard landmark banner", () => {
     );
     const img = screen.getByRole("img", { name: /bisu main admin building/i });
     expect(img).toHaveAttribute("src", expect.stringContaining("bisu"));
+  });
+});
+
+describe("ProfileCard — a profile created at signup", () => {
+  const signupOnly = {
+    firstName: null,
+    lastName: null,
+    age: null,
+    gender: null,
+    university: "Polytechnic University of the Philippines",
+    schoolType: "Public" as const,
+    major: null,
+    pathways: [],
+  };
+
+  it("says the name is missing instead of rendering a blank heading", () => {
+    render(<ProfileCard profile={signupOnly} />);
+    expect(screen.getByText(/name not set/i)).toBeInTheDocument();
+  });
+
+  it("still shows the school the student gave at signup", () => {
+    render(<ProfileCard profile={signupOnly} />);
+    expect(
+      screen.getByText(/Polytechnic University of the Philippines/)
+    ).toBeInTheDocument();
+  });
+
+  it("still shows their campus landmark", () => {
+    render(<ProfileCard profile={signupOnly} />);
+    const img = screen.getByRole("img", {
+      name: /polytechnic university of the philippines/i,
+    });
+    expect(img).toHaveAttribute("src", expect.stringContaining("pup"));
+  });
+});
+
+describe("ProfileCard edit modal — sector", () => {
+  const profile = {
+    firstName: "Juan",
+    lastName: "Dela Cruz",
+    age: null,
+    gender: null,
+    university: "University of Santo Tomas",
+    schoolType: "Private" as const,
+    major: null,
+    pathways: [],
+  };
+
+  it("offers the public/private control", () => {
+    render(<ProfileCard profile={profile} />);
+    fireEvent.click(screen.getByText("Edit"));
+    expect(screen.getByRole("button", { name: "Public" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Private" })).toBeInTheDocument();
+  });
+
+  it("pre-selects the sector already saved", () => {
+    render(<ProfileCard profile={profile} />);
+    fireEvent.click(screen.getByText("Edit"));
+    expect(screen.getByRole("button", { name: "Private" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+  });
+
+  it("leaves the school optional here, unlike signup", () => {
+    render(<ProfileCard profile={profile} />);
+    fireEvent.click(screen.getByText("Edit"));
+    expect(getUniversityCombobox()).not.toBeRequired();
   });
 });
