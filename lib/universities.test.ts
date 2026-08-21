@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { existsSync } from "fs";
 import path from "path";
-import { UNIVERSITIES, matchUniversity, universityImagePath, landmarkLabel } from "./universities";
+import {
+  UNIVERSITIES,
+  matchUniversity,
+  searchUniversities,
+  universityImagePath,
+  landmarkLabel,
+} from "./universities";
 
 describe("UNIVERSITIES catalog", () => {
   it("has exactly 25 entries", () => {
@@ -145,5 +151,69 @@ describe("landmarkLabel", () => {
 
   it("returns a generic label when given null", () => {
     expect(landmarkLabel(null)).toBe("Campus building");
+  });
+});
+
+describe("UNIVERSITIES catalog — sector", () => {
+  it("every entry declares a sector", () => {
+    for (const u of UNIVERSITIES) {
+      expect(["Public", "Private"], `bad sector for ${u.slug}`).toContain(u.sector);
+    }
+  });
+
+  it("classifies state universities as Public", () => {
+    const bySlug = (slug: string) => UNIVERSITIES.find((u) => u.slug === slug)?.sector;
+    expect(bySlug("pup")).toBe("Public");
+    expect(bySlug("up")).toBe("Public");
+    expect(bySlug("msuiit")).toBe("Public");
+  });
+
+  it("classifies a city-funded local university as Public", () => {
+    expect(UNIVERSITIES.find((u) => u.slug === "plm")?.sector).toBe("Public");
+  });
+
+  it("classifies sectarian and family-owned schools as Private", () => {
+    const bySlug = (slug: string) => UNIVERSITIES.find((u) => u.slug === slug)?.sector;
+    expect(bySlug("ust")).toBe("Private");
+    expect(bySlug("dlsu")).toBe("Private");
+    expect(bySlug("uc")).toBe("Private");
+  });
+});
+
+describe("searchUniversities", () => {
+  it("returns the whole catalog for an empty query", () => {
+    expect(searchUniversities("")).toHaveLength(50);
+  });
+
+  it("returns the whole catalog for a whitespace-only query", () => {
+    expect(searchUniversities("   ")).toHaveLength(50);
+  });
+
+  it("matches on a substring of the canonical name, case-insensitively", () => {
+    const hits = searchUniversities("santo tomas");
+    expect(hits.map((u) => u.slug)).toEqual(["ust"]);
+  });
+
+  it("matches on an acronym alias the canonical name does not contain", () => {
+    expect(searchUniversities("PUP").map((u) => u.slug)).toContain("pup");
+  });
+
+  it("matches a hyphenated alias", () => {
+    expect(searchUniversities("MSU-IIT").map((u) => u.slug)).toContain("msuiit");
+  });
+
+  it("returns each school at most once when name and alias both match", () => {
+    const hits = searchUniversities("Adamson");
+    expect(hits.filter((u) => u.slug === "adamson")).toHaveLength(1);
+  });
+
+  it("returns nothing for a school outside the catalog", () => {
+    expect(searchUniversities("Cavite State University")).toEqual([]);
+  });
+
+  it("preserves catalog order", () => {
+    const hits = searchUniversities("university");
+    const order = UNIVERSITIES.filter((u) => hits.includes(u));
+    expect(hits).toEqual(order);
   });
 });

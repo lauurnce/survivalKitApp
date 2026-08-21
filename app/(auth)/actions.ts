@@ -5,6 +5,8 @@ import { createSSRServerClient } from "@/lib/supabase/ssrServer";
 import { claimDeviceRows } from "@/lib/auth/claim";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { validateCredentials } from "@/lib/auth/validateCredentials";
+import { validateSignupSchool } from "@/lib/profile";
+import { saveSignupSchool } from "@/lib/profileStore";
 
 async function claimForUser(userId: string) {
   const jar = await cookies();
@@ -38,10 +40,33 @@ export async function signUpAction(
   const invalid = validateCredentials(email, password);
   if (invalid) return { error: invalid };
 
+  // Validated before the account is created, so a missing school can never
+  // leave behind an account the student then can't sign up with again.
+  const school = validateSignupSchool({
+    university: String(formData.get("university") ?? ""),
+    schoolType: String(formData.get("schoolType") ?? ""),
+  });
+  if (!school.ok) return { error: school.error };
+
   const supabase = await createSSRServerClient();
   const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) return { error: error.message };
-  if (data.user) await claimForUser(data.user.id);
+  if (data.user) {
+    await claimForUser(data.user.id);
+    try {
+      await saveSignupSchool(data.user.id, {
+        university: school.university,
+        schoolType: school.schoolType,
+      });
+    } catch (e) {
+      // The account exists by this point. Failing the signup here would strand
+      // the student on an error page for an account they already own and would
+      // send them back to a form that now rejects their email as taken. Log it
+      // and let them through — the profile page still asks for the school, so
+      // the answer is recoverable; the account is not.
+      console.error("signUpAction: could not save school answers", e);
+    }
+  }
   redirect(next);
 }
 

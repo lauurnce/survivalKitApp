@@ -254,11 +254,25 @@ export default async function AdminPage() {
     paymongo_link_id: p.paymongo_link_id,
   }));
 
-  const profilesAgg = (profilesAggRaw ?? { total: 0, by_pathway: [], by_university: [], by_major: [] }) as {
+  const profilesAggRow = (profilesAggRaw ?? { total: 0 }) as {
     total: number;
-    by_pathway: { pathway: string; count: number }[] | null;
-    by_university: { university: string; count: number }[] | null;
-    by_major: { major: string; count: number }[] | null;
+    named?: number | null;
+    by_pathway?: { pathway: string; count: number }[] | null;
+    by_university?: { university: string; count: number }[] | null;
+    by_school_type?: { school_type: string; count: number }[] | null;
+    by_major?: { major: string; count: number }[] | null;
+  };
+  // `named` and `by_school_type` are absent, not null, until
+  // 20260821020000_admin_profiles_agg_school_type.sql is applied. Normalise
+  // the gap to null so the dashboard renders "not read" rather than a zero
+  // it never measured.
+  const profilesAgg = {
+    total: profilesAggRow.total,
+    named: profilesAggRow.named ?? null,
+    by_pathway: profilesAggRow.by_pathway ?? [],
+    by_university: profilesAggRow.by_university ?? [],
+    by_school_type: profilesAggRow.by_school_type ?? null,
+    by_major: profilesAggRow.by_major ?? [],
   };
 
   // NOT defaulted to zeros. admin_feedback_agg is an unapplied migration, so

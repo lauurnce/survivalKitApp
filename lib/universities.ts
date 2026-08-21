@@ -3,64 +3,70 @@
 // Image files live at public/university-landmarks/<slug>.png — see
 // docs/superpowers/specs/2026-07-14-university-landmark-dashboard-design.md.
 
+export const SECTORS = ["Public", "Private"] as const;
+
+export type Sector = (typeof SECTORS)[number];
+
 export interface UniversityEntry {
   slug: string;
   name: string;
   aliases: string[];
+  /** Who funds the school: a state/local institution, or a private one. */
+  sector: Sector;
   landmark?: string;
 }
 
 export const UNIVERSITIES: UniversityEntry[] = [
-  { slug: "adamson", name: "Adamson University", aliases: ["Adamson"] },
-  { slug: "caraga", name: "Caraga State University", aliases: ["CSU Caraga", "Caraga State"] },
-  { slug: "citu", name: "Cebu Institute of Technology – University", aliases: ["CIT-U", "CITU", "Cebu Institute of Technology"] },
-  { slug: "cpu", name: "Central Philippine University", aliases: ["CPU"] },
-  { slug: "dlsu", name: "De La Salle University", aliases: ["DLSU", "La Salle"] },
-  { slug: "feu", name: "Far Eastern University", aliases: ["FEU"] },
-  { slug: "mapua", name: "Mapúa University", aliases: ["Mapua", "Mapua University", "MIT Mapua"] },
-  { slug: "msu", name: "Mindanao State University", aliases: ["MSU", "MSU Marawi"] },
-  { slug: "msuiit", name: "Mindanao State University – Iligan Institute of Technology", aliases: ["MSU-IIT", "MSUIIT", "MSU IIT"] },
-  { slug: "nu", name: "National University", aliases: ["NU"] },
-  { slug: "plm", name: "Pamantasan ng Lungsod ng Maynila", aliases: ["PLM"] },
-  { slug: "pup", name: "Polytechnic University of the Philippines", aliases: ["PUP"] },
-  { slug: "siliman", name: "Silliman University", aliases: ["Silliman"] },
-  { slug: "tup", name: "Technological University of the Philippines", aliases: ["TUP"] },
-  { slug: "unor", name: "Universidad de Negros Oriental", aliases: ["UNO-R", "UNOR"] },
-  { slug: "up", name: "University of the Philippines Diliman", aliases: ["UP", "UP Diliman", "UPD"] },
-  { slug: "up-cebu", name: "University of the Philippines Cebu", aliases: ["UP Cebu", "UPC"] },
-  { slug: "upv", name: "University of the Philippines Visayas", aliases: ["UPV", "UP Visayas"] },
-  { slug: "usc", name: "University of San Carlos", aliases: ["USC"] },
-  { slug: "usep", name: "University of Southeastern Philippines", aliases: ["USEP"] },
-  { slug: "usjr", name: "University of San Jose–Recoletos", aliases: ["USJR", "University of San Jose-Recoletos"] },
-  { slug: "usls", name: "University of St. La Salle", aliases: ["USLS", "St. La Salle Bacolod"] },
-  { slug: "ust", name: "University of Santo Tomas", aliases: ["UST"] },
-  { slug: "wmsu", name: "Western Mindanao State University", aliases: ["WMSU"] },
-  { slug: "wvsu", name: "West Visayas State University", aliases: ["WVSU"] },
-  { slug: "bisu", name: "Bohol Island State University", aliases: ["BISU"], landmark: "BISU Main Admin Building" },
-  { slug: "norsu", name: "Negros Oriental State University", aliases: ["NORSU"], landmark: "Main Campus Pylon & Gate" },
-  { slug: "asu", name: "Aklan State University", aliases: ["ASU"], landmark: "ASU Library Building" },
-  { slug: "ssu", name: "Samar State University", aliases: ["SSU"], landmark: "SSU Main Admin Building" },
-  { slug: "isatu", name: "Iloilo Science and Technology University", aliases: ["ISATU"], landmark: "Main Campus Admin & Gate" },
-  { slug: "evsu", name: "Eastern Visayas State University", aliases: ["EVSU"], landmark: "EVSU Main Admin Building" },
-  { slug: "uc", name: "University of Cebu", aliases: ["UC"], landmark: "UC Banilad Campus Facade" },
-  { slug: "hnu", name: "Holy Name University", aliases: ["HNU"], landmark: "Church of the Immaculate Spouse" },
-  { slug: "lnu", name: "Leyte Normal University", aliases: ["LNU"], landmark: "Brillo Hall (LNU Museum)" },
-  { slug: "vsu", name: "Visayas State University", aliases: ["VSU"], landmark: "\"Malakas at Maganda\" Monument" },
-  { slug: "siascc", name: "Siquijor State College", aliases: ["SIASCC"], landmark: "Admin Building" },
-  { slug: "tca", name: "University of San Jose–Recoletos – Talavera Campus", aliases: ["TCA", "USJR Talavera"], landmark: "Talavera House of Prayer" },
-  { slug: "uep", name: "University of Eastern Philippines", aliases: ["UEP"], landmark: "UEP Main Admin Building" },
-  { slug: "ndu", name: "Notre Dame University", aliases: ["NDU"], landmark: "Burke Building" },
-  { slug: "fsuu", name: "Father Saturnino Urios University", aliases: ["FSUU"], landmark: "FSUU CB / CBE Building" },
-  { slug: "jrmsu", name: "Jose Rizal Memorial State University", aliases: ["JRMSU"], landmark: "Main Gate & Rizal Plaza" },
-  { slug: "zppsu", name: "Zamboanga Peninsula Polytechnic State University", aliases: ["ZPPSU"], landmark: "Bernardo Ave Admin Building" },
-  { slug: "usm", name: "University of Southern Mindanao", aliases: ["USM"], landmark: "Maguindanaon Welcome Gate" },
-  { slug: "ldcu", name: "Liceo de Cagayan University", aliases: ["LDCU"], landmark: "Rodelsa Hall" },
-  { slug: "xu", name: "Xavier University – Ateneo de Cagayan", aliases: ["XU", "Xavier University", "Ateneo de Cagayan"], landmark: "Lucas Hall" },
-  { slug: "addu", name: "Ateneo de Davao University", aliases: ["ADDU", "Ateneo de Davao"], landmark: "Martin Hall" },
-  { slug: "adzu", name: "Ateneo de Zamboanga University", aliases: ["ADZU", "Ateneo de Zamboanga"], landmark: "Chapel of the Sacred Heart" },
-  { slug: "cmu", name: "Central Mindanao University", aliases: ["CMU"], landmark: "Main Entrance Gate" },
-  { slug: "sksu", name: "Sultan Kudarat State University", aliases: ["SKSU"], landmark: "SKSU Admin Building" },
-  { slug: "msugensan", name: "Mindanao State University – Gen. Santos", aliases: ["MSU-GenSan", "MSU Gensan", "MSU General Santos"], landmark: "MSU-Gensan Admin Building" },
+  { slug: "adamson", name: "Adamson University", aliases: ["Adamson"], sector: "Private" },
+  { slug: "caraga", name: "Caraga State University", aliases: ["CSU Caraga", "Caraga State"], sector: "Public" },
+  { slug: "citu", name: "Cebu Institute of Technology – University", aliases: ["CIT-U", "CITU", "Cebu Institute of Technology"], sector: "Private" },
+  { slug: "cpu", name: "Central Philippine University", aliases: ["CPU"], sector: "Private" },
+  { slug: "dlsu", name: "De La Salle University", aliases: ["DLSU", "La Salle"], sector: "Private" },
+  { slug: "feu", name: "Far Eastern University", aliases: ["FEU"], sector: "Private" },
+  { slug: "mapua", name: "Mapúa University", aliases: ["Mapua", "Mapua University", "MIT Mapua"], sector: "Private" },
+  { slug: "msu", name: "Mindanao State University", aliases: ["MSU", "MSU Marawi"], sector: "Public" },
+  { slug: "msuiit", name: "Mindanao State University – Iligan Institute of Technology", aliases: ["MSU-IIT", "MSUIIT", "MSU IIT"], sector: "Public" },
+  { slug: "nu", name: "National University", aliases: ["NU"], sector: "Private" },
+  { slug: "plm", name: "Pamantasan ng Lungsod ng Maynila", aliases: ["PLM"], sector: "Public" },
+  { slug: "pup", name: "Polytechnic University of the Philippines", aliases: ["PUP"], sector: "Public" },
+  { slug: "siliman", name: "Silliman University", aliases: ["Silliman"], sector: "Private" },
+  { slug: "tup", name: "Technological University of the Philippines", aliases: ["TUP"], sector: "Public" },
+  { slug: "unor", name: "Universidad de Negros Oriental", aliases: ["UNO-R", "UNOR"], sector: "Private" },
+  { slug: "up", name: "University of the Philippines Diliman", aliases: ["UP", "UP Diliman", "UPD"], sector: "Public" },
+  { slug: "up-cebu", name: "University of the Philippines Cebu", aliases: ["UP Cebu", "UPC"], sector: "Public" },
+  { slug: "upv", name: "University of the Philippines Visayas", aliases: ["UPV", "UP Visayas"], sector: "Public" },
+  { slug: "usc", name: "University of San Carlos", aliases: ["USC"], sector: "Private" },
+  { slug: "usep", name: "University of Southeastern Philippines", aliases: ["USEP"], sector: "Public" },
+  { slug: "usjr", name: "University of San Jose–Recoletos", aliases: ["USJR", "University of San Jose-Recoletos"], sector: "Private" },
+  { slug: "usls", name: "University of St. La Salle", aliases: ["USLS", "St. La Salle Bacolod"], sector: "Private" },
+  { slug: "ust", name: "University of Santo Tomas", aliases: ["UST"], sector: "Private" },
+  { slug: "wmsu", name: "Western Mindanao State University", aliases: ["WMSU"], sector: "Public" },
+  { slug: "wvsu", name: "West Visayas State University", aliases: ["WVSU"], sector: "Public" },
+  { slug: "bisu", name: "Bohol Island State University", aliases: ["BISU"], sector: "Public", landmark: "BISU Main Admin Building" },
+  { slug: "norsu", name: "Negros Oriental State University", aliases: ["NORSU"], sector: "Public", landmark: "Main Campus Pylon & Gate" },
+  { slug: "asu", name: "Aklan State University", aliases: ["ASU"], sector: "Public", landmark: "ASU Library Building" },
+  { slug: "ssu", name: "Samar State University", aliases: ["SSU"], sector: "Public", landmark: "SSU Main Admin Building" },
+  { slug: "isatu", name: "Iloilo Science and Technology University", aliases: ["ISATU"], sector: "Public", landmark: "Main Campus Admin & Gate" },
+  { slug: "evsu", name: "Eastern Visayas State University", aliases: ["EVSU"], sector: "Public", landmark: "EVSU Main Admin Building" },
+  { slug: "uc", name: "University of Cebu", aliases: ["UC"], sector: "Private", landmark: "UC Banilad Campus Facade" },
+  { slug: "hnu", name: "Holy Name University", aliases: ["HNU"], sector: "Private", landmark: "Church of the Immaculate Spouse" },
+  { slug: "lnu", name: "Leyte Normal University", aliases: ["LNU"], sector: "Public", landmark: "Brillo Hall (LNU Museum)" },
+  { slug: "vsu", name: "Visayas State University", aliases: ["VSU"], sector: "Public", landmark: "\"Malakas at Maganda\" Monument" },
+  { slug: "siascc", name: "Siquijor State College", aliases: ["SIASCC"], sector: "Public", landmark: "Admin Building" },
+  { slug: "tca", name: "University of San Jose–Recoletos – Talavera Campus", aliases: ["TCA", "USJR Talavera"], sector: "Private", landmark: "Talavera House of Prayer" },
+  { slug: "uep", name: "University of Eastern Philippines", aliases: ["UEP"], sector: "Public", landmark: "UEP Main Admin Building" },
+  { slug: "ndu", name: "Notre Dame University", aliases: ["NDU"], sector: "Private", landmark: "Burke Building" },
+  { slug: "fsuu", name: "Father Saturnino Urios University", aliases: ["FSUU"], sector: "Private", landmark: "FSUU CB / CBE Building" },
+  { slug: "jrmsu", name: "Jose Rizal Memorial State University", aliases: ["JRMSU"], sector: "Public", landmark: "Main Gate & Rizal Plaza" },
+  { slug: "zppsu", name: "Zamboanga Peninsula Polytechnic State University", aliases: ["ZPPSU"], sector: "Public", landmark: "Bernardo Ave Admin Building" },
+  { slug: "usm", name: "University of Southern Mindanao", aliases: ["USM"], sector: "Public", landmark: "Maguindanaon Welcome Gate" },
+  { slug: "ldcu", name: "Liceo de Cagayan University", aliases: ["LDCU"], sector: "Private", landmark: "Rodelsa Hall" },
+  { slug: "xu", name: "Xavier University – Ateneo de Cagayan", aliases: ["XU", "Xavier University", "Ateneo de Cagayan"], sector: "Private", landmark: "Lucas Hall" },
+  { slug: "addu", name: "Ateneo de Davao University", aliases: ["ADDU", "Ateneo de Davao"], sector: "Private", landmark: "Martin Hall" },
+  { slug: "adzu", name: "Ateneo de Zamboanga University", aliases: ["ADZU", "Ateneo de Zamboanga"], sector: "Private", landmark: "Chapel of the Sacred Heart" },
+  { slug: "cmu", name: "Central Mindanao University", aliases: ["CMU"], sector: "Public", landmark: "Main Entrance Gate" },
+  { slug: "sksu", name: "Sultan Kudarat State University", aliases: ["SKSU"], sector: "Public", landmark: "SKSU Admin Building" },
+  { slug: "msugensan", name: "Mindanao State University – Gen. Santos", aliases: ["MSU-GenSan", "MSU Gensan", "MSU General Santos"], sector: "Public", landmark: "MSU-Gensan Admin Building" },
 ];
 
 const DEFAULT_IMAGE_PATH = "/university-landmarks/default.png";
@@ -79,6 +85,21 @@ export function matchUniversity(input: string | null): UniversityEntry | null {
     if (entry.aliases.some((alias) => normalize(alias) === needle)) return entry;
   }
   return null;
+}
+
+// Live filter for the school pickers. Matches the canonical name AND the
+// aliases, so a student typing "PUP" or "MSU-IIT" — which is what students
+// actually type — finds their school even though neither string appears in
+// the canonical name. Catalog order is preserved and each school appears
+// at most once.
+export function searchUniversities(query: string): UniversityEntry[] {
+  const needle = normalize(query);
+  if (!needle) return UNIVERSITIES;
+  return UNIVERSITIES.filter(
+    (entry) =>
+      normalize(entry.name).includes(needle) ||
+      entry.aliases.some((alias) => normalize(alias).includes(needle)),
+  );
 }
 
 export function landmarkLabel(entry: UniversityEntry | null): string {
