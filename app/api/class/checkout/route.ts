@@ -17,6 +17,8 @@ const ALLOWED_CHECKOUT_ORIGINS = new Set([
   "http://localhost:3000",
 ]);
 
+const MAX_SEATS = 55;
+
 function computeAmount(scope: "subject" | "all", seats: number): number {
   const base = scope === "all" ? BASE_ALL_CENTAVOS : BASE_SUBJECT_CENTAVOS;
   const extra = Math.max(0, seats - INCLUDED_SEATS);
@@ -39,7 +41,14 @@ export async function POST(req: NextRequest) {
   const scope = body?.scope === "all" ? "all" : body?.scope === "subject" ? "subject" : null;
   const { subjectId, yearId, seats } = body ?? {};
 
-  if (!scope || !isUuid(yearId) || typeof seats !== "number" || seats < MIN_SEATS) {
+  if (
+    !scope ||
+    !isUuid(yearId) ||
+    typeof seats !== "number" ||
+    !Number.isInteger(seats) ||
+    seats < MIN_SEATS ||
+    seats > MAX_SEATS
+  ) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
   if (scope === "subject" && !isUuid(subjectId)) {
