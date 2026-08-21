@@ -5,6 +5,7 @@
 // putting it in NODE_OPTIONS crashes the process before Next even starts.
 
 import { spawn } from "node:child_process";
+import { createRequire } from "node:module";
 
 const command = process.argv[2];
 if (!command) {
@@ -22,13 +23,29 @@ const nodeOptions = [process.env.NODE_OPTIONS, ...supportedFlags]
   .filter(Boolean)
   .join(" ");
 
-const child = spawn("next", [command], {
+const nextBin = createRequire(import.meta.url).resolve("next/dist/bin/next");
+const child = spawn(process.execPath, [nextBin, command], {
   stdio: "inherit",
-  shell: true,
   env: { ...process.env, NODE_OPTIONS: nodeOptions },
 });
 
+const signalHandlers = new Map();
+for (const signal of ["SIGINT", "SIGTERM"]) {
+  const handler = () => {
+    if (!child.killed) child.kill(signal);
+  };
+  signalHandlers.set(signal, handler);
+  process.once(signal, handler);
+}
+
+const removeSignalHandlers = () => {
+  for (const [signal, handler] of signalHandlers) {
+    process.removeListener(signal, handler);
+  }
+};
+
 child.on("exit", (code, signal) => {
+  removeSignalHandlers();
   if (signal) process.kill(process.pid, signal);
   else process.exit(code ?? 0);
 });
