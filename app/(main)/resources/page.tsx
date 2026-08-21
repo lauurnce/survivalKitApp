@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { ReviewQuiz } from "@/components/account/ReviewQuiz";
+import { BackLink } from "@/components/BackLink";
 
 // Session-aware (the review quiz is gated on sign-in) but still public —
 // anonymous visitors are never redirected away.
@@ -38,6 +39,7 @@ export default async function ResourcesPage() {
 
   return (
     <main className="mx-auto max-w-wide px-4 sm:px-8 py-12 space-y-10">
+      <BackLink href="/account" label="Dashboard" />
       <header className="space-y-2">
         <p className="label-sm">Study tools</p>
         <h1 className="font-serif text-display-md text-ink">Resources</h1>
