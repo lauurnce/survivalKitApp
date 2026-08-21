@@ -11,6 +11,11 @@ const BASE_ALL_CENTAVOS = 99900; // ₱999
 const PER_SEAT_CENTAVOS = 5900; // ₱59
 const INCLUDED_SEATS = 11;
 const MIN_SEATS = 11;
+const PRODUCTION_ORIGIN = "https://survival-kit-app.vercel.app";
+const ALLOWED_CHECKOUT_ORIGINS = new Set([
+  PRODUCTION_ORIGIN,
+  "http://localhost:3000",
+]);
 
 function computeAmount(scope: "subject" | "all", seats: number): number {
   const base = scope === "all" ? BASE_ALL_CENTAVOS : BASE_SUBJECT_CENTAVOS;
@@ -91,7 +96,10 @@ export async function POST(req: NextRequest) {
     .update(`class-checkout:${repDeviceId}:${yearId}:${subjectId ?? "all"}:${seats}`)
     .digest("hex");
 
-  const origin = req.nextUrl.origin;
+  const requestOrigin = req.headers.get("origin") ?? "";
+  const origin = ALLOWED_CHECKOUT_ORIGINS.has(requestOrigin)
+    ? requestOrigin
+    : PRODUCTION_ORIGIN;
   const successUrl = `${origin}/for-blocks?payment=success`;
 
   try {

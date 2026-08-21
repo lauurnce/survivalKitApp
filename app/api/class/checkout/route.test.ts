@@ -49,10 +49,15 @@ const SUBJ = "10000000-0001-0001-0001-000000000001";
 const REP_DEVICE = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
 const VICTIM_DEVICE = "ffffffff-ffff-4fff-8fff-ffffffffffff";
 
-function makeReq(body: Record<string, unknown>) {
+function makeReq(
+  body: Record<string, unknown>,
+  origin = "http://localhost:3000",
+  requestUrlOrigin = origin
+) {
   return {
     json: () => Promise.resolve(body),
-    nextUrl: { origin: "http://localhost:3000" },
+    headers: { get: (name: string) => (name === "origin" ? origin : null) },
+    nextUrl: { origin: requestUrlOrigin },
   } as unknown as import("next/server").NextRequest;
 }
 
@@ -124,6 +129,30 @@ describe("POST /api/class/checkout", () => {
     expect(res.status).toBe(200);
     const json = await res.json();
     expect(json.checkoutUrl).toBe("https://pm.link/x");
+  });
+
+  it("does not use an untrusted request host as the post-payment destination", async () => {
+    const res = await POST(
+      makeReq(
+        { scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 },
+        "https://attacker.example",
+        "https://attacker.example"
+      )
+    );
+
+    expect(res.status).toBe(200);
+    expect(linkCalls[0][3]).toBe(
+      "https://survival-kit-app.vercel.app/for-blocks?payment=success"
+    );
+  });
+
+  it("keeps the local development origin when it is explicitly allowed", async () => {
+    const res = await POST(
+      makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 })
+    );
+
+    expect(res.status).toBe(200);
+    expect(linkCalls[0][3]).toBe("http://localhost:3000/for-blocks?payment=success");
   });
 
   it("rejects when no device cookie is present", async () => {
