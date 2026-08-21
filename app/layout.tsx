@@ -69,6 +69,7 @@ export default async function RootLayout({
       <head>
         <script
           nonce={nonce}
+          suppressHydrationWarning
           // First visit follows the device's dark-mode setting; an explicit
           // toggle choice (stored under 'theme') always wins afterwards.
           // localStorage can throw in private browsing — fall back to system.
