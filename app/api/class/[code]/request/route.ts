@@ -64,7 +64,8 @@ export async function POST(
     );
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Class join request upsert failed:", error.message);
+    return NextResponse.json({ error: "request_failed" }, { status: 500 });
   }
 
   return NextResponse.json({ status: "pending" });

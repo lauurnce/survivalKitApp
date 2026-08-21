@@ -104,9 +104,7 @@ export async function POST(req: NextRequest) {
     );
     return NextResponse.json({ checkoutUrl });
   } catch (err) {
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Unknown error" },
-      { status: 500 }
-    );
+    console.error("Class checkout setup failed:", err);
+    return NextResponse.json({ error: "Payment setup failed" }, { status: 500 });
   }
 }

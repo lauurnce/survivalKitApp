@@ -119,10 +119,8 @@ export async function POST(req: NextRequest) {
 
     if (!res.ok) {
       const text = await res.text().catch(() => "");
-      return NextResponse.json(
-        { error: `Execution service error (${res.status}): ${text.slice(0, 200)}` },
-        { status: 502 }
-      );
+      console.error("Execution service rejected request:", res.status, text.slice(0, 200));
+      return NextResponse.json({ error: "Execution service unavailable" }, { status: 502 });
     }
 
     const raw = await res.json() as {
@@ -149,9 +147,7 @@ export async function POST(req: NextRequest) {
       durationMs: Date.now() - start,
     });
   } catch (e) {
-    return NextResponse.json(
-      { error: e instanceof Error ? e.message : "Execution failed" },
-      { status: 502 }
-    );
+    console.error("Execution service request failed:", e);
+    return NextResponse.json({ error: "Execution service unavailable" }, { status: 502 });
   }
 }
