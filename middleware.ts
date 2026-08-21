@@ -22,6 +22,7 @@ function buildCsp(nonce: string): string {
     "worker-src 'self' blob:",
     "connect-src 'self' https://*.supabase.co https://cdn.jsdelivr.net https://sql.js.org",
     "img-src 'self' data:",
+    "object-src 'none'",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
