@@ -338,7 +338,7 @@ function DauChart({ data }: { data: DauDay[] }) {
 
   if (!data.length) return (
     <div>
-      <p className="label mb-4">Daily Active Users — 30 days</p>
+      <p className="label mb-4">Daily Active Devices — 30 days</p>
       <p className="font-sans text-xs text-ink-faint">No data yet.</p>
     </div>
   );
@@ -352,7 +352,7 @@ function DauChart({ data }: { data: DauDay[] }) {
   return (
     <div>
       <div className="flex items-baseline gap-3 mb-4">
-        <p className="label">Daily Active Users</p>
+        <p className="label">Daily Active Devices</p>
         <span className="font-sans text-[10px] text-ink-faint">30 days · hover a bar for detail</span>
       </div>
       <div className="flex items-end gap-0.5 h-40">
@@ -755,9 +755,9 @@ export function AdminDashboard({
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
           <Stat value={activeNow} label="Active Now (15 min)" dot />
           <Stat value={totalUniqueUsers.toLocaleString()} label="Devices reached" />
-          <Stat value={newUsers} label="New Users (3 days)" />
+          <Stat value={newUsers} label="New Devices (3 days)" />
           <Stat value={todayUsers} label="Active Today (PH)" />
-          <Stat value={last7Sessions} label="Active User-Days (7d)" />
+          <Stat value={last7Sessions} label="Active Device-Days (7d)" subValue="volume, not people" />
         </div>
         <div className="max-w-wide mx-auto">
           <DauChart data={dau} />

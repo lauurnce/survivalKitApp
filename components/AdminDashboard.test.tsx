@@ -51,6 +51,18 @@ function makeDashboardProps(overrides: Partial<DashboardProps> = {}): DashboardP
   };
 }
 
+describe("AdminDashboard (banned vocabulary)", () => {
+  it("never says 'user' in visible copy — devices and accounts are different populations", () => {
+    const { container } = render(<AdminDashboard {...makeDashboardProps()} />);
+    const visible = container.textContent ?? "";
+    // Devices outnumber accounts here by about two orders of magnitude, so a
+    // tile saying "users" is true of neither population. The figure being
+    // right does not make the noun right.
+    const offenders = visible.match(/\buser[-\s]?(days?|s)?\b/gi) ?? [];
+    expect(offenders).toEqual([]);
+  });
+});
+
 describe("AdminDashboard (label and normalisation)", () => {
   it("renders a long university name in full, not only in a title attribute", () => {
     const full = "Polytechnic University of the Philippines";
