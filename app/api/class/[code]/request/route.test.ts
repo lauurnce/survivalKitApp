@@ -189,6 +189,29 @@ describe("POST /api/class/[code]/request", () => {
     expect(upsertCalls[0][1]).toMatchObject({ onConflict: "class_id,device_id" });
   });
 
+  it("does not expose database errors in the public response", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    mockCookieValue = signDeviceCookie(DEV);
+    mockClassRow = {
+      id: CLASS_ID,
+      status: "active",
+      current_period_end: futureDate(),
+    };
+    mockUpsertError = { message: "duplicate key value violates class_join_requests_pkey" };
+
+    try {
+      const res = await POST(makeReq(), makeParams("ABC234"));
+      const json = await res.json();
+
+      expect(res.status).toBe(500);
+      expect(json).toEqual({ error: "request_failed" });
+      expect(JSON.stringify(json)).not.toContain("class_join_requests_pkey");
+      expect(consoleError).toHaveBeenCalled();
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
   it("checks the shared distributed limiter with a namespaced per-IP key", async () => {
     mockCookieValue = signDeviceCookie(DEV);
     mockClassRow = null;

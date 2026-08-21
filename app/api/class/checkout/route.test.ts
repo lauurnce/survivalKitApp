@@ -9,12 +9,14 @@ vi.mock("next/headers", () => ({
 }));
 
 const linkCalls: unknown[][] = [];
+let mockLinkError: Error | null = null;
 vi.mock("@/lib/paymongo", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/paymongo")>();
   return {
     ...actual,
     createDynamicPaymongoLink: (...args: unknown[]) => {
       linkCalls.push(args);
+      if (mockLinkError) return Promise.reject(mockLinkError);
       return Promise.resolve({ checkoutUrl: "https://pm.link/x", linkId: "link_1" });
     },
   };
@@ -63,6 +65,7 @@ function makeReq(
 
 beforeEach(() => {
   linkCalls.length = 0;
+  mockLinkError = null;
   process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
   mockCookieValue = signDeviceCookie(REP_DEVICE);
   mockSubjectRow = { id: "x" };
@@ -169,6 +172,25 @@ describe("POST /api/class/checkout", () => {
 
     expect(res.status).toBe(200);
     expect(linkCalls[0][3]).toBe("http://localhost:3000/for-blocks?payment=success");
+  });
+
+  it("does not expose payment-provider errors in the public response", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    mockLinkError = new Error("PayMongo rejected secret key sk_test_internal");
+
+    try {
+      const res = await POST(
+        makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 })
+      );
+      const json = await res.json();
+
+      expect(res.status).toBe(500);
+      expect(json).toEqual({ error: "Payment setup failed" });
+      expect(JSON.stringify(json)).not.toContain("sk_test_internal");
+      expect(consoleError).toHaveBeenCalled();
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 
   it("rejects when no device cookie is present", async () => {
