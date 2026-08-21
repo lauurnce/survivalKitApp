@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Playground } from "@/components/ide/Playground";
+import { BackLink } from "@/components/BackLink";
 import type { LanguageId } from "@/lib/ide/types";
 
 const LANGS: LanguageId[] = ["python", "sql", "java", "c"];
@@ -11,6 +12,7 @@ export default function PlaygroundTestPage() {
   return (
     <main className="min-h-screen bg-paper px-6 py-12 md:px-16">
       <div className="max-w-wide mx-auto">
+      <BackLink href="/resources" label="Resources" className="mb-10" />
       <h1 className="font-serif text-2xl text-ink mb-6">Playground (dev harness)</h1>
       <div className="flex gap-2 mb-6">
         {LANGS.map((l) => (
