@@ -93,7 +93,7 @@ function SectionCard({
         <button
           type="button"
           onClick={onEdit}
-          className="text-xs text-accent underline underline-offset-2 hover:text-accent-dark"
+          className="text-xs text-ink-muted underline underline-offset-2 hover:text-ink"
         >
           Edit
         </button>
@@ -158,7 +158,7 @@ export function ProfileCard({
               <button
                 type="button"
                 onClick={openEdit}
-                className="shrink-0 rounded-lg border border-accent/50 px-4 py-1.5 text-xs font-medium text-accent hover:bg-accent/10 transition-colors"
+                className="shrink-0 rounded-lg border border-taupe/50 px-4 py-1.5 text-xs font-medium text-ink hover:bg-ink/[0.04] transition-colors"
               >
                 Edit
               </button>
@@ -166,7 +166,7 @@ export function ProfileCard({
             {(profile.schoolType || startedLabel) && (
               <div className="flex flex-wrap items-center gap-2">
                 {profile.schoolType && (
-                  <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">
+                  <span className="rounded-full border border-taupe/50 px-2 py-0.5 text-[10px] font-medium text-ink-muted">
                     {profile.schoolType}
                   </span>
                 )}
@@ -188,7 +188,7 @@ export function ProfileCard({
           <button
             type="button"
             onClick={openEdit}
-            className="rounded-lg border border-accent/50 px-4 py-1.5 text-xs font-medium text-accent hover:bg-accent/10 transition-colors"
+            className="rounded-lg border border-taupe/50 px-4 py-1.5 text-xs font-medium text-ink hover:bg-ink/[0.04] transition-colors"
           >
             Add your info
           </button>
@@ -201,7 +201,7 @@ export function ProfileCard({
             {profile.pathways.length > 0 ? (
               <div className="flex flex-wrap gap-1.5">
                 {profile.pathways.map((p) => (
-                  <span key={p} className="rounded bg-accent/10 px-2.5 py-1 text-xs font-medium text-accent">
+                  <span key={p} className="rounded border border-taupe/50 px-2.5 py-1 text-xs font-medium text-ink">
                     {p}
                   </span>
                 ))}
@@ -255,12 +255,12 @@ export function ProfileCard({
             {profile.background || profile.itReason ? (
               <div className="space-y-2">
                 {profile.background && (
-                  <span className="inline-block rounded bg-accent/10 px-2.5 py-1 text-xs font-medium text-accent">
+                  <span className="inline-block rounded border border-taupe/50 px-2.5 py-1 text-xs font-medium text-ink">
                     {profile.background}
                   </span>
                 )}
                 {profile.itReason && (
-                  <blockquote className="border-l-2 border-accent/40 pl-3 font-serif italic text-sm text-ink-muted leading-relaxed">
+                  <blockquote className="border-l-2 border-taupe pl-3 font-serif italic text-sm text-ink-muted leading-relaxed">
                     {profile.itReason}
                   </blockquote>
                 )}
@@ -290,7 +290,7 @@ export function ProfileCard({
                       href={url as string}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-sm text-accent underline underline-offset-2 hover:text-accent-dark"
+                      className="text-sm text-ink underline underline-offset-2 hover:text-ink-muted"
                     >
                       <ArrowUpRightIcon />{" "}
                       {linkLabel(url as string)}
