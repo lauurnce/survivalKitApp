@@ -8,6 +8,8 @@ import { isServerRateLimited } from '@/lib/serverRateLimit';
 // Coarse per-IP ceiling (campus NAT headroom) and a tight per-device budget.
 const RATE_LIMIT_IP = { max: 20, windowSeconds: 3600 };
 const RATE_LIMIT_DEVICE = { max: 5, windowSeconds: 3600 };
+const MAX_FEEDBACK_LENGTH = 500;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -40,6 +42,27 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!UUID_PATTERN.test(device_id) || !UUID_PATTERN.test(module_id)) {
+      return Response.json(
+        { error: 'device_id and module_id must be valid UUIDs' },
+        { status: 400 }
+      );
+    }
+
+    if (typeof is_anonymous !== 'boolean') {
+      return Response.json(
+        { error: 'is_anonymous must be a boolean' },
+        { status: 400 }
+      );
+    }
+
+    if (typeof feedback_text !== 'string' || feedback_text.length > MAX_FEEDBACK_LENGTH) {
+      return Response.json(
+        { error: `feedback_text must be a string of at most ${MAX_FEEDBACK_LENGTH} characters` },
+        { status: 400 }
+      );
+    }
+
     // Get authenticated user from Bearer token
     let authenticatedUserId: string | null = null;
     const authHeader = request.headers.get('authorization');
@@ -65,7 +88,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (typeof app_rating !== 'number' || typeof module_rating !== 'number' ||
+    if (!Number.isInteger(app_rating) || !Number.isInteger(module_rating) ||
         app_rating < 1 || app_rating > 5 || module_rating < 1 || module_rating > 5) {
       return Response.json(
         { error: 'Ratings must be between 1 and 5' },
