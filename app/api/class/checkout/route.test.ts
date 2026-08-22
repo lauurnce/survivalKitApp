@@ -9,12 +9,14 @@ vi.mock("next/headers", () => ({
 }));
 
 const linkCalls: unknown[][] = [];
+let mockLinkError: Error | null = null;
 vi.mock("@/lib/paymongo", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/paymongo")>();
   return {
     ...actual,
     createDynamicPaymongoLink: (...args: unknown[]) => {
       linkCalls.push(args);
+      if (mockLinkError) return Promise.reject(mockLinkError);
       return Promise.resolve({ checkoutUrl: "https://pm.link/x", linkId: "link_1" });
     },
   };
@@ -49,15 +51,21 @@ const SUBJ = "10000000-0001-0001-0001-000000000001";
 const REP_DEVICE = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
 const VICTIM_DEVICE = "ffffffff-ffff-4fff-8fff-ffffffffffff";
 
-function makeReq(body: Record<string, unknown>) {
+function makeReq(
+  body: Record<string, unknown>,
+  origin = "http://localhost:3000",
+  requestUrlOrigin = origin
+) {
   return {
     json: () => Promise.resolve(body),
-    nextUrl: { origin: "http://localhost:3000" },
+    headers: { get: (name: string) => (name === "origin" ? origin : null) },
+    nextUrl: { origin: requestUrlOrigin },
   } as unknown as import("next/server").NextRequest;
 }
 
 beforeEach(() => {
   linkCalls.length = 0;
+  mockLinkError = null;
   process.env.DEVICE_COOKIE_SECRET = "test-device-secret";
   mockCookieValue = signDeviceCookie(REP_DEVICE);
   mockSubjectRow = { id: "x" };
@@ -68,6 +76,22 @@ describe("POST /api/class/checkout", () => {
   it("rejects seats below the 11 minimum", async () => {
     const res = await POST(
       makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 10 })
+    );
+    expect(res.status).toBe(400);
+    expect(linkCalls).toHaveLength(0);
+  });
+
+  it("rejects fractional seat counts", async () => {
+    const res = await POST(
+      makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11.5 })
+    );
+    expect(res.status).toBe(400);
+    expect(linkCalls).toHaveLength(0);
+  });
+
+  it("rejects seat counts above the checkout maximum", async () => {
+    const res = await POST(
+      makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 56 })
     );
     expect(res.status).toBe(400);
     expect(linkCalls).toHaveLength(0);
@@ -124,6 +148,49 @@ describe("POST /api/class/checkout", () => {
     expect(res.status).toBe(200);
     const json = await res.json();
     expect(json.checkoutUrl).toBe("https://pm.link/x");
+  });
+
+  it("does not use an untrusted request host as the post-payment destination", async () => {
+    const res = await POST(
+      makeReq(
+        { scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 },
+        "https://attacker.example",
+        "https://attacker.example"
+      )
+    );
+
+    expect(res.status).toBe(200);
+    expect(linkCalls[0][3]).toBe(
+      "https://survival-kit-app.vercel.app/for-blocks?payment=success"
+    );
+  });
+
+  it("keeps the local development origin when it is explicitly allowed", async () => {
+    const res = await POST(
+      makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 })
+    );
+
+    expect(res.status).toBe(200);
+    expect(linkCalls[0][3]).toBe("http://localhost:3000/for-blocks?payment=success");
+  });
+
+  it("does not expose payment-provider errors in the public response", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    mockLinkError = new Error("PayMongo rejected secret key sk_test_internal");
+
+    try {
+      const res = await POST(
+        makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 })
+      );
+      const json = await res.json();
+
+      expect(res.status).toBe(500);
+      expect(json).toEqual({ error: "Payment setup failed" });
+      expect(JSON.stringify(json)).not.toContain("sk_test_internal");
+      expect(consoleError).toHaveBeenCalled();
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 
   it("rejects when no device cookie is present", async () => {

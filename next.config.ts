@@ -36,6 +36,7 @@ const pyodideWorkerHeaders = [
       "script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net",
       "connect-src 'self' https://cdn.jsdelivr.net",
       "worker-src 'self' blob:",
+      "object-src 'none'",
     ].join("; "),
   },
 ];

@@ -89,7 +89,7 @@ describe('POST /api/feedback', () => {
       method: 'POST',
       body: JSON.stringify({
         device_id: '11111111-1111-1111-1111-111111111111',
-        module_id: 'module-789',
+        module_id: '22222222-2222-2222-2222-222222222222',
         app_rating: 4,
         module_rating: 4,
         feedback_text: '',
@@ -108,7 +108,7 @@ describe('POST /api/feedback', () => {
       method: 'POST',
       body: JSON.stringify({
         device_id: '11111111-1111-1111-1111-111111111111',
-        module_id: 'module-789',
+        module_id: '22222222-2222-2222-2222-222222222222',
         app_rating: 4,
         module_rating: 4,
         feedback_text: '',
@@ -125,7 +125,7 @@ describe('POST /api/feedback', () => {
       method: 'POST',
       body: JSON.stringify({
         device_id: '11111111-1111-1111-1111-111111111111',
-        module_id: 'module-789',
+        module_id: '22222222-2222-2222-2222-222222222222',
         app_rating: 4,
         module_rating: 4,
         feedback_text: '',
@@ -144,7 +144,7 @@ describe('POST /api/feedback', () => {
       method: 'POST',
       body: JSON.stringify({
         device_id: '11111111-1111-1111-1111-111111111111', // spoofed
-        module_id: 'module-789',
+        module_id: '22222222-2222-2222-2222-222222222222',
         app_rating: 5,
         module_rating: 5,
         feedback_text: '',
@@ -163,8 +163,8 @@ describe('POST /api/feedback', () => {
         'authorization': 'Bearer valid-token',
       },
       body: JSON.stringify({
-        device_id: 'device-123',
-        module_id: 'module-789',
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
         app_rating: 5,
         module_rating: 4,
         feedback_text: 'Great examples, very clear and helpful!',
@@ -186,8 +186,8 @@ describe('POST /api/feedback', () => {
     const req = new Request('http://localhost/api/feedback', {
       method: 'POST',
       body: JSON.stringify({
-        device_id: 'device-123',
-        module_id: 'module-789',
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
         app_rating: 3,
         module_rating: 2,
         feedback_text: 'Bad', // Too short
@@ -208,8 +208,8 @@ describe('POST /api/feedback', () => {
     const req = new Request('http://localhost/api/feedback', {
       method: 'POST',
       body: JSON.stringify({
-        device_id: 'device-123',
-        module_id: 'module-789',
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
         app_rating: 4,
         module_rating: 3,
         feedback_text: '',
@@ -231,7 +231,7 @@ describe('POST /api/feedback', () => {
       method: 'POST',
       body: JSON.stringify({
         device_id: '11111111-1111-1111-1111-111111111111',
-        module_id: 'module-789',
+        module_id: '22222222-2222-2222-2222-222222222222',
         app_rating: 5,
         module_rating: 5,
         feedback_text: 'Great examples, very clear and helpful!',
@@ -250,8 +250,8 @@ describe('POST /api/feedback', () => {
     const req = new Request('http://localhost/api/feedback', {
       method: 'POST',
       body: JSON.stringify({
-        device_id: 'device-123',
-        module_id: 'module-789',
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
         app_rating: 10, // Invalid
         module_rating: 2,
         feedback_text: '',
@@ -272,8 +272,8 @@ describe('POST /api/feedback', () => {
         'authorization': 'Bearer valid-token',
       },
       body: JSON.stringify({
-        device_id: 'device-123',
-        module_id: 'module-789',
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
         app_rating: 3,
         module_rating: 0, // Invalid
         feedback_text: 'Long enough text for approval here',
@@ -308,8 +308,8 @@ describe('POST /api/feedback', () => {
     const req = new Request('http://localhost/api/feedback', {
       method: 'POST',
       body: JSON.stringify({
-        device_id: 'device-123',
-        module_id: 'module-789',
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
         feedback_text: 'Good feedback',
         is_anonymous: true,
       }),
@@ -325,8 +325,8 @@ describe('POST /api/feedback', () => {
     const req = new Request('http://localhost/api/feedback', {
       method: 'POST',
       body: JSON.stringify({
-        device_id: 'device-456',
-        module_id: 'module-101',
+        device_id: '33333333-3333-3333-3333-333333333333',
+        module_id: '44444444-4444-4444-4444-444444444444',
         app_rating: 4,
         module_rating: 4,
         feedback_text: 'Great explanations and helpful examples!',
@@ -345,8 +345,8 @@ describe('POST /api/feedback', () => {
     const req = new Request('http://localhost/api/feedback', {
       method: 'POST',
       body: JSON.stringify({
-        device_id: 'device-456',
-        module_id: 'module-101',
+        device_id: '33333333-3333-3333-3333-333333333333',
+        module_id: '44444444-4444-4444-4444-444444444444',
         app_rating: 4,
         module_rating: 4,
         feedback_text: 'Great explanations and helpful examples!',
@@ -368,8 +368,8 @@ describe('POST /api/feedback', () => {
         'authorization': 'Bearer invalid-token',
       },
       body: JSON.stringify({
-        device_id: 'device-456',
-        module_id: 'module-101',
+        device_id: '33333333-3333-3333-3333-333333333333',
+        module_id: '44444444-4444-4444-4444-444444444444',
         app_rating: 4,
         module_rating: 4,
         feedback_text: 'Great explanations and helpful examples!',
@@ -391,8 +391,8 @@ describe('POST /api/feedback', () => {
         'authorization': 'Bearer valid-token',
       },
       body: JSON.stringify({
-        device_id: 'device-123',
-        module_id: 'module-789',
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
         app_rating: 2,
         module_rating: 1,
         feedback_text: 'This is aaaaaaa bad feedback',
@@ -406,5 +406,73 @@ describe('POST /api/feedback', () => {
     expect(res.status).toBe(200);
     expect(json.is_quality_approved).toBe(false);
     expect(json.coupon_code).toBeNull();
+  });
+
+  it('rejects malformed identifiers', async () => {
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        device_id: 'not-a-uuid',
+        module_id: 'also-not-a-uuid',
+        app_rating: 4,
+        module_rating: 4,
+        feedback_text: '',
+        is_anonymous: true,
+      }),
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+  });
+
+  it('rejects fractional ratings', async () => {
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
+        app_rating: 4.5,
+        module_rating: 4,
+        feedback_text: '',
+        is_anonymous: true,
+      }),
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+  });
+
+  it('rejects feedback text over 500 characters', async () => {
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
+        app_rating: 4,
+        module_rating: 4,
+        feedback_text: 'a'.repeat(501),
+        is_anonymous: true,
+      }),
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+  });
+
+  it('requires an explicit boolean anonymity flag', async () => {
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
+        app_rating: 4,
+        module_rating: 4,
+        feedback_text: '',
+        is_anonymous: 'true',
+      }),
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(400);
   });
 });

@@ -77,7 +77,7 @@ function makeGetReq(query: string) {
 
 const DEVICE = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
 const VICTIM_DEVICE = "ffffffff-ffff-4fff-8fff-ffffffffffff";
-const MODULE = "mod-101";
+const MODULE = "22222222-2222-2222-2222-222222222222";
 const USER   = "11111111-1111-1111-1111-111111111111";
 
 beforeEach(() => {
@@ -170,5 +170,43 @@ describe("POST /api/progress — distributed rate limiting", () => {
     const res = await POST(makeReq({ device_id: DEVICE, module_id: MODULE, completed: true }));
     expect(res.status).toBe(429);
     expect(upserts).toHaveLength(0);
+  });
+});
+
+describe("progress payload validation", () => {
+  it("rejects a malformed POST module_id", async () => {
+    const res = await POST(
+      makeReq({ device_id: DEVICE, module_id: "not-a-uuid", completed: true })
+    );
+
+    expect(res.status).toBe(400);
+    expect(upserts).toHaveLength(0);
+  });
+
+  it("rejects a non-boolean completed value", async () => {
+    const res = await POST(
+      makeReq({ device_id: DEVICE, module_id: MODULE, completed: "true" })
+    );
+
+    expect(res.status).toBe(400);
+    expect(upserts).toHaveLength(0);
+  });
+
+  it("rejects malformed GET module_ids", async () => {
+    const res = await GET(makeGetReq(`?device_id=${DEVICE}&module_ids=not-a-uuid`));
+
+    expect(res.status).toBe(400);
+  });
+
+  it("caps the number of GET module_ids", async () => {
+    const moduleIds = Array.from(
+      { length: 101 },
+      (_, index) => `00000000-0000-0000-0000-${index.toString().padStart(12, "0")}`
+    );
+    const res = await GET(
+      makeGetReq(`?device_id=${DEVICE}&module_ids=${moduleIds.join(",")}`)
+    );
+
+    expect(res.status).toBe(400);
   });
 });
