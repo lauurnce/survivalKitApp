@@ -17,7 +17,13 @@ vi.mock("@/lib/auth/deviceCookie", () => ({
   verifyDeviceCookie: () => "device-1",
 }));
 
-vi.mock("@/lib/auth/currentUser", () => ({ getCurrentUserId: () => Promise.resolve(null) }));
+// Checkout now requires an account, so the page only renders the gate (and the
+// returnPath these tests inspect) for a signed-in visitor. Controllable so the
+// signed-out branch can be asserted on its own.
+let currentUserId: string | null = "user-1";
+vi.mock("@/lib/auth/currentUser", () => ({
+  getCurrentUserId: () => Promise.resolve(currentUserId),
+}));
 
 let subscribed = false;
 vi.mock("@/lib/subscriptions", () => ({
@@ -129,6 +135,7 @@ async function renderPage(search: Record<string, string>) {
 beforeEach(() => {
   queries = [];
   subscribed = false;
+  currentUserId = "user-1";
 });
 
 describe("UnlockPage — return path binding", () => {
@@ -202,5 +209,29 @@ describe("UnlockPage — return path binding", () => {
     for (const read of moduleReads) {
       expect(read.filters).toContainEqual({ op: "eq", column: "subject_id", value: SUBJECT });
     }
+  });
+});
+
+describe("UnlockPage — sign-in requirement", () => {
+  it("offers sign-in instead of checkout when signed out", async () => {
+    currentUserId = null;
+    await renderPage({ year: YEAR, subject: SUBJECT });
+
+    expect(screen.queryByTestId("gate")).toBeNull();
+    const link = screen.getByRole("link", { name: /sign in to unlock/i });
+    expect(link.getAttribute("href")).toContain("/login?next=");
+  });
+
+  it("carries a valid from path through sign-in so the payer returns to the plans", async () => {
+    currentUserId = null;
+    const from = `/year/${YEAR}/subjects/${SUBJECT}/modules/${OWN_MODULE}`;
+    await renderPage({ year: YEAR, subject: SUBJECT, from });
+
+    const href = screen.getByRole("link", { name: /sign in to unlock/i }).getAttribute("href")!;
+    // from is encoded into returnHref, which is itself encoded into next —
+    // so reaching the raw module path takes two passes.
+    const next = decodeURIComponent(href.split("next=")[1]);
+    expect(next).toContain(`/unlock?year=${YEAR}&subject=${SUBJECT}`);
+    expect(decodeURIComponent(next)).toContain(from);
   });
 });
