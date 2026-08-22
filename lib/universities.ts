@@ -31,7 +31,7 @@ export const UNIVERSITIES: UniversityEntry[] = [
   { slug: "pup", name: "Polytechnic University of the Philippines", aliases: ["PUP"], sector: "Public" },
   { slug: "siliman", name: "Silliman University", aliases: ["Silliman"], sector: "Private" },
   { slug: "tup", name: "Technological University of the Philippines", aliases: ["TUP"], sector: "Public" },
-  { slug: "unor", name: "Universidad de Negros Oriental", aliases: ["UNO-R", "UNOR"], sector: "Private" },
+  { slug: "unor", name: "University of Negros Occidental – Recoletos", aliases: ["UNO-R", "UNOR", "Universidad de Negros Oriental"], sector: "Private" },
   { slug: "up", name: "University of the Philippines Diliman", aliases: ["UP", "UP Diliman", "UPD"], sector: "Public" },
   { slug: "up-cebu", name: "University of the Philippines Cebu", aliases: ["UP Cebu", "UPC"], sector: "Public" },
   { slug: "upv", name: "University of the Philippines Visayas", aliases: ["UPV", "UP Visayas"], sector: "Public" },
