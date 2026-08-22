@@ -35,3 +35,13 @@ special-charter. Private = private non-stock/sectarian/proprietary.
 | 28 | Aklan State University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Western Visayas) | high |
 | 29 | Samar State University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Eastern Visayas) | high |
 | 30 | Iloilo Science and Technology University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Western Visayas) | high |
+| 31 | Eastern Visayas State University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Eastern Visayas) | high |
+| 32 | University of Cebu | Private | Private | no | https://en.wikipedia.org/wiki/University_of_Cebu (Type: "Private, Non-sectarian"; founded/owned by Atty. Augusto W. Go) | high |
+| 33 | Holy Name University | Private | Private | no | https://en.wikipedia.org/wiki/Holy_Name_University (Type: "Private Roman Catholic ... non-profit"; Society of the Divine Word) | high |
+| 34 | Leyte Normal University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Eastern Visayas) | high |
+| 35 | Visayas State University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Eastern Visayas) | high |
+| 36 | Siquijor State College | Public | Public | no | https://lawphil.net/statutes/repacts/ra1995/ra_7947_1995.html (RA 7947, 1995, converted Larena National Vocational College into Siquijor State College) | high |
+| 37 | USJ–R – Talavera Campus | Private | Private | no | https://en.wikipedia.org/wiki/University_of_San_Jose%E2%80%93Recoletos (parent USJ-R is private, run by Order of Augustinian Recollects) | high |
+| 38 | University of Eastern Philippines | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Eastern Visayas — state university despite the private-sounding name) | high |
+| 39 | Notre Dame University | Private | Private | no | https://en.wikipedia.org/wiki/Notre_Dame_University_(Philippines) (Type: "Private non-profit"; Missionary Oblates of Mary Immaculate, Cotabato City) | high |
+| 40 | Father Saturnino Urios University | Private | Private | no | https://en.wikipedia.org/wiki/Father_Saturnino_Urios_University (private Roman Catholic, run by the Diocese of Butuan) | high |
