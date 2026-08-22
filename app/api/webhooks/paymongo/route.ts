@@ -13,6 +13,7 @@ import { isUuid } from "@/lib/validation";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
 import { recordPayment } from "@/lib/payments";
 import { generateClassCode } from "@/lib/classCode";
+import { enqueue } from "@/lib/email/outbox";
 
 export const runtime = "nodejs";
 
@@ -243,6 +244,37 @@ export async function POST(req: NextRequest) {
     // aren't disclosed to the caller.
     console.error("recordPayment failed:", err instanceof Error ? err.message : err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
+  }
+
+  // Lifecycle email, queued rather than sent. The whole block is wrapped
+  // because the payment has already succeeded by this point: reporting a
+  // failure here would make PayMongo retry, and the retry would hit
+  // recordPayment's dedupe branch and return above — so a receipt lost to a
+  // transient error would never be retried. Failures belong in the outbox
+  // row's last_error, never in this response.
+  if (userId) {
+    try {
+      const { data: authUser } = await supabase.auth.admin.getUserById(userId);
+      const toEmail = authUser?.user?.email;
+      if (toEmail) {
+        const shared = {
+          userId,
+          toEmail,
+          // The link id is single-use, so it scopes this purchase's mail exactly.
+          scopeKey: linkId,
+          payload: {
+            planLabel: PLANS[plan].description.replace("BSIT Survival Kit — ", ""),
+            amountCentavos: paidAmount,
+            accessEndsAt: periodEndFor(plan).toISOString(),
+            url: "https://survival-kit-app.vercel.app/account",
+          },
+        };
+        await enqueue(supabase, { ...shared, kind: "receipt" });
+        await enqueue(supabase, { ...shared, kind: "welcome" });
+      }
+    } catch (err) {
+      console.error("Lifecycle email enqueue failed:", err instanceof Error ? err.message : err);
+    }
   }
 
   return NextResponse.json({ ok: true });
