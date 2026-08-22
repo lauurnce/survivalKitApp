@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState, useId, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { SchoolFields } from "./SchoolFields";
 
@@ -35,6 +35,8 @@ export function AuthForm({
 }) {
   const [state, formAction] = useActionState(action, {});
   const [showPassword, setShowPassword] = useState(false);
+  const passwordId = useId();
+  const passwordHintId = `${passwordId}-hint`;
   const title = mode === "login" ? "Log in" : "Create account";
   const pendingLabel = mode === "login" ? "Signing in…" : "Creating account…";
 
@@ -74,32 +76,36 @@ export function AuthForm({
           className="mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-ink"
         />
       </label>
-      <label className="block text-sm text-ink-muted">
-        <span className="flex items-center justify-between">
-          Password
+      <div className="block text-sm text-ink-muted">
+        <div className="flex items-center justify-between">
+          <label htmlFor={passwordId}>Password</label>
           <button
             type="button"
             onClick={() => setShowPassword((s) => !s)}
             aria-pressed={showPassword}
+            aria-controls={passwordId}
+            aria-label={showPassword ? "Hide password" : "Show password"}
             className="text-xs text-ink-faint hover:text-ink transition-colors"
           >
             {showPassword ? "Hide" : "Show"}
           </button>
-        </span>
+        </div>
         <input
+          id={passwordId}
           name="password"
           type={showPassword ? "text" : "password"}
           required
           minLength={8}
           autoComplete={mode === "login" ? "current-password" : "new-password"}
+          aria-describedby={mode === "signup" ? passwordHintId : undefined}
           className="mt-1 w-full rounded border border-taupe bg-paper px-3 py-2 text-ink"
         />
         {mode === "signup" && (
-          <span className="mt-1 block text-xs text-ink-faint">
+          <span id={passwordHintId} className="mt-1 block text-xs text-ink-faint">
             At least 8 characters.
           </span>
         )}
-      </label>
+      </div>
       {/* Signup only: a returning student's school is already on their
           profile, and re-asking at login would be noise. */}
       {mode === "signup" && <SchoolFields idPrefix="signup" />}

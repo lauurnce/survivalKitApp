@@ -94,3 +94,47 @@ describe("POST /api/run — validation (unchanged behavior)", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });
+
+describe("POST /api/run — upstream failures", () => {
+  beforeEach(() => {
+    mockCookieValue = signDeviceCookie(DEVICE);
+  });
+
+  it("does not expose an execution service response body", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 502,
+      text: () => Promise.resolve("internal upstream hostname: judge0-private.local"),
+    });
+
+    try {
+      const res = await POST(makeReq({ languageId: "c", code: "int main(){}" }));
+      const json = await res.json();
+
+      expect(res.status).toBe(502);
+      expect(json).toEqual({ error: "Execution service unavailable" });
+      expect(JSON.stringify(json)).not.toContain("judge0-private.local");
+      expect(consoleError).toHaveBeenCalled();
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
+  it("does not expose network exception details", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    fetchMock.mockRejectedValueOnce(new Error("connect ECONNREFUSED 10.0.0.8"));
+
+    try {
+      const res = await POST(makeReq({ languageId: "c", code: "int main(){}" }));
+      const json = await res.json();
+
+      expect(res.status).toBe(502);
+      expect(json).toEqual({ error: "Execution service unavailable" });
+      expect(JSON.stringify(json)).not.toContain("10.0.0.8");
+      expect(consoleError).toHaveBeenCalled();
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+});

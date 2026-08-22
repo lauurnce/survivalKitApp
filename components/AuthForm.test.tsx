@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { AuthForm } from "./AuthForm";
 
 const noop = vi.fn(async () => ({}));
@@ -47,5 +47,30 @@ describe("AuthForm — login", () => {
   it("does not ask a returning student for a sector", () => {
     render(<AuthForm mode="login" action={noop} next="/account" />);
     expect(screen.queryByRole("button", { name: "Public" })).not.toBeInTheDocument();
+  });
+});
+
+describe("AuthForm — accessible password field", () => {
+  it("gives the password field and visibility toggle distinct accessible names", () => {
+    render(<AuthForm mode="login" action={noop} next="/account" />);
+
+    const password = screen.getByLabelText("Password");
+    const toggle = screen.getByRole("button", { name: "Show password" });
+
+    expect(password).toHaveAttribute("type", "password");
+    expect(toggle).toHaveAttribute("aria-controls", password.id);
+
+    fireEvent.click(toggle);
+
+    expect(password).toHaveAttribute("type", "text");
+    expect(toggle).toHaveAccessibleName("Hide password");
+  });
+
+  it("associates the signup password requirement with the field", () => {
+    render(<AuthForm mode="signup" action={noop} next="/account" />);
+
+    expect(screen.getByLabelText("Password")).toHaveAccessibleDescription(
+      "At least 8 characters.",
+    );
   });
 });

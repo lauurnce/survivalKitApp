@@ -11,6 +11,13 @@ const BASE_ALL_CENTAVOS = 99900; // ₱999
 const PER_SEAT_CENTAVOS = 5900; // ₱59
 const INCLUDED_SEATS = 11;
 const MIN_SEATS = 11;
+const PRODUCTION_ORIGIN = "https://survival-kit-app.vercel.app";
+const ALLOWED_CHECKOUT_ORIGINS = new Set([
+  PRODUCTION_ORIGIN,
+  "http://localhost:3000",
+]);
+
+const MAX_SEATS = 55;
 
 function computeAmount(scope: "subject" | "all", seats: number): number {
   const base = scope === "all" ? BASE_ALL_CENTAVOS : BASE_SUBJECT_CENTAVOS;
@@ -34,7 +41,14 @@ export async function POST(req: NextRequest) {
   const scope = body?.scope === "all" ? "all" : body?.scope === "subject" ? "subject" : null;
   const { subjectId, yearId, seats } = body ?? {};
 
-  if (!scope || !isUuid(yearId) || typeof seats !== "number" || seats < MIN_SEATS) {
+  if (
+    !scope ||
+    !isUuid(yearId) ||
+    typeof seats !== "number" ||
+    !Number.isInteger(seats) ||
+    seats < MIN_SEATS ||
+    seats > MAX_SEATS
+  ) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
   if (scope === "subject" && !isUuid(subjectId)) {
@@ -91,7 +105,10 @@ export async function POST(req: NextRequest) {
     .update(`class-checkout:${repDeviceId}:${yearId}:${subjectId ?? "all"}:${seats}`)
     .digest("hex");
 
-  const origin = req.nextUrl.origin;
+  const requestOrigin = req.headers.get("origin") ?? "";
+  const origin = ALLOWED_CHECKOUT_ORIGINS.has(requestOrigin)
+    ? requestOrigin
+    : PRODUCTION_ORIGIN;
   const successUrl = `${origin}/for-blocks?payment=success`;
 
   try {
@@ -104,9 +121,7 @@ export async function POST(req: NextRequest) {
     );
     return NextResponse.json({ checkoutUrl });
   } catch (err) {
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Unknown error" },
-      { status: 500 }
-    );
+    console.error("Class checkout setup failed:", err);
+    return NextResponse.json({ error: "Payment setup failed" }, { status: 500 });
   }
 }

@@ -50,7 +50,10 @@ export async function signUpAction(
 
   const supabase = await createSSRServerClient();
   const { data, error } = await supabase.auth.signUp({ email, password });
-  if (error) return { error: error.message };
+  if (error) {
+    console.error("Sign-up failed:", error.message);
+    return { error: "Unable to create account. Please try again." };
+  }
   if (data.user) {
     await claimForUser(data.user.id);
     try {

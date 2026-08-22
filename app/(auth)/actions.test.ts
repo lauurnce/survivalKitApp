@@ -1,4 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
+import { validateCredentials } from "@/lib/auth/validateCredentials";
 
 const signUp = vi.fn();
 const saveSignupSchool = vi.fn();
@@ -51,6 +52,18 @@ beforeEach(() => {
   claimDeviceRows.mockReset();
   signUp.mockResolvedValue({ data: { user: { id: "user-1" } }, error: null });
   saveSignupSchool.mockResolvedValue(undefined);
+});
+
+describe("validateCredentials", () => {
+  it("rejects a malformed email", () => {
+    expect(validateCredentials("nope", "password123")).toMatch(/email/i);
+  });
+  it("rejects a short password", () => {
+    expect(validateCredentials("a@b.com", "short")).toMatch(/password/i);
+  });
+  it("accepts valid input", () => {
+    expect(validateCredentials("a@b.com", "password123")).toBeNull();
+  });
 });
 
 describe("signUpAction — school is required", () => {
@@ -111,7 +124,9 @@ describe("signUpAction — storing the answers", () => {
   it("does not store a school when the account could not be created", async () => {
     signUp.mockResolvedValue({ data: { user: null }, error: { message: "taken" } });
     const result = await run(valid);
-    expect(result).toEqual({ error: "taken" });
+    // The provider message is redacted (PR #19) — but the point of this test
+    // is that a failed signup never persists school answers.
+    expect(result).toEqual({ error: "Unable to create account. Please try again." });
     expect(saveSignupSchool).not.toHaveBeenCalled();
   });
 
@@ -121,5 +136,32 @@ describe("signUpAction — storing the answers", () => {
     saveSignupSchool.mockRejectedValue(new Error("db down"));
     const result = await run(valid);
     expect(result).toEqual({ redirected: true });
+  });
+});
+
+describe("signUpAction", () => {
+  it("does not expose authentication-provider errors", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    signUp.mockResolvedValueOnce({
+      data: { user: null },
+      error: { message: "duplicate key violates auth.users_email_key" },
+    });
+    const form = new FormData();
+    form.set("email", "student@example.com");
+    form.set("password", "password123");
+    // School answers are validated before signUp runs, so the redaction path
+    // is only reachable with them present.
+    form.set("university", "PUP");
+    form.set("schoolType", "Public");
+
+    try {
+      const result = await signUpAction({}, form);
+
+      expect(result).toEqual({ error: "Unable to create account. Please try again." });
+      expect(JSON.stringify(result)).not.toContain("auth.users_email_key");
+      expect(consoleError).toHaveBeenCalled();
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 });
