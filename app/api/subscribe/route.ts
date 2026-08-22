@@ -79,6 +79,16 @@ export async function POST(req: NextRequest) {
 
   const userId = await getCurrentUserId();
 
+  // An account is required to buy. Without one there is no email address, so a
+  // payer would get no receipt and no expiry warning — and their purchase would
+  // be stranded on a single device with no way to recover it.
+  if (!userId) {
+    return NextResponse.json(
+      { error: "Please sign in to continue — we'll email your receipt and keep your unlock on every device." },
+      { status: 401 }
+    );
+  }
+
   const body = (await req.json().catch(() => null)) as
     | { yearId?: string; subjectId?: string; deviceId?: string; returnPath?: string; plan?: string; couponCode?: string }
     | null;

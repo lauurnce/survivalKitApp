@@ -2,6 +2,19 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import crypto from "crypto";
 import { SEMESTER_END } from "@/lib/paymongo";
 
+// Lifecycle email. enqueueThrows lets a test prove the payment path survives a
+// broken outbox — the single most important behaviour in this file.
+const enqueued: Array<Record<string, unknown>> = [];
+let enqueueThrows = false;
+let payerEmail: string | null = "payer@example.com";
+vi.mock("@/lib/email/outbox", () => ({
+  enqueue: (_supabase: unknown, input: Record<string, unknown>) => {
+    if (enqueueThrows) return Promise.reject(new Error("outbox is down"));
+    enqueued.push(input);
+    return Promise.resolve({ enqueued: true, deduped: false });
+  },
+}));
+
 const recorded: Array<Record<string, unknown>> = [];
 vi.mock("@/lib/payments", () => ({
   recordPayment: (_supabase: unknown, input: Record<string, unknown>) => {
@@ -44,6 +57,14 @@ function makeMockSupabase() {
         };
       }
       throw new Error(`Unexpected table in mock: ${table}`);
+    },
+    // The webhook resolves the payer's address through the admin API before
+    // queueing anything; payerEmail=null simulates an account with no email.
+    auth: {
+      admin: {
+        getUserById: (_id: string) =>
+          Promise.resolve({ data: { user: payerEmail ? { email: payerEmail } : null } }),
+      },
     },
   };
 }
@@ -88,7 +109,56 @@ beforeEach(() => {
   paymentsInsertError = null;
   classesInsertErrors = [null];
   classesInsertCallIndex = 0;
+  enqueued.length = 0;
+  enqueueThrows = false;
+  payerEmail = "payer@example.com";
   vi.stubEnv("PAYMONGO_WEBHOOK_SECRET", SECRET);
+});
+
+describe("lifecycle email", () => {
+  const USER = "cccccccc-dddd-eeee-ffff-000000000000";
+
+  it("queues a receipt and a welcome for a payer with an account", async () => {
+    const res = await POST(
+      signedRequest(`year:${YEAR} subject:${SUBJ} device:${DEV} user:${USER} plan:subject_sem`, 9900)
+    );
+    expect(res.status).toBe(200);
+    expect(enqueued.map((e) => e.kind).sort()).toEqual(["receipt", "welcome"]);
+    // scopeKey is the link id, so a replayed delivery cannot queue a second copy.
+    expect(enqueued[0].scopeKey).toBe("link_test_1");
+    expect(enqueued[0].toEmail).toBe("payer@example.com");
+    expect((enqueued[0].payload as Record<string, unknown>).amountCentavos).toBe(9900);
+  });
+
+  // The reason the outbox exists. recordPayment is idempotent on the link id:
+  // if an email error escaped, PayMongo's retry would hit the dedupe branch and
+  // return before reaching this code, losing the receipt permanently.
+  it("still returns 200 and records the payment when queueing throws", async () => {
+    enqueueThrows = true;
+    const res = await POST(
+      signedRequest(`year:${YEAR} subject:${SUBJ} device:${DEV} user:${USER} plan:subject_sem`, 9900)
+    );
+    expect(res.status).toBe(200);
+    expect(recorded).toHaveLength(1);
+  });
+
+  it("queues nothing when the payment carries no user id", async () => {
+    const res = await POST(
+      signedRequest(`year:${YEAR} subject:${SUBJ} device:${DEV} plan:subject_sem`, 9900)
+    );
+    expect(res.status).toBe(200);
+    expect(recorded).toHaveLength(1);
+    expect(enqueued).toHaveLength(0);
+  });
+
+  it("queues nothing when the account has no email address", async () => {
+    payerEmail = null;
+    const res = await POST(
+      signedRequest(`year:${YEAR} subject:${SUBJ} device:${DEV} user:${USER} plan:subject_sem`, 9900)
+    );
+    expect(res.status).toBe(200);
+    expect(enqueued).toHaveLength(0);
+  });
 });
 
 describe("webhook plan handling", () => {
