@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { PROFILE_COLUMNS, profileFromRow, signupSchoolRow } from "./profileRow";
+import {
+  REQUIRED_PROFILE_COLUMNS,
+  profileFromRow,
+  signupSchoolRow,
+} from "./profileRow";
 
-describe("PROFILE_COLUMNS", () => {
-  it("names every column profileFromRow reads, so the select cannot drift", () => {
-    const selected = PROFILE_COLUMNS.split(",");
-    expect(selected).toEqual([
+describe("REQUIRED_PROFILE_COLUMNS", () => {
+  it("names every column profileFromRow reads, so the preflight can check them", () => {
+    expect(REQUIRED_PROFILE_COLUMNS).toEqual([
       "first_name",
       "last_name",
       "age",
@@ -97,5 +100,60 @@ describe("signupSchoolRow", () => {
     expect(row.university).toBe("Cavite State University");
     expect(row.school_type).toBe("Public");
     expect(row.user_id).toBe("11111111-1111-1111-1111-111111111111");
+  });
+});
+
+describe("profileFromRow — surviving a schema that lags the code", () => {
+  // getProfile selects *, so during a deploy window where a migration has not
+  // been applied the row simply arrives without the new key. Losing the sector
+  // is acceptable; losing the student's name, major and campus art is not.
+  const preMigrationRow = {
+    first_name: "Juan",
+    last_name: "Dela Cruz",
+    age: 19,
+    gender: "Male",
+    university: "Polytechnic University of the Philippines",
+    major: "BS Information Technology",
+    pathways: ["Backend"],
+    // no school_type — the column does not exist yet
+  };
+
+  it("still returns the student's name when school_type is absent", () => {
+    const profile = profileFromRow(preMigrationRow);
+    expect(profile.firstName).toBe("Juan");
+    expect(profile.lastName).toBe("Dela Cruz");
+  });
+
+  it("still returns the school, so the campus art survives", () => {
+    expect(profileFromRow(preMigrationRow).university).toBe(
+      "Polytechnic University of the Philippines"
+    );
+  });
+
+  it("reports an absent school_type as null, never undefined", () => {
+    // undefined would leak through Profile and read as a missing key rather
+    // than an unanswered question.
+    const profile = profileFromRow(preMigrationRow);
+    expect(profile.schoolType).toBeNull();
+    expect("schoolType" in profile).toBe(true);
+  });
+
+  it("does not throw on a row missing every optional column", () => {
+    const profile = profileFromRow({ first_name: "Juan", last_name: "Cruz" });
+    expect(profile).toEqual({
+      firstName: "Juan",
+      lastName: "Cruz",
+      age: null,
+      gender: null,
+      university: null,
+      schoolType: null,
+      major: null,
+      pathways: [],
+    });
+  });
+
+  it("does not throw on a completely empty row", () => {
+    expect(() => profileFromRow({})).not.toThrow();
+    expect(profileFromRow({}).firstName).toBeNull();
   });
 });
