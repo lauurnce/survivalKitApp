@@ -130,4 +130,52 @@ describe("SubscribeGate", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Unknown subject");
     expect(screen.getByRole("button", { name: /unlock — ₱99/i })).not.toBeDisabled();
   });
+
+  it("sends a signed-out visitor to sign-in instead of calling checkout", async () => {
+    render(
+      <SubscribeGate
+        yearId={YEAR}
+        subjectId={SUBJECT}
+        returnPath={RETURN_PATH}
+        signInHref="/login?next=%2Funlock%3Fyear%3Dy%26subject%3Ds"
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /₱99/ }));
+
+    // /api/subscribe rejects anonymous callers, so a tap that reached it would
+    // surface as an error under the price instead of a route to sign-in.
+    await waitFor(() =>
+      expect(window.location.href).toBe("/login?next=%2Funlock%3Fyear%3Dy%26subject%3Ds")
+    );
+    expect(fetchCalls).toHaveLength(0);
+  });
+
+  it("routes a signed-out tap to sign-in even when storage is blocked", async () => {
+    // A checkout tap needs a device id and bails with an error without one.
+    // Signing in needs no such thing, so the signed-out branch must run before
+    // that check — otherwise a private-browsing visitor cannot even reach the
+    // account they are being asked to create.
+    deviceId = "";
+    render(
+      <SubscribeGate yearId={YEAR} subjectId={SUBJECT} signInHref="/login?next=%2Funlock" />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /₱49/ }));
+
+    await waitFor(() => expect(window.location.href).toBe("/login?next=%2Funlock"));
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(logEvent).toHaveBeenCalledWith("subscribe_click", {
+      year_id: YEAR,
+      subject_id: SUBJECT,
+    });
+  });
+
+  it("still quotes all three prices when signed out", () => {
+    render(<SubscribeGate yearId={YEAR} subjectId={SUBJECT} signInHref="/login?next=%2Funlock" />);
+
+    expect(screen.getByText("₱49")).toBeTruthy();
+    expect(screen.getByText("₱99")).toBeTruthy();
+    expect(screen.getByText("₱299")).toBeTruthy();
+  });
 });

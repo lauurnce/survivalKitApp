@@ -15,6 +15,13 @@ interface Props {
    * /account instead of back to the lesson they left.
    */
   returnPath?: string | null;
+  /**
+   * Set only when nobody is signed in. The plans stay visible either way — this
+   * page is the one place that quotes a price — but /api/subscribe rejects
+   * anonymous callers, so a tap has to go collect an account first and come
+   * back via next= rather than fail at checkout.
+   */
+  signInHref?: string | null;
 }
 
 // Keep labels below in sync with PLANS in lib/paymongo.ts (₱49 / ₱99 / ₱299).
@@ -22,11 +29,19 @@ type GatePlan = "subject_month" | "subject_sem" | "year_sem";
 
 // The three plan cards and the checkout hand-off. This is the only place in the
 // app that shows a price — the locked strips and the teaser link here instead.
-export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, returnPath }: Props) {
+export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, returnPath, signInHref }: Props) {
   const [loading, setLoading] = useState<GatePlan | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubscribe(plan: GatePlan) {
+    if (signInHref) {
+      // Still worth recording: a signed-out tap is real purchase intent, and
+      // losing it would make the sign-in wall look free in the funnel.
+      void logEvent("subscribe_click", { year_id: yearId, subject_id: subjectId });
+      window.location.href = signInHref;
+      return;
+    }
+
     const deviceId = getDeviceId();
     if (!deviceId) {
       // getDeviceId() returns "" when localStorage is unreachable — Safari

@@ -156,30 +156,38 @@ export default async function UnlockPage({ searchParams }: Props) {
                 Back to {returnModule?.title ?? subject.title} →
               </Link>
             </div>
-          ) : !userId ? (
-            <div className="border border-ink-faint/30 p-6">
-              <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-2">
-                Sign in required
-              </p>
-              <p className="font-sans text-base text-ink-muted mb-4">
-                Create a free account so we can email your receipt and keep this unlock
-                on every device.
-              </p>
-              <Link
-                href={`/login?next=${encodeURIComponent(returnHref)}`}
-                className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
-              >
-                Sign in to unlock →
-              </Link>
-            </div>
           ) : (
             <>
+              {/* Signed-out visitors still see the plans. This is the only page
+                  that quotes a price, so putting the account wall in front of it
+                  asks people to sign up before they know what it costs. The gate
+                  routes their tap to sign-in instead of a checkout it cannot
+                  complete — /api/subscribe rejects anonymous callers. */}
+              {!userId && (
+                <div className="border border-ink-faint/30 p-6 mb-6">
+                  <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-2">
+                    Sign in required
+                  </p>
+                  <p className="font-sans text-base text-ink-muted mb-4">
+                    Create a free account so we can email your receipt and keep this unlock
+                    on every device.
+                  </p>
+                  <Link
+                    href={`/login?next=${encodeURIComponent(returnHref)}`}
+                    className="inline-block bg-accent text-paper font-sans text-sm px-4 py-3 hover:bg-ink transition-colors duration-150"
+                  >
+                    Sign in to unlock →
+                  </Link>
+                </div>
+              )}
+
               <SubscribeGate
                 yearId={yearId}
                 subjectId={subjectId}
                 yearLabel={year?.label}
                 subjectTitle={subject.title}
                 returnPath={returnPath}
+                signInHref={userId ? undefined : `/login?next=${encodeURIComponent(returnHref)}`}
               />
 
               <p className="font-sans text-xs text-ink-faint mt-4">

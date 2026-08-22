@@ -33,8 +33,12 @@ vi.mock("@/lib/subscriptions", () => ({
 // Stand in for the client component so the test can read exactly which
 // returnPath the page decided to hand checkout.
 vi.mock("@/components/SubscribeGate", () => ({
-  SubscribeGate: ({ returnPath }: { returnPath?: string | null }) => (
-    <div data-testid="gate" data-return-path={returnPath ?? "none"} />
+  SubscribeGate: ({ returnPath, signInHref }: { returnPath?: string | null; signInHref?: string | null }) => (
+    <div
+      data-testid="gate"
+      data-return-path={returnPath ?? "none"}
+      data-sign-in-href={signInHref ?? "none"}
+    />
   ),
 }));
 
@@ -217,7 +221,6 @@ describe("UnlockPage — sign-in requirement", () => {
     currentUserId = null;
     await renderPage({ year: YEAR, subject: SUBJECT });
 
-    expect(screen.queryByTestId("gate")).toBeNull();
     const link = screen.getByRole("link", { name: /sign in to unlock/i });
     expect(link.getAttribute("href")).toContain("/login?next=");
   });
@@ -233,5 +236,30 @@ describe("UnlockPage — sign-in requirement", () => {
     const next = decodeURIComponent(href.split("next=")[1]);
     expect(next).toContain(`/unlock?year=${YEAR}&subject=${SUBJECT}`);
     expect(decodeURIComponent(next)).toContain(from);
+  });
+
+  it("still quotes the price to a signed-out visitor", async () => {
+    currentUserId = null;
+    await renderPage({ year: YEAR, subject: SUBJECT });
+
+    // This page is the only place in the app that shows a price. Hiding it
+    // behind the account wall asks people to sign up before they know the cost.
+    expect(screen.getByTestId("gate")).not.toBeNull();
+  });
+
+  it("points the signed-out gate at sign-in instead of checkout", async () => {
+    currentUserId = null;
+    await renderPage({ year: YEAR, subject: SUBJECT });
+
+    const href = screen.getByTestId("gate").getAttribute("data-sign-in-href")!;
+    expect(href).toContain("/login?next=");
+    expect(decodeURIComponent(href)).toContain(`/unlock?year=${YEAR}&subject=${SUBJECT}`);
+  });
+
+  it("leaves the gate free to check out once signed in", async () => {
+    currentUserId = "user-1";
+    await renderPage({ year: YEAR, subject: SUBJECT });
+
+    expect(screen.getByTestId("gate").getAttribute("data-sign-in-href")).toBe("none");
   });
 });
