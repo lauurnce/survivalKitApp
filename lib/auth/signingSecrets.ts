@@ -4,9 +4,8 @@
 // runtime: no Node built-ins here.
 
 /**
- * Minimum length enforced on a PRIMARY secret once a rotation window is open.
- * PREVIOUS values are exempt — they exist precisely because old secrets were
- * allowed to be short.
+ * Minimum length enforced on a PRIMARY secret. PREVIOUS values are exempt —
+ * they exist precisely because old secrets were allowed to be short.
  */
 export const MIN_PRIMARY_SECRET_LENGTH = 32;
 
@@ -17,22 +16,22 @@ export const MIN_PRIMARY_SECRET_LENGTH = 32;
  *
  * Rotation runbook (rotating DEVICE_COOKIE_SECRET / ADMIN_SESSION_SECRET
  * without stranding existing holders):
- *   1. Deploy code reading these vars while the current (possibly
- *      legacy-short) primary is still set and no *_PREVIOUS var exists —
- *      behavior is exactly what shipped before this helper existed.
- *   2. Open the rotation window: set *_PREVIOUS to the old secret and point
- *      the primary itself at a fresh value of >= MIN_PRIMARY_SECRET_LENGTH
- *      characters. Existing cookies/tokens keep verifying against *_PREVIOUS;
+ *   1. BEFORE deploying this code, set both vars on the target environment:
+ *      point *_PREVIOUS at the current (legacy, possibly short) secret, and
+ *      point the primary at a fresh value of >= MIN_PRIMARY_SECRET_LENGTH
+ *      characters. The floor below is unconditional, so deploying while the
+ *      primary is still the short legacy value fails closed.
+ *   2. Deploy. Existing cookies/tokens keep verifying against *_PREVIOUS;
  *      everything newly issued signs with the rotated primary.
  *   3. After a grace window covering the longest-lived credential (device
  *      cookies live 1 year, admin sessions 8 hours), delete *_PREVIOUS.
  *
- * The length floor applies to the primary only, and only once the window is
- * open (*_PREVIOUS set): a legacy short primary keeps working untouched until
- * you rotate, but from the moment you do, signing refuses to mint new
- * credentials with anything below the floor. An empty *_PREVIOUS counts as
- * unset, so the window can be closed by clearing the value rather than
- * deleting the variable.
+ * The floor applies to the primary only and applies unconditionally — it is
+ * NOT contingent on a rotation window being open. Gating it on *_PREVIOUS
+ * would mean deleting *_PREVIOUS in step 3 silently switched enforcement back
+ * off, exactly when the operator believes the rotation is finished. An empty
+ * *_PREVIOUS counts as unset, so the window can be closed by clearing the
+ * value rather than deleting the variable.
  */
 export function signingSecretCandidates(
   primaryName: string,
@@ -40,14 +39,12 @@ export function signingSecretCandidates(
 ): string[] {
   const primary = process.env[primaryName];
   if (!primary) throw new Error(`${primaryName} env var is not set`);
-
-  const previous = process.env[previousName];
-  if (!previous) return [primary];
-
   if (primary.length < MIN_PRIMARY_SECRET_LENGTH) {
     throw new Error(
       `${primaryName} must be at least ${MIN_PRIMARY_SECRET_LENGTH} characters`,
     );
   }
-  return [primary, previous];
+
+  const previous = process.env[previousName];
+  return previous ? [primary, previous] : [primary];
 }
