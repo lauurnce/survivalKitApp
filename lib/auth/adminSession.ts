@@ -1,17 +1,24 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
+import { signingSecretCandidates } from "@/lib/auth/signingSecrets";
 
 const COOKIE_NAME = "admin_session";
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
 
-function getSecret(): string {
-  const s = process.env.ADMIN_SESSION_SECRET;
-  if (!s) throw new Error("ADMIN_SESSION_SECRET env var is not set");
-  return s;
+function signingCandidates(): string[] {
+  return signingSecretCandidates(
+    "ADMIN_SESSION_SECRET",
+    "ADMIN_SESSION_SECRET_PREVIOUS",
+  );
+}
+
+function hmac(secret: string, payload: string): string {
+  return createHmac("sha256", secret).update(payload).digest("base64url");
 }
 
 function sign(payload: string): string {
-  return createHmac("sha256", getSecret()).update(payload).digest("base64url");
+  // Signing always uses the primary (first candidate); see signingSecrets.
+  return hmac(signingCandidates()[0], payload);
 }
 
 export function createSessionToken(): string {
@@ -26,8 +33,17 @@ export function verifySessionToken(token: string): boolean {
     const payload = token.slice(0, dot);
     const sig = token.slice(dot + 1);
 
-    const expected = sign(payload);
-    if (!timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) return false;
+    // Primary first; during a rotation window the previous secret is the
+    // fallback that keeps existing sessions valid.
+    let signatureValid = false;
+    for (const secret of signingCandidates()) {
+      const expected = hmac(secret, payload);
+      if (timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) {
+        signatureValid = true;
+        break;
+      }
+    }
+    if (!signatureValid) return false;
 
     const { exp } = JSON.parse(Buffer.from(payload, "base64url").toString());
     return typeof exp === "number" && Date.now() < exp;
