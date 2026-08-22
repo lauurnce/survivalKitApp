@@ -1,0 +1,233 @@
+name: db-migrations
+
+# Migration safety net: every PR / push to main replays the whole
+# supabase/migrations history against a throwaway postgres:16 so a broken
+# migration fails CI instead of failing production. No Supabase CLI — plain
+# psql only.
+on:
+  pull_request:
+    paths:
+      - "supabase/migrations/**"
+      - ".github/workflows/db-migrations.yml"
+      - "scripts/db/**"
+  push:
+    branches: [main]
+    paths:
+      - "supabase/migrations/**"
+      - ".github/workflows/db-migrations.yml"
+      - "scripts/db/**"
+
+permissions:
+  contents: read
+
+jobs:
+  apply-migrations:
+    name: Apply every migration (postgres:16)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: app
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d app"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: app
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # Vanilla postgres:16 has none of the Supabase-managed objects the
+      # migrations reference. Create the minimal equivalents first so every
+      # migration applies UNCHANGED (semantics stay identical to prod).
+      # This shim exists ONLY for CI; production keeps the real ones.
+      - name: Bootstrap Supabase-flavored roles, schemas, extensions
+        run: |
+          psql --no-psqlrc -v ON_ERROR_STOP=1 <<'SQL'
+          create extension if not exists pgcrypto;
+
+          do $bootstrap$
+          begin
+            if not exists (select 1 from pg_roles where rolname = 'anon') then
+              create role anon nologin;
+            end if;
+            if not exists (select 1 from pg_roles where rolname = 'authenticated') then
+              create role authenticated nologin;
+            end if;
+            if not exists (select 1 from pg_roles where rolname = 'service_role') then
+              create role service_role nologin;
+            end if;
+          end
+          $bootstrap$;
+
+          -- auth is Supabase-managed in production; stub it here so
+          -- migrations referencing auth.users / auth.uid() / auth.role()
+          -- apply unchanged. The stub functions return NULL: CI never holds
+          -- a Supabase JWT, and policies only need to parse at DDL time.
+          create schema if not exists auth;
+          grant usage on schema auth to anon, authenticated, service_role;
+
+          create table if not exists auth.users (
+            id uuid primary key default gen_random_uuid(),
+            email text,
+            email_confirmed_at timestamptz
+          );
+
+          create or replace function auth.uid() returns uuid
+          language sql stable as $fn$ select null::uuid $fn$;
+          create or replace function auth.role() returns text
+          language sql stable as $fn$ select null::text $fn$;
+
+          -- storage is also Supabase-managed; pre-create the empty schema so
+          -- any future migration referencing it does not break CI.
+          create schema if not exists storage;
+
+          grant usage on schema public to anon, authenticated, service_role;
+          SQL
+
+      - name: Apply every migration in lexical (== version) order
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=()
+          while IFS= read -r f; do files+=("$f"); done \
+            < <(printf '%s\n' supabase/migrations/*.sql | LC_ALL=C sort)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "::error::no supabase/migrations/*.sql found"
+            exit 1
+          fi
+          for f in "${files[@]}"; do
+            echo "::group::apply $f"
+            psql --no-psqlrc -v ON_ERROR_STOP=1 -f "$f"
+            echo "::endgroup::"
+          done
+          echo "Applied ${#files[@]} migration file(s) cleanly."
+
+  validate-consolidated:
+    name: Validate consolidated pending script (postgres:16)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: app
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d app"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: app
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # The committed artifact must always equal the output of the build
+      # script over the current pending files — otherwise the paste-ready
+      # script has drifted from its sources.
+      - name: Regenerate consolidated script, fail on drift
+        run: |
+          bash scripts/db/build-consolidated.sh
+          if ! git diff --exit-code -- scripts/db/consolidated-pending.sql; then
+            echo "::error::scripts/db/consolidated-pending.sql is stale — run scripts/db/build-consolidated.sh and commit the result"
+            exit 1
+          fi
+
+      - name: Bootstrap Supabase-flavored roles, schemas, extensions
+        run: |
+          psql --no-psqlrc -v ON_ERROR_STOP=1 <<'SQL'
+          create extension if not exists pgcrypto;
+
+          do $bootstrap$
+          begin
+            if not exists (select 1 from pg_roles where rolname = 'anon') then
+              create role anon nologin;
+            end if;
+            if not exists (select 1 from pg_roles where rolname = 'authenticated') then
+              create role authenticated nologin;
+            end if;
+            if not exists (select 1 from pg_roles where rolname = 'service_role') then
+              create role service_role nologin;
+            end if;
+          end
+          $bootstrap$;
+
+          create schema if not exists auth;
+          grant usage on schema auth to anon, authenticated, service_role;
+
+          create table if not exists auth.users (
+            id uuid primary key default gen_random_uuid(),
+            email text,
+            email_confirmed_at timestamptz
+          );
+
+          create or replace function auth.uid() returns uuid
+          language sql stable as $fn$ select null::uuid $fn$;
+          create or replace function auth.role() returns text
+          language sql stable as $fn$ select null::text $fn$;
+
+          create schema if not exists storage;
+
+          grant usage on schema public to anon, authenticated, service_role;
+          SQL
+
+      # Production already has everything up to and including
+      # 20260821000000_admin_feedback_agg.sql applied; the consolidated six
+      # are what is still pending there. Replay only that applied history,
+      # then the paste-ready script on top — exactly what pasting it into
+      # the Supabase SQL Editor will do.
+      - name: Apply production baseline (history minus pending six)
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          pending=()
+          while IFS= read -r p; do pending+=("$p"); done \
+            < <(bash scripts/db/build-consolidated.sh --list)
+          if [ "${#pending[@]}" -eq 0 ]; then
+            echo "::error::pending list is empty — check scripts/db/build-consolidated.sh"
+            exit 1
+          fi
+          files=()
+          while IFS= read -r f; do
+            skip=""
+            for p in "${pending[@]}"; do
+              if [ "$f" = "$p" ]; then skip="1"; break; fi
+            done
+            if [ -z "$skip" ]; then files+=("$f"); fi
+          done < <(printf '%s\n' supabase/migrations/*.sql | LC_ALL=C sort)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "::error::baseline is empty — check scripts/db/build-consolidated.sh"
+            exit 1
+          fi
+          for f in "${files[@]}"; do
+            echo "::group::apply $f"
+            psql --no-psqlrc -v ON_ERROR_STOP=1 -f "$f"
+            echo "::endgroup::"
+          done
+          echo "Baseline of ${#files[@]} migration file(s) applied."
+
+      - name: Apply consolidated pending script (paste-ready artifact)
+        run: |
+          psql --no-psqlrc -v ON_ERROR_STOP=1 -f scripts/db/consolidated-pending.sql
+          echo "Consolidated pending script applies cleanly on top of the production baseline."
