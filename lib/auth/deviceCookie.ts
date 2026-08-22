@@ -1,19 +1,24 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { isUuid } from "@/lib/validation";
+import { signingSecretCandidates } from "@/lib/auth/signingSecrets";
 
 export const DEVICE_COOKIE = "bsit_device_id";
 const DEVICE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
-function getSecret(): string {
-  const s = process.env.DEVICE_COOKIE_SECRET;
-  if (!s || s.length < 32) {
-    throw new Error("DEVICE_COOKIE_SECRET must be at least 32 characters");
-  }
-  return s;
+function signingCandidates(): string[] {
+  return signingSecretCandidates(
+    "DEVICE_COOKIE_SECRET",
+    "DEVICE_COOKIE_SECRET_PREVIOUS",
+  );
+}
+
+function hmac(secret: string, deviceId: string): string {
+  return createHmac("sha256", secret).update(deviceId).digest("base64url");
 }
 
 function sign(deviceId: string): string {
-  return createHmac("sha256", getSecret()).update(deviceId).digest("base64url");
+  // Signing always uses the primary (first candidate); see signingSecrets.
+  return hmac(signingCandidates()[0], deviceId);
 }
 
 /** Cookie value: "<uuid>.<hmac>" so the server can trust it without a DB lookup. */
@@ -32,12 +37,18 @@ export function verifyDeviceCookie(value: string | undefined): string | null {
   if (!isUuid(deviceId)) return null;
 
   try {
-    const expected = sign(deviceId);
-    if (!timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) return null;
+    // Primary first; during a rotation window the previous secret is the
+    // fallback that keeps existing cookies valid.
+    for (const secret of signingCandidates()) {
+      const expected = hmac(secret, deviceId);
+      if (timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) {
+        return deviceId;
+      }
+    }
   } catch {
     return null;
   }
-  return deviceId;
+  return null;
 }
 
 export const DEVICE_COOKIE_OPTIONS: {

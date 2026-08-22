@@ -19,6 +19,10 @@ const {
 } = await import("./adminSession");
 
 const SECRET = "test-admin-session-secret-at-least-32";
+// A realistic rotation: the old production secret is short, its replacement
+// meets the 32-character floor.
+const OLD_SECRET = "old-admin-session-secret";
+const NEW_SECRET = "brand-new-admin-session-secret-at-least-32-chars";
 const TTL_MS = 8 * 60 * 60 * 1000;
 
 // Mint a token the way the module does, but with an arbitrary payload, so we
@@ -32,12 +36,15 @@ function tokenWithPayload(payload: object, secret = SECRET): string {
 describe("adminSession", () => {
   beforeEach(() => {
     process.env.ADMIN_SESSION_SECRET = SECRET;
+    delete process.env.ADMIN_SESSION_SECRET_PREVIOUS;
     process.env.ADMIN_PASSWORD = "correct-horse-battery-staple";
     mockCookieValue = undefined;
   });
 
   afterEach(() => {
     vi.useRealTimers();
+    delete process.env.ADMIN_SESSION_SECRET;
+    delete process.env.ADMIN_SESSION_SECRET_PREVIOUS;
   });
 
   describe("createSessionToken / verifySessionToken", () => {
@@ -50,8 +57,9 @@ describe("adminSession", () => {
       expect(() => createSessionToken()).toThrow(/ADMIN_SESSION_SECRET/);
     });
 
-    it("throws rather than using a short signing secret", () => {
+    it("throws rather than using a short signing secret once rotating", () => {
       process.env.ADMIN_SESSION_SECRET = "too-short";
+      process.env.ADMIN_SESSION_SECRET_PREVIOUS = "legacy-admin-secret";
       expect(() => createSessionToken()).toThrow(/at least 32/);
     });
 
@@ -113,6 +121,54 @@ describe("adminSession", () => {
       for (const bad of ["", "no-dot-at-all", ".", "..", "garbage.garbage"]) {
         expect(verifySessionToken(bad)).toBe(false);
       }
+    });
+  });
+
+  describe("rotation window (dual-secret)", () => {
+    it("keeps verifying tokens minted with the previous secret during rotation", () => {
+      // Pre-rotation: an admin session exists, signed with the short legacy
+      // secret.
+      process.env.ADMIN_SESSION_SECRET = OLD_SECRET;
+      const liveSession = createSessionToken();
+
+      // Rotation: new long primary, old secret demoted to previous.
+      process.env.ADMIN_SESSION_SECRET = NEW_SECRET;
+      process.env.ADMIN_SESSION_SECRET_PREVIOUS = OLD_SECRET;
+
+      expect(verifySessionToken(liveSession)).toBe(true);
+    });
+
+    it("mints new tokens with the rotated primary, not the previous", () => {
+      process.env.ADMIN_SESSION_SECRET = NEW_SECRET;
+      process.env.ADMIN_SESSION_SECRET_PREVIOUS = OLD_SECRET;
+
+      const fresh = createSessionToken();
+      expect(verifySessionToken(fresh)).toBe(true);
+
+      // Closing the window must not invalidate tokens issued during it.
+      delete process.env.ADMIN_SESSION_SECRET_PREVIOUS;
+      expect(verifySessionToken(fresh)).toBe(true);
+    });
+
+    it("still rejects tokens signed with secrets outside the window", () => {
+      process.env.ADMIN_SESSION_SECRET = OLD_SECRET;
+      const stale = createSessionToken();
+
+      process.env.ADMIN_SESSION_SECRET = NEW_SECRET;
+      process.env.ADMIN_SESSION_SECRET_PREVIOUS = "some-other-old-secret";
+      expect(verifySessionToken(stale)).toBe(false);
+    });
+
+    it("refuses to mint tokens with a short primary once rotating", () => {
+      process.env.ADMIN_SESSION_SECRET = OLD_SECRET;
+      process.env.ADMIN_SESSION_SECRET_PREVIOUS = OLD_SECRET;
+      expect(() => createSessionToken()).toThrow(/at least 32/);
+    });
+
+    it("keeps verifying short-primary sessions while only the primary is configured", () => {
+      // Step 1 of the runbook: code deployed, env vars untouched.
+      process.env.ADMIN_SESSION_SECRET = OLD_SECRET;
+      expect(verifySessionToken(createSessionToken())).toBe(true);
     });
   });
 

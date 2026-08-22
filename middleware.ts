@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
+import { signingSecretCandidates } from "@/lib/auth/signingSecrets";
 
 // Nonce-based CSP for scripts: 'unsafe-inline' on script-src would defeat most
 // of CSP's XSS value (any injected <script> would execute freely). A fresh
@@ -30,10 +31,41 @@ function buildCsp(nonce: string): string {
 }
 
 // Middleware runs in Edge Runtime — use Web Crypto API (not Node's crypto module)
+async function hmacValid(
+  secret: string,
+  payload: string,
+  sigBytes: BufferSource,
+): Promise<boolean> {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["verify"],
+  );
+  return crypto.subtle.verify(
+    "HMAC",
+    key,
+    sigBytes,
+    new TextEncoder().encode(payload),
+  );
+}
+
 async function verifyAdminToken(token: string): Promise<boolean> {
   try {
-    const secret = process.env.ADMIN_SESSION_SECRET;
-    if (!secret || secret.length < 32 || !token) return false;
+    // Fail closed on a short or missing primary before anything else runs.
+    // The shared resolver below enforces the same floor, but this explicit
+    // check keeps the middleware-side guarantee independent of exception
+    // handling (PR #14 posture).
+    const primary = process.env.ADMIN_SESSION_SECRET;
+    if (!primary || primary.length < 32 || !token) return false;
+
+    // Primary first; during a rotation window the previous secret is the
+    // fallback that keeps existing sessions valid (see lib/auth/signingSecrets).
+    const candidates = signingSecretCandidates(
+      "ADMIN_SESSION_SECRET",
+      "ADMIN_SESSION_SECRET_PREVIOUS",
+    );
 
     const dot = token.lastIndexOf(".");
     if (dot === -1) return false;
@@ -41,27 +73,19 @@ async function verifyAdminToken(token: string): Promise<boolean> {
     const payload = token.slice(0, dot);
     const sig = token.slice(dot + 1);
 
-    const keyBytes = new TextEncoder().encode(secret);
-    const key = await crypto.subtle.importKey(
-      "raw",
-      keyBytes,
-      { name: "HMAC", hash: "SHA-256" },
-      false,
-      ["verify"],
-    );
-
     // base64url → base64 → bytes
     const sigBytes = Uint8Array.from(
       atob(sig.replace(/-/g, "+").replace(/_/g, "/")),
       (c) => c.charCodeAt(0),
     );
 
-    const isValid = await crypto.subtle.verify(
-      "HMAC",
-      key,
-      sigBytes,
-      new TextEncoder().encode(payload),
-    );
+    let isValid = false;
+    for (const secret of candidates) {
+      if (await hmacValid(secret, payload, sigBytes)) {
+        isValid = true;
+        break;
+      }
+    }
     if (!isValid) return false;
 
     const decoded = JSON.parse(
