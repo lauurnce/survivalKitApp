@@ -25,3 +25,13 @@ special-charter. Private = private non-stock/sectarian/proprietary.
 | 18 | University of the Philippines Visayas | Public | Public | no | https://en.wikipedia.org/wiki/University_of_the_Philippines_Visayas (Type: "National state university"; constituent of UP System) | high |
 | 19 | University of San Carlos | Private | Private | no | https://en.wikipedia.org/wiki/University_of_San_Carlos (Type: "Private, research university"; run by Society of the Divine Word) | high |
 | 20 | University of Southeastern Philippines | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Davao Region) | high |
+| 21 | University of San Jose–Recoletos | Private | Private | no | https://en.wikipedia.org/wiki/University_of_San_Jose%E2%80%93Recoletos (Type: "Private, Co-educational, Research university"; Order of Augustinian Recollects) | high |
+| 22 | University of St. La Salle | Private | Private | no | https://en.wikipedia.org/wiki/University_of_St._La_Salle (Type: "Private, Roman Catholic, ... non-stock"; De La Salle Brothers) | high |
+| 23 | University of Santo Tomas | Private | Private | no | https://en.wikipedia.org/wiki/University_of_Santo_Tomas (Type: "Private non-profit research university"; Dominican Order) | high |
+| 24 | Western Mindanao State University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Zamboanga Peninsula) | high |
+| 25 | West Visayas State University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Western Visayas) | high |
+| 26 | Bohol Island State University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Central Visayas) | high |
+| 27 | Negros Oriental State University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Negros Island Region) | high |
+| 28 | Aklan State University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Western Visayas) | high |
+| 29 | Samar State University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Eastern Visayas) | high |
+| 30 | Iloilo Science and Technology University | Public | Public | no | https://en.wikipedia.org/wiki/List_of_state_schools,_colleges_and_universities_in_the_Philippines (listed SUC, Western Visayas) | high |
