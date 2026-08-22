@@ -13,7 +13,7 @@ const OLD = "the-old-short-one"; // previous secrets may be any length
 
 describe("signingSecretCandidates", () => {
   beforeEach(() => {
-    process.env[PRIMARY_NAME] = SHORT;
+    process.env[PRIMARY_NAME] = LONG;
     delete process.env[PREVIOUS_NAME];
   });
   afterEach(() => {
@@ -22,7 +22,7 @@ describe("signingSecretCandidates", () => {
   });
 
   it("returns only the primary when no previous secret is set", () => {
-    expect(signingSecretCandidates(PRIMARY_NAME, PREVIOUS_NAME)).toEqual([SHORT]);
+    expect(signingSecretCandidates(PRIMARY_NAME, PREVIOUS_NAME)).toEqual([LONG]);
   });
 
   it("lists the previous secret after the primary during a rotation window", () => {
@@ -36,7 +36,7 @@ describe("signingSecretCandidates", () => {
 
   it("treats an empty-string previous as unset", () => {
     process.env[PREVIOUS_NAME] = "";
-    expect(signingSecretCandidates(PRIMARY_NAME, PREVIOUS_NAME)).toEqual([SHORT]);
+    expect(signingSecretCandidates(PRIMARY_NAME, PREVIOUS_NAME)).toEqual([LONG]);
   });
 
   it("throws when the primary env var is not set", () => {
@@ -55,11 +55,23 @@ describe("signingSecretCandidates", () => {
     );
   });
 
-  it("still allows a legacy short primary before any rotation starts", () => {
-    // Today's production state: short primary, no previous. This must keep
-    // working untouched until the operator chooses to rotate.
+  it("refuses a below-floor primary even with no rotation window open", () => {
+    // The floor is unconditional on the primary. If it only applied while
+    // *_PREVIOUS was set, deleting *_PREVIOUS at the end of the grace window
+    // would silently switch enforcement back off — exactly when the operator
+    // believes the rotation is finished.
     process.env[PRIMARY_NAME] = SHORT;
-    expect(signingSecretCandidates(PRIMARY_NAME, PREVIOUS_NAME)).toEqual([SHORT]);
+    expect(() => signingSecretCandidates(PRIMARY_NAME, PREVIOUS_NAME)).toThrow(
+      /must be at least 32 characters/,
+    );
+  });
+
+  it("refuses a below-floor primary when previous is set but empty", () => {
+    process.env[PRIMARY_NAME] = SHORT;
+    process.env[PREVIOUS_NAME] = "";
+    expect(() => signingSecretCandidates(PRIMARY_NAME, PREVIOUS_NAME)).toThrow(
+      /must be at least 32 characters/,
+    );
   });
 
   it("exempts the previous secret from the length floor", () => {
