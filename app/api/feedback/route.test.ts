@@ -15,8 +15,16 @@ vi.mock('@/lib/auth/deviceCookie', () => ({
 }));
 
 let rateLimited = false;
+// When set, emulates the real helper's backend-error behavior: reject unless
+// the caller opted into fail-open with onFailure: "allow".
+let limiterDown = false;
 vi.mock('@/lib/serverRateLimit', () => ({
-  isServerRateLimited: vi.fn(async () => rateLimited),
+  isServerRateLimited: vi.fn(
+    async (_key: string, opts?: { onFailure?: string }) => {
+      if (limiterDown) return opts?.onFailure !== 'allow';
+      return rateLimited;
+    }
+  ),
 }));
 
 let lastInsert: Record<string, unknown> = {};
@@ -81,10 +89,30 @@ describe('POST /api/feedback', () => {
     existingFeedback = null;
     insertResult = { data: { id: 'test-id-123' }, error: null };
     rateLimited = false;
+    limiterDown = false;
   });
 
   it('returns 429 when rate limited', async () => {
     rateLimited = true;
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
+        app_rating: 4,
+        module_rating: 4,
+        feedback_text: '',
+        is_anonymous: true,
+      }),
+    });
+    const res = await POST(req);
+    const json = await res.json();
+    expect(res.status).toBe(429);
+    expect(json.error).toBe('rate_limited');
+  });
+
+  it('returns 429 when the limiter backend errors (fail closed on this public path)', async () => {
+    limiterDown = true;
     const req = new Request('http://localhost/api/feedback', {
       method: 'POST',
       body: JSON.stringify({
