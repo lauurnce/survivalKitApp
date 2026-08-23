@@ -45,7 +45,8 @@ export async function createPaymongoLink(
   successUrl: string,
   subjectId: string | null = null,
   userId?: string,
-  plan?: PlanKey
+  plan?: PlanKey,
+  failedUrl?: string
 ): Promise<{ checkoutUrl: string; linkId: string }> {
   const secretKey = process.env.PAYMONGO_SECRET_KEY;
   if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
@@ -80,7 +81,10 @@ export async function createPaymongoLink(
           amount,
           description,
           remarks,
-          redirect: { success: successUrl, failed: successUrl },
+          // A cancelled/failed payment must land on a URL without the
+          // ?payment=success marker, so it defaults to the success URL only
+          // when the caller supplies no separate failed leg.
+          redirect: { success: successUrl, failed: failedUrl ?? successUrl },
         },
       },
     }),
@@ -108,7 +112,8 @@ export async function createDynamicPaymongoLink(
   description: string,
   remarks: string,
   successUrl: string,
-  idempotencyKey: string
+  idempotencyKey: string,
+  failedUrl?: string
 ): Promise<{ checkoutUrl: string; linkId: string }> {
   const secretKey = process.env.PAYMONGO_SECRET_KEY;
   if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
@@ -128,7 +133,8 @@ export async function createDynamicPaymongoLink(
           amount,
           description,
           remarks,
-          redirect: { success: successUrl, failed: successUrl },
+          // Same failed-leg default as createPaymongoLink above.
+          redirect: { success: successUrl, failed: failedUrl ?? successUrl },
         },
       },
     }),

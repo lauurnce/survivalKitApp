@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   buildSuccessUrl,
+  buildFailedUrl,
   buildUnlockHref,
   modulePath,
   parseModuleRoute,
@@ -111,6 +112,58 @@ describe("buildSuccessUrl", () => {
     expect(
       buildSuccessUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: path })
     ).toBe(fallback);
+  });
+});
+
+// buildFailedUrl mirrors buildSuccessUrl for PayMongo's cancelled/failed
+// redirect leg. The invariant under test: a cancelled payment must NEVER land
+// on a URL carrying ?payment=success, or the module pages would poll, unlock,
+// and flash success UI for a payment that never happened.
+describe("buildFailedUrl", () => {
+  it("returns the bare module path (no marker) for a valid matching path", () => {
+    const url = buildFailedUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: validPath });
+    expect(url).toBe(`${ORIGIN}${validPath}`);
+    expect(url).not.toContain("payment=success");
+  });
+
+  it("returns the bare /account fallback when returnPath is missing", () => {
+    expect(
+      buildFailedUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: null })
+    ).toBe(`${ORIGIN}/account`);
+  });
+
+  it("falls back to /account when the year segment does not match", () => {
+    const otherYear = "99999999-9999-9999-9999-999999999999";
+    const path = `/year/${otherYear}/subjects/${SUBJECT}/modules/${MODULE}`;
+    expect(
+      buildFailedUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: path })
+    ).toBe(`${ORIGIN}/account`);
+  });
+
+  it("falls back to /account when the subject segment does not match", () => {
+    const otherSubject = "44444444-4444-4444-4444-444444444444";
+    const path = `/year/${YEAR}/subjects/${otherSubject}/modules/${MODULE}`;
+    expect(
+      buildFailedUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: path })
+    ).toBe(`${ORIGIN}/account`);
+  });
+
+  it("falls back to /account for a non-module or hostile path", () => {
+    expect(
+      buildFailedUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: "//evil.com" })
+    ).toBe(`${ORIGIN}/account`);
+    expect(
+      buildFailedUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath: "/admin" })
+    ).toBe(`${ORIGIN}/account`);
+  });
+
+  // Every output of the builder, across accepted and fallback shapes, is free
+  // of the success marker — this is the cancelled-payment contract.
+  it("never emits payment=success for any input shape", () => {
+    for (const returnPath of [validPath, null, "/admin", "//evil.com", `${validPath}?x=1`]) {
+      const url = buildFailedUrl({ origin: ORIGIN, yearId: YEAR, subjectId: SUBJECT, returnPath });
+      expect(url).not.toContain("payment=success");
+    }
   });
 });
 

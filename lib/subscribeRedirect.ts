@@ -67,6 +67,27 @@ export function buildSuccessUrl({
   return `${origin}${returnPath}?payment=success`;
 }
 
+// Mirror of buildSuccessUrl for the cancelled/failed leg of PayMongo's
+// redirect: same validation, same /account fallback, but deliberately WITHOUT
+// the ?payment=success marker so a cancelled payment can never trip the
+// module pages' unlock poll or the success banners.
+export function buildFailedUrl({
+  origin,
+  yearId,
+  subjectId,
+  returnPath,
+}: BuildSuccessUrlParams): string {
+  const fallback = `${origin}/account`;
+  const route = parseModuleRoute(returnPath);
+  if (!route) return fallback;
+
+  // Year must match the purchased plan.
+  if (route.yearId !== yearId) return fallback;
+  if (subjectId !== null && route.subjectId !== subjectId) return fallback;
+
+  return `${origin}${returnPath}`;
+}
+
 // Vet the /unlock page's `from` query param before it becomes the checkout's
 // returnPath. `from` arrives straight off the URL, so it must be a relative,
 // same-origin module route for the very year and subject the page is selling —

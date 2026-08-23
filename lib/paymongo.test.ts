@@ -100,6 +100,57 @@ describe("createPaymongoLink", () => {
       createPaymongoLink("year-1", "device-1", "https://example.com/success")
     ).rejects.toThrow("PayMongo error");
   });
+
+  // PayMongo's Links API carries both redirect legs at creation time. A
+  // cancelled payment must land on the failed leg WITHOUT ?payment=success,
+  // or the module pages would poll, unlock, and flash success UI.
+  function sentRedirect(i = 0): { success: string; failed: string } {
+    return JSON.parse(
+      vi.mocked(fetch).mock.calls[i][1]!.body as string
+    ).data.attributes.redirect;
+  }
+
+  it("defaults the failed redirect leg to the success URL when failedUrl is omitted", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: { id: "link_r1", attributes: { checkout_url: "https://checkout.paymongo.com/r" } },
+      }),
+    } as Response);
+
+    await createPaymongoLink(
+      "year-1", "device-1", "https://example.com/return?payment=success"
+    );
+
+    expect(sentRedirect()).toEqual({
+      success: "https://example.com/return?payment=success",
+      failed: "https://example.com/return?payment=success",
+    });
+  });
+
+  it("sends a separate failed redirect leg that never carries payment=success", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: { id: "link_r2", attributes: { checkout_url: "https://checkout.paymongo.com/r" } },
+      }),
+    } as Response);
+
+    await createPaymongoLink(
+      "year-1",
+      "device-1",
+      "https://example.com/year/y/subjects/s/modules/m?payment=success",
+      null,
+      undefined,
+      undefined,
+      "https://example.com/year/y/subjects/s/modules/m"
+    );
+
+    const redirect = sentRedirect();
+    expect(redirect.success).toContain("payment=success");
+    expect(redirect.failed).not.toContain("payment=success");
+    expect(redirect.failed).toBe("https://example.com/year/y/subjects/s/modules/m");
+  });
 });
 
 describe("createDynamicPaymongoLink", () => {
@@ -183,6 +234,56 @@ describe("createDynamicPaymongoLink", () => {
         "idem-key-3"
       )
     ).rejects.toThrow("PayMongo error");
+  });
+
+  it("defaults the failed redirect leg to the success URL when failedUrl is omitted", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: { id: "link_dyn_r1", attributes: { checkout_url: "https://checkout.paymongo.com/d" } },
+      }),
+    } as Response);
+
+    await createDynamicPaymongoLink(
+      12345,
+      "desc",
+      "remarks",
+      "https://example.com/for-blocks?payment=success",
+      "idem-key-r1"
+    );
+
+    const redirect = JSON.parse(
+      vi.mocked(fetch).mock.calls[0][1]!.body as string
+    ).data.attributes.redirect;
+    expect(redirect).toEqual({
+      success: "https://example.com/for-blocks?payment=success",
+      failed: "https://example.com/for-blocks?payment=success",
+    });
+  });
+
+  it("sends a separate failed redirect leg that never carries payment=success", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: { id: "link_dyn_r2", attributes: { checkout_url: "https://checkout.paymongo.com/d" } },
+      }),
+    } as Response);
+
+    await createDynamicPaymongoLink(
+      12345,
+      "desc",
+      "remarks",
+      "https://example.com/for-blocks?payment=success",
+      "idem-key-r2",
+      "https://example.com/for-blocks"
+    );
+
+    const redirect = JSON.parse(
+      vi.mocked(fetch).mock.calls[0][1]!.body as string
+    ).data.attributes.redirect;
+    expect(redirect.success).toContain("payment=success");
+    expect(redirect.failed).not.toContain("payment=success");
+    expect(redirect.failed).toBe("https://example.com/for-blocks");
   });
 });
 

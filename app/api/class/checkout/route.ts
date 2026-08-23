@@ -110,6 +110,9 @@ export async function POST(req: NextRequest) {
     ? requestOrigin
     : PRODUCTION_ORIGIN;
   const successUrl = `${origin}/for-blocks?payment=success`;
+  // Cancelled payments land back on the same page without the success marker,
+  // so the banner there never fires for an abandoned checkout.
+  const failedUrl = `${origin}/for-blocks`;
 
   try {
     const { checkoutUrl } = await createDynamicPaymongoLink(
@@ -117,7 +120,8 @@ export async function POST(req: NextRequest) {
       description,
       remarks,
       successUrl,
-      idempotencyKey
+      idempotencyKey,
+      failedUrl
     );
     return NextResponse.json({ checkoutUrl });
   } catch (err) {

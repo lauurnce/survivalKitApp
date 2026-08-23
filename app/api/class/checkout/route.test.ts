@@ -174,6 +174,33 @@ describe("POST /api/class/checkout", () => {
     expect(linkCalls[0][3]).toBe("http://localhost:3000/for-blocks?payment=success");
   });
 
+  // A cancelled block purchase lands on the failed leg — it must never carry
+  // the ?payment=success marker or the page would flash the success banner.
+  it("sends a separate failed redirect leg without payment=success", async () => {
+    const res = await POST(
+      makeReq({ scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 })
+    );
+
+    expect(res.status).toBe(200);
+    // args: amount, description, remarks, successUrl, idempotencyKey, failedUrl
+    expect(String(linkCalls[0][3])).toContain("payment=success");
+    expect(linkCalls[0][5]).toBe("http://localhost:3000/for-blocks");
+    expect(String(linkCalls[0][5])).not.toContain("payment=success");
+  });
+
+  it("points the failed leg at the production origin for untrusted request hosts", async () => {
+    const res = await POST(
+      makeReq(
+        { scope: "all", yearId: YEAR, seats: 11 },
+        "https://attacker.example",
+        "https://attacker.example"
+      )
+    );
+
+    expect(res.status).toBe(200);
+    expect(linkCalls[0][5]).toBe("https://survival-kit-app.vercel.app/for-blocks");
+  });
+
   it("does not expose payment-provider errors in the public response", async () => {
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     mockLinkError = new Error("PayMongo rejected secret key sk_test_internal");

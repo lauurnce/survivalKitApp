@@ -342,6 +342,41 @@ describe("POST /api/subscribe amount validation security", () => {
   });
 });
 
+describe("POST /api/subscribe redirect legs", () => {
+  it("keeps ?payment=success on the success leg and strips it from the failed leg (standard link)", async () => {
+    const returnPath = `/year/${YEAR}/subjects/${SUBJ}/modules/33333333-3333-3333-3333-333333333333`;
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, returnPath }));
+    expect(res.status).toBe(200);
+    expect(linkCalls).toHaveLength(1);
+    // args: yearId, deviceId, successUrl, subjectId, userId, plan, failedUrl
+    const successUrl = linkCalls[0][2] as string;
+    const failedUrl = linkCalls[0][6] as string;
+    expect(successUrl).toBe(`http://localhost:3000${returnPath}?payment=success`);
+    expect(failedUrl).toBe(`http://localhost:3000${returnPath}`);
+    // A cancelled payment must never land on a URL that reads as a success.
+    expect(failedUrl).not.toContain("payment=success");
+  });
+
+  it("passes a marker-free failed leg to the dynamic (coupon) link too", async () => {
+    mockCouponValid = true;
+    const res = await POST(
+      makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" })
+    );
+    expect(res.status).toBe(200);
+    expect(dynamicLinkCalls).toHaveLength(1);
+    // args: amount, description, remarks, successUrl, idempotencyKey, failedUrl
+    expect(String(dynamicLinkCalls[0][3])).toContain("payment=success");
+    expect(dynamicLinkCalls[0][5]).not.toContain("payment=success");
+  });
+
+  it("falls the failed leg back to /account when returnPath is absent", async () => {
+    const res = await POST(makeReq({ yearId: YEAR, deviceId: DEV }));
+    expect(res.status).toBe(200);
+    expect(linkCalls[0][2]).toBe("http://localhost:3000/account?payment=success");
+    expect(linkCalls[0][6]).toBe("http://localhost:3000/account");
+  });
+});
+
 describe("POST /api/subscribe — distributed rate limiting", () => {
   it("checks the shared limiter with a namespaced per-IP key", async () => {
     await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_sem" }));

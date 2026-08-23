@@ -7,7 +7,7 @@ import { isUuid } from "@/lib/validation";
 import { getClientIp } from "@/lib/rateLimit";
 import { isServerRateLimited } from "@/lib/serverRateLimit";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
-import { buildSuccessUrl } from "@/lib/subscribeRedirect";
+import { buildSuccessUrl, buildFailedUrl } from "@/lib/subscribeRedirect";
 import {
   DEVICE_COOKIE,
   DEVICE_COOKIE_OPTIONS,
@@ -173,12 +173,16 @@ export async function POST(req: NextRequest) {
     : "https://survival-kit-app.vercel.app";
   // Return the payer to the exact module page they came from (validated), with
   // ?payment=success so the SubscribeGate there auto-polls and unlocks in place.
-  const successUrl = buildSuccessUrl({
+  // The failed leg mirrors it without the marker, so a cancelled payment never
+  // shows success UI.
+  const redirectParams = {
     origin,
     yearId,
     subjectId,
     returnPath: body?.returnPath ?? null,
-  });
+  };
+  const successUrl = buildSuccessUrl(redirectParams);
+  const failedUrl = buildFailedUrl(redirectParams);
 
   try {
     // Validate coupon if provided
@@ -220,7 +224,8 @@ export async function POST(req: NextRequest) {
         `${description} (coupon applied)`,
         remarks,
         successUrl,
-        idempotencyKey
+        idempotencyKey,
+        failedUrl
       );
       checkoutUrl = url;
     } else {
@@ -231,7 +236,8 @@ export async function POST(req: NextRequest) {
         successUrl,
         subjectId,
         userId ?? undefined,
-        plan
+        plan,
+        failedUrl
       );
       checkoutUrl = url;
     }
