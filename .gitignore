@@ -53,6 +53,12 @@ docs/NEXT_STEPS.md
 # from the live database. Never commit them; delete once you're done.
 waitlist-backup-*.json
 
+# Session handoffs for the buyer-lifecycle email work — these quote lifetime
+# revenue and funnel conversion rates. Same disclosure rules as the
+# post-mortem; this repo is public. Other docs/HANDOFF-*.md files are tracked
+# and stay tracked, so keep this pattern narrow.
+docs/HANDOFF-*-emails.md
+
 # Private retrospective — contains revenue/conversion numbers excluded from
 # public disclosure (see STORY.md disclosure rules).
 docs/POST-MORTEM.md
