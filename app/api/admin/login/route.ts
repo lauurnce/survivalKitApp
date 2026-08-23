@@ -4,6 +4,7 @@ import {
   createSessionToken,
   SESSION_COOKIE,
 } from "@/lib/auth/adminSession";
+import { getClientIp } from "@/lib/rateLimit";
 import { createServerClient } from "@/lib/supabase/server";
 
 // Brute-force protection backed by Supabase so state is shared across all
@@ -27,13 +28,7 @@ async function clearAttempts(ip: string): Promise<void> {
 }
 
 export async function POST(req: NextRequest) {
-  // x-real-ip is set by Vercel to the verified client IP and is not attacker-controllable.
-  // Fallback to the last x-forwarded-for entry (also Vercel-appended) rather than the first,
-  // which an attacker can spoof to bypass the lockout.
-  const ip =
-    req.headers.get("x-real-ip") ??
-    req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
-    "unknown";
+  const ip = getClientIp(req);
 
   if (await isLockedOut(ip)) {
     return NextResponse.json(
