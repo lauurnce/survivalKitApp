@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   erasureResidue,
   extractDeletionTargets,
@@ -8,6 +10,7 @@ import {
   RETENTION_REGISTER,
   type IdentityTable,
 } from "./privacyPosture";
+import { buildSchema } from "./migrationSchema";
 import type { TableRecord } from "./migrationSchema";
 
 const tableRecord = (name: string, columns: string[]): TableRecord => ({
@@ -176,5 +179,31 @@ describe("privacySummaryLine", () => {
     expect(line).toContain("2 identity tables");
     expect(line).toContain("1 not reached by erasure");
     expect(line).not.toContain("signups");
+  });
+});
+
+describe("standing assertion: deletion targets still resolve", () => {
+  it("finds at least one real table in lib/deleteAccount.ts", () => {
+    const repo = join(__dirname, "..", "..");
+    const migrationsDir = join(repo, "supabase", "migrations");
+    const files = readdirSync(migrationsDir)
+      .filter((name) => name.endsWith(".sql"))
+      .sort()
+      .map((name) => ({ name, sql: readFileSync(join(migrationsDir, name), "utf8") }));
+
+    const known = new Set(buildSchema(files).map((table) => table.name));
+    const targets = extractDeletionTargets(
+      readFileSync(join(repo, "lib", "deleteAccount.ts"), "utf8")
+    ).filter((name) => known.has(name));
+
+    // Asserts the extractor still works, never which tables it covers.
+    //
+    // extractDeletionTargets over-matches on purpose, which is safe: an extra
+    // name produces a missed residue rather than a false one. The failure it
+    // cannot survive is the opposite — a rename in lib/deleteAccount.ts that
+    // makes it match nothing, after which the residue silently becomes every
+    // identity table and the report describes a catastrophe that is really a
+    // parser regression. One resolved table is enough to prove it still reads.
+    expect(targets.length).toBeGreaterThan(0);
   });
 });
