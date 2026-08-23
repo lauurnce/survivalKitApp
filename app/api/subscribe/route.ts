@@ -73,7 +73,15 @@ async function validateCouponCode(couponCode: string): Promise<{ valid: boolean;
 }
 
 export async function POST(req: NextRequest) {
-  if (await isServerRateLimited(`subscribe:ip:${getClientIp(req)}`, RATE_LIMIT_IP)) {
+  // Payment path: fail OPEN. A limiter outage must never block paying
+  // customers at checkout, unlike the abuse-prone public endpoints that
+  // reject when the limiter is unreachable.
+  if (
+    await isServerRateLimited(`subscribe:ip:${getClientIp(req)}`, {
+      ...RATE_LIMIT_IP,
+      onFailure: "allow",
+    })
+  ) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

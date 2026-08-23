@@ -5,7 +5,11 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 // serverless instances and survives cold starts. Keys are namespaced by the
 // caller, e.g. "feedback:ip:203.0.113.9".
 //
-// Fails open: a limiter outage must never take down the endpoint it protects.
+// Fails closed when the limiter cannot make a decision: the protected
+// database routes cannot complete during that outage anyway, while allowing
+// requests would remove abuse protection from public endpoints. Revenue-
+// critical routes opt out per call with onFailure: "allow" so a limiter
+// outage never blocks paying customers.
 
 let client: SupabaseClient | null = null;
 function getClient(): SupabaseClient {
@@ -21,11 +25,14 @@ function getClient(): SupabaseClient {
 export interface ServerRateLimitOptions {
   max: number;
   windowSeconds: number;
+  // Behavior when the limiter backend itself errors: "reject" (the default,
+  // fail closed) or "allow" (fail open) for revenue-critical routes.
+  onFailure?: "allow" | "reject";
 }
 
 export async function isServerRateLimited(
   key: string,
-  { max, windowSeconds }: ServerRateLimitOptions
+  { max, windowSeconds, onFailure = "reject" }: ServerRateLimitOptions
 ): Promise<boolean> {
   const { data, error } = await getClient().rpc("check_rate_limit", {
     p_key: key,
@@ -34,7 +41,7 @@ export async function isServerRateLimited(
   });
   if (error) {
     console.error("check_rate_limit RPC error:", error);
-    return false;
+    return onFailure !== "allow";
   }
   return data === true;
 }
