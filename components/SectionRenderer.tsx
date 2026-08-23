@@ -8,6 +8,8 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { LockedReviewer } from "./LockedReviewer";
+import { ProBadge } from "./ProBadge";
+import { LockIcon } from "./ProIcons";
 import { logEvent, logSectionView } from "@/lib/analytics";
 import { buildUnlockHref, modulePath } from "@/lib/subscribeRedirect";
 import type { TopologyData } from "@/lib/topology/types";
@@ -67,11 +69,33 @@ export function SectionRenderer({ section, index, moduleId, yearId, subjectId, u
   if (section.kind === "activity" && !unlockAll && !isFreeSample) {
     return (
       <section>
-        <div className="flex items-baseline gap-4 mb-6">
-          <span className="label-sm shrink-0">{String(index + 1).padStart(2, "0")}</span>
-          <h2 className="font-serif text-2xl md:text-3xl text-ink leading-tight">{section.heading}</h2>
+        {/* Locked preview: the server only ever sent the heading, so the
+            blurred layer is that heading plus decorative ghost lines — never
+            gated bodies. The overlay chip is deliberately inert (no link, no
+            pointer events); the actionable row stays in LockedReviewer below. */}
+        <div className="relative">
+          <div className="select-none pointer-events-none opacity-60 blur-[1px]">
+            <div className="flex items-baseline gap-4 mb-5">
+              <span className="label-sm shrink-0">{String(index + 1).padStart(2, "0")}</span>
+              <h2 className="font-serif text-2xl md:text-3xl text-ink leading-tight">{section.heading}</h2>
+            </div>
+            <div className="pl-10 md:pl-12 space-y-3" aria-hidden="true">
+              <div className="h-3 w-3/4 bg-ink-faint/20" />
+              <div className="h-3 w-2/3 bg-ink-faint/20" />
+              <div className="h-3 w-1/2 bg-ink-faint/20" />
+            </div>
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span className="flex items-center gap-2 border border-amber-300/60 bg-paper/90 px-4 py-2 shadow-sm dark:border-amber-300/25 dark:bg-ink/90">
+              <LockIcon className="h-3.5 w-3.5 shrink-0 text-amber-700 dark:text-amber-400" />
+              <ProBadge />
+              <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-muted">
+                Pro activity
+              </span>
+            </span>
+          </div>
         </div>
-        <div className="pl-10 md:pl-12">
+        <div className="pl-10 md:pl-12 mt-6">
           <LockedReviewer yearId={yearId} subjectId={subjectId} from={returnPath} />
         </div>
       </section>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { CurrentTerm, Recommendation } from "@/lib/dashboard";
 import { continueHref } from "@/lib/dashboard";
 import type { Profile } from "@/lib/profile";
+import { ProBadge } from "@/components/ProBadge";
 import { LandmarkArt } from "./LandmarkArt";
 
 function greeting(): string {
@@ -15,14 +16,19 @@ interface Props {
   term: CurrentTerm | null;
   topPick: Recommendation | undefined;
   profile: Profile | null;
+  /** Active subscription — renders the PRO pill beside the greeting. */
+  pro?: boolean;
 }
 
-export function HeroCard({ term, topPick, profile }: Props) {
+export function HeroCard({ term, topPick, profile, pro }: Props) {
   return (
     <div>
-      <p className="font-serif text-lg text-ink mb-4">
-        {greeting()}
-        {profile?.firstName ? `, ${profile.firstName}` : ""}
+      <p className="font-serif text-lg text-ink mb-4 flex items-center gap-2">
+        <span>
+          {greeting()}
+          {profile?.firstName ? `, ${profile.firstName}` : ""}
+        </span>
+        {pro && <ProBadge size="md" />}
       </p>
 
       <div className="rounded-xl border border-taupe/30 bg-paper p-6 sm:p-8 flex items-center gap-8">

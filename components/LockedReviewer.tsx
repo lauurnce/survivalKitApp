@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { ProBadge } from "./ProBadge";
+import { LockIcon } from "./ProIcons";
 import { logEvent } from "@/lib/analytics";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { buildUnlockHref } from "@/lib/subscribeRedirect";
@@ -24,11 +26,10 @@ export function LockedReviewer({ yearId, subjectId, from }: Props) {
 
   return (
     <div className="border border-ink-faint/30 p-5 flex flex-wrap items-center gap-4">
-      <span className="text-base opacity-50 shrink-0" aria-hidden="true">
-        🔒
-      </span>
+      <LockIcon className="h-4 w-4 text-ink-faint shrink-0" />
       <div className="flex-1 min-w-56">
-        <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-1">
+        <p className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mb-1 flex items-center gap-2">
+          <ProBadge />
           Reviewer — locked
         </p>
         <p className="font-sans text-sm text-ink-muted">

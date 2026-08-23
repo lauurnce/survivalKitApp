@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { BackLink } from "@/components/BackLink";
+import { PaymentSuccessBanner } from "@/components/PaymentSuccessBanner";
 import { getDeviceId } from "@/lib/device";
 import { computePrice, INCLUDED_SEATS, MIN_SEATS, MAX_SEATS, PER_SEAT } from "./pricing";
 
@@ -79,6 +80,12 @@ export function ForBlocksCheckout({ years }: Props) {
     <main className="min-h-screen bg-paper px-6 py-12 md:px-16 md:py-20">
       <div className="max-w-md mx-auto">
         <BackLink href="/" label="Back to home" className="text-ink-muted hover:text-ink mb-10" />
+
+        {/* Fallback landing after PayMongo redirects a paid block purchase —
+            the ?payment=success marker is read client-side. */}
+        <div className="mb-6">
+          <PaymentSuccessBanner subtext="Your block purchase went through." />
+        </div>
 
         <p className="label-sm mb-4">For Class Representatives</p>
         <h1 className="font-serif text-display-lg text-ink mb-6 leading-tight">

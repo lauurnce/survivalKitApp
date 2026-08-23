@@ -191,6 +191,11 @@ export default async function UnlockPage({ searchParams }: Props) {
               />
 
               <p className="font-sans text-xs text-ink-faint mt-4">
+                Paying via GCash/Maya QR? After paying, switch back to this tab — your
+                module unlocks automatically.
+              </p>
+
+              <p className="font-sans text-xs text-ink-faint mt-2">
                 One-time payment via GCash, Maya, or card. No auto-renew — access simply
                 ends with the semester. Instant unlock after payment.
               </p>

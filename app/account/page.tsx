@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
+import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
+import { createServerClient } from "@/lib/supabase/server";
 import { getAccountOverview } from "@/lib/account";
 import { getProfile } from "@/lib/profileStore";
 import { signOutAction } from "../(auth)/actions";
 import { ThemeToggleInline } from "@/components/ThemeToggle";
+import { PaymentSuccessBanner } from "@/components/PaymentSuccessBanner";
 import { NavRail } from "@/components/dashboard/NavRail";
 import { HeroCard } from "@/components/dashboard/HeroCard";
 import { ThisWeekPanel } from "@/components/dashboard/ThisWeekPanel";
@@ -19,19 +23,36 @@ export const metadata: Metadata = {
   title: "Dashboard",
 };
 
-interface Props {
-  searchParams: Promise<{ payment?: string }>;
-}
-
-export default async function AccountPage({ searchParams }: Props) {
+export default async function AccountPage() {
   const userId = await getCurrentUserId();
   if (!userId) redirect("/login?next=/account");
   const [overview, profile] = await Promise.all([
     getAccountOverview(userId),
     getProfile(userId),
   ]);
-  const { payment } = await searchParams;
-  const paymentSuccess = payment === "success";
+
+  // Same identity model as the module pages: device cookie or signed-in user,
+  // checked once for the whole page. The dashboard spans every year and
+  // subject, so "Pro" here means at least one active grant: the user leg is
+  // what getAccountOverview already computed per subject (active, unexpired
+  // subscriptions via isUnlockedBy); the device leg covers purchases made
+  // before this viewer signed in, which are stored against the device cookie.
+  const devUnlockAll = process.env.UNLOCK_ALL === "true";
+  const cookieStore = await cookies();
+  const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+  const now = new Date().toISOString();
+  const { data: deviceSub } = deviceId
+    ? await createServerClient()
+        .from("subscriptions")
+        .select("id")
+        .eq("device_id", deviceId)
+        .eq("status", "active")
+        .gt("current_period_end", now)
+        .limit(1)
+        .maybeSingle()
+    : { data: null };
+  const subscribed =
+    devUnlockAll || !!deviceSub || overview.subjects.some((s) => s.unlocked);
 
   const terms = groupByTerm(overview.years);
   const current = deriveCurrentTerm(terms);
@@ -50,18 +71,11 @@ export default async function AccountPage({ searchParams }: Props) {
           </form>
         </div>
 
-        {paymentSuccess && (
-          <div className="bg-accent/10 border-b border-accent/30 px-6 py-3 flex items-center gap-3">
-            <span className="text-accent text-lg">✓</span>
-            <div>
-              <p className="font-sans text-sm font-medium text-ink">Payment received — your subject is now unlocked.</p>
-              <p className="font-sans text-xs text-ink-muted">It may take a few seconds to appear below. Refresh if needed.</p>
-            </div>
-          </div>
-        )}
-
         <main className="px-4 sm:px-8 py-6 mx-auto max-w-[90rem] space-y-8">
-          <HeroCard term={current} topPick={recs[0]} profile={profile} />
+          {/* Fallback landing when a paid returnPath was invalid — PayMongo
+              redirects here with ?payment=success, read client-side. */}
+          <PaymentSuccessBanner subtext="Your purchase is now active on this account." />
+          <HeroCard term={current} topPick={recs[0]} profile={profile} pro={subscribed} />
 
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
             <div className="space-y-8 min-w-0">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
 import { isSubscribed } from "@/lib/subscriptions";
@@ -12,6 +13,7 @@ import { SectionRenderer } from "@/components/SectionRenderer";
 import { PageTracker } from "@/components/PageTracker";
 import { LastModuleTracker } from "@/components/LastModuleTracker";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
+import { UnlockSuccessToast } from "@/components/UnlockSuccessToast";
 import { ModuleReaderClient } from "@/components/ModuleReaderClient";
 import { ModuleSurveyCard } from "@/components/ModuleSurveyCard";
 import { pickFirstActivity } from "@/lib/freeSample";
@@ -160,6 +162,11 @@ export default async function ReaderPage({ params }: Props) {
     <ModuleReaderClient moduleId={moduleId} moduleTitle={mod.title} userId={userId}>
       <main className="min-h-screen bg-paper">
       <PageTracker event="module_open" yearId={yearId} subjectId={subjectId} moduleId={moduleId} />
+      {/* Post-payment confirmation; self-dismisses, needs the Suspense that
+          Next.js 15 requires around useSearchParams. */}
+      <Suspense fallback={null}>
+        <UnlockSuccessToast />
+      </Suspense>
       <LastModuleTracker
         moduleId={moduleId}
         subjectId={subjectId}
