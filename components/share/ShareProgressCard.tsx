@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   buildProgressCardUrl,
@@ -36,6 +36,8 @@ export function ShareProgressCard({
   const [filename] = useState(() => progressCardFilename(subjectTitle));
   const [canShare, setCanShare] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     let active = true;
@@ -76,6 +78,69 @@ export function ShareProgressCard({
     setCanShare(typeof navigator !== "undefined" && typeof navigator.canShare === "function");
   }, []);
 
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    const closeButton = closeButtonRef.current;
+    if (!dialog || !closeButton) return;
+    const focusScope = dialog;
+
+    const previouslyFocused =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const background = Array.from(document.body.children).filter(
+      (element): element is HTMLElement => element instanceof HTMLElement && element !== focusScope
+    );
+    const inertState = background.map((element) => ({
+      element,
+      wasInert: element.hasAttribute("inert"),
+    }));
+
+    for (const element of background) element.setAttribute("inert", "");
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        onClose();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusable = Array.from(
+        focusScope.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href]:not([aria-disabled="true"]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      if (focusable.length === 0) {
+        event.preventDefault();
+        focusScope.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && (active === first || !focusScope.contains(active))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (active === last || !focusScope.contains(active))) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    closeButton.focus();
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      for (const { element, wasInert } of inertState) {
+        if (!wasInert) element.removeAttribute("inert");
+      }
+      if (previouslyFocused?.isConnected) previouslyFocused.focus();
+    };
+  }, [onClose]);
+
   async function share() {
     if (!cardUrl || sharing) return;
     setSharing(true);
@@ -103,10 +168,12 @@ export function ShareProgressCard({
 
   return createPortal(
     <div
+      ref={dialogRef}
       className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4"
       role="dialog"
       aria-modal="true"
       aria-label="Share your progress"
+      tabIndex={-1}
       onClick={(e) => {
         e.stopPropagation();
         onClose();
@@ -121,6 +188,7 @@ export function ShareProgressCard({
             Share your progress
           </p>
           <button
+            ref={closeButtonRef}
             type="button"
             aria-label="Close"
             onClick={onClose}

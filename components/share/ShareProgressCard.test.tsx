@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
+import { useState } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 const logged: Array<[string, Record<string, unknown>]> = [];
 vi.mock("@/lib/analytics", () => ({
@@ -17,6 +18,26 @@ vi.mock("@/lib/progress", () => ({
 import { ShareProgressCard } from "./ShareProgressCard";
 
 const SUBJECT_ID = "11111111-2222-3333-4444-555555555555";
+
+function DialogHarness() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <button type="button" onClick={() => setOpen(true)}>
+        Open share dialog
+      </button>
+      {open && (
+        <ShareProgressCard
+          subjectId={SUBJECT_ID}
+          subjectTitle="CP1"
+          moduleIds={["m1"]}
+          onClose={() => setOpen(false)}
+        />
+      )}
+    </>
+  );
+}
 
 beforeEach(() => {
   logged.length = 0;
@@ -96,5 +117,32 @@ describe("ShareProgressCard", () => {
     );
     (await screen.findByRole("button", { name: /close/i })).click();
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it("contains keyboard focus, closes on Escape, and restores the trigger", async () => {
+    const { container } = render(<DialogHarness />);
+    const trigger = screen.getByRole("button", { name: /open share dialog/i });
+    trigger.focus();
+    fireEvent.click(trigger);
+
+    const close = await screen.findByRole("button", { name: /close/i });
+    const download = await screen.findByRole("link", { name: /download/i });
+
+    await waitFor(() => expect(close).toHaveFocus());
+    await waitFor(() => expect(download).not.toHaveAttribute("aria-disabled", "true"));
+    expect(container).toHaveAttribute("inert");
+
+    download.focus();
+    fireEvent.keyDown(document, { key: "Tab" });
+    expect(close).toHaveFocus();
+
+    close.focus();
+    fireEvent.keyDown(document, { key: "Tab", shiftKey: true });
+    expect(download).toHaveFocus();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+    expect(container).not.toHaveAttribute("inert");
   });
 });
