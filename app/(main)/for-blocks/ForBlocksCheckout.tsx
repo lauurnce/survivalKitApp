@@ -92,8 +92,10 @@ export function ForBlocksCheckout({ years }: Props) {
           Unlock a subject for your whole block
         </h1>
 
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mb-6" role="group" aria-label="Unlock scope">
           <button
+            type="button"
+            aria-pressed={scope === "subject"}
             onClick={() => setScope("subject")}
             className={`flex-1 rounded-xl py-3 text-sm font-sans font-semibold transition-colors ${
               scope === "subject" ? "bg-accent text-paper" : "border border-taupe/30 text-ink-muted"
@@ -102,6 +104,8 @@ export function ForBlocksCheckout({ years }: Props) {
             1 Subject
           </button>
           <button
+            type="button"
+            aria-pressed={scope === "all"}
             onClick={() => setScope("all")}
             className={`flex-1 rounded-xl py-3 text-sm font-sans font-semibold transition-colors ${
               scope === "all" ? "bg-accent text-paper" : "border border-taupe/30 text-ink-muted"
@@ -153,10 +157,11 @@ export function ForBlocksCheckout({ years }: Props) {
 
         <div className="mb-7">
           <div className="flex justify-between text-sm font-sans text-ink-muted mb-2">
-            <span>Expected classmates (incl. you)</span>
+            <label htmlFor="seat-count">Expected classmates (incl. you)</label>
             <span className="text-ink font-semibold">{seats} people</span>
           </div>
           <input
+            id="seat-count"
             type="range"
             min={MIN_SEATS}
             max={MAX_SEATS}
