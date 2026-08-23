@@ -1,4 +1,7 @@
-# BSIT Survival Kit — Claude Instructions
+# BSIT Survival Kit — Agent Instructions
+
+Read by Claude Code as `CLAUDE.md` and by opencode as `AGENTS.md`, which is a
+symlink to this file. One source of truth, so the two can never drift.
 
 ## Commits
 
@@ -35,7 +38,16 @@ One editor at a time is the rule, not one worktree per session:
 - **Claim your files** in `~/projects/.survivalkit-claims.md` before editing, and
   delete your row when the branch is merged or abandoned.
 
-Only `Write`/`Edit` are gated. Bash is not, so `git commit`, merges, and pushes
-still work in main — but `HEAD` moves under you, so re-check it before each one.
+**If you are opencode, no hook is enforcing any of this.** The hook is Claude
+Code machinery; opencode never runs it and can edit the main checkout freely.
+That makes following this protocol by hand your responsibility: check
+`~/projects/.survivalkit-claims.md` before editing, and work in a worktree
+whenever anyone else is active. Claude Code sessions ask before editing main
+while an opencode process is alive, so an unannounced opencode edit is the one
+collision nothing here can catch.
+
+Only `Write`/`Edit` are gated, and only for Claude Code. Bash is not, so
+`git commit`, merges, and pushes still work in main — but `HEAD` moves under
+you, so re-check it before each one.
 
 Full procedure and the audit steps: [docs/WORKTREES.md](docs/WORKTREES.md).
