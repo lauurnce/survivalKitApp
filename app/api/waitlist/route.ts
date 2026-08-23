@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
 import { getDeviceType } from "@/lib/deviceType";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
+import { getClientIp } from "@/lib/rateLimit";
 
 // IP-based rate limiter — bounded map to prevent unbounded memory growth
 const rateLimitMap = new Map<string, number[]>();
@@ -14,14 +15,6 @@ const MAX_MAP_SIZE = 10_000;
 const MAX_EMAIL = 254;
 const MAX_NAME = 120;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function getRateLimitKey(req: NextRequest): string {
-  return (
-    req.headers.get("x-real-ip") ??
-    req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
-    "unknown"
-  );
-}
 
 function isRateLimited(key: string): boolean {
   const now = Date.now();
@@ -87,7 +80,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid needs_capstone" }, { status: 400 });
   }
 
-  if (isRateLimited(getRateLimitKey(req))) {
+  if (isRateLimited(getClientIp(req))) {
     return NextResponse.json({ error: "Rate limited" }, { status: 429 });
   }
 
