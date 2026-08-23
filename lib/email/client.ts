@@ -3,7 +3,7 @@ import type { RenderedEmail } from "./types";
 
 // The one place the sender identity is written. mail.<domain> rather than the
 // root so a spam complaint here never damages the apex domain's reputation.
-export const FROM = "BSIT Survival Kit <noreply@mail.lawrenceigen.me>";
+export const FROM = "BSIT Survival Kit <noreply@mail.tryi2i.com>";
 
 export interface SendResult { ok: boolean; id?: string; error?: string }
 

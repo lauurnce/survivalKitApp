@@ -12,7 +12,7 @@ describe("sendEmail", () => {
     sendMock.mockResolvedValue({ data: { id: "abc" }, error: null });
     const { sendEmail, FROM } = await import("./client");
     const r = await sendEmail("s@example.com", { subject: "S", html: "<p>H</p>", text: "H" });
-    expect(FROM).toBe("BSIT Survival Kit <noreply@mail.lawrenceigen.me>");
+    expect(FROM).toBe("BSIT Survival Kit <noreply@mail.tryi2i.com>");
     expect(r).toEqual({ ok: true, id: "abc" });
     expect(sendMock).toHaveBeenCalledWith(
       expect.objectContaining({ from: FROM, to: "s@example.com", subject: "S", html: "<p>H</p>", text: "H" })
