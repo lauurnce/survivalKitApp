@@ -66,6 +66,22 @@ describe("ForBlocksCheckout", () => {
     expect(screen.getByText("₱1,330")).toBeInTheDocument();
   });
 
+  it("announces the selected scope and labels the classmate slider", () => {
+    render(<ForBlocksCheckout years={YEARS} />);
+    const subjectScope = screen.getByRole("button", { name: "1 Subject" });
+    const allScope = screen.getByRole("button", { name: "All Subjects" });
+
+    expect(subjectScope).toHaveAttribute("aria-pressed", "true");
+    expect(allScope).toHaveAttribute("aria-pressed", "false");
+    expect(
+      screen.getByRole("slider", { name: "Expected classmates (incl. you)" })
+    ).toHaveValue("11");
+
+    fireEvent.click(allScope);
+    expect(subjectScope).toHaveAttribute("aria-pressed", "false");
+    expect(allScope).toHaveAttribute("aria-pressed", "true");
+  });
+
   it("shows the subject dropdown only for scope='subject'", () => {
     render(<ForBlocksCheckout years={YEARS} />);
     expect(screen.getByLabelText("Subject")).toBeInTheDocument();
