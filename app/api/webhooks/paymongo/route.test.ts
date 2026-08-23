@@ -113,6 +113,26 @@ beforeEach(() => {
   enqueueThrows = false;
   payerEmail = "payer@example.com";
   vi.stubEnv("PAYMONGO_WEBHOOK_SECRET", SECRET);
+  vi.stubEnv("PAYMONGO_LIVEMODE", "false");
+});
+
+describe("webhook configuration", () => {
+  it("fails closed when PAYMONGO_LIVEMODE is missing", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.stubEnv("PAYMONGO_LIVEMODE", "");
+
+    try {
+      const res = await POST(signedRequest(`year:${YEAR} device:${DEV}`, 4900));
+      const json = await res.json();
+
+      expect(res.status).toBe(503);
+      expect(json).toEqual({ error: "Webhook unavailable" });
+      expect(recorded).toHaveLength(0);
+      expect(consoleError).toHaveBeenCalled();
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
 });
 
 describe("lifecycle email", () => {
