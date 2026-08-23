@@ -66,3 +66,7 @@ docs/vercel-status/
 # security report in a public repo is a published attack surface. Same
 # disclosure rules as the post-mortem.
 docs/reports/
+
+# Supabase CLI local link state — pooler-url carries a database connection
+# string with credentials. Never commit.
+supabase/.temp/
