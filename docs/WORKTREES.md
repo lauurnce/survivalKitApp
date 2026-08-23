@@ -36,7 +36,7 @@ and reads it back:
 |---|---|
 | You are the only session editing | **Allowed** — edit freely, no worktree |
 | Another Claude session claimed it in the last 60 min | **Blocked** — use a worktree |
-| An `opencode` process is running | **Blocked** — use a worktree |
+| An `opencode` process is running | **Asks you** — allow, or refuse and use a worktree |
 | The path is under `.claude/` | Always allowed (see below) |
 | The path is in a sibling worktree | Always allowed |
 
@@ -51,8 +51,12 @@ claims main, which is correct: reads do not collide.
 Two gaps this does not close, by design:
 
 - **opencode is ungovernable.** It does not run Claude Code hooks, so it can edit
-  main whenever it likes. Claude Code sessions yield to it rather than race it —
-  a blunt rule, since the hook cannot tell which project opencode is in.
+  main whenever it likes, and the hook cannot tell which project it is in. Only
+  you know that, so the hook asks instead of guessing. A second *Claude* session
+  is still a hard refusal — that conflict is certain, so it outranks the question.
+  The claim is staked before asking, since the hook never sees your answer;
+  refusing leaves a claim that expires in 60 minutes and only holds other Claude
+  sessions off main, which is the safe direction to be wrong in.
 - **Merges still move `HEAD`.** Only `Write`/`Edit` are gated; Bash is not. A
   merge into main from any worktree still shifts `HEAD` under everyone. Re-check
   it before each commit.

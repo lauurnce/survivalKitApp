@@ -22,8 +22,10 @@ One editor at a time is the rule, not one worktree per session:
   checkout while another session holds it, and prints the recipe. Whoever got
   there first keeps main — a session mid-edit is never evicted. A claim goes
   stale after 60 minutes, so a crashed session does not hold main forever.
-- **opencode running? Claude yields.** opencode does not run this hook and can
-  edit main at any time, and this session cannot tell which project it is in.
+- **opencode running? The hook asks you.** opencode does not run this hook, can
+  edit main at any time, and this session cannot tell which project it is in —
+  only you can. A second Claude session stays a hard refusal; that conflict is
+  certain, so it outranks the question.
 - **Worktrees live at `~/projects/survivalKitApp-<track>`.** Never a scratchpad,
   `/tmp`, or other volatile path — those get wiped and leave orphaned branches
   that make `git worktree list` lie.

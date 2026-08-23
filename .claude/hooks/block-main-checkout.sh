@@ -67,17 +67,16 @@ deny() {
   exit 0
 }
 
-# opencode never runs this hook, so it can edit main whenever it likes and we
-# cannot see which project it is in. Yield rather than race it.
-if pgrep -x opencode >/dev/null 2>&1; then
-  deny "$rel is in the main checkout, and opencode is running.
-
-opencode does not run this hook, so it can edit the main checkout at any time
-and this session cannot tell which project it is working in. Yielding is the
-only safe option.
-
-$recipe"
-fi
+ask() {
+  jq -n --arg r "$1" '{
+    hookSpecificOutput: {
+      hookEventName: "PreToolUse",
+      permissionDecision: "ask",
+      permissionDecisionReason: $r
+    }
+  }'
+  exit 0
+}
 
 # Any other Claude session that touched main recently owns it.
 holder=$(find "$BEATS" -type f ! -name "$me" 2>/dev/null | head -1)
@@ -87,6 +86,27 @@ if [ -n "$holder" ]; then
 
 Two sessions editing one checkout fight over HEAD and the git index. The session
 that got there first keeps it.
+
+$recipe"
+fi
+
+# opencode never runs this hook, so it can edit main whenever it likes and we
+# cannot see which project it is in. Only you know whether it is working in this
+# repo, so ask rather than guess.
+#
+# The claim is staked before asking, not after: the hook cannot see your answer.
+# Answering no leaves a claim that expires in $STALE_MINUTES minutes, which only
+# holds other Claude sessions off main — the safe direction to be wrong in.
+if pgrep -x opencode >/dev/null 2>&1; then
+  touch "$BEATS/$me" 2>/dev/null
+  ask "opencode is running, and $rel is in the main checkout.
+
+opencode does not run this hook, so it can edit the main checkout at any time
+and this session cannot tell which project it is working in. If opencode is
+working somewhere else, this edit is safe. If it is in this repo, you are about
+to collide with it.
+
+Allow the edit, or refuse and work in a worktree:
 
 $recipe"
 fi
