@@ -17,3 +17,8 @@ export function generateClassCode(): string {
 export function isValidClassCodeShape(code: string): boolean {
   return SHAPE_RE.test(code);
 }
+
+export function normalizeClassCode(code: string): string | null {
+  const normalized = code.trim().toUpperCase();
+  return isValidClassCodeShape(normalized) ? normalized : null;
+}

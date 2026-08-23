@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { createServerClient } from "@/lib/supabase/server";
-import { isValidClassCodeShape } from "@/lib/classCode";
+import { normalizeClassCode } from "@/lib/classCode";
 
 // Deliberately NOT rate-limited, unlike the POST routes that look up codes:
 // this route is not a brute-force oracle — it returns { status: "none" }
@@ -23,8 +23,8 @@ export async function GET(
   }
 
   const { code: rawCode } = await params;
-  const code = rawCode.trim().toUpperCase();
-  if (!isValidClassCodeShape(code)) {
+  const code = normalizeClassCode(rawCode);
+  if (!code) {
     return NextResponse.json({ status: "none" });
   }
 

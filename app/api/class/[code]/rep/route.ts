@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { createServerClient } from "@/lib/supabase/server";
-import { isValidClassCodeShape } from "@/lib/classCode";
+import { normalizeClassCode } from "@/lib/classCode";
 
 export async function GET(
   req: NextRequest,
@@ -13,8 +13,8 @@ export async function GET(
   if (!deviceId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const { code: rawCode } = await params;
-  const code = rawCode.trim().toUpperCase();
-  if (!isValidClassCodeShape(code)) {
+  const code = normalizeClassCode(rawCode);
+  if (!code) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
 
