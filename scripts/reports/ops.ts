@@ -11,10 +11,11 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { diffMetrics, renderMetricsTable, type Metric } from "../../lib/reports/metrics";
 import { archiveExistingRun } from "../../lib/reports/runArchive";
+import { readPreviousRun } from "../../lib/reports/previousRun";
 
 const PRODUCTION = "https://survival-kit-app.vercel.app";
 const ROUTES = ["/", "/login", "/year", "/for-blocks"];
@@ -117,33 +118,6 @@ function migrationInventory(): { count: number; latest: string | null } {
   }
 }
 
-/**
- * Finds the most recent prior run and its metrics, if one exists and is
- * readable. Any failure — no directory yet, no earlier file, unreadable
- * file, malformed JSON, or a missing/non-array `metrics` field — degrades to
- * a baseline run rather than crashing the collector. A previous run is a
- * nice-to-have; it must never be a hard dependency.
- */
-function readPreviousRun(outDir: string, todayFilename: string): { date: string; metrics: Metric[] } | null {
-  let files: string[];
-  try {
-    files = readdirSync(outDir).filter((name) => name.endsWith(".json"));
-  } catch {
-    return null;
-  }
-
-  const previousFile = files.filter((name) => name < todayFilename).sort().at(-1);
-  if (!previousFile) return null;
-
-  try {
-    const parsed = JSON.parse(readFileSync(join(outDir, previousFile), "utf8")) as { metrics?: unknown };
-    if (!Array.isArray(parsed.metrics)) return null;
-    return { date: previousFile.replace(/\.json$/, ""), metrics: parsed.metrics as Metric[] };
-  } catch {
-    return null;
-  }
-}
-
 function main(): void {
   const started = Date.now();
 
@@ -201,7 +175,7 @@ function main(): void {
     collectedAt: new Date().toISOString(),
     collectMs,
     metrics,
-    previousDate: previous?.date ?? null,
+    previousDate: previous?.key ?? null,
     table,
     raw: { routes, cache, outdated, migrations },
   };
