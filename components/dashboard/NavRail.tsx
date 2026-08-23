@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { pct } from "@/lib/account";
+import { completionPercentage } from "@/lib/account";
 
 interface NavRailProps {
   overallDone: number;
@@ -43,7 +43,7 @@ function isItemActive(pathname: string, item: NavItem): boolean {
  */
 export function NavRail({ overallDone, overallTotal }: NavRailProps) {
   const pathname = usePathname();
-  const percent = pct(overallDone, overallTotal);
+  const percent = completionPercentage(overallDone, overallTotal);
 
   return (
     <nav

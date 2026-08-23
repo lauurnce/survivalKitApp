@@ -5,7 +5,7 @@ import Link from "next/link";
 import type { TermGroup } from "@/lib/dashboard";
 import { subjectStatus } from "@/lib/dashboard";
 import type { SubjectSummary, YearGroup } from "@/lib/account";
-import { pct } from "@/lib/account";
+import { completionPercentage } from "@/lib/account";
 import { YearSubscribeModal, SubjectSubscribeModal } from "@/components/account/SubscribeModals";
 import { StatusChip } from "./StatusChip";
 import { SubjectIcon } from "./SubjectIcon";
@@ -108,7 +108,7 @@ function TermSection({
 
       <ul className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {term.subjects.map((s) => {
-          const progress = pct(s.doneCount, s.totalCount);
+          const progress = completionPercentage(s.doneCount, s.totalCount);
 
           if (s.unlocked) {
             const status = subjectStatus(s);
