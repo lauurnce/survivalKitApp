@@ -251,7 +251,11 @@ export function assessSecrets({
 
   const rows: SecretRow[] = [];
   for (const name of [...readers.keys()].sort()) {
-    const secretClass = registry[name] ?? "UNCLASSIFIED";
+    // Membership, not a lookup-then-compare: Record's index signature claims
+    // every key exists, so comparing the lookup result against the fallback
+    // literal is a type error. `in` is also exactly the question.
+    const registered = name in registry;
+    const secretClass: SecretClass | "UNCLASSIFIED" = registered ? registry[name] : "UNCLASSIFIED";
     const files = readers.get(name) ?? [];
     const clientFile = files.find((file) => clientFiles.has(file)) ?? null;
 
@@ -262,7 +266,7 @@ export function assessSecrets({
       reach: clientFile ? "CLIENT" : "server",
     });
 
-    if (secretClass === "UNCLASSIFIED") {
+    if (!registered) {
       issues.push({ kind: "unclassified", name, file: files[0] ?? null });
     }
     if (secretClass === "SERVER_ONLY" && clientFile) {

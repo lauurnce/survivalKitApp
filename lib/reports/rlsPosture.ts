@@ -93,7 +93,12 @@ export function assessRls(
   registry: Record<string, DataClass> = TABLE_DATA_CLASS
 ): TablePosture[] {
   return tables.map((table) => {
-    const dataClass = registry[table.name] ?? "UNREGISTERED";
+    // Membership, not a lookup-then-compare: Record's index signature claims
+    // every key exists, so comparing the lookup result against the fallback
+    // literal is a type error. `in` is also exactly the question — is this
+    // table named in the registry at all.
+    const registered = table.name in registry;
+    const dataClass: DataClass | "UNREGISTERED" = registered ? registry[table.name] : "UNREGISTERED";
     const anonPolicies = table.policies.filter(reachableByPublishableKey);
     const reasons: string[] = [];
     let verdict: TablePosture["verdict"] = "ok";
@@ -107,7 +112,7 @@ export function assessRls(
       escalate("gap");
     }
 
-    if (dataClass === "UNREGISTERED") {
+    if (!registered) {
       reasons.push("table not in TABLE_DATA_CLASS");
       escalate("review");
     }
