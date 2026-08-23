@@ -77,8 +77,8 @@ const releaseCalls: Array<Record<string, unknown>> = [];
 
 vi.mock("@supabase/supabase-js", () => ({
   createClient: () => ({
-    from: (table: string) => ({
-      select: (columns: string) => ({
+    from: () => ({
+      select: () => ({
         eq: (column: string, value: string) => ({
           is: (col: string, val: null) => ({
             single: () => Promise.resolve(

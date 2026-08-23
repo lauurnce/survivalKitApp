@@ -10,7 +10,7 @@ interface Params {
   params: Promise<{ sectionId: string }>;
 }
 
-export async function GET(req: NextRequest, { params }: Params) {
+export async function GET(_request: NextRequest, { params }: Params) {
   const { sectionId } = await params;
   // Derive the device identity from the HMAC-signed cookie, not a client-supplied
   // header — a forged or copied value verifies to null and grants no access.
