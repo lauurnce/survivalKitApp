@@ -291,32 +291,41 @@ function mergeByLabel<T>(
 }
 
 /**
- * The label column keeps a FIXED width on purpose. The row is
+ * The label column keeps a SHARED width on purpose. The row is
  * `flex items-center gap-3` with a shrink-0 label and a flex-1 bar, so that
- * width is what makes every row's bar start at the same x. Dropping it to fit
- * long names lets each bar begin at a different offset and the bar column stops
- * forming a straight edge. So the fix for clipped names is a WIDER column plus
- * a two-line clamp -- never removing the width.
+ * width is what makes every row's bar start at the same x. Letting each label
+ * size to its own text lets each bar begin at a different offset and the bar
+ * column stops forming a straight edge. So the fix for clipped names is a
+ * two-line clamp plus the `title` tooltip -- never a per-row width.
+ *
+ * The width is a PERCENTAGE, not a pixel count. A fixed `w-56` label plus the
+ * gaps and the count column made every row 280px wide and unshrinkable, which
+ * a narrow grid track cannot honour: the track blew past its column, the
+ * `flex-1` bar collapsed to zero, and the right-aligned count landed on top of
+ * the next column's labels. A percentage still lines every bar up at the same
+ * x -- all rows share one container -- but it can never overflow the column.
+ * `min-w-0` on the root is the second half of that guarantee: without it a
+ * grid track is floored at its content's min-content width.
  */
 function BarChart({ data, label }: { data: TopItem[]; label: string }) {
   if (!data.length) return (
-    <div>
+    <div className="min-w-0">
       <p className="label mb-4">{label}</p>
       <p className="font-sans text-xs text-ink-faint">No data yet.</p>
     </div>
   );
   const max = Math.max(...data.map(d => d.count), 1);
   return (
-    <div>
+    <div className="min-w-0">
       <p className="label mb-4">{label}</p>
       <div className="space-y-2">
         {data.map(item => (
           <div key={item.label} className="group flex items-center gap-3">
-            <span className="font-sans text-xs text-ink-muted w-40 sm:w-56 shrink-0 leading-tight line-clamp-2" title={item.label}>{item.label}</span>
-            <div className="flex-1 bg-ink-faint/20 h-4">
+            <span className="font-sans text-xs text-ink-muted w-1/2 shrink-0 leading-tight line-clamp-2 break-words" title={item.label}>{item.label}</span>
+            <div className="flex-1 min-w-0 bg-ink-faint/20 h-4">
               <div className="h-4 bg-accent transition-all duration-300 group-hover:bg-accent-dark" style={{ width: `${(item.count / max) * 100}%` }} />
             </div>
-            <span className="font-mono text-xs text-ink-muted w-8 text-right">{item.count}</span>
+            <span className="font-mono text-xs text-ink-muted w-10 shrink-0 text-right tabular-nums">{item.count}</span>
           </div>
         ))}
       </div>
@@ -831,7 +840,12 @@ export function AdminDashboard({
             profile card on their account page.
           </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 max-w-wide mx-auto">
+          // Two columns, never four, and full width rather than the 88ch
+          // `max-w-wide` reading measure the prose sections use. University
+          // and program names are the longest labels on the dashboard: a
+          // quarter of a 88ch row leaves the label nothing to wrap into and
+          // the bar nothing to draw in.
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-12">
             <BarChart
               data={(profilesAgg.by_pathway ?? []).map(p => ({ label: p.pathway, count: p.count }))}
               label="Preferred Pathways"
