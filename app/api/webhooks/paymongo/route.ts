@@ -13,7 +13,7 @@ import { isUuid } from "@/lib/validation";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
 import { recordPayment } from "@/lib/payments";
 import { generateClassCode } from "@/lib/classCode";
-import { enqueue } from "@/lib/email/outbox";
+import { enqueue, drain } from "@/lib/email/outbox";
 
 export const runtime = "nodejs";
 
@@ -282,6 +282,8 @@ export async function POST(req: NextRequest) {
         };
         await enqueue(supabase, { ...shared, kind: "receipt" });
         await enqueue(supabase, { ...shared, kind: "welcome" });
+        // Best-effort immediate send; the nightly cron retries anything left pending.
+        await drain(supabase);
       }
     } catch (err) {
       console.error("Lifecycle email enqueue failed:", err instanceof Error ? err.message : err);
