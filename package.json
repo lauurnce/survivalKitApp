@@ -20,7 +20,10 @@
     "story:check": "node scripts/gen-story-svgs.check.mjs",
     "report:ops": "tsx scripts/reports/ops.ts",
     "report:growth": "tsx scripts/reports/growth.ts",
-    "report:cost": "tsx scripts/reports/cost.ts"
+    "report:cost": "tsx scripts/reports/cost.ts",
+    "report:finance": "tsx scripts/reports/finance.ts",
+    "report:finance:weekly": "tsx scripts/reports/finance.ts --weekly",
+    "report:security": "tsx scripts/reports/security.ts"
   },
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.3",
