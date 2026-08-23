@@ -85,7 +85,7 @@ export function AuthForm({
             aria-pressed={showPassword}
             aria-controls={passwordId}
             aria-label={showPassword ? "Hide password" : "Show password"}
-            className="text-xs text-ink-faint hover:text-ink transition-colors"
+            className="inline-flex min-h-6 min-w-6 items-center justify-center text-xs text-ink-faint hover:text-ink transition-colors"
           >
             {showPassword ? "Hide" : "Show"}
           </button>
