@@ -103,7 +103,7 @@ Everything below was checked, not assumed. Where a check was impossible it says 
 
 **The Ops JSON contract must not change.** The extracted function returns `{ key, metrics }` where Ops' private version returned `{ date, metrics }` — because a Finance key is a month, not a date. Ops' *payload* field stays `previousDate`, because PULSE reads that name. Only the local expression changes.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `lib/reports/previousRun.test.ts`:
 
@@ -189,12 +189,12 @@ describe("readPreviousRun", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run lib/reports/previousRun.test.ts`
 Expected: FAIL — cannot resolve `./previousRun`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Create `lib/reports/previousRun.ts`:
 
@@ -264,12 +264,12 @@ export function readPreviousRun(
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run lib/reports/previousRun.test.ts`
 Expected: PASS — 9 tests.
 
-- [ ] **Step 5: Point the Ops collector at the shared copy**
+- [x] **Step 5: Point the Ops collector at the shared copy**
 
 In `scripts/reports/ops.ts`, delete the entire private `readPreviousRun` function (its JSDoc block and body, currently at lines 120–145) and add the import beside the existing `lib/reports` imports:
 
@@ -287,7 +287,7 @@ Then, in `main()`, change the one line that reads the previous key:
 
 **Do not rename the `previousDate` field in the payload.** `.claude/agents/pulse.md` reads it by that name.
 
-- [ ] **Step 6: Verify the Ops collector still produces the same shape**
+- [x] **Step 6: Verify the Ops collector still produces the same shape**
 
 ```bash
 npm run report:ops
@@ -296,7 +296,7 @@ node -e "const d=require('./docs/reports/ops/.data/'+new Date().toLocaleDateStri
 
 Expected: keys `collectedAt,collectMs,metrics,previousDate,table,raw`, a `previousDate` that is either a date string or `null`, and 12 metrics. The collector prints a `superseded earlier run today ->` line, which is correct — it is preserving the run that existed before this verification.
 
-- [ ] **Step 7: Run the full suite**
+- [x] **Step 7: Run the full suite**
 
 ```bash
 npm test && npm run typecheck && npm run lint
@@ -304,7 +304,7 @@ npm test && npm run typecheck && npm run lint
 
 Expected: all pass, 633 tests (624 + 9).
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add lib/reports/previousRun.ts lib/reports/previousRun.test.ts scripts/reports/ops.ts
@@ -326,7 +326,7 @@ git commit -m "refactor(reports): share the previous-run reader between collecto
 
 Supabase caps a `select` at 1000 rows. `payments` and `subscriptions` are far under it today — verified — which is exactly why Finance needs no aggregate RPC. But a truncated select does not error; it silently returns 1000 rows, and a revenue total computed from a truncated ledger is wrong in a way nobody would notice. So the read path **throws** at the cap rather than degrading, the same reasoning `runArchive.ts` uses: losing data quietly is worse than failing loudly.
 
-- [ ] **Step 1: Check whether a reports client already exists**
+- [x] **Step 1: Check whether a reports client already exists**
 
 Run: `ls -1 scripts/reports/`
 
@@ -334,7 +334,7 @@ If `supabaseClient.ts` is already present — the Growth build may have created 
 
 If the directory shows only `cost.ts` and `ops.ts`, create both files as written below.
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 Create `lib/reports/rowCap.test.ts`:
 
@@ -375,12 +375,12 @@ describe("assertUnderCap", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `npx vitest run lib/reports/rowCap.test.ts`
 Expected: FAIL — cannot resolve `./rowCap`.
 
-- [ ] **Step 4: Write the cap guard**
+- [x] **Step 4: Write the cap guard**
 
 Create `lib/reports/rowCap.ts`:
 
@@ -419,12 +419,12 @@ export function assertUnderCap(table: string, rowCount: number): void {
 }
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `npx vitest run lib/reports/rowCap.test.ts`
 Expected: PASS — 6 tests.
 
-- [ ] **Step 6: Write the client**
+- [x] **Step 6: Write the client**
 
 Create `scripts/reports/supabaseClient.ts`:
 
@@ -530,7 +530,7 @@ If `npm run typecheck` objects to the `apply` parameter's type, replace its anno
 apply: (query: any) => any = (q) => q
 ```
 
-- [ ] **Step 7: Smoke-test the client against production, read-only**
+- [x] **Step 7: Smoke-test the client against production, read-only**
 
 This is also the check that confirms the plan's central data-access claim. It prints **buckets, not counts** — the exact figures are private and must not reach a tracked file or a terminal transcript that gets pasted into one.
 
@@ -551,12 +551,12 @@ const bucket = (n) => n === 0 ? 'empty' : n < 500 ? 'well under cap' : n < 900 ?
 
 Expected: every table prints `empty` or `well under cap`. If any prints `approaching cap`, note it in `docs/reports/finance/README.md` (Task 10) as a P3 to watch. If any prints `AT CAP` the command will have thrown instead — stop and add an aggregate RPC for that table before continuing.
 
-- [ ] **Step 8: Confirm nothing became trackable**
+- [x] **Step 8: Confirm nothing became trackable**
 
 Run: `git status --porcelain`
 Expected: only `lib/reports/rowCap.ts`, `lib/reports/rowCap.test.ts`, and `scripts/reports/supabaseClient.ts` as new files. **No `.env*` file may appear.**
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add lib/reports/rowCap.ts lib/reports/rowCap.test.ts scripts/reports/supabaseClient.ts
@@ -579,7 +579,7 @@ Month boundaries decide which month a payment counts toward. Getting one wrong m
 
 The boundary that matters: **PH month start is 16:00 UTC on the last day of the previous UTC month.** Half of these tests exist to pin that down.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `lib/reports/phWindow.test.ts`:
 
@@ -688,12 +688,12 @@ describe("inWindow", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run lib/reports/phWindow.test.ts`
 Expected: FAIL — cannot resolve `./phWindow`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Create `lib/reports/phWindow.ts`:
 
@@ -763,12 +763,12 @@ export function inWindow(iso: string, from: Date, to: Date): boolean {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run lib/reports/phWindow.test.ts`
 Expected: PASS — 17 tests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/reports/phWindow.ts lib/reports/phWindow.test.ts
@@ -822,7 +822,7 @@ Four decisions here are load-bearing.
 
 **Nothing divides by zero and nothing returns `Infinity` or `NaN`.** ARPU with no paying devices is `null`, which renders `not read`; it is not `0`, which would read as "people are paying nothing" rather than "nobody has paid". Same for payback and LTV.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `lib/reports/unitEconomics.test.ts`:
 
@@ -1200,12 +1200,12 @@ describe("completeMonths and completeMonthDelta", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run lib/reports/unitEconomics.test.ts`
 Expected: FAIL — cannot resolve `./unitEconomics`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Create `lib/reports/unitEconomics.ts`:
 
@@ -1560,12 +1560,12 @@ export function completeMonthDelta(months: AnnotatedMonth[]): MonthDelta | null 
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run lib/reports/unitEconomics.test.ts`
 Expected: PASS — 51 tests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/reports/unitEconomics.ts lib/reports/unitEconomics.test.ts
@@ -1598,7 +1598,7 @@ Exceptions are computed on three independent axes and a row can appear on more t
 
 **Disclosure:** exceptions carry `device_id`, `paymongo_link_id`, and amounts. Those are identifiers and money. They live in `docs/reports/finance/.data/`, which is gitignored, and never move into a tracked file, a commit message, or a plan.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `lib/reports/ledgerIntegrity.test.ts`:
 
@@ -1969,12 +1969,12 @@ describe("summariseExceptions", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run lib/reports/ledgerIntegrity.test.ts`
 Expected: FAIL — cannot resolve `./ledgerIntegrity`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Create `lib/reports/ledgerIntegrity.ts`:
 
@@ -2454,12 +2454,12 @@ export function summariseExceptions(
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run lib/reports/ledgerIntegrity.test.ts`
 Expected: PASS — 37 tests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/reports/ledgerIntegrity.ts lib/reports/ledgerIntegrity.test.ts
@@ -2491,7 +2491,7 @@ Charter sub-functions 7 and 8. Once subscriptions are the model, money received 
 
 Both are deterministic functions of the constant and today's date, so both are computed here and neither is left to the agent to remember.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `lib/reports/revenueRecognition.test.ts`:
 
@@ -2819,12 +2819,12 @@ describe("expirySchedule", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run lib/reports/revenueRecognition.test.ts`
 Expected: FAIL — cannot resolve `./revenueRecognition`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Create `lib/reports/revenueRecognition.ts`:
 
@@ -3107,14 +3107,14 @@ export function expirySchedule(
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run lib/reports/revenueRecognition.test.ts`
 Expected: PASS — 33 tests.
 
 **If the parity tests fail, do not weaken them.** They are pinned to `SEMESTER_END` as it is imported, so they follow the constant when it is bumped. A failure means `periodEndFor`'s flooring behaviour changed, which is a product change and a finding in its own right.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/reports/revenueRecognition.ts lib/reports/revenueRecognition.test.ts
@@ -3149,7 +3149,7 @@ Two limits are stated rather than papered over. **The two route files are read a
 
 **`MAX_SEATS` is reported, not asserted.** `pricing.ts` declares `MAX_SEATS = 55`, and neither server path enforces it — both check only a lower bound. Whether that is deliberate could not be verified, so failing a test on it would be inventing a requirement. `seatBoundEnforcement` reports it and LEDGER writes it up as a finding with options. The seat *minimum* is different: it is genuinely duplicated three times, once as a bare literal in the webhook, and that one is asserted.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `lib/reports/blockPrice.test.ts`:
 
@@ -3453,12 +3453,12 @@ describe("the block price formula agrees across every source in the repo", () =>
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run lib/reports/blockPrice.test.ts`
 Expected: FAIL — cannot resolve `./blockPrice`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Create `lib/reports/blockPrice.ts`:
 
@@ -3708,14 +3708,14 @@ export function seatBoundEnforcement(
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run lib/reports/blockPrice.test.ts`
 Expected: PASS — 31 tests.
 
 **If the standing assertion fails on the first run, that is not a broken test.** It means the three copies disagree right now, which is the P0 this module exists to find. Stop and fix the source, then re-run. Do not relax the assertion to make it pass.
 
-- [ ] **Step 5: Confirm the assertion actually bites**
+- [x] **Step 5: Confirm the assertion actually bites**
 
 Temporarily change `PER_SEAT` in `app/(main)/for-blocks/pricing.ts` from `59` to `60`, then run:
 
@@ -3734,7 +3734,7 @@ npx vitest run lib/reports/blockPrice.test.ts
 
 A standing assertion nobody has watched fail is an assertion nobody knows works.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib/reports/blockPrice.ts lib/reports/blockPrice.test.ts
@@ -3775,7 +3775,7 @@ The middle row is the one worth a report, and the module refuses to collapse it 
 
 **The authoritative webhook-landing check is a manual procedure, and the module says which one.** Confirming that every paid link produced a ledger row means listing payments at PayMongo — `listRecentPaidLinks` in `lib/paymongo.ts` — which needs the live secret key. That is `[SENSITIVE]`, so the collector cannot do it. The existing admin reconcile view (`app/api/admin/reconcile/route.ts`) already performs exactly this check with real credentials, so LEDGER recommends running it rather than inventing a substitute.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `lib/reports/billingSignals.test.ts`:
 
@@ -3955,12 +3955,12 @@ describe("WEBHOOK_LANDING_CEILING", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run lib/reports/billingSignals.test.ts`
 Expected: FAIL — cannot resolve `./billingSignals`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Create `lib/reports/billingSignals.ts`:
 
@@ -4147,12 +4147,12 @@ export function quietLedger(lastPaidAtIso: string | null, now: Date): QuietLedge
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run lib/reports/billingSignals.test.ts`
 Expected: PASS — 26 tests.
 
-- [ ] **Step 5: Confirm the placeholder claim is still true**
+- [x] **Step 5: Confirm the placeholder claim is still true**
 
 The whole design of this module rests on the PayMongo values being unreadable. Check it rather than trusting the plan:
 
@@ -4164,7 +4164,7 @@ Expected: `3`. If it prints `0`, the values have become readable — in which ca
 
 This command prints a count, never a value. Do not `cat` that file.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib/reports/billingSignals.ts lib/reports/billingSignals.test.ts
@@ -4203,7 +4203,7 @@ The weekly runs live in a **subdirectory** of the same `.data` directory on purp
 
 **Where the tests are.** This file has no colocated `.test.ts`, and that is the architecture rather than an omission: `scripts/reports/` holds credentials and network I/O, and `lib/reports/` holds everything that computes. Every figure this collector emits is produced by a Vitest-covered function from Tasks 1 and 3–8 — attribution, reconciliation, recognition, expiry, block-price comparison, and the billing signals are all tested in isolation with synthetic fixtures. What remains here is reading rows, assembling, and formatting, and that is verified empirically by Steps 3–8 below. `scripts/reports/ops.ts` and `scripts/reports/growth.ts` are structured the same way, for the same reason: a test that needs production credentials is not a unit test.
 
-- [ ] **Step 1: Write the collector**
+- [x] **Step 1: Write the collector**
 
 Create `scripts/reports/finance.ts`:
 
@@ -4868,7 +4868,7 @@ main().catch((error) => {
 });
 ```
 
-- [ ] **Step 2: Run the monthly collector**
+- [x] **Step 2: Run the monthly collector**
 
 Run: `npx tsx scripts/reports/finance.ts`
 
@@ -4878,7 +4878,7 @@ If it throws on `.env.reports.local`, that file is missing or incomplete. Get th
 
 If it throws from `assertUnderCap`, a table has reached the 1000-row select cap. Stop and add an aggregate RPC for that table before continuing — see `lib/reports/rowCap.ts`.
 
-- [ ] **Step 3: Verify the output shape without printing any figure**
+- [x] **Step 3: Verify the output shape without printing any figure**
 
 ```bash
 node -e "
@@ -4902,7 +4902,7 @@ The table rule is drawn with `─`, a box-drawing character, while an empty cell
 
 This prints shapes and counts, never values. **Do not `cat` the JSON into a transcript that might be pasted into a tracked file.**
 
-- [ ] **Step 4: Verify the month-to-date rows never became a baseline**
+- [x] **Step 4: Verify the month-to-date rows never became a baseline**
 
 ```bash
 node -e "
@@ -4916,7 +4916,7 @@ console.log('leaked month-to-date rows:', leaked.length ? leaked.join(',') : 'no
 
 Expected: `none`. A leak here means next month's run would diff a complete month against a partial one — exactly the false comparison the Global Constraints forbid.
 
-- [ ] **Step 5: Run the weekly collector**
+- [x] **Step 5: Run the weekly collector**
 
 Run: `npx tsx scripts/reports/finance.ts --weekly`
 
@@ -4934,7 +4934,7 @@ console.log('tables :', Object.keys(p.tables).join(','));
 
 Expected: `mode: weekly`, `metrics: 6`, `tables: week`.
 
-- [ ] **Step 6: Verify the weekly run cannot become the monthly baseline**
+- [x] **Step 6: Verify the weekly run cannot become the monthly baseline**
 
 ```bash
 ls docs/reports/finance/.data/
@@ -4942,7 +4942,7 @@ ls docs/reports/finance/.data/
 
 Expected: the month file and a `weekly/` directory, nothing else. `readPreviousRun` globs non-recursively, so the weekly files are invisible to the monthly run by construction — and Task 1's test suite already pins that behaviour.
 
-- [ ] **Step 7: Verify the same-period archive**
+- [x] **Step 7: Verify the same-period archive**
 
 Run `npx tsx scripts/reports/finance.ts` a second time.
 Expected: a second line reading `superseded earlier run -> .../superseded/<YYYY-MM>.1.json`.
@@ -4950,7 +4950,7 @@ Expected: a second line reading `superseded earlier run -> .../superseded/<YYYY-
 Run: `ls docs/reports/finance/.data/superseded/`
 Expected: `<YYYY-MM>.1.json`.
 
-- [ ] **Step 8: Verify nothing became trackable**
+- [x] **Step 8: Verify nothing became trackable**
 
 ```bash
 git status --porcelain docs/reports/
@@ -4959,7 +4959,7 @@ git check-ignore -v docs/reports/finance/.data/
 
 Expected: the first prints nothing; the second matches the `docs/reports/` rule. If either check fails, **stop** — this data carries revenue figures, device ids, and PayMongo link ids, and the repo is public.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add scripts/reports/finance.ts
@@ -4984,7 +4984,7 @@ LEDGER gets no MCP tools. Its data comes entirely from the collector JSON, becau
 
 **One formatting rule for this file specifically.** `.claude/skills/report/SKILL.md` was once mangled by a dollar-sign-followed-by-a-digit being treated as a positional argument (HANDOFF §5.3). Agent definitions take no positional arguments, so it should not apply here — but the real value is pasted from a script regardless, so the `CUMULATIVE` examples below simply never write that sequence. Do not "improve" them by adding one.
 
-- [ ] **Step 1: Create the agent**
+- [x] **Step 1: Create the agent**
 
 Create `.claude/agents/ledger.md`:
 
@@ -5429,7 +5429,7 @@ report is the private place where that is allowed.
 | `grep --include=*.ts` unquoted | zsh expands the glob. Quote it: `--include="*.ts"`. |
 ````
 
-- [ ] **Step 2: Create the department README**
+- [x] **Step 2: Create the department README**
 
 Create `docs/reports/finance/README.md`. This is the standing-open-items file every
 department carries. It is **gitignored** — it lives under `docs/reports/` — so it is
@@ -5467,12 +5467,12 @@ can classify them. This file records why each one was added.
 (none yet)
 ```
 
-- [ ] **Step 3: Verify the agent is registered**
+- [x] **Step 3: Verify the agent is registered**
 
 Run: `ls -1 .claude/agents/`
 Expected: `ledger.md` alongside `pulse.md`, and `vantage.md` if Growth has been built.
 
-- [ ] **Step 4: Verify the README stayed untracked**
+- [x] **Step 4: Verify the README stayed untracked**
 
 ```bash
 git status --porcelain docs/reports/
@@ -5481,7 +5481,7 @@ git check-ignore -v docs/reports/finance/README.md
 
 Expected: the first prints nothing; the second matches the `docs/reports/` rule.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 Only the agent definition is tracked.
 
@@ -5500,7 +5500,7 @@ git commit -m "feat(finance): add the LEDGER finance agent"
 - Consumes: everything built in Tasks 1–10.
 - Produces: a real report at `docs/reports/finance/<YYYY-MM>.md`, a weekly delta, and one line in `docs/reports/cost-ledger.jsonl`.
 
-- [ ] **Step 1: Run the full suite**
+- [x] **Step 1: Run the full suite**
 
 ```bash
 npm test
@@ -5512,7 +5512,7 @@ Expected: all pass, with **210 more tests than before this plan** — 9 from `pr
 
 **State the delta, not an absolute.** The suite was at 624 tests across 72 files on 2026-08-08, which gives 834 — but only if the Growth plan has not landed. Growth adds 70 of its own, and whether it has been executed is not knowable from inside this plan. Check the delta against whatever the suite reported before Task 1.
 
-- [ ] **Step 2: Confirm the standing assertion is actually in the suite**
+- [x] **Step 2: Confirm the standing assertion is actually in the suite**
 
 ```bash
 npx vitest run lib/reports/blockPrice.test.ts --reporter=verbose 2>&1 | grep -c "block price formula agrees"
@@ -5520,7 +5520,7 @@ npx vitest run lib/reports/blockPrice.test.ts --reporter=verbose 2>&1 | grep -c 
 
 Expected: at least `1`. A standing assertion that is not being run every time is not standing.
 
-- [ ] **Step 3: Run both collectors fresh**
+- [x] **Step 3: Run both collectors fresh**
 
 ```bash
 npx tsx scripts/reports/finance.ts
@@ -5557,7 +5557,7 @@ Dispatch LEDGER again for a weekly run.
 
 Expected in `docs/reports/finance/weekly/<YYYY-MM-DD>.md`: a header ending `· weekly delta`, the six-row `WEEK` table, `MOVED` / `LEDGER` / `CARRIED` lines, and **no P2 or P3 findings**. If it opened a P2, the cadence rule in Step 0 of the agent definition is not being followed — that is a definition bug, not a judgment call.
 
-- [ ] **Step 7: Verify the disclosure boundary held**
+- [x] **Step 7: Verify the disclosure boundary held**
 
 ```bash
 git status --porcelain docs/reports/
@@ -5643,26 +5643,26 @@ None of these block the department. Revenue accounting, ledger integrity, billin
 
 After all tasks, confirm the department works end to end:
 
-- [ ] `npx vitest run lib/reports/` passes, with 210 more tests than before this plan
-- [ ] The block-price standing assertion is among them, and has been watched to fail once (Task 7 Step 5) and pass again
-- [ ] `npx tsx scripts/reports/finance.ts` writes `docs/reports/finance/.data/<YYYY-MM>.json`, keyed to the **Manila** calendar month
-- [ ] That payload carries 47 metrics, three rendered tables, and an `errors` array that is empty (or holds only `ops-handoff` if Operations has never run)
-- [ ] The month-to-date labels do **not** appear in the persisted `metrics` array
-- [ ] The `MONTH TO DATE` table has empty previous and delta columns
-- [ ] `reconciliation.exceptions` entries each carry a `kind`, a `linkId`, a `deviceId` and a written `reason` — never a bare count
-- [ ] `counts.matchedByRenewal` exists and is not reported as an exception
-- [ ] `npx tsx scripts/reports/finance.ts --weekly` writes into `.data/weekly/` and produces exactly 6 metrics
-- [ ] `ls docs/reports/finance/.data/` shows the month file and a `weekly/` directory, and the monthly run's `previousKey` never names a weekly file
-- [ ] Running either collector twice in the same period archives the first run to `.data/superseded/<key>.1.json`
-- [ ] `assertUnderCap` has not fired for any table
+- [x] `npx vitest run lib/reports/` passes, with 210 more tests than before this plan
+- [x] The block-price standing assertion is among them, and has been watched to fail once (Task 7 Step 5) and pass again
+- [x] `npx tsx scripts/reports/finance.ts` writes `docs/reports/finance/.data/<YYYY-MM>.json`, keyed to the **Manila** calendar month
+- [x] That payload carries 47 metrics, three rendered tables, and an `errors` array that is empty (or holds only `ops-handoff` if Operations has never run)
+- [x] The month-to-date labels do **not** appear in the persisted `metrics` array
+- [x] The `MONTH TO DATE` table has empty previous and delta columns
+- [x] `reconciliation.exceptions` entries each carry a `kind`, a `linkId`, a `deviceId` and a written `reason` — never a bare count
+- [x] `counts.matchedByRenewal` exists and is not reported as an exception
+- [x] `npx tsx scripts/reports/finance.ts --weekly` writes into `.data/weekly/` and produces exactly 6 metrics
+- [x] `ls docs/reports/finance/.data/` shows the month file and a `weekly/` directory, and the monthly run's `previousKey` never names a weekly file
+- [x] Running either collector twice in the same period archives the first run to `.data/superseded/<key>.1.json`
+- [x] `assertUnderCap` has not fired for any table
 - [ ] Dispatching `ledger` in a **fresh session** produces `docs/reports/finance/<YYYY-MM>.md`
 - [ ] The report reconciles before it quotes revenue, and names every exception individually
 - [ ] The report states that revenue is single-source
 - [ ] The CAC disclaimer appears verbatim wherever CAC is quoted
 - [ ] Every scenario line carries its assumptions, including the 10x one
-- [ ] The Active CPU row reads a copied value or `not read` — never an estimate
+- [x] The Active CPU row reads a copied value or `not read` — never an estimate
 - [ ] The weekly delta opened no P2 or P3 findings
 - [ ] `docs/reports/cost-ledger.jsonl` has a `"department":"finance"` line per monthly run and `"finance-weekly"` per delta
-- [ ] `git status --porcelain docs/reports/` is empty
+- [x] `git status --porcelain docs/reports/` is empty
 - [ ] `git diff HEAD` contains no revenue, conversion, or ARPU figure in any tracked file
-- [ ] `npm test && npm run typecheck && npm run lint` all pass
+- [x] `npm test && npm run typecheck && npm run lint` all pass
