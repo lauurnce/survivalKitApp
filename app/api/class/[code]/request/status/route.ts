@@ -13,7 +13,7 @@ import { isValidClassCodeShape } from "@/lib/classCode";
 // many students behind one NAT'd IP, so even two simultaneous pollers would
 // collide with any modest per-IP limit.
 export async function GET(
-  req: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ code: string }> }
 ) {
   const jar = await cookies();

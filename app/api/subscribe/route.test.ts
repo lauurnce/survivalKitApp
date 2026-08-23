@@ -47,8 +47,8 @@ let mockCouponRedeemed = false; // Track if coupon has been redeemed
 
 vi.mock("@supabase/supabase-js", () => ({
   createClient: () => ({
-    from: (table: string) => ({
-      select: (columns: string) => ({
+    from: () => ({
+      select: () => ({
         eq: (column: string, value: string) => ({
           is: (col: string, val: null) => ({
             single: () => Promise.resolve(
@@ -62,7 +62,7 @@ vi.mock("@supabase/supabase-js", () => ({
         }),
       }),
       update: (data: Record<string, unknown>) => ({
-        eq: (column: string, value: string) => ({
+        eq: (column: string) => ({
           is: (col: string, val: null) => ({
             select: () => ({
               single: () => Promise.resolve(

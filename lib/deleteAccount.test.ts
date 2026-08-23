@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { deleteAccount } from "./deleteAccount";
 
 const USER = "11111111-1111-1111-1111-111111111111";
