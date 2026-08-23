@@ -1,6 +1,10 @@
 # Worktrees — parallel sessions without collisions
 
-**Rule: one session, one worktree. No exceptions.**
+**Rule: one editor in the main checkout at a time. Everyone else gets a worktree.**
+
+A solo session edits the main checkout normally — spinning up a worktree for a
+one-line fix is overhead nobody wants. The rule engages the moment a second
+editor shows up, because that is where collisions actually come from.
 
 ## Why this exists
 
@@ -21,6 +25,40 @@ specific ways:
    thrown away.
 
 Worktrees fix (1). The bootstrap step fixes (2). The claims file fixes (3).
+
+## Who has to use a worktree
+
+`.claude/hooks/block-main-checkout.sh` runs before every `Write`/`Edit` and
+decides. It records a heartbeat per session in `~/.claude/survivalkit-sessions/`
+and reads it back:
+
+| Situation | Main checkout |
+|---|---|
+| You are the only session editing | **Allowed** — edit freely, no worktree |
+| Another Claude session claimed it in the last 60 min | **Blocked** — use a worktree |
+| An `opencode` process is running | **Blocked** — use a worktree |
+| The path is under `.claude/` | Always allowed (see below) |
+| The path is in a sibling worktree | Always allowed |
+
+**The incumbent keeps main.** Whoever edits first holds it; latecomers are the
+ones who move. Evicting a session mid-edit would be worse than letting it finish.
+A claim goes stale after 60 minutes, so a crashed session does not hold main
+forever — and a denied session never claims it.
+
+**Only sessions that edit register.** A session that is merely reading never
+claims main, which is correct: reads do not collide.
+
+Two gaps this does not close, by design:
+
+- **opencode is ungovernable.** It does not run Claude Code hooks, so it can edit
+  main whenever it likes. Claude Code sessions yield to it rather than race it —
+  a blunt rule, since the hook cannot tell which project opencode is in.
+- **Merges still move `HEAD`.** Only `Write`/`Edit` are gated; Bash is not. A
+  merge into main from any worktree still shifts `HEAD` under everyone. Re-check
+  it before each commit.
+
+**Escape hatch:** edits under `.claude/` are always allowed. A broken hook must
+never lock every session out of the file needed to repair it.
 
 ## Layout
 

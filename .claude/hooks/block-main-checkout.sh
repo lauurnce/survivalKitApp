@@ -1,16 +1,24 @@
 #!/bin/bash
-# Refuse edits inside the main checkout. Parallel sessions that share it fight
-# over HEAD and the index; every session belongs in its own worktree.
-# See docs/WORKTREES.md. Wired up as a PreToolUse hook in .claude/settings.json.
+# Keep the main checkout to one editor at a time.
+#
+# A solo session edits it normally — a worktree for a one-line fix is overhead
+# nobody wants. The moment a second editor appears, the latecomer is pushed into
+# its own worktree instead, which is where the collisions actually come from.
+#
+# The incumbent keeps main: whoever is mid-edit should not be evicted.
+#
+# Wired up as a PreToolUse hook in .claude/settings.json. See docs/WORKTREES.md.
 
 PATH=/usr/bin:/bin:/usr/sbin:/sbin:$PATH
 
 MAIN="/Users/lauurnce/projects/survivalKitApp"
+BEATS="$HOME/.claude/survivalkit-sessions"
+STALE_MINUTES=60
 
-file=$(jq -r '.tool_input.file_path // empty' 2>/dev/null)
+payload=$(cat)
+file=$(printf '%s' "$payload" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
 [ -z "$file" ] && exit 0
 
-# Relative paths resolve against the session's working directory
 case "$file" in
   /*) abs="$file" ;;
   *)  abs="$PWD/$file" ;;
@@ -24,17 +32,21 @@ case "$abs" in
 esac
 
 # Escape hatch. Claude Code's own config has to stay editable from here, or a
-# bad hook locks every session out of the file needed to fix it.
+# bad hook locks every session out of the file needed to repair it.
 case "$abs" in
   "$MAIN"/.claude/*) exit 0 ;;
 esac
 
+me=$(printf '%s' "$payload" | jq -r '.session_id // empty' 2>/dev/null)
+[ -z "$me" ] && me="nosession-$PPID"
+
+mkdir -p "$BEATS" 2>/dev/null
+# A session that died should not hold main forever.
+find "$BEATS" -type f -mmin "+$STALE_MINUTES" -delete 2>/dev/null
+
 rel="${abs#"$MAIN"/}"
 
-reason="$rel is in the main checkout, which is read-only for feature work.
-Parallel sessions sharing it fight over HEAD and the git index.
-
-Work in a worktree instead:
+recipe="Work in a worktree instead:
 
   git -C $MAIN worktree add ~/projects/survivalKitApp-<track> -b <type>/<description> origin/main
   cd ~/projects/survivalKitApp-<track>
@@ -42,14 +54,43 @@ Work in a worktree instead:
   ln -s $MAIN/node_modules node_modules
 
 Then claim your files in ~/projects/.survivalkit-claims.md before editing.
-Full procedure: docs/WORKTREES.md.
+Full procedure: docs/WORKTREES.md."
 
-The main checkout still accepts reads, merges, and pushes — just not edits."
+deny() {
+  jq -n --arg r "$1" '{
+    hookSpecificOutput: {
+      hookEventName: "PreToolUse",
+      permissionDecision: "deny",
+      permissionDecisionReason: $r
+    }
+  }'
+  exit 0
+}
 
-jq -n --arg r "$reason" '{
-  hookSpecificOutput: {
-    hookEventName: "PreToolUse",
-    permissionDecision: "deny",
-    permissionDecisionReason: $r
-  }
-}'
+# opencode never runs this hook, so it can edit main whenever it likes and we
+# cannot see which project it is in. Yield rather than race it.
+if pgrep -x opencode >/dev/null 2>&1; then
+  deny "$rel is in the main checkout, and opencode is running.
+
+opencode does not run this hook, so it can edit the main checkout at any time
+and this session cannot tell which project it is working in. Yielding is the
+only safe option.
+
+$recipe"
+fi
+
+# Any other Claude session that touched main recently owns it.
+holder=$(find "$BEATS" -type f ! -name "$me" 2>/dev/null | head -1)
+if [ -n "$holder" ]; then
+  deny "$rel is in the main checkout, which another Claude session is already editing
+(claimed by session ${holder##*/}, within the last $STALE_MINUTES minutes).
+
+Two sessions editing one checkout fight over HEAD and the git index. The session
+that got there first keeps it.
+
+$recipe"
+fi
+
+# Sole editor — claim main and allow the edit.
+touch "$BEATS/$me" 2>/dev/null
+exit 0

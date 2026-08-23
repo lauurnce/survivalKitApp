@@ -6,27 +6,34 @@
 - The user (lauurnce) is the sole contributor on all commits
 - Use `gh auth token` piped into the remote URL when pushing via HTTPS
 
-## Worktrees — mandatory for every session
+## Worktrees — required once a second session appears
 
-Several sessions run against this repo at the same time. When two of them work
-in the same checkout they fight over `HEAD`, the index, and each other's edits,
-and neither one can see what the other is doing. The fix is one worktree per
-session, plus a claims file they all read.
+Several sessions run against this repo at the same time. When two of them edit
+the same checkout they fight over `HEAD`, the index, and each other's changes,
+and neither can see what the other is doing.
 
-- **Never edit in `/Users/lauurnce/projects/survivalKitApp`.** The main checkout
-  stays on `main` and stays clean. Read it, merge reviewed branches into it,
-  push from it — nothing else. No feature work, ever.
-- **First action of every session:** create or enter a worktree at
-  `~/projects/survivalKitApp-<track>`. Never a scratchpad, `/tmp`, or other
-  volatile path — those get wiped and leave orphaned branches that make
-  `git worktree list` lie.
+One editor at a time is the rule, not one worktree per session:
+
+- **Alone? Edit the main checkout normally.** A worktree for a one-line fix is
+  overhead nobody wants. A `PreToolUse` hook
+  (`.claude/hooks/block-main-checkout.sh`) tracks who is editing and gets out of
+  your way when you are the only one.
+- **Second session? You go to a worktree.** The hook refuses edits in the main
+  checkout while another session holds it, and prints the recipe. Whoever got
+  there first keeps main — a session mid-edit is never evicted. A claim goes
+  stale after 60 minutes, so a crashed session does not hold main forever.
+- **opencode running? Claude yields.** opencode does not run this hook and can
+  edit main at any time, and this session cannot tell which project it is in.
+- **Worktrees live at `~/projects/survivalKitApp-<track>`.** Never a scratchpad,
+  `/tmp`, or other volatile path — those get wiped and leave orphaned branches
+  that make `git worktree list` lie.
 - **Bootstrap before running anything.** A fresh worktree has no `.env.local`
-  and no `node_modules` — both are gitignored — so `npm run dev`, `npm test`,
-  and every `scripts/db/*` command fail until you link them in.
-- **Claim your files before the first edit** in `~/projects/.survivalkit-claims.md`,
-  and delete your row when the branch is merged or abandoned.
-- **Read the claims file before touching a shared file.** If a live track already
-  owns it, coordinate — do not edit in parallel and hope the merge works out.
+  and no `node_modules` — both gitignored — so `npm run dev`, `npm test`, and
+  every `scripts/db/*` command fail until you link them in.
+- **Claim your files** in `~/projects/.survivalkit-claims.md` before editing, and
+  delete your row when the branch is merged or abandoned.
 
-Full procedure, bootstrap commands, and the audit steps:
-[docs/WORKTREES.md](docs/WORKTREES.md).
+Only `Write`/`Edit` are gated. Bash is not, so `git commit`, merges, and pushes
+still work in main — but `HEAD` moves under you, so re-check it before each one.
+
+Full procedure and the audit steps: [docs/WORKTREES.md](docs/WORKTREES.md).
