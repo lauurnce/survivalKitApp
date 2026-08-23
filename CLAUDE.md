@@ -51,3 +51,17 @@ Only `Write`/`Edit` are gated, and only for Claude Code. Bash is not, so
 you, so re-check it before each one.
 
 Full procedure and the audit steps: [docs/WORKTREES.md](docs/WORKTREES.md).
+
+## Agent skills
+
+### Issue tracker
+
+Issues and PRDs are tracked in GitHub Issues on `lauurnce/survivalKitApp`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the canonical five-label triage vocabulary. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Use the single-context domain documentation layout. See `docs/agents/domain.md`.
