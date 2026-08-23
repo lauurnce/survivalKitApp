@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
@@ -8,13 +7,11 @@ import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
-import { ModuleDoneToggle } from "@/components/ModuleDoneToggle";
+import { ModuleListItem } from "@/components/ModuleListItem";
 import { SubjectComingSoon } from "@/components/SubjectComingSoon";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
 import { ProAccessBanner } from "@/components/ProAccessBanner";
-import { ProBadge } from "@/components/ProBadge";
 import { ShareProgressButton } from "@/components/share/ShareProgressButton";
-import { formatCount } from "@/lib/counters";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { modulePath } from "@/lib/subscribeRedirect";
 
@@ -138,46 +135,21 @@ export default async function ModulesPage({ params }: Props) {
             // reviewer content, and only once the reader can open them.
             const isPro = subscribed && proModuleIds.has(mod.id);
             return (
-              <Link
+              <ModuleListItem
                 key={mod.id}
                 href={modulePath(yearId, subjectId, mod.id)}
-                className={`group flex items-start gap-6 py-8 hover:bg-ink/[0.02] -mx-4 px-4 transition-colors duration-150 ${
-                  isPro ? "border-l-2 border-l-amber-400/70 bg-amber-50/40 dark:bg-amber-400/[0.06]" : ""
-                }`}
-              >
-                <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mt-1 w-8 shrink-0 text-right">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="flex-1">
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-1">
-                    <h2 className="font-serif text-2xl text-ink group-hover:text-accent transition-colors duration-150">
-                      {mod.title}
-                    </h2>
-                    {isPro && <ProBadge />}
-                  </div>
-                  {readCount(mod.id) > 0 ? (
-                    <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint">
-                      <span className="text-ink-muted">{formatCount(readCount(mod.id))}</span> reads
-                    </span>
-                  ) : (
-                    <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-accent">
-                      New
-                    </span>
-                  )}
-                </div>
-                <ModuleDoneToggle
-                  moduleId={mod.id}
-                  share={{
-                    subjectId,
-                    subjectTitle: subject.title,
-                    moduleTitle: mod.title,
-                    moduleIds,
-                  }}
-                />
-                <span className="font-sans text-sm text-ink-faint group-hover:text-ink transition-colors mt-1">
-                  →
-                </span>
-              </Link>
+                index={i}
+                moduleId={mod.id}
+                title={mod.title}
+                readCount={readCount(mod.id)}
+                isPro={isPro}
+                share={{
+                  subjectId,
+                  subjectTitle: subject.title,
+                  moduleTitle: mod.title,
+                  moduleIds,
+                }}
+              />
             );
           })}
 

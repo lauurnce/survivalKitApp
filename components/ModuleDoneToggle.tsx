@@ -54,7 +54,7 @@ export function ModuleDoneToggle({ moduleId, share }: Props) {
   }
 
   async function toggle(e: MouseEvent) {
-    // Prevent the surrounding <Link> from navigating when used inside a row.
+    // Keep progress changes independent from any row-level navigation.
     e.preventDefault();
     e.stopPropagation();
     if (pending) return;
