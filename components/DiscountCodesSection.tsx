@@ -36,7 +36,7 @@ export function DiscountCodesSection({ userToken }: DiscountCodesSectionProps) {
   if (codes.length === 0) {
     return (
       <div className="text-gray-600 dark:text-gray-400">
-        No discount codes yet. Submit quality feedback to earn ₱100 discount codes!
+        No discount codes yet. Submit quality feedback to earn discount codes — up to ₱100 off!
       </div>
     );
   }
@@ -75,7 +75,7 @@ export function DiscountCodesSection({ userToken }: DiscountCodesSectionProps) {
                 </div>
 
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                  ₱100 discount on any module unlock
+                  Up to ₱100 off — covers a single-subject unlock in full, or ₱100 off the all-subjects semester pass
                 </p>
 
                 <button

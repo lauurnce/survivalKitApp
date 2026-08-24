@@ -9,6 +9,11 @@ import {
   SEMESTER_END,
   resolvePlan,
   periodEndFor,
+  MIN_CHARGE,
+  COUPON_DISCOUNT,
+  couponDiscountFor,
+  MAX_SEATS,
+  type PlanKey,
 } from "./paymongo";
 import crypto from "crypto";
 
@@ -495,23 +500,23 @@ describe("parseLinkRemarks", () => {
 
   it("parses a full subject-plan remarks string (year+subject+device+user)", () => {
     const r = `year:${yearId} subject:${subjectId} device:${deviceId} user:${userId}`;
-    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId, plan: null });
+    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId, plan: null, coupon: null });
   });
 
   it("parses a year-plan remarks string (no subject)", () => {
     const r = `year:${yearId} device:${deviceId} user:${userId}`;
-    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId: null, deviceId, userId, plan: null });
+    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId: null, deviceId, userId, plan: null, coupon: null });
   });
 
   it("parses a remarks string without a user (anonymous device payment)", () => {
     const r = `year:${yearId} subject:${subjectId} device:${deviceId}`;
-    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId: null, plan: null });
+    expect(parseLinkRemarks(r)).toEqual({ yearId, subjectId, deviceId, userId: null, plan: null, coupon: null });
   });
 
   it("returns all-null for empty or garbage remarks (caller must reject)", () => {
-    expect(parseLinkRemarks("")).toEqual({ yearId: null, subjectId: null, deviceId: null, userId: null, plan: null });
+    expect(parseLinkRemarks("")).toEqual({ yearId: null, subjectId: null, deviceId: null, userId: null, plan: null, coupon: null });
     expect(parseLinkRemarks("totally unrelated text")).toEqual({
-      yearId: null, subjectId: null, deviceId: null, userId: null, plan: null,
+      yearId: null, subjectId: null, deviceId: null, userId: null, plan: null, coupon: null,
     });
   });
 
@@ -523,6 +528,45 @@ describe("parseLinkRemarks", () => {
   it("returns null plan for legacy remarks", () => {
     const r = parseLinkRemarks(`year:${yearId} device:${deviceId}`);
     expect(r.plan).toBeNull();
+  });
+
+  it("extracts the coupon token from coupon-discounted remarks", () => {
+    const r = parseLinkRemarks(
+      `year:${yearId} device:${deviceId} plan:year_sem coupon:FEEDBACK-TESTTEST`
+    );
+    expect(r.coupon).toBe("FEEDBACK-TESTTEST");
+    // The token must not bleed into neighbouring fields.
+    expect(r.plan).toBe("year_sem");
+  });
+
+  it("returns null coupon for links created without one", () => {
+    const r = parseLinkRemarks(`year:${yearId} device:${deviceId} plan:subject_month`);
+    expect(r.coupon).toBeNull();
+  });
+});
+
+describe("coupon constants", () => {
+  it("caps the discount at each plan price", () => {
+    expect(couponDiscountFor("subject_month")).toBe(PLANS.subject_month.amount);
+    expect(couponDiscountFor("subject_sem")).toBe(PLANS.subject_sem.amount);
+    // Face value is below the year plan, so it applies in full there.
+    expect(couponDiscountFor("year_sem")).toBe(COUPON_DISCOUNT);
+    expect(couponDiscountFor("year_sem")).toBeLessThan(PLANS.year_sem.amount);
+  });
+
+  it("never lets a discounted remainder go negative", () => {
+    for (const plan of Object.keys(PLANS) as PlanKey[]) {
+      expect(PLANS[plan].amount - couponDiscountFor(plan)).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  it("keeps the gateway minimum and face value at their product-decided values", () => {
+    expect(MIN_CHARGE).toBe(10000); // PayMongo minimum charge
+    expect(COUPON_DISCOUNT).toBe(MIN_CHARGE); // face value equals it today by decision
+  });
+
+  it("keeps the seat cap at 55 for checkout and webhook", () => {
+    expect(MAX_SEATS).toBe(55);
   });
 });
 

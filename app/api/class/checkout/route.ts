@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
-import { createDynamicPaymongoLink } from "@/lib/paymongo";
+import { createDynamicPaymongoLink, MAX_SEATS } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import crypto from "crypto";
@@ -16,8 +16,6 @@ const ALLOWED_CHECKOUT_ORIGINS = new Set([
   PRODUCTION_ORIGIN,
   "http://localhost:3000",
 ]);
-
-const MAX_SEATS = 55;
 
 function computeAmount(scope: "subject" | "all", seats: number): number {
   const base = scope === "all" ? BASE_ALL_CENTAVOS : BASE_SUBJECT_CENTAVOS;

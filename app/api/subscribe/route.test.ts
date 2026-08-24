@@ -26,6 +26,7 @@ vi.mock("@/lib/serverRateLimit", () => ({
 
 const linkCalls: unknown[][] = [];
 const dynamicLinkCalls: unknown[][] = [];
+let dynamicLinkShouldThrow = false;
 vi.mock("@/lib/paymongo", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/paymongo")>();
   return {
@@ -35,15 +36,44 @@ vi.mock("@/lib/paymongo", async (importOriginal) => {
       return Promise.resolve({ checkoutUrl: "https://pm.link/x", linkId: "link_1" });
     },
     createDynamicPaymongoLink: (...args: unknown[]) => {
+      if (dynamicLinkShouldThrow) {
+        return Promise.reject(new Error("PayMongo error: gateway down"));
+      }
       dynamicLinkCalls.push(args);
       return Promise.resolve({ checkoutUrl: "https://pm.link/dynamic", linkId: "link_dynamic" });
     },
   };
 });
+
+// Free unlocks grant through recordPayment instead of a PayMongo link. The
+// mock records every call so tests can assert both the entitlement input and
+// the zero-value ledger row.
+const recordedPayments: Array<Record<string, unknown>> = [];
+let recordPaymentThrows = false;
+// "deduped" simulates the ledger already holding this link (replay/re-entry).
+let recordPaymentMode: "ok" | "deduped" = "ok";
+vi.mock("@/lib/payments", () => ({
+  recordPayment: (_supabase: unknown, input: Record<string, unknown>) => {
+    if (recordPaymentThrows) return Promise.reject(new Error("ledger down"));
+    recordedPayments.push(input);
+    return Promise.resolve(
+      recordPaymentMode === "deduped"
+        ? { recorded: false, deduped: true }
+        : { recorded: true, deduped: false }
+    );
+  },
+}));
+
 // Mock to control coupon validation behavior per test
 let mockCouponValid = false;
 let mockCouponExpired = false;
 let mockCouponRedeemed = false; // Track if coupon has been redeemed
+// When set, the atomic reserve UPDATE returns a row only this many times
+// before reporting "already redeemed" — models two requests racing on one
+// coupon regardless of the mockCouponRedeemed flag.
+let atomicReserveSuccesses: number | null = null;
+// Release-path calls (redeemed_at flipped back to null via .not(...)).
+const releaseCalls: Array<Record<string, unknown>> = [];
 
 vi.mock("@supabase/supabase-js", () => ({
   createClient: () => ({
@@ -65,15 +95,25 @@ vi.mock("@supabase/supabase-js", () => ({
         eq: (column: string, value: string) => ({
           is: (col: string, val: null) => ({
             select: () => ({
-              single: () => Promise.resolve(
-                mockCouponValid && column === 'coupon_code' && val === null && col === 'redeemed_at'
-                  ? mockCouponRedeemed
-                    ? { data: null, error: { message: 'Already redeemed' } }
-                    : { data: { redeemed_at: data.redeemed_at }, error: null } // Simulate successful update
-                  : { data: null, error: { message: 'Not found' } }
-              ),
+              single: () => {
+                const reserveWins =
+                  atomicReserveSuccesses === null
+                    ? !mockCouponRedeemed
+                    : atomicReserveSuccesses > 0;
+                if (atomicReserveSuccesses !== null) atomicReserveSuccesses--;
+                return Promise.resolve(
+                  mockCouponValid && column === 'coupon_code' && val === null && col === 'redeemed_at' && reserveWins
+                    ? { data: { redeemed_at: data.redeemed_at }, error: null } // Simulate successful update
+                    : { data: null, error: { message: 'Already redeemed' } }
+                );
+              },
             }),
           }),
+          // Release path: update(...).eq('coupon_code', c).not('redeemed_at','is',null)
+          not: (col: string, op: string, val: null) => {
+            releaseCalls.push({ column, value, col, op, val, redeemed_to: data.redeemed_at });
+            return Promise.resolve({ data: null, error: null });
+          },
         }),
       }),
     }),
@@ -119,6 +159,12 @@ function makeReq(body: Record<string, unknown>) {
 beforeEach(() => {
   linkCalls.length = 0;
   dynamicLinkCalls.length = 0;
+  dynamicLinkShouldThrow = false;
+  recordedPayments.length = 0;
+  recordPaymentThrows = false;
+  recordPaymentMode = "ok";
+  releaseCalls.length = 0;
+  atomicReserveSuccesses = null;
   mockCookieValue = undefined;
   mockCouponValid = false;
   mockCouponExpired = false;
@@ -230,24 +276,24 @@ describe("POST /api/subscribe coupon validation", () => {
     expect(dynamicLinkCalls).toHaveLength(0);
   });
 
-  it("uses dynamic link with discount when coupon is valid", async () => {
+  it("charges the plan minus the face value on year_sem when coupon is valid", async () => {
     mockCouponValid = true;
     mockCouponExpired = false;
-    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
+    const res = await POST(makeReq({ yearId: YEAR, deviceId: DEV, plan: "year_sem", couponCode: "FEEDBACK-TESTTEST" }));
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.discountApplied).toBe(true);
     expect(dynamicLinkCalls).toHaveLength(1);
     expect(linkCalls).toHaveLength(0);
-    // First arg to createDynamicPaymongoLink is amount (should be clamped to MIN_CHARGE)
-    // subject_month base is 4900, discount is 10000, so final should be clamped to 10000 (MIN_CHARGE)
-    expect(dynamicLinkCalls[0][0]).toBe(10000);
+    // First arg to createDynamicPaymongoLink is amount: 29900 - 10000 = 19900.
+    // No floor clamps it back up — the discount is real.
+    expect(dynamicLinkCalls[0][0]).toBe(29900 - 10000);
   });
 
   it("uses standard link when coupon is expired", async () => {
     mockCouponValid = true;
     mockCouponExpired = true;
-    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-EXPIRED" }));
+    const res = await POST(makeReq({ yearId: YEAR, deviceId: DEV, plan: "year_sem", couponCode: "FEEDBACK-EXPIRED" }));
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.discountApplied).toBe(false);
@@ -258,94 +304,166 @@ describe("POST /api/subscribe coupon validation", () => {
   it("includes coupon code in remarks when coupon valid", async () => {
     mockCouponValid = true;
     mockCouponExpired = false;
-    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
+    const res = await POST(makeReq({ yearId: YEAR, deviceId: DEV, plan: "year_sem", couponCode: "FEEDBACK-TESTTEST" }));
     expect(res.status).toBe(200);
     // 3rd arg to createDynamicPaymongoLink is remarks
     const remarks = dynamicLinkCalls[0][2] as string;
-    expect(remarks).toContain("coupon:FEEDBACK-ABC123");
+    expect(remarks).toContain("coupon:FEEDBACK-TESTTEST");
+    expect(remarks).toContain("plan:year_sem");
   });
 
-  it("enforces minimum charge when discount >= baseAmount", async () => {
+  it("never clamps a discounted amount back up to the old floor", async () => {
+    // Regression guard for the original bug: subject plans were charged the
+    // ₱100 minimum while still burning the coupon. Now they unlock free
+    // instead, and the paid coupon path passes the exact remainder through.
     mockCouponValid = true;
-    mockCouponExpired = false;
-    // subject_month = 4900, discount = 10000, so 4900 - 10000 = -5100
-    // Should be clamped to MIN_CHARGE (10000)
-    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
-    expect(res.status).toBe(200);
-    expect(dynamicLinkCalls).toHaveLength(1);
-    // Final amount must be at least MIN_CHARGE (10000)
-    const finalAmount = dynamicLinkCalls[0][0];
-    expect(finalAmount).toBeGreaterThanOrEqual(10000);
-    expect(finalAmount).toBe(10000);
-  });
-
-  it("rejects if finalAmount becomes non-integer (edge case)", async () => {
-    // This test ensures that even with valid calculations, we verify the result
-    // is an integer before sending to PayMongo
-    mockCouponValid = true;
-    mockCouponExpired = false;
-    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
+    const res = await POST(makeReq({ yearId: YEAR, deviceId: DEV, plan: "year_sem", couponCode: "FEEDBACK-TESTTEST" }));
     expect(res.status).toBe(200);
     const finalAmount = dynamicLinkCalls[0][0];
-    expect(Number.isInteger(finalAmount)).toBe(true);
+    expect(finalAmount).not.toBe(10000); // the old clamp value
+    expect(finalAmount).toBe(19900);
   });
 });
 
-describe("POST /api/subscribe amount validation security", () => {
-  it("prevents zero amount payment", async () => {
-    // If somehow a discount equals the base amount exactly, minimum charge applies
+describe("POST /api/subscribe coupon free unlocks", () => {
+  it.each(["subject_month", "subject_sem"] as const)(
+    "unlocks %s outright with a valid coupon — success URL, no PayMongo link, nothing charged",
+    async (plan) => {
+      mockCouponValid = true;
+      const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan, couponCode: "FEEDBACK-FREEFREE" }));
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.freeUnlock).toBe(true);
+      expect(body.discountApplied).toBe(true);
+      // checkoutUrl carries the success URL so the client's existing redirect
+      // lands on ?payment=success and auto-polls/unlocks like a paid purchase.
+      expect(typeof body.checkoutUrl).toBe("string");
+      expect(body.checkoutUrl).toContain("payment=success");
+      // No link of either kind exists for a zero-amount purchase.
+      expect(linkCalls).toHaveLength(0);
+      expect(dynamicLinkCalls).toHaveLength(0);
+      // Exactly one grant, through recordPayment.
+      expect(recordedPayments).toHaveLength(1);
+    }
+  );
+
+  it("writes BOTH the entitlement and a ZERO-value payments row keyed by the coupon", async () => {
     mockCouponValid = true;
-    mockCouponExpired = false;
-    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_sem", couponCode: "FEEDBACK-ZEROVAL" }));
     expect(res.status).toBe(200);
-    const finalAmount = dynamicLinkCalls[0][0];
-    expect(finalAmount).toBeGreaterThan(0);
+    expect(recordedPayments[0]).toMatchObject({
+      // linkId "coupon:<code>" hits the unique index on payments.paymongo_link_id,
+      // making single-use enforceable at the database level.
+      linkId: "coupon:FEEDBACK-ZEROVAL",
+      deviceId: DEV,
+      yearId: YEAR,
+      subjectId: SUBJ,
+      amount: 0,
+      userId: USER,
+    });
+    // Semester plan grants until SEMESTER_END, not a stub period.
+    expect(recordedPayments[0].periodEnd).toBeInstanceOf(Date);
   });
 
-  it("prevents negative amount payment", async () => {
-    // Verify that negative amounts are clamped to minimum charge
+  it("sets the device cookie on the free path just like the paid path", async () => {
     mockCouponValid = true;
-    mockCouponExpired = false;
-    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_month", couponCode: "FEEDBACK-COOKIE1" }));
     expect(res.status).toBe(200);
-    const finalAmount = dynamicLinkCalls[0][0];
-    expect(finalAmount).toBeGreaterThan(0);
-    expect(finalAmount).toBe(10000); // Clamped to MIN_CHARGE
+    // DEVICE_COOKIE ("bsit_device_id") must be minted when only a body UUID
+    // was supplied — same contract as the paid paths.
+    expect(res.cookies.get("bsit_device_id")?.value).toBeTruthy();
   });
 
-  it("allows normal discount that doesn't trigger minimum charge", async () => {
-    // Year plan is 29900, discount is 10000, so 29900 - 10000 = 19900 (no clamping needed)
+  it("refuses the same coupon a second time (single-use)", async () => {
     mockCouponValid = true;
-    mockCouponExpired = false;
-    const res = await POST(makeReq({ yearId: YEAR, deviceId: DEV, couponCode: "FEEDBACK-ABC123" }));
-    expect(res.status).toBe(200);
-    expect(dynamicLinkCalls).toHaveLength(1);
-    const finalAmount = dynamicLinkCalls[0][0];
-    expect(finalAmount).toBe(29900 - 10000); // 19900
-    expect(finalAmount).toBeGreaterThan(10000);
-  });
 
-  it("rejects coupon on second use (atomic redemption prevents reuse)", async () => {
-    mockCouponValid = true;
-    mockCouponExpired = false;
-
-    // First request: coupon should be valid and atomically marked as redeemed
-    const res1 = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-UNIQUE" }));
+    const res1 = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_month", couponCode: "FEEDBACK-ONCEONLY" }));
     expect(res1.status).toBe(200);
-    const body1 = await res1.json();
-    expect(body1.discountApplied).toBe(true);
-    expect(dynamicLinkCalls).toHaveLength(1);
+    expect((await res1.json()).freeUnlock).toBe(true);
+    expect(recordedPayments).toHaveLength(1);
 
-    // Simulate coupon being marked as redeemed
+    // Simulate the coupon now being redeemed: the atomic reserve returns 0 rows.
     mockCouponRedeemed = true;
 
-    // Second request: same coupon should be rejected because it's already redeemed
-    const res2 = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-UNIQUE" }));
+    const res2 = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_month", couponCode: "FEEDBACK-ONCEONLY" }));
     expect(res2.status).toBe(200);
     const body2 = await res2.json();
-    expect(body2.discountApplied).toBe(false); // Coupon not applied
-    expect(dynamicLinkCalls).toHaveLength(1); // No new dynamic link created
-    expect(linkCalls).toHaveLength(1); // Standard link used instead (no discount)
+    // Second request gets NO discount and NO second grant — full price instead.
+    expect(body2.freeUnlock).toBeUndefined();
+    expect(body2.discountApplied).toBe(false);
+    expect(linkCalls).toHaveLength(1); // standard full-price link
+    expect(recordedPayments).toHaveLength(1); // no second entitlement
+  });
+
+  it("lets exactly one of two concurrent requests redeem one coupon", async () => {
+    mockCouponValid = true;
+    // The conditional UPDATE ... WHERE redeemed_at IS NULL returns a row only
+    // once; the racing request sees zero rows and falls back to full price.
+    atomicReserveSuccesses = 1;
+
+    const [res1, res2] = await Promise.all([
+      POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-RACECOND" })),
+      POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-RACECOND" })),
+    ]);
+    const bodies = [await res1.json(), await res2.json()];
+    expect(bodies.filter((b) => b.freeUnlock === true)).toHaveLength(1);
+    expect(recordedPayments).toHaveLength(1);
+    // Loser proceeds as an undiscounted purchase rather than erroring.
+    expect(bodies.some((b) => b.discountApplied === false)).toBe(true);
+  });
+
+  it("treats a deduped ledger write (already-used coupon row) as success", async () => {
+    mockCouponValid = true;
+    recordPaymentMode = "deduped";
+    const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_month", couponCode: "FEEDBACK-DEDUPE1" }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.freeUnlock).toBe(true);
+  });
+
+  it("releases the coupon after a ledger failure so it is usable again", async () => {
+    mockCouponValid = true;
+    recordPaymentThrows = true;
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_month", couponCode: "FEEDBACK-LEDGERX" }));
+      expect(res.status).toBe(500);
+      expect(recordedPayments).toHaveLength(0);
+    } finally {
+      consoleError.mockRestore();
+    }
+    // The release flipped redeemed_at back to null...
+    expect(releaseCalls).toHaveLength(1);
+    expect(releaseCalls[0]).toMatchObject({ redeemed_to: null });
+
+    // ...so an immediate retry with the same coupon succeeds.
+    recordPaymentThrows = false;
+    const res2 = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_month", couponCode: "FEEDBACK-LEDGERX" }));
+    expect(res2.status).toBe(200);
+    expect((await res2.json()).freeUnlock).toBe(true);
+    expect(recordedPayments).toHaveLength(1);
+  });
+
+  it("releases the coupon after discounted-link creation fails, and it redeems on retry", async () => {
+    mockCouponValid = true;
+    dynamicLinkShouldThrow = true;
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const res = await POST(makeReq({ yearId: YEAR, deviceId: DEV, plan: "year_sem", couponCode: "FEEDBACK-LINKFAIL" }));
+      expect(res.status).toBe(500);
+      expect(dynamicLinkCalls).toHaveLength(0);
+    } finally {
+      consoleError.mockRestore();
+    }
+    expect(releaseCalls).toHaveLength(1);
+
+    // Gateway healthy again: same coupon reserves and links successfully.
+    dynamicLinkShouldThrow = false;
+    const res2 = await POST(makeReq({ yearId: YEAR, deviceId: DEV, plan: "year_sem", couponCode: "FEEDBACK-LINKFAIL" }));
+    expect(res2.status).toBe(200);
+    expect((await res2.json()).discountApplied).toBe(true);
+    expect(dynamicLinkCalls).toHaveLength(1);
+    expect(dynamicLinkCalls[0][0]).toBe(19900);
   });
 });
 
@@ -367,7 +485,7 @@ describe("POST /api/subscribe redirect legs", () => {
   it("passes a marker-free failed leg to the dynamic (coupon) link too", async () => {
     mockCouponValid = true;
     const res = await POST(
-      makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, couponCode: "FEEDBACK-ABC123" })
+      makeReq({ yearId: YEAR, deviceId: DEV, plan: "year_sem", couponCode: "FEEDBACK-TESTTEST" })
     );
     expect(res.status).toBe(200);
     expect(dynamicLinkCalls).toHaveLength(1);

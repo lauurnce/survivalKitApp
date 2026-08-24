@@ -249,6 +249,55 @@ describe("webhook plan handling", () => {
   });
 });
 
+describe("webhook coupon-aware amount validation", () => {
+  // A coupon-discounted year_sem link is created for exactly
+  // 29900 - 10000 = 19900 centavos and carries `coupon:<code>` in its remarks.
+  const COUPON_REMARKS = `year:${YEAR} device:${DEV} plan:year_sem coupon:FEEDBACK-TESTTEST`;
+
+  it("grants a coupon-discounted year_sem paid at the discounted 19900", async () => {
+    const res = await POST(signedRequest(COUPON_REMARKS, 19900));
+    expect(res.status).toBe(200);
+    expect(recorded).toHaveLength(1);
+    expect(recorded[0]).toMatchObject({ deviceId: DEV, yearId: YEAR, subjectId: null, amount: 19900 });
+    expect((recorded[0].periodEnd as Date).getTime()).toBe(SEMESTER_END.getTime());
+  });
+
+  it("still rejects a coupon-discounted year_sem paid at 19899 (underpayment detection survives)", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const res = await POST(signedRequest(COUPON_REMARKS, 19899));
+      expect(res.status).toBe(400);
+      expect(await res.json()).toEqual({ error: "Amount too low" });
+      expect(recorded).toHaveLength(0);
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
+  it("still rejects a NON-coupon year_sem paid at 19900 — a coupon token cannot be forged past payment", async () => {
+    // Same 19900 as the discounted price, but the link's remarks carry no
+    // coupon token, so the full 29900 expectation applies.
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const res = await POST(
+        signedRequest(`year:${YEAR} device:${DEV} plan:year_sem`, 19900)
+      );
+      expect(res.status).toBe(400);
+      expect(recorded).toHaveLength(0);
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
+  it("still grants when a coupon-discounted payer pays MORE than expected", async () => {
+    // Reject-only-underpayments: overpayment (price change, manual link) must
+    // never strand a real payment, coupon or not.
+    const res = await POST(signedRequest(COUPON_REMARKS, 29900));
+    expect(res.status).toBe(200);
+    expect(recorded).toHaveLength(1);
+  });
+});
+
 describe("POST /api/webhooks/paymongo - class purchase branch", () => {
   it("creates a classes row and a payments row when remarks contain block:1", async () => {
     // computeAmount('subject', 15) = 79900 + 4*5900 = 103500
@@ -337,6 +386,24 @@ describe("POST /api/webhooks/paymongo - class purchase branch", () => {
     expect(json.error).toBe("Malformed remarks");
     expect(paymentsInserts).toHaveLength(0);
     expect(classesInserts).toHaveLength(0);
+  });
+
+  it("rejects remarks with seats above the 55 seat cap (upper bound now enforced server-side)", async () => {
+    // No checkout flow can mint a link over MAX_SEATS, so one appearing at the
+    // webhook is malformed remarks — reject before any rows are written.
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const res = await POST(
+        signedRequest(`block:1 year:${YEAR} subject:${SUBJ} seats:56 rep:${REP_DEVICE}`, 79900 + 45 * 5900)
+      );
+      expect(res.status).toBe(400);
+      const json = await res.json();
+      expect(json.error).toBe("Malformed remarks");
+      expect(paymentsInserts).toHaveLength(0);
+      expect(classesInserts).toHaveLength(0);
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 
   it("rejects remarks with a non-UUID rep device ID", async () => {
