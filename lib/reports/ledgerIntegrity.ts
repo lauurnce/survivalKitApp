@@ -27,8 +27,10 @@
  *    asserts a "link_" prefix — no production link id was ever read, and the
  *    PayMongo secret in .env.reports.local is the literal string [SENSITIVE].
  *
- * 3. The known-exception register ships EMPTY. Comped access should stop being
- *    re-reported every month, but only once someone has written down why.
+ * 3. The known-exception register SHIPPED EMPTY until 2026-08-24, when the
+ *    owner confirmed the first five deliberate grants. Comped access stops
+ *    being re-reported every month only once someone has written down why —
+ *    registration retires a finding; the passage of time does not.
  *
  * THE AXES ARE INDEPENDENT. A payment can be both unmatched and at a price we
  * do not sell, and it produces one exception on each axis. Conservation holds
@@ -134,13 +136,37 @@ export interface KnownException {
 }
 
 /**
- * Owner-maintained. SHIPS EMPTY on purpose: an empty register means nothing is
- * excused by default, so the first month's report has to look at every
- * unmatched entitlement rather than inheriting someone's assumption. Adding an
- * entry is a deliberate act that costs one line and a sentence of reasoning —
- * the same shape as an ACCEPTED finding, and for the same reason.
+ * The four owner unlocks came from ONE batch action — sequential names,
+ * granted together on one device — so they share one reason, word for word:
+ * there was only ever one decision.
  */
-export const KNOWN_EXCEPTIONS: readonly KnownException[] = [];
+const OWNER_UNLOCK_REASON =
+  "Owner unlock, batch-granted by hand on one device; no payment by design.";
+
+/**
+ * Owner-maintained. SHIPPED EMPTY on purpose until 2026-08-24: an empty
+ * register means nothing is excused by default, so the first reports had to
+ * look at every unmatched entitlement rather than inherit someone's
+ * assumption. That is also why an entry costs one line and a sentence of
+ * reasoning — the same shape as an ACCEPTED finding. The five below are the
+ * deliberate grants the owner confirmed on 2026-08-24: one batch of four
+ * hand-granted owner unlocks and the seeded demo subscription. Coupon
+ * free-unlocks must NOT be registered here; zero-value payment rows make
+ * those reconcile on their own.
+ */
+export const KNOWN_EXCEPTIONS: readonly KnownException[] = [
+  { linkId: "owner-unlock-1", reason: OWNER_UNLOCK_REASON, since: "2026-08-24" },
+  { linkId: "owner-unlock-2", reason: OWNER_UNLOCK_REASON, since: "2026-08-24" },
+  { linkId: "owner-unlock-3", reason: OWNER_UNLOCK_REASON, since: "2026-08-24" },
+  { linkId: "owner-unlock-4", reason: OWNER_UNLOCK_REASON, since: "2026-08-24" },
+  {
+    linkId: "demo-1782312786938",
+    reason:
+      "Seeded demo-data subscription on the demo device; gateway-style placeholder " +
+      "link id, no payment by design.",
+    since: "2026-08-24",
+  },
+];
 
 // ── Exceptions ──────────────────────────────────────────────────────────────
 

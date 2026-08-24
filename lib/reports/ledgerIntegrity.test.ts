@@ -116,8 +116,24 @@ describe("naturalKey", () => {
 });
 
 describe("KNOWN_EXCEPTIONS", () => {
-  it("ships empty, so nothing is excused by default", () => {
-    expect(KNOWN_EXCEPTIONS).toEqual([]);
+  it("registers exactly the five accepted link ids, order-insensitive, no extras", () => {
+    expect(KNOWN_EXCEPTIONS.map((entry) => entry.linkId).sort()).toEqual([
+      "demo-1782312786938",
+      "owner-unlock-1",
+      "owner-unlock-2",
+      "owner-unlock-3",
+      "owner-unlock-4",
+    ]);
+  });
+
+  it("resolves a registered entitlement to known-exception, not unexplained", () => {
+    // Runs against the SHIPPED register — none injected — so the default
+    // fallback inside reconcile() is exercised end to end.
+    const result = run({
+      subscriptions: [subscription({ paymongo_link_id: "owner-unlock-1" })],
+    });
+    expect(kinds(result)).toEqual(["entitlement-known-exception"]);
+    expect(result.exceptions[0].reason).toMatch(/^Accepted 2026-08-24:/);
   });
 
   it("requires a reason and a date on every entry that is ever added", () => {
