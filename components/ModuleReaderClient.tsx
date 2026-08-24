@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { ModuleCompletionProvider } from "@/hooks/useModuleCompletion";
 import { useFeedbackPrompt } from "@/hooks/useFeedbackPrompt";
 
@@ -19,6 +19,18 @@ export function ModuleReaderClient({
 }: ModuleReaderClientProps) {
   const { isOpen, currentModuleId, open, closeFeedback, markRated } =
     useFeedbackPrompt(moduleId);
+
+  // Arriving from a "Submit quality feedback" link (?feedback=1) is an
+  // explicit request: open the survey on mount even if the cooldown or the
+  // rated-module list would normally hold it back. ModuleSurveyCard scrolls
+  // itself into view for this same param.
+  useEffect(() => {
+    if (
+      new URLSearchParams(window.location.search).get("feedback") === "1"
+    ) {
+      open({ force: true });
+    }
+  }, [open]);
 
   const value = useMemo(
     () => ({

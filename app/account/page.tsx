@@ -15,7 +15,7 @@ import { ThisWeekPanel } from "@/components/dashboard/ThisWeekPanel";
 import { RoadmapTimeline } from "@/components/dashboard/RoadmapTimeline";
 import { SemesterSections } from "@/components/dashboard/SemesterSections";
 import { DiscountCodesSectionWrapper } from "@/components/DiscountCodesSectionWrapper";
-import { groupByTerm, deriveCurrentTerm, pickRecommended, roadmapNodes } from "@/lib/dashboard";
+import { groupByTerm, deriveCurrentTerm, pickRecommended, roadmapNodes, continueHref } from "@/lib/dashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -59,6 +59,10 @@ export default async function AccountPage() {
   const recs = pickRecommended(current, 3);
   const nodes = roadmapNodes(terms, current);
   const currentKey = current ? `${current.yearId}-${current.semester}` : null;
+  // Feedback is module-scoped (the API requires a module UUID), so the empty
+  // discount-codes state links into the reader of the recommended next module;
+  // ?feedback=1 force-opens the survey there. Nothing unlocked → browse first.
+  const feedbackHref = recs[0] ? `${continueHref(recs[0])}?feedback=1` : "/year";
 
   return (
     <div className="min-h-screen bg-paper lg:flex">
@@ -86,7 +90,7 @@ export default async function AccountPage() {
           </div>
 
           <section className="border-t border-taupe/20 pt-6">
-            <DiscountCodesSectionWrapper />
+            <DiscountCodesSectionWrapper feedbackHref={feedbackHref} />
           </section>
         </main>
       </div>

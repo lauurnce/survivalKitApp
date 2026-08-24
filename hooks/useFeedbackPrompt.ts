@@ -53,21 +53,29 @@ export function useFeedbackPrompt(moduleId: string | null) {
     setOpenFor(null);
   }, [moduleId]);
 
-  // Called by the completion event, never on mount.
-  const open = useCallback(() => {
-    if (!moduleId) return;
+  // Called by the completion event, never on mount. `force` bypasses the
+  // cooldown and rated-module checks — an explicit tap on a "submit feedback"
+  // link is an invitation, not an interruption — and still stamps the
+  // cooldown so the survey does not immediately re-offer itself.
+  const open = useCallback(
+    (options?: { force?: boolean }) => {
+      if (!moduleId) return;
 
-    const now = Date.now();
-    if (isOnCooldown(now)) return;
-    if (readRatedModules().includes(moduleId)) return;
+      const now = Date.now();
+      if (!options?.force) {
+        if (isOnCooldown(now)) return;
+        if (readRatedModules().includes(moduleId)) return;
+      }
 
-    try {
-      localStorage.setItem(LAST_PROMPT_KEY, now.toString());
-    } catch {
-      // Losing the cooldown stamp is better than losing the reader's page.
-    }
-    setOpenFor(moduleId);
-  }, [moduleId]);
+      try {
+        localStorage.setItem(LAST_PROMPT_KEY, now.toString());
+      } catch {
+        // Losing the cooldown stamp is better than losing the reader's page.
+      }
+      setOpenFor(moduleId);
+    },
+    [moduleId]
+  );
 
   const closeFeedback = useCallback(() => {
     setOpenFor(null);

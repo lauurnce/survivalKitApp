@@ -1,13 +1,17 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useDiscountCodes } from '@/hooks/useDiscountCodes';
 
 interface DiscountCodesSectionProps {
   userToken: string | null;
+  /** Where "Submit quality feedback" leads — the reader of the next module
+   *  with ?feedback=1, or /year when nothing is unlocked yet. */
+  feedbackHref: string;
 }
 
-export function DiscountCodesSection({ userToken }: DiscountCodesSectionProps) {
+export function DiscountCodesSection({ userToken, feedbackHref }: DiscountCodesSectionProps) {
   const { codes, loading, error } = useDiscountCodes(userToken);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const copyResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -36,7 +40,14 @@ export function DiscountCodesSection({ userToken }: DiscountCodesSectionProps) {
   if (codes.length === 0) {
     return (
       <div className="text-gray-600 dark:text-gray-400">
-        No discount codes yet. Submit quality feedback to earn discount codes — up to ₱100 off!
+        No discount codes yet.{' '}
+        <Link
+          href={feedbackHref}
+          className="text-accent underline underline-offset-2 hover:text-accent-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+        >
+          Submit quality feedback
+        </Link>{' '}
+        to earn discount codes — up to ₱100 off!
       </div>
     );
   }

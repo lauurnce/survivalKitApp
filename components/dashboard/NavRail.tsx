@@ -48,7 +48,9 @@ export function NavRail({ overallDone, overallTotal }: NavRailProps) {
   return (
     <nav
       aria-label="Primary"
-      className="flex items-center gap-1 overflow-x-auto border-b border-taupe/30 bg-paper lg:sticky lg:top-0 lg:min-h-screen lg:w-60 lg:shrink-0 lg:flex-col lg:items-stretch lg:gap-0 lg:overflow-visible lg:border-b-0 lg:border-r"
+      className="relative flex items-center gap-1 overflow-x-auto border-b border-taupe/30 bg-paper lg:sticky lg:top-0 lg:min-h-screen lg:w-60 lg:shrink-0 lg:flex-col lg:items-stretch lg:gap-0 lg:overflow-visible lg:border-b-0 lg:border-r"
+      // relative keeps absolutely-positioned descendants inside the mobile
+      // scroll clip; lg:sticky replaces it as the position on desktop.
     >
       {/* Brand block — desktop only */}
       <Link

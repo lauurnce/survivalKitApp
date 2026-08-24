@@ -1,5 +1,14 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeEach,
+  afterEach,
+  beforeAll,
+  afterAll,
+} from "vitest";
 import { render, screen, waitFor, fireEvent, cleanup } from "@testing-library/react";
 
 const progress = vi.hoisted(() => ({
@@ -76,6 +85,8 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  // Tests that fake ?feedback=1 must not leak the param into other cases.
+  window.history.replaceState(null, "", "/");
   vi.restoreAllMocks();
 });
 
@@ -205,5 +216,37 @@ describe("corrupt rated-modules storage", () => {
     await submitSurvey();
 
     expect(JSON.parse(localStorage.getItem("rated-modules") ?? "null")).toEqual(["m1"]);
+  });
+});
+
+// A "Submit quality feedback" link on the dashboard lands here with
+// ?feedback=1 — an explicit request, so the survey opens on mount even when
+// the 24h cooldown or the rated-module list would suppress the unprompted one.
+describe("forced open via ?feedback=1", () => {
+  // jsdom has no layout engine; ModuleSurveyCard scrolls itself into view for
+  // this entry path.
+  beforeAll(() => {
+    Element.prototype.scrollIntoView = vi.fn();
+  });
+  afterAll(() => {
+    delete (Element.prototype as { scrollIntoView?: unknown }).scrollIntoView;
+  });
+
+  it("opens the survey on mount despite an active cooldown", async () => {
+    window.history.replaceState(null, "", "/?feedback=1");
+    localStorage.setItem("last-feedback-prompt", Date.now().toString());
+
+    render(<Reader />);
+
+    expect(await screen.findByText(/help us improve/i)).toBeInTheDocument();
+  });
+
+  it("opens the survey on mount for an already-rated module", async () => {
+    window.history.replaceState(null, "", "/?feedback=1");
+    localStorage.setItem("rated-modules", JSON.stringify(["m1"]));
+
+    render(<Reader />);
+
+    expect(await screen.findByText(/help us improve/i)).toBeInTheDocument();
   });
 });

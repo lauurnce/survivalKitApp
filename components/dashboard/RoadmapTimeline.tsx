@@ -42,7 +42,10 @@ export function RoadmapTimeline({ nodes }: Props) {
         Your academic roadmap
       </h2>
 
-      <ol className="flex items-start overflow-x-auto pb-2">
+      {/* relative makes this scroller the containing block for the sr-only
+          state labels — absolutely positioned, they would otherwise escape
+          the overflow clip and widen the whole page on phones. */}
+      <ol className="relative flex items-start overflow-x-auto pb-2">
         {nodes.map((node, index) => {
           const isLast = index === nodes.length - 1;
           const connectorIsPast = node.state === "past";
