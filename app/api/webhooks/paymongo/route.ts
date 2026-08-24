@@ -5,8 +5,10 @@ import {
   parseBlockRemarks,
   resolvePlan,
   periodEndFor,
+  couponDiscountFor,
   PLANS,
   SEMESTER_END,
+  MAX_SEATS,
 } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
@@ -114,7 +116,10 @@ export async function POST(req: NextRequest) {
   if (block) {
     const { yearId: classYearId, subjectId: classSubjectId, seats, repDeviceId } = block;
 
-    if (seats < 11) {
+    // Reject seat counts outside the sellable window — the same bounds the
+    // checkout route enforces before creating a link. A link outside them was
+    // never minted by our checkout, so its remarks are malformed.
+    if (seats < 11 || seats > MAX_SEATS) {
       return NextResponse.json({ error: "Malformed remarks" }, { status: 400 });
     }
 
@@ -223,8 +228,14 @@ export async function POST(req: NextRequest) {
   // paid the correct amount or more must always be granted access, so a price
   // change, promo, or manually-created link never strands a real payment.
   // Still require a numeric amount; never grant on a missing field.
+  //
+  // Coupons are verified server-side: the coupon:<code> token is read back out
+  // of the signed remarks WE stamped at checkout and the discount is recomputed
+  // here with the same capped formula the checkout used — never taken from any
+  // payload-declared amount.
   const plan = resolvePlan(parsed.plan, subjectId);
-  const expectedAmount = PLANS[plan].amount;
+  const discount = parsed.coupon ? couponDiscountFor(plan) : 0;
+  const expectedAmount = PLANS[plan].amount - discount;
   if (typeof paidAmount !== "number" || paidAmount < expectedAmount) {
     console.error(`Webhook underpayment: got ${paidAmount}, expected >= ${expectedAmount} (${plan})`);
     return NextResponse.json({ error: "Amount too low" }, { status: 400 });

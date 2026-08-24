@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
-import { createPaymongoLink, createDynamicPaymongoLink, PLANS, type PlanKey } from "@/lib/paymongo";
+import {
+  createPaymongoLink,
+  createDynamicPaymongoLink,
+  PLANS,
+  MIN_CHARGE,
+  COUPON_DISCOUNT,
+  couponDiscountFor,
+  periodEndFor,
+  type PlanKey,
+} from "@/lib/paymongo";
+import { recordPayment } from "@/lib/payments";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import { getClientIp } from "@/lib/rateLimit";
@@ -19,10 +29,6 @@ import {
 // old per-instance limiter gave each cold start a fresh 5/min allowance on
 // this payment-link endpoint.
 const RATE_LIMIT_IP = { max: 5, windowSeconds: 60 };
-
-// Minimum charge: ₱100 = 10000 centavos
-// Security: prevents negative or zero amounts from being sent to PayMongo
-const MIN_CHARGE = 10000;
 
 // Helper function to validate coupon codes and atomically mark as redeemed
 async function validateCouponCode(couponCode: string): Promise<{ valid: boolean; discount: number }> {
@@ -69,7 +75,24 @@ async function validateCouponCode(couponCode: string): Promise<{ valid: boolean;
   }
 
   // Coupon is valid and successfully marked as redeemed
-  return { valid: true, discount: 10000 }; // 10000 centavos = ₱100
+  return { valid: true, discount: COUPON_DISCOUNT };
+}
+
+// Atomically return a reserved coupon to the pool (redeemed_at back to null)
+// when the purchase it was reserved for fails before anything is granted or
+// charged. The conditional update mirrors validateCouponCode's reserve: only a
+// row that is currently redeemed flips back, so a release can never clobber a
+// concurrent re-reserve by another request.
+async function releaseCouponCode(couponCode: string): Promise<void> {
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+  await supabaseAdmin
+    .from('user_feedback')
+    .update({ redeemed_at: null })
+    .eq('coupon_code', couponCode)
+    .not('redeemed_at', 'is', null);
 }
 
 export async function POST(req: NextRequest) {
@@ -195,14 +218,14 @@ export async function POST(req: NextRequest) {
   try {
     // Validate coupon if provided
     const couponResult = await validateCouponCode(couponCode ?? '');
-    const resolvedPlan: PlanKey = plan ?? (subjectId ? "subject_month" : "year_sem");
-    const baseAmount = PLANS[resolvedPlan].amount;
+    // validateCouponCode only reports valid for a truthy code.
+    const appliedCoupon = couponResult.valid ? (couponCode ?? '') : '';
+    // Flexible discount: face value capped at the plan price, so a coupon
+    // covers either subject plan IN FULL and takes its face value off year_sem.
+    const discount = couponResult.valid ? couponDiscountFor(plan) : 0;
+    const finalAmount = PLANS[plan].amount - discount; // never negative by construction
 
-    // Security: clamp final amount to minimum charge, preventing negative or zero amounts
-    const finalAmount = Math.max(MIN_CHARGE, baseAmount - (couponResult.valid ? couponResult.discount : 0));
-
-    // Validate finalAmount is a positive integer
-    if (!Number.isInteger(finalAmount) || finalAmount <= 0) {
+    if (!Number.isInteger(finalAmount) || finalAmount < 0) {
       return NextResponse.json(
         { error: "Invalid payment amount" },
         { status: 400 }
@@ -211,31 +234,99 @@ export async function POST(req: NextRequest) {
 
     let checkoutUrl: string;
 
+    if (finalAmount === 0) {
+      // FREE UNLOCK PATH: the coupon covers this plan entirely. A zero-amount
+      // purchase has no PayMongo link to wait on, so grant through the ledger
+      // directly — same house invariant as the webhook (no access without a
+      // recorded payment), with the unique index on payments.paymongo_link_id
+      // making "coupon:<code>" single-use at the database level too.
+      try {
+        const { recorded, deduped } = await recordPayment(supabase, {
+          linkId: `coupon:${appliedCoupon}`,
+          deviceId,
+          yearId,
+          subjectId,
+          amount: 0,
+          paidAt: new Date(),
+          userId,
+          periodEnd: periodEndFor(plan),
+        });
+        // deduped means this exact coupon unlock is already on the ledger —
+        // as good as recorded for our purposes, so both outcomes proceed.
+        if (!recorded && !deduped) throw new Error("recordPayment recorded nothing");
+      } catch (err) {
+        console.error("Free unlock failed:", err);
+        // Nothing was granted or charged — hand the coupon back instead of
+        // burning it on a failed redemption.
+        await releaseCouponCode(appliedCoupon);
+        return NextResponse.json(
+          { error: "Payment setup failed" },
+          { status: 500 }
+        );
+      }
+
+      // Respond with the success URL in place of a checkout URL so the client
+      // redirect flow lands on ?payment=success and auto-polls/unlocks exactly
+      // like a paid purchase.
+      const res = NextResponse.json({
+        checkoutUrl: successUrl,
+        freeUnlock: true,
+        discountApplied: true,
+      });
+      if (needsCookie) {
+        res.cookies.set(DEVICE_COOKIE, signDeviceCookie(deviceId), DEVICE_COOKIE_OPTIONS);
+      }
+      return res;
+    }
+
+    if (couponResult.valid && finalAmount < MIN_CHARGE) {
+      // Unreachable while the plan table and the capped discount keep their
+      // current shapes: a coupon remainder is either exactly 0 (the cheaper
+      // plans, handled above) or year_sem minus the face value, well clear of
+      // the gateway minimum. Full-price links never enter this branch — the
+      // subject plans themselves are priced below the minimum and sell fine.
+      // Fail loudly rather than mint a link PayMongo would refuse.
+      console.error(`Unpayable amount ${finalAmount} centavos for plan ${plan}`);
+      return NextResponse.json(
+        { error: "Payment setup failed" },
+        { status: 500 }
+      );
+    }
+
     if (couponResult.valid) {
       // Use dynamic link for coupon-discounted purchases
-      const description = PLANS[resolvedPlan].description;
+      const description = PLANS[plan].description;
       let remarks = subjectId
         ? `year:${yearId} subject:${subjectId} device:${deviceId}`
         : `year:${yearId} device:${deviceId}`;
       if (userId) remarks += ` user:${userId}`;
-      remarks += ` plan:${resolvedPlan} coupon:${couponCode}`;
+      remarks += ` plan:${plan} coupon:${appliedCoupon}`;
 
       // Idempotency key for coupon purchases (includes coupon code)
       const crypto = await import("crypto");
       const idempotencyKey = crypto.default
         .createHash("sha256")
-        .update(`subscribe:${deviceId}:${yearId}:${subjectId ?? "year"}:${resolvedPlan}:${couponCode}`)
+        .update(`subscribe:${deviceId}:${yearId}:${subjectId ?? "year"}:${plan}:${appliedCoupon}`)
         .digest("hex");
 
-      const { checkoutUrl: url } = await createDynamicPaymongoLink(
-        finalAmount,
-        `${description} (coupon applied)`,
-        remarks,
-        successUrl,
-        idempotencyKey,
-        failedUrl
-      );
-      checkoutUrl = url;
+      try {
+        const { checkoutUrl: url } = await createDynamicPaymongoLink(
+          finalAmount,
+          `${description} (coupon applied)`,
+          remarks,
+          successUrl,
+          idempotencyKey,
+          failedUrl
+        );
+        checkoutUrl = url;
+      } catch (err) {
+        // The link was never created, so keeping the reservation would burn
+        // the coupon for nothing. Release it, then surface the failure.
+        await releaseCouponCode(appliedCoupon);
+        throw err;
+      }
+      // The link now exists and encodes the coupon — the coupon stays reserved
+      // even if the payer abandons checkout.
     } else {
       // Use standard link for full-price purchases
       const { checkoutUrl: url } = await createPaymongoLink(

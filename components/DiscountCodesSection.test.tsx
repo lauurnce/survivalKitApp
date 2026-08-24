@@ -50,4 +50,26 @@ describe('DiscountCodesSection', () => {
     });
     expect(screen.getByRole('button', { name: /copy code/i })).toBeInTheDocument();
   });
+
+  // The coupon became flexible: it covers either subject plan IN FULL and
+  // takes ₱100 off the year pass. Copy must not promise a flat ₱100-off-any-
+  // module discount (the old wording was wrong in both directions).
+  it('describes the flexible discount instead of promising flat ₱100 off any module', () => {
+    render(<DiscountCodesSection userToken="token" />);
+
+    expect(
+      screen.getByText(/covers a single-subject unlock in full/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/₱100 discount on any module unlock/i)
+    ).not.toBeInTheDocument();
+  });
+
+  it('keeps the empty state free of a flat-amount promise too', () => {
+    mockCodes = [];
+    render(<DiscountCodesSection userToken="token" />);
+
+    expect(screen.getByText(/up to ₱100 off/i)).toBeInTheDocument();
+    expect(screen.queryByText(/earn ₱100 discount codes/i)).not.toBeInTheDocument();
+  });
 });

@@ -13,6 +13,33 @@ export const PLANS: Record<PlanKey, { amount: number; description: string }> = {
   year_sem: { amount: 29900, description: "BSIT Survival Kit — All subjects (semester)" },
 };
 
+// PayMongo's minimum charge per link. Not a floor to clamp amounts up to any
+// more — a remainder below it simply cannot exist as a PayMongo link, so
+// checkout reads MIN_CHARGE as the path selector: at zero the coupon unlocks
+// the plan outright, below it nothing is payable, at or above it a link is
+// minted for the exact remainder.
+export const MIN_CHARGE = 10000;
+
+// Feedback-coupon face value. Applied flexibly per plan through
+// couponDiscountFor — capped at the plan price so a coupon can cover a cheap
+// plan in full but never makes using it cost more than not using it.
+// References MIN_CHARGE because the face value happens to equal the gateway
+// minimum today; lib/couponConstants.test.ts pins the single literal so the
+// two names can never silently drift apart.
+export const COUPON_DISCOUNT = MIN_CHARGE;
+
+// What a coupon actually knocks off a given plan: face value, never more than
+// the plan itself (the two cheaper plans become free).
+export function couponDiscountFor(plan: PlanKey): number {
+  return Math.min(COUPON_DISCOUNT, PLANS[plan].amount);
+}
+
+// Upper bound on class block sales (seat cap). Shared by the checkout route,
+// which rejects over-cap requests before a link exists, and the webhook, which
+// re-checks before granting. app/(main)/for-blocks/pricing.ts keeps its own
+// client-side copy (this file pulls in node:crypto) — keep the numbers equal.
+export const MAX_SEATS = 55;
+
 // End of 1st Semester AY 2026-27: Dec 31, 2026 23:59 PH (UTC+8).
 // Bump once per semester when the selling window rolls over.
 export const SEMESTER_END = new Date("2026-12-31T15:59:59Z");
@@ -171,25 +198,31 @@ export interface PaidLink {
 }
 
 // Parse the remarks string we attach at checkout. Mirrors the webhook's regexes
-// so reconcile and live-grant agree on what a link is for.
+// so reconcile and live-grant agree on what a link is for. `coupon` is present
+// when the link was created with a feedback coupon applied (subscribe route
+// stamps `coupon:<code>`); the webhook recomputes the discount from it
+// server-side — the token itself never carries an amount.
 export function parseLinkRemarks(remarks: string): {
   yearId: string | null;
   subjectId: string | null;
   deviceId: string | null;
   userId: string | null;
   plan: string | null;
+  coupon: string | null;
 } {
   const year = remarks.match(/year:([^\s]+)/);
   const subject = remarks.match(/subject:([^\s]+)/);
   const device = remarks.match(/device:([^\s]+)/);
   const user = remarks.match(/user:([^\s]+)/);
   const plan = remarks.match(/plan:([^\s]+)/);
+  const coupon = remarks.match(/coupon:([^\s]+)/);
   return {
     yearId: year ? year[1] : null,
     subjectId: subject ? subject[1] : null,
     deviceId: device ? device[1] : null,
     userId: user ? user[1] : null,
     plan: plan ? plan[1] : null,
+    coupon: coupon ? coupon[1] : null,
   };
 }
 

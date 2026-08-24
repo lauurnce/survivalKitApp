@@ -131,7 +131,7 @@ export function FeedbackPrompt({
         )}
         {isAnonymous && (
           <p className="font-sans text-sm text-ink-muted mt-4">
-            Sign in and submit non-anonymously next time to earn a ₱100 discount code.
+            Sign in and submit non-anonymously next time to earn a discount code worth up to ₱100.
           </p>
         )}
       </div>
