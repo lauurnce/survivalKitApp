@@ -46,15 +46,18 @@ contains.
 
 ## Chosen fix
 
-One new idempotent backfill seed, `0055_seed_missing_years_and_module_subjects.sql`:
+One new idempotent backfill seed, `005a_seed_missing_years_and_module_subjects.sql`:
 
 - inserts years `…0001` (1st Year) and `…0002` (2nd Year),
   `on conflict (id) do nothing`;
 - inserts subjects COBOL + World Literature with their **exact prod UUIDs**,
   attached to year `…0002`, `on conflict (id) do nothing`.
 
-Name sorts `005_ < 0055_ < 006_ < 007_` under `LC_ALL=C sort`, so it lands
-before both consumers and before the June 18/23 seeds.
+Name sorts `005_ < 005a_ < 006_ < 007_` under `LC_ALL=C sort` (verified with
+the workflow's own sort expression), so it lands before both consumers and
+before the June 18/23 seeds. An earlier draft named it `0055_…`, which sorts
+BEFORE `005_` (`'5'` < `'_'`) — caught by running the sort before pushing and
+renamed in place; semantics were never affected (005 only alters unlocks).
 
 Why this shape:
 
