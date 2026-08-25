@@ -35,7 +35,7 @@ export default async function AdminPage() {
   // months before the current one so the dashboard can compare month over
   // month, and closes at the start of next month.
   // We derive these BEFORE the Promise.all so we can use them in the query.
-  const todayPHForBounds = new Date(Date.now() + PH_OFFSET_MS);
+  const todayPHForBounds = new Date(Date.now() + PH_OFFSET_MS); // eslint-disable-line react-hooks/purity -- dynamic server render: fresh PH-time window bounds per request are the point
   const phYear = todayPHForBounds.getUTCFullYear();
   const phMonth = todayPHForBounds.getUTCMonth();
   const windowStartUtcMs =
@@ -136,7 +136,7 @@ export default async function AdminPage() {
   // Scaffold a continuous 30-day window ending today (PH time) and fill zeros
   // for days with no activity. This keeps the chart spanning the full range and
   // makes the latest bar always "today" — it never freezes on the last active day.
-  const todayPH = new Date(Date.now() + PH_OFFSET_MS);
+  const todayPH = new Date(Date.now() + PH_OFFSET_MS); // eslint-disable-line react-hooks/purity -- chart must end at "today" per request, not per build
   const dau = Array.from({ length: 30 }, (_, i) => {
     const d = new Date(todayPH.getTime() - (29 - i) * 24 * 60 * 60 * 1000);
     const date = d.toISOString().slice(0, 10);

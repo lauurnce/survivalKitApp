@@ -70,6 +70,10 @@ export function ReviewQuiz() {
   }, []);
 
   useEffect(() => {
+    // Fetch-on-mount: loadQuiz() sets state only after awaits / guard checks;
+    // no synchronous cascading render despite what the v6 rule conservatively
+    // assumes about the helper indirection.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadQuiz();
     // Invalidate any in-flight request on unmount so it can't set state.
     return () => {

@@ -61,7 +61,7 @@ export function DiscountCodesSection({ userToken, feedbackHref }: DiscountCodesS
           .map((code) => {
             const expiresAt = new Date(code.coupon_expires_at);
             const isExpired = expiresAt < new Date();
-            const daysUntilExpiry = Math.ceil((expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+            const daysUntilExpiry = Math.ceil((expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)); // eslint-disable-line react-hooks/purity -- display-only expiry countdown; re-renders legitimately re-read the clock
 
             return (
               <div

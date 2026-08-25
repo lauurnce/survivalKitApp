@@ -17,6 +17,9 @@ function Toast() {
   // so a fresh mount sees no marker and the toast cannot resurrect.
   useEffect(() => {
     if (searchParams.get("payment") !== "success") return;
+    // One-shot marker read on mount: lazy init from useSearchParams during
+    // hydration can't be proven safe under Suspense fallback timing.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVisible(true);
     const timer = setTimeout(() => setVisible(false), DISMISS_MS);
     return () => clearTimeout(timer);

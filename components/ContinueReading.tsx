@@ -26,6 +26,9 @@ export function ContinueReading() {
         typeof parsed.moduleTitle === "string" && parsed.moduleTitle &&
         typeof parsed.subjectTitle === "string" && parsed.subjectTitle
       ) {
+        // localStorage only exists post-mount; lazy state init would read it
+        // during hydration and mismatch the server-rendered null.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLast(parsed as LastModule);
       }
     } catch {
