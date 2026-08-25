@@ -1,5 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
-import { generateClassCode, isValidClassCodeShape, CODE_ALPHABET } from "./classCode";
+import {
+  generateClassCode,
+  isValidClassCodeShape,
+  normalizeClassCode,
+  CODE_ALPHABET,
+} from "./classCode";
 
 describe("generateClassCode", () => {
   it("produces a 6-character code using only alphabet characters", () => {
@@ -45,5 +50,15 @@ describe("isValidClassCodeShape", () => {
     expect(isValidClassCodeShape("ABC1EF")).toBe(false);
     expect(isValidClassCodeShape("ABCIEF")).toBe(false);
     expect(isValidClassCodeShape("ABCLEF")).toBe(false);
+  });
+});
+
+describe("normalizeClassCode", () => {
+  it("trims and uppercases a valid code", () => {
+    expect(normalizeClassCode("  abc234  ")).toBe("ABC234");
+  });
+
+  it("returns null for an invalid code", () => {
+    expect(normalizeClassCode("A%B%C%")).toBeNull();
   });
 });

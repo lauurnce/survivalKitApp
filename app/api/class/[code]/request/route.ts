@@ -4,7 +4,7 @@ import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { createServerClient } from "@/lib/supabase/server";
 import { getClientIp } from "@/lib/rateLimit";
 import { isServerRateLimited } from "@/lib/serverRateLimit";
-import { isValidClassCodeShape } from "@/lib/classCode";
+import { normalizeClassCode } from "@/lib/classCode";
 
 // This is the only throttle standing between a 6-char code (887M-combination
 // space, Math.random-generated) and brute-force guessing. Do not remove or
@@ -27,8 +27,8 @@ export async function POST(
   }
 
   const { code: rawCode } = await params;
-  const code = rawCode.trim().toUpperCase();
-  if (!isValidClassCodeShape(code)) {
+  const code = normalizeClassCode(rawCode);
+  if (!code) {
     return NextResponse.json({ error: "invalid_code" }, { status: 400 });
   }
 
