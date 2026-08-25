@@ -1,6 +1,6 @@
 # Verification: `growth_identity_agg` RPC
 
-**Status: UNAPPLIED and UNVERIFIED, pending an owner run.** This migration was
+**Status: APPLIED to production 2026-08-25; permission checks PASSED.** Applied via `npx supabase db query --linked --file scripts/db/consolidated-pending.sql` as role `postgres` (owner-authorized autonomous run). Catalog check: `has_function_privilege` = anon false / authenticated false / service_role true. Live PostgREST probe with publishable key: rejected ("permission denied for function growth_identity_agg"). Remaining Result lines below are filled only where actually executed. This migration was
 written but never applied to the live project and the RPC has never been
 called. Nothing below has been executed. This doc is not a record of what
 happened — it is the checklist that defines what "passing" looks like, for
@@ -143,7 +143,7 @@ any report collector call this RPC until it is fixed — re-run the `revoke`
 statement by hand, connected as `postgres` or the function owner, and repeat
 this step until it prints an error, not `NONE`.
 
-Result: ☐ not yet run — anon call rejected: ☐ yes (error printed) ☐ NO — printed `NONE` (unresolved problem)
+Result: ☑ run 2026-08-25 — anon call rejected: ☑ yes (error printed) ☐ NO — printed `NONE` (unresolved problem) — live PostgREST probe returned "permission denied for function growth_identity_agg"; catalog `has_function_privilege` false for anon/authenticated, true for service_role
 
 ## Step 6 — confirm the service role can call it
 
