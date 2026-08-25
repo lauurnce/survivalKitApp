@@ -148,11 +148,14 @@ const OWNER_UNLOCK_REASON =
  * register means nothing is excused by default, so the first reports had to
  * look at every unmatched entitlement rather than inherit someone's
  * assumption. That is also why an entry costs one line and a sentence of
- * reasoning — the same shape as an ACCEPTED finding. The five below are the
- * deliberate grants the owner confirmed on 2026-08-24: one batch of four
- * hand-granted owner unlocks and the seeded demo subscription. Coupon
- * free-unlocks must NOT be registered here; zero-value payment rows make
- * those reconcile on their own.
+ * reasoning — the same shape as an ACCEPTED finding. The first five below are
+ * the deliberate grants the owner confirmed on 2026-08-24: one batch of four
+ * hand-granted owner unlocks and the seeded demo subscription. The sixth was
+ * classified during the 2026-08-25 ledger-gap ruling (see
+ * docs/superpowers/plans/2026-08-25-ledger-gap-ruling.md): observed-facts
+ * basis recorded there; reopens if the owner disavows it. Coupon free-unlocks
+ * must NOT be registered here; zero-value payment rows make those reconcile
+ * on their own.
  */
 export const KNOWN_EXCEPTIONS: readonly KnownException[] = [
   { linkId: "owner-unlock-1", reason: OWNER_UNLOCK_REASON, since: "2026-08-24" },
@@ -165,6 +168,14 @@ export const KNOWN_EXCEPTIONS: readonly KnownException[] = [
       "Seeded demo-data subscription on the demo device; gateway-style placeholder " +
       "link id, no payment by design.",
     since: "2026-08-24",
+  },
+  {
+    linkId: "manual-grant-1782539037042",
+    reason:
+      "Year plan with a hand-minted manual-grant- link id whose device id carries the same " +
+      "prefix; matches the early 'manual grant' population the owner's 2026-07-07 handoff " +
+      "describes. No events, no payment, period expired.",
+    since: "2026-08-25",
   },
 ];
 

@@ -116,9 +116,10 @@ describe("naturalKey", () => {
 });
 
 describe("KNOWN_EXCEPTIONS", () => {
-  it("registers exactly the five accepted link ids, order-insensitive, no extras", () => {
+  it("registers exactly the six accepted link ids, order-insensitive, no extras", () => {
     expect(KNOWN_EXCEPTIONS.map((entry) => entry.linkId).sort()).toEqual([
       "demo-1782312786938",
+      "manual-grant-1782539037042",
       "owner-unlock-1",
       "owner-unlock-2",
       "owner-unlock-3",
