@@ -59,6 +59,7 @@ describe("AuthForm — accessible password field", () => {
 
     expect(password).toHaveAttribute("type", "password");
     expect(toggle).toHaveAttribute("aria-controls", password.id);
+    expect(toggle).toHaveClass("min-h-6", "min-w-6");
 
     fireEvent.click(toggle);
 
