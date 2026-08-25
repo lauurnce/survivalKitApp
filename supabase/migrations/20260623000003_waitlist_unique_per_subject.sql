@@ -4,6 +4,12 @@
 -- still de-duplicate per (email, source), while each per-subject signup is kept.
 -- Requires Postgres 15+ for NULLS NOT DISTINCT (project runs Postgres 17).
 
+-- The columns themselves were only ever added by hand on production; provide
+-- them here so a cold replay has them before anything indexes or reads them
+-- (the unique index below, admin_waitlist_agg, growth_demand_agg).
+alter table public.waitlist add column if not exists subject_title text;
+alter table public.waitlist add column if not exists year_label text;
+
 alter table waitlist drop constraint if exists waitlist_email_source_key;
 
 drop index if exists waitlist_email_source_subject_key;
