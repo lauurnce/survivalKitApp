@@ -51,21 +51,16 @@ migrations applied before this one):
   these four functions, but if either is missing, apply it first so the
   `growth_*` aggregates land in the order they were written.
 
-**Known schema drift — read before Step 2.** `waitlist.year_label` and
-`waitlist.subject_title` are used by `growth_demand_agg` below but **no
-migration in this repo creates them** on the `waitlist` table (checked by
-grepping every migration touching `waitlist`: `20260620000000_create_waitlist.sql`,
-`20260623000003_waitlist_unique_per_subject.sql`, `20260623_enable_rls.sql`,
-`20260629000001_admin_waitlist_agg.sql`, none of which adds the columns).
-Two independent pieces of evidence say the columns exist live anyway: (1)
-`app/api/waitlist/route.ts:111-112` writes both columns on every insert, and
-(2) the already-shipped `admin_waitlist_agg()` function
-(`20260629000001_admin_waitlist_agg.sql`) already selects both columns and
-is presumed to be working in production today. **If `growth_demand_agg`
-fails in Step 4 below citing `column "year_label" does not exist` or
-`column "subject_title" does not exist`, that is real information — it means
-the drift this doc warned about is not what's actually live — stop and
-inspect the live `waitlist` schema (`\d waitlist` or the Table Editor) before
+**Former schema drift — resolved 2026-08-25.** `waitlist.year_label` and
+`waitlist.subject_title` are used by `growth_demand_agg` below. They used to
+exist only live with no migration creating them; since the cold-replay
+repair that made db-migrations CI green, both columns are added by
+`20260623000003_waitlist_unique_per_subject.sql`, so a fresh replay now has
+them before this migration runs. The warning below is kept for history: if
+`growth_demand_agg` still fails citing `column "year_label" does not exist`
+or `column "subject_title" does not exist`, that means the replay you are
+reading predates that repair — stop and inspect the live `waitlist` schema
+(`\d waitlist` or the Table Editor) before
 assuming the function is wrong or patching around it.**
 
 ## Step 1 — red: confirm the functions do not exist yet
