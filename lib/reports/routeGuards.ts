@@ -72,6 +72,11 @@ export const GUARD_SIGNALS: readonly GuardSignal[] = [
   { kind: "validation", label: "isValid helper", pattern: /\bisValid[A-Za-z]*\s*\(/ },
   {
     kind: "validation",
+    label: "normalizeClassCode",
+    pattern: /\bnormalizeClassCode\s*\(/,
+  },
+  {
+    kind: "validation",
     label: "constant allowlist membership",
     pattern: /\b[A-Z][A-Z0-9_]{2,}\.includes\s*\(/,
   },
