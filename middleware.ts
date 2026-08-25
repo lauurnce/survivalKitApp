@@ -33,7 +33,7 @@ function buildCsp(nonce: string): string {
 async function verifyAdminToken(token: string): Promise<boolean> {
   try {
     const secret = process.env.ADMIN_SESSION_SECRET;
-    if (!secret || !token) return false;
+    if (!secret || secret.length < 32 || !token) return false;
 
     const dot = token.lastIndexOf(".");
     if (dot === -1) return false;
