@@ -5,7 +5,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { isValidClassCodeShape } from "@/lib/classCode";
 
 export async function GET(
-  req: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ code: string }> }
 ) {
   const jar = await cookies();

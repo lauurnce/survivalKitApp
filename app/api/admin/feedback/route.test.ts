@@ -45,9 +45,6 @@ function makeSupabase(opts: {
 
   const statsData = opts.statsData ?? selectData;
 
-  let orderCalled = false;
-  let rangeCalled = false;
-
   // The route ends its chain with .returns<T>() (type override), so range()
   // yields one more chainable step before the awaited result.
   const rangeMock = vi.fn().mockReturnValue({
@@ -93,7 +90,6 @@ function makeSupabase(opts: {
 
   // Override from() to return different chains for different calls
   let callCount = 0;
-  const originalFrom = supabase.from;
   supabase.from = vi.fn((table: string) => {
     callCount++;
     if (table === "user_feedback") {
