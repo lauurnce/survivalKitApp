@@ -5,7 +5,6 @@ const warned = new Set<string>();
 export function SubjectIcon({ title, className }: { title: string; className?: string }) {
   if (process.env.NODE_ENV !== "production" && resolveSubjectSlug(title) === null && !warned.has(title)) {
     warned.add(title);
-    // eslint-disable-next-line no-console
     console.warn(`[SubjectIcon] no icon mapped for subject title: "${title}" (using book fallback)`);
   }
 

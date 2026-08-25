@@ -46,11 +46,12 @@ export async function GET(req: NextRequest) {
     day: "numeric",
   });
 
-  try {
-    const fonts = await fontsPromise;
-
-    return new ImageResponse(
-      (
+  // Element construction happens outside the try: building this tree is plain
+  // object creation, not a React render pass, so nothing here can throw the
+  // way rendering can. Actual satori/font failures still surface in the catch
+  // below via the ImageResponse constructor (react-hooks/error-boundaries
+  // rejects JSX lexically inside try/catch).
+  const card = (
         // Transparent root — the card is a sticker overlaid on the student's
         // own story photo, so no background anywhere except the pill.
         <div
@@ -190,7 +191,13 @@ export async function GET(req: NextRequest) {
             </div>
           </div>
         </div>
-      ),
+  );
+
+  try {
+    const fonts = await fontsPromise;
+
+    return new ImageResponse(
+      card,
       {
         width: WIDTH,
         height: HEIGHT,

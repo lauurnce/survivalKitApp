@@ -41,6 +41,10 @@ export function RepDashboard({ code }: Props) {
   }, [code]);
 
   useEffect(() => {
+    // Fetch-on-mount: every setState in load() runs after its awaits, so no
+    // synchronous cascading render occurs; the v6 rule can't see through the
+    // helper indirection.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, [load]);
 

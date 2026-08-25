@@ -8,15 +8,17 @@ interface DiscountCodesSectionWrapperProps {
 export async function DiscountCodesSectionWrapper({
   feedbackHref,
 }: DiscountCodesSectionWrapperProps) {
+  // Resolve the token first; the JSX return stays out of the try/catch so a
+  // render is never what the catch is guarding (react-hooks/error-boundaries).
+  let userToken: string | null = null;
   try {
     const supabase = await createSSRServerClient();
     const { data: { session } } = await supabase.auth.getSession();
 
-    const userToken = session?.access_token || null;
-
-    return <DiscountCodesSection userToken={userToken} feedbackHref={feedbackHref} />;
+    userToken = session?.access_token || null;
   } catch (error) {
     console.error('Error getting session for discount codes:', error);
-    return <DiscountCodesSection userToken={null} feedbackHref={feedbackHref} />;
   }
+
+  return <DiscountCodesSection userToken={userToken} feedbackHref={feedbackHref} />;
 }

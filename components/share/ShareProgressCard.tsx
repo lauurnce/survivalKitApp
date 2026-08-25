@@ -70,6 +70,9 @@ export function ShareProgressCard({
   }, []);
 
   useEffect(() => {
+    // Capability probe must run post-mount (SSR has no navigator); lazy init
+    // would mismatch the server-rendered disabled state.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCanShare(typeof navigator !== "undefined" && typeof navigator.canShare === "function");
   }, []);
 
