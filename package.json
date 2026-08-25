@@ -9,7 +9,7 @@
     "dev": "node scripts/run-next.mjs dev",
     "build": "next build",
     "start": "node scripts/run-next.mjs start",
-    "lint": "next lint",
+    "lint": "eslint app components lib",
     "typecheck": "tsc --noEmit",
     "ingest": "tsx scripts/ingest.ts",
     "ingest:md": "tsx scripts/ingest-md.ts",
