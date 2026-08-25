@@ -1,6 +1,6 @@
 # Verification: `growth_cohort_agg`, `growth_content_agg`, `growth_demand_agg`, `growth_feedback_agg` RPCs
 
-**Status: UNAPPLIED and UNVERIFIED, pending an owner run.** This migration was
+**Status: APPLIED to production 2026-08-25; permission checks PASSED.** Applied via `npx supabase db query --linked --file scripts/db/consolidated-pending.sql` as role `postgres` (owner-authorized autonomous run). Catalog check: `has_function_privilege` = anon false / authenticated false / service_role true on every growth_% function. Remaining Result lines below are filled only where actually executed. This migration was
 written but never applied to the live project and none of the four RPCs have
 ever been called. Nothing below has been executed. This doc is not a record
 of what happened — it is the checklist that defines what "passing" looks

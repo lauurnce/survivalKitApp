@@ -192,12 +192,12 @@ jobs:
           grant usage on schema public to anon, authenticated, service_role;
           SQL
 
-      # Production already has everything up to and including
-      # 20260821000000_admin_feedback_agg.sql applied; the consolidated six
-      # are what is still pending there. Replay only that applied history,
-      # then the paste-ready script on top — exactly what pasting it into
-      # the Supabase SQL Editor will do.
-      - name: Apply production baseline (history minus pending six)
+      # Production has everything applied except the files listed in
+      # build-consolidated.sh's `pending` array — those are what is still
+      # pending there. Replay only that applied history, then the paste-ready
+      # script on top — exactly what pasting it into the Supabase SQL Editor
+      # will do.
+      - name: Apply production baseline (history minus pending)
         run: |
           set -euo pipefail
           shopt -s nullglob
