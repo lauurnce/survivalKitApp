@@ -1,7 +1,7 @@
 import { createServerClient } from "./supabase/server";
 import { isUuid } from "./validation";
 
-export function pct(done: number, total: number): number {
+export function completionPercentage(done: number, total: number): number {
   if (total <= 0) return 0;
   return Math.min(100, Math.round((done / total) * 100));
 }
