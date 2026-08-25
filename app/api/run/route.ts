@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { truncateOutput } from "@/lib/ide/format";
 import type { LanguageId } from "@/lib/ide/types";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
+import { getClientIp } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -26,14 +27,6 @@ const runRateMap = new Map<string, number[]>();
 const RUN_WINDOW_MS = 60_000;
 const RUN_MAX_PER_WINDOW = 10;
 const MAX_MAP_SIZE = 5_000;
-
-function getIp(req: NextRequest): string {
-  return (
-    req.headers.get("x-real-ip") ??
-    req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
-    "unknown"
-  );
-}
 
 function isRateLimited(key: string): boolean {
   const now = Date.now();
@@ -68,7 +61,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing device identity" }, { status: 401 });
   }
 
-  const ip = getIp(req);
+  const ip = getClientIp(req);
   if (isRateLimited(ip) || isRateLimited(`device:${deviceId}`)) {
     return NextResponse.json(
       { error: "Rate limit exceeded — try again in a minute" },
