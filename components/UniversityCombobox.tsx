@@ -48,7 +48,11 @@ export function UniversityCombobox({
   // Keyed on `value`, not on the resolved entry: free text over free text
   // leaves the entry null both times but is still a change the parent shows.
   const onChangeRef = useRef(onSchoolChange);
-  onChangeRef.current = onSchoolChange;
+  // Latest-ref idiom: refs are written in effects, not during render
+  // (react-hooks/refs).
+  useEffect(() => {
+    onChangeRef.current = onSchoolChange;
+  });
   const firstRun = useRef(true);
   useEffect(() => {
     // Skip the mount pass: a prefilled defaultValue is not a fresh choice.

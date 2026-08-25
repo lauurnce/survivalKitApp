@@ -17,11 +17,10 @@ export function SubjectProgressBar({ moduleIds }: Props) {
 
   const total = moduleIds.length;
 
+  // A subject with no modules renders null below regardless of load state,
+  // so there is nothing to flag as loaded on that path.
   useEffect(() => {
-    if (total === 0) {
-      setLoaded(true);
-      return;
-    }
+    if (total === 0) return;
     let active = true;
     fetchCompletedModules(moduleIds).then((set) => {
       if (!active) return;

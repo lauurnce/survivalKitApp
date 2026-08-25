@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { BackLink } from "@/components/BackLink";
 import { PaymentSuccessBanner } from "@/components/PaymentSuccessBanner";
 import { getDeviceId } from "@/lib/device";
@@ -32,20 +32,20 @@ export function ForBlocksCheckout({ years }: Props) {
   const selectedYear = years.find((y) => y.id === yearId);
   const subjectsForYear = selectedYear?.subjects ?? [];
 
-  // Keep the subject selection valid whenever the year changes (or the
-  // previously-selected subject no longer belongs to the current year).
-  useEffect(() => {
-    if (subjectsForYear.some((s) => s.id === subjectId)) return;
-    setSubjectId(subjectsForYear[0]?.id ?? "");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [yearId]);
+  // Derived instead of effect-synced: when the stored subject doesn't belong
+  // to the selected year (year changed, or stale persisted choice), fall back
+  // to that year's first subject on every read. Same output as the old
+  // normalize-in-effect write-back without the cascading render.
+  const selectedSubjectId = subjectsForYear.some((s) => s.id === subjectId)
+    ? subjectId
+    : subjectsForYear[0]?.id ?? "";
 
   const { base, extraSeats, extra, total, perHead } = useMemo(
     () => computePrice(scope, seats),
     [scope, seats]
   );
 
-  const canPay = !loading && !!yearId && (scope === "all" || !!subjectId);
+  const canPay = !loading && !!yearId && (scope === "all" || !!selectedSubjectId);
 
   async function handlePay() {
     if (!canPay) return;
@@ -59,7 +59,7 @@ export function ForBlocksCheckout({ years }: Props) {
         body: JSON.stringify({
           scope,
           yearId,
-          subjectId: scope === "subject" ? subjectId : undefined,
+          subjectId: scope === "subject" ? selectedSubjectId : undefined,
           seats,
         }),
       });
@@ -136,7 +136,7 @@ export function ForBlocksCheckout({ years }: Props) {
             </label>
             <select
               id="subject-select"
-              value={subjectId}
+              value={selectedSubjectId}
               onChange={(e) => setSubjectId(e.target.value)}
               disabled={subjectsForYear.length === 0}
               className="w-full rounded-xl border border-taupe/30 bg-paper px-4 py-3 font-sans text-sm text-ink focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-50"
