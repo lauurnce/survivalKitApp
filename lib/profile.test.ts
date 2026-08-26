@@ -11,6 +11,13 @@ function raw(overrides: Partial<RawProfileInput> = {}): RawProfileInput {
     schoolType: "",
     major: "",
     pathways: [],
+    devices: [],
+    languages: [],
+    background: "",
+    itReason: "",
+    careerGoal: "",
+    githubUrl: "",
+    portfolioUrl: "",
     ...overrides,
   };
 }
@@ -29,6 +36,14 @@ describe("validateProfile", () => {
         schoolType: null,
         major: null,
         pathways: [],
+        devices: [],
+        languages: [],
+        background: null,
+        itReason: null,
+        careerGoal: null,
+        githubUrl: null,
+        portfolioUrl: null,
+        createdAt: null,
       },
     });
   });
@@ -204,5 +219,147 @@ describe("validateProfile — school type", () => {
   it("rejects an unknown school type", () => {
     const result = validateProfile(raw({ schoolType: "State" }));
     expect(result).toEqual({ ok: false, error: "Invalid school type option." });
+  });
+});
+
+describe("validateProfile — who they really are", () => {
+  it("accepts a fully filled profile with every context field set", () => {
+    const result = validateProfile(
+      raw({
+        devices: ["Laptop", "Smartphone"],
+        languages: ["Python", "C"],
+        background: "TVL / ICT strand",
+        itReason: "I want to build things people use.",
+        careerGoal: "Backend developer",
+        githubUrl: "https://github.com/juandelacruz",
+        portfolioUrl: "https://juandelacruz.dev",
+      })
+    );
+    expect(result).toEqual({
+      ok: true,
+      profile: {
+        firstName: "Juan",
+        lastName: "Dela Cruz",
+        age: null,
+        gender: null,
+        university: null,
+        schoolType: null,
+        major: null,
+        pathways: [],
+        devices: ["Laptop", "Smartphone"],
+        languages: ["Python", "C"],
+        background: "TVL / ICT strand",
+        itReason: "I want to build things people use.",
+        careerGoal: "Backend developer",
+        githubUrl: "https://github.com/juandelacruz",
+        portfolioUrl: "https://juandelacruz.dev",
+        createdAt: null,
+      },
+    });
+  });
+
+  it("rejects a device outside the fixed list", () => {
+    expect(validateProfile(raw({ devices: ["Mainframe"] }))).toEqual({
+      ok: false,
+      error: "Invalid device selection.",
+    });
+  });
+
+  it("rejects a language outside the fixed list", () => {
+    expect(validateProfile(raw({ languages: ["Brainfuck"] }))).toEqual({
+      ok: false,
+      error: "Invalid language selection.",
+    });
+  });
+
+  it("rejects a background outside the fixed list", () => {
+    expect(validateProfile(raw({ background: "Trust fund" }))).toEqual({
+      ok: false,
+      error: "Invalid background option.",
+    });
+  });
+
+  it("dedupes repeated devices and languages, preserving order", () => {
+    const result = validateProfile(
+      raw({ devices: ["Laptop", "Tablet", "Laptop"], languages: ["Python", "Go", "Python"] })
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.profile.devices).toEqual(["Laptop", "Tablet"]);
+      expect(result.profile.languages).toEqual(["Python", "Go"]);
+    }
+  });
+
+  it("nulls whitespace-only text fields instead of storing blank answers", () => {
+    const result = validateProfile(
+      raw({
+        background: "   ",
+        itReason: "   ",
+        careerGoal: "\t\n",
+        githubUrl: "",
+        portfolioUrl: "   ",
+      })
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.profile.background).toBeNull();
+      expect(result.profile.itReason).toBeNull();
+      expect(result.profile.careerGoal).toBeNull();
+      expect(result.profile.githubUrl).toBeNull();
+      expect(result.profile.portfolioUrl).toBeNull();
+    }
+  });
+
+  it("trims the context text fields it keeps", () => {
+    const result = validateProfile(
+      raw({
+        background: "  Career shifter  ",
+        itReason: "  Curiosity.  ",
+        careerGoal: "  Ship real software.  ",
+        githubUrl: "  https://github.com/juan  ",
+      })
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.profile.background).toBe("Career shifter");
+      expect(result.profile.itReason).toBe("Curiosity.");
+      expect(result.profile.careerGoal).toBe("Ship real software.");
+      expect(result.profile.githubUrl).toBe("https://github.com/juan");
+    }
+  });
+
+  it("rejects links that do not start with https://", () => {
+    expect(validateProfile(raw({ githubUrl: "http://github.com/juan" }))).toEqual({
+      ok: false,
+      error: "GitHub link must start with https:// and be 200 characters or fewer.",
+    });
+    expect(validateProfile(raw({ portfolioUrl: "github.com/juan" }))).toEqual({
+      ok: false,
+      error: "Portfolio link must start with https:// and be 200 characters or fewer.",
+    });
+  });
+
+  it("rejects links and text over their length caps", () => {
+    // 201 chars total, still one over the cap even though it starts https://
+    const longLink = `https://${"x".repeat(193)}`;
+    expect(longLink.length).toBe(201);
+    expect(validateProfile(raw({ githubUrl: longLink })).ok).toBe(false);
+    expect(validateProfile(raw({ portfolioUrl: longLink })).ok).toBe(false);
+    expect(validateProfile(raw({ itReason: "x".repeat(281) })).ok).toBe(false);
+    expect(validateProfile(raw({ careerGoal: "x".repeat(121) })).ok).toBe(false);
+  });
+
+  it("accepts values exactly at their length caps", () => {
+    const capLink = `https://${"x".repeat(192)}`;
+    expect(capLink.length).toBe(200);
+    const result = validateProfile(
+      raw({
+        itReason: "x".repeat(280),
+        careerGoal: "x".repeat(120),
+        githubUrl: capLink,
+        portfolioUrl: capLink,
+      })
+    );
+    expect(result.ok).toBe(true);
   });
 });

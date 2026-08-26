@@ -1,5 +1,7 @@
 // Profile types + validation (pure — no IO). Lists must stay in sync with the
-// check constraints in supabase/migrations/20260706000000_profiles.sql.
+// check constraints in supabase/migrations/20260706000000_profiles.sql,
+// 20260821010000_profiles_school_type.sql and
+// 20260826000000_profiles_context_fields.sql.
 
 import { canonicalProgram, canonicalUniversity } from "./academicPrograms";
 import { SECTORS, type Sector } from "./universities";
@@ -27,6 +29,39 @@ export type Pathway = (typeof PATHWAYS)[number];
 export const GENDERS = ["Male", "Female", "Non-binary", "Prefer not to say"] as const;
 export type Gender = (typeof GENDERS)[number];
 
+export const DEVICES = ["Laptop", "Desktop PC", "Tablet", "Smartphone", "None yet"] as const;
+export type Device = (typeof DEVICES)[number];
+
+export const LANGUAGES = [
+  "Python",
+  "JavaScript",
+  "TypeScript",
+  "Java",
+  "C",
+  "C++",
+  "C#",
+  "PHP",
+  "SQL",
+  "HTML/CSS",
+  "Kotlin",
+  "Swift",
+  "Go",
+  "Rust",
+  "Dart",
+  "None yet",
+] as const;
+export type Language = (typeof LANGUAGES)[number];
+
+export const BACKGROUNDS = [
+  "TVL / ICT strand",
+  "STEM strand",
+  "Other SHS strand",
+  "ALS completer",
+  "Career shifter",
+  "Zero knowledge",
+] as const;
+export type Background = (typeof BACKGROUNDS)[number];
+
 export interface Profile {
   // Null until the student fills in the profile form. A row can be created at
   // signup, which asks for the school but not the name — see
@@ -39,6 +74,16 @@ export interface Profile {
   schoolType: Sector | null;
   major: string | null;
   pathways: Pathway[];
+  devices: Device[];
+  languages: Language[];
+  background: Background | null;
+  itReason: string | null;
+  careerGoal: string | null;
+  githubUrl: string | null;
+  portfolioUrl: string | null;
+  // Set by the row (column default now()), never by the form. validateProfile
+  // emits null here; the store keeps the value the row already carries.
+  createdAt: string | null;
 }
 
 export interface RawProfileInput {
@@ -50,6 +95,13 @@ export interface RawProfileInput {
   schoolType: string;
   major: string;
   pathways: string[];
+  devices: string[];
+  languages: string[];
+  background: string;
+  itReason: string;
+  careerGoal: string;
+  githubUrl: string;
+  portfolioUrl: string;
 }
 
 export type ValidateResult =
@@ -67,6 +119,17 @@ function optionalText(
   const canonical = canonicalize ? canonicalize(v) : v;
   if (canonical.length > max) return { error: `${label} must be ${max} characters or fewer.` };
   return { value: canonical };
+}
+
+function optionalUrl(raw: string, label: string): { value: string | null } | { error: string } {
+  const v = raw.trim();
+  if (!v) return { value: null };
+  if (!v.startsWith("https://") || v.length > 200) {
+    return {
+      error: `${label} link must start with https:// and be 200 characters or fewer.`,
+    };
+  }
+  return { value: v };
 }
 
 export function validateProfile(input: RawProfileInput): ValidateResult {
@@ -118,6 +181,43 @@ export function validateProfile(input: RawProfileInput): ValidateResult {
     if (!pathways.includes(p as Pathway)) pathways.push(p as Pathway);
   }
 
+  const devices: Device[] = [];
+  for (const d of input.devices) {
+    if (!(DEVICES as readonly string[]).includes(d)) {
+      return { ok: false, error: "Invalid device selection." };
+    }
+    if (!devices.includes(d as Device)) devices.push(d as Device);
+  }
+
+  const languages: Language[] = [];
+  for (const l of input.languages) {
+    if (!(LANGUAGES as readonly string[]).includes(l)) {
+      return { ok: false, error: "Invalid language selection." };
+    }
+    if (!languages.includes(l as Language)) languages.push(l as Language);
+  }
+
+  let background: Background | null = null;
+  if (input.background.trim()) {
+    const b = input.background.trim();
+    if (!(BACKGROUNDS as readonly string[]).includes(b)) {
+      return { ok: false, error: "Invalid background option." };
+    }
+    background = b as Background;
+  }
+
+  const itReason = optionalText(input.itReason, "IT reason", 280);
+  if ("error" in itReason) return { ok: false, error: itReason.error };
+
+  const careerGoal = optionalText(input.careerGoal, "Career goal", 120);
+  if ("error" in careerGoal) return { ok: false, error: careerGoal.error };
+
+  const githubUrl = optionalUrl(input.githubUrl, "GitHub");
+  if ("error" in githubUrl) return { ok: false, error: githubUrl.error };
+
+  const portfolioUrl = optionalUrl(input.portfolioUrl, "Portfolio");
+  if ("error" in portfolioUrl) return { ok: false, error: portfolioUrl.error };
+
   return {
     ok: true,
     profile: {
@@ -129,6 +229,14 @@ export function validateProfile(input: RawProfileInput): ValidateResult {
       schoolType,
       major: major.value,
       pathways,
+      devices,
+      languages,
+      background,
+      itReason: itReason.value,
+      careerGoal: careerGoal.value,
+      githubUrl: githubUrl.value,
+      portfolioUrl: portfolioUrl.value,
+      createdAt: null,
     },
   };
 }

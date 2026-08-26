@@ -50,7 +50,10 @@ export async function getProfile(userId: string): Promise<Profile | null> {
 export async function saveProfile(userId: string, profile: Profile): Promise<void> {
   if (isFileStore()) {
     const store = await readFileStore();
-    store[userId] = profile;
+    const existing = store[userId];
+    // createdAt is owned by the row, not the form — validateProfile emits
+    // null for it, so keep whatever a previous save recorded.
+    store[userId] = { ...profile, createdAt: existing?.createdAt ?? null };
     await fs.mkdir(path.dirname(FILE_STORE), { recursive: true });
     await fs.writeFile(FILE_STORE, JSON.stringify(store, null, 2));
     return;
@@ -67,7 +70,17 @@ export async function saveProfile(userId: string, profile: Profile): Promise<voi
     school_type: profile.schoolType,
     major: profile.major,
     pathways: profile.pathways,
+    devices: profile.devices,
+    languages: profile.languages,
+    background: profile.background,
+    it_reason: profile.itReason,
+    career_goal: profile.careerGoal,
+    github_url: profile.githubUrl,
+    portfolio_url: profile.portfolioUrl,
     updated_at: new Date().toISOString(),
+    // created_at is deliberately absent: it belongs to the row (column
+    // default), and validateProfile hands us null for it. Listing it would
+    // overwrite the real timestamp with null and fail the NOT NULL check.
   });
   if (error) throw new Error(`saveProfile failed: ${error.message}`);
 }
@@ -97,6 +110,14 @@ export async function saveSignupSchool(
       gender: existing?.gender ?? null,
       major: existing?.major ?? null,
       pathways: existing?.pathways ?? [],
+      devices: existing?.devices ?? [],
+      languages: existing?.languages ?? [],
+      background: existing?.background ?? null,
+      itReason: existing?.itReason ?? null,
+      careerGoal: existing?.careerGoal ?? null,
+      githubUrl: existing?.githubUrl ?? null,
+      portfolioUrl: existing?.portfolioUrl ?? null,
+      createdAt: existing?.createdAt ?? null,
       university: school.university,
       schoolType: school.schoolType,
     };
