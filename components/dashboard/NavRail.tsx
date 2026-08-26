@@ -24,13 +24,12 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/account", match: "exact", icon: HouseIcon },
   { label: "Subjects", href: "/year", match: "startsWith", icon: BookIcon },
-  { label: "Roadmap", href: "/account#roadmap", match: "exact", icon: MapIcon },
+  { label: "Roadmap", href: "/account/roadmap", match: "startsWith", icon: MapIcon },
   { label: "Resources", href: "/resources", match: "startsWith", icon: FolderIcon },
   { label: "Profile", href: "/account/profile", match: "startsWith", icon: PersonIcon },
 ];
 
 function isItemActive(pathname: string, item: NavItem): boolean {
-  if (item.href.includes("#")) return false; // same-page anchor, never "active"
   if (item.match === "exact") return pathname === item.href;
   return pathname.startsWith(item.href);
 }
