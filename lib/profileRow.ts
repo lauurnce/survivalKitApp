@@ -13,7 +13,14 @@
 // column that does not exist), which is what scripts/db/schema-check.ts is
 // for.
 
-import type { Gender, Pathway, Profile } from "./profile";
+import type {
+  Background,
+  Device,
+  Gender,
+  Language,
+  Pathway,
+  Profile,
+} from "./profile";
 import type { Sector } from "./universities";
 
 /**
@@ -29,6 +36,14 @@ export const REQUIRED_PROFILE_COLUMNS = [
   "school_type",
   "major",
   "pathways",
+  "devices",
+  "languages",
+  "background",
+  "it_reason",
+  "career_goal",
+  "github_url",
+  "portfolio_url",
+  "created_at",
 ] as const;
 
 /** Every field optional: a lagging schema simply omits the key. */
@@ -41,6 +56,14 @@ export interface ProfileRow {
   school_type?: string | null;
   major?: string | null;
   pathways?: string[] | null;
+  devices?: string[] | null;
+  languages?: string[] | null;
+  background?: string | null;
+  it_reason?: string | null;
+  career_goal?: string | null;
+  github_url?: string | null;
+  portfolio_url?: string | null;
+  created_at?: string | null;
 }
 
 export function profileFromRow(row: ProfileRow): Profile {
@@ -53,6 +76,14 @@ export function profileFromRow(row: ProfileRow): Profile {
     schoolType: (row.school_type ?? null) as Sector | null,
     major: row.major ?? null,
     pathways: (row.pathways ?? []) as Pathway[],
+    devices: (row.devices ?? []) as Device[],
+    languages: (row.languages ?? []) as Language[],
+    background: (row.background ?? null) as Background | null,
+    itReason: row.it_reason ?? null,
+    careerGoal: row.career_goal ?? null,
+    githubUrl: row.github_url ?? null,
+    portfolioUrl: row.portfolio_url ?? null,
+    createdAt: row.created_at ?? null,
   };
 }
 

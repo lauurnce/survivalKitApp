@@ -24,6 +24,13 @@ export async function saveProfileAction(
     schoolType: String(formData.get("schoolType") ?? ""),
     major: String(formData.get("major") ?? ""),
     pathways: formData.getAll("pathways").map(String),
+    devices: formData.getAll("devices").map(String),
+    languages: formData.getAll("languages").map(String),
+    background: String(formData.get("background") ?? ""),
+    itReason: String(formData.get("itReason") ?? ""),
+    careerGoal: String(formData.get("careerGoal") ?? ""),
+    githubUrl: String(formData.get("githubUrl") ?? ""),
+    portfolioUrl: String(formData.get("portfolioUrl") ?? ""),
   });
   if (!result.ok) return { error: result.error };
 

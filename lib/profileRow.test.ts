@@ -16,6 +16,14 @@ describe("REQUIRED_PROFILE_COLUMNS", () => {
       "school_type",
       "major",
       "pathways",
+      "devices",
+      "languages",
+      "background",
+      "it_reason",
+      "career_goal",
+      "github_url",
+      "portfolio_url",
+      "created_at",
     ]);
   });
 });
@@ -30,6 +38,14 @@ describe("profileFromRow", () => {
     school_type: "Public",
     major: "BS Information Technology",
     pathways: ["Backend"],
+    devices: ["Laptop", "Smartphone"],
+    languages: ["Python", "C"],
+    background: "TVL / ICT strand",
+    it_reason: "I want to build things people use.",
+    career_goal: "Backend developer",
+    github_url: "https://github.com/juandelacruz",
+    portfolio_url: "https://juandelacruz.dev",
+    created_at: "2026-08-26T00:00:00.000Z",
   };
 
   it("maps a full row onto the profile shape", () => {
@@ -42,6 +58,14 @@ describe("profileFromRow", () => {
       schoolType: "Public",
       major: "BS Information Technology",
       pathways: ["Backend"],
+      devices: ["Laptop", "Smartphone"],
+      languages: ["Python", "C"],
+      background: "TVL / ICT strand",
+      itReason: "I want to build things people use.",
+      careerGoal: "Backend developer",
+      githubUrl: "https://github.com/juandelacruz",
+      portfolioUrl: "https://juandelacruz.dev",
+      createdAt: "2026-08-26T00:00:00.000Z",
     });
   });
 
@@ -67,6 +91,30 @@ describe("profileFromRow", () => {
 
   it("substitutes an empty pathway list for a null column", () => {
     expect(profileFromRow({ ...row, pathways: null }).pathways).toEqual([]);
+  });
+
+  it("substitutes an empty list for null device/language columns", () => {
+    const profile = profileFromRow({ ...row, devices: null, languages: null });
+    expect(profile.devices).toEqual([]);
+    expect(profile.languages).toEqual([]);
+  });
+
+  it("passes the created_at ISO string through untouched", () => {
+    expect(profileFromRow({ ...row, created_at: "2026-01-02T03:04:05.000Z" }).createdAt).toBe(
+      "2026-01-02T03:04:05.000Z"
+    );
+  });
+
+  it("reads a null created_at as null", () => {
+    expect(profileFromRow({ ...row, created_at: null }).createdAt).toBeNull();
+  });
+
+  it("maps every context field through its camelCase name", () => {
+    const profile = profileFromRow(row);
+    expect(profile.itReason).toBe(row.it_reason);
+    expect(profile.careerGoal).toBe(row.career_goal);
+    expect(profile.githubUrl).toBe(row.github_url);
+    expect(profile.portfolioUrl).toBe(row.portfolio_url);
   });
 });
 
@@ -138,6 +186,18 @@ describe("profileFromRow — surviving a schema that lags the code", () => {
     expect("schoolType" in profile).toBe(true);
   });
 
+  it("reports absent context columns as empty lists and nulls", () => {
+    const profile = profileFromRow(preMigrationRow);
+    expect(profile.devices).toEqual([]);
+    expect(profile.languages).toEqual([]);
+    expect(profile.background).toBeNull();
+    expect(profile.itReason).toBeNull();
+    expect(profile.careerGoal).toBeNull();
+    expect(profile.githubUrl).toBeNull();
+    expect(profile.portfolioUrl).toBeNull();
+    expect(profile.createdAt).toBeNull();
+  });
+
   it("does not throw on a row missing every optional column", () => {
     const profile = profileFromRow({ first_name: "Juan", last_name: "Cruz" });
     expect(profile).toEqual({
@@ -149,6 +209,14 @@ describe("profileFromRow — surviving a schema that lags the code", () => {
       schoolType: null,
       major: null,
       pathways: [],
+      devices: [],
+      languages: [],
+      background: null,
+      itReason: null,
+      careerGoal: null,
+      githubUrl: null,
+      portfolioUrl: null,
+      createdAt: null,
     });
   });
 

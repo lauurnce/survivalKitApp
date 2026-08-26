@@ -7,7 +7,7 @@ import { signOutAction } from "../../(auth)/actions";
 import { ThemeToggleInline } from "@/components/ThemeToggle";
 import { NavRail } from "@/components/dashboard/NavRail";
 import { ProfileCard } from "@/components/account/ProfileCard";
-import { DeleteAccountButton } from "@/components/account/DeleteAccountButton";
+import { DangerZone } from "@/components/account/DangerZone";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +24,17 @@ export default async function ProfilePage() {
     getProfile(userId),
   ]);
 
+  // Formatted server-side so the client renders the same string and hydration
+  // can't disagree about locale or date parsing.
+  const startedLabel = profile?.createdAt
+    ? new Intl.DateTimeFormat("en-PH", { month: "long", year: "numeric" }).format(
+        new Date(profile.createdAt)
+      )
+    : null;
+  const joinedLabel = [profile?.major, profile?.university, profile?.schoolType]
+    .filter(Boolean)
+    .join(" · ");
+
   return (
     <div className="min-h-screen bg-paper lg:flex">
       <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
@@ -35,17 +46,19 @@ export default async function ProfilePage() {
           </form>
         </div>
 
-        <main className="px-4 sm:px-8 py-6 mx-auto max-w-wide space-y-8">
+        <main className="px-4 sm:px-8 py-6 mx-auto max-w-wide space-y-6">
           <header>
             <p className="label-sm">Your account</p>
             <h1 className="font-serif text-display-md text-ink">Profile</h1>
           </header>
 
-          <div className="max-w-md space-y-6">
-            <ProfileCard profile={profile} />
-            <div className="border-t border-taupe/20 pt-4">
-              <DeleteAccountButton />
-            </div>
+          <div className="space-y-4">
+            <ProfileCard
+              profile={profile}
+              joinedLabel={joinedLabel}
+              startedLabel={startedLabel}
+            />
+            <DangerZone />
           </div>
         </main>
       </div>
