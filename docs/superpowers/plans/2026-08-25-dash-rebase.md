@@ -35,17 +35,32 @@ Session: opencode-D1 · date: 2026-08-26
 
 ## Conflict log
 
-| file | main-side commits | resolution |
-|---|---|---|
+`git rebase origin/main` completed with **zero textual conflicts** (auto-merge).
+Semantic verification replaced hand-resolution:
 
-(to be appended during step 4)
+| surface | main-side change | track change | call |
+|---|---|---|---|
+| `components/AdminDashboard.tsx` | school-type segmentation `f0a2a7b`, chart-overlap fix `56c731a` | devices-not-users relabels `d68e90e` | Auto-merged disjoint hunks. Audited post-rebase: main's tiles/sections intact AND all four track relabels intact. No entanglement found. |
+| `components/AdminDashboard.test.tsx` | same two commits (+88 lines) | guard test `d68e90e` | Same — both suites coexist, fixture gained `by_school_type`. |
+| `app/admin/page.tsx`, `RepDashboard.tsx` | Next 16 react-hooks suppressions | *not touched by track* | No overlap possible; suppressions preserved as-is. |
+| DAU tooltip L370, funnel drop marker L418, profiles empty state L839 | pre-dated merge-base (L353/401/818), carried through by main unchanged | constraint said "users banned in dashboard copy" but original commit missed these | **Follow-up `b89db74`**: device/devices for the two device-count surfaces (their own subtitles say "unique devices"), accounts for the profile-completer empty state. Guard extended: hover test forces the tooltip into the scan; zero-profiles render covers the empty state. Newer-main behavior untouched — only nouns changed. |
 
 ## Gate log
 
-| run | tsc | vitest | lint | build |
-|---|---|---|---|---|
+Node v24.18.0 · next 16.3.2 (lockfile synced via two `npm install` runs).
 
-(to be filled with exact numbers)
+| run | state | tsc --noEmit | vitest run | npm run lint | npm run build |
+|---|---|---|---|---|---|
+| 1 | pure rebase, before follow-up | clean (exit 0) | **117 files, 1471/1471** | exit 0 | exit 0 |
+| 2 | final (after `b89db74`) | clean (exit 0) | **117 files, 1473/1473** | exit 0 | exit 0 |
+
+(+2 = the two new guard cases in `AdminDashboard.test.tsx`.)
+
+## Verdict
+
+**READY** for cross-review and merge. Tree clean, 4 commits ahead of
+`origin/main` (`83f25f3`), no push performed per instructions.
+
 
 ## Cross-track dependency note
 
