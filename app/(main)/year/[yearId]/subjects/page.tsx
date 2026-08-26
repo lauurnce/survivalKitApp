@@ -10,6 +10,7 @@ export const revalidate = 300;
 
 interface Props {
   params: Promise<{ yearId: string }>;
+  searchParams: Promise<{ from?: string }>;
 }
 
 interface Subject {
@@ -36,8 +37,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function SubjectsPage({ params }: Props) {
+export default async function SubjectsPage({ params, searchParams }: Props) {
   const { yearId } = await params;
+  const resolvedSearchParams = await searchParams;
   const supabase = createServerClient();
 
   const [{ data: year }, { data: rawSubjects }, { data: subjectCounters }] = await Promise.all([
@@ -83,7 +85,13 @@ export default async function SubjectsPage({ params }: Props) {
       {/* Page header — dark navy */}
       <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
         <div className="max-w-wide mx-auto">
-          <BackLink href="/year" label="Select Year" className="text-taupe hover:text-paper" />
+          <BackLink
+            href={`/year/${yearId}`}
+            label="Select Year"
+            className="text-taupe hover:text-paper"
+            dashboardFallback={{ href: "/account", label: "Back to Dashboard" }}
+            searchParams={{ get: (k) => (k === "from" ? resolvedSearchParams.from : null) }}
+          />
           <div className="mt-10">
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
               {sectionLabel(year.sort_order)} — {year.label}

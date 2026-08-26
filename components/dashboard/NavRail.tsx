@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { completionPercentage } from "@/lib/account";
+import { withDashboardReferrer } from "@/lib/navigation";
 
 interface NavRailProps {
   overallDone: number;
@@ -23,7 +24,7 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/account", match: "exact", icon: HouseIcon },
-  { label: "Subjects", href: "/year", match: "startsWith", icon: BookIcon },
+  { label: "Subjects", href: withDashboardReferrer("/year"), match: "startsWith", icon: BookIcon },
   { label: "Roadmap", href: "/account/roadmap", match: "startsWith", icon: MapIcon },
   { label: "Resources", href: "/resources", match: "startsWith", icon: FolderIcon },
   { label: "Profile", href: "/account/profile", match: "startsWith", icon: PersonIcon },

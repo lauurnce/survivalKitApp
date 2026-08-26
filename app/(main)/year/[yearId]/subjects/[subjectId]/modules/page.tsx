@@ -19,6 +19,7 @@ export const revalidate = 300;
 
 interface Props {
   params: Promise<{ yearId: string; subjectId: string }>;
+  searchParams: Promise<{ from?: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -37,8 +38,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ModulesPage({ params }: Props) {
+export default async function ModulesPage({ params, searchParams }: Props) {
   const { yearId, subjectId } = await params;
+  const resolvedSearchParams = await searchParams;
   const supabase = createServerClient();
 
   const [{ data: subject }, { data: modules }, { data: moduleCounters }] = await Promise.all([
@@ -96,6 +98,8 @@ export default async function ModulesPage({ params }: Props) {
             href={`/year/${yearId}/subjects`}
             label={year?.label ?? "Subjects"}
             className="text-taupe hover:text-paper"
+            dashboardFallback={{ href: "/account", label: "Back to Dashboard" }}
+            searchParams={{ get: (k) => (k === "from" ? resolvedSearchParams.from : null) }}
           />
           <div className="mt-10">
             <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
