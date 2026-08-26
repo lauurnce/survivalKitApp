@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { viewportConfig } from "@/lib/viewport";
 import { Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
@@ -50,6 +51,8 @@ export const metadata: Metadata = {
       "Module notes, programming guides, and reviewers with answer keys for BSIT students — organized by year and subject.",
   },
 };
+
+export const viewport = viewportConfig;
 
 export default async function RootLayout({
   children,

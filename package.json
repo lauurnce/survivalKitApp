@@ -16,6 +16,7 @@
     "db:check": "tsx scripts/db/schema-check.ts",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:mobile-fit": "tsx scripts/dev/render-fit-harness.tsx && node scripts/dev/check-mobile-fit.mjs",
     "story:svg": "node scripts/gen-story-svgs.mjs",
     "story:check": "node scripts/gen-story-svgs.check.mjs",
     "report:ops": "tsx scripts/reports/ops.ts",

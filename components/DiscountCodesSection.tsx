@@ -73,7 +73,7 @@ export function DiscountCodesSection({ userToken, feedbackHref }: DiscountCodesS
                 }`}
               >
                 <div className="flex justify-between items-start mb-2">
-                  <div className="font-mono font-bold text-lg">{code.coupon_code}</div>
+                  <div className="font-mono font-bold text-lg break-all">{code.coupon_code}</div>
                   <span
                     className={`text-xs px-2 py-1 rounded ${
                       isExpired

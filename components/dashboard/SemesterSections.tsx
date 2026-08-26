@@ -114,7 +114,7 @@ function TermSection({
             const status = subjectStatus(s);
             const inProgress = status === "in-progress";
             return (
-              <li key={s.id}>
+<li key={s.id} className="min-w-0">
                 <Link
                   href={`/year/${term.yearId}/subjects/${s.id}/modules`}
                   className={
@@ -148,7 +148,7 @@ function TermSection({
           }
 
           return (
-            <li key={s.id}>
+            <li key={s.id} className="min-w-0">
               <div className="flex items-center gap-3 rounded-xl border border-taupe/30 bg-paper px-3 py-3">
                 <SubjectIcon title={s.title} className="w-10 h-10 opacity-50" />
                 <div className="min-w-0 flex-1">

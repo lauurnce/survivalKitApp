@@ -46,7 +46,7 @@ export function HeroCard({ term, topPick, profile, pro }: Props) {
           </p>
 
           {term && (
-            <dl className="mt-6 flex items-center gap-6">
+            <dl className="mt-6 flex flex-wrap items-center gap-6 gap-y-4">
               <div className="flex flex-col">
                 <dd className="font-serif text-2xl text-ink">
                   {term.modulesDone} / {term.modulesTotal}
