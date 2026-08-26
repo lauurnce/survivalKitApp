@@ -5,15 +5,19 @@
  * database, and none of these aggregates exist yet — they are Tasks 5 and 6 of
  * docs/superpowers/plans/2026-08-20-admin-dashboard-v2.md.
  *
- * This route lives on the throwaway `feat/admin-dashboard-preview` branch and
- * must never be merged or deployed: it sits outside the /admin auth guard so it
- * can be viewed without logging in, which is only acceptable because the data
- * is invented. Delete the branch once the design is settled.
+ * Originally a throwaway on `feat/admin-dashboard-preview`; merged for design
+ * reference behind the same admin guard as /admin (review flag: the route sat
+ * outside auth while carrying plausible-looking invented metrics). Invented
+ * numbers must never be mistaken for phase-1 output — see the plan doc's
+ * "nothing may render invented data" rule for the real dashboard.
  *
  * The primitives are copied from components/AdminDashboard.tsx rather than
  * imported, so the BarChart change (two-line labels) can be shown side by side
  * with the current behaviour without touching the real component.
  */
+
+import { redirect } from "next/navigation";
+import { getAdminSession } from "@/lib/auth/adminSession";
 
 interface TopItem {
   label: string;
@@ -153,7 +157,9 @@ const SUBSCRIBER_SUBJECTS: TopItem[] = [
   { label: "Web Development", count: 4 },
 ];
 
-export default function DashboardPreview() {
+export default async function DashboardPreview() {
+  const authed = await getAdminSession();
+  if (!authed) redirect("/admin/login");
   return (
     <main className="min-h-screen bg-paper text-ink px-6 py-10">
       <div className="max-w-wide mx-auto mb-12">
