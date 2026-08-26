@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { createServerClient } from "@/lib/supabase/server";
-import { getAccountOverview } from "@/lib/account";
+import { getAccountOverview, getRoadmapData } from "@/lib/account";
 import { getProfile } from "@/lib/profileStore";
 import { signOutAction } from "../(auth)/actions";
 import { ThemeToggleInline } from "@/components/ThemeToggle";
@@ -26,9 +26,10 @@ export const metadata: Metadata = {
 export default async function AccountPage() {
   const userId = await getCurrentUserId();
   if (!userId) redirect("/login?next=/account");
-  const [overview, profile] = await Promise.all([
+  const [overview, profile, roadmapData] = await Promise.all([
     getAccountOverview(userId),
     getProfile(userId),
+    getRoadmapData(userId),
   ]);
 
   // Same identity model as the module pages: device cookie or signed-in user,
@@ -83,7 +84,7 @@ export default async function AccountPage() {
 
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
             <div className="space-y-8 min-w-0">
-              <RoadmapTimeline nodes={nodes} />
+              <RoadmapTimeline nodes={nodes} roadmapData={roadmapData} />
               <SemesterSections terms={terms} currentKey={currentKey} />
             </div>
             <ThisWeekPanel recs={recs} />
