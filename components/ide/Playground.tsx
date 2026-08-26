@@ -18,11 +18,13 @@ export function Playground({ languageId, initialCode }: Props) {
   const [result, setResult] = useState<RunResult | null>(null);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [executedCode, setExecutedCode] = useState<string | null>(null);
 
   async function handleRun() {
     setRunning(true);
     setError(null);
     setResult(null);
+    setExecutedCode(code);
     try {
       const runner = await getRunner(languageId);
       const res = await runner.run({ languageId, code });
@@ -38,6 +40,7 @@ export function Playground({ languageId, initialCode }: Props) {
     setCode(initialCode ?? lang.starter);
     setResult(null);
     setError(null);
+    setExecutedCode(null);
   }
 
   return (
@@ -65,7 +68,7 @@ export function Playground({ languageId, initialCode }: Props) {
         </div>
       </div>
       <CodeEditor languageId={languageId} value={code} onChange={setCode} readOnly={running} />
-      <OutputPanel result={result} running={running} error={error} />
+      <OutputPanel result={result} running={running} error={error} executedCode={executedCode ?? undefined} />
     </div>
   );
 }
