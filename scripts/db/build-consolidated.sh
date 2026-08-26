@@ -14,20 +14,20 @@ set -euo pipefail
 
 cd "$(dirname "$0")/../.."
 
+# Empty as of 2026-08-26: every written migration is applied to production
+# (growth aggregates + dash_exit_agg via the consolidated artifact). New
+# unapplied migrations go back here in version order. An empty array is a
+# healthy state — the artifact degenerates to its header and the CI jobs
+# remain meaningful (full-history replay + no-op paste).
 pending=(
-  supabase/migrations/20260808000000_growth_identity_agg.sql
-  supabase/migrations/20260808000001_growth_funnel_agg.sql
-  supabase/migrations/20260808000002_growth_audience_agg.sql
-  supabase/migrations/20260808000003_growth_retention_agg.sql
-  supabase/migrations/20260821000001_dash_exit_agg.sql
 )
 
 if [ "${1:-}" = "--list" ]; then
-  printf '%s\n' "${pending[@]}"
+  printf '%s\n' ${pending[@]+"${pending[@]}"}
   exit 0
 fi
 
-for f in "${pending[@]}"; do
+for f in ${pending[@]+"${pending[@]}"}; do
   if [ ! -f "$f" ]; then
     echo "error: listed pending migration not found: $f" >&2
     exit 1
@@ -49,7 +49,7 @@ out="scripts/db/consolidated-pending.sql"
   echo "--"
   echo "-- Source files, applied in this order:"
   i=1
-  for f in "${pending[@]}"; do
+  for f in ${pending[@]+"${pending[@]}"}; do
     echo "--   $i. $f"
     i=$((i + 1))
   done
@@ -64,7 +64,7 @@ out="scripts/db/consolidated-pending.sql"
 
 HEADER
 
-  for f in "${pending[@]}"; do
+  for f in ${pending[@]+"${pending[@]}"}; do
     printf -- '\n-- ----------------------------------------------------------------\n'
     printf -- '-- Source: %s\n' "$f"
     printf -- '-- ----------------------------------------------------------------\n\n'
