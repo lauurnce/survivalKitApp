@@ -70,24 +70,58 @@ scrutinized.
 | `lib/auth/signingSecrets.ts` | Floor check moves from primary-only to all candidates; error names the offending var; runbook rewritten per above |
 | `lib/auth/signingSecrets.test.ts` | Exemption test flipped to refusal tests (short previous rejected with long primary present; empty-string previous still counts as unset) |
 | `lib/auth/deviceCookie.ts` / `adminSession.ts` | Branch structure (candidates loop) kept; #14's guarantee inherited through the shared resolver — message text keeps `must be at least 32 characters` so #14's test regexes hold |
-| `middleware.ts` | Branch candidates-loop kept AND #14's explicit `!secret \|\| secret.length < 32 \|\| !token` guard kept in front — defense-in-depth: middleware fails closed without relying on exception handling, while the resolver additionally rejects any short previous |
+| `middleware.ts` → `proxy.ts` | Branch candidates-loop kept AND #14's explicit `!secret \|\| secret.length < 32 \|\| !token` guard kept in front — defense-in-depth: middleware fails closed without relying on exception handling, while the resolver additionally rejects any short previous. File migrated to the proxy convention (see below) |
 | `*.test.ts` fixtures | #14's ≥32-char fixtures and short-secret throw tests merged into branch suites |
 
-## proxy.ts migration decision: SKIP (evidence-based)
+## proxy.ts migration decision: DONE (initial SKIP reversed by build evidence)
 
-Premise checked and falsified in this environment:
+The first evidence pass concluded SKIP: greps over `node_modules/next/dist/build/`
+found no proxy convention and `next/package.json` reads **15.5.23**, not 16.
+That conclusion was wrong in one direction: 15.5 backported the convention.
+The first full build printed:
 
-- Installed Next is **15.5.23**, not 16. `rg -l "proxy\.ts" node_modules/next/dist/build/`
-  → no hits; no deprecation strings in the build pipeline. The `proxy.ts`
-  convention does not exist in this version.
-- The claims registry records `chore/next-security-bump` abandoned precisely
-  because it required a next@16 major bump — out of scope for this track.
-- Renaming `middleware.ts` → `proxy.ts` on 15.5 would make Next ignore the file
-  entirely: CSP nonce injection, Supabase session refresh, the /admin page
-  guard, and the /api/admin defense-in-depth layer would all silently vanish.
-  That is the opposite of mechanical.
+> ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead.
 
-Revisit if/when the Next 16 bump lands as its own track.
+so step 3's original premise (a deprecation warning on every main build today)
+was correct after all, and the migration was executed in this track.
+
+### Evidence for the migration shape (all from installed next@15.5.23)
+
+- `dist/lib/constants.js`: `PROXY_FILENAME = 'proxy'`; both conventions
+  detected at the root/src level; having BOTH files is a hard error (E900).
+- `dist/build/templates/middleware.js`: handler resolves as
+  `(isProxy ? mod.proxy : mod.middleware) || mod.default` — a named `proxy`
+  export or a default function; missing-export error text mirrors middleware's.
+- Everything else is the shared pipeline: same adapter (`server/web/adapter.js`
+  treats `/middleware`, `/src/middleware`, `/proxy`, `/src/proxy` identically),
+  same route matcher machinery, same `config.matcher` extraction.
+- Official codemod offered by the warning:
+  `npx @next/codemod@canary middleware-to-proxy .`
+
+### What changed
+
+`git mv middleware.ts proxy.ts`; export renamed to `proxy`; comments updated.
+Non-code references updated so standing audits keep pointing at real files:
+`lib/reports/securityBaseline.ts` (5 path refs + BASE-10 title),
+`lib/reports/secretsPosture.test.ts` ROOTS, `scripts/reports/security.ts`
+SOURCE_ROOTS + matcher lookup, `next.config.ts` prose,
+`lib/auth/signingSecrets.ts` header comment.
+
+### Behavior-equivalence argument
+
+Same compiled template, same adapter, same manifest slot, same matcher regexp;
+the only deltas are the filename Next scans for and the export identifier it
+resolves. Verified empirically against the production build (`next start`,
+port 3111): `/admin/users` → 307 to `/admin/login` (page guard), 
+`/api/admin/check` → 401 (API defense-in-depth), `/` carries the nonce CSP
+header. Build output shows zero deprecation warnings. One cosmetic note: the
+legacy `middleware-manifest.json` comes out empty under Turbopack; live
+registration sits in `functions-config-manifest.json` under `/_middleware` —
+same key shape main's middleware builds produce, and runtime probes above are
+authoritative regardless.
+
+Revisit-if-superseded note removed: nothing left to revisit; when the Next 16
+bump lands, this file already speaks the new convention.
 
 ## Execution order
 

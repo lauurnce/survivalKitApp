@@ -1,6 +1,6 @@
 // Shared resolution of HMAC signing secrets, consumed by the device cookie
 // (lib/auth/deviceCookie.ts), admin sessions (lib/auth/adminSession.ts), and
-// the Edge middleware guard (middleware.ts). Must stay import-safe in the Edge
+// the Edge proxy guard (proxy.ts). Must stay import-safe in the Edge
 // runtime: no Node built-ins here.
 
 /**

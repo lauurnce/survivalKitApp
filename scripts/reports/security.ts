@@ -77,7 +77,7 @@ import {
 } from "../../lib/reports/detectionCoverage";
 
 const REPO_ROOT = join(__dirname, "..", "..");
-const SOURCE_ROOTS = ["app", "lib", "components", "scripts", "middleware.ts", "next.config.ts"];
+const SOURCE_ROOTS = ["app", "lib", "components", "scripts", "proxy.ts", "next.config.ts"];
 const SOURCE_EXTENSIONS = [".ts", ".tsx", ".mjs"];
 
 /**
@@ -175,9 +175,9 @@ function readRoutes(): { path: string; source: string }[] {
     .sort((a, b) => a.path.localeCompare(b.path));
 }
 
-/** The middleware matcher, or null when it cannot be located. */
+/** The edge proxy's route matcher, or null when it cannot be located. */
 function readMiddlewareMatcher(sources: Record<string, string>): string | null {
-  const source = sources["middleware.ts"];
+  const source = sources["proxy.ts"];
   if (!source) return null;
   const match = /matcher:\s*\[\s*["']([^"']+)["']/.exec(source);
   return match ? match[1] : null;

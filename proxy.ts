@@ -30,7 +30,8 @@ function buildCsp(nonce: string): string {
   ].join("; ");
 }
 
-// Middleware runs in Edge Runtime — use Web Crypto API (not Node's crypto module)
+// The proxy (formerly middleware.ts) runs in the Edge runtime — use Web Crypto
+// API (not Node's crypto module)
 async function hmacValid(
   secret: string,
   payload: string,
@@ -56,7 +57,7 @@ async function verifyAdminToken(token: string): Promise<boolean> {
     // Fail closed on a short or missing primary before anything else runs.
     // The shared resolver below enforces the same floor on every candidate
     // (including any *_PREVIOUS), but this explicit check keeps the
-    // middleware-side guarantee independent of exception handling (PR #14).
+    // proxy-side guarantee independent of exception handling (PR #14).
     const primary = process.env.ADMIN_SESSION_SECRET;
     if (!primary || primary.length < 32 || !token) return false;
 
@@ -97,7 +98,7 @@ async function verifyAdminToken(token: string): Promise<boolean> {
   }
 }
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   // Web Crypto (Edge Runtime) — 16 random bytes, base64-encoded, per request.
   const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
 

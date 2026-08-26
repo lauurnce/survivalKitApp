@@ -293,7 +293,7 @@ describe("secretsSummaryLine", () => {
 
 describe("standing assertion: the registry covers real env usage", () => {
   const REPO = join(__dirname, "..", "..");
-  const ROOTS = ["app", "lib", "components", "scripts", "middleware.ts", "next.config.ts"];
+  const ROOTS = ["app", "lib", "components", "scripts", "proxy.ts", "next.config.ts"];
   const EXTENSIONS = [".ts", ".tsx", ".mjs"];
 
   const walk = (path: string, out: string[] = []): string[] => {
