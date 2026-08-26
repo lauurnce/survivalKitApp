@@ -19,6 +19,7 @@ pending=(
   supabase/migrations/20260808000001_growth_funnel_agg.sql
   supabase/migrations/20260808000002_growth_audience_agg.sql
   supabase/migrations/20260808000003_growth_retention_agg.sql
+  supabase/migrations/20260821000001_dash_exit_agg.sql
 )
 
 if [ "${1:-}" = "--list" ]; then
