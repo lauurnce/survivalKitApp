@@ -56,4 +56,22 @@ Cross-checked every doc row against `lib/universities.ts` at `origin/main`
 
 ## Result
 
-See gate table appended below after runs.
+Rebased cleanly onto `83f25f3` (no conflicts — single new file, absent from
+main). One follow-up fix commit (`9392425`) aligns audit row 15 with main's
+UNO-R display-name rename.
+
+## Gates (post-rebase, node v24.18.0, Next 16.3.2 tree)
+
+| gate | result |
+|---|---|
+| `npx tsc --noEmit` | clean, 0 errors |
+| `npx vitest run` | 117 files / **1470 passed** / 0 failed (9.87s) |
+| `npm run lint` | eslint app components lib — 0 findings |
+| `npm run build` | success; static + dynamic routes emitted, middleware compiled |
+
+Note: first `npm install` pass left the tree incomplete (`resend` missing,
+tsc/lint failing on TS2307); a second install added 32 packages and cleared
+it. Worth remembering when bootstrapping this worktree after the lockfile
+jump.
+
+No push, no merge — ready for integration review.
