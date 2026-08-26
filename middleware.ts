@@ -54,9 +54,9 @@ async function hmacValid(
 async function verifyAdminToken(token: string): Promise<boolean> {
   try {
     // Fail closed on a short or missing primary before anything else runs.
-    // The shared resolver below enforces the same floor, but this explicit
-    // check keeps the middleware-side guarantee independent of exception
-    // handling (PR #14 posture).
+    // The shared resolver below enforces the same floor on every candidate
+    // (including any *_PREVIOUS), but this explicit check keeps the
+    // middleware-side guarantee independent of exception handling (PR #14).
     const primary = process.env.ADMIN_SESSION_SECRET;
     if (!primary || primary.length < 32 || !token) return false;
 
