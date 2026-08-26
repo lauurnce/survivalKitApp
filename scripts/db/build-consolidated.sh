@@ -14,12 +14,10 @@ set -euo pipefail
 
 cd "$(dirname "$0")/../.."
 
-# Empty as of 2026-08-26: every written migration is applied to production
-# (growth aggregates + dash_exit_agg via the consolidated artifact). New
-# unapplied migrations go back here in version order. An empty array is a
-# healthy state — the artifact degenerates to its header and the CI jobs
-# remain meaningful (full-history replay + no-op paste).
+# 2026-08-26: profiles context fields (feat/profile-dashboard) await the SQL
+# Editor paste. Once applied, empty this array again and regenerate.
 pending=(
+  supabase/migrations/20260826000000_profiles_context_fields.sql
 )
 
 if [ "${1:-}" = "--list" ]; then
