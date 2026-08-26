@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import type { ComponentProps } from "react";
 import { AdminDashboard } from "./AdminDashboard";
@@ -50,6 +50,53 @@ function makeDashboardProps(overrides: Partial<DashboardProps> = {}): DashboardP
     ...overrides,
   };
 }
+
+describe("AdminDashboard (banned vocabulary)", () => {
+  it("never says 'user' in visible copy — devices and accounts are different populations", () => {
+    const { container } = render(<AdminDashboard {...makeDashboardProps()} />);
+    const visible = container.textContent ?? "";
+    // Devices outnumber accounts here by about two orders of magnitude, so a
+    // tile saying "users" is true of neither population. The figure being
+    // right does not make the noun right.
+    const offenders = visible.match(/\buser[-\s]?(days?|s)?\b/gi) ?? [];
+    expect(offenders).toEqual([]);
+  });
+
+  it("never says 'user' in hover tooltips or funnel drop markers either", () => {
+    const { container } = render(<AdminDashboard {...makeDashboardProps({
+      dau: [{ date: "2026-08-25", unique: 3 }],
+      funnel: [
+        { type: "visit", label: "Visited", hint: "", unique: 100 },
+        { type: "signup", label: "Signed up", hint: "", unique: 60 },
+      ],
+    })} />);
+    // The DAU tooltip only exists in the DOM while a bar is hovered, and the
+    // default fixture's empty arrays hide both it and the drop markers — the
+    // flat scan above cannot see them. Hover the first bar (the wrapper is
+    // the only cursor-default element) so the tooltip renders into the scan.
+    const bars = container.querySelectorAll(".cursor-default");
+    expect(bars.length).toBeGreaterThan(0);
+    fireEvent.mouseEnter(bars[0]);
+    expect(screen.getByText("3 devices")).toBeInTheDocument();
+    const hovered = container.textContent ?? "";
+    const hoverOffenders = hovered.match(/\buser[-\s]?(days?|s)?\b/gi) ?? [];
+    expect(hoverOffenders).toEqual([]);
+  });
+
+  it("calls profile completers accounts, not users", () => {
+    render(<AdminDashboard {...makeDashboardProps({
+      profilesAgg: {
+        total: 0,
+        named: null,
+        by_pathway: [],
+        by_university: [],
+        by_school_type: [],
+        by_major: [],
+      },
+    })} />);
+    expect(screen.getByText(/logged-in accounts/)).toBeInTheDocument();
+  });
+});
 
 describe("AdminDashboard (label and normalisation)", () => {
   it("renders a long university name in full, not only in a title attribute", () => {
