@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { formatCount } from "@/lib/counters";
 import { ComingSoonModal } from "@/components/ComingSoonModal";
+import { withDashboardReferrer } from "@/lib/navigation";
 
 export interface YearCardData {
   id: string;
@@ -15,9 +16,10 @@ export interface YearCardData {
 
 interface Props {
   cards: YearCardData[];
+  fromDashboard?: boolean;
 }
 
-export function YearGrid({ cards }: Props) {
+export function YearGrid({ cards, fromDashboard = false }: Props) {
   const [activeLabel, setActiveLabel] = useState<string | null>(null);
 
   return (
@@ -48,7 +50,7 @@ export function YearGrid({ cards }: Props) {
           return (
             <Link
               key={year.id}
-              href={`/year/${year.id}/subjects`}
+              href={fromDashboard ? withDashboardReferrer(`/year/${year.id}/subjects`) : `/year/${year.id}/subjects`}
               className="group border border-ink-faint hover:border-navy hover:bg-navy p-8 flex flex-col gap-4 transition-colors duration-200"
             >
               <span aria-hidden="true" className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint group-hover:text-taupe transition-colors duration-200">
