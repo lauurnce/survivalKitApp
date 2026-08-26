@@ -89,7 +89,7 @@ export const CONTROLS: readonly Control[] = [
     id: "BASE-02",
     group: "BASELINE",
     title: "Nonce-based Content-Security-Policy",
-    file: "middleware.ts",
+    file: "proxy.ts",
     baselineTask: 1,
     signals: [
       { label: "CSP header set", pattern: /Content-Security-Policy/ },
@@ -97,13 +97,13 @@ export const CONTROLS: readonly Control[] = [
       { label: "framing denied", pattern: /frame-ancestors 'none'/ },
     ],
     absentMeans:
-      "Injected script would run with the page's privileges; the policy is what makes an injection inert rather than executable. Lives in middleware rather than next.config.ts because the nonce must be regenerated per request.",
+      "Injected script would run with the page's privileges; the policy is what makes an injection inert rather than executable. Lives in the edge proxy (proxy.ts, formerly middleware.ts) rather than next.config.ts because the nonce must be regenerated per request.",
   },
   {
     id: "BASE-03",
     group: "BASELINE",
     title: "CSP has not regained script-src 'unsafe-inline'",
-    file: "middleware.ts",
+    file: "proxy.ts",
     baselineTask: 1,
     signals: [
       {
@@ -198,8 +198,8 @@ export const CONTROLS: readonly Control[] = [
   {
     id: "BASE-10",
     group: "BASELINE",
-    title: "Middleware guards the admin surface",
-    file: "middleware.ts",
+    title: "Edge proxy guards the admin surface",
+    file: "proxy.ts",
     baselineTask: 8,
     signals: [
       { label: "admin path match", pattern: /pathname\.startsWith\(["']\/admin["']\)/ },
@@ -300,7 +300,18 @@ export const CONTROLS: readonly Control[] = [
     title: "Device cookie secret is required, never defaulted",
     file: "lib/auth/deviceCookie.ts",
     signals: [
-      { label: "throws when unset", pattern: /DEVICE_COOKIE_SECRET[\s\S]{0,200}throw new Error/ },
+      // Enforcement lives in the shared resolver since the dual-secret
+      // rebase; the cookie module must still be seen handing over its var
+      // name, and the resolver must be seen throwing rather than defaulting.
+      {
+        label: "delegates its secret name to the shared resolver",
+        pattern: /signingSecretCandidates\(\s*["']DEVICE_COOKIE_SECRET["']/,
+      },
+      {
+        label: "resolver throws when unset or below the length floor",
+        file: "lib/auth/signingSecrets.ts",
+        pattern: /MIN_SECRET_LENGTH[\s\S]{0,300}throw new Error/,
+      },
     ],
     absentMeans:
       "A deployment missing the secret would fall back to a predictable one instead of refusing to run.",
@@ -353,8 +364,8 @@ export const CONTROLS: readonly Control[] = [
     signals: [
       { label: "node signature check", pattern: /timingSafeEqual\(/ },
       { label: "node expiry check", pattern: /Date\.now\(\)\s*<\s*exp/ },
-      { label: "edge signature check", pattern: /crypto\.subtle\.verify\(/, file: "middleware.ts" },
-      { label: "edge expiry check", pattern: /Date\.now\(\)\s*<\s*decoded\.exp/, file: "middleware.ts" },
+      { label: "edge signature check", pattern: /crypto\.subtle\.verify\(/, file: "proxy.ts" },
+      { label: "edge expiry check", pattern: /Date\.now\(\)\s*<\s*decoded\.exp/, file: "proxy.ts" },
     ],
     absentMeans:
       "The same token is verified twice by two different implementations. If they diverge, one layer accepts what the other rejects and the weaker one becomes the real policy.",

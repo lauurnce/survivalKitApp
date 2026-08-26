@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
-// Content-Security-Policy is NOT set here for normal page routes — middleware.ts
+// Content-Security-Policy is NOT set here for normal page routes — proxy.ts
 // generates a fresh per-request nonce and sets script-src there (nonce-based CSP
 // requires a value that changes every request, which this static config can't
-// produce). Next.js gives a middleware-set header priority over a matching
+// produce). Next.js gives a proxy-set header priority over a matching
 // next.config.ts header, so leaving CSP out of securityHeaders below avoids two
 // conflicting policies landing on the same response. /pyodideWorker.js is the
 // one path that keeps its CSP here (see pyodideWorkerHeaders) — middleware
