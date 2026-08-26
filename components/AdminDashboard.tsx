@@ -367,7 +367,7 @@ function DauChart({ data }: { data: DauDay[] }) {
               <div className="absolute -top-1 left-1/2 -translate-x-1/2 -translate-y-full z-10 whitespace-nowrap bg-ink text-paper px-2 py-1 shadow-md pointer-events-none">
                 <p className="font-mono text-[10px] leading-tight">{item.date}</p>
                 <p className="font-mono text-[10px] leading-tight">
-                  {item.unique} {item.unique === 1 ? "user" : "users"}
+                  {item.unique} {item.unique === 1 ? "device" : "devices"}
                 </p>
               </div>
             )}
@@ -415,7 +415,7 @@ function FunnelChart({ steps }: { steps: FunnelStep[] }) {
                   <div className="flex items-center gap-2 py-1 pl-28 sm:pl-44">
                     {dropped > 0 ? (
                       <span className="font-mono text-[10px] text-accent">
-                        ↓ {dropPct}% dropped ({dropped} users)
+                        ↓ {dropPct}% dropped ({dropped} devices)
                       </span>
                     ) : (
                       <span className="font-mono text-[10px] text-ink-faint">↓ no drop</span>
@@ -836,7 +836,7 @@ export function AdminDashboard({
         />
         {profilesAgg.total === 0 ? (
           <p className="font-sans text-xs text-ink-faint">
-            No profiles yet — this fills in as logged-in users complete the
+            No profiles yet — this fills in as logged-in accounts complete the
             profile card on their account page.
           </p>
         ) : (
