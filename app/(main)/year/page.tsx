@@ -4,6 +4,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
 import { YearGrid, type YearCardData } from "@/components/YearGrid";
+import { hasDashboardReferrer } from "@/lib/navigation";
 
 export const revalidate = 300;
 
@@ -12,7 +13,13 @@ export const metadata: Metadata = {
   description: "Pick your year level to browse BSIT subjects and modules.",
 };
 
-export default async function YearPage() {
+interface Props {
+  searchParams: Promise<{ from?: string }>;
+}
+
+export default async function YearPage({ searchParams }: Props) {
+  const resolvedSearchParams = await searchParams;
+  const fromDashboard = hasDashboardReferrer({ get: (k) => (k === "from" ? resolvedSearchParams.from ?? null : null) });
   const supabase = createServerClient();
   const [{ data: years }, { data: subjects }, { data: yearCounters }] = await Promise.all([
     supabase.from("years").select("*").order("sort_order"),
@@ -45,7 +52,13 @@ export default async function YearPage() {
       <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
         <div className="max-w-wide mx-auto">
           <div className="flex items-center justify-between gap-4">
-            <BackLink href="/" label="Home" className="text-taupe hover:text-paper" />
+            <BackLink
+              href="/"
+              label="Home"
+              className="text-taupe hover:text-paper"
+              dashboardFallback={{ href: "/account", label: "Back to Dashboard" }}
+              searchParams={{ get: (k) => (k === "from" ? resolvedSearchParams.from : null) }}
+            />
             <Link
               href="/search"
               className="inline-flex items-center gap-2 font-sans text-sm text-taupe hover:text-paper transition-colors duration-150"
@@ -68,7 +81,7 @@ export default async function YearPage() {
       {/* Year cards — cream */}
       <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
         <div className="max-w-wide mx-auto">
-          <YearGrid cards={cards} />
+          <YearGrid cards={cards} fromDashboard={fromDashboard} />
         </div>
       </div>
     </main>
