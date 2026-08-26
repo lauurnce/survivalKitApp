@@ -70,4 +70,18 @@ a, button, input, select, textarea {
   .label-sm {
     @apply font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint;
   }
+  .animate-slide-down {
+    animation: slideDown 200ms ease-out;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

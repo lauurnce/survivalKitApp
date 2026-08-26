@@ -126,6 +126,8 @@ export function pickRecommended(term: TermGroup | null, limit = 3): Recommendati
   return recs.slice(0, limit);
 }
 
+// ─── Legacy RoadmapNode (kept for backward compatibility) ────────────────────
+
 export interface RoadmapNode {
   key: string;
   short: string;
@@ -167,4 +169,80 @@ export function roadmapNodes(terms: TermGroup[], current: CurrentTerm | null): R
 export function continueHref(rec: Recommendation | undefined): string {
   if (!rec) return "/year";
   return `/year/${rec.yearId}/subjects/${rec.subjectId}/modules/${rec.moduleId}`;
+}
+
+// ─── New Rich Roadmap Types (Roadmap Redesign) ───────────────────────────────
+
+export type MilestoneState = "completed" | "current" | "upcoming" | "locked";
+
+export interface ModuleProgress {
+  id: string;
+  title: string;
+  status: "done" | "in-progress" | "not-started" | "locked";
+  completedAt: string | null;
+  firstOpenedAt: string | null;
+}
+
+export interface MilestoneSubject {
+  id: string;
+  title: string;
+  kind: "major" | "minor";
+  unlocked: boolean;
+  totalModules: number;
+  completedModules: number;
+  inProgressModules: number;
+  modules: ModuleProgress[];
+}
+
+export interface RoadmapMilestone {
+  key: string;
+  label: string;
+  yearId: string;
+  semester: number;
+  yearPosition: number;
+  state: MilestoneState;
+
+  totalModules: number;
+  completedModules: number;
+  inProgressModules: number;
+  notStartedModules: number;
+  lockedModules: number;
+
+  unlockedAt: string | null;
+  firstActivityAt: string | null;
+  lastActivityAt: string | null;
+
+  subjects: MilestoneSubject[];
+}
+
+export interface RoadmapData {
+  journeyStartedAt: string;
+  milestones: RoadmapMilestone[];
+  overall: {
+    totalModules: number;
+    completedModules: number;
+    inProgressModules: number;
+    completionRate: number;
+  };
+}
+
+// Derives semester label like "Year 1 • 1st Semester"
+export function milestoneLabel(yearLabel: string, semester: number): string {
+  const semLabel = semester === 1 ? "1st" : "2nd";
+  return `${yearLabel} • ${semLabel} Semester`;
+}
+
+// Determines milestone state based on unlock status and progress
+export function deriveMilestoneState(
+  milestone: Pick<RoadmapMilestone, "totalModules" | "completedModules" | "lockedModules">,
+  isCurrent: boolean
+): MilestoneState {
+  if (milestone.lockedModules === milestone.totalModules && milestone.totalModules > 0) {
+    return "locked";
+  }
+  if (milestone.completedModules === milestone.totalModules && milestone.totalModules > 0) {
+    return "completed";
+  }
+  if (isCurrent) return "current";
+  return "upcoming";
 }

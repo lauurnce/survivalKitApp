@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { completionPercentage, isUnlockedBy } from "./account";
+import { completionPercentage, isUnlockedBy, type ActiveSub } from "./account";
+
+const NOW = new Date().toISOString();
+
+function mkSub(s: Omit<ActiveSub, "created_at">): ActiveSub {
+  return { ...s, created_at: NOW };
+}
 
 describe("completionPercentage", () => {
   it("is 0 when total is 0", () => expect(completionPercentage(0, 0)).toBe(0));
@@ -16,26 +22,26 @@ describe("isUnlockedBy", () => {
   });
 
   it("year-level plan (subject_id null) unlocks any subject in that year", () => {
-    const subs = [{ year_id: YEAR, subject_id: null }];
+    const subs = [mkSub({ year_id: YEAR, subject_id: null })];
     expect(isUnlockedBy(subs, YEAR, SUBJ)).toBe(true);
     expect(isUnlockedBy(subs, YEAR, OTHER_SUBJ)).toBe(true);
   });
 
   it("year-level plan does not unlock a different year", () => {
-    const subs = [{ year_id: YEAR, subject_id: null }];
+    const subs = [mkSub({ year_id: YEAR, subject_id: null })];
     expect(isUnlockedBy(subs, OTHER_YEAR, SUBJ)).toBe(false);
   });
 
   it("subject-level plan unlocks only its own subject", () => {
-    const subs = [{ year_id: YEAR, subject_id: SUBJ }];
+    const subs = [mkSub({ year_id: YEAR, subject_id: SUBJ })];
     expect(isUnlockedBy(subs, YEAR, SUBJ)).toBe(true);
     expect(isUnlockedBy(subs, YEAR, OTHER_SUBJ)).toBe(false);
   });
 
   it("matches the right plan among several", () => {
     const subs = [
-      { year_id: OTHER_YEAR, subject_id: null },
-      { year_id: YEAR, subject_id: OTHER_SUBJ },
+      mkSub({ year_id: OTHER_YEAR, subject_id: null }),
+      mkSub({ year_id: YEAR, subject_id: OTHER_SUBJ }),
     ];
     expect(isUnlockedBy(subs, YEAR, SUBJ)).toBe(false);
     expect(isUnlockedBy(subs, YEAR, OTHER_SUBJ)).toBe(true);
