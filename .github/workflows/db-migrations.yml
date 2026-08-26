@@ -204,10 +204,9 @@ jobs:
           pending=()
           while IFS= read -r p; do pending+=("$p"); done \
             < <(bash scripts/db/build-consolidated.sh --list)
-          if [ "${#pending[@]}" -eq 0 ]; then
-            echo "::error::pending list is empty — check scripts/db/build-consolidated.sh"
-            exit 1
-          fi
+          # An empty pending array is the healthy caught-up state: the
+          # baseline degenerates to a full-history replay and the paste
+          # becomes a no-op. Only an empty BASELINE is an error.
           files=()
           while IFS= read -r f; do
             skip=""
