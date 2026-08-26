@@ -162,7 +162,7 @@ function footerMarkup(): string {
 
 function buildPage(): string {
   const { terms, current, recs, nodes, currentKey, feedbackHref } = generateMockData();
-  const profile: Profile = { firstName: "Lawrence", lastName: "Panes", age: 21, gender: null, university: "Test University", schoolType: "Public", major: "BSIT", pathways: [] };
+  const profile: Profile = { firstName: "Lawrence", lastName: "Panes", age: 21, gender: null, university: "Test University", schoolType: "Public", major: "BSIT", pathways: [], devices: [], languages: [], background: null, itReason: null, careerGoal: null, githubUrl: null, portfolioUrl: null, createdAt: null };
 
   const heroHtml = renderToStaticMarkup(<HeroCard term={current} topPick={recs[0]} profile={profile} pro={true} />);
   const roadmapHtml = renderToStaticMarkup(<RoadmapTimeline nodes={nodes} />);
