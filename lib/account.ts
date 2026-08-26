@@ -436,3 +436,241 @@ function deriveMilestoneState(
   if (isCurrent) return "current";
   return "upcoming";
 }
+
+// ─── Activity Graph Data ──────────────────────────────────────────────────────
+
+export interface ActivityWeek {
+  weekStart: string;      // ISO date (Monday)
+  activeDays: number;     // 0-7
+  totalEvents: number;
+  days: Array<{
+    date: string;         // ISO date
+    isActive: boolean;
+    eventCount: number;
+  }>;
+}
+
+export interface ActivityData {
+  weeks: ActivityWeek[];
+  currentStreak: number;    // consecutive active days ending today/yesterday
+  longestStreak: number;
+  totalActiveDays: number;
+}
+
+interface EventRowFull {
+  event_type: string;
+  subject_id: string | null;
+  module_id: string | null;
+  created_at: string;
+}
+
+/**
+ * Fetches activity data for the past 8 weeks (56 days).
+ * Used for the activity line graph visualization.
+ */
+export async function getActivityData(userId: string): Promise<ActivityData> {
+  const supabase = createServerClient();
+  const now = new Date();
+  const cutoff = new Date(now);
+  cutoff.setDate(cutoff.getDate() - 56); // 8 weeks
+
+  // Fetch events for both user_id and device_id (for anonymous)
+  const [userEventsRes, deviceEventsRes] = await Promise.all([
+    isUuid(userId)
+      ? supabase
+          .from("events")
+          .select("event_type, subject_id, module_id, created_at")
+          .eq("user_id", userId)
+          .gte("created_at", cutoff.toISOString())
+          .order("created_at", { ascending: true })
+      : { data: [] as EventRowFull[] },
+    supabase
+      .from("events")
+      .select("event_type, subject_id, module_id, created_at")
+      .eq("device_id", userId)
+      .gte("created_at", cutoff.toISOString())
+      .order("created_at", { ascending: true }),
+  ]);
+
+  const userEvents = (userEventsRes.data ?? []) as EventRowFull[];
+  const deviceEvents = (deviceEventsRes.data ?? []) as EventRowFull[];
+  const allEvents = [...userEvents, ...deviceEvents].sort((a, b) => 
+    new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  );
+
+  // Build daily activity map
+  const dailyActivity = new Map<string, { eventCount: number; isActive: boolean }>();
+  
+  for (let i = 0; i < 56; i++) {
+    const d = new Date(cutoff);
+    d.setDate(d.getDate() + i);
+    const key = d.toISOString().split("T")[0];
+    dailyActivity.set(key, { eventCount: 0, isActive: false });
+  }
+
+  for (const e of allEvents) {
+    const date = new Date(e.created_at).toISOString().split("T")[0];
+    const existing = dailyActivity.get(date);
+    if (existing) {
+      existing.eventCount++;
+      existing.isActive = true;
+    }
+  }
+
+  // Group into weeks (Monday-Sunday)
+  const weeks: ActivityWeek[] = [];
+  let currentWeek: ActivityWeek | null = null;
+
+  for (let i = 0; i < 56; i++) {
+    const d = new Date(cutoff);
+    d.setDate(d.getDate() + i);
+    const key = d.toISOString().split("T")[0];
+    const dayData = dailyActivity.get(key)!;
+    const dayOfWeek = d.getDay(); // 0=Sun, 1=Mon...
+
+    if (dayOfWeek === 1 || currentWeek === null) { // Monday = new week
+      if (currentWeek) weeks.push(currentWeek);
+      currentWeek = {
+        weekStart: key,
+        activeDays: 0,
+        totalEvents: 0,
+        days: [],
+      };
+    }
+
+    currentWeek!.days.push({
+      date: key,
+      isActive: dayData.isActive,
+      eventCount: dayData.eventCount,
+    });
+    if (dayData.isActive) currentWeek!.activeDays++;
+    currentWeek!.totalEvents += dayData.eventCount;
+  }
+  if (currentWeek) weeks.push(currentWeek);
+
+  // Calculate streaks
+  let currentStreak = 0;
+  let longestStreak = 0;
+  let tempStreak = 0;
+
+  // Check from most recent day backwards
+  for (let i = weeks.length - 1; i >= 0; i--) {
+    const week = weeks[i];
+    for (let d = week.days.length - 1; d >= 0; d--) {
+      const day = week.days[d];
+      if (day.isActive) {
+        tempStreak++;
+        if (i === weeks.length - 1 && d === week.days.length - 1) {
+          // Most recent day (today or yesterday)
+          currentStreak = tempStreak;
+        }
+      } else {
+        if (tempStreak > longestStreak) longestStreak = tempStreak;
+        if (currentStreak === 0) tempStreak = 0; // streak broken before today
+      }
+    }
+  }
+  if (tempStreak > longestStreak) longestStreak = tempStreak;
+
+  const totalActiveDays = weeks.reduce((sum, w) => sum + w.activeDays, 0);
+
+  return { weeks, currentStreak, longestStreak, totalActiveDays };
+}
+
+// ─── Subscription Timeline Data ───────────────────────────────────────────────
+
+export interface SubscriptionTimelineItem {
+  yearId: string;
+  yearLabel: string;
+  subjectId: string | null;
+  subjectTitle: string | null;
+  startedAt: string;
+  endsAt: string;
+  daysRemaining: number;
+  progressPct: number;    // elapsed / total period
+  isActive: boolean;
+}
+
+/**
+ * Fetches subscription timeline data for visualization.
+ * Shows each active subscription as a progress bar with time remaining.
+ */
+export async function getSubscriptionTimeline(userId: string): Promise<SubscriptionTimelineItem[]> {
+  const supabase = createServerClient();
+  const now = new Date();
+  const nowISO = now.toISOString();
+
+  const subsRes = await supabase
+    .from("subscriptions")
+    .select("year_id, subject_id, created_at, current_period_end")
+    .eq("user_id", userId)
+    .eq("status", "active")
+    .gt("current_period_end", nowISO);
+
+  const subs = (subsRes.data ?? []) as Array<{
+    year_id: string;
+    subject_id: string | null;
+    created_at: string;
+    current_period_end: string;
+  }>;
+
+  if (subs.length === 0) return [];
+
+  // Fetch year/subject labels
+  const yearIds = [...new Set(subs.map(s => s.year_id))];
+  const subjectIds = [...new Set(subs.map(s => s.subject_id).filter(Boolean))];
+
+  const [yearsRes, subjectsRes] = await Promise.all([
+    yearIds.length > 0
+      ? supabase.from("years").select("id, label").in("id", yearIds)
+      : { data: [] },
+    subjectIds.length > 0
+      ? supabase.from("subjects").select("id, title").in("id", subjectIds)
+      : { data: [] },
+  ]);
+
+  const yearLabels = new Map((yearsRes.data ?? []).map(y => [y.id, y.label]));
+  const subjectTitles = new Map((subjectsRes.data ?? []).map(s => [s.id, s.title]));
+
+  return subs.map(sub => {
+    const startedAt = new Date(sub.created_at);
+    const endsAt = new Date(sub.current_period_end);
+    const totalMs = endsAt.getTime() - startedAt.getTime();
+    const elapsedMs = now.getTime() - startedAt.getTime();
+    const progressPct = totalMs > 0 ? Math.min(100, Math.max(0, Math.round((elapsedMs / totalMs) * 100))) : 0;
+    const daysRemaining = Math.max(0, Math.ceil((endsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+
+    return {
+      yearId: sub.year_id,
+      yearLabel: yearLabels.get(sub.year_id) ?? "Unknown Year",
+      subjectId: sub.subject_id,
+      subjectTitle: sub.subject_id ? subjectTitles.get(sub.subject_id) ?? null : null,
+      startedAt: sub.created_at,
+      endsAt: sub.current_period_end,
+      daysRemaining,
+      progressPct,
+      isActive: daysRemaining > 0,
+    };
+  });
+}
+
+// ─── Combined Dashboard Data ──────────────────────────────────────────────────
+
+export interface DashboardData {
+  roadmap: RoadmapData;
+  activity: ActivityData;
+  subscriptions: SubscriptionTimelineItem[];
+}
+
+/**
+ * Single batched fetch for all dashboard data.
+ * Used by /account page for simplified roadmap + activity graph.
+ */
+export async function getDashboardData(userId: string): Promise<DashboardData> {
+  const [roadmap, activity, subscriptions] = await Promise.all([
+    getRoadmapData(userId),
+    getActivityData(userId),
+    getSubscriptionTimeline(userId),
+  ]);
+  return { roadmap, activity, subscriptions };
+}

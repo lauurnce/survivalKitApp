@@ -246,3 +246,41 @@ export function deriveMilestoneState(
   if (isCurrent) return "current";
   return "upcoming";
 }
+
+// ─── Activity & Subscription Types (Roadmap v2) ────────────────────────────────
+
+export interface ActivityWeek {
+  weekStart: string;
+  activeDays: number;
+  totalEvents: number;
+  days: Array<{
+    date: string;
+    isActive: boolean;
+    eventCount: number;
+  }>;
+}
+
+export interface ActivityData {
+  weeks: ActivityWeek[];
+  currentStreak: number;
+  longestStreak: number;
+  totalActiveDays: number;
+}
+
+export interface SubscriptionTimelineItem {
+  yearId: string;
+  yearLabel: string;
+  subjectId: string | null;
+  subjectTitle: string | null;
+  startedAt: string;
+  endsAt: string;
+  daysRemaining: number;
+  progressPct: number;
+  isActive: boolean;
+}
+
+export interface DashboardData {
+  roadmap: RoadmapData;
+  activity: ActivityData;
+  subscriptions: SubscriptionTimelineItem[];
+}
