@@ -42,6 +42,10 @@ export async function GET(
     const cookieStore = await cookies();
     const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
 
+    if (!deviceId) {
+      return NextResponse.json<QuizResponse>({ questions: [], reason: "no-progress" });
+    }
+
     const { moduleId } = await params;
     if (!isUuid(moduleId)) {
       return NextResponse.json({ error: "Invalid module ID" }, { status: 400 });
@@ -50,15 +54,15 @@ export async function GET(
     const supabase = createServerClient();
     const now = new Date().toISOString();
 
-    // Check module_progress by user_id with device_id fallback
+    // Check module_progress by device_id (primary) with user_id fallback
     let progressQuery = supabase
       .from("module_progress")
       .select("completed_at")
       .eq("module_id", moduleId)
-      .eq("user_id", userId);
+      .eq("device_id", deviceId);
 
-    if (deviceId) {
-      progressQuery = progressQuery.or(`user_id.eq.${userId},device_id.eq.${deviceId}`);
+    if (userId) {
+      progressQuery = progressQuery.or(`device_id.eq.${deviceId},user_id.eq.${userId}`);
     }
 
     const [progressRes, subsRes, moduleRes, subjectRes, sectionsRes] = await Promise.all([

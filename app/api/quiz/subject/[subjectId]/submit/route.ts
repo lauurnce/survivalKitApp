@@ -31,6 +31,10 @@ export async function POST(
     const cookieStore = await cookies();
     const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
 
+    if (!deviceId) {
+      return NextResponse.json({ error: "No device ID" }, { status: 400 });
+    }
+
     const { subjectId } = await params;
     if (!isUuid(subjectId)) {
       return NextResponse.json({ error: "Invalid subject ID" }, { status: 400 });
@@ -54,10 +58,10 @@ export async function POST(
     let progressQuery = supabase
       .from("module_progress")
       .select("module_id")
-      .eq("user_id", userId);
+      .eq("device_id", deviceId);
 
-    if (deviceId) {
-      progressQuery = progressQuery.or(`user_id.eq.${userId},device_id.eq.${deviceId}`);
+    if (userId) {
+      progressQuery = progressQuery.or(`device_id.eq.${deviceId},user_id.eq.${userId}`);
     }
 
     const { data: completedModules } = await progressQuery;
