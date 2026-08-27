@@ -56,9 +56,13 @@ export default async function YearPage({ searchParams }: Props) {
     };
   });
 
+  const showNavRail = userId || fromDashboard;
+
   return (
     <div className="min-h-screen bg-paper lg:flex">
-      <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
+      {showNavRail && (
+        <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
+      )}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
           <ThemeToggleInline />
@@ -78,6 +82,7 @@ export default async function YearPage({ searchParams }: Props) {
               <div className="flex items-center justify-end gap-4">
                 <Link
                   href="/search"
+                  prefetch={true}
                   className="inline-flex items-center gap-2 font-sans text-sm text-taupe hover:text-paper transition-colors duration-150"
                 >
                   <span className="text-accent">⌕</span>

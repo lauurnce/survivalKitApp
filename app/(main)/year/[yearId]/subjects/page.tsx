@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
+import { getCurrentUserId } from "@/lib/auth/currentUser";
+import { hasDashboardReferrer } from "@/lib/navigation";
+import { NavRail } from "@/components/dashboard/NavRail";
 import { BackLink } from "@/components/BackLink";
 import { PageTracker } from "@/components/PageTracker";
 import { SubjectAccordion, type SubjectModule } from "@/components/SubjectAccordion";
 import { sectionLabel } from "@/lib/sectionLabel";
+import { getAccountOverview } from "@/lib/account";
 
 export const revalidate = 300;
 
@@ -40,7 +44,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SubjectsPage({ params, searchParams }: Props) {
   const { yearId } = await params;
   const resolvedSearchParams = await searchParams;
+  const fromDashboard = hasDashboardReferrer({ get: (k) => (k === "from" ? resolvedSearchParams.from ?? null : null) });
   const supabase = createServerClient();
+
+  const userId = await getCurrentUserId();
+  const overview = userId
+    ? await getAccountOverview(userId)
+    : { overallDone: 0, overallTotal: 0 };
+
+  const showNavRail = userId || fromDashboard;
 
   const [{ data: year }, { data: rawSubjects }, { data: subjectCounters }] = await Promise.all([
     supabase.from("years").select("*").eq("id", yearId).single(),
@@ -79,61 +91,68 @@ export default async function SubjectsPage({ params, searchParams }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-paper flex flex-col">
-      <PageTracker event="subject_open" yearId={yearId} />
+    <div className="min-h-screen bg-paper lg:flex">
+      {showNavRail && (
+        <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
+      )}
+      <div className="flex-1 min-w-0">
+        <main className="min-h-screen bg-paper flex flex-col">
+          <PageTracker event="subject_open" yearId={yearId} />
 
-      {/* Page header — dark navy */}
-      <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
-        <div className="max-w-wide mx-auto">
-          <BackLink
-            href={`/year/${yearId}`}
-            label="Select Year"
-            className="text-taupe hover:text-paper"
-            dashboardFallback={{ href: "/account", label: "Back to Dashboard" }}
-            searchParams={{ get: (k) => (k === "from" ? resolvedSearchParams.from : null) }}
-          />
-          <div className="mt-10">
-            <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
-              {sectionLabel(year.sort_order)} — {year.label}
-            </p>
-            <h1 className="font-serif text-display-lg text-paper">Subjects</h1>
+          {/* Page header — dark navy */}
+          <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
+            <div className="max-w-wide mx-auto">
+              <BackLink
+                href={`/year/${yearId}`}
+                label="Select Year"
+                className="text-taupe hover:text-paper"
+                dashboardFallback={{ href: "/account", label: "Back to Dashboard" }}
+                searchParams={{ get: (k) => (k === "from" ? resolvedSearchParams.from : null) }}
+              />
+              <div className="mt-10">
+                <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe mb-4">
+                  {sectionLabel(year.sort_order)} — {year.label}
+                </p>
+                <h1 className="font-serif text-display-lg text-paper">Subjects</h1>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Subject list — cream */}
-      <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
-        <div className="flex flex-col gap-12 max-w-wide mx-auto">
-          {[
-            { label: "1st Semester", items: sem1 },
-            { label: "2nd Semester", items: sem2 },
-          ]
-            .filter(({ items }) => items.length > 0)
-            .map(({ label, items }) => (
-              <section key={label}>
-                {/* Semester label — dark band */}
-                <div className="bg-navy px-4 py-3 mb-6 inline-block">
-                  <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe">
-                    {label}
-                  </p>
-                </div>
+          {/* Subject list — cream */}
+          <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
+            <div className="flex flex-col gap-12 max-w-wide mx-auto">
+              {[
+                { label: "1st Semester", items: sem1 },
+                { label: "2nd Semester", items: sem2 },
+              ]
+                .filter(({ items }) => items.length > 0)
+                .map(({ label, items }) => (
+                  <section key={label}>
+                    {/* Semester label — dark band */}
+                    <div className="bg-navy px-4 py-3 mb-6 inline-block">
+                      <p className="font-mono text-label-md uppercase tracking-[0.1em] text-taupe">
+                        {label}
+                      </p>
+                    </div>
 
-                <div className="flex flex-col divide-y divide-ink-faint/30">
-                  {items.map((subject, i) => (
-                    <SubjectAccordion
-                      key={subject.id}
-                      subject={subject}
-                      modules={modulesBySubject.get(subject.id) ?? []}
-                      yearId={yearId}
-                      index={i}
-                      reads={readCount(subject.id)}
-                    />
-                  ))}
-                </div>
-              </section>
-            ))}
-        </div>
+                    <div className="flex flex-col divide-y divide-ink-faint/30">
+                      {items.map((subject, i) => (
+                        <SubjectAccordion
+                          key={subject.id}
+                          subject={subject}
+                          modules={modulesBySubject.get(subject.id) ?? []}
+                          yearId={yearId}
+                          index={i}
+                          reads={readCount(subject.id)}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                ))}
+            </div>
+          </div>
+        </main>
       </div>
-    </main>
+    </div>
   );
 }
