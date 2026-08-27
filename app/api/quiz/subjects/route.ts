@@ -126,6 +126,11 @@ export async function GET() {
       .eq("kind", "content")
       .in("module_id", doneModuleIds);
 
+    console.log('[QUIZ SUBJECTS DEBUG] sections count:', sections?.length);
+    if (sections && sections.length > 0) {
+      console.log('[QUIZ SUBJECTS DEBUG] sample section body_md:', sections[0].body_md?.substring(0, 200));
+    }
+
     const sectionsByModule = new Map<string, string[]>();
     for (const s of sections ?? []) {
       if (!s.body_md) continue;
