@@ -5,7 +5,7 @@ import { getAccountOverview } from "@/lib/account";
 import { signOutAction } from "../../(auth)/actions";
 import { ThemeToggleInline } from "@/components/ThemeToggle";
 import { NavRail } from "@/components/dashboard/NavRail";
-import { ReviewQuiz } from "@/components/account/ReviewQuiz";
+import { SubjectQuizList } from "@/components/resources/SubjectQuizList";
 
 // Session-aware (the review quiz is gated on sign-in) but still public —
 // anonymous visitors are never redirected away.
@@ -82,14 +82,14 @@ export default async function ResourcesPage() {
           <section className="space-y-3">
             <div>
               <p className="label-sm">Review</p>
-              <h2 className="font-serif text-lg text-ink">Quiz yourself on finished modules</h2>
+              <h2 className="font-serif text-lg text-ink">Quiz yourself on finished subjects</h2>
             </div>
             {userId ? (
-              <ReviewQuiz />
+              <SubjectQuizList />
             ) : (
               <div className="rounded-xl border border-taupe/30 p-6 space-y-3">
                 <p className="text-sm text-ink-muted">
-                  Sign in to quiz yourself on the modules you&apos;ve finished.
+                  Sign in to quiz yourself on the subjects you&apos;ve completed modules in.
                 </p>
                 <Link
                   href="/login?next=/resources"

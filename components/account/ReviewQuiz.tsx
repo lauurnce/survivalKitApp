@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import {
   isAnswerCorrect,
   type MultiChoiceQuestion,
@@ -8,42 +9,78 @@ import {
   type QuizResponse,
 } from "@/lib/quiz/types";
 
-// ─── local state ──────────────────────────────────────────────────────────────
-
 type FetchState =
   | { status: "loading" }
   | { status: "error" }
   | { status: "empty"; reason: "no-progress" | "no-facts" }
   | { status: "ready"; questions: QuizQuestion[] };
 
-/** What the student answered for one question, recorded at submit time. */
 interface Result {
   given: string;
   correct: boolean;
 }
 
-const kickerClass =
-  "font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint";
+interface ReviewQuizProps {
+  moduleId?: string;
+  moduleTitle?: string;
+  subjectId?: string;
+  subjectTitle?: string;
+}
+
+const kickerClass = "font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint";
 const wrongText = "text-red-600 dark:text-red-400";
 
-/** The correct answer of a question as display text. */
 function correctAnswerText(q: QuizQuestion): string {
   return q.kind === "multi-choice" ? q.options[q.answerIndex] : q.answer;
 }
 
-// ─── component ────────────────────────────────────────────────────────────────
+function buildQuizUrl(moduleId: string | undefined, subjectId: string | undefined, seed?: number): string {
+  if (subjectId) {
+    const base = `/api/quiz/subject/${subjectId}`;
+    return seed !== undefined ? `${base}?seed=${seed}` : base;
+  }
+  if (moduleId) {
+    const base = `/api/quiz/module/${moduleId}`;
+    return seed !== undefined ? `${base}?seed=${seed}` : base;
+  }
+  return seed !== undefined ? `/api/quiz?seed=${seed}` : "/api/quiz";
+}
 
-export function ReviewQuiz() {
+function buildSubmitUrl(moduleId: string | undefined, subjectId: string | undefined): string {
+  if (subjectId) {
+    return `/api/quiz/subject/${subjectId}/submit`;
+  }
+  return moduleId ? `/api/quiz/module/${moduleId}/submit` : "/api/quiz/submit";
+}
+
+function getBackLink(moduleId: string | undefined, subjectId: string | undefined): string {
+  if (subjectId) return "/resources";
+  if (moduleId) return "/resources";
+  return "/resources";
+}
+
+function getBackLinkLabel(moduleId: string | undefined, subjectId: string | undefined): string {
+  if (subjectId) return "← Back to Quizzes";
+  if (moduleId) return "← Back to Quizzes";
+  return "← Back to Resources";
+}
+
+export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: ReviewQuizProps) {
   const [fetchState, setFetchState] = useState<FetchState>({ status: "loading" });
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<"answering" | "feedback">("answering");
   const [typed, setTyped] = useState("");
   const [chosen, setChosen] = useState<number | null>(null);
   const [results, setResults] = useState<Result[]>([]);
+  const [lastSeed, setLastSeed] = useState<number | null>(null);
 
   const requestIdRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
+
+  const isModuleMode = !!moduleId;
+  const isSubjectMode = !!subjectId;
+  const isLegacyMode = !moduleId && !subjectId;
 
   const loadQuiz = useCallback(async (seed?: number) => {
     const id = ++requestIdRef.current;
@@ -53,12 +90,13 @@ export function ReviewQuiz() {
     setTyped("");
     setChosen(null);
     setResults([]);
+    if (seed !== undefined) setLastSeed(seed);
     try {
-      const url = seed === undefined ? "/api/quiz" : `/api/quiz?seed=${seed}`;
+      const url = buildQuizUrl(moduleId, subjectId, seed);
       const res = await fetch(url);
       if (!res.ok) throw new Error(`quiz fetch failed: ${res.status}`);
       const data = (await res.json()) as QuizResponse;
-      if (id !== requestIdRef.current) return; // a newer request superseded us
+      if (id !== requestIdRef.current) return;
       if (data.questions.length === 0) {
         setFetchState({ status: "empty", reason: data.reason ?? "no-facts" });
       } else {
@@ -67,30 +105,51 @@ export function ReviewQuiz() {
     } catch {
       if (id === requestIdRef.current) setFetchState({ status: "error" });
     }
-  }, []);
+  }, [moduleId, subjectId]);
+
+  const initialLoadRef = useRef(true);
 
   useEffect(() => {
-    // Fetch-on-mount: loadQuiz()'s synchronous writes are idempotent resets
-    // to initial values, batched into one cascade before the first await —
-    // a perf nit at most; the v6 rule flags the helper indirection
-    // conservatively.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void loadQuiz();
-    // Invalidate any in-flight request on unmount so it can't set state.
+    if (initialLoadRef.current) {
+      initialLoadRef.current = false;
+      void loadQuiz();
+    }
     return () => {
       requestIdRef.current += 1;
     };
   }, [loadQuiz]);
 
-  // Focus follows the phase: text input while answering, Next while in
-  // feedback — so Enter both submits and advances without extra listeners.
   useEffect(() => {
     if (fetchState.status !== "ready") return;
     if (phase === "answering") inputRef.current?.focus();
     else nextRef.current?.focus();
   }, [fetchState.status, phase, index]);
 
-  // ── answer handlers ─────────────────────────────────────────────────────────
+  async function submitResults() {
+    if (isLegacyMode) return;
+    if (results.length === 0) return;
+
+    const answers = results.map((r, i) => ({
+      index: i,
+      given: r.given,
+      correct: r.correct,
+    }));
+
+    try {
+      await fetch(buildSubmitUrl(moduleId, subjectId), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          score: results.filter((r) => r.correct).length,
+          totalQuestions: results.length,
+          seed: lastSeed ?? Math.floor(Math.random() * 1e9),
+          answers,
+        }),
+      });
+    } catch {
+      // Non-blocking; quiz still works locally
+    }
+  }
 
   function submitTyped(question: QuizQuestion & { answer: string }) {
     if (phase !== "answering") return;
@@ -120,28 +179,34 @@ export function ReviewQuiz() {
     setIndex((i) => Math.min(i + 1, total));
   }
 
-  // ── frame shared by every state ─────────────────────────────────────────────
-
   function frame(children: React.ReactNode, headerRight?: React.ReactNode) {
+    const kickerText = isSubjectMode
+      ? "Subject Quiz"
+      : isModuleMode
+      ? "Module Quiz"
+      : "Review Quiz";
+
+    const subtitle = isSubjectMode && subjectTitle
+      ? `Questions from ${subjectTitle} (all completed modules)`
+      : isModuleMode && moduleTitle && subjectTitle
+      ? `Questions from ${moduleTitle} · ${subjectTitle}`
+      : "Questions drawn from lessons you&apos;ve completed.";
+
     return (
       <section className="rounded-xl border border-taupe/40 bg-paper p-6">
         <div className="flex items-baseline justify-between gap-3 mb-1">
-          <p className={kickerClass}>Review Quiz</p>
+          <p className={kickerClass}>{kickerText}</p>
           {headerRight}
         </div>
-        <p className="text-xs text-ink-muted mb-5">
-          Questions drawn from lessons you&apos;ve completed.
-        </p>
+        <p className="text-xs text-ink-muted mb-5">{subtitle}</p>
         {children}
       </section>
     );
   }
 
-  // ── loading / error / empty ─────────────────────────────────────────────────
-
   if (fetchState.status === "loading") {
     return frame(
-      <div className="animate-pulse space-y-3" aria-label="Loading review quiz">
+      <div className="animate-pulse space-y-3" aria-label="Loading quiz">
         <div className="h-5 w-3/4 rounded bg-taupe/30" />
         <div className="h-5 w-1/2 rounded bg-taupe/30" />
         <div className="h-10 w-full rounded bg-taupe/20" />
@@ -170,13 +235,15 @@ export function ReviewQuiz() {
     return frame(
       <p className="text-sm text-ink-muted">
         {fetchState.reason === "no-progress"
-          ? "Finish your first module and a review quiz will appear here."
-          : "Your finished modules don't have quiz material yet — it will appear as more lessons are completed."}
+          ? isSubjectMode
+            ? "No completed modules in this subject yet."
+            : isModuleMode
+            ? "This module isn't marked complete yet."
+            : "Finish your first module and a review quiz will appear here."
+          : "This module doesn't have enough quiz material yet."}
       </p>
     );
   }
-
-  // ── ready ───────────────────────────────────────────────────────────────────
 
   const { questions } = fetchState;
   const total = questions.length;
@@ -193,8 +260,8 @@ export function ReviewQuiz() {
               ? "bg-accent"
               : "bg-red-400"
             : i === index
-              ? "bg-ink"
-              : "bg-taupe/50";
+            ? "bg-ink"
+            : "bg-taupe/50";
           return <span key={i} className={`h-1.5 w-1.5 rounded-full ${cls}`} />;
         })}
       </div>
@@ -204,15 +271,13 @@ export function ReviewQuiz() {
     </div>
   );
 
-  // ── score screen ────────────────────────────────────────────────────────────
-
   if (finished) {
     const verdict =
       score === total
         ? "Perfect score — you got every term right."
         : score / total >= 0.7
-          ? "Good work — a couple of terms to revisit."
-          : "Keep reviewing — reread the modules below and try again.";
+        ? "Good work — a couple of terms to revisit."
+        : "Keep reviewing — reread the material and try again.";
     return frame(
       <div className="space-y-6">
         <div>
@@ -259,18 +324,36 @@ export function ReviewQuiz() {
           })}
         </ul>
 
-        <button
-          type="button"
-          onClick={() => void loadQuiz(Math.floor(Math.random() * 1e9))}
-          className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-paper hover:bg-accent-dark transition-colors"
-        >
-          Try another quiz
-        </button>
+        <div className="flex flex-wrap gap-3">
+          {(isModuleMode || isSubjectMode) ? (
+            <>
+              <Link
+                href={getBackLink(moduleId, subjectId)}
+                className="rounded-lg border border-taupe/60 px-4 py-2 text-sm text-ink hover:border-accent/60 hover:text-accent transition-colors"
+              >
+                {getBackLinkLabel(moduleId, subjectId)}
+              </Link>
+              <button
+                type="button"
+                onClick={() => void loadQuiz(Math.floor(Math.random() * 1e9))}
+                className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-paper hover:bg-accent-dark transition-colors"
+              >
+                Retry Quiz
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => void loadQuiz(Math.floor(Math.random() * 1e9))}
+              className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-paper hover:bg-accent-dark transition-colors"
+            >
+              Try another quiz
+            </button>
+          )}
+        </div>
       </div>
     );
   }
-
-  // ── question ────────────────────────────────────────────────────────────────
 
   const q = questions[index];
   const result = phase === "feedback" ? results[index] : null;
@@ -376,7 +459,6 @@ export function ReviewQuiz() {
           </>
         )}
 
-        {/* Feedback — always mounted so aria-live announces phase changes */}
         <div aria-live="polite">
           {result && (
             <div className="space-y-1 pt-1">
@@ -405,7 +487,12 @@ export function ReviewQuiz() {
           <button
             type="button"
             ref={nextRef}
-            onClick={() => next(total)}
+            onClick={() => {
+              if (index + 1 === total && (isModuleMode || isSubjectMode)) {
+                void submitResults();
+              }
+              next(total);
+            }}
             className="rounded-lg border border-taupe/60 px-4 py-2 text-sm text-ink hover:border-accent/60 hover:text-accent transition-colors"
           >
             {index + 1 === total ? "See score →" : "Next →"}
