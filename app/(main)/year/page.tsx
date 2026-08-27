@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createServerClient } from "@/lib/supabase/server";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { getAccountOverview } from "@/lib/account";
 import { signOutAction } from "../../(auth)/actions";
@@ -8,9 +7,10 @@ import { NavRail } from "@/components/dashboard/NavRail";
 import { PageTracker } from "@/components/PageTracker";
 import { YearGrid, type YearCardData } from "@/components/YearGrid";
 import { hasDashboardReferrer } from "@/lib/navigation";
+import { getYears, getAllSubjects, getYearCounters } from "@/lib/cache/queries";
 
-// Per-user progress on the nav rail requires cookies — render per request.
-export const dynamic = "force-dynamic";
+// Year list is static; user progress on nav rail is cached for 60s (acceptable for progress indicator).
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Select Year",
@@ -31,15 +31,15 @@ export default async function YearPage({ searchParams }: Props) {
     ? await getAccountOverview(userId)
     : { overallDone: 0, overallTotal: 0 };
 
-  const supabase = createServerClient();
-  const [{ data: years }, { data: subjects }, { data: yearCounters }] = await Promise.all([
-    supabase.from("years").select("*").order("sort_order"),
-    supabase.from("subjects").select("id, year_id, semester, kind"),
-    supabase.from("counters").select("resource_id, reader_count").eq("resource_type", "year"),
+  // Use cached queries for static data
+  const [years, allSubjects, yearCounters] = await Promise.all([
+    getYears(),
+    getAllSubjects(),
+    getYearCounters(),
   ]);
 
   const cards: YearCardData[] = (years ?? []).map((year) => {
-    const rows = subjects?.filter((s) => s.year_id === year.id) ?? [];
+    const rows = (allSubjects ?? []).filter((s) => s.year_id === year.id);
     return {
       id: year.id,
       label: year.label,
