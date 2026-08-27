@@ -68,6 +68,7 @@ export default async function ResourcesPage() {
               <Link
                 key={card.href}
                 href={card.href}
+                prefetch={true}
                 className="rounded-xl border border-taupe/30 p-6 hover:border-accent/50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
               >
                 <p className="label-sm">{card.kicker}</p>
@@ -91,6 +92,7 @@ export default async function ResourcesPage() {
                 </p>
                 <Link
                   href="/login?next=/resources"
+                  prefetch={true}
                   className="inline-block text-sm text-accent underline underline-offset-2 hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                 >
                   Sign in &rarr;

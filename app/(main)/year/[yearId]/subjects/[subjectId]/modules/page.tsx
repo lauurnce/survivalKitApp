@@ -14,8 +14,9 @@ import { ProAccessBanner } from "@/components/ProAccessBanner";
 import { ShareProgressButton } from "@/components/share/ShareProgressButton";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { modulePath } from "@/lib/subscribeRedirect";
+import { getSubjectWithYear, getModulesBySubject, getModuleCounters, getActivitySectionsForModules } from "@/lib/cache/queries";
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ yearId: string; subjectId: string }>;
@@ -41,16 +42,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ModulesPage({ params, searchParams }: Props) {
   const { yearId, subjectId } = await params;
   const resolvedSearchParams = await searchParams;
-  const supabase = createServerClient();
 
-  const [{ data: subject }, { data: modules }, { data: moduleCounters }] = await Promise.all([
-    supabase.from("subjects").select("*, years(label, sort_order)").eq("id", subjectId).single(),
-    supabase
-      .from("modules")
-      .select("*")
-      .eq("subject_id", subjectId)
-      .order("sort_order"),
-    supabase.from("counters").select("resource_id, read_count").eq("resource_type", "module"),
+  // Use cached queries for static data
+  const subject = await getSubjectWithYear(subjectId);
+  if (!subject) notFound();
+
+  const modules = await getModulesBySubject(subjectId);
+  const moduleIds = (modules ?? []).map((m) => m.id);
+  
+  const [moduleCounters, activityRows] = await Promise.all([
+    getModuleCounters(moduleIds),
+    getActivitySectionsForModules(moduleIds),
   ]);
 
   if (!subject) notFound();
@@ -58,14 +60,6 @@ export default async function ModulesPage({ params, searchParams }: Props) {
   // Concrete reviewer count for the teaser ("N reviewers with answer keys…"),
   // plus which modules carry gated activity sections at all — a module with
   // none is free content and must never wear the PRO treatment.
-  const moduleIds = (modules ?? []).map((m) => m.id);
-  const { data: activityRows } = moduleIds.length
-    ? await supabase
-        .from("sections")
-        .select("id, module_id")
-        .eq("kind", "activity")
-        .in("module_id", moduleIds)
-    : { data: [] };
   const reviewerCount = activityRows?.length ?? 0;
   const proModuleIds = new Set((activityRows ?? []).map((row) => row.module_id));
 
@@ -81,7 +75,7 @@ export default async function ModulesPage({ params, searchParams }: Props) {
       ? await isSubscribed(deviceId ?? "", yearId, subjectId, userId ?? undefined)
       : false);
 
-  const year = subject.years as { label: string; sort_order: number } | null;
+  const year = (subject.years as { label: string; sort_order: number }[] | null)?.[0] ?? null;
 
   function readCount(moduleId: string): number {
     return moduleCounters?.find((c) => c.resource_id === moduleId)?.read_count ?? 0;

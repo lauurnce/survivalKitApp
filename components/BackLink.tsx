@@ -28,6 +28,7 @@ export function BackLink({ href, label, className, dashboardFallback, searchPara
     <Link
       href={finalHref}
       className={`inline-flex items-center gap-2 font-sans text-sm transition-colors duration-150 group ${className ?? "text-ink-muted hover:text-ink"}`}
+      prefetch={true}
     >
       <span className="text-accent group-hover:translate-x-[-2px] transition-transform duration-150">←</span>
       <span>{finalLabel}</span>

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { createServerClient } from "@/lib/supabase/server";
 import { BackLink } from "@/components/BackLink";
 import { popularKeywords } from "@/lib/searchSuggestions";
 import { SearchClient, type SearchItem } from "@/components/SearchClient";
+import { getYears, getAllSubjects, getAllModules } from "@/lib/cache/queries";
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Search",
@@ -12,12 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default async function SearchPage() {
-  const supabase = createServerClient();
-
-  const [{ data: years }, { data: subjects }, { data: modules }] = await Promise.all([
-    supabase.from("years").select("id, label, sort_order"),
-    supabase.from("subjects").select("id, year_id, title"),
-    supabase.from("modules").select("id, subject_id, title"),
+  const [years, subjects, modules] = await Promise.all([
+    getYears(),
+    getAllSubjects(),
+    getAllModules(),
   ]);
 
   const yearById = new Map((years ?? []).map((y) => [y.id, y]));

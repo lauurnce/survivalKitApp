@@ -48,7 +48,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
       <div className="flex-1">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <Link href={modulesHref} className="group block">
+            <Link href={modulesHref} className="group block" prefetch={true}>
               <h2 className="font-serif text-2xl text-ink group-hover:text-accent transition-colors duration-150 mb-1">
                 {subject.title}
               </h2>
@@ -72,6 +72,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
             href={modulesHref}
             aria-label={`View modules for ${subject.title}`}
             className="font-sans text-sm text-ink-faint hover:text-ink transition-colors mt-1 flex-shrink-0"
+            prefetch={true}
           >
             →
           </Link>
@@ -96,6 +97,7 @@ export function SubjectAccordion({ subject, modules, yearId, index, reads }: Pro
               <Link
                 key={m.id}
                 href={`/year/${yearId}/subjects/${subject.id}/modules/${m.id}`}
+                prefetch={true}
                 className="group flex items-start gap-4 py-3 hover:bg-ink/[0.02] -mx-4 px-4 transition-colors duration-150"
               >
                 <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mt-0.5 w-6 shrink-0 text-right">

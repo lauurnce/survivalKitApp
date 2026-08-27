@@ -56,6 +56,7 @@ export function NavRail({ overallDone, overallTotal }: NavRailProps) {
       <Link
         href="/"
         className="hidden shrink-0 flex-col gap-1 border-b border-taupe/30 px-6 py-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent lg:flex"
+        prefetch={true}
       >
         <span className="font-serif text-2xl tracking-wide text-ink">BSIT</span>
         <span className="label-sm">Survival kit</span>
@@ -76,6 +77,7 @@ export function NavRail({ overallDone, overallTotal }: NavRailProps) {
                     ? "bg-accent/10 text-accent"
                     : "text-ink-muted hover:text-ink"
                 }`}
+                prefetch={true}
               >
                 <Icon className="h-5 w-5 shrink-0" />
                 {item.label}

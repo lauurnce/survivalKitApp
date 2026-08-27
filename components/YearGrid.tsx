@@ -51,6 +51,7 @@ export function YearGrid({ cards, fromDashboard = false }: Props) {
             <Link
               key={year.id}
               href={fromDashboard ? withDashboardReferrer(`/year/${year.id}/subjects`) : `/year/${year.id}/subjects`}
+              prefetch={true}
               className="group border border-ink-faint hover:border-navy hover:bg-navy p-8 flex flex-col gap-4 transition-colors duration-200"
             >
               <span aria-hidden="true" className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint group-hover:text-taupe transition-colors duration-200">

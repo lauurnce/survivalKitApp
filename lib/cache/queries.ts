@@ -37,7 +37,7 @@ export const getAllSubjects = unstable_cache(
     const supabase = getSupabase();
     const { data } = await supabase
       .from("subjects")
-      .select("id, title, year_id, sort_order")
+      .select("id, title, year_id, sort_order, semester, kind")
       .order("sort_order");
     return data ?? [];
   },
@@ -192,7 +192,7 @@ export const getModuleWithSubject = unstable_cache(
     const supabase = getSupabase();
     const [{ data: mod }, { data: subject }] = await Promise.all([
       supabase.from("modules").select("id, title, subject_id").eq("id", moduleId).eq("subject_id", subjectId).single(),
-      supabase.from("subjects").select("id, title, year_id").eq("id", subjectId).single(),
+      supabase.from("subjects").select("id, title, year_id, years(label, sort_order)").eq("id", subjectId).single(),
     ]);
     return { mod, subject };
   },

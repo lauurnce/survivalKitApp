@@ -18,8 +18,9 @@ import { ModuleReaderClient } from "@/components/ModuleReaderClient";
 import { ModuleSurveyCard } from "@/components/ModuleSurveyCard";
 import { pickFirstActivity } from "@/lib/freeSample";
 import { sectionLabel } from "@/lib/sectionLabel";
+import { getModuleWithSubject, getSiblingModules, getModuleContentSections, getModuleActivitySections } from "@/lib/cache/queries";
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ yearId: string; subjectId: string; moduleId: string }>;
@@ -27,16 +28,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { subjectId, moduleId } = await params;
-  const supabase = createServerClient();
-  const [{ data: mod }, { data: subject }] = await Promise.all([
-    supabase
-      .from("modules")
-      .select("title")
-      .eq("id", moduleId)
-      .eq("subject_id", subjectId)
-      .single(),
-    supabase.from("subjects").select("title").eq("id", subjectId).single(),
-  ]);
+  const { mod, subject } = await getModuleWithSubject(moduleId, subjectId);
   if (!mod) return {};
   return {
     title: subject ? `${mod.title} · ${subject.title}` : mod.title,
@@ -48,18 +40,11 @@ export default async function ReaderPage({ params }: Props) {
   const { yearId, subjectId, moduleId } = await params;
   const supabase = createServerClient();
 
-  const [{ data: mod }, { data: subject }, { data: siblingModules }] = await Promise.all([
-    // Bind the module to the subject in the URL. Without this, a paid
-    // subject_month for one subject unlocked every module in the year: the
-    // subscription check below tests the URL's subject, not the module's, so
-    // swapping in another subject's moduleId rendered its gated reviewers.
-    supabase.from("modules").select("*").eq("id", moduleId).eq("subject_id", subjectId).single(),
-    supabase.from("subjects").select("*, years(label, sort_order)").eq("id", subjectId).single(),
-    supabase
-      .from("modules")
-      .select("id, title, sort_order")
-      .eq("subject_id", subjectId)
-      .order("sort_order"),
+  // Use cached queries for static data
+  const [{ mod, subject }, siblingModules, contentSections] = await Promise.all([
+    getModuleWithSubject(moduleId, subjectId),
+    getSiblingModules(subjectId),
+    getModuleContentSections(moduleId),
   ]);
 
   if (!mod || !subject) notFound();
@@ -72,13 +57,6 @@ export default async function ReaderPage({ params }: Props) {
       : null;
   const prevModule = currentIndex > 0 ? siblings[currentIndex - 1] : null;
 
-  const { data: contentSections } = await supabase
-    .from("sections")
-    .select("id, kind, heading, body_md, sort_order, ide_language, starter_code, topology_data")
-    .eq("module_id", moduleId)
-    .eq("kind", "content")
-    .order("sort_order");
-
   const devUnlockAll = process.env.UNLOCK_ALL === "true";
   const cookieStore = await cookies();
   // Only trust the device ID if its HMAC signature checks out — a forged or
@@ -90,16 +68,7 @@ export default async function ReaderPage({ params }: Props) {
 
   // Locked visitors only ever receive activity headings; the full body, drill
   // markdown, and starter code are fetched solely when this request is unlocked.
-  const { data: activityMeta } = await supabase
-    .from("sections")
-    .select(
-      unlockActivities
-        ? "id, kind, heading, body_md, sort_order, ide_language, starter_code, topology_data"
-        : "id, kind, heading, sort_order"
-    )
-    .eq("module_id", moduleId)
-    .eq("kind", "activity")
-    .order("sort_order");
+  const activityMeta = await getModuleActivitySections(moduleId, unlockActivities);
 
   type ReaderSection = {
     id: string;
@@ -156,7 +125,7 @@ export default async function ReaderPage({ params }: Props) {
     }),
   ].sort((a, b) => a.sort_order - b.sort_order);
 
-  const year = subject.years as { label: string; sort_order: number } | null;
+  const year = (subject.years as { label: string; sort_order: number }[] | null)?.[0] ?? null;
 
   return (
     <ModuleReaderClient moduleId={moduleId} moduleTitle={mod.title} userId={userId}>
@@ -251,6 +220,7 @@ export default async function ReaderPage({ params }: Props) {
             </p>
             <Link
               href={`/year/${yearId}/subjects/${subjectId}/modules/${nextModule.id}`}
+              prefetch={true}
               className="group flex items-center justify-between gap-6 bg-navy px-8 py-6 hover:bg-ink transition-colors duration-150"
             >
               <span className="font-serif text-display-md text-paper">
@@ -261,6 +231,7 @@ export default async function ReaderPage({ params }: Props) {
             {prevModule && (
               <Link
                 href={`/year/${yearId}/subjects/${subjectId}/modules/${prevModule.id}`}
+                prefetch={true}
                 className="group inline-flex items-center gap-3 mt-6 font-sans text-sm text-ink-muted hover:text-ink transition-colors duration-150"
               >
                 <span className="text-accent group-hover:translate-x-[-2px] transition-transform duration-150">←</span>
@@ -276,6 +247,7 @@ export default async function ReaderPage({ params }: Props) {
             <div className="flex flex-col gap-3">
               <Link
                 href={`/year/${yearId}/subjects/${subjectId}/modules`}
+                prefetch={true}
                 className="inline-flex items-center gap-3 font-sans text-sm text-ink-muted hover:text-ink transition-colors duration-150"
               >
                 <span className="text-accent">←</span>
@@ -284,6 +256,7 @@ export default async function ReaderPage({ params }: Props) {
               {prevModule && (
                 <Link
                   href={`/year/${yearId}/subjects/${subjectId}/modules/${prevModule.id}`}
+                  prefetch={true}
                   className="inline-flex items-center gap-3 font-sans text-sm text-ink-muted hover:text-ink transition-colors duration-150"
                 >
                   <span className="text-accent">←</span>

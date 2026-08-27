@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { createServerClient } from "@/lib/supabase/server";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { hasDashboardReferrer } from "@/lib/navigation";
 import { NavRail } from "@/components/dashboard/NavRail";
@@ -9,8 +8,10 @@ import { PageTracker } from "@/components/PageTracker";
 import { SubjectAccordion, type SubjectModule } from "@/components/SubjectAccordion";
 import { sectionLabel } from "@/lib/sectionLabel";
 import { getAccountOverview } from "@/lib/account";
+import { getYears, getSubjectsByYear, getSubjectCounters, getModulesBySubject } from "@/lib/cache/queries";
+import { createServerClient } from "@/lib/supabase/server";
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ yearId: string }>;
@@ -45,7 +46,6 @@ export default async function SubjectsPage({ params, searchParams }: Props) {
   const { yearId } = await params;
   const resolvedSearchParams = await searchParams;
   const fromDashboard = hasDashboardReferrer({ get: (k) => (k === "from" ? resolvedSearchParams.from ?? null : null) });
-  const supabase = createServerClient();
 
   const userId = await getCurrentUserId();
   const overview = userId
@@ -54,15 +54,10 @@ export default async function SubjectsPage({ params, searchParams }: Props) {
 
   const showNavRail = userId || fromDashboard;
 
-  const [{ data: year }, { data: rawSubjects }, { data: subjectCounters }] = await Promise.all([
-    supabase.from("years").select("*").eq("id", yearId).single(),
-    supabase
-      .from("subjects")
-      .select("*")
-      .eq("year_id", yearId)
-      .order("sort_order"),
-    supabase.from("counters").select("resource_id, read_count").eq("resource_type", "subject"),
-  ]);
+  // Use cached queries for static data
+  const year = (await getYears()).find((y) => y.id === yearId);
+  const rawSubjects = await getSubjectsByYear(yearId);
+  const subjectCounters = await getSubjectCounters((rawSubjects ?? []).map((s) => s.id));
 
   if (!year) notFound();
   if (year.coming_soon) notFound();
@@ -73,17 +68,18 @@ export default async function SubjectsPage({ params, searchParams }: Props) {
 
   // Module ids per subject — used by the per-subject progress bar (client-side
   // completion lookup happens in <SubjectProgressBar /> via the device_id).
-  const { data: subjectModules } = await supabase
-    .from("modules")
-    .select("id, title, sort_order, subject_id")
-    .in("subject_id", subjects.length > 0 ? subjects.map((s) => s.id) : ["__none__"])
-    .order("sort_order");
-
+  const subjectIds = subjects.length > 0 ? subjects.map((s) => s.id) : [];
   const modulesBySubject = new Map<string, SubjectModule[]>();
-  for (const m of subjectModules ?? []) {
-    const list = modulesBySubject.get(m.subject_id) ?? [];
-    list.push({ id: m.id, title: m.title, sort_order: m.sort_order });
-    modulesBySubject.set(m.subject_id, list);
+  
+  if (subjectIds.length > 0) {
+    // Fetch modules for all subjects in parallel
+    const modulesPromises = subjectIds.map((subjectId) => getModulesBySubject(subjectId));
+    const modulesResults = await Promise.all(modulesPromises);
+    
+    subjectIds.forEach((subjectId, index) => {
+      const modules = modulesResults[index] ?? [];
+      modulesBySubject.set(subjectId, modules.map((m) => ({ id: m.id, title: m.title, sort_order: m.sort_order })));
+    });
   }
 
   function readCount(subjectId: string): number {

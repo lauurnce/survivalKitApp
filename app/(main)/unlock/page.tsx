@@ -207,6 +207,7 @@ export default async function UnlockPage({ searchParams }: Props) {
               Buying for your block?{" "}
               <Link
                 href="/for-blocks"
+                prefetch={true}
                 className="text-ink hover:text-accent transition-colors underline underline-offset-2"
               >
                 See block pricing →

@@ -96,6 +96,7 @@ export function SearchClient({ items, suggestions = [] }: Props) {
           </p>
           <Link
             href="/year"
+            prefetch={true}
             className="inline-flex items-center gap-2 font-sans text-sm text-ink hover:text-accent transition-colors duration-150"
           >
             <span>Browse all subjects</span>
@@ -112,6 +113,7 @@ export function SearchClient({ items, suggestions = [] }: Props) {
               <Link
                 key={`${item.type}-${item.id}`}
                 href={item.href}
+                prefetch={true}
                 className="group flex items-start gap-6 py-6 hover:bg-ink/[0.02] -mx-4 px-4 transition-colors duration-150"
               >
                 <span className="font-mono text-label-sm uppercase tracking-[0.12em] text-ink-faint mt-1 w-16 shrink-0">

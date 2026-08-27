@@ -37,6 +37,7 @@ export function ModuleListItem({
         href={href}
         aria-label={`Open ${title}`}
         className="absolute inset-0 z-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+        prefetch={true}
       >
         <span className="sr-only">Open {title}</span>
       </Link>

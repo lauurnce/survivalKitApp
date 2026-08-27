@@ -98,6 +98,26 @@ async function verifyAdminToken(token: string): Promise<boolean> {
   }
 }
 
+// Public routes that don't need auth session refresh — skipping getUser() saves ~200-400ms
+const PUBLIC_PATH_PREFIXES = [
+  "/",
+  "/year",
+  "/search",
+  "/playground",
+  "/privacy",
+  "/for-blocks",
+  "/unlock", // unlock page handles its own subscription check
+  "/api/card/progress", // OG card endpoint — public, no auth
+  "/api/quiz", // quiz API handles its own auth
+  "/api/quiz/", // quiz API handles its own auth
+];
+
+function isPublicPath(pathname: string): boolean {
+  return PUBLIC_PATH_PREFIXES.some((prefix) =>
+    pathname === prefix || pathname.startsWith(prefix + "/")
+  );
+}
+
 export async function proxy(req: NextRequest) {
   // Web Crypto (Edge Runtime) — 16 random bytes, base64-encoded, per request.
   const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
@@ -116,23 +136,26 @@ export async function proxy(req: NextRequest) {
     res.headers.set("Content-Security-Policy", buildCsp(nonce));
   }
 
-  // Refresh the Supabase auth session cookie on every request.
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    {
-      cookies: {
-        getAll: () => req.cookies.getAll(),
-        setAll: (toSet) =>
-          toSet.forEach(({ name, value, options }) =>
-            res.cookies.set(name, value, options),
-          ),
-      },
-    },
-  );
-  await supabase.auth.getUser();
-
   const { pathname } = req.nextUrl;
+
+  // Skip auth session refresh on public routes — saves ~200-400ms per request
+  if (!isPublicPath(pathname)) {
+    // Refresh the Supabase auth session cookie on protected requests.
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+      {
+        cookies: {
+          getAll: () => req.cookies.getAll(),
+          setAll: (toSet) =>
+            toSet.forEach(({ name, value, options }) =>
+              res.cookies.set(name, value, options),
+            ),
+        },
+      },
+    );
+    await supabase.auth.getUser();
+  }
 
   // Guard all /admin routes except the login page itself
   if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
