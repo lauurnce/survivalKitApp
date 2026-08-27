@@ -32,24 +32,20 @@ export async function GET() {
     const cookieStore = await cookies();
     const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
 
-    if (!deviceId) {
-      return NextResponse.json<ModuleQuizInfo[]>([]);
-    }
-
     const supabase = createServerClient();
     const now = new Date().toISOString();
 
-    // Query module_progress by device_id (primary) with user_id fallback for authenticated users
+    // Query module_progress by user_id (primary) with device_id fallback
     let progressQuery = supabase
       .from("module_progress")
       .select("module_id, completed_at")
-      .eq("device_id", deviceId);
+      .eq("user_id", userId);
 
-    if (userId) {
-      progressQuery = progressQuery.or(`device_id.eq.${deviceId},user_id.eq.${userId}`);
+    if (deviceId) {
+      progressQuery = progressQuery.or(`user_id.eq.${userId},device_id.eq.${deviceId}`);
     }
 
-    // Query module_quiz_progress by user_id with device_id fallback
+    // Query module_quiz_progress by user_id (primary) with device_id fallback
     let quizProgressQuery = supabase
       .from("module_quiz_progress")
       .select("module_id, score, total_questions, completed_at")
@@ -70,12 +66,12 @@ export async function GET() {
             .gt("current_period_end", now)
         : { data: [] as ActiveSub[] },
       supabase.from("modules").select("id, title, subject_id, sort_order"),
-      supabase.from("subjects").select("id, title, year_id, semester, years(id, label)"),
+      supabase.from("subjects").select("id, title, year_id, semester, years(id, label, sort_order)"),
       quizProgressQuery,
     ]);
 
-    const doneModules = new Map((progressRes.data ?? []).map((r) => [r.module_id, r.completed_at]));
-    if (doneModules.size === 0) {
+    const doneModuleIds = (progressRes.data ?? []).map((r) => r.module_id);
+    if (doneModuleIds.length === 0) {
       return NextResponse.json<ModuleQuizInfo[]>([]);
     }
 
@@ -94,7 +90,7 @@ export async function GET() {
       .from("sections")
       .select("module_id, body_md")
       .eq("kind", "content")
-      .in("module_id", Array.from(doneModules.keys()));
+      .in("module_id", doneModuleIds);
 
     const sectionsByModule = new Map<string, string[]>();
     for (const s of sections ?? []) {
@@ -106,7 +102,9 @@ export async function GET() {
 
     const results: ModuleQuizInfo[] = [];
 
-    for (const [moduleId, completedAt] of doneModules) {
+    for (const modProgress of progressRes.data ?? []) {
+      const moduleId = modProgress.module_id;
+      const completedAt = modProgress.completed_at;
       const mod = moduleById.get(moduleId);
       if (!mod) continue;
 
@@ -115,7 +113,7 @@ export async function GET() {
 
       if (!isUnlockedBy(activeSubs, subject.year_id, subject.id)) continue;
 
-      const year = (subject as unknown as { years: { id: string; label: string } | null }).years;
+      const year = (subject as unknown as { years: { id: string; label: string; sort_order: number } | null }).years;
       if (!year) continue;
 
       const hasQuizMaterial = (sectionsByModule.get(moduleId) ?? []).length > 0;

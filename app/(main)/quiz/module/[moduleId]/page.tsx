@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUnlockedBy, type ActiveSub } from "@/lib/account";
 import { isUuid } from "@/lib/validation";
+import { verifyDeviceCookie, DEVICE_COOKIE } from "@/lib/auth/deviceCookie";
 import { ReviewQuiz } from "@/components/account/ReviewQuiz";
 import { BackLink } from "@/components/BackLink";
 
@@ -52,11 +54,14 @@ export default async function ModuleQuizPage({ params }: { params: Promise<{ mod
     );
   }
 
+  const cookieStore = await cookies();
+  const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+
   const supabase = createServerClient();
   const now = new Date().toISOString();
 
   const [progressRes, subsRes, moduleRes] = await Promise.all([
-    supabase.from("module_progress").select("completed_at").eq("device_id", userId).eq("module_id", moduleId).maybeSingle(),
+    supabase.from("module_progress").select("completed_at").eq("user_id", userId).eq("module_id", moduleId).maybeSingle(),
     isUuid(userId)
       ? supabase
           .from("subscriptions")
@@ -68,8 +73,18 @@ export default async function ModuleQuizPage({ params }: { params: Promise<{ mod
     supabase.from("modules").select("id, title, subject_id").eq("id", moduleId).maybeSingle(),
   ]);
 
-  const progress = progressRes.data;
-  if (!progress) {
+  let progress = progressRes.data;
+  if (!progress && deviceId) {
+    // Fallback to device_id if user_id query returns nothing
+    const deviceProgress = await supabase
+      .from("module_progress")
+      .select("completed_at")
+      .eq("device_id", deviceId)
+      .eq("module_id", moduleId)
+      .maybeSingle();
+    if (!deviceProgress.data) notFound();
+    progress = deviceProgress.data;
+  } else if (!progress) {
     notFound();
   }
 

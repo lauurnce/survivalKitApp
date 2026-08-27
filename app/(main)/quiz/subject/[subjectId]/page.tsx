@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUnlockedBy, type ActiveSub } from "@/lib/account";
 import { isUuid } from "@/lib/validation";
+import { verifyDeviceCookie, DEVICE_COOKIE } from "@/lib/auth/deviceCookie";
 import { ReviewQuiz } from "@/components/account/ReviewQuiz";
 import { BackLink } from "@/components/BackLink";
 
@@ -50,6 +52,9 @@ export default async function SubjectQuizPage({ params }: { params: Promise<{ su
   const supabase = createServerClient();
   const now = new Date().toISOString();
 
+  const cookieStore = await cookies();
+  const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+
   const [progressRes, subsRes, subjectRes] = await Promise.all([
     supabase.from("module_progress").select("module_id").eq("user_id", userId),
     isUuid(userId)
@@ -62,6 +67,20 @@ export default async function SubjectQuizPage({ params }: { params: Promise<{ su
       : { data: [] as ActiveSub[] },
     supabase.from("subjects").select("id, title, year_id, semester").eq("id", subjectId).maybeSingle(),
   ]);
+
+  // Fallback to device_id if user_id query returns nothing
+  if (!progressRes.data || progressRes.data.length === 0) {
+    if (deviceId) {
+      const deviceProgress = await supabase
+        .from("module_progress")
+        .select("module_id")
+        .eq("device_id", deviceId);
+      progressRes.data = deviceProgress.data;
+    }
+    if (!progressRes.data || progressRes.data.length === 0) {
+      notFound();
+    }
+  }
 
   const subject = subjectRes.data as SubjectData | null;
   if (!subject) {

@@ -11,7 +11,7 @@ import { verifyDeviceCookie, DEVICE_COOKIE } from "@/lib/auth/deviceCookie";
 export const dynamic = "force-dynamic";
 
 const MIN_QUESTIONS = 5;
-const MAX_QUESTIONS = 20; // Higher max for subject quizzes
+const MAX_QUESTIONS = 20;
 
 function hashSeed(subjectId: string, userId: string): number {
   let hash = 0;
@@ -42,10 +42,6 @@ export async function GET(
     const cookieStore = await cookies();
     const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
 
-    if (!deviceId) {
-      return NextResponse.json<QuizResponse>({ questions: [], reason: "no-progress" });
-    }
-
     const { subjectId } = await params;
     if (!isUuid(subjectId)) {
       return NextResponse.json({ error: "Invalid subject ID" }, { status: 400 });
@@ -54,14 +50,14 @@ export async function GET(
     const supabase = createServerClient();
     const now = new Date().toISOString();
 
-    // Get all completed modules for this subject
+    // Get all completed modules for this subject by user_id (primary) with device_id fallback
     let progressQuery = supabase
       .from("module_progress")
       .select("module_id, completed_at")
-      .eq("device_id", deviceId);
+      .eq("user_id", userId);
 
-    if (userId) {
-      progressQuery = progressQuery.or(`device_id.eq.${deviceId},user_id.eq.${userId}`);
+    if (deviceId) {
+      progressQuery = progressQuery.or(`user_id.eq.${userId},device_id.eq.${deviceId}`);
     }
 
     const [progressRes, subsRes, subjectRes, modulesRes] = await Promise.all([
