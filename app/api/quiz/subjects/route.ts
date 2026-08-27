@@ -74,12 +74,24 @@ export async function GET() {
       quizProgressQuery,
     ]);
 
+    console.log('[QUIZ SUBJECTS DEBUG]', {
+      userId,
+      deviceId,
+      progressCount: progressRes.data?.length,
+      subsCount: subsRes.data?.length,
+      modulesCount: modulesRes.data?.length,
+      subjectsCount: subjectsRes.data?.length,
+      quizProgressCount: quizProgressRes.data?.length,
+    });
+
     const doneModuleIds = (progressRes.data ?? []).map((r) => r.module_id);
     if (doneModuleIds.length === 0) {
+      console.log('[QUIZ SUBJECTS DEBUG] No done modules');
       return NextResponse.json<SubjectQuizInfo[]>([]);
     }
 
     const activeSubs = (subsRes.data ?? []) as ActiveSub[];
+    console.log('[QUIZ SUBJECTS DEBUG] activeSubs:', activeSubs);
     const subjectById = new Map(
       (subjectsRes.data ?? []).map((s) => [s.id, s]),
     );
@@ -94,7 +106,9 @@ export async function GET() {
       if (!m) continue;
       const subject = subjectById.get(m.subject_id);
       if (!subject) continue;
-      if (!isUnlockedBy(activeSubs, subject.year_id, subject.id)) continue;
+      const unlocked = isUnlockedBy(activeSubs, subject.year_id, subject.id);
+      console.log('[QUIZ SUBJECTS DEBUG] module', mod.module_id, 'subject', subject.id, subject.title, 'unlocked:', unlocked);
+      if (!unlocked) continue;
 
       const list = modulesBySubject.get(m.subject_id) ?? [];
       list.push({ moduleId: mod.module_id, completedAt: mod.completed_at });
@@ -170,6 +184,8 @@ export async function GET() {
       if (a.semester !== b.semester) return a.semester - b.semester;
       return ((subjectA as unknown as { sort_order?: number }).sort_order ?? 0) - ((subjectB as unknown as { sort_order?: number }).sort_order ?? 0);
     });
+
+    console.log('[QUIZ SUBJECTS DEBUG] Final results:', results.map(r => ({ subjectId: r.subjectId, subjectTitle: r.subjectTitle, completedModules: r.completedModules, hasQuizMaterial: r.hasQuizMaterial, quizTaken: r.quizTaken })));
 
     return NextResponse.json(results);
   } catch {
