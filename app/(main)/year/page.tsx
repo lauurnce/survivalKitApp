@@ -4,7 +4,6 @@ import { createServerClient } from "@/lib/supabase/server";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { getAccountOverview } from "@/lib/account";
 import { signOutAction } from "../../(auth)/actions";
-import { ThemeToggleInline } from "@/components/ThemeToggle";
 import { NavRail } from "@/components/dashboard/NavRail";
 import { PageTracker } from "@/components/PageTracker";
 import { YearGrid, type YearCardData } from "@/components/YearGrid";
@@ -65,7 +64,6 @@ export default async function YearPage({ searchParams }: Props) {
       )}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
-          <ThemeToggleInline />
           {userId && (
             <form action={signOutAction}>
               <button className="text-xs text-ink-muted underline">Log out</button>

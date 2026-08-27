@@ -3,7 +3,6 @@ import Link from "next/link";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { getAccountOverview } from "@/lib/account";
 import { signOutAction } from "../../(auth)/actions";
-import { ThemeToggleInline } from "@/components/ThemeToggle";
 import { NavRail } from "@/components/dashboard/NavRail";
 import { SubjectQuizList } from "@/components/resources/SubjectQuizList";
 
@@ -50,7 +49,6 @@ export default async function ResourcesPage() {
       <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
-          <ThemeToggleInline />
           {userId && (
             <form action={signOutAction}>
               <button className="text-xs text-ink-muted underline">Log out</button>
