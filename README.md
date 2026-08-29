@@ -6,6 +6,34 @@ Study companion web app for BSIT (Bachelor of Science in Information Technology)
 
 **The story:** why this exists, the data behind it, and where it's going → [STORY.md](STORY.md)
 
+## Where things stand (as of 2026-08-29)
+
+- **Per-subject quiz system** shipped — quizzes now generate from an entire subject's content, not just one module, with device + account (`user_id`) progress tracking.
+- **Per-module quiz system** shipped — dedicated quiz pages and cards per completed module, generated straight from that module's sections.
+- **Navigation overhaul** — dashboard shell with a persistent nav rail now wraps subjects, resources, and roadmap; prefetching, revalidation, and middleware-skip work cut route transition time.
+- **Roadmap redesign** — academic timeline with progress markers, an activity graph, and subscription timeline on its own page.
+- **Profile dashboard** — context-rich profile page (school, year, sector) with a monochrome palette matching the subjects design.
+- **In-app SQL labs** — self-hosted `sql.js` WASM with an executed-script + data-grid output view.
+- Ongoing security/finance/ops/growth department reports (`npm run report:*`) audit RLS posture, route guards, revenue reconciliation, and funnel metrics on a recurring cadence.
+
+### Data snapshot (live production, 2026-08-29)
+
+| Metric | Count |
+|---|---|
+| Subjects | 36 |
+| Years covered | 4 |
+| Modules | 274 |
+| Content sections | 1,602 |
+| Tracked events | 186,114 |
+| Registered accounts | 344 |
+| Completed module progress records | 924 |
+| Completed payments | 10 |
+| Active subscriptions | 15 |
+| Feedback submissions | 99 |
+| Waitlist signups | 3 |
+
+See [STORY.md](STORY.md) for the fuller narrative (device/university breakdowns, top subjects) as of its own last refresh.
+
 ## Stack
 
 - **Next.js** (App Router) + **React** + **Tailwind CSS**
