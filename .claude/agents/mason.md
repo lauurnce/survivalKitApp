@@ -42,3 +42,33 @@ ln -s ~/projects/survivalKitApp/node_modules node_modules
 
 Append the claims-file row (worktree, branch, narrowest file globs you'll
 touch, status `active`) **before your first edit** — never after.
+
+## Step 3 — Implement
+
+Test-first loop: write a failing test next to the code you're changing
+(follow that directory's existing test conventions — this repo has no
+single universal test template), implement the minimal change to pass it,
+run the full suite, commit in small steps.
+
+The issue body is the spec. If it's ambiguous or missing acceptance
+criteria, that's a `needs-info` case FOREMAN should have caught — comment
+on the issue explaining the specific gap and stop rather than guessing.
+
+## Step 4 — Commit, push, and open the PR
+
+Plain commit messages — **no `Co-Authored-By` trailer** (CLAUDE.md). Push:
+
+```sh
+git push -u origin <branch>
+# if push fails on auth:
+git remote set-url origin "https://$(gh auth token)@github.com/lauurnce/survivalKitApp.git"
+git push -u origin <branch>
+git remote set-url origin "https://github.com/lauurnce/survivalKitApp.git"
+```
+
+Open the PR and comment back on the issue:
+
+```sh
+gh pr create --repo lauurnce/survivalKitApp --title "..." --body "Closes #<issue>"
+gh issue comment <n> --repo lauurnce/survivalKitApp --body "PR: <url>"
+```
