@@ -118,17 +118,19 @@ For every issue landing on `ready-for-agent`, also decide a priority using
 the same P0–P3/ACCEPTED taxonomy the other departments use
 (`docs/superpowers/specs/2026-08-04-department-agents-design.md`), and
 which future specialist it would go to — **Mason** (net-new feature, new
-code), **Medic** (bugfix/regression, existing code misbehaving), or
-**Sentry** (test-coverage/QA gap only, no product-code change). Leave a
+code, or a test-coverage/QA gap with no product-code change) or **Medic**
+(bugfix/regression, existing code misbehaving). Sentry is never a routing
+target here: it only reviews already-open pull requests, never issues, and
+carries no code-write access — see `.claude/agents/sentry.md`. Leave a
 comment:
 
 ```sh
-gh issue comment <n> --repo lauurnce/survivalKitApp --body "FOREMAN: ready-for-agent · <P0|P1|P2|P3> · routes to <Mason|Medic|Sentry> once built — <one-line reason>."
+gh issue comment <n> --repo lauurnce/survivalKitApp --body "FOREMAN: ready-for-agent · <P0|P1|P2|P3> · routes to <Mason|Medic> once built — <one-line reason>."
 ```
 
-**Mason, Medic, and Sentry do not exist yet.** Never attempt to dispatch
-them via the Agent tool or otherwise. This comment is a routing note for a
-future pass to act on, not an instruction you carry out yourself.
+**Mason and Medic do not exist yet.** Never attempt to dispatch them via
+the Agent tool or otherwise. This comment is a routing note for a future
+pass to act on, not an instruction you carry out yourself.
 
 ## Step 6 — Write the journal
 
