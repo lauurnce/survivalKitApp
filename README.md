@@ -15,6 +15,9 @@ Study companion web app for BSIT (Bachelor of Science in Information Technology)
 - **Profile dashboard** — context-rich profile page (school, year, sector) with a monochrome palette matching the subjects design.
 - **In-app SQL labs** — self-hosted `sql.js` WASM with an executed-script + data-grid output view.
 - Ongoing security/finance/ops/growth department reports (`npm run report:*`) audit RLS posture, route guards, revenue reconciliation, and funnel metrics on a recurring cadence.
+- Public update drafts (`/x-updates` skill → HERALD) turn shipped progress
+  into X-ready post batches — 20 posts on the first run, 5 on every run
+  after — each checked against the 280-character free-tier limit.
 
 ### Data snapshot (live production, 2026-08-29)
 
@@ -65,6 +68,7 @@ npm run dev
 | `npm run ingest:md` | Ingest 2nd-year markdown modules into Supabase |
 | `npm run story:svg` | Regenerate the STORY.md charts from `assets/story/story-data.json` |
 | `npm run story:check` | Assertion suite for the chart generator |
+| `npm run social:check` | Validate an X-post batch's character counts against the 280-char limit |
 
 ## Repository layout
 
