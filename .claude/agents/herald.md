@@ -133,7 +133,16 @@ For each post: count characters (URL = 23 flat, per above), confirm ≤280,
 tag the count inline.
 
 Write to `docs/social/x-updates-<YYYY-MM-DD>.md` (use today's date,
-`TZ=Asia/Manila`):
+`TZ=Asia/Manila`). **If that exact file already exists** (a second run on
+the same day — e.g. an INITIAL batch followed by a same-day UPDATE),
+do not overwrite it: append a lowercase letter directly before `.md`
+instead — `x-updates-<YYYY-MM-DD>b.md`, then `c.md`, and so on, picking the
+first letter not already taken. Use a letter suffix with no separator
+(never a hyphen or underscore before it) — a bare date sorts before any
+letter-suffixed version of that same date in plain lexicographic sort
+(`.` is less than any letter), and letters sort in order among themselves,
+so Step 1's `sort | tail -1` and the validator's default file-discovery
+both keep finding the true latest batch without any change to their logic.
 
 ```markdown
 ---

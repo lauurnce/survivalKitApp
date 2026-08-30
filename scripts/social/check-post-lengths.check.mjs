@@ -1,7 +1,7 @@
 // scripts/social/check-post-lengths.check.mjs
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -163,6 +163,46 @@ import {
     result.stderr,
     /ENOENT|at Object\.readdirSync/,
     'missing directory must not leak a raw fs stack trace'
+  );
+}
+
+// CLI: a same-day letter-suffixed batch (collision fallback) is picked over
+// the bare-date file, and sorts after it — not before, despite being a
+// longer filename — since a bare date must sort before any letter suffix
+{
+  const scriptPath = fileURLToPath(new URL('./check-post-lengths.mjs', import.meta.url));
+  const cwd = mkdtempSync(join(tmpdir(), 'check-post-lengths-'));
+  const socialDir = join(cwd, 'docs', 'social');
+  mkdirSync(socialDir, { recursive: true });
+
+  const bareBatch = [
+    '---',
+    'batch_type: initial',
+    'covers_commit: aaa0000',
+    'post_count: 1',
+    '---',
+    '',
+    '### Post 1 (5/280)',
+    'first',
+  ].join('\n');
+  const suffixedBatch = [
+    '---',
+    'batch_type: update',
+    'covers_commit: bbb1111',
+    'post_count: 1',
+    '---',
+    '',
+    '### Post 1 (6/280)',
+    'second',
+  ].join('\n');
+  writeFileSync(join(socialDir, 'x-updates-2026-01-01.md'), bareBatch);
+  writeFileSync(join(socialDir, 'x-updates-2026-01-01b.md'), suffixedBatch);
+
+  const result = spawnSync(process.execPath, [scriptPath], { cwd, encoding: 'utf8' });
+  assert.match(
+    result.stdout,
+    /Checking docs\/social\/x-updates-2026-01-01b\.md/,
+    'the letter-suffixed same-day file must be treated as the latest batch, not the bare-date one'
   );
 }
 

@@ -111,7 +111,7 @@ function main() {
       process.exit(1);
     }
     const files = readdirSync(dir).filter((f) =>
-      /^x-updates-\d{4}-\d{2}-\d{2}\.md$/.test(f)
+      /^x-updates-\d{4}-\d{2}-\d{2}[a-z]?\.md$/.test(f)
     ).sort();
     if (files.length === 0) {
       console.error('No docs/social/x-updates-*.md files found.');
