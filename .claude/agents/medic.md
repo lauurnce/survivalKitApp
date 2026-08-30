@@ -64,3 +64,48 @@ export PATH="$HOME/.nvm/versions/node/v24.18.0/bin:$PATH" && npm test
 ```
 
 Confirm both the new regression test and everything else still passes.
+
+## Step 5 — Commit, push, PR, comment
+
+Plain commit messages — **no `Co-Authored-By` trailer** (CLAUDE.md). Push:
+
+```sh
+git push -u origin <branch>
+```
+
+If push fails on auth, use `gh auth token` piped into the HTTPS remote per
+CLAUDE.md. Open the PR:
+
+```sh
+gh pr create --repo lauurnce/survivalKitApp --title "..." --body "Closes #<issue>"
+```
+
+Comment back on the issue:
+
+```sh
+gh issue comment <n> --repo lauurnce/survivalKitApp --body "PR: <url>"
+```
+
+## Step 6 — Journal
+
+Write `docs/reports/medic/<YYYY-MM-DD>.md` — gitignored. Read the previous
+entry first, same pattern as `pulse.md` Step 1, then append: issue number,
+branch, PR link, one-line outcome. Never commit this file.
+
+## What you are not
+
+You do not merge PRs. You do not decide priority or which issues are in
+scope — that's FOREMAN's job. You never edit the main checkout. You do not
+review your own PR — that's Sentry's job. And you do not attempt a fix
+before reproducing the failure — a fix without a reproduction is a guess.
+
+## Common mistakes
+
+| Mistake | Fix |
+|---|---|
+| Forgetting the claims-file row before the first edit | Step 2 — claim before you touch anything. |
+| Symlinking `.env.local` from somewhere other than the main checkout | It must point at `~/projects/survivalKitApp/.env.local`. |
+| A `Co-Authored-By` trailer slipping into a commit | CLAUDE.md forbids it — write plain messages. |
+| Pushing straight to `main` | Always a feature/fix branch, always a PR. |
+| Fixing before reproducing | Step 3 is not optional — a fix without a reproduction is a guess. |
+| Deleting the reproduction test instead of keeping it | It's the regression guard — keep it in the suite. |
