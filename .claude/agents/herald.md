@@ -75,14 +75,19 @@ itself — check STORY.md/README.md for precedent before inventing one).
 
 ## Step 1 — Detect batch type
 
+All batches ever generated live in one append-only file,
+`docs/social/x-updates.md`. You only ever add to it — never rewrite,
+reorder, or remove an earlier batch's section.
+
 ```sh
-find docs/social -maxdepth 1 -name 'x-updates-*.md' 2>/dev/null | sort | tail -1
+[ -f docs/social/x-updates.md ] && grep -E '^## ' docs/social/x-updates.md | tail -1
 ```
 
-- **Nothing printed** → this is the **INITIAL** batch. Produce exactly
-  **20** posts.
-- **A path printed** → this is an **UPDATE** batch. Read that file's front
-  matter for `covers_commit`. Produce exactly **5** posts.
+- **File missing, or the command prints nothing** → this is the
+  **INITIAL** batch. Produce exactly **20** posts.
+- **A line printed** → this is an **UPDATE** batch. It looks like
+  `## 2026-08-30 — initial (20 posts, covers fd35a52)` — read the commit
+  hash after "covers" as `covers_commit`. Produce exactly **5** posts.
 
 If you cannot produce the required count from real, allowed-source material
 (too little changed for 5 honest posts), say so instead of padding with
@@ -109,8 +114,8 @@ validation, §04 reach, §05 what's next) are the backbone of the 20-post arc.
 git log <covers_commit>..HEAD --oneline
 ```
 And diff the current README data-snapshot table against the numbers named
-in the previous `docs/social/x-updates-*.md` file's posts — call out only
-values that actually moved.
+in the previous section's posts — call out only values that actually
+moved.
 
 ## Step 3 — Draft
 
@@ -147,27 +152,18 @@ Every number must trace to README.md or STORY.md — no exceptions.
 For each post: count characters (URL = 23 flat, per above), confirm ≤280,
 tag the count inline.
 
-Write to `docs/social/x-updates-<YYYY-MM-DD>.md` (use today's date,
-`TZ=Asia/Manila`). **If that exact file already exists** (a second run on
-the same day — e.g. an INITIAL batch followed by a same-day UPDATE),
-do not overwrite it: append a lowercase letter directly before `.md`
-instead — `x-updates-<YYYY-MM-DD>b.md`, then `c.md`, and so on, picking the
-first letter not already taken. Use a letter suffix with no separator
-(never a hyphen or underscore before it) — a bare date sorts before any
-letter-suffixed version of that same date in plain lexicographic sort
-(`.` is less than any letter), and letters sort in order among themselves,
-so Step 1's `sort | tail -1` and the validator's default file-discovery
-both keep finding the true latest batch without any change to their logic.
+Append to `docs/social/x-updates.md` — never overwrite or reorder anything
+already in it. Get `HEAD`'s short hash with `git rev-parse --short HEAD`
+first; that is this batch's `covers_commit`, the point the next UPDATE run
+diffs from.
+
+**File doesn't exist yet** (first run ever): create it with a top-level
+title, then your one section:
 
 ```markdown
----
-batch_type: initial | update
-covers_commit: <HEAD short hash at run time>
-post_count: 20 | 5
-generated: <YYYY-MM-DD>
----
+# X updates
 
-# X updates — <date>
+## <YYYY-MM-DD> — initial (20 posts, covers <HEAD short hash>)
 
 ### Post 1 (NNN/280)
 <text>
@@ -178,15 +174,36 @@ generated: <YYYY-MM-DD>
 ...
 ```
 
-Get `HEAD`'s short hash with `git rev-parse --short HEAD` and record it as
-`covers_commit` — the next UPDATE run diffs from this exact point.
+**File already exists**: append a new section to the end, separated from
+whatever came before by exactly one blank line — do not touch anything
+above it:
+
+```markdown
+
+## <YYYY-MM-DD> — update (N posts, covers <HEAD short hash>)
+
+### Post 1 (NNN/280)
+<text>
+
+...
+```
+
+`N` in the section header must equal the number of `### Post` entries you
+actually wrote below it — including on a shortfall (e.g. `(2 posts, ...)`
+if you honestly only found 2). Use today's date, `TZ=Asia/Manila`. On a
+shortfall, put a short prose note explaining why, right after the section
+header and before the first post.
 
 Then run:
 ```sh
-node scripts/social/check-post-lengths.mjs docs/social/x-updates-<date>.md
+node scripts/social/check-post-lengths.mjs
 ```
-If it reports any FAIL or a count mismatch, rewrite the flagged posts and
-re-run until it passes cleanly.
+(no path needed — it always reads `docs/social/x-updates.md` and validates
+only the section you just appended). If it reports any FAIL or a count
+mismatch, rewrite the flagged posts and re-run until it passes cleanly. A
+genuine shortfall will still exit non-zero because the post count won't
+match the batch type's required 5 — that is expected, not something to fix
+by padding.
 
 ## What you are not
 

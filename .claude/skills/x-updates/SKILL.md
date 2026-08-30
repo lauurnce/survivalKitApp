@@ -21,9 +21,12 @@ before dispatching it.** Agent definitions load at session start, same as
 every other department agent in this repo — a subagent dispatched after a
 mid-session edit runs the old instructions.
 
-HERALD decides its own batch size: 20 posts if `docs/social/` has no prior
-`x-updates-*.md` file, otherwise exactly 5, diffed against the most recent
-one. See `.claude/agents/herald.md` for the full procedure.
+All batches ever generated live in one append-only file,
+`docs/social/x-updates.md` — HERALD only ever appends a new section to it,
+never rewrites or reorders an earlier one. It decides its own batch size:
+20 posts if that file doesn't exist yet, otherwise exactly 5, diffed
+against the most recently appended section. See `.claude/agents/herald.md`
+for the full procedure.
 
 ## Validating output
 
@@ -31,16 +34,16 @@ Before treating a batch as ready to post, run:
 ```sh
 node scripts/social/check-post-lengths.mjs
 ```
-(no argument needed — it finds the most recent `docs/social/x-updates-*.md`
-file on its own). This is a deterministic re-check independent of HERALD's
-own char counts.
+(no argument needed — it always reads `docs/social/x-updates.md` and
+validates only the most recently appended section). This is a deterministic
+re-check independent of HERALD's own char counts.
 
 ## Output — the opposite disclosure rule from `report`
 
 `docs/social/` is **committed** — it holds public content, meant to be
 posted. This is the reverse of `docs/reports/`, which is gitignored because
 it holds private data. Don't carry the `report` skill's "never commit this"
-habit over here by reflex — committing `docs/social/x-updates-*.md` is the
+habit over here by reflex — committing `docs/social/x-updates.md` is the
 correct, intended behavior.
 
 ## Relaying the result

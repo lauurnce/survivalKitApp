@@ -115,3 +115,20 @@ the front matter's `post_count` against reality. Its self-test,
 directly (including the weighted-count edge cases) and runs standalone via
 `node scripts/social/check-post-lengths.check.mjs`, independent of the
 manual spot-check above.
+
+## Addendum (2026-08-31): single append-only file
+
+The original design wrote one dated file per run
+(`docs/social/x-updates-<date>.md`, with a batch's metadata in YAML front
+matter). Lawrence asked for every past batch to stay in one place instead,
+so output moved to a single `docs/social/x-updates.md` that HERALD only
+ever appends to — never rewrites, reorders, or removes an earlier section
+from.
+
+Each batch is now a `## <date> — <initial|update> (N posts, covers <hash>)`
+section header (replacing the old YAML front matter) followed by its
+`### Post` entries, same as before. `check-post-lengths.mjs` was rewritten
+to split the file into sections and validate only the most recently
+appended one — an older section's content, even a broken one, never affects
+today's run. The now-unneeded same-day filename-collision suffix (`b`, `c`,
+...) was removed along with the multi-file discovery logic it protected.

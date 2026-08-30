@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // scripts/social/check-post-lengths.mjs
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync, existsSync } from 'node:fs';
 
 const X_LIMIT = 280;
 const URL_COST = 23;
 const URL_RE = /https?:\/\/\S+/g;
+const DEFAULT_PATH = 'docs/social/x-updates.md';
 
 function weightedLength(text) {
   let total = 0;
@@ -50,24 +50,69 @@ export function parsePosts(content) {
   }));
 }
 
-export function parseFrontMatter(content) {
-  const match = content.match(/^---\n([\s\S]*?)\n---/);
-  if (!match) return {};
-  const fm = {};
-  for (const line of match[1].split('\n')) {
-    const idx = line.indexOf(':');
-    if (idx === -1) continue;
-    fm[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
+// A batch section header, e.g.:
+// ## 2026-08-30 — initial (20 posts, covers fd35a52)
+const SECTION_HEADER_RE =
+  /^## (\d{4}-\d{2}-\d{2}) — (\S+) \((\d+) posts?, covers ([0-9a-f]+)\)\s*$/;
+
+export function splitSections(content) {
+  const lines = content.split('\n');
+  const sections = [];
+  let current = null;
+  for (const line of lines) {
+    const match = line.match(SECTION_HEADER_RE);
+    if (match) {
+      if (current) sections.push(current);
+      current = {
+        date: match[1],
+        batchType: match[2],
+        declaredCount: Number(match[3]),
+        coversCommit: match[4],
+        bodyLines: [],
+      };
+    } else if (current) {
+      current.bodyLines.push(line);
+    }
   }
-  return fm;
+  if (current) sections.push(current);
+  return sections.map((s) => ({
+    date: s.date,
+    batchType: s.batchType,
+    declaredCount: s.declaredCount,
+    coversCommit: s.coversCommit,
+    body: s.bodyLines.join('\n'),
+  }));
+}
+
+// The file is an append-only log of every batch ever generated; validation
+// always targets the most recently appended section, since that is the
+// only one a given run could have just written.
+export function latestSection(content) {
+  const sections = splitSections(content);
+  return sections.length > 0 ? sections[sections.length - 1] : null;
 }
 
 export function validateBatch(content) {
-  const fm = parseFrontMatter(content);
-  const posts = parsePosts(content);
-  const validBatchType = fm.batch_type === 'initial' || fm.batch_type === 'update';
+  const section = latestSection(content);
+  if (!section) {
+    return {
+      section: null,
+      results: [],
+      failures: [],
+      mismatches: [],
+      countOk: false,
+      validBatchType: false,
+      expectedCount: null,
+      actualCount: 0,
+      declaredCountOk: false,
+    };
+  }
+
+  const validBatchType = section.batchType === 'initial' || section.batchType === 'update';
   const expectedCount =
-    fm.batch_type === 'initial' ? 20 : fm.batch_type === 'update' ? 5 : null;
+    section.batchType === 'initial' ? 20 : section.batchType === 'update' ? 5 : null;
+
+  const posts = parsePosts(section.body);
   const results = posts.map((p) => {
     const effective = effectiveLength(p.text);
     return {
@@ -81,15 +126,11 @@ export function validateBatch(content) {
   const failures = results.filter((r) => !r.pass);
   const mismatches = results.filter((r) => r.countMismatch);
 
-  const frontMatterPostCount = fm.post_count !== undefined ? Number(fm.post_count) : null;
-  const postCountFrontMatterOk =
-    frontMatterPostCount === null || frontMatterPostCount === posts.length;
-
-  const countOk =
-    validBatchType && posts.length === expectedCount && postCountFrontMatterOk;
+  const declaredCountOk = section.declaredCount === posts.length;
+  const countOk = validBatchType && posts.length === expectedCount && declaredCountOk;
 
   return {
-    fm,
+    section,
     results,
     failures,
     mismatches,
@@ -97,34 +138,28 @@ export function validateBatch(content) {
     validBatchType,
     expectedCount,
     actualCount: posts.length,
-    frontMatterPostCount,
-    postCountFrontMatterOk,
+    declaredCountOk,
   };
 }
 
 function main() {
-  let filePath = process.argv[2];
-  if (!filePath) {
-    const dir = 'docs/social';
-    if (!existsSync(dir)) {
-      console.error('No docs/social/x-updates-*.md files found.');
-      process.exit(1);
-    }
-    const files = readdirSync(dir).filter((f) =>
-      /^x-updates-\d{4}-\d{2}-\d{2}[a-z]?\.md$/.test(f)
-    ).sort();
-    if (files.length === 0) {
-      console.error('No docs/social/x-updates-*.md files found.');
-      process.exit(1);
-    }
-    filePath = join(dir, files[files.length - 1]);
+  const filePath = process.argv[2] || DEFAULT_PATH;
+  if (!existsSync(filePath)) {
+    console.error(`No ${filePath} found.`);
+    process.exit(1);
   }
   const content = readFileSync(filePath, 'utf8');
   const report = validateBatch(content);
 
-  console.log(`Checking ${filePath}`);
+  console.log(`Checking ${filePath} (latest batch section)`);
+  if (!report.section) {
+    console.error(
+      'No batch sections found — expected a "## <date> — initial|update (N posts, covers <hash>)" header.'
+    );
+    process.exit(1);
+  }
   console.log(
-    `batch_type=${report.fm.batch_type ?? 'MISSING'} expected_count=${
+    `date=${report.section.date} batch_type=${report.section.batchType} expected_count=${
       report.expectedCount ?? 'unknown'
     } actual_count=${report.actualCount}`
   );
@@ -150,15 +185,15 @@ function main() {
     if (!report.countOk) {
       if (!report.validBatchType) {
         console.error(
-          `\nInvalid or missing batch_type: expected "initial" or "update", got ${JSON.stringify(
-            report.fm.batch_type ?? null
+          `\nInvalid batch type in section header: expected "initial" or "update", got ${JSON.stringify(
+            report.section.batchType
           )}.`
         );
       } else if (report.actualCount !== report.expectedCount) {
         console.error(`\nExpected ${report.expectedCount} posts, found ${report.actualCount}.`);
-      } else if (!report.postCountFrontMatterOk) {
+      } else if (!report.declaredCountOk) {
         console.error(
-          `\nFront matter post_count (${report.frontMatterPostCount}) does not match actual post count (${report.actualCount}).`
+          `\nSection header declares ${report.section.declaredCount} posts but ${report.actualCount} were found.`
         );
       }
     }

@@ -1,11 +1,6 @@
----
-batch_type: initial
-covers_commit: fd35a52
-post_count: 20
-generated: 2026-08-30
----
+# X updates
 
-# X updates — 2026-08-30
+## 2026-08-30 — initial (20 posts, covers fd35a52)
 
 ### Post 1 (249/280)
 I entered BSIT with zero tech background.
