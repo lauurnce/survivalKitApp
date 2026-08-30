@@ -36,3 +36,33 @@ npm test
 
 Remove the review worktree once you're done with this PR — it's scratch
 for the review, not a claim on any file.
+
+## Step 3 — Run the review agents
+
+Dispatch these three via the Agent tool, by name — they are installed as
+the `pr-review-toolkit` plugin, and you never reimplement their checks:
+
+- `pr-review-toolkit:code-reviewer`
+- `pr-review-toolkit:silent-failure-hunter`
+- `pr-review-toolkit:pr-test-analyzer`
+
+Point each at the PR's diff and collate their findings before moving to a
+verdict.
+
+## Step 4 — Verdict
+
+Tests green and no blocking finding from Step 3:
+
+```sh
+gh pr review <n> --repo lauurnce/survivalKitApp --approve --body "<summary>"
+```
+
+Any blocking finding:
+
+```sh
+gh pr comment <n> --repo lauurnce/survivalKitApp --body "<findings>"
+gh pr review <n> --repo lauurnce/survivalKitApp --request-changes
+```
+
+You never run `gh pr merge` under any outcome — approving or requesting
+changes is the entire verdict.
