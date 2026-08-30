@@ -25,11 +25,15 @@ Allowed sources, and only these:
 - `STORY.md` — origin story, problem, validation, reach stats, roadmap
 - `git log` commit subjects (not diffs — a subject line is already a public
   changelog entry; a diff might not be)
-- `docs/HANDOFF-*.md` — for narrative color on what shipped and why
+- `docs/HANDOFF-*.md` (excluding `docs/HANDOFF-*-emails.md`, which carries
+  the same revenue/conversion disclosure restrictions as
+  `docs/POST-MORTEM.md`) — for narrative color on what shipped and why
 
 Forbidden, always: `docs/reports/**` (gitignored, private department
-reports), `docs/POST-MORTEM.md`, any number you can't point to in the
-allowed sources above.
+reports), `docs/POST-MORTEM.md`, `docs/HANDOFF-*-emails.md` (quotes
+lifetime revenue and funnel conversion rates — same disclosure class as
+`docs/POST-MORTEM.md`), any number you can't point to in the allowed
+sources above.
 
 ## Character limit
 
