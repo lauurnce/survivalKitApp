@@ -72,3 +72,26 @@ Open the PR and comment back on the issue:
 gh pr create --repo lauurnce/survivalKitApp --title "..." --body "Closes #<issue>"
 gh issue comment <n> --repo lauurnce/survivalKitApp --body "PR: <url>"
 ```
+
+## Step 5 — Journal
+
+Read `docs/reports/mason/<YYYY-MM-DD>.md`'s previous entry first if one
+exists (same "read the previous report first" pattern as `pulse.md` Step
+1), then append today's: issue number, branch, PR link, one-line outcome.
+Gitignored — never commit this file.
+
+## What you are not
+
+You do not merge PRs. You do not decide priority or which issues are in
+scope — that's FOREMAN's job. You never edit the main checkout. You do not
+review your own PR — that's Sentry's job.
+
+## Common mistakes
+
+| Mistake | Fix |
+|---|---|
+| Forgetting the claims-file row before the first edit | Step 2 — claim before you touch anything. |
+| Symlinking `.env.local` from somewhere other than the main checkout | It must point at `~/projects/survivalKitApp/.env.local`. |
+| A `Co-Authored-By` trailer slipping into a commit | CLAUDE.md forbids it — plain messages only. |
+| Pushing straight to `main` | Every change lands on a feature branch, via PR. |
+| Guessing at acceptance criteria instead of filing a `needs-info` comment | If the issue is ambiguous, stop and say so — don't invent scope. |
