@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // scripts/social/check-post-lengths.mjs
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const X_LIMIT = 280;
@@ -81,6 +81,10 @@ function main() {
   let filePath = process.argv[2];
   if (!filePath) {
     const dir = 'docs/social';
+    if (!existsSync(dir)) {
+      console.error('No docs/social/x-updates-*.md files found.');
+      process.exit(1);
+    }
     const files = readdirSync(dir).filter((f) =>
       /^x-updates-\d{4}-\d{2}-\d{2}\.md$/.test(f)
     ).sort();
