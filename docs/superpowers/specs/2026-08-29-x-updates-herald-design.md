@@ -98,7 +98,20 @@ posts, each tagged with its live character count, e.g. `### Post 1 (247/280)`.
 
 ## Testing
 
-Content generation, not application logic — no unit tests. Verification is
-the char-count validation step itself (every post's tag must show `≤280`),
-plus a manual spot-check of the first real INITIAL run's 20 posts before
-they're treated as ready to post.
+Content generation, not application logic — no unit tests for the drafting
+step itself. Verification is the char-count validation step (every post's
+tag must show `≤280`), plus a manual spot-check of the first real INITIAL
+run's 20 posts before they're treated as ready to post.
+
+The validation step itself does have deterministic coverage:
+`scripts/social/check-post-lengths.mjs` (wired up as `npm run social:check`)
+implements X's real weighted character-count algorithm — most code points
+cost 1, but code points outside a handful of low-value ranges (CJK,
+emoji, and symbols like `₱`) cost 2 — plus the flat 23-character URL cost,
+and cross-checks each post's claimed header count against that computed
+value, the batch's declared `batch_type` against its actual post count, and
+the front matter's `post_count` against reality. Its self-test,
+`scripts/social/check-post-lengths.check.mjs`, asserts this arithmetic
+directly (including the weighted-count edge cases) and runs standalone via
+`node scripts/social/check-post-lengths.check.mjs`, independent of the
+manual spot-check above.

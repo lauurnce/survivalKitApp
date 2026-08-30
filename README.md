@@ -68,6 +68,7 @@ npm run dev
 | `npm run ingest:md` | Ingest 2nd-year markdown modules into Supabase |
 | `npm run story:svg` | Regenerate the STORY.md charts from `assets/story/story-data.json` |
 | `npm run story:check` | Assertion suite for the chart generator |
+| `npm run social:check` | Validate an X-post batch's character counts against the 280-char limit |
 
 ## Repository layout
 
