@@ -41,6 +41,10 @@ edit runs the old instructions. This has already cost one whole verification run
 
 `/report all` runs every built department **in a single invocation**.
 
+Every department still follows all four steps from "Running one department"
+above, including its own `docs/status/digest.md` update — `/report all` is
+not exempt from that step.
+
 This is not a style preference. A cold invocation costs roughly 22 US cents in
 cache-creation overhead before any analysis happens. Running departments separately
 pays that once each and produces identical reports. One invocation pays it once, and
@@ -97,4 +101,6 @@ current-state file holding one verdict word plus one figure-free headline
 sentence per department, kept updated by step 4 of "Running one department"
 above. It exists so the weekly reminder routine (which cannot see the
 gitignored reports) has real content to read. It must never carry a number
-beyond the "Last run" date.
+beyond the "Last run" date. For security specifically, a headline states the
+verdict and whether work is outstanding, but never names the unpatched
+component, package, or defect class.

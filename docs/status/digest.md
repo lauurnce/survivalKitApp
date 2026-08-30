@@ -23,4 +23,4 @@ docs/superpowers/specs/2026-08-30-report-digest-reminder-design.md).
 ## WARDEN (security)
 - Last run: 2026-08-25
 - Verdict: nothing exposed
-- Headline: the coupon-redemption defect opened the prior day is closed and verified; the npm-advisory fix remains blocked on the Next.js major-version decision.
+- Headline: the coupon-redemption defect opened the prior day is closed and verified; a separate dependency fix remains blocked pending an upgrade decision.
