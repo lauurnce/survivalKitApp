@@ -1,46 +1,22 @@
 /**
- * Billing operations, and the PAYMONGO_LIVEMODE mode-matching trap.
+ * Billing operations signal helpers.
  *
- * THE TRAP. app/api/webhooks/paymongo/route.ts:21 computes
- * `EXPECTED_LIVEMODE = process.env.PAYMONGO_LIVEMODE === "true"`, and line 74
- * answers a mismatch with 200 { ok: true, ignored: "livemode" }. The 2xx is
- * correct — it stops PayMongo retrying an event this deployment will never act
- * on — but it means a mismatch produces NO ERROR ANYWHERE. PayMongo records
- * success. Vercel logs a 200. The buyer is charged. No subscription is written.
- * The only symptom is an absence.
- *
- * The `=== "true"` coercion is what makes it dangerous: every value that is not
- * the exact literal "true" means "expect test mode" — unset, empty, "True", a
- * trailing space, or the literal string "[SENSITIVE]". Any of those in a
- * production environment quietly switches production into test-only mode.
- *
- * THIS COLLECTOR CANNOT READ PRODUCTION'S VALUE. The PayMongo variables in
- * .env.reports.local are all the literal "[SENSITIVE]", because `vercel env
- * pull` cannot retrieve Sensitive values — and even a readable value would
- * only describe a local file, not the deployed environment. The reading is
- * `not read`, twice over, and it is reported that way rather than coerced.
- *
- * WHAT IS LEFT IS A DATABASE-SIDE PROXY, AND IT IS A GOOD ONE. A row in
- * `payments` can only be written by a webhook that already passed the livemode
- * gate, so ANY payment is proof the mode matched when it landed. Absence of
- * payments proves nothing on its own — which is exactly why the signal is
- * three-valued and why the middle state carries three hypotheses instead of a
- * verdict.
- *
- * Everything here takes counts rather than rows: intent is counted with
- * `head: true` queries against `events`, which is far past the 1000-row select
- * cap, and a count query is unaffected by it.
+ * Detects a PAYMONGO_LIVEMODE misconfiguration indirectly, via a
+ * database-side proxy (see `modeMatchSignal`) rather than by reading
+ * production's env value directly — the collector can't read that value at
+ * all (it's [SENSITIVE], see `readLivemodeFlag`). Everything here takes
+ * counts rather than rows: intent is counted with `head: true` queries
+ * against `events`, unaffected by the 1000-row select cap. Full rationale:
+ * docs/reports/finance/billing-edge-cases.md (gitignored).
  */
 
 /** What `vercel env pull` writes in place of a Sensitive value. */
 export const SENSITIVE_PLACEHOLDER = "[SENSITIVE]";
 
 export const LIVEMODE_TRAP =
-  "A PAYMONGO_LIVEMODE mismatch is silent: the webhook answers 200 with " +
-  'ignored: "livemode", so PayMongo records success, Vercel logs no error, the ' +
-  "buyer is charged, and no entitlement is written. The only symptom is payments " +
-  "stopping. Because the check is `=== \"true\"`, any value other than that exact " +
-  "literal — unset, empty, mis-cased, or [SENSITIVE] — puts production in test mode.";
+  "A PAYMONGO_LIVEMODE mismatch fails silently: the webhook still answers 200, " +
+  "so nothing errors while entitlements stop being written. See " +
+  "docs/reports/finance/billing-edge-cases.md for the exact mechanics.";
 
 export type LivemodeState = "true" | "false" | "unset" | "sensitive-placeholder" | "malformed";
 
@@ -159,12 +135,10 @@ export function abandonmentHandoff(input: {
 // ── What this module cannot do ──────────────────────────────────────────────
 
 export const WEBHOOK_LANDING_CEILING =
-  "Confirming that every paid PayMongo link produced a ledger row means listing " +
-  "payments at PayMongo (listRecentPaidLinks in lib/paymongo.ts), which needs the " +
-  "live secret key. That key is [SENSITIVE] and cannot be pulled, so the collector " +
-  "cannot perform this check. The admin reconcile view " +
-  "(app/api/admin/reconcile/route.ts) already does exactly it with real " +
-  "credentials — recommend running that rather than substituting an estimate.";
+  "The collector can't confirm every paid link reached the ledger — that needs " +
+  "the live secret key, which is [SENSITIVE]. Run the admin reconcile view " +
+  "instead of substituting an estimate; see " +
+  "docs/reports/finance/billing-edge-cases.md for detail.";
 
 export interface QuietLedger {
   daysSinceLastPayment: number | null;

@@ -1,31 +1,12 @@
 /**
  * Earned versus deferred revenue, and the expiry schedule behind it.
  *
- * Money received is not money earned. A semester plan bought in August has
- * been paid for and not yet delivered; the undelivered part is a liability.
- * That distinction did not matter under the one-time unlock and matters now
- * that subscriptions are the model.
- *
- * RECOGNITION IS STRAIGHT-LINE between paid_at and the entitlement's
- * current_period_end. Nothing more elaborate is justified: one deliverable,
- * continuously available, over a short period. `deferred` is computed by
- * SUBTRACTION from the payment rather than by its own multiplication, so
- * integer centavos can never drift apart from the amount actually received.
- *
- * A RENEWAL DESTROYS THE ORIGINAL PERIOD. recordPayment UPDATES
- * subscriptions.current_period_end in place, so a payment that a later payment
- * superseded has no recoverable period of its own. Those are recognised as
- * fully earned — a period replaced by a renewal has by definition elapsed —
- * and counted separately so the deferred total can be qualified rather than
- * presented as exact.
- *
- * TWO STANDING CHECKS ON SEMESTER_END, and the second is the dangerous one.
- * periodEndFor floors every semester plan at 31 days, so once `now + 31 days`
- * reaches SEMESTER_END the semester plan and the month plan return the SAME
- * period end — identical access at double the price. That begins 31 days
- * BEFORE the semester ends, which is why watching the calendar would not catch
- * it. The second check is the ordinary one: after SEMESTER_END passes without
- * a bump, every semester plan is silently a 31-day plan.
+ * Recognition is straight-line between paid_at and the entitlement's
+ * current_period_end; a renewal that overwrites a period counts that period
+ * as fully earned rather than deferred. `semesterPlanParity` below guards a
+ * pricing edge case near SEMESTER_END. Full rationale, including the exact
+ * mechanics of both:
+ * docs/reports/finance/billing-edge-cases.md (gitignored).
  */
 
 import { SEMESTER_END, periodEndFor } from "../paymongo";
@@ -156,10 +137,8 @@ export interface PlanParity {
 }
 
 /**
- * The check nobody would think to run. periodEndFor floors a semester plan at
- * 31 days, so from 31 days before SEMESTER_END the semester plan delivers
- * exactly what the month plan delivers — at double the price — and keeps doing
- * so forever if the constant is never bumped.
+ * Guards a pricing edge case near SEMESTER_END — see
+ * docs/reports/finance/billing-edge-cases.md for the exact mechanics.
  */
 export function semesterPlanParity(now: Date): PlanParity {
   const semesterPlanEnd = periodEndFor("subject_sem", now);
