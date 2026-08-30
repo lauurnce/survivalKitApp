@@ -29,6 +29,9 @@ which deliberately holds none.
    `subagent_type: "vantage"`, `subagent_type: "ledger"`, or
    `subagent_type: "warden"`.
 3. Relay the agent's chat summary — verdict first.
+4. Update this department's block in `docs/status/digest.md` with today's
+   date, the verdict, and a one-sentence, figure-free headline. Commit it —
+   this file is tracked, unlike `docs/reports/`.
 
 **If you have just edited an agent definition, restart the session before dispatching
 it.** Definitions load at session start, so a subagent dispatched after a mid-session
@@ -88,3 +91,10 @@ owns it and reports on it monthly, since cost of operation is already in its cha
 `docs/reports/` is gitignored and must stay that way. The repo is public; these
 reports carry traffic, revenue, conversion, and security data. Never copy a figure
 from a report into a tracked file.
+
+The one deliberate exception is `docs/status/digest.md`: a tracked,
+current-state file holding one verdict word plus one figure-free headline
+sentence per department, kept updated by step 4 of "Running one department"
+above. It exists so the weekly reminder routine (which cannot see the
+gitignored reports) has real content to read. It must never carry a number
+beyond the "Last run" date.
