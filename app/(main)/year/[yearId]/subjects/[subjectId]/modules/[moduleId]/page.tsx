@@ -14,6 +14,7 @@ import { PageTracker } from "@/components/PageTracker";
 import { LastModuleTracker } from "@/components/LastModuleTracker";
 import { PaywallTeaser } from "@/components/PaywallTeaser";
 import { UnlockSuccessToast } from "@/components/UnlockSuccessToast";
+import { SignupNudgeToast } from "@/components/SignupNudgeToast";
 import { ModuleReaderClient } from "@/components/ModuleReaderClient";
 import { ModuleSurveyCard } from "@/components/ModuleSurveyCard";
 import { pickFirstActivity } from "@/lib/freeSample";
@@ -136,6 +137,16 @@ export default async function ReaderPage({ params }: Props) {
       <Suspense fallback={null}>
         <UnlockSuccessToast />
       </Suspense>
+      {/* This page already serves free (non-activity) content to anonymous
+          visitors — the nudge here is purely a soft prompt to create an
+          account, not a new gate. It never blocks reading. */}
+      {!userId && (
+        <SignupNudgeToast
+          signupHref={`/signup?next=${encodeURIComponent(
+            `/year/${yearId}/subjects/${subjectId}/modules/${moduleId}`
+          )}`}
+        />
+      )}
       <LastModuleTracker
         moduleId={moduleId}
         subjectId={subjectId}
