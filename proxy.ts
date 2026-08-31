@@ -9,7 +9,9 @@ import { signingSecretCandidates } from "@/lib/auth/signingSecrets";
 // 'unsafe-inline' — React's style={{}} prop compiles to inline style
 // attributes with no nonce support, and CSS-only injection is a much
 // narrower attack surface than script injection.
-function buildCsp(nonce: string): string {
+// Exported for proxy.test.ts — the nonce must stay verifiable without
+// spinning up a full NextRequest/proxy() harness.
+export function buildCsp(nonce: string): string {
   const isDev = process.env.NODE_ENV !== "production";
   const devEval = isDev ? " 'unsafe-eval'" : "";
   return [
@@ -17,12 +19,20 @@ function buildCsp(nonce: string): string {
     // 'wasm-unsafe-eval' permits WebAssembly compilation (Pyodide, sql.js)
     // WITHOUT enabling JS eval()/new Function(). The Pyodide worker itself
     // gets a separate, narrowly-scoped CSP in next.config.ts.
+    //
+    // GA4's gtag.js is loaded via a nonced <script src="https://www.
+    // googletagmanager.com/...">  — a nonce match trusts a script element
+    // regardless of its src host, so googletagmanager.com does not need to
+    // be host-allowlisted here too.
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'${devEval} https://cdn.jsdelivr.net`,
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
     "font-src 'self' https://cdn.jsdelivr.net",
     "worker-src 'self' blob:",
-    "connect-src 'self' https://*.supabase.co https://cdn.jsdelivr.net https://sql.js.org",
-    "img-src 'self' data:",
+    // *.google-analytics.com: where gtag.js actually sends pageview hits
+    // (fetch/sendBeacon, regionalized as e.g. region1.google-analytics.com)
+    // — without this, GA4 loads but every hit is silently dropped by CSP.
+    "connect-src 'self' https://*.supabase.co https://cdn.jsdelivr.net https://sql.js.org https://*.google-analytics.com",
+    "img-src 'self' data: https://*.google-analytics.com",
     "object-src 'none'",
     "frame-ancestors 'none'",
     "base-uri 'self'",
