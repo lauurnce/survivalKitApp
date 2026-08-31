@@ -94,9 +94,14 @@ export default async function RootLayout({
             <p className="font-sans text-[11px] text-ink-faint leading-relaxed">
               Study guide — original explanations. Content covers standard curriculum topics.
             </p>
-            <a href="/privacy" className="font-sans text-[11px] text-ink-faint hover:text-ink-muted transition-colors">
-              Privacy Policy
-            </a>
+            <div className="flex items-center gap-4">
+              <a href="/faq" className="font-sans text-[11px] text-ink-faint hover:text-ink-muted transition-colors">
+                FAQ
+              </a>
+              <a href="/privacy" className="font-sans text-[11px] text-ink-faint hover:text-ink-muted transition-colors">
+                Privacy Policy
+              </a>
+            </div>
           </div>
         </footer>
       </body>
