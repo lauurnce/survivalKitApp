@@ -284,3 +284,33 @@ export interface DashboardData {
   activity: ActivityData;
   subscriptions: SubscriptionTimelineItem[];
 }
+
+// Calendar-accurate breakdown (years/months from actual month lengths, not a
+// /30 approximation), largest unit first — a raw day count for a far-out
+// deadline (e.g. "26786 days") doesn't tell a reader when that actually is.
+export function formatDurationRemaining(from: Date, to: Date): string {
+  if (to.getTime() <= from.getTime()) return "0 days";
+
+  let months = (to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth());
+  const cursor = new Date(from);
+  cursor.setMonth(cursor.getMonth() + months);
+  if (cursor.getTime() > to.getTime()) {
+    months -= 1;
+    cursor.setMonth(cursor.getMonth() - 1);
+  }
+
+  const years = Math.floor(months / 12);
+  months %= 12;
+
+  const remainderDays = Math.floor((to.getTime() - cursor.getTime()) / (1000 * 60 * 60 * 24));
+  const weeks = Math.floor(remainderDays / 7);
+  const days = remainderDays % 7;
+
+  const parts: string[] = [];
+  if (years > 0) parts.push(`${years} year${years !== 1 ? "s" : ""}`);
+  if (months > 0) parts.push(`${months} month${months !== 1 ? "s" : ""}`);
+  if (weeks > 0) parts.push(`${weeks} week${weeks !== 1 ? "s" : ""}`);
+  if (days > 0 || parts.length === 0) parts.push(`${days} day${days !== 1 ? "s" : ""}`);
+
+  return parts.slice(0, 3).join(", ");
+}

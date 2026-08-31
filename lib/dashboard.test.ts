@@ -6,6 +6,7 @@ import {
   pickRecommended,
   roadmapNodes,
   continueHref,
+  formatDurationRemaining,
   type TermGroup,
   type CurrentTerm,
   type Recommendation,
@@ -404,5 +405,38 @@ describe("continueHref", () => {
 
   it("falls back to /year when there is no recommendation", () => {
     expect(continueHref(undefined)).toBe("/year");
+  });
+});
+
+describe("formatDurationRemaining", () => {
+  it("breaks a multi-month span into months, weeks, and days", () => {
+    // 2026-01-01 -> 2026-03-17: 2 months, 2 weeks, 2 days
+    const from = new Date("2026-01-01T00:00:00Z");
+    const to = new Date("2026-03-17T00:00:00Z");
+    expect(formatDurationRemaining(from, to)).toBe("2 months, 2 weeks, 2 days");
+  });
+
+  it("adds years once the span exceeds 12 months", () => {
+    const from = new Date("2026-01-01T00:00:00Z");
+    const to = new Date("2028-06-15T00:00:00Z");
+    expect(formatDurationRemaining(from, to)).toBe("2 years, 5 months, 2 weeks");
+  });
+
+  it("omits zero units", () => {
+    const from = new Date("2026-01-01T00:00:00Z");
+    const to = new Date("2026-01-15T00:00:00Z");
+    expect(formatDurationRemaining(from, to)).toBe("2 weeks");
+  });
+
+  it("falls back to days when the span is under a week", () => {
+    const from = new Date("2026-01-01T00:00:00Z");
+    const to = new Date("2026-01-04T00:00:00Z");
+    expect(formatDurationRemaining(from, to)).toBe("3 days");
+  });
+
+  it("returns 0 days for a non-positive span", () => {
+    const from = new Date("2026-01-10T00:00:00Z");
+    const to = new Date("2026-01-01T00:00:00Z");
+    expect(formatDurationRemaining(from, to)).toBe("0 days");
   });
 });

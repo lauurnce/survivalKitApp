@@ -468,35 +468,25 @@ interface EventRowFull {
  * Fetches activity data for the past 8 weeks (56 days).
  * Used for the activity line graph visualization.
  */
-export async function getActivityData(userId: string): Promise<ActivityData> {
+export async function getActivityData(deviceId: string | null): Promise<ActivityData> {
   const supabase = createServerClient();
   const now = new Date();
   const cutoff = new Date(now);
   cutoff.setDate(cutoff.getDate() - 56); // 8 weeks
 
-  // Fetch events for both user_id and device_id (for anonymous)
-  const [userEventsRes, deviceEventsRes] = await Promise.all([
-    isUuid(userId)
-      ? supabase
-          .from("events")
-          .select("event_type, subject_id, module_id, created_at")
-          .eq("user_id", userId)
-          .gte("created_at", cutoff.toISOString())
-          .order("created_at", { ascending: true })
-      : { data: [] as EventRowFull[] },
-    supabase
-      .from("events")
-      .select("event_type, subject_id, module_id, created_at")
-      .eq("device_id", userId)
-      .gte("created_at", cutoff.toISOString())
-      .order("created_at", { ascending: true }),
-  ]);
+  // events has no user_id column — every row is keyed by device_id, so a
+  // signed-in user's activity is only visible through the device cookie set
+  // on their browser (the same one subscriptions/unlocks fall back to).
+  const eventsRes = deviceId
+    ? await supabase
+        .from("events")
+        .select("event_type, subject_id, module_id, created_at")
+        .eq("device_id", deviceId)
+        .gte("created_at", cutoff.toISOString())
+        .order("created_at", { ascending: true })
+    : { data: [] as EventRowFull[] };
 
-  const userEvents = (userEventsRes.data ?? []) as EventRowFull[];
-  const deviceEvents = (deviceEventsRes.data ?? []) as EventRowFull[];
-  const allEvents = [...userEvents, ...deviceEvents].sort((a, b) => 
-    new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-  );
+  const allEvents = (eventsRes.data ?? []) as EventRowFull[];
 
   // Build daily activity map
   const dailyActivity = new Map<string, { eventCount: number; isActive: boolean }>();
@@ -666,10 +656,10 @@ export interface DashboardData {
  * Single batched fetch for all dashboard data.
  * Used by /account page for simplified roadmap + activity graph.
  */
-export async function getDashboardData(userId: string): Promise<DashboardData> {
+export async function getDashboardData(userId: string, deviceId: string | null): Promise<DashboardData> {
   const [roadmap, activity, subscriptions] = await Promise.all([
     getRoadmapData(userId),
-    getActivityData(userId),
+    getActivityData(deviceId),
     getSubscriptionTimeline(userId),
   ]);
   return { roadmap, activity, subscriptions };

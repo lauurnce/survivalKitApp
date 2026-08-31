@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
+import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getAccountOverview, getDashboardData } from "@/lib/account";
 import { signOutAction } from "../../(auth)/actions";
 import { ThemeToggleInline } from "@/components/ThemeToggle";
@@ -17,9 +19,14 @@ export default async function RoadmapPage() {
   const userId = await getCurrentUserId();
   if (!userId) redirect("/login?next=/account/roadmap");
 
+  // events is device_id-only (no user_id column) — same cookie the dashboard
+  // uses to attribute activity/streak data to this viewer.
+  const cookieStore = await cookies();
+  const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+
   const [overview, data] = await Promise.all([
     getAccountOverview(userId),
-    getDashboardData(userId),
+    getDashboardData(userId, deviceId),
   ]);
 
   return (

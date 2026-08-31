@@ -15,7 +15,8 @@ import { ThisWeekPanel } from "@/components/dashboard/ThisWeekPanel";
 import { ActivityGraph } from "@/components/dashboard/ActivityGraph";
 import { SemesterSections } from "@/components/dashboard/SemesterSections";
 import { DiscountCodesSectionWrapper } from "@/components/DiscountCodesSectionWrapper";
-import { groupByTerm, deriveCurrentTerm, pickRecommended, continueHref } from "@/lib/dashboard";
+import { PageTracker } from "@/components/PageTracker";
+import { groupByTerm, deriveCurrentTerm, pickRecommended, continueHref, formatDurationRemaining } from "@/lib/dashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -26,11 +27,6 @@ export const metadata: Metadata = {
 export default async function AccountPage() {
   const userId = await getCurrentUserId();
   if (!userId) redirect("/login?next=/account");
-  const [overview, profile, dashboardData] = await Promise.all([
-    getAccountOverview(userId),
-    getProfile(userId),
-    getDashboardData(userId),
-  ]);
 
   // Same identity model as the module pages: device cookie or signed-in user,
   // checked once for the whole page. The dashboard spans every year and
@@ -38,9 +34,18 @@ export default async function AccountPage() {
   // what getAccountOverview already computed per subject (active, unexpired
   // subscriptions via isUnlockedBy); the device leg covers purchases made
   // before this viewer signed in, which are stored against the device cookie.
+  // The activity/streak events table is device_id-only (no user_id column),
+  // so this same cookie is also how the dashboard finds this viewer's activity.
   const devUnlockAll = process.env.UNLOCK_ALL === "true";
   const cookieStore = await cookies();
   const deviceId = verifyDeviceCookie(cookieStore.get(DEVICE_COOKIE)?.value);
+
+  const [overview, profile, dashboardData] = await Promise.all([
+    getAccountOverview(userId),
+    getProfile(userId),
+    getDashboardData(userId, deviceId),
+  ]);
+
   const now = new Date().toISOString();
   const { data: deviceSub } = deviceId
     ? await createServerClient()
@@ -68,6 +73,10 @@ export default async function AccountPage() {
 
   return (
     <div className="min-h-screen bg-paper lg:flex">
+      {/* Every dashboard visit counts toward the activity streak — module
+          pages already track "year_select"/"module_open" etc, but landing
+          here (e.g. right after login) previously logged nothing at all. */}
+      <PageTracker event="enter" />
       <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
@@ -143,7 +152,15 @@ export default async function AccountPage() {
                       {subscriptions[0].subjectTitle && ` • ${subscriptions[0].subjectTitle}`}
                     </p>
                     <p className="text-sm text-ink-muted mt-1">
-                      {subscriptions[0].daysRemaining} day{subscriptions[0].daysRemaining !== 1 ? "s" : ""} remaining
+                      {formatDurationRemaining(new Date(), new Date(subscriptions[0].endsAt))} remaining
+                    </p>
+                    <p className="text-xs text-ink-faint mt-0.5">
+                      Ends{" "}
+                      {new Date(subscriptions[0].endsAt).toLocaleDateString(undefined, {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
                     </p>
                   </>
                 ) : roadmap.milestones.find(m => m.state === "upcoming") ? (
