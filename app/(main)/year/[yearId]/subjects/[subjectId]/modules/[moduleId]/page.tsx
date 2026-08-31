@@ -8,6 +8,7 @@ import { isSubscribed } from "@/lib/subscriptions";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { BackLink } from "@/components/BackLink";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ModuleDoneToggle } from "@/components/ModuleDoneToggle";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import { PageTracker } from "@/components/PageTracker";
@@ -147,6 +148,15 @@ export default async function ReaderPage({ params }: Props) {
       {/* Top nav — dark navy */}
       <div className="bg-navy px-6 py-8 md:px-16 border-b border-paper/10">
         <div className="max-w-wide mx-auto">
+          <Breadcrumbs
+            items={[
+              { label: "Year", href: "/year" },
+              { label: year?.label ?? "Year", href: `/year/${yearId}/subjects` },
+              { label: subject.title, href: `/year/${yearId}/subjects/${subjectId}/modules` },
+              { label: mod.title },
+            ]}
+            className="mb-4"
+          />
           <BackLink
             href={`/year/${yearId}/subjects/${subjectId}/modules`}
             label={subject.title}

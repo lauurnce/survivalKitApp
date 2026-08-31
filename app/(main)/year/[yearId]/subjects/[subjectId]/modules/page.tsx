@@ -6,6 +6,7 @@ import { isSubscribed } from "@/lib/subscriptions";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { BackLink } from "@/components/BackLink";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTracker } from "@/components/PageTracker";
 import { ModuleListItem } from "@/components/ModuleListItem";
 import { SubjectComingSoon } from "@/components/SubjectComingSoon";
@@ -88,6 +89,14 @@ export default async function ModulesPage({ params, searchParams }: Props) {
       {/* Page header — dark navy */}
       <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
         <div className="max-w-wide mx-auto">
+          <Breadcrumbs
+            items={[
+              { label: "Year", href: "/year" },
+              { label: year?.label ?? "Year", href: `/year/${yearId}/subjects` },
+              { label: subject.title },
+            ]}
+            className="mb-6"
+          />
           <BackLink
             href={`/year/${yearId}/subjects`}
             label={year?.label ?? "Subjects"}
