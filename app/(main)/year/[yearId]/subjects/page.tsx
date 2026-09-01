@@ -4,6 +4,7 @@ import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { hasDashboardReferrer } from "@/lib/navigation";
 import { NavRail } from "@/components/dashboard/NavRail";
 import { BackLink } from "@/components/BackLink";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTracker } from "@/components/PageTracker";
 import { SubjectAccordion, type SubjectModule } from "@/components/SubjectAccordion";
 import { sectionLabel } from "@/lib/sectionLabel";
@@ -98,6 +99,10 @@ export default async function SubjectsPage({ params, searchParams }: Props) {
           {/* Page header — dark navy */}
           <div className="bg-navy px-6 py-12 md:px-16 md:py-16">
             <div className="max-w-wide mx-auto">
+              <Breadcrumbs
+                items={[{ label: "Year", href: "/year" }, { label: year.label }]}
+                className="mb-6"
+              />
               <BackLink
                 href={`/year/${yearId}`}
                 label="Select Year"
