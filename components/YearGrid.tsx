@@ -62,7 +62,7 @@ export function YearGrid({ cards, fromDashboard = false }: Props) {
               </h2>
 
               {year.stats.total > 0 && (
-                <div className="flex flex-col gap-1 mt-1">
+                <div className="flex flex-col gap-1 mt-1" data-tour="subjects-stats">
                   <p className="font-sans text-xs text-ink-muted group-hover:text-taupe transition-colors duration-200">
                     {year.stats.major} major · {year.stats.minor} minor
                   </p>

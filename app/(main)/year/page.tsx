@@ -6,6 +6,7 @@ import { signOutAction } from "../../(auth)/actions";
 import { NavRail } from "@/components/dashboard/NavRail";
 import { PageTracker } from "@/components/PageTracker";
 import { YearGrid, type YearCardData } from "@/components/YearGrid";
+import { SubjectsTour } from "@/components/tour/SubjectsTour";
 import { hasDashboardReferrer } from "@/lib/navigation";
 import { getYears, getAllSubjects, getYearCounters } from "@/lib/cache/queries";
 
@@ -60,7 +61,13 @@ export default async function YearPage({ searchParams }: Props) {
   return (
     <div className="min-h-screen bg-paper lg:flex">
       {showNavRail && (
-        <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
+        <>
+          <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
+          {/* Only for visitors arriving via the dashboard shell — anon
+              visitors browsing here from the public landing page already
+              saw the landing tour (#60) and shouldn't see this one too. */}
+          <SubjectsTour />
+        </>
       )}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
@@ -81,6 +88,7 @@ export default async function YearPage({ searchParams }: Props) {
                 <Link
                   href="/search"
                   prefetch={true}
+                  data-tour="subjects-search"
                   className="inline-flex items-center gap-2 font-sans text-sm text-taupe hover:text-paper transition-colors duration-150"
                 >
                   <span className="text-accent">⌕</span>
@@ -100,7 +108,7 @@ export default async function YearPage({ searchParams }: Props) {
 
           {/* Year cards — cream */}
           <div className="flex-1 px-6 py-12 md:px-16 md:py-16">
-            <div className="max-w-wide mx-auto">
+            <div className="max-w-wide mx-auto" data-tour="subjects-years">
               <YearGrid cards={cards} fromDashboard={fromDashboard} />
             </div>
           </div>
