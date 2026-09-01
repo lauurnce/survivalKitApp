@@ -128,7 +128,7 @@ export function ProfileCard({
       : null;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-tour="profile-card">
       {profile ? (
         // Hero — campus landmark banner over identity.
         <section className="rounded-xl border border-taupe/30 overflow-hidden">
