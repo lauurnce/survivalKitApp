@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PageTracker } from "@/components/PageTracker";
 import { ContinueReading } from "@/components/ContinueReading";
 import { PopularModules, type PopularModule } from "@/components/PopularModules";
+import { LandingTour } from "@/components/tour/LandingTour";
 import { createServerClient } from "@/lib/supabase/server";
 
 export const revalidate = 300;
@@ -67,6 +68,7 @@ export default async function LandingPage() {
   return (
     <main className="min-h-screen bg-paper flex flex-col px-6 py-12 md:px-16 md:py-20">
       <PageTracker event="enter" />
+      <LandingTour />
       <div className="w-full max-w-wide mx-auto flex-1 flex flex-col gap-16">
 
       {/* Header label */}
@@ -91,6 +93,7 @@ export default async function LandingPage() {
         <div className="flex flex-wrap items-center gap-8">
           <Link
             href="/year"
+            data-tour="landing-subjects"
             className="inline-flex items-center gap-3 bg-navy text-paper font-sans text-sm uppercase tracking-widest px-8 py-4 hover:bg-ink transition-colors duration-150"
           >
             Start here
@@ -98,6 +101,7 @@ export default async function LandingPage() {
           </Link>
           <Link
             href="/search"
+            data-tour="landing-search"
             className="inline-flex items-center gap-2 font-sans text-sm uppercase tracking-widest text-ink-muted hover:text-ink transition-colors duration-150"
           >
             <span className="text-accent" aria-hidden="true">⌕</span>
@@ -109,8 +113,15 @@ export default async function LandingPage() {
       {/* Continue reading — client, null for first-time visitors */}
       <ContinueReading />
 
-      {/* Popular modules — hidden when no reads */}
-      <PopularModules modules={popularModules} />
+      {/* Popular modules — hidden when no reads. The data-tour wrapper is
+          conditional too, not just PopularModules' own empty state, so the
+          landing tour's "skip a step whose target is missing" behavior sees
+          no element at all on a fresh install rather than an empty one. */}
+      {popularModules.length > 0 && (
+        <div data-tour="landing-popular">
+          <PopularModules modules={popularModules} />
+        </div>
+      )}
 
       {/* Footer */}
       <div className="mt-auto flex flex-col gap-3">

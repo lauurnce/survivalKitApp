@@ -57,6 +57,7 @@ export function TopBar({ userId }: TopBarProps) {
       </button>
       <Link
         href={userId ? "/account" : "/login"}
+        data-tour="landing-login"
         className="h-9 flex items-center border border-ink-faint/30 bg-paper px-3 font-mono text-label-sm uppercase tracking-[0.12em] text-ink hover:bg-ink hover:text-paper transition-colors duration-150 rounded-xl"
       >
         {userId ? "My Account" : "Log in"}
