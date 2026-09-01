@@ -5,6 +5,7 @@ import { getAccountOverview } from "@/lib/account";
 import { signOutAction } from "../../(auth)/actions";
 import { NavRail } from "@/components/dashboard/NavRail";
 import { SubjectQuizList } from "@/components/resources/SubjectQuizList";
+import { ResourcesTour } from "@/components/tour/ResourcesTour";
 
 // Session-aware (the review quiz is gated on sign-in) but still public —
 // anonymous visitors are never redirected away.
@@ -19,6 +20,7 @@ interface ResourceCard {
   title: string;
   description: string;
   href: string;
+  tourTarget: string;
 }
 
 const CARDS: ResourceCard[] = [
@@ -27,12 +29,14 @@ const CARDS: ResourceCard[] = [
     title: "Code playground",
     description: "Run Python, SQL, Java, and C right in your browser.",
     href: "/playground",
+    tourTarget: "resources-playground",
   },
   {
     kicker: "Find",
     title: "Search the kit",
     description: "Find any lesson, module, or topic by keyword.",
     href: "/search",
+    tourTarget: "resources-search",
   },
 ];
 
@@ -46,6 +50,7 @@ export default async function ResourcesPage() {
 
   return (
     <div className="min-h-screen bg-paper lg:flex">
+      <ResourcesTour userId={userId} />
       <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
@@ -69,6 +74,7 @@ export default async function ResourcesPage() {
                 key={card.href}
                 href={card.href}
                 prefetch={true}
+                data-tour={card.tourTarget}
                 className="rounded-xl border border-taupe/30 p-6 hover:border-accent/50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
               >
                 <p className="label-sm">{card.kicker}</p>
@@ -78,7 +84,7 @@ export default async function ResourcesPage() {
             ))}
           </div>
 
-          <section className="space-y-3">
+          <section className="space-y-3" data-tour="resources-quiz">
             <div>
               <p className="label-sm">Review</p>
               <h2 className="font-serif text-lg text-ink">Quiz yourself on finished subjects</h2>
