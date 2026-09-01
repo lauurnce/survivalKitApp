@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach } from "vitest";
 import { act, render, screen } from "@testing-library/react";
-import { useTour, type TourStep } from "./useTour";
+import { useTour, resetAllTours, type TourStep } from "./useTour";
 
 const STEPS: TourStep[] = [
   { id: "welcome", title: "Welcome", body: "Let's take a look around." },
@@ -114,5 +114,33 @@ describe("useTour", () => {
     const states = screen.getAllByTestId("state");
     expect(states[0]).toHaveTextContent("step=1");
     expect(states[1]).toHaveTextContent("step=0");
+  });
+
+  describe("resetAllTours", () => {
+    it("clears every bsit:tour: key, leaving unrelated storage untouched", () => {
+      localStorage.setItem("bsit:tour:landing", "1");
+      localStorage.setItem("bsit:tour:dashboard", "1");
+      localStorage.setItem("theme", "dark");
+
+      resetAllTours();
+
+      expect(localStorage.getItem("bsit:tour:landing")).toBeNull();
+      expect(localStorage.getItem("bsit:tour:dashboard")).toBeNull();
+      expect(localStorage.getItem("theme")).toBe("dark");
+    });
+
+    it("lets a completed tour auto-activate again after a fresh mount", async () => {
+      localStorage.setItem("bsit:tour:landing", "1");
+      const { unmount } = render(<Probe tourId="landing" steps={STEPS} />);
+      await act(async () => {});
+      expect(screen.getByTestId("state")).toHaveTextContent("active=false");
+      unmount();
+
+      resetAllTours();
+
+      render(<Probe tourId="landing" steps={STEPS} />);
+      await act(async () => {});
+      expect(screen.getByTestId("state")).toHaveTextContent("active=true step=0");
+    });
   });
 });

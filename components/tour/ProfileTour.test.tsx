@@ -8,6 +8,7 @@ function Anchors() {
     <>
       <div data-tour="profile-card">profile card</div>
       <div data-tour="profile-danger">danger zone</div>
+      <div data-tour="profile-tour-replay">guided tour</div>
     </>
   );
 }
@@ -33,7 +34,7 @@ describe("ProfileTour", () => {
     await act(async () => {});
 
     expect(screen.getByRole("heading", { name: "Your account" })).toBeInTheDocument();
-    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
   });
 
   it("never runs again once bsit:tour:profile is set", async () => {
@@ -49,7 +50,7 @@ describe("ProfileTour", () => {
     expect(screen.queryByRole("heading", { name: "Your account" })).not.toBeInTheDocument();
   });
 
-  it("walks both steps in order: profile-card, then danger zone, and only 2 steps", async () => {
+  it("walks all three steps in order: profile-card, danger zone, then guided tour", async () => {
     render(
       <>
         <Anchors />
@@ -61,7 +62,10 @@ describe("ProfileTour", () => {
     expect(screen.getByRole("heading", { name: "Your account" })).toBeInTheDocument();
     await clickNext();
     expect(screen.getByRole("heading", { name: "Danger zone" })).toBeInTheDocument();
-    expect(screen.getByText("Step 2 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Step 2 of 3")).toBeInTheDocument();
+    await clickNext();
+    expect(screen.getByRole("heading", { name: "Guided tour" })).toBeInTheDocument();
+    expect(screen.getByText("Step 3 of 3")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Done" })).toBeInTheDocument();
   });
 

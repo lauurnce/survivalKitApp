@@ -8,6 +8,7 @@ import { ThemeToggleInline } from "@/components/ThemeToggle";
 import { NavRail } from "@/components/dashboard/NavRail";
 import { ProfileCard } from "@/components/account/ProfileCard";
 import { DangerZone } from "@/components/account/DangerZone";
+import { TourReplay } from "@/components/account/TourReplay";
 import { ProfileTour } from "@/components/tour/ProfileTour";
 
 export const dynamic = "force-dynamic";
@@ -60,6 +61,7 @@ export default async function ProfilePage() {
               joinedLabel={joinedLabel}
               startedLabel={startedLabel}
             />
+            <TourReplay />
             <DangerZone />
           </div>
         </main>
