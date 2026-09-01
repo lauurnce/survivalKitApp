@@ -134,23 +134,36 @@ export function TourOverlay({ steps, stepIndex, totalSteps, next, prev, skip }: 
 
   return (
     <div className="fixed inset-0 z-50">
-      {/* Backdrop */}
+      {/* Backdrop / click-to-skip catcher. Dark itself only when there's no
+          target to spotlight — once a target exists, the dimming moves onto
+          its own box-shadow below so the target reads at full color instead
+          of dark page underneath an accent-colored outline. */}
       <div
-        className="absolute inset-0 bg-ink/60"
+        className={`absolute inset-0 ${rect ? "" : "bg-ink/60"}`}
         aria-hidden="true"
         onClick={skip}
       />
 
-      {/* Highlight ring around the target, when there is one */}
+      {/* Spotlight: a transparent box whose box-shadow does double duty —
+          a thin accent ring right at its edge, then an oversized second
+          layer that paints the dimming everywhere beyond that ring. Both
+          have to live in the same `boxShadow` value (comma-separated
+          layers): a `ring-*` utility class here would also compile to
+          `box-shadow` and silently lose to this inline style, which is
+          exactly the bug this replaced — the ring rendered, but the target
+          underneath it stayed dim. */}
       {rect && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute rounded-xl ring-2 ring-accent transition-[top,left,width,height] duration-200"
+          data-tour-spotlight="true"
+          className="pointer-events-none absolute rounded-xl transition-[top,left,width,height] duration-200"
           style={{
             top: rect.top - HIGHLIGHT_PADDING,
             left: rect.left - HIGHLIGHT_PADDING,
             width: rect.width + HIGHLIGHT_PADDING * 2,
             height: rect.height + HIGHLIGHT_PADDING * 2,
+            boxShadow:
+              "0 0 0 2px rgb(var(--color-accent)), 0 0 0 9999px rgb(var(--color-ink) / 0.6)",
           }}
         />
       )}

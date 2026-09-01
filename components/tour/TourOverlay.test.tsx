@@ -154,7 +154,37 @@ describe("TourOverlay", () => {
       <TourOverlay steps={STEPS} stepIndex={0} totalSteps={3} next={vi.fn()} prev={vi.fn()} skip={vi.fn()} />
     );
 
-    expect(container.querySelector(".ring-accent")).not.toBeInTheDocument();
+    expect(container.querySelector("[data-tour-spotlight]")).not.toBeInTheDocument();
     expect(screen.getByText("Welcome")).toBeInTheDocument();
+  });
+
+  it("spotlights an anchored target with a box-shadow cutout instead of dimming it, and drops the full-page dim", () => {
+    const { container } = render(
+      <>
+        <Anchor tour="landing-subjects" />
+        <TourOverlay steps={STEPS} stepIndex={1} totalSteps={3} next={vi.fn()} prev={vi.fn()} skip={vi.fn()} />
+      </>
+    );
+
+    const backdrop = container.querySelector('[aria-hidden="true"].absolute.inset-0')!;
+    expect(backdrop.className).not.toContain("bg-ink/60");
+
+    const spotlight = container.querySelector("[data-tour-spotlight]") as HTMLElement;
+    expect(spotlight).toBeInTheDocument();
+    // Both layers must be present in one value — a class-based ring utility
+    // here would compile to its own `box-shadow` and silently lose to this
+    // inline style, leaving the target dim underneath an orange outline.
+    expect(spotlight.style.boxShadow).toContain("2px");
+    expect(spotlight.style.boxShadow).toContain("9999px");
+  });
+
+  it("dims the full page for an unanchored step, with no spotlight box-shadow", () => {
+    const { container } = render(
+      <TourOverlay steps={STEPS} stepIndex={0} totalSteps={3} next={vi.fn()} prev={vi.fn()} skip={vi.fn()} />
+    );
+
+    const backdrop = container.querySelector('[aria-hidden="true"].absolute.inset-0')!;
+    expect(backdrop.className).toContain("bg-ink/60");
+    expect(container.querySelector("[data-tour-spotlight]")).not.toBeInTheDocument();
   });
 });
