@@ -16,12 +16,17 @@ const PROFILE_STEPS: TourStep[] = [
     title: "Danger zone",
     body: "This is where irreversible actions live, like deleting your account for good.",
   },
+  {
+    id: "profile-tour-replay",
+    target: "profile-tour-replay",
+    title: "Guided tour",
+    body: "Want to see any of the walkthroughs again? Replay them all from here, any time.",
+  },
 ];
 
 /**
  * Mounts the first-time-visitor tour for the profile page (`tourId:
- * "profile"`). Takes no props. Two steps only — `ProfileCard` and
- * `DangerZone` are genuinely the only two distinct features on this page.
+ * "profile"`). Takes no props.
  */
 export function ProfileTour() {
   const { active, stepIndex, totalSteps, next, prev, skip } = useTour("profile", PROFILE_STEPS);

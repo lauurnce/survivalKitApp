@@ -27,8 +27,10 @@ export interface UseTourResult {
   skip: () => void;
 }
 
+const STORAGE_PREFIX = "bsit:tour:";
+
 function storageKey(tourId: string): string {
-  return `bsit:tour:${tourId}`;
+  return `${STORAGE_PREFIX}${tourId}`;
 }
 
 function readDone(tourId: string): boolean {
@@ -47,6 +49,24 @@ function writeDone(tourId: string): void {
     localStorage.setItem(storageKey(tourId), "1");
   } catch {
     // Non-fatal — worst case the tour reappears next visit.
+  }
+}
+
+/**
+ * Clears every tour's completion/skip state on this browser — landing plus
+ * every dashboard section — so each one auto-activates again the next time
+ * its page mounts. Doesn't touch anything outside the `bsit:tour:` prefix.
+ */
+export function resetAllTours(): void {
+  try {
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith(STORAGE_PREFIX)) keys.push(key);
+    }
+    keys.forEach((key) => localStorage.removeItem(key));
+  } catch {
+    // Blocked/unavailable storage — nothing to reset, nothing to crash.
   }
 }
 
