@@ -4,7 +4,10 @@ import { DeleteAccountButton } from "./DeleteAccountButton";
 // can be reached no matter how much of the dashboard is filled in.
 export function DangerZone() {
   return (
-    <section className="rounded-xl border border-red-500/20 bg-red-500/5 p-5">
+    <section
+      className="rounded-xl border border-red-500/20 bg-red-500/5 p-5"
+      data-tour="profile-danger"
+    >
       <h2 className="label-sm">Danger zone</h2>
       <p className="mt-2 text-xs text-ink-muted">
         Deleting your account removes your profile, progress, and login for
