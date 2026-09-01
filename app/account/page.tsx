@@ -16,6 +16,7 @@ import { ActivityGraph } from "@/components/dashboard/ActivityGraph";
 import { SemesterSections } from "@/components/dashboard/SemesterSections";
 import { DiscountCodesSectionWrapper } from "@/components/DiscountCodesSectionWrapper";
 import { PageTracker } from "@/components/PageTracker";
+import { DashboardTour } from "@/components/tour/DashboardTour";
 import { groupByTerm, deriveCurrentTerm, pickRecommended, continueHref, formatDurationRemaining } from "@/lib/dashboard";
 
 export const dynamic = "force-dynamic";
@@ -77,6 +78,7 @@ export default async function AccountPage() {
           pages already track "year_select"/"module_open" etc, but landing
           here (e.g. right after login) previously logged nothing at all. */}
       <PageTracker event="enter" />
+      <DashboardTour />
       <NavRail overallDone={overview.overallDone} overallTotal={overview.overallTotal} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-end gap-3 px-4 sm:px-8 py-3 border-b border-taupe/30">
@@ -90,10 +92,12 @@ export default async function AccountPage() {
           {/* Fallback landing when a paid returnPath was invalid — PayMongo
               redirects here with ?payment=success, read client-side. */}
           <PaymentSuccessBanner subtext="Your purchase is now active on this account." />
-          <HeroCard term={current} topPick={recs[0]} profile={profile} pro={subscribed} />
+          <div data-tour="dashboard-hero">
+            <HeroCard term={current} topPick={recs[0]} profile={profile} pro={subscribed} />
+          </div>
 
           {/* Simplified Roadmap Section: Activity Graph + Key Highlights */}
-          <section aria-labelledby="roadmap-summary-heading" className="space-y-6">
+          <section aria-labelledby="roadmap-summary-heading" data-tour="dashboard-roadmap-summary" className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 id="roadmap-summary-heading" className="label-sm">Academic roadmap</h2>
               <a
@@ -178,13 +182,15 @@ export default async function AccountPage() {
           </section>
 
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
-            <div className="space-y-8 min-w-0">
+            <div data-tour="dashboard-semesters" className="space-y-8 min-w-0">
               <SemesterSections terms={terms} currentKey={currentKey} />
             </div>
-            <ThisWeekPanel recs={recs} />
+            <div data-tour="dashboard-this-week">
+              <ThisWeekPanel recs={recs} />
+            </div>
           </div>
 
-          <section className="border-t border-taupe/20 pt-6">
+          <section data-tour="dashboard-discounts" className="border-t border-taupe/20 pt-6">
             <DiscountCodesSectionWrapper feedbackHref={feedbackHref} />
           </section>
         </main>
