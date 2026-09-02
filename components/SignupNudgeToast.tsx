@@ -64,8 +64,17 @@ export function SignupNudgeToast({ signupHref }: Props) {
   if (!visible || typeof document === "undefined") return null;
 
   return createPortal(
+    // Anchored to the TOP of the viewport, deliberately distinct from every
+    // bottom-anchored toast in this codebase (ModuleDoneToggle's own "Nice!
+    // One more down" prompt uses this exact bottom-6/inset-x-0/z-40 wrapper,
+    // and UnlockSuccessToast sits at bottom-6/right-6). This toast has no
+    // auto-dismiss timer and can stay open indefinitely, so it must never
+    // share a position with something that can appear while it's still up —
+    // ModuleDoneToggle's prompt fires from marking a module done, which only
+    // needs the device cookie, not sign-in, so the signed-out reader this
+    // toast targets can trigger both at once.
     <div
-      className="fixed bottom-6 inset-x-0 z-40 flex justify-center px-4"
+      className="fixed top-6 inset-x-0 z-40 flex justify-center px-4"
       onClick={(e) => e.stopPropagation()}
     >
       <div

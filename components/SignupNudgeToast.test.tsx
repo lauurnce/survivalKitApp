@@ -79,4 +79,19 @@ describe("SignupNudgeToast", () => {
       await screen.findByText(/save your progress across devices/i)
     ).toBeInTheDocument();
   });
+
+  // Regression: this toast has no auto-dismiss timer and previously used the
+  // exact same fixed bottom-6/inset-x-0/z-40 wrapper as ModuleDoneToggle's own
+  // "Nice! One more down" prompt (components/ModuleDoneToggle.tsx), which a
+  // signed-out reader can trigger just by marking a module done (that action
+  // only needs the device cookie, not sign-in). The two could stack and
+  // overlap on screen for up to 10 seconds. Anchoring to the top instead
+  // guarantees no shared position with any bottom-anchored toast in the app.
+  it("anchors to the top of the viewport, never the bottom-center spot ModuleDoneToggle's prompt uses", async () => {
+    render(<SignupNudgeToast signupHref={SIGNUP_HREF} />);
+    const status = await screen.findByRole("status");
+    const wrapper = status.parentElement;
+    expect(wrapper?.className).toContain("top-6");
+    expect(wrapper?.className).not.toContain("bottom-6");
+  });
 });
