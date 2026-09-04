@@ -17,6 +17,7 @@ const counts: FunnelCounts = {
   module_open: 500,
   paywall_teaser_view: 200,
   paywall_teaser_click: 40,
+  unlock_click: 30,
   subscribe_click: 20,
   paid: 2,
 };
@@ -30,6 +31,7 @@ describe("FUNNEL_STEPS", () => {
       "module_open",
       "paywall_teaser_view",
       "paywall_teaser_click",
+      "unlock_click",
       "subscribe_click",
       "paid",
     ]);
@@ -40,10 +42,15 @@ describe("FUNNEL_STEPS", () => {
     expect(FUNNEL_STEPS.slice(0, -1).every((s) => s.source === "events")).toBe(true);
   });
 
-  it("contains no dead event type", () => {
+  it("includes unlock_click — it is live, not dead, and sits between the paywall tap and checkout", () => {
     const keys = FUNNEL_STEPS.map((s) => s.key);
-    expect(keys).not.toContain("unlock_click");
-    expect(keys).not.toContain("unlock_submitted");
+    const unlockIdx = keys.indexOf("unlock_click");
+    expect(unlockIdx).toBeGreaterThan(keys.indexOf("paywall_teaser_click"));
+    expect(unlockIdx).toBeLessThan(keys.indexOf("subscribe_click"));
+  });
+
+  it("still excludes unlock_submitted — no completion event exists on the live path", () => {
+    expect(FUNNEL_STEPS.map((s) => s.key)).not.toContain("unlock_submitted");
   });
 });
 
@@ -138,6 +145,7 @@ describe("largestLeak", () => {
       module_open: 80,
       paywall_teaser_view: 80,
       paywall_teaser_click: 80,
+      unlock_click: 80,
       subscribe_click: 80,
       paid: 80,
     });
@@ -158,6 +166,7 @@ describe("largestLeak", () => {
       module_open: 5,
       paywall_teaser_view: 5,
       paywall_teaser_click: 5,
+      unlock_click: 5,
       subscribe_click: 5,
       paid: 5,
     });
@@ -181,7 +190,7 @@ describe("funnelMetrics", () => {
   it("labels the ledger step so its source is never mistaken", () => {
     const steps = buildFunnel(counts);
     const rows = funnelMetrics(steps, largestLeak(steps));
-    expect(rows[7].label).toBe("8 Paid (ledger)");
+    expect(rows[FUNNEL_STEPS.length - 1].label).toBe(`${FUNNEL_STEPS.length} Paid (ledger)`);
   });
 
   it("renders the leak as its lost-device count with a percentage row", () => {
