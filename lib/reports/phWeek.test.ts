@@ -28,23 +28,43 @@ describe("phDayStartUtc", () => {
 });
 
 describe("phWeekWindows", () => {
-  const now = new Date("2026-08-08T10:00:00.000Z"); // PH: 2026-08-08 18:00
+  // PH: 2026-08-08 18:00, a Saturday — deliberately NOT a Monday, so a
+  // regression to trailing-7-days-from-today (issue #33) would resurface as
+  // a window not starting on a Monday.
+  const now = new Date("2026-08-08T10:00:00.000Z");
 
-  it("returns the two most recent complete PH weeks, newest first", () => {
+  it("returns the two most recently completed Monday-Sunday PH weeks, newest first", () => {
     const [current, previous] = phWeekWindows(now, 2);
 
-    expect(current.sinceIso).toBe("2026-07-31T16:00:00.000Z");
-    expect(current.untilIso).toBe("2026-08-07T16:00:00.000Z");
-    expect(current.label).toBe("2026-08-01 → 2026-08-07");
+    // Aug 8 2026 is a Saturday inside the in-progress Mon Aug 3 - Sun Aug 9
+    // week, which is excluded — the most recently COMPLETE week is the one
+    // before it, Mon Jul 27 - Sun Aug 2. This is the exact span
+    // growth_cohort_agg's Postgres date_trunc('week', ...) would also
+    // produce for the same instant — the alignment issue #33 asked for.
+    expect(current.sinceIso).toBe(phDayStartUtc("2026-07-27"));
+    expect(current.untilIso).toBe(phDayStartUtc("2026-08-03"));
+    expect(current.label).toBe("2026-07-27 → 2026-08-02");
 
-    expect(previous.sinceIso).toBe("2026-07-24T16:00:00.000Z");
-    expect(previous.untilIso).toBe("2026-07-31T16:00:00.000Z");
-    expect(previous.label).toBe("2026-07-25 → 2026-07-31");
+    expect(previous.sinceIso).toBe(phDayStartUtc("2026-07-20"));
+    expect(previous.untilIso).toBe(phDayStartUtc("2026-07-27"));
+    expect(previous.label).toBe("2026-07-20 → 2026-07-26");
   });
 
-  it("excludes today, so a partial day is never compared against a whole one", () => {
-    const [current] = phWeekWindows(now, 1);
-    expect(current.untilIso).toBe(phDayStartUtc(phDate(now)));
+  it("starts every window on a Monday", () => {
+    for (const w of phWeekWindows(now, 4)) {
+      // sinceIso is PH midnight of a Monday, expressed as a UTC instant
+      // (16:00 the prior UTC day) — read the weekday off the PH calendar
+      // date the label already carries, not off the raw UTC instant.
+      const phCalendarDate = w.label.split(" → ")[0];
+      expect(new Date(`${phCalendarDate}T00:00:00.000Z`).getUTCDay()).toBe(1); // Monday
+    }
+  });
+
+  it("excludes the in-progress week even when today is itself a Monday", () => {
+    const monday = new Date("2026-08-03T02:00:00.000Z"); // PH: Mon Aug 3, 10:00
+    const [current] = phWeekWindows(monday, 1);
+    expect(current.untilIso).toBe(phDayStartUtc("2026-08-03"));
+    expect(current.label).toBe("2026-07-27 → 2026-08-02");
   });
 
   it("windows abut exactly with no gap and no overlap", () => {
@@ -61,10 +81,11 @@ describe("phWeekWindows", () => {
   });
 
   it("is stable across a UTC day boundary that PH has already crossed", () => {
-    // 20:00Z on the 8th is 04:00 on the 9th in Manila. The current window must
-    // end at PH midnight of the 9th, not the 8th.
+    // 20:00Z on the 8th is 04:00 on the 9th (a Sunday) in Manila — still
+    // inside the same in-progress Mon Aug 3 - Sun Aug 9 week as `now` above,
+    // so the most recently complete week must come out identical.
     const [current] = phWeekWindows(new Date("2026-08-08T20:00:00.000Z"), 1);
-    expect(current.untilIso).toBe("2026-08-08T16:00:00.000Z");
-    expect(current.label).toBe("2026-08-02 → 2026-08-08");
+    expect(current.untilIso).toBe(phDayStartUtc("2026-08-03"));
+    expect(current.label).toBe("2026-07-27 → 2026-08-02");
   });
 });
