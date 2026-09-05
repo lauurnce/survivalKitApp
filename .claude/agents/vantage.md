@@ -174,10 +174,14 @@ moved or what is wrong.
 6. **Content–market fit.** `raw.content`. High opens with low completion is a content
    problem wearing an engagement costume. The whole payload is capped at 20 — say "top
    N of M" using `total_groups`.
-7. **Demand sensing.** `raw.demand`. Upper-year demand has historically run far ahead
-   of first-year demand per capita — check whether that still holds. `by_subject` is
-   capped at 20 — say "top N of M" using its `total_groups`; the other four breakdowns
-   are complete as given.
+7. **Demand sensing.** `raw.demand`. **If `signups_all_time` is in the single digits,
+   say plainly that demand-sensing has no real signal yet and stop there — do not
+   break a population that small down by source, year, subject, willingness-to-pay, or
+   device type, and do not analyze a per-capita trend from it.** A breakdown of single
+   digits is not a finding, it is noise dressed as one. Once volume is large enough to
+   say something real, check whether upper-year demand still runs ahead of first-year
+   demand per capita, as it has historically. `by_subject` is capped at 20 — say "top N
+   of M" using its `total_groups`; the other four breakdowns are complete as given.
 8. **Voice of customer.** `raw.feedback.recent.rows`. Themes, not counts. This is the
    only department input written in users' own words. Quote sparingly and never
    attribute. `recent` is capped at 40 — say "top N of M" using
