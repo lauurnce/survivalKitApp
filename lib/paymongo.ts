@@ -319,17 +319,20 @@ export function parseBlockRemarks(remarks: string): {
 // PayMongo's Links API has NO "list all links" endpoint — GET /v1/links only
 // resolves a single link by reference_number. So to enumerate paid activity we
 // list PAYMENTS (GET /v1/payments, which IS a real list endpoint), then resolve
-// each paid payment back to its Link (by reference) to read our remarks.
+// each paid payment's remarks.
 
 interface PaymentRow {
-  reference: string;       // external_reference_number == the link's reference
-  amount: number;          // centavos
+  id: string;               // the payment's own id — always present, always unique
+  reference: string;        // external_reference_number == the link's reference (legacy only)
+  metadataRemarks: string | null; // Checkout-Sessions-era payments carry remarks here
+  amount: number;           // centavos
   description: string;
   paidAt: Date | null;
 }
 
 // Resolve a single Link by its reference_number. Returns the link id + remarks,
-// or null if PayMongo has no such link. The only supported way to read remarks.
+// or null if PayMongo has no such link. The only supported way to read remarks
+// for a pre-migration (Links API) purchase.
 // PayMongo resolves references at GET /v1/links/{reference}; the query-param
 // form (?reference_number=) is not a real route and 404s.
 export async function getLinkByReference(
@@ -356,10 +359,43 @@ export async function getLinkByReference(
   };
 }
 
-// List recent PAID payments from PayMongo, then resolve each back to its Link
-// to read our remarks. Returns the same PaidLink shape the reconcile matcher
-// expects. Bounded: lists up to `maxPages` pages of payments and resolves each
-// paid one. Live secret key only — never expose this to the client.
+// Resolve a single Payment by its own id (pay_xxx) — the only supported
+// lookup for a Checkout-Sessions-era purchase. Unlike Links, a Payment has
+// no reference_number lookup at all; the admin manual-grant action instead
+// takes the payment id straight from a findUnreflectedPayments row.
+export async function getPaymentById(
+  paymentId: string
+): Promise<{ remarks: string; amount: number; status: string } | null> {
+  const secretKey = process.env.PAYMONGO_SECRET_KEY;
+  if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
+  const encoded = Buffer.from(`${secretKey}:`).toString("base64");
+
+  const res = await fetch(
+    `https://api.paymongo.com/v1/payments/${encodeURIComponent(paymentId)}`,
+    { headers: { Authorization: `Basic ${encoded}` } }
+  );
+  if (!res.ok) return null;
+  const json = await res.json();
+  const attrs = json?.data?.attributes;
+  if (!attrs) return null;
+
+  return {
+    remarks: typeof attrs.metadata?.remarks === "string" ? attrs.metadata.remarks : "",
+    amount: typeof attrs.amount === "number" ? attrs.amount : 0,
+    status: (attrs.status ?? "") as string,
+  };
+}
+
+// List recent PAID payments from PayMongo and resolve each one's remarks.
+// A Checkout-Sessions-era payment (post-2026-09-03) carries metadata.remarks
+// directly on the listed row — GET /v1/payments returns it inline, verified
+// against a real paid test-mode transaction, so no extra fetch is needed. A
+// legacy Links-era payment carries no metadata but an external_reference_
+// number, resolved via getLinkByReference exactly as before. linkId is never
+// left empty: it's the payment's own id unless a legacy reference resolves
+// to a real Link id. Returns the same PaidLink shape the reconcile matcher
+// expects. Bounded: lists up to `maxPages` pages of payments. Live secret
+// key only — never expose this to the client.
 export async function listRecentPaidLinks(maxPages = 3): Promise<PaidLink[]> {
   const secretKey = process.env.PAYMONGO_SECRET_KEY;
   if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
@@ -391,6 +427,7 @@ export async function listRecentPaidLinks(maxPages = 3): Promise<PaidLink[]> {
         description?: string;
         paid_at?: number;
         external_reference_number?: string;
+        metadata?: { remarks?: string };
       };
     }>;
 
@@ -399,10 +436,10 @@ export async function listRecentPaidLinks(maxPages = 3): Promise<PaidLink[]> {
     for (const row of rows) {
       const a = row.attributes;
       if (a.status !== "paid") continue;
-      const reference = a.external_reference_number ?? "";
-      if (!reference) continue; // can't tie back to a link without it
       paidPayments.push({
-        reference,
+        id: row.id,
+        reference: a.external_reference_number ?? "",
+        metadataRemarks: typeof a.metadata?.remarks === "string" ? a.metadata.remarks : null,
         amount: typeof a.amount === "number" ? a.amount : 0,
         description: a.description ?? "",
         paidAt: typeof a.paid_at === "number" ? new Date(a.paid_at * 1000) : null,
@@ -413,29 +450,66 @@ export async function listRecentPaidLinks(maxPages = 3): Promise<PaidLink[]> {
     if (!after || rows.length < 100) break; // last page
   }
 
-  // 2. Resolve each unique reference to its Link to read remarks.
-  const seen = new Set<string>();
+  // 2. Resolve each payment's remarks: Checkout-Sessions-era payments carry
+  //    them inline already (no extra call); legacy Links-era payments need
+  //    one getLinkByReference call per unique reference.
+  const linkCache = new Map<string, Awaited<ReturnType<typeof getLinkByReference>>>();
   const paid: PaidLink[] = [];
-  for (const p of paidPayments) {
-    if (seen.has(p.reference)) continue;
-    seen.add(p.reference);
 
-    let link: Awaited<ReturnType<typeof getLinkByReference>> = null;
-    try {
-      link = await getLinkByReference(p.reference);
-    } catch {
-      link = null; // network hiccup resolving one link shouldn't fail the batch
+  for (const p of paidPayments) {
+    if (p.metadataRemarks !== null) {
+      const parsed = parseLinkRemarks(p.metadataRemarks);
+      paid.push({
+        linkId: p.id,
+        amount: p.amount,
+        description: p.description,
+        reference: p.reference,
+        paidAt: p.paidAt,
+        remarks: p.metadataRemarks,
+        ...parsed,
+      });
+      continue;
     }
-    const remarks = link?.remarks ?? "";
-    const parsed = parseLinkRemarks(remarks);
+
+    if (p.reference) {
+      if (!linkCache.has(p.reference)) {
+        try {
+          linkCache.set(p.reference, await getLinkByReference(p.reference));
+        } catch {
+          linkCache.set(p.reference, null); // network hiccup resolving one link shouldn't fail the batch
+        }
+      }
+      const link = linkCache.get(p.reference) ?? null;
+      const remarks = link?.remarks ?? "";
+      const parsed = parseLinkRemarks(remarks);
+      paid.push({
+        linkId: link?.linkId ?? p.id,
+        amount: p.amount || link?.amount || 0,
+        description: p.description,
+        reference: p.reference,
+        paidAt: p.paidAt,
+        remarks,
+        ...parsed,
+      });
+      continue;
+    }
+
+    // Neither metadata nor a reference — unresolvable. Surface it with the
+    // payment's own id rather than drop it silently; parseLinkRemarks("")
+    // yields all-null fields, so the reconcile matcher flags it as
+    // malformed_remarks rather than granting anything.
     paid.push({
-      linkId: link?.linkId ?? "",
-      amount: p.amount || link?.amount || 0,
+      linkId: p.id,
+      amount: p.amount,
       description: p.description,
       reference: p.reference,
       paidAt: p.paidAt,
-      remarks,
-      ...parsed,
+      remarks: "",
+      yearId: null,
+      subjectId: null,
+      deviceId: null,
+      userId: null,
+      plan: null,
     });
   }
 

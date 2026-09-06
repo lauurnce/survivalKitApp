@@ -6,6 +6,8 @@ import {
   parseLinkRemarks,
   getLinkByReference,
   getCheckoutSessionById,
+  getPaymentById,
+  listRecentPaidLinks,
   PLANS,
   SEMESTER_END,
   resolvePlan,
@@ -577,6 +579,250 @@ describe("getCheckoutSessionById", () => {
   it("throws if PAYMONGO_SECRET_KEY is missing", async () => {
     delete process.env.PAYMONGO_SECRET_KEY;
     await expect(getCheckoutSessionById("cs_abc123")).rejects.toThrow("PAYMONGO_SECRET_KEY");
+  });
+});
+
+describe("getPaymentById", () => {
+  beforeEach(() => {
+    process.env.PAYMONGO_SECRET_KEY = FAKE_SECRET;
+    vi.stubGlobal("fetch", vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    delete process.env.PAYMONGO_SECRET_KEY;
+  });
+
+  it("fetches the payment by id and extracts remarks, amount, and status", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: {
+          id: "pay_abc123",
+          attributes: {
+            metadata: { remarks: "year:y device:d plan:year_sem" },
+            amount: 29900,
+            status: "paid",
+          },
+        },
+      }),
+    } as Response);
+
+    const result = await getPaymentById("pay_abc123");
+
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.paymongo.com/v1/payments/pay_abc123",
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: expect.stringContaining("Basic") }),
+      })
+    );
+    expect(result).toEqual({
+      remarks: "year:y device:d plan:year_sem",
+      amount: 29900,
+      status: "paid",
+    });
+  });
+
+  it("returns empty remarks when the payment has no metadata", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: { id: "pay_nometa", attributes: { amount: 4900, status: "paid" } },
+      }),
+    } as Response);
+
+    const result = await getPaymentById("pay_nometa");
+    expect(result).toEqual({ remarks: "", amount: 4900, status: "paid" });
+  });
+
+  it("returns null when PayMongo has no such payment", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ errors: [{ code: "not_found" }] }),
+    } as Response);
+
+    expect(await getPaymentById("pay_nope")).toBeNull();
+  });
+
+  it("throws if PAYMONGO_SECRET_KEY is missing", async () => {
+    delete process.env.PAYMONGO_SECRET_KEY;
+    await expect(getPaymentById("pay_abc123")).rejects.toThrow("PAYMONGO_SECRET_KEY");
+  });
+});
+
+describe("listRecentPaidLinks", () => {
+  beforeEach(() => {
+    process.env.PAYMONGO_SECRET_KEY = FAKE_SECRET;
+    vi.stubGlobal("fetch", vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    delete process.env.PAYMONGO_SECRET_KEY;
+  });
+
+  function paymentsListPage(rows: unknown[]) {
+    return { ok: true, json: async () => ({ data: rows }) } as Response;
+  }
+
+  it("resolves a Checkout-Sessions-era payment from its inline metadata, with no extra fetch", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(
+      paymentsListPage([
+        {
+          id: "pay_cs1",
+          attributes: {
+            status: "paid",
+            amount: 29900,
+            description: "BSIT Survival Kit",
+            paid_at: 1788664145,
+            external_reference_number: null,
+            metadata: { remarks: "year:y device:d plan:year_sem" },
+          },
+        },
+      ])
+    );
+
+    const result = await listRecentPaidLinks();
+
+    // Exactly one fetch call — the list page itself. No per-item resolution.
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(result).toEqual([
+      {
+        linkId: "pay_cs1",
+        amount: 29900,
+        description: "BSIT Survival Kit",
+        reference: "",
+        paidAt: new Date(1788664145 * 1000),
+        remarks: "year:y device:d plan:year_sem",
+        yearId: "y",
+        subjectId: null,
+        deviceId: "d",
+        userId: null,
+        plan: "year_sem",
+        coupon: null,
+      },
+    ]);
+  });
+
+  it("still resolves a legacy Links-era payment by reference, unchanged", async () => {
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(
+        paymentsListPage([
+          {
+            id: "pay_legacy1",
+            attributes: {
+              status: "paid",
+              amount: 4900,
+              description: "BSIT Survival Kit",
+              paid_at: 1788664000,
+              external_reference_number: "REF123",
+            },
+          },
+        ])
+      )
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          data: {
+            id: "link_legacy1",
+            attributes: { remarks: "year:y device:d", amount: 4900, status: "paid" },
+          },
+        }),
+      } as Response);
+
+    const result = await listRecentPaidLinks();
+
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(fetch).toHaveBeenNthCalledWith(
+      2,
+      "https://api.paymongo.com/v1/links/REF123",
+      expect.anything()
+    );
+    expect(result[0]).toMatchObject({ linkId: "link_legacy1", reference: "REF123" });
+  });
+
+  it("resolves a mixed batch of legacy and Checkout-Sessions payments in one call", async () => {
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(
+        paymentsListPage([
+          {
+            id: "pay_legacy2",
+            attributes: {
+              status: "paid",
+              amount: 4900,
+              description: "d",
+              paid_at: 1,
+              external_reference_number: "REF456",
+            },
+          },
+          {
+            id: "pay_cs2",
+            attributes: {
+              status: "paid",
+              amount: 9900,
+              description: "d",
+              paid_at: 2,
+              metadata: { remarks: "year:y2 device:d2 plan:subject_sem" },
+            },
+          },
+        ])
+      )
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          data: { id: "link_legacy2", attributes: { remarks: "year:y1 device:d1", amount: 4900, status: "paid" } },
+        }),
+      } as Response);
+
+    const result = await listRecentPaidLinks();
+
+    expect(result).toHaveLength(2);
+    expect(result.find((r) => r.linkId === "link_legacy2")).toBeTruthy();
+    expect(result.find((r) => r.linkId === "pay_cs2")).toMatchObject({ yearId: "y2", deviceId: "d2" });
+  });
+
+  it("never leaves linkId empty when a payment has neither metadata nor a resolvable reference", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(
+      paymentsListPage([
+        {
+          id: "pay_orphan",
+          attributes: { status: "paid", amount: 100, description: "d", paid_at: 1 },
+        },
+      ])
+    );
+
+    const result = await listRecentPaidLinks();
+    expect(result[0].linkId).toBe("pay_orphan");
+    expect(result[0].remarks).toBe("");
+  });
+
+  it("falls back to the payment's own id when a legacy reference fails to resolve at PayMongo", async () => {
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(
+        paymentsListPage([
+          {
+            id: "pay_deadref",
+            attributes: {
+              status: "paid",
+              amount: 100,
+              description: "d",
+              paid_at: 1,
+              external_reference_number: "GONE",
+            },
+          },
+        ])
+      )
+      .mockResolvedValueOnce({ ok: false, json: async () => ({ errors: [] }) } as Response);
+
+    const result = await listRecentPaidLinks();
+    expect(result[0].linkId).toBe("pay_deadref");
+  });
+
+  it("ignores unpaid payments", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(
+      paymentsListPage([{ id: "pay_failed", attributes: { status: "failed", amount: 100, description: "d" } }])
+    );
+    expect(await listRecentPaidLinks()).toEqual([]);
   });
 });
 
