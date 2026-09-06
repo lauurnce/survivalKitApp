@@ -334,8 +334,13 @@ async function main(): Promise<void> {
       // by_referrer_host is capped-and-nested ({ rows, total_groups }), not a
       // bare array — the `.rows` here is load-bearing. Omitting it types as
       // `undefined` silently rather than erroring (Ruling 1, 2026-08-10).
+      // The rows are ordered by count DESC, and the no-referrer bucket
+      // (host = "(none)", stamped by 20260808000002_growth_audience_agg.sql)
+      // is almost always the largest, so rows[0] alone was always "(none)" —
+      // its own share is already the "No-referrer share" metric above; this
+      // one is meant to answer "who else sends us traffic," so skip it.
       label: "Top referrer host",
-      value: acquisition?.by_referrer_host?.rows?.[0]?.host ?? null,
+      value: acquisition?.by_referrer_host?.rows?.find((r) => r.host !== "(none)")?.host ?? null,
     },
     // Demand and voice.
     { label: "Waitlist signups this week", value: demand?.signups_window ?? null },
