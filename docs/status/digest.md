@@ -21,6 +21,6 @@ docs/superpowers/specs/2026-08-30-report-digest-reminder-design.md).
 - Headline: first clean reconciliation run — all known exceptions are now classified and no paying user is locked out; revenue did not move this cycle.
 
 ## WARDEN (security)
-- Last run: 2026-08-25
+- Last run: 2026-09-06
 - Verdict: nothing exposed
-- Headline: the coupon-redemption defect opened the prior day is closed and verified; a separate dependency fix remains blocked pending an upgrade decision.
+- Headline: nothing exposed this cycle, but a live operational issue outside the security perimeter needs prompt follow-up, plus one minor dependency note outstanding.
