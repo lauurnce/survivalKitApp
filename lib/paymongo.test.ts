@@ -5,6 +5,7 @@ import {
   verifyPaymongoWebhook,
   parseLinkRemarks,
   getLinkByReference,
+  getCheckoutSessionById,
   PLANS,
   SEMESTER_END,
   resolvePlan,
@@ -38,12 +39,12 @@ describe("createPaymongoLink", () => {
     ).rejects.toThrow("PAYMONGO_SECRET_KEY");
   });
 
-  it("calls PayMongo links API with correct amount and returns checkout URL", async () => {
+  it("calls PayMongo checkout sessions API with correct amount and returns checkout URL", async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         data: {
-          id: "link_abc123",
+          id: "cs_abc123",
           attributes: { checkout_url: "https://checkout.paymongo.com/abc" },
         },
       }),
@@ -52,7 +53,7 @@ describe("createPaymongoLink", () => {
     const result = await createPaymongoLink("year-1", "device-1", "https://example.com/success");
 
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.paymongo.com/v1/links",
+      "https://api.paymongo.com/v1/checkout_sessions",
       expect.objectContaining({
         method: "POST",
         headers: expect.objectContaining({
@@ -62,13 +63,16 @@ describe("createPaymongoLink", () => {
         }),
       })
     );
-    // The link is created for the pinned subscription price.
+    // The session is created for the pinned subscription price.
     const sentBody = JSON.parse(
       vi.mocked(fetch).mock.calls[0][1]!.body as string
     );
-    expect(sentBody.data.attributes.amount).toBe(PLANS.year_sem.amount);
+    expect(sentBody.data.attributes.line_items[0].amount).toBe(PLANS.year_sem.amount);
+    expect(sentBody.data.attributes.payment_method_types).toEqual(
+      expect.arrayContaining(["card", "gcash", "paymaya", "grab_pay"])
+    );
     expect(result.checkoutUrl).toBe("https://checkout.paymongo.com/abc");
-    expect(result.linkId).toBe("link_abc123");
+    expect(result.linkId).toBe("cs_abc123");
   });
 
   it("uses a stable idempotency key for the same device+year", async () => {
@@ -106,20 +110,22 @@ describe("createPaymongoLink", () => {
     ).rejects.toThrow("PayMongo error");
   });
 
-  // PayMongo's Links API carries both redirect legs at creation time. A
-  // cancelled payment must land on the failed leg WITHOUT ?payment=success,
-  // or the module pages would poll, unlock, and flash success UI.
+  // Checkout Sessions carries both redirect legs at creation time as
+  // separate top-level fields. A cancelled payment must land on the
+  // cancel leg WITHOUT ?payment=success, or the module pages would poll,
+  // unlock, and flash success UI.
   function sentRedirect(i = 0): { success: string; failed: string } {
-    return JSON.parse(
+    const attrs = JSON.parse(
       vi.mocked(fetch).mock.calls[i][1]!.body as string
-    ).data.attributes.redirect;
+    ).data.attributes;
+    return { success: attrs.success_url, failed: attrs.cancel_url };
   }
 
   it("defaults the failed redirect leg to the success URL when failedUrl is omitted", async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
-        data: { id: "link_r1", attributes: { checkout_url: "https://checkout.paymongo.com/r" } },
+        data: { id: "cs_r1", attributes: { checkout_url: "https://checkout.paymongo.com/r" } },
       }),
     } as Response);
 
@@ -137,7 +143,7 @@ describe("createPaymongoLink", () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
-        data: { id: "link_r2", attributes: { checkout_url: "https://checkout.paymongo.com/r" } },
+        data: { id: "cs_r2", attributes: { checkout_url: "https://checkout.paymongo.com/r" } },
       }),
     } as Response);
 
@@ -169,12 +175,12 @@ describe("createDynamicPaymongoLink", () => {
     delete process.env.PAYMONGO_SECRET_KEY;
   });
 
-  it("calls the PayMongo links API with the exact caller-supplied amount and remarks", async () => {
+  it("calls the PayMongo checkout sessions API with the exact caller-supplied amount and remarks", async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         data: {
-          id: "link_dyn123",
+          id: "cs_dyn123",
           attributes: { checkout_url: "https://checkout.paymongo.com/dyn" },
         },
       }),
@@ -189,7 +195,7 @@ describe("createDynamicPaymongoLink", () => {
     );
 
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.paymongo.com/v1/links",
+      "https://api.paymongo.com/v1/checkout_sessions",
       expect.objectContaining({
         method: "POST",
         headers: expect.objectContaining({
@@ -202,13 +208,13 @@ describe("createDynamicPaymongoLink", () => {
     const sentBody = JSON.parse(
       vi.mocked(fetch).mock.calls[0][1]!.body as string
     );
-    expect(sentBody.data.attributes.amount).toBe(12345);
+    expect(sentBody.data.attributes.line_items[0].amount).toBe(12345);
     expect(sentBody.data.attributes.description).toBe(
       "BSIT Survival Kit — Class block (25 seats)"
     );
-    expect(sentBody.data.attributes.remarks).toBe("class:abc-123 seats:25");
+    expect(sentBody.data.attributes.metadata.remarks).toBe("class:abc-123 seats:25");
     expect(result.checkoutUrl).toBe("https://checkout.paymongo.com/dyn");
-    expect(result.linkId).toBe("link_dyn123");
+    expect(result.linkId).toBe("cs_dyn123");
   });
 
   it("throws when PAYMONGO_SECRET_KEY is not set", async () => {
@@ -245,7 +251,7 @@ describe("createDynamicPaymongoLink", () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
-        data: { id: "link_dyn_r1", attributes: { checkout_url: "https://checkout.paymongo.com/d" } },
+        data: { id: "cs_dyn_r1", attributes: { checkout_url: "https://checkout.paymongo.com/d" } },
       }),
     } as Response);
 
@@ -257,20 +263,18 @@ describe("createDynamicPaymongoLink", () => {
       "idem-key-r1"
     );
 
-    const redirect = JSON.parse(
+    const attrs = JSON.parse(
       vi.mocked(fetch).mock.calls[0][1]!.body as string
-    ).data.attributes.redirect;
-    expect(redirect).toEqual({
-      success: "https://example.com/for-blocks?payment=success",
-      failed: "https://example.com/for-blocks?payment=success",
-    });
+    ).data.attributes;
+    expect(attrs.success_url).toBe("https://example.com/for-blocks?payment=success");
+    expect(attrs.cancel_url).toBe("https://example.com/for-blocks?payment=success");
   });
 
   it("sends a separate failed redirect leg that never carries payment=success", async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
-        data: { id: "link_dyn_r2", attributes: { checkout_url: "https://checkout.paymongo.com/d" } },
+        data: { id: "cs_dyn_r2", attributes: { checkout_url: "https://checkout.paymongo.com/d" } },
       }),
     } as Response);
 
@@ -283,12 +287,12 @@ describe("createDynamicPaymongoLink", () => {
       "https://example.com/for-blocks"
     );
 
-    const redirect = JSON.parse(
+    const attrs = JSON.parse(
       vi.mocked(fetch).mock.calls[0][1]!.body as string
-    ).data.attributes.redirect;
-    expect(redirect.success).toContain("payment=success");
-    expect(redirect.failed).not.toContain("payment=success");
-    expect(redirect.failed).toBe("https://example.com/for-blocks");
+    ).data.attributes;
+    expect(attrs.success_url).toContain("payment=success");
+    expect(attrs.cancel_url).not.toContain("payment=success");
+    expect(attrs.cancel_url).toBe("https://example.com/for-blocks");
   });
 });
 
@@ -314,7 +318,7 @@ describe("remarks user: field", () => {
       ok: true,
       json: async () => ({
         data: {
-          id: "link_u1",
+          id: "cs_u1",
           attributes: { checkout_url: "https://checkout.paymongo.com/u1" },
         },
       }),
@@ -331,7 +335,7 @@ describe("remarks user: field", () => {
     const sentBody = JSON.parse(
       vi.mocked(fetch).mock.calls[0][1]!.body as string
     );
-    expect(sentBody.data.attributes.remarks).toContain(
+    expect(sentBody.data.attributes.metadata.remarks).toContain(
       "user:33333333-3333-3333-3333-333333333333"
     );
 
@@ -346,7 +350,7 @@ describe("remarks user: field", () => {
       ok: true,
       json: async () => ({
         data: {
-          id: "link_u2",
+          id: "cs_u2",
           attributes: { checkout_url: "https://checkout.paymongo.com/u2" },
         },
       }),
@@ -357,7 +361,7 @@ describe("remarks user: field", () => {
     const sentBody = JSON.parse(
       vi.mocked(fetch).mock.calls[0][1]!.body as string
     );
-    expect(sentBody.data.attributes.remarks).not.toContain("user:");
+    expect(sentBody.data.attributes.metadata.remarks).not.toContain("user:");
 
     vi.unstubAllGlobals();
     delete process.env.PAYMONGO_SECRET_KEY;
@@ -492,6 +496,88 @@ describe("getLinkByReference", () => {
   });
 });
 
+describe("getCheckoutSessionById", () => {
+  beforeEach(() => {
+    process.env.PAYMONGO_SECRET_KEY = FAKE_SECRET;
+    vi.stubGlobal("fetch", vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    delete process.env.PAYMONGO_SECRET_KEY;
+  });
+
+  it("fetches the session by id and extracts remarks and the paid payment", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: {
+          id: "cs_abc123",
+          attributes: {
+            metadata: { remarks: "year:y device:d plan:year_sem" },
+            payments: [
+              { attributes: { status: "failed", amount: 29900 } },
+              { attributes: { status: "paid", amount: 29900, paid_at: 1788664145 } },
+            ],
+          },
+        },
+      }),
+    } as Response);
+
+    const result = await getCheckoutSessionById("cs_abc123");
+
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.paymongo.com/v1/checkout_sessions/cs_abc123",
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: expect.stringContaining("Basic") }),
+      })
+    );
+    expect(result).toEqual({
+      remarks: "year:y device:d plan:year_sem",
+      paidAmount: 29900,
+      paidStatus: "paid",
+      paidAtSeconds: 1788664145,
+    });
+  });
+
+  it("returns undefined paid fields when no payment in the array has status paid", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: {
+          id: "cs_pending",
+          attributes: {
+            metadata: { remarks: "year:y device:d" },
+            payments: [{ attributes: { status: "failed", amount: 4900 } }],
+          },
+        },
+      }),
+    } as Response);
+
+    const result = await getCheckoutSessionById("cs_pending");
+    expect(result).toEqual({
+      remarks: "year:y device:d",
+      paidAmount: undefined,
+      paidStatus: undefined,
+      paidAtSeconds: undefined,
+    });
+  });
+
+  it("returns null when PayMongo has no such session", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ errors: [{ code: "not_found" }] }),
+    } as Response);
+
+    expect(await getCheckoutSessionById("cs_nope")).toBeNull();
+  });
+
+  it("throws if PAYMONGO_SECRET_KEY is missing", async () => {
+    delete process.env.PAYMONGO_SECRET_KEY;
+    await expect(getCheckoutSessionById("cs_abc123")).rejects.toThrow("PAYMONGO_SECRET_KEY");
+  });
+});
+
 describe("parseLinkRemarks", () => {
   const yearId = "00000000-0000-0000-0000-000000000001";
   const subjectId = "10000000-0001-0001-0001-000000000001";
@@ -586,7 +672,7 @@ describe("createPaymongoLink plans", () => {
       ok: true,
       json: async () => ({
         data: {
-          id: "link_plan1",
+          id: "cs_plan1",
           attributes: { checkout_url: "https://checkout.paymongo.com/p" },
         },
       }),
@@ -604,9 +690,9 @@ describe("createPaymongoLink plans", () => {
   it("charges 9900 and stamps plan:subject_sem in remarks for the semester subject plan", async () => {
     vi.mocked(fetch).mockResolvedValueOnce(mockOk());
     await createPaymongoLink("year-1", "device-1", "https://x/ok", "subj-1", undefined, "subject_sem");
-    expect(sentBody(0).data.attributes.amount).toBe(9900);
-    expect(sentBody(0).data.attributes.remarks).toContain("plan:subject_sem");
-    expect(sentBody(0).data.attributes.remarks).toContain("subject:subj-1");
+    expect(sentBody(0).data.attributes.line_items[0].amount).toBe(9900);
+    expect(sentBody(0).data.attributes.metadata.remarks).toContain("plan:subject_sem");
+    expect(sentBody(0).data.attributes.metadata.remarks).toContain("subject:subj-1");
   });
 
   it("defaults to legacy plans when plan is omitted", async () => {
@@ -614,12 +700,12 @@ describe("createPaymongoLink plans", () => {
     vi.mocked(fetch).mockResolvedValueOnce(mockOk());
 
     await createPaymongoLink("year-1", "device-1", "https://x/ok", "subj-1");
-    expect(sentBody(0).data.attributes.amount).toBe(4900);
-    expect(sentBody(0).data.attributes.remarks).toContain("plan:subject_month");
+    expect(sentBody(0).data.attributes.line_items[0].amount).toBe(4900);
+    expect(sentBody(0).data.attributes.metadata.remarks).toContain("plan:subject_month");
 
     await createPaymongoLink("year-1", "device-1", "https://x/ok", null);
-    expect(sentBody(1).data.attributes.amount).toBe(29900);
-    expect(sentBody(1).data.attributes.remarks).toContain("plan:year_sem");
+    expect(sentBody(1).data.attributes.line_items[0].amount).toBe(29900);
+    expect(sentBody(1).data.attributes.metadata.remarks).toContain("plan:year_sem");
   });
 
   it("includes the plan in the idempotency key so different tiers are distinct purchases", async () => {

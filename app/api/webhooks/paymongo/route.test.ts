@@ -1,5 +1,24 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import crypto from "crypto";
+
+// checkout_session.payment.paid carries no usable resource in the delivered
+// body (see route.ts), so the handler re-fetches the session by id — mocked
+// here per-test via checkoutSessionMock while everything else stays real.
+type CheckoutSessionResult = {
+  remarks: string;
+  paidAmount: number | undefined;
+  paidStatus: string | undefined;
+  paidAtSeconds: number | undefined;
+} | null;
+let checkoutSessionMock: (sessionId: string) => Promise<CheckoutSessionResult> = async () => null;
+vi.mock("@/lib/paymongo", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/paymongo")>();
+  return {
+    ...actual,
+    getCheckoutSessionById: (sessionId: string) => checkoutSessionMock(sessionId),
+  };
+});
+
 import { SEMESTER_END } from "@/lib/paymongo";
 
 // Lifecycle email. enqueueThrows lets a test prove the payment path survives a
@@ -105,6 +124,28 @@ function signedRequest(remarks: string, amount: number) {
   } as unknown as import("next/server").NextRequest;
 }
 
+function checkoutSessionRequest(sessionId: string) {
+  const body = JSON.stringify({
+    data: {
+      attributes: {
+        type: "checkout_session.payment.paid",
+        livemode: false,
+        data: { id: sessionId, attributes: { remarks: "" } },
+      },
+    },
+  });
+  const t = Math.floor(Date.now() / 1000);
+  const hmac = crypto.createHmac("sha256", SECRET).update(`${t}.${body}`).digest("hex");
+  const ip = `10.2.1.${ipCounter++ % 250}`;
+  return {
+    text: () => Promise.resolve(body),
+    headers: {
+      get: (h: string) =>
+        h === "paymongo-signature" ? `t=${t},te=${hmac},li=${hmac}` : ip,
+    },
+  } as unknown as import("next/server").NextRequest;
+}
+
 beforeEach(() => {
   recorded.length = 0;
   paymentsInserts.length = 0;
@@ -116,6 +157,7 @@ beforeEach(() => {
   enqueueThrows = false;
   payerEmail = "payer@example.com";
   drainMock.mockClear();
+  checkoutSessionMock = async () => null;
   vi.stubEnv("PAYMONGO_WEBHOOK_SECRET", SECRET);
   vi.stubEnv("PAYMONGO_LIVEMODE", "false");
 });
@@ -415,5 +457,67 @@ describe("POST /api/webhooks/paymongo - class purchase branch", () => {
     expect(json.error).toBe("Malformed remarks");
     expect(paymentsInserts).toHaveLength(0);
     expect(classesInserts).toHaveLength(0);
+  });
+});
+
+describe("POST /api/webhooks/paymongo - checkout_session.payment.paid (post-migration)", () => {
+  it("grants a device subscription by re-fetching the session for remarks and paid amount", async () => {
+    checkoutSessionMock = async (sessionId) => {
+      expect(sessionId).toBe("cs_test_1");
+      return {
+        remarks: `year:${YEAR} subject:${SUBJ} device:${DEV} plan:subject_sem`,
+        paidAmount: 9900,
+        paidStatus: "paid",
+        paidAtSeconds: 1788664145,
+      };
+    };
+
+    const res = await POST(checkoutSessionRequest("cs_test_1"));
+    expect(res.status).toBe(200);
+    expect(recorded).toHaveLength(1);
+    expect(recorded[0]).toMatchObject({ linkId: "cs_test_1", deviceId: DEV, yearId: YEAR, amount: 9900 });
+  });
+
+  it("ignores a session whose fetched status isn't paid (e.g. still awaiting payment)", async () => {
+    checkoutSessionMock = async () => ({
+      remarks: `year:${YEAR} device:${DEV}`,
+      paidAmount: undefined,
+      paidStatus: undefined,
+      paidAtSeconds: undefined,
+    });
+
+    const res = await POST(checkoutSessionRequest("cs_test_2"));
+    const json = await res.json();
+    expect(res.status).toBe(200);
+    expect(json).toEqual({ ok: true, ignored: "status" });
+    expect(recorded).toHaveLength(0);
+  });
+
+  it("fails closed with 502 when the session can't be fetched from PayMongo", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      checkoutSessionMock = async () => null;
+      const res = await POST(checkoutSessionRequest("cs_test_3"));
+      expect(res.status).toBe(502);
+      expect(recorded).toHaveLength(0);
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
+  it("creates a class purchase from a checkout session carrying block remarks", async () => {
+    const paidAmount = 79900;
+    checkoutSessionMock = async () => ({
+      remarks: `block:1 year:${YEAR} subject:${SUBJ} seats:11 rep:${REP_DEVICE}`,
+      paidAmount,
+      paidStatus: "paid",
+      paidAtSeconds: 1788664145,
+    });
+
+    const res = await POST(checkoutSessionRequest("cs_test_block"));
+    expect(res.status).toBe(200);
+    expect(paymentsInserts).toHaveLength(1);
+    expect(paymentsInserts[0]).toMatchObject({ paymongo_link_id: "cs_test_block", device_id: REP_DEVICE });
+    expect(classesInserts).toHaveLength(1);
   });
 });

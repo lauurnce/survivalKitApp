@@ -6,6 +6,7 @@ import {
   resolvePlan,
   periodEndFor,
   couponDiscountFor,
+  getCheckoutSessionById,
   PLANS,
   SEMESTER_END,
   MAX_SEATS,
@@ -89,18 +90,47 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, ignored: "livemode" });
   }
 
-  if (eventType !== "link.payment.paid") {
+  if (eventType !== "link.payment.paid" && eventType !== "checkout_session.payment.paid") {
     // Acknowledge non-payment events without action
     return NextResponse.json({ ok: true });
   }
 
-  const resource = event.data.attributes.data;
-  const remarks = resource.attributes.remarks ?? "";
-  // PayMongo nests the resource id at data.attributes.data.id; fall back to the
-  // attributes-level id for resources that expose it there.
-  const linkId = resource.id ?? resource.attributes.id;
-  const paidAmount = resource.attributes.amount;
-  const paidStatus = resource.attributes.status;
+  let linkId: string | undefined;
+  let remarks: string;
+  let paidAmount: number | undefined;
+  let paidStatus: string | undefined;
+  let paidAtSeconds: number | undefined;
+
+  if (eventType === "link.payment.paid") {
+    // Legacy path: PayMongo's Links API (discontinued 2026-09-03) embedded
+    // the paid Link resource directly in the event body.
+    const resource = event.data.attributes.data;
+    remarks = resource.attributes.remarks ?? "";
+    // PayMongo nests the resource id at data.attributes.data.id; fall back to
+    // the attributes-level id for resources that expose it there.
+    linkId = resource.id ?? resource.attributes.id;
+    paidAmount = resource.attributes.amount;
+    paidStatus = resource.attributes.status;
+    paidAtSeconds = resource.attributes.paid_at;
+  } else {
+    // Checkout Sessions' event payload shape isn't documented and its own
+    // status field is only active/expired, so re-fetch the session by id
+    // from PayMongo rather than trust the delivered body.
+    const sessionId = event.data.attributes.data.id;
+    if (!sessionId) {
+      return NextResponse.json({ error: "Missing checkout session id" }, { status: 400 });
+    }
+    const session = await getCheckoutSessionById(sessionId);
+    if (!session) {
+      console.error(`Could not fetch checkout session ${sessionId} for webhook confirmation`);
+      return NextResponse.json({ error: "Could not verify checkout session" }, { status: 502 });
+    }
+    linkId = sessionId;
+    remarks = session.remarks;
+    paidAmount = session.paidAmount;
+    paidStatus = session.paidStatus;
+    paidAtSeconds = session.paidAtSeconds;
+  }
 
   if (!linkId) {
     return NextResponse.json({ error: "Missing link id" }, { status: 400 });
@@ -144,7 +174,6 @@ export async function POST(req: NextRequest) {
     }
 
     const supabase = createServerClient();
-    const paidAtSeconds = resource.attributes.paid_at;
     const paidAt = typeof paidAtSeconds === "number" ? new Date(paidAtSeconds * 1000) : new Date();
 
     // Ledger row first — never grant access without a recorded payment,
@@ -243,7 +272,6 @@ export async function POST(req: NextRequest) {
 
   const supabase = createServerClient();
 
-  const paidAtSeconds = resource.attributes.paid_at;
   const paidAt =
     typeof paidAtSeconds === "number"
       ? new Date(paidAtSeconds * 1000)
