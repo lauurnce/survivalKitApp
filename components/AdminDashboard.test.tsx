@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
 import type { ComponentProps } from "react";
 import { AdminDashboard } from "./AdminDashboard";
 
@@ -304,5 +304,71 @@ describe("AdminDashboard — student profiles after signup starts creating rows"
       },
     })} />);
     expect(screen.queryByText("School Type")).not.toBeInTheDocument();
+  });
+});
+
+describe("ReconcileSection grant action", () => {
+  // Regression: a Checkout-Sessions-era row has reference: "" (PayMongo's
+  // Checkout Sessions has no reference_number lookup, unlike Links). Two such
+  // rows must not collide on an empty-string key/state, and the grant action
+  // must post the row's linkId, not its (possibly empty) reference.
+  it("posts each row's own linkId, even when two rows share an empty reference", async () => {
+    const rows: DashboardProps["unreflectedPayments"] = [
+      {
+        linkId: "pay_aaa",
+        reference: "",
+        amount: 4900,
+        description: "BSIT Survival Kit",
+        paidAt: "2026-09-01T00:00:00.000Z",
+        yearId: "y",
+        subjectId: null,
+        deviceId: "device-a",
+        userId: null,
+        reason: "no_subscription",
+        hasLedgerRow: false,
+      },
+      {
+        linkId: "pay_bbb",
+        reference: "",
+        amount: 9900,
+        description: "BSIT Survival Kit",
+        paidAt: "2026-09-02T00:00:00.000Z",
+        yearId: "y",
+        subjectId: null,
+        deviceId: "device-b",
+        userId: null,
+        reason: "no_subscription",
+        hasLedgerRow: false,
+      },
+    ];
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ ok: true, deduped: false }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<AdminDashboard {...makeDashboardProps({ unreflectedPayments: rows })} />);
+
+    const grantButtons = screen.getAllByRole("button", { name: /grant access/i });
+    expect(grantButtons).toHaveLength(2);
+
+    fireEvent.click(grantButtons[0]);
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        "/api/admin/reconcile",
+        expect.objectContaining({ body: JSON.stringify({ identifier: "pay_aaa" }) })
+      )
+    );
+
+    fireEvent.click(grantButtons[1]);
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        "/api/admin/reconcile",
+        expect.objectContaining({ body: JSON.stringify({ identifier: "pay_bbb" }) })
+      )
+    );
+
+    vi.unstubAllGlobals();
   });
 });
