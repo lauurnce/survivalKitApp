@@ -46,6 +46,11 @@ export const SEMESTER_END = new Date("2026-12-31T15:59:59Z");
 
 const PERIOD_31_DAYS_MS = 31 * 24 * 60 * 60 * 1000;
 
+// PayMongo's Links API (POST /v1/links) was discontinued for this account on
+// 2026-09-03 in favor of Checkout Sessions (POST /v1/checkout_sessions).
+// Verified against the account's own enabled channels in test mode.
+const CHECKOUT_PAYMENT_METHODS = ["card", "gcash", "paymaya", "grab_pay"];
+
 // Resolve a plan from a link's `plan:` remarks token. Tokens that are unknown
 // or contradict the link's scope (subject plans need a subject; year_sem must
 // not have one) fall back to legacy inference so old links keep working.
@@ -95,7 +100,7 @@ export async function createPaymongoLink(
     .update(`subscribe:${deviceId}:${yearId}:${subjectId ?? "year"}:${resolvedPlan}`)
     .digest("hex");
 
-  const res = await fetch("https://api.paymongo.com/v1/links", {
+  const res = await fetch("https://api.paymongo.com/v1/checkout_sessions", {
     method: "POST",
     headers: {
       Authorization: `Basic ${encoded}`,
@@ -105,13 +110,18 @@ export async function createPaymongoLink(
     body: JSON.stringify({
       data: {
         attributes: {
-          amount,
+          line_items: [{ name: description, amount, currency: "PHP", quantity: 1 }],
+          payment_method_types: CHECKOUT_PAYMENT_METHODS,
           description,
-          remarks,
+          // Checkout Sessions has no first-class remarks field, so the same
+          // string rides inside metadata; the webhook reads it back out of
+          // there for a checkout_session.payment.paid event.
+          metadata: { remarks },
           // A cancelled/failed payment must land on a URL without the
           // ?payment=success marker, so it defaults to the success URL only
           // when the caller supplies no separate failed leg.
-          redirect: { success: successUrl, failed: failedUrl ?? successUrl },
+          success_url: successUrl,
+          cancel_url: failedUrl ?? successUrl,
         },
       },
     }),
@@ -147,7 +157,7 @@ export async function createDynamicPaymongoLink(
 
   const encoded = Buffer.from(`${secretKey}:`).toString("base64");
 
-  const res = await fetch("https://api.paymongo.com/v1/links", {
+  const res = await fetch("https://api.paymongo.com/v1/checkout_sessions", {
     method: "POST",
     headers: {
       Authorization: `Basic ${encoded}`,
@@ -157,11 +167,14 @@ export async function createDynamicPaymongoLink(
     body: JSON.stringify({
       data: {
         attributes: {
-          amount,
+          line_items: [{ name: description, amount, currency: "PHP", quantity: 1 }],
+          payment_method_types: CHECKOUT_PAYMENT_METHODS,
           description,
-          remarks,
+          // Same remarks-in-metadata approach as createPaymongoLink above.
+          metadata: { remarks },
           // Same failed-leg default as createPaymongoLink above.
-          redirect: { success: successUrl, failed: failedUrl ?? successUrl },
+          success_url: successUrl,
+          cancel_url: failedUrl ?? successUrl,
         },
       },
     }),
@@ -179,8 +192,62 @@ export async function createDynamicPaymongoLink(
   };
 }
 
+// Checkout Sessions has no "paid" status of its own (its status field is only
+// active/expired) and the webhook.payment.paid event's embedded payload shape
+// isn't documented, so the webhook re-fetches the session by id here instead
+// of trusting the delivered body — attributes.payments is the authoritative
+// place to find a completed charge. Returns null if the session can't be
+// fetched at all (network/auth failure); the caller should fail closed on that.
+//
+// Returns the underlying Payment's own id (paymentId, e.g. "pay_xxx") rather
+// than the session id — GET /v1/payments (which lib/reconcile.ts's
+// listRecentPaidLinks lists to find unreflected payments) can only ever
+// surface a payment by ITS id, never by its checkout session's id, so callers
+// must key their ledger row (paymongo_link_id) on paymentId for reconciliation
+// to ever find a match. Falls back to sessionId only if PayMongo's payments
+// array is present but a payment somehow lacks its own id.
+export async function getCheckoutSessionById(sessionId: string): Promise<{
+  paymentId: string | undefined;
+  remarks: string;
+  paidAmount: number | undefined;
+  paidStatus: string | undefined;
+  paidAtSeconds: number | undefined;
+} | null> {
+  const secretKey = process.env.PAYMONGO_SECRET_KEY;
+  if (!secretKey) throw new Error("PAYMONGO_SECRET_KEY is not set");
+  const encoded = Buffer.from(`${secretKey}:`).toString("base64");
+
+  const res = await fetch(
+    `https://api.paymongo.com/v1/checkout_sessions/${encodeURIComponent(sessionId)}`,
+    { headers: { Authorization: `Basic ${encoded}` } }
+  );
+  if (!res.ok) return null;
+  const json = await res.json();
+  const attrs = json?.data?.attributes;
+  if (!attrs) return null;
+
+  const remarks = typeof attrs.metadata?.remarks === "string" ? attrs.metadata.remarks : "";
+  const payments = Array.isArray(attrs.payments) ? attrs.payments : [];
+  const paidPayment = payments.find(
+    (p: { attributes?: { status?: string } }) => p?.attributes?.status === "paid"
+  );
+
+  return {
+    paymentId: typeof paidPayment?.id === "string" ? paidPayment.id : undefined,
+    remarks,
+    paidAmount:
+      typeof paidPayment?.attributes?.amount === "number" ? paidPayment.attributes.amount : undefined,
+    paidStatus: paidPayment ? "paid" : undefined,
+    paidAtSeconds:
+      typeof paidPayment?.attributes?.paid_at === "number" ? paidPayment.attributes.paid_at : undefined,
+  };
+}
+
 // ── Reconciliation: list paid links from PayMongo to catch payments that never
-//    reflected (webhook dropped/rejected). Used by the admin reconcile view. ──
+//    reflected (webhook dropped/rejected). Used by the admin reconcile view.
+//    Covers pre-2026-09-03 Links-API purchases only — Checkout Sessions has no
+//    lookup-by-reference endpoint, so reconciling newer purchases is tracked
+//    as a follow-up (see the PR for this file's checkout_sessions migration). ──
 
 export interface PaidLink {
   linkId: string;
