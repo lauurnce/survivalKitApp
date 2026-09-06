@@ -104,7 +104,7 @@ export default async function SubjectsPage({ params, searchParams }: Props) {
                 className="mb-6"
               />
               <BackLink
-                href={`/year/${yearId}`}
+                href="/year"
                 label="Select Year"
                 className="text-taupe hover:text-paper"
                 dashboardFallback={{ href: "/account", label: "Back to Dashboard" }}
