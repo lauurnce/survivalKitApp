@@ -134,3 +134,10 @@ Next: BSIT Survival Kit moves to a subscription. Not to charge more, to promise 
 New reviewers every semester as syllabi change. Progress that follows you from CP1 to capstone. Coverage widening across all four years.
 
 https://survival-kit-app.vercel.app
+
+## 2026-09-06 — update (1 post, covers d5ef025)
+
+Shortfall note: only 1 honest post came out of this run, not 5. The README data snapshot (subjects, modules, sections, tracked events, accounts, and every other row) is byte-for-byte unchanged since the last batch, so there is no number movement to report. Roughly 90 commits landed in the covered window — a full onboarding-tour feature family across the dashboard, roadmap, resources, profile, and subjects pages, plus breadcrumb navigation, an FAQ page, a default social share image, and Google Analytics — but README's "Where things stand" section (still dated 2026-08-29) hasn't been refreshed to confirm any of them shipped. Per the cross-check rule, a commit subject alone isn't enough to post as fact, so all of that is left out rather than guessed at. The one item README does confirm as new is the HERALD/x-updates tooling itself.
+
+### Post 1 (198/280)
+Shipped something meta: a tool that turns my own commits into these X post drafts. First batch is 20 posts, every batch after is 5, each one checked against X's 280-character limit before I post it.
