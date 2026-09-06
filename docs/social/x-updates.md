@@ -141,3 +141,20 @@ Shortfall note: only 1 honest post came out of this run, not 5. The README data 
 
 ### Post 1 (198/280)
 Shipped something meta: a tool that turns my own commits into these X post drafts. First batch is 20 posts, every batch after is 5, each one checked against X's 280-character limit before I post it.
+
+## 2026-09-06 — update (5 posts, covers d5ef025)
+
+### Post 1 (244/280)
+New: a full guided tour across the dashboard, roadmap, resources, profile, and subjects pages — so first-time users see what BSIT Survival Kit actually does instead of guessing. Forgot how something works? Replay any tour anytime from settings.
+
+### Post 2 (209/280)
+Small fix, real difference: the onboarding tour now spotlights the thing you're supposed to look at instead of just dimming everything else. Easy to miss until you're the one squinting at a highlighted button.
+
+### Post 3 (198/280)
+Added breadcrumb trails to subject, module list, and module detail pages. Sounds minor until you're four levels deep in your course material and need to jump back two without hitting back-back-back.
+
+### Post 4 (127/280)
+New FAQ page, linked right from the footer. Five straight answers to the questions people keep asking before they even sign up.
+
+### Post 5 (199/280)
+Been shipping the boring-but-necessary stuff too: breadcrumbs so you never get lost, an FAQ so you don't have to ask, and a tour that actually shows new users around instead of dropping them in cold.
