@@ -502,19 +502,21 @@ function ReconcileSection({
   rows: UnreflectedPayment[];
   error: string | null;
 }) {
-  // Track per-row grant state (keyed by reference) so each button reflects its
-  // own status.
+  // Track per-row grant state keyed by linkId — always present and unique,
+  // unlike reference (empty for every Checkout-Sessions-era row, since that
+  // API has no reference_number lookup) — so each button reflects its own
+  // status even when several rows share an empty reference.
   const [state, setState] = useState<Record<string, "idle" | "granting" | "done" | "error">>({});
   const [msg, setMsg] = useState<Record<string, string>>({});
 
-  async function grant(reference: string) {
-    setState(s => ({ ...s, [reference]: "granting" }));
-    setMsg(m => ({ ...m, [reference]: "" }));
+  async function grant(identifier: string) {
+    setState(s => ({ ...s, [identifier]: "granting" }));
+    setMsg(m => ({ ...m, [identifier]: "" }));
     try {
       const res = await fetch("/api/admin/reconcile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reference }),
+        body: JSON.stringify({ identifier }),
       });
       const data = (await res.json().catch(() => ({}))) as {
         ok?: boolean;
@@ -522,18 +524,18 @@ function ReconcileSection({
         error?: string;
       };
       if (!res.ok || !data.ok) {
-        setState(s => ({ ...s, [reference]: "error" }));
-        setMsg(m => ({ ...m, [reference]: data.error ?? "Grant failed" }));
+        setState(s => ({ ...s, [identifier]: "error" }));
+        setMsg(m => ({ ...m, [identifier]: data.error ?? "Grant failed" }));
         return;
       }
-      setState(s => ({ ...s, [reference]: "done" }));
+      setState(s => ({ ...s, [identifier]: "done" }));
       setMsg(m => ({
         ...m,
-        [reference]: data.deduped ? "Already recorded — access ensured" : "Access granted",
+        [identifier]: data.deduped ? "Already recorded — access ensured" : "Access granted",
       }));
     } catch {
-      setState(s => ({ ...s, [reference]: "error" }));
-      setMsg(m => ({ ...m, [reference]: "Network error" }));
+      setState(s => ({ ...s, [identifier]: "error" }));
+      setMsg(m => ({ ...m, [identifier]: "Network error" }));
     }
   }
 
@@ -571,9 +573,9 @@ function ReconcileSection({
           </thead>
           <tbody>
             {rows.map(r => {
-              const st = state[r.reference] ?? "idle";
+              const st = state[r.linkId] ?? "idle";
               return (
-                <tr key={r.reference} className="border-b border-ink-faint/15 hover:bg-ink-faint/5 transition-colors">
+                <tr key={r.linkId} className="border-b border-ink-faint/15 hover:bg-ink-faint/5 transition-colors">
                   <td className="py-3 pr-6 font-sans text-xs text-ink-muted">
                     {r.paidAt
                       ? new Date(r.paidAt).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })
@@ -594,7 +596,7 @@ function ReconcileSection({
                   </td>
                   <td className="py-3 pr-6">
                     {st === "done" ? (
-                      <span className="font-mono text-xs text-green-600">{msg[r.reference] ?? "Done"}</span>
+                      <span className="font-mono text-xs text-green-600">{msg[r.linkId] ?? "Done"}</span>
                     ) : r.reason === "malformed_remarks" ? (
                       <span className="font-mono text-xs text-ink-faint">Manual — bad remarks</span>
                     ) : r.reason === "class_block_unfulfilled" ? (
@@ -604,14 +606,14 @@ function ReconcileSection({
                     ) : (
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => grant(r.reference)}
+                          onClick={() => grant(r.linkId)}
                           disabled={st === "granting"}
                           className="font-mono text-xs border border-ink-faint/30 px-3 py-1 hover:text-ink hover:border-ink transition-colors duration-150 disabled:opacity-50"
                         >
                           {st === "granting" ? "Granting…" : "Grant access"}
                         </button>
                         {st === "error" && (
-                          <span className="font-mono text-xs text-red-500">{msg[r.reference]}</span>
+                          <span className="font-mono text-xs text-red-500">{msg[r.linkId]}</span>
                         )}
                       </div>
                     )}
