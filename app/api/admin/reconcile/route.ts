@@ -1,49 +1,63 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/auth/adminSession";
 import { createServerClient } from "@/lib/supabase/server";
-import { getLinkByReference, parseLinkRemarks, resolvePlan, periodEndFor, PLANS } from "@/lib/paymongo";
+import {
+  getLinkByReference,
+  getPaymentById,
+  parseLinkRemarks,
+  resolvePlan,
+  periodEndFor,
+  PLANS,
+} from "@/lib/paymongo";
 import { recordPayment } from "@/lib/payments";
 import { isUuid } from "@/lib/validation";
 
-// Manually grant access for a paid PayMongo link that never reflected. The
-// admin supplies only the payment's reference_number; we resolve the link from
-// PayMongo (the only supported lookup) so the grant is driven by PayMongo's
-// truth (status=paid, real amount/remarks), never by client-supplied amounts.
-// recordPayment is idempotent, so re-granting an already-recorded link is a
-// safe no-op.
+// Manually grant access for a paid PayMongo purchase that never reflected.
+// The admin supplies only an identifier — either a legacy Link
+// reference_number (pre-2026-09-03, Links API) or a Payment id ("pay_xxx",
+// Checkout Sessions, PayMongo's replacement) — and we resolve it straight
+// from PayMongo (the only supported lookup for either), so the grant is
+// driven by PayMongo's truth (status=paid, real amount/remarks), never by
+// client-supplied amounts. recordPayment is idempotent, so re-granting an
+// already-recorded purchase is a safe no-op.
 export async function POST(req: NextRequest) {
   const authed = await getAdminSession();
   if (!authed) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = (await req.json().catch(() => null)) as { reference?: string } | null;
-  const reference = body?.reference;
-  if (!reference || typeof reference !== "string") {
-    return NextResponse.json({ error: "reference required" }, { status: 400 });
+  const body = (await req.json().catch(() => null)) as { identifier?: string } | null;
+  const identifier = body?.identifier;
+  if (!identifier || typeof identifier !== "string") {
+    return NextResponse.json({ error: "identifier required" }, { status: 400 });
   }
 
-  let link: Awaited<ReturnType<typeof getLinkByReference>>;
+  let resolved: { linkId: string; remarks: string; amount: number; status: string } | null;
   try {
-    link = await getLinkByReference(reference);
+    if (identifier.startsWith("pay_")) {
+      const payment = await getPaymentById(identifier);
+      resolved = payment && { linkId: identifier, ...payment };
+    } else {
+      resolved = await getLinkByReference(identifier);
+    }
   } catch (err) {
-    console.error("reconcile link lookup failed:", err instanceof Error ? err.message : err);
+    console.error("reconcile lookup failed:", err instanceof Error ? err.message : err);
     return NextResponse.json({ error: "Could not reach PayMongo" }, { status: 502 });
   }
-  if (!link) {
-    return NextResponse.json({ error: "Link not found at PayMongo" }, { status: 404 });
+  if (!resolved) {
+    return NextResponse.json({ error: "Payment not found at PayMongo" }, { status: 404 });
   }
-  if (link.status !== "paid") {
-    return NextResponse.json({ error: "Link is not paid" }, { status: 400 });
+  if (resolved.status !== "paid") {
+    return NextResponse.json({ error: "Payment is not paid" }, { status: 400 });
   }
 
-  const { yearId, subjectId, deviceId, userId, plan: planToken } = parseLinkRemarks(link.remarks);
+  const { yearId, subjectId, deviceId, userId, plan: planToken } = parseLinkRemarks(resolved.remarks);
   if (!yearId || !deviceId || !isUuid(yearId) || !isUuid(deviceId)) {
-    return NextResponse.json({ error: "Link remarks are malformed; cannot grant" }, { status: 422 });
+    return NextResponse.json({ error: "Remarks are malformed; cannot grant" }, { status: 422 });
   }
   if (subjectId !== null && !isUuid(subjectId)) {
-    return NextResponse.json({ error: "Link remarks are malformed; cannot grant" }, { status: 422 });
+    return NextResponse.json({ error: "Remarks are malformed; cannot grant" }, { status: 422 });
   }
 
-  const paidAmount = link.amount;
+  const paidAmount = resolved.amount;
   const plan = resolvePlan(planToken, subjectId);
   const expected = PLANS[plan].amount;
   if (paidAmount < expected) {
@@ -56,7 +70,7 @@ export async function POST(req: NextRequest) {
   const supabase = createServerClient();
   try {
     const { recorded, deduped } = await recordPayment(supabase, {
-      linkId: link.linkId,
+      linkId: resolved.linkId,
       deviceId,
       yearId,
       subjectId,
