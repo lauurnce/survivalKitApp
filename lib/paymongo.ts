@@ -198,7 +198,16 @@ export async function createDynamicPaymongoLink(
 // of trusting the delivered body — attributes.payments is the authoritative
 // place to find a completed charge. Returns null if the session can't be
 // fetched at all (network/auth failure); the caller should fail closed on that.
+//
+// Returns the underlying Payment's own id (paymentId, e.g. "pay_xxx") rather
+// than the session id — GET /v1/payments (which lib/reconcile.ts's
+// listRecentPaidLinks lists to find unreflected payments) can only ever
+// surface a payment by ITS id, never by its checkout session's id, so callers
+// must key their ledger row (paymongo_link_id) on paymentId for reconciliation
+// to ever find a match. Falls back to sessionId only if PayMongo's payments
+// array is present but a payment somehow lacks its own id.
 export async function getCheckoutSessionById(sessionId: string): Promise<{
+  paymentId: string | undefined;
   remarks: string;
   paidAmount: number | undefined;
   paidStatus: string | undefined;
@@ -224,6 +233,7 @@ export async function getCheckoutSessionById(sessionId: string): Promise<{
   );
 
   return {
+    paymentId: typeof paidPayment?.id === "string" ? paidPayment.id : undefined,
     remarks,
     paidAmount:
       typeof paidPayment?.attributes?.amount === "number" ? paidPayment.attributes.amount : undefined,

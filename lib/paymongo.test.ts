@@ -507,7 +507,7 @@ describe("getCheckoutSessionById", () => {
     delete process.env.PAYMONGO_SECRET_KEY;
   });
 
-  it("fetches the session by id and extracts remarks and the paid payment", async () => {
+  it("fetches the session by id and extracts remarks, payment id, and the paid payment", async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
@@ -516,8 +516,8 @@ describe("getCheckoutSessionById", () => {
           attributes: {
             metadata: { remarks: "year:y device:d plan:year_sem" },
             payments: [
-              { attributes: { status: "failed", amount: 29900 } },
-              { attributes: { status: "paid", amount: 29900, paid_at: 1788664145 } },
+              { id: "pay_failed", attributes: { status: "failed", amount: 29900 } },
+              { id: "pay_abc123", attributes: { status: "paid", amount: 29900, paid_at: 1788664145 } },
             ],
           },
         },
@@ -533,6 +533,7 @@ describe("getCheckoutSessionById", () => {
       })
     );
     expect(result).toEqual({
+      paymentId: "pay_abc123",
       remarks: "year:y device:d plan:year_sem",
       paidAmount: 29900,
       paidStatus: "paid",
@@ -548,7 +549,7 @@ describe("getCheckoutSessionById", () => {
           id: "cs_pending",
           attributes: {
             metadata: { remarks: "year:y device:d" },
-            payments: [{ attributes: { status: "failed", amount: 4900 } }],
+            payments: [{ id: "pay_failed", attributes: { status: "failed", amount: 4900 } }],
           },
         },
       }),
@@ -556,6 +557,7 @@ describe("getCheckoutSessionById", () => {
 
     const result = await getCheckoutSessionById("cs_pending");
     expect(result).toEqual({
+      paymentId: undefined,
       remarks: "year:y device:d",
       paidAmount: undefined,
       paidStatus: undefined,

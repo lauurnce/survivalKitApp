@@ -5,6 +5,7 @@ import crypto from "crypto";
 // body (see route.ts), so the handler re-fetches the session by id — mocked
 // here per-test via checkoutSessionMock while everything else stays real.
 type CheckoutSessionResult = {
+  paymentId: string | undefined;
   remarks: string;
   paidAmount: number | undefined;
   paidStatus: string | undefined;
@@ -461,10 +462,11 @@ describe("POST /api/webhooks/paymongo - class purchase branch", () => {
 });
 
 describe("POST /api/webhooks/paymongo - checkout_session.payment.paid (post-migration)", () => {
-  it("grants a device subscription by re-fetching the session for remarks and paid amount", async () => {
+  it("grants a device subscription keyed on the payment's own id, not the session id", async () => {
     checkoutSessionMock = async (sessionId) => {
       expect(sessionId).toBe("cs_test_1");
       return {
+        paymentId: "pay_test_1",
         remarks: `year:${YEAR} subject:${SUBJ} device:${DEV} plan:subject_sem`,
         paidAmount: 9900,
         paidStatus: "paid",
@@ -475,11 +477,30 @@ describe("POST /api/webhooks/paymongo - checkout_session.payment.paid (post-migr
     const res = await POST(checkoutSessionRequest("cs_test_1"));
     expect(res.status).toBe(200);
     expect(recorded).toHaveLength(1);
-    expect(recorded[0]).toMatchObject({ linkId: "cs_test_1", deviceId: DEV, yearId: YEAR, amount: 9900 });
+    // Reconciliation (GET /v1/payments) can only ever surface this purchase by
+    // its payment id, never by the session id — the ledger must be keyed on
+    // paymentId so an already-fulfilled purchase isn't later flagged as
+    // unreflected.
+    expect(recorded[0]).toMatchObject({ linkId: "pay_test_1", deviceId: DEV, yearId: YEAR, amount: 9900 });
+  });
+
+  it("falls back to the session id if the fetched session somehow has no payment id", async () => {
+    checkoutSessionMock = async () => ({
+      paymentId: undefined,
+      remarks: `year:${YEAR} subject:${SUBJ} device:${DEV}`,
+      paidAmount: 4900,
+      paidStatus: "paid",
+      paidAtSeconds: 1788664145,
+    });
+
+    const res = await POST(checkoutSessionRequest("cs_test_fallback"));
+    expect(res.status).toBe(200);
+    expect(recorded[0]).toMatchObject({ linkId: "cs_test_fallback" });
   });
 
   it("ignores a session whose fetched status isn't paid (e.g. still awaiting payment)", async () => {
     checkoutSessionMock = async () => ({
+      paymentId: undefined,
       remarks: `year:${YEAR} device:${DEV}`,
       paidAmount: undefined,
       paidStatus: undefined,
@@ -508,6 +529,7 @@ describe("POST /api/webhooks/paymongo - checkout_session.payment.paid (post-migr
   it("creates a class purchase from a checkout session carrying block remarks", async () => {
     const paidAmount = 79900;
     checkoutSessionMock = async () => ({
+      paymentId: "pay_test_block",
       remarks: `block:1 year:${YEAR} subject:${SUBJ} seats:11 rep:${REP_DEVICE}`,
       paidAmount,
       paidStatus: "paid",
@@ -517,7 +539,7 @@ describe("POST /api/webhooks/paymongo - checkout_session.payment.paid (post-migr
     const res = await POST(checkoutSessionRequest("cs_test_block"));
     expect(res.status).toBe(200);
     expect(paymentsInserts).toHaveLength(1);
-    expect(paymentsInserts[0]).toMatchObject({ paymongo_link_id: "cs_test_block", device_id: REP_DEVICE });
+    expect(paymentsInserts[0]).toMatchObject({ paymongo_link_id: "pay_test_block", device_id: REP_DEVICE });
     expect(classesInserts).toHaveLength(1);
   });
 });

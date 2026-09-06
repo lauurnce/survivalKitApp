@@ -125,7 +125,11 @@ export async function POST(req: NextRequest) {
       console.error(`Could not fetch checkout session ${sessionId} for webhook confirmation`);
       return NextResponse.json({ error: "Could not verify checkout session" }, { status: 502 });
     }
-    linkId = sessionId;
+    // The payment's own id, never the session id — GET /v1/payments (which
+    // admin reconciliation lists) can only ever surface a payment by its own
+    // id, so paymongo_link_id must be keyed on that for reconciliation to
+    // find a match against an already-fulfilled purchase.
+    linkId = session.paymentId ?? sessionId;
     remarks = session.remarks;
     paidAmount = session.paidAmount;
     paidStatus = session.paidStatus;
