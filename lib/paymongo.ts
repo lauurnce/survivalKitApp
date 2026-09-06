@@ -452,8 +452,12 @@ export async function listRecentPaidLinks(maxPages = 3): Promise<PaidLink[]> {
 
   // 2. Resolve each payment's remarks: Checkout-Sessions-era payments carry
   //    them inline already (no extra call); legacy Links-era payments need
-  //    one getLinkByReference call per unique reference.
-  const linkCache = new Map<string, Awaited<ReturnType<typeof getLinkByReference>>>();
+  //    one getLinkByReference call per unique reference. A Link can have
+  //    more than one Payment row against it (e.g. a retried attempt), but
+  //    it's still one purchase — only the first payment seen for a given
+  //    reference is resolved and emitted, exactly as before this rewrite,
+  //    so reconciliation never renders two rows for the same linkId.
+  const seenReferences = new Set<string>();
   const paid: PaidLink[] = [];
 
   for (const p of paidPayments) {
@@ -472,14 +476,15 @@ export async function listRecentPaidLinks(maxPages = 3): Promise<PaidLink[]> {
     }
 
     if (p.reference) {
-      if (!linkCache.has(p.reference)) {
-        try {
-          linkCache.set(p.reference, await getLinkByReference(p.reference));
-        } catch {
-          linkCache.set(p.reference, null); // network hiccup resolving one link shouldn't fail the batch
-        }
+      if (seenReferences.has(p.reference)) continue;
+      seenReferences.add(p.reference);
+
+      let link: Awaited<ReturnType<typeof getLinkByReference>> = null;
+      try {
+        link = await getLinkByReference(p.reference);
+      } catch {
+        link = null; // network hiccup resolving one link shouldn't fail the batch
       }
-      const link = linkCache.get(p.reference) ?? null;
       const remarks = link?.remarks ?? "";
       const parsed = parseLinkRemarks(remarks);
       paid.push({

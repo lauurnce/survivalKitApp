@@ -824,6 +824,48 @@ describe("listRecentPaidLinks", () => {
     );
     expect(await listRecentPaidLinks()).toEqual([]);
   });
+
+  it("emits only one row when two payments share the same legacy reference", async () => {
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(
+        paymentsListPage([
+          {
+            id: "pay_retry1",
+            attributes: {
+              status: "paid",
+              amount: 4900,
+              description: "d",
+              paid_at: 1,
+              external_reference_number: "SHARED",
+            },
+          },
+          {
+            id: "pay_retry2",
+            attributes: {
+              status: "paid",
+              amount: 4900,
+              description: "d",
+              paid_at: 2,
+              external_reference_number: "SHARED",
+            },
+          },
+        ])
+      )
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          data: { id: "link_shared", attributes: { remarks: "year:y device:d", amount: 4900, status: "paid" } },
+        }),
+      } as Response);
+
+    const result = await listRecentPaidLinks();
+
+    // Exactly one getLinkByReference call and one emitted row — no duplicate
+    // linkId, which would otherwise collide as a React key on the admin table.
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(result).toHaveLength(1);
+    expect(result[0].linkId).toBe("link_shared");
+  });
 });
 
 describe("parseLinkRemarks", () => {
