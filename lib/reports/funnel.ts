@@ -1,10 +1,12 @@
 /**
  * The live acquisition-to-payment funnel, written down once.
  *
- * `unlock_click` and `unlock_submitted` are deliberately absent. They are
- * pre-pivot event types: still in the DB enum, the events API allowlist, and
- * lib/supabase/types.ts, but emitted by no code since the subscription pivot.
- * Anything that renders them shows a frozen count that will never move again.
+ * `unlock_submitted` is deliberately absent — a pre-pivot event type, still
+ * in the DB enum, the events API allowlist, and lib/supabase/types.ts, but
+ * emitted by no code since the subscription pivot. `unlock_click` is NOT in
+ * that category: SectionRenderer.tsx and LockedReviewer.tsx both still fire
+ * it live today, at /unlock, where the price is first quoted — it sits
+ * between paywall_teaser_click and subscribe_click on the live path.
  *
  * There is also no completion event on the live path. `unlock_submitted` was
  * the "they paid" step and the pivot never replaced it, so completion comes
@@ -29,6 +31,7 @@ export const FUNNEL_STEPS: readonly FunnelStepDef[] = [
   { key: "module_open", label: "Opened a module", source: "events" },
   { key: "paywall_teaser_view", label: "Saw the paywall", source: "events" },
   { key: "paywall_teaser_click", label: "Tapped the paywall", source: "events" },
+  { key: "unlock_click", label: "Reached Unlock", source: "events" },
   { key: "subscribe_click", label: "Started checkout", source: "events" },
   { key: "paid", label: "Paid (ledger)", source: "ledger" },
 ] as const;
