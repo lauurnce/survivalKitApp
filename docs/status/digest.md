@@ -11,9 +11,9 @@ docs/superpowers/specs/2026-08-30-report-digest-reminder-design.md).
 - Headline: ISR is still off app-wide; root cause traced to a root-layout headers() call that forces every child page dynamic, overriding their revalidate settings. Scoped as planned work, not urgent.
 
 ## VANTAGE (growth)
-- Last run: 2026-08-25
+- Last run: 2026-09-12
 - Verdict: nothing on fire
-- Headline: the growth instrument is producing real reports for the first time; reach is trending down across most week-over-week periods on record.
+- Headline: reach decline accelerated to its worst week on record and paid conversion stayed at zero, but the funnel's shape held and prior fixes verified live; term-calendar data is still needed to rule out a seasonal dip.
 
 ## LEDGER (finance)
 - Last run: 2026-08
