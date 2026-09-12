@@ -6,9 +6,9 @@ sentence only. Read by the weekly reminder routine (see
 docs/superpowers/specs/2026-08-30-report-digest-reminder-design.md).
 
 ## PULSE (ops)
-- Last run: 2026-08-29
+- Last run: 2026-09-12
 - Verdict: nothing on fire
-- Headline: ISR is still off app-wide; root cause traced to a root-layout headers() call that forces every child page dynamic, overriding their revalidate settings. Scoped as planned work, not urgent.
+- Headline: production is healthy with zero runtime errors, but a critical dependency advisory reopened on an already-patched package and needs a lockfile refresh soon.
 
 ## VANTAGE (growth)
 - Last run: 2026-09-12
