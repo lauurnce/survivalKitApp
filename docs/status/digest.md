@@ -11,9 +11,9 @@ docs/superpowers/specs/2026-08-30-report-digest-reminder-design.md).
 - Headline: production is healthy and a brief upstream database connectivity blip earlier in the week resolved on its own with no recurrence, but the critical dependency advisory is now a week unpatched and still needs a lockfile refresh.
 
 ## VANTAGE (growth)
-- Last run: 2026-09-12
+- Last run: 2026-09-19
 - Verdict: nothing on fire
-- Headline: reach decline accelerated to its worst week on record and paid conversion stayed at zero, but the funnel's shape held and prior fixes verified live; term-calendar data is still needed to rule out a seasonal dip.
+- Headline: reach fell again in the last complete week, but the week now in progress is already bringing in more new devices than the recent complete weeks, and no checkout attempts have been seen since the payment-provider cutover, so a live purchase test is worth doing this week.
 
 ## LEDGER (finance)
 - Last run: 2026-08
