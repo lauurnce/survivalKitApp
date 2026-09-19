@@ -18,7 +18,16 @@ const RATE_LIMIT_IP = { max: 20, windowSeconds: 60 };
 // localStorage UUID (or a freshly generated one); we sign it so the value
 // can't be forged or copied between browsers without the server secret.
 export async function POST(req: NextRequest) {
-  if (await isServerRateLimited(`device:ip:${getClientIp(req)}`, RATE_LIMIT_IP)) {
+  // Fail OPEN: a limiter outage must never silently stop issuing device
+  // cookies to first-time visitors — this is a public, non-revenue
+  // endpoint, not an abuse-prone one, so losing rate-limit coverage for the
+  // duration of a backend outage is an acceptable trade-off.
+  if (
+    await isServerRateLimited(`device:ip:${getClientIp(req)}`, {
+      ...RATE_LIMIT_IP,
+      onFailure: "allow",
+    })
+  ) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

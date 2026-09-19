@@ -2,12 +2,18 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Controllable distributed rate limiter (real one is Supabase-backed).
 let rateLimited = false;
-const rateLimitCalls: Array<{ key: string; max: number; windowSeconds: number }> = [];
+// When set, emulates the real helper's backend-error behavior: reject unless
+// the caller opted into fail-open with onFailure: "allow".
+let limiterDown = false;
+const rateLimitCalls: Array<{ key: string; max: number; windowSeconds: number; onFailure?: string }> = [];
 vi.mock("@/lib/serverRateLimit", () => ({
-  isServerRateLimited: vi.fn(async (key: string, opts: { max: number; windowSeconds: number }) => {
-    rateLimitCalls.push({ key, ...opts });
-    return rateLimited;
-  }),
+  isServerRateLimited: vi.fn(
+    async (key: string, opts: { max: number; windowSeconds: number; onFailure?: string }) => {
+      rateLimitCalls.push({ key, ...opts });
+      if (limiterDown) return opts.onFailure !== "allow";
+      return rateLimited;
+    }
+  ),
 }));
 
 import { POST } from "./route";
@@ -23,6 +29,7 @@ function makeReq(body: unknown) {
 
 beforeEach(() => {
   rateLimited = false;
+  limiterDown = false;
   rateLimitCalls.length = 0;
   process.env.DEVICE_COOKIE_SECRET = "test-device-secret-at-least-32-bytes";
 });
@@ -60,5 +67,13 @@ describe("POST /api/device", () => {
     const res = await POST(makeReq({ deviceId: DEVICE }));
     expect(res.status).toBe(429);
     expect(res.headers.get("set-cookie")).toBeNull();
+  });
+
+  it("opts into fail-open so device cookies keep issuing when the limiter backend errors", async () => {
+    limiterDown = true;
+    const res = await POST(makeReq({ deviceId: DEVICE }));
+    expect(res.status).toBe(200);
+    expect(rateLimitCalls[0].onFailure).toBe("allow");
+    expect(res.headers.get("set-cookie")).toContain(DEVICE);
   });
 });

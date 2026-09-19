@@ -5,11 +5,14 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 // serverless instances and survives cold starts. Keys are namespaced by the
 // caller, e.g. "feedback:ip:203.0.113.9".
 //
-// Fails closed when the limiter cannot make a decision: the protected
-// database routes cannot complete during that outage anyway, while allowing
-// requests would remove abuse protection from public endpoints. Revenue-
-// critical routes opt out per call with onFailure: "allow" so a limiter
-// outage never blocks paying customers.
+// Fails closed by default: allowing requests through would remove abuse
+// protection from the route for the duration of the outage. Callers opt
+// out per call with onFailure: "allow" when that trade-off is wrong for
+// them — either because blocking is worse than the abuse risk (checkout,
+// in /api/subscribe) or because a silent block would permanently lose data
+// with no retry (the reads/readers counters in /api/events, "mark done" in
+// /api/progress, device-cookie issuance in /api/device — see the 34h outage
+// documented in docs/reports/ops/2026-09-19.md).
 
 let client: SupabaseClient | null = null;
 function getClient(): SupabaseClient {

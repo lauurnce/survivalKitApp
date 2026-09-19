@@ -10,12 +10,18 @@ vi.mock("next/headers", () => ({
 
 // Controllable distributed rate limiter (real one is Supabase-backed).
 let rateLimited = false;
-const rateLimitCalls: Array<{ key: string; max: number; windowSeconds: number }> = [];
+// When set, emulates the real helper's backend-error behavior: reject unless
+// the caller opted into fail-open with onFailure: "allow".
+let limiterDown = false;
+const rateLimitCalls: Array<{ key: string; max: number; windowSeconds: number; onFailure?: string }> = [];
 vi.mock("@/lib/serverRateLimit", () => ({
-  isServerRateLimited: vi.fn(async (key: string, opts: { max: number; windowSeconds: number }) => {
-    rateLimitCalls.push({ key, ...opts });
-    return rateLimited;
-  }),
+  isServerRateLimited: vi.fn(
+    async (key: string, opts: { max: number; windowSeconds: number; onFailure?: string }) => {
+      rateLimitCalls.push({ key, ...opts });
+      if (limiterDown) return opts.onFailure !== "allow";
+      return rateLimited;
+    }
+  ),
 }));
 
 // ── Captured upsert payloads / GET device_id filters ─────────────────────────
@@ -85,6 +91,7 @@ beforeEach(() => {
   selectDeviceIdFilters.length = 0;
   mockCookieValue = undefined;
   rateLimited = false;
+  limiterDown = false;
   rateLimitCalls.length = 0;
   process.env.DEVICE_COOKIE_SECRET = "test-device-secret-at-least-32-bytes";
 });
@@ -170,6 +177,14 @@ describe("POST /api/progress — distributed rate limiting", () => {
     const res = await POST(makeReq({ device_id: DEVICE, module_id: MODULE, completed: true }));
     expect(res.status).toBe(429);
     expect(upserts).toHaveLength(0);
+  });
+
+  it("opts into fail-open so progress saves keep working when the limiter backend errors", async () => {
+    limiterDown = true;
+    const res = await POST(makeReq({ device_id: DEVICE, module_id: MODULE, completed: true }));
+    expect(res.status).toBe(200);
+    expect(rateLimitCalls[0].onFailure).toBe("allow");
+    expect(upserts).toHaveLength(1);
   });
 });
 

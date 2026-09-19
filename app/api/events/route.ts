@@ -74,7 +74,16 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    if (await isServerRateLimited(`events:ip:${getClientIp(req)}`, RATE_LIMIT_IP)) {
+    // Fail OPEN: a limiter outage must never silently zero out the reads/
+    // readers counters (record_visit below) — this is a public, non-revenue
+    // endpoint, not an abuse-prone one, so losing rate-limit coverage for the
+    // duration of a backend outage is an acceptable trade-off.
+    if (
+      await isServerRateLimited(`events:ip:${getClientIp(req)}`, {
+        ...RATE_LIMIT_IP,
+        onFailure: "allow",
+      })
+    ) {
       return NextResponse.json({ error: "Rate limited" }, { status: 429 });
     }
 
