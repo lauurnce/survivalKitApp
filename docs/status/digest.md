@@ -6,9 +6,9 @@ sentence only. Read by the weekly reminder routine (see
 docs/superpowers/specs/2026-08-30-report-digest-reminder-design.md).
 
 ## PULSE (ops)
-- Last run: 2026-09-12
+- Last run: 2026-09-19
 - Verdict: nothing on fire
-- Headline: production is healthy with zero runtime errors, but a critical dependency advisory reopened on an already-patched package and needs a lockfile refresh soon.
+- Headline: production is healthy and a brief upstream database connectivity blip earlier in the week resolved on its own with no recurrence, but the critical dependency advisory is now a week unpatched and still needs a lockfile refresh.
 
 ## VANTAGE (growth)
 - Last run: 2026-09-12
