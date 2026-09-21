@@ -158,3 +158,24 @@ New FAQ page, linked right from the footer. Five straight answers to the questio
 
 ### Post 5 (199/280)
 Been shipping the boring-but-necessary stuff too: breadcrumbs so you never get lost, an FAQ so you don't have to ask, and a tour that actually shows new users around instead of dropping them in cold.
+
+## 2026-09-12 — update (5 posts, covers 20ff14f)
+
+### Post 1 (207/280)
+New: if you're not signed in and you're reading a free lesson, you'll now see a nudge toast pointing you toward signing up. Small prompt, but it's the gap between reading once and actually tracking progress.
+
+### Post 2 (191/280)
+Fixed the sign-up nudge toast's position. It was popping up wherever ModuleDoneToggle happened to sit instead of the top of the screen, so it could land in a weird spot depending on the page.
+
+### Post 3 (167/280)
+Small fix: the back link on the Select Year page was pointing to the wrong place. It now actually takes you back to where you came from instead of somewhere unrelated.
+
+### Post 4 (204/280)
+PayMongo discontinued Payment Links, so checkout creation on BSIT Survival Kit now runs on PayMongo Checkout Sessions instead. Same GCash-friendly one-time unlock, just on the API PayMongo still supports.
+
+### Post 5 (197/280)
+Also fixed purchase reconciliation on the backend. It was only checking the old, discontinued Payment Links, not the new Checkout Sessions, so it now accounts for purchases made through either one.
+
+## 2026-09-19 — update (0 posts, covers d14245f)
+
+Shortfall note: 0 posts this run, not 5. Only three commits landed since 20ff14f (4b0d2f0, 2f297eb, d14245f), and all three are updates to an internal status digest — none is a shipped feature or a user-facing change. README.md and STORY.md were not touched in that window, and the README data snapshot (subjects, modules, sections, tracked events, accounts, and every other row) is unchanged and still dated 2026-08-29, so there is no number movement to report. Posting about digest upkeep would be filler, so this section is intentionally empty. It exists to advance covers_commit to d14245f so the next run diffs from here.
