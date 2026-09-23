@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364" height="628" viewBox="-2 -2 364 628" role="img" aria-labelledby="title desc">
+  <title id="title">The three control structures as flowcharts</title>
+  <desc id="desc">Sequence: INPUT, then PROCESS, then OUTPUT, one after another. Selection: a diamond asks whether A is less than 0; the TRUE path outputs NEGATIVE, the FALSE path outputs POSITIVE, and both paths meet again at STOP. Repetition: N starts at 0; a diamond asks whether N is less than 10; while TRUE the program adds 1 to N and loops back to the question; when FALSE it goes to STOP.</desc>
+  <style>
+    .t { font: 600 15px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .c { font: 600 14px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .h { font: 700 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; letter-spacing: 0.08em; }
+    .s { font: 700 12px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; letter-spacing: 0.04em; }
+    .ln { stroke: #7d838a; stroke-width: 2; fill: none; }
+    .box { fill: #2f4858; stroke: #7d838a; stroke-width: 1; }
+    .end { fill: #3d6b5a; stroke: #7d838a; stroke-width: 1; }
+    .ask { fill: #b83820; stroke: #7d838a; stroke-width: 1; }
+    .pill { fill: #5b6168; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7d838a"/>
+    </marker>
+  </defs>
+  <g text-anchor="middle" dominant-baseline="central">
+    <!-- 1. Sequence -->
+    <rect class="pill" x="0" y="0" width="132" height="26" rx="13"/>
+    <text class="h" x="66" y="13">1. SEQUENCE</text>
+    <polygon class="box" points="14,44 104,44 90,92 0,92"/>
+    <text class="t" x="52" y="68">INPUT</text>
+    <path class="ln" d="M100,68 H124" marker-end="url(#arrow)"/>
+    <rect class="box" x="128" y="44" width="104" height="48"/>
+    <text class="t" x="180" y="68">PROCESS</text>
+    <path class="ln" d="M232,68 H256" marker-end="url(#arrow)"/>
+    <polygon class="box" points="270,44 360,44 346,92 256,92"/>
+    <text class="t" x="308" y="68">OUTPUT</text>
+
+    <!-- 2. Selection -->
+    <rect class="pill" x="0" y="124" width="132" height="26" rx="13"/>
+    <text class="h" x="66" y="137">2. SELECTION</text>
+    <polygon class="ask" points="180,160 252,198 180,236 108,198"/>
+    <text class="c" x="180" y="198">A &lt; 0 ?</text>
+    <path class="ln" d="M108,198 H65 V246" marker-end="url(#arrow)"/>
+    <rect class="pill" x="70" y="204" width="44" height="20" rx="10"/>
+    <text class="s" x="92" y="214">TRUE</text>
+    <path class="ln" d="M252,198 H295 V246" marker-end="url(#arrow)"/>
+    <rect class="pill" x="244" y="204" width="48" height="20" rx="10"/>
+    <text class="s" x="268" y="214">FALSE</text>
+    <polygon class="box" points="14,250 130,250 116,298 0,298"/>
+    <text class="c" x="65" y="274">"NEGATIVE"</text>
+    <polygon class="box" points="244,250 360,250 346,298 230,298"/>
+    <text class="c" x="295" y="274">"POSITIVE"</text>
+    <path class="ln" d="M65,298 V344 H126" marker-end="url(#arrow)"/>
+    <path class="ln" d="M295,298 V344 H234" marker-end="url(#arrow)"/>
+    <rect class="end" x="130" y="328" width="100" height="32" rx="16"/>
+    <text class="t" x="180" y="344">STOP</text>
+
+    <!-- 3. Repetition -->
+    <rect class="pill" x="0" y="392" width="132" height="26" rx="13"/>
+    <text class="h" x="66" y="405">3. REPETITION</text>
+    <rect class="box" x="130" y="428" width="100" height="36"/>
+    <text class="c" x="180" y="446">N = 0</text>
+    <path class="ln" d="M180,464 V476" marker-end="url(#arrow)"/>
+    <polygon class="ask" points="180,480 252,516 180,552 108,516"/>
+    <text class="c" x="180" y="516">N &lt; 10 ?</text>
+    <path class="ln" d="M180,552 V574" marker-end="url(#arrow)"/>
+    <rect class="pill" x="188" y="554" width="44" height="18" rx="9"/>
+    <text class="s" x="210" y="563">TRUE</text>
+    <rect class="box" x="110" y="578" width="140" height="44"/>
+    <text class="c" x="180" y="600">N = N + 1</text>
+    <path class="ln" d="M110,600 H56 V516 H104" marker-end="url(#arrow)"/>
+    <rect class="pill" x="4" y="548" width="48" height="20" rx="10"/>
+    <text class="s" x="28" y="558">LOOP</text>
+    <path class="ln" d="M252,516 H284" marker-end="url(#arrow)"/>
+    <rect class="end" x="288" y="500" width="72" height="32" rx="16"/>
+    <text class="t" x="324" y="516">STOP</text>
+    <rect class="pill" x="256" y="538" width="48" height="20" rx="10"/>
+    <text class="s" x="280" y="548">FALSE</text>
+  </g>
+</svg>
