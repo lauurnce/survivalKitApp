@@ -498,6 +498,17 @@ d.  TRUE && FALSE || TRUE
 e.  (6 > 3) && (7 != 7)
 f.  (7 == 2) || (7 > 4) && (6 == 5)
 ```
+$md$, 8);
+
+-- Key Takeaways: the free recap that closes Lesson 2's notes. Fixed id so
+-- this seed and migration 20261101000800_cp1_takeaways_diagrams agree.
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order) VALUES
+('a1000001-0001-0001-0002-000000000002','a1000001-0001-0001-0001-000000000002','content','Key Takeaways',$md$
+- C is a general-purpose, structured language designed by Dennis Ritchie in 1972 at AT&T Bell Laboratories.
+- Your `.c` source code passes through the preprocessor, the compiler, and the linker to become an executable. Syntax errors show up at compile time; run-time errors only show up when the program runs.
+- An identifier starts with a letter or underscore, cannot be a keyword, and is case-sensitive: `sum` and `Sum` are two different names.
+- Pick the type that fits the value: `int` for whole numbers, `float` or `double` for decimals, `char` for one character. A variable holds a garbage value until you give it one.
+- Know the classic traps: `11 / 2` is `5` (integer division), `11 % 2` is `1`, and `y = x++` copies `x` before adding 1, while `y = ++x` adds 1 first.
 $md$, 7);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
@@ -559,7 +570,7 @@ Remaining answers, same method:
 - Precedence order that decides most answers: `* / %` before `+ -` before relational (`< >`) before `==`/`!=` before `&&` before `||`. The ternary `? :` comes last.
 - `&&` before `||`, when you see both, bracket the `&&` part first.
 - `integer`, `main`, and `printf` are NOT keywords; `int`, `float`, `if`, `while` are. Trick items rely on you confusing the two.
-$md$, 8);
+$md$, 9);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('a1000001-0001-0001-0001-000000000002','activity','Code Lab, Lesson 2: Fix the Five Errors',$md$
@@ -573,7 +584,7 @@ offset  = 12.3723
 sname   = Sonnet
 group   = A
 ```
-$md$, 9, 'c', $code$#include <stdio.h>
+$md$, 10, 'c', $code$#include <stdio.h>
 
 int main(void) {
     int counter = 7;
