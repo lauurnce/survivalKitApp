@@ -89,6 +89,10 @@ STOP
 ```
 
 These three structures, sequence, selection, repetition, are sufficient to construct any program logic.
+
+The three structures as flowcharts:
+
+![Flowcharts of the three control structures. Sequence: input, process, output. Selection: a diamond asks if A < 0, TRUE prints NEGATIVE, FALSE prints POSITIVE. Repetition: N = N + 1 repeats while N < 10, then the loop stops.](/diagrams/cp1/lesson-1-control-structures.svg)
 $md$, 2),
 
 ('a1000001-0001-0001-0001-000000000001','content','Algorithms (Pseudocode)',$md$
