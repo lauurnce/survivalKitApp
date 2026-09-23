@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364" height="352" viewBox="-2 -2 364 352" role="img" aria-labelledby="title desc">
+  <title id="title">How scanf and printf move a value through memory</title>
+  <desc id="desc">You type 42 and press Enter. scanf("%d", &amp;num) reads it and stores 42 in the variable num; it needs &amp;num, the address of num, so it knows where in memory to put the value. printf("%5d", num) only needs the value of num, so there is no ampersand. It prints 42 right-justified in a field 5 columns wide: three blank columns, then 4, then 2.</desc>
+  <style>
+    .t { font: 600 15px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .big { font: 700 22px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .c { font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .n { font: 500 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .s { font: 700 12px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; letter-spacing: 0.06em; }
+    .ln { stroke: #7d838a; stroke-width: 2; fill: none; }
+    .box { fill: #2f4858; stroke: #7d838a; stroke-width: 1; }
+    .val { fill: #3d6b5a; stroke: #7d838a; stroke-width: 1; }
+    .code { fill: #b83820; stroke: #7d838a; stroke-width: 1; }
+    .note { fill: #5b6168; stroke: #7d838a; stroke-width: 1; }
+    .cell { fill: #2f4858; stroke: #7d838a; stroke-width: 1.5; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7d838a"/>
+    </marker>
+  </defs>
+  <g text-anchor="middle" dominant-baseline="central">
+    <!-- keyboard -->
+    <rect class="box" x="0" y="0" width="360" height="48"/>
+    <text class="s" x="180" y="15">KEYBOARD</text>
+    <text class="n" x="180" y="34">you type 42, then press Enter</text>
+
+    <path class="ln" d="M180,48 V112" marker-end="url(#arrow)"/>
+    <rect class="code" x="70" y="66" width="220" height="28" rx="4"/>
+    <text class="c" x="180" y="80">scanf("%d", &amp;num);</text>
+
+    <!-- memory -->
+    <rect class="note" x="0" y="118" width="104" height="56" rx="6"/>
+    <text class="c" x="52" y="136">&amp;num</text>
+    <text class="n" x="52" y="157">where it lives</text>
+    <path class="ln" d="M104,146 H124" marker-end="url(#arrow)"/>
+    <rect class="val" x="128" y="118" width="104" height="56"/>
+    <text class="c" x="180" y="132">num</text>
+    <text class="big" x="180" y="156">42</text>
+    <path class="ln" d="M256,146 H236" marker-end="url(#arrow)"/>
+    <rect class="note" x="256" y="118" width="104" height="56" rx="6"/>
+    <text class="c" x="308" y="136">num</text>
+    <text class="n" x="308" y="157">what it holds</text>
+
+    <path class="ln" d="M180,174 V238" marker-end="url(#arrow)"/>
+    <rect class="code" x="70" y="192" width="220" height="28" rx="4"/>
+    <text class="c" x="180" y="206">printf("%5d", num);</text>
+
+    <!-- screen: a 5-column field -->
+    <rect class="cell" x="80" y="244" width="40" height="44"/>
+    <rect class="cell" x="120" y="244" width="40" height="44"/>
+    <rect class="cell" x="160" y="244" width="40" height="44"/>
+    <rect class="val" x="200" y="244" width="40" height="44"/>
+    <rect class="val" x="240" y="244" width="40" height="44"/>
+    <text class="big" x="220" y="266">4</text>
+    <text class="big" x="260" y="266">2</text>
+
+    <rect class="note" x="30" y="300" width="300" height="46" rx="6"/>
+    <text class="s" x="180" y="315">SCREEN</text>
+    <text class="n" x="180" y="334">%5d: 5 columns wide, number on the right</text>
+  </g>
+</svg>
