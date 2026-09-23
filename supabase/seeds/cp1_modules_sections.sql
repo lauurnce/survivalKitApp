@@ -157,6 +157,17 @@ $md$, 3),
 4. A store sells four candy types: Type A ₱35/kg, Type B ₱45/kg, Type C ₱56/kg, Type D ₱57.50/kg. Design an algorithm to calculate total cost from the weight of each type purchased.
 
 5. On Mars, a 100-pound Earth person weighs 38 pounds. On Jupiter, 264 pounds. Design an algorithm that takes Earth weight and displays Mars and Jupiter weight.
+$md$, 5);
+
+-- Key Takeaways: the free recap that closes Lesson 1's notes. Fixed id so
+-- this seed and migration 20261101000800_cp1_takeaways_diagrams agree.
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order) VALUES
+('a1000001-0001-0001-0002-000000000001','a1000001-0001-0001-0001-000000000001','content','Key Takeaways',$md$
+- A **program** is an ordered set of instructions that turns data (raw facts) into information. Writing those instructions is **programming**.
+- Work through the five steps in order: define the problem, design the solution, code it, test it, then document it.
+- Plan before you code. A **flowchart** draws the logic with standard shapes (oval for start/stop, parallelogram for input/output, rectangle for a process, diamond for a decision). **Pseudocode** writes the same steps in plain English.
+- Any program logic can be built from three structures: **sequence**, **selection**, and **repetition**.
+- A **syntax error** breaks the rules of the language and is caught when compiling. A **logic error** runs fine but gives the wrong answer.
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
@@ -229,7 +240,7 @@ Step 4: For the flowchart, draw: oval START → parallelogram INPUT E → rectan
 - Every algorithm needs INPUT, PROCESS, and OUTPUT. If your pseudocode is missing one of the three, you dropped a step.
 - Desk-check every answer with easy numbers before moving on; it takes 30 seconds and catches most logic slips.
 - When a problem states a sample ("100 pounds → 38 pounds"), the conversion factor is hiding in that sentence, divide to find it.
-$md$, 5);
+$md$, 6);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('a1000001-0001-0001-0001-000000000001','activity','Code Lab, Lesson 1: Run It Yourself',$md$
@@ -239,7 +250,7 @@ Expected output:
 ```
 Volume: 60
 ```
-$md$, 6, 'c', $code$#include <stdio.h>
+$md$, 7, 'c', $code$#include <stdio.h>
 
 int main(void) {
     int length = 5, width = 4, height = 3;
