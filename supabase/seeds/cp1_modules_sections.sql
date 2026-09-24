@@ -1111,7 +1111,7 @@ do {
 3. Input 3 integers and print them in descending order.
 4. Print all numbers from N1 to N2 divisible by M, and count how many there are.
 5. Rental late fee: ≤2 days → ₱10, ≤4 days → ₱15, ≤5 days → ₱20, ≥7 days → cost of rental (CD=₱50, VHS=₱35).
-$md$, 6);
+$md$, 7);
 
 -- Key Takeaways: the free recap that closes Lesson 4's notes. Fixed id so
 -- this seed and migration 20261101000800_cp1_takeaways_diagrams agree.
@@ -1178,7 +1178,7 @@ Three compare-and-swap steps, the same idea bubble sort scales up in Lesson 5. F
 - In a `switch`, every forgotten `break` means fall-through, when a trace prints "too many" things, that is why.
 - `for (i = 1; i <= 5; i++)` runs 5 times; `for (i = 1; i < 5; i++)` runs 4. Off-by-one boundaries are the most common trace trap.
 - Ranges (`age <= 12`, `days <= 4`) need if/else-if ladders; `switch` only matches exact constant values.
-$md$, 7);
+$md$, 8);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('a1000001-0001-0001-0001-000000000004','activity','Code Lab, Lesson 4: Grade Remarks Ladder',$md$
@@ -1191,7 +1191,7 @@ Expected output:
 76: C
 60: FAIL
 ```
-$md$, 8, 'c', $code$#include <stdio.h>
+$md$, 9, 'c', $code$#include <stdio.h>
 
 int main(void) {
     int scores[4] = {95, 83, 76, 60};
@@ -1914,7 +1914,7 @@ int main(void) {
 
     return 0;
 }$code$),
-('a1000001-0001-0001-0001-000000000004','content','Try It: Control Structures',$md$Change the grade value and see which branch runs. Then modify the loop limits.$md$, 999, 'c', $code$#include <stdio.h>
+('a1000001-0001-0001-0001-000000000004','content','Try It: Control Structures',$md$Change the grade value and see which branch runs. Then modify the loop limits.$md$, 6, 'c', $code$#include <stdio.h>
 
 int main(void) {
     int grade = 85;
