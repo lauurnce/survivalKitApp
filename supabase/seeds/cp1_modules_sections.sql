@@ -1069,6 +1069,10 @@ do {
 } while (a != 0);
 printf("The sum is %d", sum);
 ```
+
+Tracing a `for` loop step by step:
+
+![Flowchart and trace of for (i = 1; i <= 3; i++) printf i. i = 1 runs once. The check i <= 3 is true for i = 1, 2 and 3, so it prints 1 2 3, doing i++ after each pass. At i = 4 the check is false and the loop ends: checked 4 times, body ran 3 times.](/diagrams/cp1/lesson-4-for-loop-trace.svg)
 $md$, 4),
 
 ('a1000001-0001-0001-0001-000000000004','activity','Practice Exercises, Lesson 4',$md$
