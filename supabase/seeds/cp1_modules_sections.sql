@@ -1227,6 +1227,10 @@ An **array** is a fixed-size, sequenced collection of elements all of the same d
 ```
 element address = array address + (sizeof(element) × index)
 ```
+
+The formula, worked on a real array:
+
+![int a[5] = {5, 3, 2, 7, 9} in memory. Indexes a[0] to a[4] hold 5, 3, 2, 7 and 9 at example addresses 1000, 1004, 1008, 1012 and 1016. Each int is 4 bytes, so the address of a[3] is 1000 + 4 × 3 = 1012. a[5] would be past the end of the array.](/diagrams/cp1/lesson-5-array-indexing.svg)
 $md$, 1),
 
 ('a1000001-0001-0001-0001-000000000005','content','Declaring, Defining, and Accessing Arrays',$md$
