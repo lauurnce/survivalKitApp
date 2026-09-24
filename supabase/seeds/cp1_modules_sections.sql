@@ -502,7 +502,7 @@ d.  TRUE && FALSE || TRUE
 e.  (6 > 3) && (7 != 7)
 f.  (7 == 2) || (7 > 4) && (6 == 5)
 ```
-$md$, 8);
+$md$, 9);
 
 -- Key Takeaways: the free recap that closes Lesson 2's notes. Fixed id so
 -- this seed and migration 20261101000800_cp1_takeaways_diagrams agree.
@@ -574,7 +574,7 @@ Remaining answers, same method:
 - Precedence order that decides most answers: `* / %` before `+ -` before relational (`< >`) before `==`/`!=` before `&&` before `||`. The ternary `? :` comes last.
 - `&&` before `||`, when you see both, bracket the `&&` part first.
 - `integer`, `main`, and `printf` are NOT keywords; `int`, `float`, `if`, `while` are. Trick items rely on you confusing the two.
-$md$, 9);
+$md$, 10);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('a1000001-0001-0001-0001-000000000002','activity','Code Lab, Lesson 2: Fix the Five Errors',$md$
@@ -588,7 +588,7 @@ offset  = 12.3723
 sname   = Sonnet
 group   = A
 ```
-$md$, 10, 'c', $code$#include <stdio.h>
+$md$, 11, 'c', $code$#include <stdio.h>
 
 int main(void) {
     int counter = 7;
@@ -1857,7 +1857,7 @@ int main(void) {
 -- ============================================================
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
-('a1000001-0001-0001-0001-000000000002','content','Try It: C Basics',$md$Run the code below. Try changing the values and adding more variables.$md$, 999, 'c', $code$#include <stdio.h>
+('a1000001-0001-0001-0001-000000000002','content','Try It: C Basics',$md$Run the code below. Try changing the values and adding more variables.$md$, 8, 'c', $code$#include <stdio.h>
 
 int main(void) {
     int age = 20;
