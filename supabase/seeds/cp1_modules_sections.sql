@@ -775,6 +775,17 @@ printf("\n %5d %6.2f", 6, 6.5);
 3. Given a, b, c: compute sum, difference, product, quotient, and sum of squares.
 4. Calculate cost of candy: 4 types at different prices per kg.
 5. Convert Earth weight to Mars (× 0.38) and Jupiter (× 2.64).
+$md$, 7);
+
+-- Key Takeaways: the free recap that closes Lesson 3's notes. Fixed id so
+-- this seed and migration 20261101000800_cp1_takeaways_diagrams agree.
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order) VALUES
+('a1000001-0001-0001-0002-000000000003','a1000001-0001-0001-0001-000000000003','content','Key Takeaways',$md$
+- Lines that start with `#` are handled before compiling: `#include` pulls in a header file such as `<stdio.h>`, and `#define` gives a constant a name.
+- `printf()` prints formatted output. Match each conversion specifier to its type: `%d` for int, `%f` for float, `%lf` for double, `%c` for char, `%s` for a string. A number between `%` and the letter sets the field width.
+- `scanf()` stores what the user types, so it needs the variable's address: `&num`. The one exception is a string (a char array): `scanf("%s", name)` takes no `&`.
+- Escape sequences put special characters in text: `\n` for a new line, `\t` for a tab, `\\` for a backslash.
+- Every C program starts running at `main()`, every statement ends with `;`, and `return 0;` tells the system the program finished successfully.
 $md$, 6);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
@@ -833,7 +844,7 @@ The four-part pattern, declare, prompt + `scanf`, compute, `printf` the result, 
 - `%5d` pads a NUMBER to width 5; `%6.2f` = total width 6 including the decimal point, 2 digits after it.
 - `%f` prints floats, but in `scanf` a `double` needs `%lf`, mixing them up corrupts the value.
 - If the expected output has blank lines, count the `\n`s; if it has aligned columns, count the field widths.
-$md$, 7);
+$md$, 8);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('a1000001-0001-0001-0001-000000000003','activity','Code Lab, Lesson 3: Format It Right',$md$
@@ -846,7 +857,7 @@ Midterm:  88.25
 Finals :  90.00
 Average:  87.92
 ```
-$md$, 8, 'c', $code$#include <stdio.h>
+$md$, 9, 'c', $code$#include <stdio.h>
 
 int main(void) {
     float prelim = 85.5f, midterm = 88.25f, finals = 90.0f;
