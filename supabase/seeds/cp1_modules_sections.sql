@@ -308,6 +308,10 @@ Source code (.c file)
       ↓
   Executable code
 ```
+
+The same pipeline, showing where each kind of error shows up:
+
+![The path from hello.c to a running program: preprocessor, compiler, linker with library code such as printf, executable hello.exe, then run. Syntax errors are caught at the compiler. Run-time errors only appear when the program runs.](/diagrams/cp1/lesson-2-compile-pipeline.svg)
 $md$, 2),
 
 ('a1000001-0001-0001-0001-000000000002','content','Identifiers',$md$
