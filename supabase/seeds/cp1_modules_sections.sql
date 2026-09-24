@@ -779,7 +779,7 @@ printf("\n %5d %6.2f", 6, 6.5);
 3. Given a, b, c: compute sum, difference, product, quotient, and sum of squares.
 4. Calculate cost of candy: 4 types at different prices per kg.
 5. Convert Earth weight to Mars (× 0.38) and Jupiter (× 2.64).
-$md$, 7);
+$md$, 8);
 
 -- Key Takeaways: the free recap that closes Lesson 3's notes. Fixed id so
 -- this seed and migration 20261101000800_cp1_takeaways_diagrams agree.
@@ -848,7 +848,7 @@ The four-part pattern, declare, prompt + `scanf`, compute, `printf` the result, 
 - `%5d` pads a NUMBER to width 5; `%6.2f` = total width 6 including the decimal point, 2 digits after it.
 - `%f` prints floats, but in `scanf` a `double` needs `%lf`, mixing them up corrupts the value.
 - If the expected output has blank lines, count the `\n`s; if it has aligned columns, count the field widths.
-$md$, 8);
+$md$, 9);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('a1000001-0001-0001-0001-000000000003','activity','Code Lab, Lesson 3: Format It Right',$md$
@@ -861,7 +861,7 @@ Midterm:  88.25
 Finals :  90.00
 Average:  87.92
 ```
-$md$, 9, 'c', $code$#include <stdio.h>
+$md$, 10, 'c', $code$#include <stdio.h>
 
 int main(void) {
     float prelim = 85.5f, midterm = 88.25f, finals = 90.0f;
@@ -1885,7 +1885,7 @@ int main(void) {
 
     return 0;
 }$code$),
-('a1000001-0001-0001-0001-000000000003','content','Try It: Input/Output',$md$Modify num1 and num2 to simulate different inputs and observe the formatted output.$md$, 999, 'c', $code$#include <stdio.h>
+('a1000001-0001-0001-0001-000000000003','content','Try It: Input/Output',$md$Modify num1 and num2 to simulate different inputs and observe the formatted output.$md$, 7, 'c', $code$#include <stdio.h>
 
 int main(void) {
     int num1 = 15;
