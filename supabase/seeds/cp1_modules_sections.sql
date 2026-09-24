@@ -679,6 +679,10 @@ scanf("%s", name);       // read a string (no & for arrays)
 ```
 
 `scanf()` returns the number of successful conversions. When reading characters, whitespace is **not** skipped automatically (unlike numbers).
+
+Why `scanf` needs `&` but `printf` does not:
+
+![You type 42. scanf with %d and &num stores 42 in the variable num, because &num tells it where num lives. printf with %5d and num only needs the value, and prints 42 at the right of a 5-column field: three blanks, then 4, then 2.](/diagrams/cp1/lesson-3-scanf-printf-memory.svg)
 $md$, 3),
 
 ('a1000001-0001-0001-0001-000000000003','content','Escape Sequences and Console I/O',$md$
