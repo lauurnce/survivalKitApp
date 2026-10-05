@@ -67,6 +67,7 @@ docs/POST-MORTEM.md
 # docs/reports/ rule below. Entry kept so an old working copy stays ignored.
 docs/vercel-status/
 .env*
+!.env.example
 
 # Department agent reports — conversion, revenue, and security findings. A
 # security report in a public repo is a published attack surface. Same
