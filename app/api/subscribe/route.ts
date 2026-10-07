@@ -18,6 +18,7 @@ import { getClientIp } from "@/lib/rateLimit";
 import { isServerRateLimited } from "@/lib/serverRateLimit";
 import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { buildSuccessUrl, buildFailedUrl } from "@/lib/subscribeRedirect";
+import { resolveRequestOrigin } from "@/lib/appOrigin";
 import {
   DEVICE_COOKIE,
   DEVICE_COOKIE_OPTIONS,
@@ -194,14 +195,9 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const ALLOWED_ORIGINS = [
-    "https://survival-kit-app.vercel.app",
-    "http://localhost:3000",
-  ];
-  const requestOrigin = req.headers.get("origin") ?? "";
-  const origin = ALLOWED_ORIGINS.includes(requestOrigin)
-    ? requestOrigin
-    : "https://survival-kit-app.vercel.app";
+  // Send the payer back to the allowlisted host they paid from, so the device
+  // cookie and Supabase session they hold there are present on return.
+  const origin = resolveRequestOrigin(req.headers.get("origin"));
   // Return the payer to the exact module page they came from (validated), with
   // ?payment=success so the SubscribeGate there auto-polls and unlocks in place.
   // The failed leg mirrors it without the marker, so a cancelled payment never

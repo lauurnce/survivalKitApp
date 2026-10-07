@@ -148,11 +148,11 @@ const VICTIM_DEV = "ffffffff-ffff-4fff-8fff-ffffffffffff";
 const USER = "11111111-1111-1111-1111-111111111111";
 
 let ipCounter = 0;
-function makeReq(body: Record<string, unknown>) {
+function makeReq(body: Record<string, unknown>, origin: string | null = "http://localhost:3000") {
   const ip = `10.1.${Math.floor(ipCounter / 250)}.${ipCounter++ % 250}`;
   return {
     json: () => Promise.resolve(body),
-    headers: { get: (h: string) => (h === "origin" ? "http://localhost:3000" : ip) },
+    headers: { get: (h: string) => (h === "origin" ? origin : ip) },
   } as unknown as import("next/server").NextRequest;
 }
 
@@ -499,6 +499,43 @@ describe("POST /api/subscribe redirect legs", () => {
     expect(res.status).toBe(200);
     expect(linkCalls[0][2]).toBe("http://localhost:3000/account?payment=success");
     expect(linkCalls[0][6]).toBe("http://localhost:3000/account");
+  });
+});
+
+// Cookies are host-scoped, so the payer must come back to the host they paid
+// from. Before the canonical-origin fix a tryi2i.com payer was sent to the
+// vercel.app host, arriving with no device cookie and a locked page.
+describe("POST /api/subscribe redirect host", () => {
+  const returnPath = `/year/${YEAR}/subjects/${SUBJ}/modules/33333333-3333-3333-3333-333333333333`;
+
+  it("keeps a payer who started on tryi2i.com on tryi2i.com", async () => {
+    const res = await POST(
+      makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, returnPath }, "https://tryi2i.com")
+    );
+    expect(res.status).toBe(200);
+    expect(linkCalls[0][2]).toBe(`https://tryi2i.com${returnPath}?payment=success`);
+    expect(linkCalls[0][6]).toBe(`https://tryi2i.com${returnPath}`);
+  });
+
+  it("keeps a payer who started on the vercel.app host on that host", async () => {
+    const res = await POST(
+      makeReq(
+        { yearId: YEAR, subjectId: SUBJ, deviceId: DEV, returnPath },
+        "https://survival-kit-app.vercel.app"
+      )
+    );
+    expect(res.status).toBe(200);
+    expect(linkCalls[0][2]).toBe(`https://survival-kit-app.vercel.app${returnPath}?payment=success`);
+  });
+
+  it("falls back to the canonical tryi2i.com origin for a foreign or missing Origin", async () => {
+    for (const origin of ["https://attacker.example", null]) {
+      linkCalls.length = 0;
+      const res = await POST(makeReq({ yearId: YEAR, deviceId: DEV }, origin));
+      expect(res.status).toBe(200);
+      expect(linkCalls[0][2]).toBe("https://tryi2i.com/account?payment=success");
+      expect(linkCalls[0][6]).toBe("https://tryi2i.com/account");
+    }
   });
 });
 
