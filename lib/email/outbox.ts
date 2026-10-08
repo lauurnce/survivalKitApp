@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { sendEmail } from "@/lib/email/client";
 import { receiptEmail, welcomeEmail, expiryWarningEmail, winbackEmail } from "@/lib/email/templates";
 import type { EmailKind, RenderedEmail } from "./types";
+import { canonicalUrl } from "@/lib/appOrigin";
 
 const MAX_ATTEMPTS = 5;
 
@@ -34,7 +35,7 @@ export async function enqueue(
 function render(kind: EmailKind, p: Record<string, unknown>): RenderedEmail {
   const planLabel = String(p.planLabel ?? "your plan");
   const ends = p.accessEndsAt ? new Date(String(p.accessEndsAt)) : new Date();
-  const url = String(p.url ?? "https://survival-kit-app.vercel.app/account");
+  const url = String(p.url ?? canonicalUrl("/account"));
   switch (kind) {
     case "receipt": return receiptEmail({ planLabel, amountCentavos: Number(p.amountCentavos ?? 0), accessEndsAt: ends, returnUrl: url });
     case "welcome": return welcomeEmail({ planLabel, returnUrl: url });

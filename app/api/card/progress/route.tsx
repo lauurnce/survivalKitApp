@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { parseProgressCardParams, ACADEMIC_YEAR_LABEL } from "@/lib/shareCard";
 import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
+import { canonicalOrigin } from "@/lib/appOrigin";
 
 export const dynamic = "force-dynamic";
 
@@ -187,7 +188,7 @@ export async function GET(req: NextRequest) {
               BSIT Survival Kit
             </div>
             <div style={{ display: "flex", fontSize: 28, opacity: 0.85 }}>
-              survival-kit-app.vercel.app
+              {new URL(canonicalOrigin()).host}
             </div>
           </div>
         </div>

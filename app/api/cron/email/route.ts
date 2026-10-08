@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { drain, enqueue } from "@/lib/email/outbox";
+import { canonicalUrl } from "@/lib/appOrigin";
 
 export const runtime = "nodejs";
 
@@ -45,7 +46,7 @@ async function scan(
         payload: {
           planLabel: sub.subject_id ? "Subject access" : "All subjects",
           accessEndsAt: sub.current_period_end,
-          url: "https://survival-kit-app.vercel.app/account",
+          url: canonicalUrl("/account"),
         },
       });
       if (enqueued) queued++;

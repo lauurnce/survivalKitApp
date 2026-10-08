@@ -17,6 +17,7 @@ import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
 import { recordPayment } from "@/lib/payments";
 import { generateClassCode } from "@/lib/classCode";
 import { enqueue, drain } from "@/lib/email/outbox";
+import { canonicalUrl } from "@/lib/appOrigin";
 
 export const runtime = "nodejs";
 
@@ -320,7 +321,7 @@ export async function POST(req: NextRequest) {
             planLabel: PLANS[plan].description.replace("BSIT Survival Kit — ", ""),
             amountCentavos: paidAmount,
             accessEndsAt: periodEndFor(plan).toISOString(),
-            url: "https://survival-kit-app.vercel.app/account",
+            url: canonicalUrl("/account"),
           },
         };
         await enqueue(supabase, { ...shared, kind: "receipt" });
