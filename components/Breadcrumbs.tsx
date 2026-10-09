@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { canonicalOrigin } from "@/lib/appOrigin";
 
-const SITE_URL = "https://survival-kit-app.vercel.app";
+const SITE_URL = canonicalOrigin();
 
 export interface BreadcrumbItem {
   label: string;

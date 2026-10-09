@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { createServerClient } from "@/lib/supabase/server";
+import { canonicalOrigin } from "@/lib/appOrigin";
 
-const SITE_URL = "https://survival-kit-app.vercel.app";
+const SITE_URL = canonicalOrigin();
 
 export const revalidate = 3600;
 

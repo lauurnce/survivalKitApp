@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { canonicalOrigin } from "@/lib/appOrigin";
 import { headers } from "next/headers";
 import { viewportConfig } from "@/lib/viewport";
 import { Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google";
@@ -27,7 +28,7 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
-const SITE_URL = "https://survival-kit-app.vercel.app";
+const SITE_URL = canonicalOrigin();
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
