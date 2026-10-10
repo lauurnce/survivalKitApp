@@ -74,3 +74,71 @@ on conflict (id) do update set
   heading    = excluded.heading,
   body_md    = excluded.body_md,
   sort_order = excluded.sort_order;
+
+-- 2. Diagrams -----------------------------------------------------------
+
+-- Lesson 1, Program Logic Formulation
+update public.sections
+set body_md = body_md || $md$
+The three structures as flowcharts:
+
+![Flowcharts of the three control structures. Sequence: input, process, output. Selection: a diamond asks if A < 0, TRUE prints NEGATIVE, FALSE prints POSITIVE. Repetition: N = N + 1 repeats while N < 10, then the loop stops.](/diagrams/cp1/lesson-1-control-structures.svg)
+$md$
+where id = '6284402e-ab92-43f5-b626-ce43523bfac8'
+  and module_id = 'a1000001-0001-0001-0001-000000000001'
+  and position('/diagrams/cp1/lesson-1-control-structures.svg' in body_md) = 0;
+
+-- Lesson 2, The Compilation Process
+update public.sections
+set body_md = body_md || $md$
+The same pipeline, showing where each kind of error shows up:
+
+![The path from hello.c to a running program: preprocessor, compiler, linker with library code such as printf, executable hello.exe, then run. Syntax errors are caught at the compiler. Run-time errors only appear when the program runs.](/diagrams/cp1/lesson-2-compile-pipeline.svg)
+$md$
+where id = 'f245b951-8a39-44c8-b285-91f5d107a097'
+  and module_id = 'a1000001-0001-0001-0001-000000000002'
+  and position('/diagrams/cp1/lesson-2-compile-pipeline.svg' in body_md) = 0;
+
+-- Lesson 3, Standard Input: scanf()
+update public.sections
+set body_md = body_md || $md$
+Why `scanf` needs `&` but `printf` does not:
+
+![You type 42. scanf with %d and &num stores 42 in the variable num, because &num tells it where num lives. printf with %5d and num only needs the value, and prints 42 at the right of a 5-column field: three blanks, then 4, then 2.](/diagrams/cp1/lesson-3-scanf-printf-memory.svg)
+$md$
+where id = '1975bdf2-b5fd-49a9-8cd9-24f3f5e5c4d9'
+  and module_id = 'a1000001-0001-0001-0001-000000000003'
+  and position('/diagrams/cp1/lesson-3-scanf-printf-memory.svg' in body_md) = 0;
+
+-- Lesson 4, Loop Structures
+update public.sections
+set body_md = body_md || $md$
+Tracing a `for` loop step by step:
+
+![Flowchart and trace of for (i = 1; i <= 3; i++) printf i. i = 1 runs once. The check i <= 3 is true for i = 1, 2 and 3, so it prints 1 2 3, doing i++ after each pass. At i = 4 the check is false and the loop ends: checked 4 times, body ran 3 times.](/diagrams/cp1/lesson-4-for-loop-trace.svg)
+$md$
+where id = 'bbb300f2-2cc1-4b24-88a8-aa7c852a5147'
+  and module_id = 'a1000001-0001-0001-0001-000000000004'
+  and position('/diagrams/cp1/lesson-4-for-loop-trace.svg' in body_md) = 0;
+
+-- Lesson 5, What Is an Array?
+update public.sections
+set body_md = body_md || $md$
+The formula, worked on a real array:
+
+![int a[5] = {5, 3, 2, 7, 9} in memory. Indexes a[0] to a[4] hold 5, 3, 2, 7 and 9 at example addresses 1000, 1004, 1008, 1012 and 1016. Each int is 4 bytes, so the address of a[3] is 1000 + 4 × 3 = 1012. a[5] would be past the end of the array.](/diagrams/cp1/lesson-5-array-indexing.svg)
+$md$
+where id = '989716a3-8d09-43eb-92f8-935de90074ff'
+  and module_id = 'a1000001-0001-0001-0001-000000000005'
+  and position('/diagrams/cp1/lesson-5-array-indexing.svg' in body_md) = 0;
+
+-- Lesson 6, Call by Value vs. Call by Reference
+update public.sections
+set body_md = body_md || $md$
+Both calls side by side:
+
+![Call by value: main has n = 5, funct_sample gets a copy y, triples it to 15, and n is still 5 afterwards. Call by reference: main passes the address of fin_grd, compute_rating stores through that address, and fin_grd in main becomes 85.0 for a midterm of 80 and a final of 90.](/diagrams/cp1/lesson-6-value-vs-reference.svg)
+$md$
+where id = '4b8b37b3-a486-48e7-a324-ef2c5ca144b8'
+  and module_id = 'a1000001-0001-0001-0001-000000000006'
+  and position('/diagrams/cp1/lesson-6-value-vs-reference.svg' in body_md) = 0;
