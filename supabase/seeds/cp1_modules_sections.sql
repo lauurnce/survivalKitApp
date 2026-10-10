@@ -1363,7 +1363,7 @@ printf("%d", b);
 2. Write a function `REVERSE` that copies array X into array Y in reverse order.
 3. Read two equal-length arrays X and Y (sentinel-terminated). Store products of corresponding elements in Z. Display the square root of the sum of Z.
 4. Store 11 numbers in an array. Store the sum of each successive pair in a second array of 10 elements. Print both arrays.
-$md$, 5);
+$md$, 6);
 
 -- Key Takeaways: the free recap that closes Lesson 5's notes. Fixed id so
 -- this seed and migration 20261101000800_cp1_takeaways_diagrams agree.
@@ -1425,7 +1425,7 @@ The whole trick is the index formula `n - 1 - i`: when i = 0 it reads x[4], when
 - `int x[10]` initializes nothing, reading `x[3]` before assigning it is garbage. But `static` and global arrays start at zero, and a partial initializer like `{3, 7}` zero-fills the rest.
 - For string questions, count the `'\0'` every single time.
 - When a trace mixes `a` and `c[a]`, slow down, value-vs-index is the intended trap (see the twin traces above).
-$md$, 6);
+$md$, 7);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('a1000001-0001-0001-0001-000000000005','activity','Code Lab, Lesson 5: Run It Yourself',$md$
@@ -1436,7 +1436,7 @@ Expected output:
 Total: 61
 Highest: 10
 ```
-$md$, 7, 'c', $code$#include <stdio.h>
+$md$, 8, 'c', $code$#include <stdio.h>
 
 int main(void) {
     int scores[10] = {7, 5, 9, 3, 8, 6, 10, 4, 2, 7};
@@ -1952,7 +1952,7 @@ int main(void) {
     printf("\n");
     return 0;
 }$code$),
-('a1000001-0001-0001-0001-000000000005','content','Try It: Arrays',$md$Add more scores to the array (update the size too) and watch the average and max update.$md$, 999, 'c', $code$#include <stdio.h>
+('a1000001-0001-0001-0001-000000000005','content','Try It: Arrays',$md$Add more scores to the array (update the size too) and watch the average and max update.$md$, 5, 'c', $code$#include <stdio.h>
 
 int main(void) {
     int scores[] = {85, 90, 78, 92, 88};
