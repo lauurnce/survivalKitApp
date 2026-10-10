@@ -1587,7 +1587,7 @@ main() {
 2. Write a function `is_prime` that returns 1 if N is prime, 0 otherwise.
 3. Prove the Goldbach conjecture for all even integers between START and FINISH (e.g., 700–1100): show each as the sum of two primes.
 4. Write a function `rel_prime` that returns 1 if two integers are relatively prime (no integer > 1 divides both), 0 otherwise.
-$md$, 5);
+$md$, 6);
 
 -- Key Takeaways: the free recap that closes Lesson 6's notes. Fixed id so
 -- this seed and migration 20261101000800_cp1_takeaways_diagrams agree.
@@ -1661,7 +1661,7 @@ Note how validation returns a sentinel (−1) instead of printing inside the fun
 - Prototype before `main`, definition after, or define the whole function before `main`. Calling an undeclared function is a compile-time trap question.
 - A `void` function with a `return 5;` inside is invalid; a non-void function missing `return` is the reverse trap.
 - Local variables die when the function returns; if a value must survive, return it or write it through a pointer.
-$md$, 6);
+$md$, 7);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('a1000001-0001-0001-0001-000000000006','activity','Code Lab, Lesson 6: Value vs. Reference',$md$
@@ -1673,7 +1673,7 @@ square(7) = 49
 before: x=3 y=8
 after : x=8 y=3
 ```
-$md$, 7, 'c', $code$#include <stdio.h>
+$md$, 8, 'c', $code$#include <stdio.h>
 
 int square(int n) {
     /* TODO: return n multiplied by itself */
@@ -1910,7 +1910,10 @@ int main(void) {
 }$code$);
 
 -- ============================================================
--- FREE "Try It" playground teasers (Lessons 2-7, sort_order 999)
+-- FREE "Try It" playground teasers (Lessons 2-7)
+-- Lessons 2-6 sit right after Key Takeaways, above the locked reviewers, so
+-- a free reader reaches them without scrolling past the paywall. Lesson 7
+-- has no Key Takeaways yet and keeps sort_order 999 (last).
 -- Backported 2026-07-05 from the live DB, where they were added
 -- directly and never existed in this file, without these rows a
 -- full re-run of this seed would delete them from production.
@@ -1989,7 +1992,7 @@ int main(void) {
 
     return 0;
 }$code$),
-('a1000001-0001-0001-0001-000000000006','content','Try It: Functions',$md$Try calling add() with different numbers, or write a new function that multiplies two values.$md$, 999, 'c', $code$#include <stdio.h>
+('a1000001-0001-0001-0001-000000000006','content','Try It: Functions',$md$Try calling add() with different numbers, or write a new function that multiplies two values.$md$, 5, 'c', $code$#include <stdio.h>
 
 int add(int a, int b) {
     return a + b;
