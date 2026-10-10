@@ -142,3 +142,37 @@ $md$
 where id = '4b8b37b3-a486-48e7-a324-ef2c5ca144b8'
   and module_id = 'a1000001-0001-0001-0001-000000000006'
   and position('/diagrams/cp1/lesson-6-value-vs-reference.svg' in body_md) = 0;
+
+-- 3. Order -------------------------------------------------------------
+
+update public.sections s
+set sort_order = v.sort_order
+from (values
+  ('035347a5-e27f-4eba-83bd-efb2079865e7', 'a1000001-0001-0001-0001-000000000001', 'activity', 5),  -- L1 Practice Exercises
+  ('02c16eab-c022-4537-ac01-0f1955c5c4a6', 'a1000001-0001-0001-0001-000000000001', 'activity', 6),  -- L1 Worked Exam Solutions
+  ('a73447e3-f71b-4172-ae8b-3073fe586253', 'a1000001-0001-0001-0001-000000000001', 'activity', 7),  -- L1 Code Lab
+  ('40389029-1607-4b93-ab4c-ee1d2919a0b0', 'a1000001-0001-0001-0001-000000000002', 'content',  8),  -- L2 Try It
+  ('3231301f-2d25-4d0a-bc6d-9455b07714b1', 'a1000001-0001-0001-0001-000000000002', 'activity', 9),  -- L2 Practice Exercises
+  ('0f76717e-55c4-4335-9159-f25490eff43c', 'a1000001-0001-0001-0001-000000000002', 'activity', 10),  -- L2 Worked Exam Solutions
+  ('73e78670-17bf-4d9e-9d97-d5670d08ce14', 'a1000001-0001-0001-0001-000000000002', 'activity', 11),  -- L2 Code Lab
+  ('f82cd129-af5a-475c-9aa1-957e60b93a5c', 'a1000001-0001-0001-0001-000000000003', 'content',  7),  -- L3 Try It
+  ('3cd61dc6-706f-4764-b6f8-f94caea5a02d', 'a1000001-0001-0001-0001-000000000003', 'activity', 8),  -- L3 Practice Exercises
+  ('9cb9a313-a3de-4d88-aeb4-35f31a59b311', 'a1000001-0001-0001-0001-000000000003', 'activity', 9),  -- L3 Worked Exam Solutions
+  ('39392f7e-a601-47f6-aeda-9861fa09a8aa', 'a1000001-0001-0001-0001-000000000003', 'activity', 10),  -- L3 Code Lab
+  ('7af3f945-7ec3-4730-b105-65c281ff34e2', 'a1000001-0001-0001-0001-000000000004', 'content',  6),  -- L4 Try It
+  ('f85c2a3f-191f-4c7c-8b42-ce419102cf69', 'a1000001-0001-0001-0001-000000000004', 'activity', 7),  -- L4 Practice Exercises
+  ('bd2976c1-cd14-4e78-9867-b1e7f08d1dd8', 'a1000001-0001-0001-0001-000000000004', 'activity', 8),  -- L4 Worked Exam Solutions
+  ('ea39fdb9-74aa-44b9-94bd-a576b1ea81fc', 'a1000001-0001-0001-0001-000000000004', 'activity', 9),  -- L4 Code Lab
+  ('1d8ceb95-9e2a-4ed7-9054-ea6cc3abe25a', 'a1000001-0001-0001-0001-000000000005', 'content',  5),  -- L5 Try It
+  ('03d4b6c4-6bfc-40c1-a3b5-b13c72ccc633', 'a1000001-0001-0001-0001-000000000005', 'activity', 6),  -- L5 Practice Exercises
+  ('dfcddf02-4959-4f91-b5fe-196ff77d3e0d', 'a1000001-0001-0001-0001-000000000005', 'activity', 7),  -- L5 Worked Exam Solutions
+  ('fe6af405-8533-48c1-b686-a69c483da7ca', 'a1000001-0001-0001-0001-000000000005', 'activity', 8),  -- L5 Code Lab
+  ('c644effa-2a01-4b0c-a2bf-193b9b8fb1f5', 'a1000001-0001-0001-0001-000000000006', 'content',  5),  -- L6 Try It
+  ('82e801ef-48a8-45d1-af74-651ef3df02bd', 'a1000001-0001-0001-0001-000000000006', 'activity', 6),  -- L6 Practice Exercises
+  ('c97f0c82-afef-4c09-bd2c-60e17ef85bef', 'a1000001-0001-0001-0001-000000000006', 'activity', 7),  -- L6 Worked Exam Solutions
+  ('66846830-cb70-4691-b5c5-595dedcd1538', 'a1000001-0001-0001-0001-000000000006', 'activity', 8)   -- L6 Code Lab
+) as v(id, module_id, kind, sort_order)
+where s.id = v.id::uuid
+  and s.module_id = v.module_id::uuid
+  and s.kind = v.kind
+  and s.sort_order is distinct from v.sort_order;
