@@ -1583,6 +1583,17 @@ main() {
 2. Write a function `is_prime` that returns 1 if N is prime, 0 otherwise.
 3. Prove the Goldbach conjecture for all even integers between START and FINISH (e.g., 700–1100): show each as the sum of two primes.
 4. Write a function `rel_prime` that returns 1 if two integers are relatively prime (no integer > 1 divides both), 0 otherwise.
+$md$, 5);
+
+-- Key Takeaways: the free recap that closes Lesson 6's notes. Fixed id so
+-- this seed and migration 20261101000800_cp1_takeaways_diagrams agree.
+INSERT INTO sections (id, module_id, kind, heading, body_md, sort_order) VALUES
+('a1000001-0001-0001-0002-000000000006','a1000001-0001-0001-0001-000000000006','content','Key Takeaways',$md$
+- A function is a self-contained block of code that does one task. Functions make programs cleaner, reusable, and easier to debug.
+- Declare a function with a prototype (return type, name, parameter types) before you use it, then define its body. A `void` function returns no value.
+- Local variables exist only inside their function and must be initialized. Global variables are visible to every function and start at zero.
+- **Call by value** passes a copy, so changing the parameter does not change the caller's variable.
+- **Call by reference** passes an address with `&`, and the function uses `*` to change the caller's variable directly.
 $md$, 4);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order) VALUES
@@ -1646,7 +1657,7 @@ Note how validation returns a sentinel (−1) instead of printing inside the fun
 - Prototype before `main`, definition after, or define the whole function before `main`. Calling an undeclared function is a compile-time trap question.
 - A `void` function with a `return 5;` inside is invalid; a non-void function missing `return` is the reverse trap.
 - Local variables die when the function returns; if a value must survive, return it or write it through a pointer.
-$md$, 5);
+$md$, 6);
 
 INSERT INTO sections (module_id, kind, heading, body_md, sort_order, ide_language, starter_code) VALUES
 ('a1000001-0001-0001-0001-000000000006','activity','Code Lab, Lesson 6: Value vs. Reference',$md$
@@ -1658,7 +1669,7 @@ square(7) = 49
 before: x=3 y=8
 after : x=8 y=3
 ```
-$md$, 6, 'c', $code$#include <stdio.h>
+$md$, 7, 'c', $code$#include <stdio.h>
 
 int square(int n) {
     /* TODO: return n multiplied by itself */
