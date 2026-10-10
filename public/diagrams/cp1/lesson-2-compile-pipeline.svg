@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364" height="428" viewBox="-2 -2 364 428" role="img" aria-labelledby="title desc">
+  <title id="title">From C source code to a running program</title>
+  <desc id="desc">Six stages from top to bottom. Source code in hello.c goes to the preprocessor, which handles the #include and #define lines. The compiler turns the result into object code; syntax errors are caught here, at compile time. The linker joins the object code with library code such as printf and scanf. The result is the executable, hello.exe. Running it executes the program; run-time errors such as dividing by zero only appear at this last stage.</desc>
+  <style>
+    .t { font: 600 15px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .c { font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .n { font: 500 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .s { font: 700 12px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; letter-spacing: 0.04em; }
+    .ln { stroke: #7d838a; stroke-width: 2; fill: none; }
+    .box { fill: #2f4858; stroke: #7d838a; stroke-width: 1; }
+    .end { fill: #3d6b5a; stroke: #7d838a; stroke-width: 1; }
+    .err { fill: #b83820; stroke: #7d838a; stroke-width: 1; }
+    .note { fill: #5b6168; stroke: #7d838a; stroke-width: 1; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7d838a"/>
+    </marker>
+  </defs>
+  <g text-anchor="middle" dominant-baseline="central">
+    <!-- main pipeline, x 0..210 -->
+    <rect class="box" x="0" y="0" width="210" height="52"/>
+    <text class="t" x="105" y="17">Source code</text>
+    <text class="c" x="105" y="37">hello.c</text>
+    <path class="ln" d="M105,52 V70" marker-end="url(#arrow)"/>
+
+    <rect class="box" x="0" y="74" width="210" height="52"/>
+    <text class="t" x="105" y="91">Preprocessor</text>
+    <text class="c" x="105" y="111">#include, #define</text>
+    <path class="ln" d="M105,126 V144" marker-end="url(#arrow)"/>
+
+    <rect class="box" x="0" y="148" width="210" height="52"/>
+    <text class="t" x="105" y="165">Compiler</text>
+    <text class="n" x="105" y="185">makes object code</text>
+    <path class="ln" d="M105,200 V218" marker-end="url(#arrow)"/>
+
+    <rect class="box" x="0" y="222" width="210" height="52"/>
+    <text class="t" x="105" y="239">Linker</text>
+    <text class="n" x="105" y="259">adds library code</text>
+    <path class="ln" d="M105,274 V292" marker-end="url(#arrow)"/>
+
+    <rect class="end" x="0" y="296" width="210" height="52"/>
+    <text class="t" x="105" y="313">Executable</text>
+    <text class="c" x="105" y="333">hello.exe</text>
+    <path class="ln" d="M105,348 V366" marker-end="url(#arrow)"/>
+
+    <rect class="end" x="0" y="370" width="210" height="52"/>
+    <text class="t" x="105" y="387">Run</text>
+    <text class="n" x="105" y="407">the program executes</text>
+
+    <!-- notes, x 228..360 -->
+    <rect class="err" x="228" y="148" width="132" height="52" rx="6"/>
+    <text class="s" x="294" y="165">SYNTAX ERRORS</text>
+    <text class="n" x="294" y="185">caught here</text>
+    <path class="ln" d="M228,174 H214" marker-end="url(#arrow)"/>
+
+    <rect class="note" x="228" y="222" width="132" height="52" rx="6"/>
+    <text class="s" x="294" y="239">LIBRARY</text>
+    <text class="c" x="294" y="259">printf, scanf</text>
+    <path class="ln" d="M228,248 H214" marker-end="url(#arrow)"/>
+
+    <rect class="err" x="228" y="370" width="132" height="52" rx="6"/>
+    <text class="s" x="294" y="387">RUN-TIME ERRORS</text>
+    <text class="n" x="294" y="407">appear here</text>
+    <path class="ln" d="M228,396 H214" marker-end="url(#arrow)"/>
+  </g>
+</svg>

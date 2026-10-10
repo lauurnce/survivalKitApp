@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364" height="510" viewBox="-2 -2 364 510" role="img" aria-labelledby="title desc">
+  <title id="title">How a for loop runs, traced step by step</title>
+  <desc id="desc">The loop for (i = 1; i &lt;= 3; i++) printf("%d ", i); as a flowchart. Step 1, i = 1, runs once. Step 2 checks i &lt;= 3. If TRUE, step 3 runs the body and prints i, then step 4 does i++ and the flow loops back to the check. If FALSE, the loop exits. Trace table: i is 1, the check is true, it prints 1. i is 2, true, prints 2. i is 3, true, prints 3. i is 4, the check is false, so the loop ends. Output: 1 2 3. The condition is checked 4 times but the body runs only 3 times.</desc>
+  <style>
+    .t { font: 600 15px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .c { font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .n { font: 500 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .s { font: 700 12px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; letter-spacing: 0.06em; }
+    .ln { stroke: #7d838a; stroke-width: 2; fill: none; }
+    .box { fill: #2f4858; stroke: #7d838a; stroke-width: 1; }
+    .ok { fill: #3d6b5a; stroke: #7d838a; stroke-width: 1; }
+    .ask { fill: #b83820; stroke: #7d838a; stroke-width: 1; }
+    .note { fill: #5b6168; stroke: #7d838a; stroke-width: 1; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7d838a"/>
+    </marker>
+  </defs>
+  <g text-anchor="middle" dominant-baseline="central">
+    <!-- the code -->
+    <rect class="note" x="0" y="0" width="360" height="52" rx="6"/>
+    <text class="c" x="180" y="17">for (i = 1; i &lt;= 3; i++)</text>
+    <text class="c" x="180" y="37">printf("%d ", i);</text>
+
+    <!-- flowchart -->
+    <path class="ln" d="M180,52 V68" marker-end="url(#arrow)"/>
+    <rect class="box" x="110" y="72" width="140" height="36"/>
+    <text class="c" x="180" y="90">i = 1</text>
+    <circle class="note" cx="250" cy="72" r="11"/>
+    <text class="s" x="250" y="72">1</text>
+
+    <path class="ln" d="M180,108 V122" marker-end="url(#arrow)"/>
+    <polygon class="ask" points="180,126 252,162 180,198 108,162"/>
+    <text class="c" x="180" y="162">i &lt;= 3 ?</text>
+    <circle class="note" cx="230" cy="136" r="11"/>
+    <text class="s" x="230" y="136">2</text>
+
+    <path class="ln" d="M180,198 V218" marker-end="url(#arrow)"/>
+    <rect class="note" x="188" y="200" width="44" height="18" rx="9"/>
+    <text class="s" x="210" y="209">TRUE</text>
+    <rect class="box" x="110" y="222" width="140" height="36"/>
+    <text class="c" x="180" y="240">print i</text>
+    <circle class="note" cx="250" cy="222" r="11"/>
+    <text class="s" x="250" y="222">3</text>
+
+    <path class="ln" d="M180,258 V272" marker-end="url(#arrow)"/>
+    <rect class="box" x="110" y="276" width="140" height="36"/>
+    <text class="c" x="180" y="294">i++</text>
+    <circle class="note" cx="250" cy="276" r="11"/>
+    <text class="s" x="250" y="276">4</text>
+
+    <path class="ln" d="M110,294 H56 V162 H104" marker-end="url(#arrow)"/>
+    <rect class="note" x="4" y="216" width="48" height="20" rx="10"/>
+    <text class="s" x="28" y="226">LOOP</text>
+
+    <path class="ln" d="M252,162 H284" marker-end="url(#arrow)"/>
+    <rect class="ok" x="288" y="146" width="72" height="32" rx="16"/>
+    <text class="t" x="324" y="162">exit</text>
+    <rect class="note" x="290" y="184" width="50" height="20" rx="10"/>
+    <text class="s" x="315" y="194">FALSE</text>
+
+    <!-- trace table -->
+    <rect class="note" x="0" y="330" width="80" height="30"/>
+    <rect class="note" x="80" y="330" width="140" height="30"/>
+    <rect class="note" x="220" y="330" width="140" height="30"/>
+    <text class="s" x="40" y="345">i</text>
+    <text class="s" x="150" y="345">i &lt;= 3 ?</text>
+    <text class="s" x="290" y="345">PRINTS</text>
+
+    <rect class="box" x="0" y="360" width="80" height="30"/>
+    <rect class="box" x="80" y="360" width="140" height="30"/>
+    <rect class="box" x="220" y="360" width="140" height="30"/>
+    <text class="c" x="40" y="375">1</text>
+    <text class="c" x="150" y="375">true</text>
+    <text class="c" x="290" y="375">1</text>
+
+    <rect class="box" x="0" y="390" width="80" height="30"/>
+    <rect class="box" x="80" y="390" width="140" height="30"/>
+    <rect class="box" x="220" y="390" width="140" height="30"/>
+    <text class="c" x="40" y="405">2</text>
+    <text class="c" x="150" y="405">true</text>
+    <text class="c" x="290" y="405">2</text>
+
+    <rect class="box" x="0" y="420" width="80" height="30"/>
+    <rect class="box" x="80" y="420" width="140" height="30"/>
+    <rect class="box" x="220" y="420" width="140" height="30"/>
+    <text class="c" x="40" y="435">3</text>
+    <text class="c" x="150" y="435">true</text>
+    <text class="c" x="290" y="435">3</text>
+
+    <rect class="ask" x="0" y="450" width="80" height="30"/>
+    <rect class="ask" x="80" y="450" width="140" height="30"/>
+    <rect class="ask" x="220" y="450" width="140" height="30"/>
+    <text class="c" x="40" y="465">4</text>
+    <text class="c" x="150" y="465">false</text>
+    <text class="n" x="290" y="465">loop ends</text>
+
+    <rect class="ok" x="0" y="480" width="360" height="26"/>
+    <text class="n" x="180" y="493">Output: 1 2 3  (checked 4 times, body ran 3)</text>
+  </g>
+</svg>

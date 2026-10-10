@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364" height="396" viewBox="-2 -2 364 396" role="img" aria-labelledby="title desc">
+  <title id="title">Call by value versus call by reference</title>
+  <desc id="desc">Call by value: main() has n = 5. Calling funct_sample(n) gives the function a copy, y = 5. The function triples y to 15, but n in main() is still 5 after the call. Call by reference: main() has fin_grd, stored at an example address 2000. Calling compute_rating(mid, fin, &amp;fin_grd) passes that address, so the parameter rating holds 2000. The line *rating = (midterm + final) / 2 writes through the address into fin_grd itself, so with a midterm of 80 and a final of 90, fin_grd in main() becomes 85.0.</desc>
+  <style>
+    .c { font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .a { font: 600 12px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .big { font: 700 22px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .n { font: 500 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .h { font: 700 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; letter-spacing: 0.08em; }
+    .ln { stroke: #7d838a; stroke-width: 2; fill: none; }
+    .frame { fill: #2f4858; stroke: #7d838a; stroke-width: 1; }
+    .cell { fill: #3d6b5a; stroke: #7d838a; stroke-width: 1; }
+    .ptr { fill: #b83820; stroke: #7d838a; stroke-width: 1; }
+    .pill { fill: #5b6168; stroke: #7d838a; stroke-width: 1; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7d838a"/>
+    </marker>
+  </defs>
+  <g text-anchor="middle" dominant-baseline="central">
+    <!-- call by value -->
+    <rect class="pill" x="0" y="0" width="170" height="26" rx="13"/>
+    <text class="h" x="85" y="13">CALL BY VALUE</text>
+
+    <rect class="frame" x="0" y="36" width="140" height="100"/>
+    <text class="a" x="70" y="52">main()</text>
+    <rect class="cell" x="20" y="66" width="100" height="58"/>
+    <text class="a" x="70" y="80">n</text>
+    <text class="big" x="70" y="106">5</text>
+
+    <rect class="frame" x="220" y="36" width="140" height="100"/>
+    <text class="a" x="290" y="52">funct_sample()</text>
+    <rect class="cell" x="240" y="66" width="100" height="58"/>
+    <text class="a" x="290" y="80">y (got 5)</text>
+    <text class="big" x="290" y="106">15</text>
+
+    <path class="ln" d="M120,100 H236" marker-end="url(#arrow)"/>
+    <rect class="pill" x="142" y="72" width="76" height="20" rx="10"/>
+    <text class="a" x="180" y="82">copy</text>
+
+    <rect class="cell" x="0" y="146" width="360" height="28" rx="6"/>
+    <text class="n" x="180" y="160">after the call, n in main() is still 5</text>
+
+    <!-- call by reference -->
+    <rect class="pill" x="0" y="196" width="200" height="26" rx="13"/>
+    <text class="h" x="100" y="209">CALL BY REFERENCE</text>
+
+    <rect class="frame" x="0" y="232" width="140" height="120"/>
+    <text class="a" x="70" y="248">main()</text>
+    <rect class="cell" x="20" y="262" width="100" height="60"/>
+    <text class="a" x="70" y="276">fin_grd</text>
+    <text class="big" x="70" y="302">85.0</text>
+    <text class="a" x="70" y="338">at address 2000</text>
+
+    <rect class="frame" x="220" y="232" width="140" height="120"/>
+    <text class="a" x="290" y="248">compute_rating()</text>
+    <rect class="ptr" x="240" y="262" width="100" height="48"/>
+    <text class="a" x="290" y="276">rating</text>
+    <text class="c" x="290" y="296">2000</text>
+    <text class="a" x="290" y="334">*rating = 85.0</text>
+
+    <path class="ln" d="M120,284 H236" marker-end="url(#arrow)"/>
+    <rect class="pill" x="140" y="256" width="80" height="20" rx="10"/>
+    <text class="a" x="180" y="266">&amp;fin_grd</text>
+
+    <path class="ln" d="M232,334 H180 V312 H124" marker-end="url(#arrow)"/>
+    <rect class="pill" x="144" y="334" width="72" height="20" rx="10"/>
+    <text class="a" x="180" y="344">writes</text>
+
+    <rect class="cell" x="0" y="364" width="360" height="28" rx="6"/>
+    <text class="n" x="180" y="378">mid 80, final 90: fin_grd in main() is now 85.0</text>
+  </g>
+</svg>

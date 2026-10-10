@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364" height="380" viewBox="-2 -2 364 380" role="img" aria-labelledby="title desc">
+  <title id="title">An int array in memory: index, value and address</title>
+  <desc id="desc">int a[5] = {5, 3, 2, 7, 9}; stores five ints side by side (the addresses are examples). Index 0 holds 5 at address 1000, index 1 holds 3 at 1004, index 2 holds 2 at 1008, index 3 holds 7 at 1012, and index 4 holds 9 at 1016. Each int takes 4 bytes, so the address of a[3] is 1000 + 4 × 3 = 1012. There is no a[5]: an array of size 5 has indexes 0 to 4, and a[5] would point past the end at address 1020, memory that does not belong to the array.</desc>
+  <style>
+    .c { font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .a { font: 600 12px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .big { font: 700 22px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ffffff; }
+    .n { font: 500 13px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .s { font: 700 12px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #ffffff; letter-spacing: 0.06em; }
+    .box { fill: #2f4858; stroke: #7d838a; stroke-width: 1.5; }
+    .ok { fill: #3d6b5a; stroke: #7d838a; stroke-width: 1.5; }
+    .bad { fill: #b83820; stroke: #7d838a; stroke-width: 1.5; stroke-dasharray: 5 4; }
+    .note { fill: #5b6168; stroke: #7d838a; stroke-width: 1; }
+  </style>
+  <g text-anchor="middle" dominant-baseline="central">
+    <rect class="note" x="0" y="0" width="360" height="40" rx="6"/>
+    <text class="c" x="180" y="20">int a[5] = {5, 3, 2, 7, 9};</text>
+
+    <!-- row legend -->
+    <rect class="note" x="0" y="54" width="360" height="26" rx="13"/>
+    <text class="n" x="180" y="67">top: index · middle: value · bottom: address</text>
+
+    <!-- index row -->
+    <rect class="box" x="0" y="92" width="60" height="28"/>
+    <rect class="box" x="60" y="92" width="60" height="28"/>
+    <rect class="box" x="120" y="92" width="60" height="28"/>
+    <rect class="ok" x="180" y="92" width="60" height="28"/>
+    <rect class="box" x="240" y="92" width="60" height="28"/>
+    <rect class="bad" x="300" y="92" width="60" height="28"/>
+    <text class="a" x="30" y="106">a[0]</text>
+    <text class="a" x="90" y="106">a[1]</text>
+    <text class="a" x="150" y="106">a[2]</text>
+    <text class="a" x="210" y="106">a[3]</text>
+    <text class="a" x="270" y="106">a[4]</text>
+    <text class="a" x="330" y="106">a[5]</text>
+
+    <!-- value row -->
+    <rect class="box" x="0" y="120" width="60" height="52"/>
+    <rect class="box" x="60" y="120" width="60" height="52"/>
+    <rect class="box" x="120" y="120" width="60" height="52"/>
+    <rect class="ok" x="180" y="120" width="60" height="52"/>
+    <rect class="box" x="240" y="120" width="60" height="52"/>
+    <rect class="bad" x="300" y="120" width="60" height="52"/>
+    <text class="big" x="30" y="146">5</text>
+    <text class="big" x="90" y="146">3</text>
+    <text class="big" x="150" y="146">2</text>
+    <text class="big" x="210" y="146">7</text>
+    <text class="big" x="270" y="146">9</text>
+    <text class="big" x="330" y="146">??</text>
+
+    <!-- address row -->
+    <rect class="box" x="0" y="172" width="60" height="28"/>
+    <rect class="box" x="60" y="172" width="60" height="28"/>
+    <rect class="box" x="120" y="172" width="60" height="28"/>
+    <rect class="ok" x="180" y="172" width="60" height="28"/>
+    <rect class="box" x="240" y="172" width="60" height="28"/>
+    <rect class="bad" x="300" y="172" width="60" height="28"/>
+    <text class="a" x="30" y="186">1000</text>
+    <text class="a" x="90" y="186">1004</text>
+    <text class="a" x="150" y="186">1008</text>
+    <text class="a" x="210" y="186">1012</text>
+    <text class="a" x="270" y="186">1016</text>
+    <text class="a" x="330" y="186">1020</text>
+
+    <!-- size 5 brace -->
+    <path d="M2,214 V222 H298 V214" stroke="#7d838a" stroke-width="2" fill="none"/>
+    <path d="M150,222 V232" stroke="#7d838a" stroke-width="2"/>
+    <rect class="note" x="60" y="232" width="180" height="24" rx="12"/>
+    <text class="n" x="150" y="244">size 5: indexes 0 to 4</text>
+
+    <!-- callouts -->
+    <rect class="ok" x="0" y="272" width="360" height="46" rx="6"/>
+    <text class="n" x="180" y="287">each int is 4 bytes, so address of a[3]</text>
+    <text class="c" x="180" y="306">= 1000 + 4 × 3 = 1012</text>
+
+    <rect class="bad" x="0" y="328" width="360" height="46" rx="6"/>
+    <text class="n" x="180" y="343">a[5] is past the end of the array:</text>
+    <text class="n" x="180" y="362">that memory is not yours</text>
+  </g>
+</svg>
