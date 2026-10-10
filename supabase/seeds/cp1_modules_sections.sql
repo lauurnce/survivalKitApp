@@ -1554,6 +1554,10 @@ main() {
 ```
 
 `&fin_grd` passes the address. `*rating = ...` stores a value directly into that memory location, so the change is visible in `main()` after the call.
+
+Both calls side by side:
+
+![Call by value: main has n = 5, funct_sample gets a copy y, triples it to 15, and n is still 5 afterwards. Call by reference: main passes the address of fin_grd, compute_rating stores through that address, and fin_grd in main becomes 85.0 for a midterm of 80 and a final of 90.](/diagrams/cp1/lesson-6-value-vs-reference.svg)
 $md$, 3),
 
 ('a1000001-0001-0001-0001-000000000006','activity','Practice Exercises, Lesson 6',$md$
