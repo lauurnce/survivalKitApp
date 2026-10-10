@@ -94,6 +94,10 @@ STOP
 
 These three structures, sequence, selection, and repetition, are sufficient to construct any program logic.
 
+The three structures as flowcharts:
+
+![Flowcharts of the three control structures. Sequence: input, process, output. Selection: a diamond asks if A < 0, TRUE prints NEGATIVE, FALSE prints POSITIVE. Repetition: N = N + 1 repeats while N < 10, then the loop stops.](/diagrams/cp1/lesson-1-control-structures.svg)
+
 ---
 
 <!-- kind: content -->
@@ -229,6 +233,10 @@ Source code (.c file)
       ↓
   Executable code
 ```
+
+The same pipeline, showing where each kind of error shows up:
+
+![The path from hello.c to a running program: preprocessor, compiler, linker with library code such as printf, executable hello.exe, then run. Syntax errors are caught at the compiler. Run-time errors only appear when the program runs.](/diagrams/cp1/lesson-2-compile-pipeline.svg)
 
 ---
 
@@ -566,6 +574,10 @@ scanf("%s", name);       // read a string (no & needed for arrays)
 ```
 
 `scanf()` returns the number of successful conversions. When reading characters, whitespace (spaces, tabs, newlines) is **not** skipped automatically, unlike when reading numbers.
+
+Why `scanf` needs `&` but `printf` does not:
+
+![You type 42. scanf with %d and &num stores 42 in the variable num, because &num tells it where num lives. printf with %5d and num only needs the value, and prints 42 at the right of a 5-column field: three blanks, then 4, then 2.](/diagrams/cp1/lesson-3-scanf-printf-memory.svg)
 
 ---
 
@@ -1001,6 +1013,10 @@ Enter a number: 0
 The sum is 19
 ```
 
+Tracing a `for` loop step by step:
+
+![Flowchart and trace of for (i = 1; i <= 3; i++) printf i. i = 1 runs once. The check i <= 3 is true for i = 1, 2 and 3, so it prints 1 2 3, doing i++ after each pass. At i = 4 the check is false and the loop ends: checked 4 times, body ran 3 times.](/diagrams/cp1/lesson-4-for-loop-trace.svg)
+
 ---
 
 <!-- kind: content -->
@@ -1080,6 +1096,10 @@ An **array** solves this problem. An array is a fixed-size, sequenced collection
 ```
 element address = array address + (sizeof(element) × index)
 ```
+
+The formula, worked on a real array:
+
+![int a[5] = {5, 3, 2, 7, 9} in memory. Indexes a[0] to a[4] hold 5, 3, 2, 7 and 9 at example addresses 1000, 1004, 1008, 1012 and 1016. Each int is 4 bytes, so the address of a[3] is 1000 + 4 × 3 = 1012. a[5] would be past the end of the array.](/diagrams/cp1/lesson-5-array-indexing.svg)
 
 ---
 
@@ -1450,6 +1470,10 @@ main() {
 ```
 
 Here, `&fin_grd` passes the address of `fin_grd` to the function. Inside the function, `*rating = ...` stores a value directly into that memory location, so the change is visible in `main()` after the function returns.
+
+Both calls side by side:
+
+![Call by value: main has n = 5, funct_sample gets a copy y, triples it to 15, and n is still 5 afterwards. Call by reference: main passes the address of fin_grd, compute_rating stores through that address, and fin_grd in main becomes 85.0 for a midterm of 80 and a final of 90.](/diagrams/cp1/lesson-6-value-vs-reference.svg)
 
 ---
 
