@@ -2,7 +2,7 @@
 
 Study companion web app for BSIT (Bachelor of Science in Information Technology) students in the Philippines. Lessons are free to read; a one-time unlock adds practice drills, quizzes, in-app code labs, exam solutions, and progress tracking.
 
-**Live:** https://survival-kit-app.vercel.app
+**Live:** https://tryi2i.com
 
 **The story:** why this exists, the data behind it, and where it's going → [STORY.md](STORY.md)
 
