@@ -4,6 +4,7 @@ import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
 import { createDynamicPaymongoLink, MAX_SEATS } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
+import { resolveRequestOrigin } from "@/lib/appOrigin";
 import crypto from "crypto";
 
 const BASE_SUBJECT_CENTAVOS = 79900; // ₱799
@@ -11,11 +12,6 @@ const BASE_ALL_CENTAVOS = 99900; // ₱999
 const PER_SEAT_CENTAVOS = 5900; // ₱59
 const INCLUDED_SEATS = 11;
 const MIN_SEATS = 11;
-const PRODUCTION_ORIGIN = "https://survival-kit-app.vercel.app";
-const ALLOWED_CHECKOUT_ORIGINS = new Set([
-  PRODUCTION_ORIGIN,
-  "http://localhost:3000",
-]);
 
 function computeAmount(scope: "subject" | "all", seats: number): number {
   const base = scope === "all" ? BASE_ALL_CENTAVOS : BASE_SUBJECT_CENTAVOS;
@@ -103,10 +99,8 @@ export async function POST(req: NextRequest) {
     .update(`class-checkout:${repDeviceId}:${yearId}:${subjectId ?? "all"}:${seats}`)
     .digest("hex");
 
-  const requestOrigin = req.headers.get("origin") ?? "";
-  const origin = ALLOWED_CHECKOUT_ORIGINS.has(requestOrigin)
-    ? requestOrigin
-    : PRODUCTION_ORIGIN;
+  // Same allowlisted host the rep paid from, so their cookies match on return.
+  const origin = resolveRequestOrigin(req.headers.get("origin"));
   const successUrl = `${origin}/for-blocks?payment=success`;
   // Cancelled payments land back on the same page without the success marker,
   // so the banner there never fires for an abandoned checkout.

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { canonicalUrl } from "@/lib/appOrigin";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -8,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
       // Keep private and operational surfaces out of search results.
       disallow: ["/api/", "/admin", "/account", "/playground"],
     },
-    sitemap: "https://survival-kit-app.vercel.app/sitemap.xml",
+    sitemap: canonicalUrl("/sitemap.xml"),
   };
 }

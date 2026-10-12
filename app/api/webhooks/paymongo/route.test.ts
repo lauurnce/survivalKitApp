@@ -195,6 +195,8 @@ describe("lifecycle email", () => {
     expect(enqueued[0].scopeKey).toBe("link_test_1");
     expect(enqueued[0].toEmail).toBe("payer@example.com");
     expect((enqueued[0].payload as Record<string, unknown>).amountCentavos).toBe(9900);
+    // Email links point at the canonical custom domain, not the vercel.app host.
+    expect((enqueued[0].payload as Record<string, unknown>).url).toBe("https://tryi2i.com/account");
   });
 
   // The design doc requires best-effort send-now in the webhook; the nightly

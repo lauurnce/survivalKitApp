@@ -61,19 +61,19 @@ describe("Breadcrumbs", () => {
         "@type": "ListItem",
         position: 1,
         name: "Year",
-        item: "https://survival-kit-app.vercel.app/year",
+        item: "https://tryi2i.com/year",
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "1st Year",
-        item: "https://survival-kit-app.vercel.app/year/first-year/subjects",
+        item: "https://tryi2i.com/year/first-year/subjects",
       },
       {
         "@type": "ListItem",
         position: 3,
         name: "Computer Programming 1",
-        item: "https://survival-kit-app.vercel.app/year/first-year/subjects/cp1/modules",
+        item: "https://tryi2i.com/year/first-year/subjects/cp1/modules",
       },
       {
         "@type": "ListItem",

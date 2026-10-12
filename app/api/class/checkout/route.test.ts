@@ -160,9 +160,37 @@ describe("POST /api/class/checkout", () => {
     );
 
     expect(res.status).toBe(200);
+    expect(linkCalls[0][3]).toBe("https://tryi2i.com/for-blocks?payment=success");
+  });
+
+  // Cookies are host-scoped: a rep who pays from the custom domain must land
+  // back on it, not on the vercel.app host where they hold no device cookie.
+  it("returns a rep who paid from tryi2i.com to tryi2i.com", async () => {
+    const res = await POST(
+      makeReq(
+        { scope: "subject", subjectId: SUBJ, yearId: YEAR, seats: 11 },
+        "https://tryi2i.com"
+      )
+    );
+
+    expect(res.status).toBe(200);
+    expect(linkCalls[0][3]).toBe("https://tryi2i.com/for-blocks?payment=success");
+    expect(linkCalls[0][5]).toBe("https://tryi2i.com/for-blocks");
+  });
+
+  it("keeps a rep who paid from the vercel.app host on that host", async () => {
+    const res = await POST(
+      makeReq(
+        { scope: "all", yearId: YEAR, seats: 11 },
+        "https://survival-kit-app.vercel.app"
+      )
+    );
+
+    expect(res.status).toBe(200);
     expect(linkCalls[0][3]).toBe(
       "https://survival-kit-app.vercel.app/for-blocks?payment=success"
     );
+    expect(linkCalls[0][5]).toBe("https://survival-kit-app.vercel.app/for-blocks");
   });
 
   it("keeps the local development origin when it is explicitly allowed", async () => {
@@ -188,7 +216,7 @@ describe("POST /api/class/checkout", () => {
     expect(String(linkCalls[0][5])).not.toContain("payment=success");
   });
 
-  it("points the failed leg at the production origin for untrusted request hosts", async () => {
+  it("points the failed leg at the canonical origin for untrusted request hosts", async () => {
     const res = await POST(
       makeReq(
         { scope: "all", yearId: YEAR, seats: 11 },
@@ -198,7 +226,7 @@ describe("POST /api/class/checkout", () => {
     );
 
     expect(res.status).toBe(200);
-    expect(linkCalls[0][5]).toBe("https://survival-kit-app.vercel.app/for-blocks");
+    expect(linkCalls[0][5]).toBe("https://tryi2i.com/for-blocks");
   });
 
   it("does not expose payment-provider errors in the public response", async () => {

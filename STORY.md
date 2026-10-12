@@ -116,4 +116,4 @@ Today, lessons are free to read and the practice layer (drills, quizzes, code la
 
 **Next: BSIT Survival Kit is moving to a subscription.** Not to charge more — to promise more. A subscription is a commitment on my side: new reviewers every semester as syllabi evolve, progress tracking that follows you from CP1 to capstone, and coverage that keeps widening across all four years. One student's semester at a time, this becomes the resource that meets every incoming freshman *before* their first class does.
 
-→ **Try it:** [survival-kit-app.vercel.app](https://survival-kit-app.vercel.app)
+→ **Try it:** [tryi2i.com](https://tryi2i.com)
