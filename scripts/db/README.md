@@ -15,7 +15,7 @@ Plain-Postgres safety net for `supabase/migrations/`. No Supabase CLI needed.
    schema), then applies EVERY `supabase/migrations/*.sql` in lexical
    (`==` version) order via `psql -v ON_ERROR_STOP=1`. Any failure fails CI.
 2. **validate-consolidated** — same bootstrap, replays only the production
-   baseline (all migrations *minus* the pending six listed in
+   baseline (all migrations *minus* those in the `pending` array of
    `build-consolidated.sh`), then applies `consolidated-pending.sql` on top —
    exactly what pasting it into the Supabase SQL Editor will do. It also
    regenerates the artifact and fails if the committed copy has drifted from
@@ -41,6 +41,11 @@ naturally repeatable. The SQL Editor may be re-pasted after a partial apply.
 ## Next free migration number
 
 Migration filenames are `YYYYMMDDHHMMSS_description.sql` and are applied by
-CI in lexical order, which must equal chronological order. The next free
-number is **20260822000006** and up (`20260822000007`, …). Never reuse a
-number, even if an earlier migration was reverted or deleted.
+CI in lexical order, which must equal chronological order. The highest
+number in use is `20260904000000`, so the next free number is
+**20260904000001** and up (or any later timestamp). Never stamp a migration
+earlier than a migration it depends on: `module_quiz_user_id` was once
+numbered `20260820000000`, ahead of the `20260827000000` file that creates
+its tables, and broke every replay until it was renumbered to
+`20260827000003`. Never reuse a number, even if an earlier migration was
+reverted or deleted.

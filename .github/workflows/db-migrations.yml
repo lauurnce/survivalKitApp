@@ -47,7 +47,7 @@ jobs:
       PGDATABASE: app
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # Vanilla postgres:16 has none of the Supabase-managed objects the
       # migrations reference. Create the minimal equivalents first so every
@@ -141,7 +141,7 @@ jobs:
       PGDATABASE: app
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # The committed artifact must always equal the output of the build
       # script over the current pending files — otherwise the paste-ready

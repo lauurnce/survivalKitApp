@@ -1,0 +1,56 @@
+name: ci
+
+# Quality gate: every PR and every push to main must typecheck, lint, pass
+# the Vitest suite, and produce a production build.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    name: Typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Harmless placeholders, NOT secrets. `next build` evaluates route modules
+    # while collecting page data, and app/api/feedback/user/route.ts and
+    # app/api/feedback/route.ts call createClient() at module scope, which
+    # throws "supabaseUrl is required" when these are unset. The URL points at
+    # a closed local port so any build-time query (app/sitemap.ts is
+    # prerendered) fails fast instead of reaching a real project.
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-placeholder-publishable-key
+      SUPABASE_SERVICE_ROLE_KEY: ci-placeholder-service-role-key
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build

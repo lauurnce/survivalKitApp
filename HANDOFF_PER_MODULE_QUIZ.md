@@ -10,7 +10,7 @@
 | Migration | Description |
 |-----------|-------------|
 | `20260827000000_module_quiz_progress.sql` | Created `module_quiz_progress` + `module_quiz_answers` tables |
-| `20260820000000_module_quiz_user_id.sql` | Added `user_id` column + RLS policies to both tables |
+| `20260827000003_module_quiz_user_id.sql` | Added `user_id` column + RLS policies to both tables |
 
 ### API Endpoints (4 new)
 | Endpoint | Purpose |
