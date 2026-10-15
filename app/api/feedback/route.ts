@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
-import { checkFeedbackQuality, generateCouponCode } from '@/lib/feedback';
+import { checkFeedbackQuality, earnsCoupon, generateCouponCode } from '@/lib/feedback';
 import { DEVICE_COOKIE, verifyDeviceCookie } from '@/lib/auth/deviceCookie';
 import { getClientIp } from '@/lib/rateLimit';
 import { isServerRateLimited } from '@/lib/serverRateLimit';
@@ -136,8 +136,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check feedback quality
+    // Check feedback quality. A silent (ratings-only) submission is still
+    // quality-approved, but only non-empty approved text earns a coupon.
     const isQualityApproved = checkFeedbackQuality(feedback_text);
+    const textEarnsCoupon = earnsCoupon(feedback_text);
 
     // Coupons only for signed-in, non-anonymous feedback: anonymous device_ids
     // are client-generated, so anonymous coupons are farmable by construction.
@@ -148,7 +150,7 @@ export async function POST(request: Request) {
     let coupon_code = null;
     let coupon_expires_at = null;
 
-    if (isQualityApproved && couponEligible) {
+    if (textEarnsCoupon && couponEligible) {
       coupon_code = generateCouponCode();
       // 30 days from now
       const expiryDate = new Date();
@@ -196,7 +198,7 @@ export async function POST(request: Request) {
     let message = 'Thanks for your feedback!';
     if (coupon_code) {
       message = `Thanks! Your feedback helps us improve. You've earned a ₱100 discount code: ${coupon_code} (valid 30 days)`;
-    } else if (isQualityApproved && !couponEligible) {
+    } else if (textEarnsCoupon && !couponEligible) {
       message = 'Thanks for your feedback! Sign in next time to earn a ₱100 discount code.';
     }
 

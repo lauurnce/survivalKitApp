@@ -48,6 +48,17 @@ export function generateCouponCode(): string {
 }
 
 /**
+ * Whether feedback text earns a discount coupon. Stricter than
+ * checkFeedbackQuality: a silent, ratings-only submission is still
+ * quality-approved (nothing in it is spam), but it carries no written
+ * feedback, so it must not be paid for. Without this, two star ratings were
+ * enough to mint a coupon worth a full subject plan, once per module.
+ */
+export function earnsCoupon(text: string): boolean {
+  return typeof text === "string" && text.trim().length > 0 && checkFeedbackQuality(text);
+}
+
+/**
  * Convenience wrapper for isQualityApproved
  */
 export function isQualityApproved(feedbackText: string): boolean {
