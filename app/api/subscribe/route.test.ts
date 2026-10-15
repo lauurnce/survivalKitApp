@@ -75,47 +75,79 @@ let atomicReserveSuccesses: number | null = null;
 // Release-path calls (redeemed_at flipped back to null via .not(...)).
 const releaseCalls: Array<Record<string, unknown>> = [];
 
+// Who earned the mocked coupon (user_feedback.user_id). Defaults to the
+// signed-in USER; set to another account to model redeeming someone else's code.
+let mockCouponOwner: string | null = null;
+// Every reserve UPDATE attempted, with the filters it carried.
+const reserveCalls: Array<Record<string, unknown>> = [];
+
+// Chainable query builder for user_feedback: records eq/is filters in any
+// order and resolves the way Postgres would for the modeled coupon row.
+function couponRowMatches(filters: Record<string, unknown>): boolean {
+  return (
+    mockCouponValid &&
+    typeof filters.coupon_code === "string" &&
+    filters["is:redeemed_at"] === null &&
+    // Like Postgres: an unfiltered query matches any owner's row.
+    (!("user_id" in filters) || filters.user_id === mockCouponOwner)
+  );
+}
+
 vi.mock("@supabase/supabase-js", () => ({
   createClient: () => ({
     from: () => ({
-      select: () => ({
-        eq: (column: string, value: string) => ({
-          is: (col: string, val: null) => ({
-            single: () => Promise.resolve(
-              mockCouponValid && column === 'coupon_code' && val === null && col === 'redeemed_at'
-                ? mockCouponRedeemed
-                  ? { data: null, error: { message: 'Not found' } }
-                  : { data: { coupon_code: value, coupon_expires_at: mockCouponExpired ? new Date(Date.now() - 1000).toISOString() : new Date(Date.now() + 86400000).toISOString(), redeemed_at: null }, error: null }
-                : { data: null, error: { message: 'Not found' } }
+      select: () => {
+        const filters: Record<string, unknown> = {};
+        const q = {
+          eq: (column: string, value: unknown) => { filters[column] = value; return q; },
+          is: (column: string, value: null) => { filters[`is:${column}`] = value; return q; },
+          single: () =>
+            Promise.resolve(
+              couponRowMatches(filters) && !mockCouponRedeemed
+                ? {
+                    data: {
+                      coupon_code: filters.coupon_code,
+                      coupon_expires_at: mockCouponExpired
+                        ? new Date(Date.now() - 1000).toISOString()
+                        : new Date(Date.now() + 86400000).toISOString(),
+                      redeemed_at: null,
+                      user_id: mockCouponOwner,
+                    },
+                    error: null,
+                  }
+                : { data: null, error: { message: "Not found" } }
             ),
-          }),
-        }),
-      }),
-      update: (data: Record<string, unknown>) => ({
-        eq: (column: string, value: string) => ({
-          is: (col: string, val: null) => ({
-            select: () => ({
-              single: () => {
-                const reserveWins =
-                  atomicReserveSuccesses === null
-                    ? !mockCouponRedeemed
-                    : atomicReserveSuccesses > 0;
-                if (atomicReserveSuccesses !== null) atomicReserveSuccesses--;
-                return Promise.resolve(
-                  mockCouponValid && column === 'coupon_code' && val === null && col === 'redeemed_at' && reserveWins
-                    ? { data: { redeemed_at: data.redeemed_at }, error: null } // Simulate successful update
-                    : { data: null, error: { message: 'Already redeemed' } }
-                );
-              },
-            }),
+        };
+        return q;
+      },
+      update: (data: Record<string, unknown>) => {
+        const filters: Record<string, unknown> = {};
+        const q = {
+          eq: (column: string, value: unknown) => { filters[column] = value; return q; },
+          is: (column: string, value: null) => { filters[`is:${column}`] = value; return q; },
+          select: () => ({
+            single: () => {
+              reserveCalls.push({ ...filters });
+              const reserveWins =
+                atomicReserveSuccesses === null
+                  ? !mockCouponRedeemed
+                  : atomicReserveSuccesses > 0;
+              if (atomicReserveSuccesses !== null) atomicReserveSuccesses--;
+              return Promise.resolve(
+                couponRowMatches(filters) && reserveWins
+                  ? { data: { redeemed_at: data.redeemed_at }, error: null }
+                  : { data: null, error: { message: "Already redeemed" } }
+              );
+            },
           }),
           // Release path: update(...).eq('coupon_code', c).not('redeemed_at','is',null)
           not: (col: string, op: string, val: null) => {
-            releaseCalls.push({ column, value, col, op, val, redeemed_to: data.redeemed_at });
+            releaseCalls.push({ column: "coupon_code", value: filters.coupon_code, col, op, val, redeemed_to: data.redeemed_at });
             return Promise.resolve({ data: null, error: null });
           },
-        }),
-      }),
+        };
+        return q;
+      },
     }),
   }),
 }));
@@ -169,6 +201,8 @@ beforeEach(() => {
   mockCouponValid = false;
   mockCouponExpired = false;
   mockCouponRedeemed = false;
+  mockCouponOwner = USER;
+  reserveCalls.length = 0;
     rateLimited = false;
     limiterDown = false;
     rateLimitCalls.length = 0;
@@ -322,6 +356,67 @@ describe("POST /api/subscribe coupon validation", () => {
     const finalAmount = dynamicLinkCalls[0][0];
     expect(finalAmount).not.toBe(10000); // the old clamp value
     expect(finalAmount).toBe(19900);
+  });
+});
+
+describe("POST /api/subscribe coupon owner binding", () => {
+  const OTHER_USER = "22222222-2222-2222-2222-222222222222";
+
+  it("rejects another account's coupon and does not consume it", async () => {
+    mockCouponValid = true;
+    mockCouponOwner = OTHER_USER; // earned by someone else
+    const res = await POST(
+      makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_month", couponCode: "FEEDBACK-NOTMINE1" })
+    );
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    // No discount, no free unlock: the caller is sent to full-price checkout.
+    expect(body.discountApplied).toBe(false);
+    expect(body.freeUnlock).toBeUndefined();
+    expect(recordedPayments).toHaveLength(0);
+    expect(dynamicLinkCalls).toHaveLength(0);
+    expect(linkCalls).toHaveLength(1);
+    // Never reserved, so it was not consumed and needs no release.
+    expect(reserveCalls).toHaveLength(0);
+    expect(releaseCalls).toHaveLength(0);
+  });
+
+  it("still lets the owner redeem a code another account tried first", async () => {
+    mockCouponValid = true;
+    mockCouponOwner = OTHER_USER;
+    await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_month", couponCode: "FEEDBACK-NOTMINE2" }));
+    expect(recordedPayments).toHaveLength(0);
+
+    getCurrentUserIdMock.mockResolvedValue(OTHER_USER);
+    const res = await POST(
+      makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_month", couponCode: "FEEDBACK-NOTMINE2" })
+    );
+    expect(res.status).toBe(200);
+    expect((await res.json()).freeUnlock).toBe(true);
+    expect(recordedPayments).toHaveLength(1);
+    expect(recordedPayments[0]).toMatchObject({ userId: OTHER_USER });
+  });
+
+  it("rejects a coupon with no owner (legacy anonymous row)", async () => {
+    mockCouponValid = true;
+    mockCouponOwner = null;
+    const res = await POST(
+      makeReq({ yearId: YEAR, deviceId: DEV, plan: "year_sem", couponCode: "FEEDBACK-ANONLEGA" })
+    );
+    expect(res.status).toBe(200);
+    expect((await res.json()).discountApplied).toBe(false);
+    expect(reserveCalls).toHaveLength(0);
+  });
+
+  it("binds the atomic reserve to the signed-in user", async () => {
+    mockCouponValid = true;
+    const res = await POST(
+      makeReq({ yearId: YEAR, deviceId: DEV, plan: "year_sem", couponCode: "FEEDBACK-MINEMINE" })
+    );
+    expect(res.status).toBe(200);
+    expect((await res.json()).discountApplied).toBe(true);
+    expect(reserveCalls).toHaveLength(1);
+    expect(reserveCalls[0]).toMatchObject({ coupon_code: "FEEDBACK-MINEMINE", user_id: USER, "is:redeemed_at": null });
   });
 });
 

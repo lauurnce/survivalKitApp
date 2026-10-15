@@ -31,9 +31,16 @@ import {
 // this payment-link endpoint.
 const RATE_LIMIT_IP = { max: 5, windowSeconds: 60 };
 
-// Helper function to validate coupon codes and atomically mark as redeemed
-async function validateCouponCode(couponCode: string): Promise<{ valid: boolean; discount: number }> {
-  if (!couponCode) {
+// Helper function to validate coupon codes and atomically mark as redeemed.
+// A coupon is bound to the account that earned it: only the signed-in owner
+// (user_feedback.user_id) can redeem it. Someone else's code is treated
+// exactly like an unknown one and is never reserved, so it stays usable by
+// its owner.
+async function validateCouponCode(
+  couponCode: string,
+  userId: string
+): Promise<{ valid: boolean; discount: number }> {
+  if (!couponCode || !userId) {
     return { valid: false, discount: 0 };
   }
 
@@ -42,15 +49,17 @@ async function validateCouponCode(couponCode: string): Promise<{ valid: boolean;
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  // Step 1: Look up coupon to verify it exists, is not expired, and not yet redeemed
+  // Step 1: Look up coupon to verify it exists, belongs to this user, is not
+  // expired, and not yet redeemed
   const { data: couponData, error: lookupError } = await supabaseAdmin
     .from('user_feedback')
-    .select('coupon_code, coupon_expires_at, redeemed_at')
+    .select('coupon_code, coupon_expires_at, redeemed_at, user_id')
     .eq('coupon_code', couponCode)
+    .eq('user_id', userId) // Only the account that earned it
     .is('redeemed_at', null) // Only non-redeemed coupons
     .single();
 
-  if (lookupError || !couponData) {
+  if (lookupError || !couponData || couponData.user_id !== userId) {
     return { valid: false, discount: 0 };
   }
 
@@ -66,6 +75,7 @@ async function validateCouponCode(couponCode: string): Promise<{ valid: boolean;
     .from('user_feedback')
     .update({ redeemed_at: new Date().toISOString() })
     .eq('coupon_code', couponCode)
+    .eq('user_id', userId) // Owner binding holds on the write too
     .is('redeemed_at', null) // Atomic condition: only if not already redeemed
     .select('redeemed_at')
     .single();
@@ -213,7 +223,7 @@ export async function POST(req: NextRequest) {
 
   try {
     // Validate coupon if provided
-    const couponResult = await validateCouponCode(couponCode ?? '');
+    const couponResult = await validateCouponCode(couponCode ?? '', userId);
     // validateCouponCode only reports valid for a truthy code.
     const appliedCoupon = couponResult.valid ? (couponCode ?? '') : '';
     // Flexible discount: face value capped at the plan price, so a coupon
