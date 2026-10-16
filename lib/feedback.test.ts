@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { checkFeedbackQuality, generateCouponCode } from './feedback';
+import { checkFeedbackQuality, earnsCoupon, generateCouponCode } from './feedback';
 
 describe('checkFeedbackQuality', () => {
   it('approves empty feedback (silent submission)', () => {
@@ -31,6 +31,25 @@ describe('checkFeedbackQuality', () => {
     // Actually this should fail because it's < 15 chars
     expect(checkFeedbackQuality('Quiz confusing')).toBe(false); // 14 chars
     expect(checkFeedbackQuality('The quiz was confusing')).toBe(true); // 22 chars
+  });
+});
+
+describe('earnsCoupon', () => {
+  it('refuses empty or whitespace-only text even though it is quality-approved', () => {
+    expect(earnsCoupon('')).toBe(false);
+    expect(earnsCoupon('   ')).toBe(false);
+    expect(earnsCoupon('\n\t ')).toBe(false);
+  });
+
+  it('accepts non-empty text that passes the quality heuristic', () => {
+    expect(earnsCoupon('Great examples!')).toBe(true);
+    expect(earnsCoupon('  The quiz was confusing  ')).toBe(true);
+  });
+
+  it('refuses non-empty text that fails the quality heuristic', () => {
+    expect(earnsCoupon('Too short')).toBe(false);
+    expect(earnsCoupon('This is aaaaa bad')).toBe(false);
+    expect(earnsCoupon('12345678901234567890')).toBe(false);
   });
 });
 

@@ -254,6 +254,76 @@ describe('POST /api/feedback', () => {
     expect(json.coupon_code).toBeNull();
   });
 
+  it('does not issue a coupon for a signed-in ratings-only (empty text) submission', async () => {
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      headers: { authorization: 'Bearer valid-token' },
+      body: JSON.stringify({
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
+        app_rating: 5,
+        module_rating: 5,
+        feedback_text: '',
+        is_anonymous: false,
+      }),
+    });
+
+    const res = await POST(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    // Still saved and still quality-approved...
+    expect(json.is_quality_approved).toBe(true);
+    // ...but star ratings alone never mint a coupon.
+    expect(json.coupon_code).toBeNull();
+    expect(json.coupon_expires_at).toBeNull();
+    expect(lastInsert.coupon_code).toBeNull();
+    expect(lastInsert.user_id).toBe('user-456');
+    expect(json.message).toBe('Thanks for your feedback!');
+  });
+
+  it('does not issue a coupon for a signed-in whitespace-only submission', async () => {
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      headers: { authorization: 'Bearer valid-token' },
+      body: JSON.stringify({
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
+        app_rating: 4,
+        module_rating: 4,
+        feedback_text: '                    ',
+        is_anonymous: false,
+      }),
+    });
+
+    const res = await POST(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(json.coupon_code).toBeNull();
+    expect(lastInsert.coupon_code).toBeNull();
+  });
+
+  it('does not tell an anonymous ratings-only submitter they could earn a coupon', async () => {
+    const req = new Request('http://localhost/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        device_id: '11111111-1111-1111-1111-111111111111',
+        module_id: '22222222-2222-2222-2222-222222222222',
+        app_rating: 4,
+        module_rating: 3,
+        feedback_text: '',
+        is_anonymous: true,
+      }),
+    });
+
+    const res = await POST(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(json.message).toBe('Thanks for your feedback!');
+  });
+
   it('does not issue a coupon for anonymous submissions', async () => {
     const req = new Request('http://localhost/api/feedback', {
       method: 'POST',
