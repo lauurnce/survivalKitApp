@@ -107,13 +107,20 @@ async function releaseCouponCode(couponCode: string): Promise<void> {
 }
 
 export async function POST(req: NextRequest) {
-  // Payment path: fail OPEN. A limiter outage must never block paying
-  // customers at checkout, unlike the abuse-prone public endpoints that
-  // reject when the limiter is unreachable.
+  // Read the body first: whether a coupon is attached decides how the
+  // limiter behaves when its backend is down.
+  const body = (await req.json().catch(() => null)) as
+    | { yearId?: string; subjectId?: string; deviceId?: string; returnPath?: string; plan?: string; couponCode?: string }
+    | null;
+  const couponCode = body?.couponCode;
+
+  // Plain checkout fails OPEN: a limiter outage must never block paying
+  // customers. A coupon-bearing request fails CLOSED: it can grant access
+  // for nothing, so it is abuse-prone, and an outage must not lift its cap.
   if (
     await isServerRateLimited(`subscribe:ip:${getClientIp(req)}`, {
       ...RATE_LIMIT_IP,
-      onFailure: "allow",
+      onFailure: couponCode ? "reject" : "allow",
     })
   ) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
@@ -131,13 +138,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const body = (await req.json().catch(() => null)) as
-    | { yearId?: string; subjectId?: string; deviceId?: string; returnPath?: string; plan?: string; couponCode?: string }
-    | null;
-
   const yearId = body?.yearId;
   const subjectId = body?.subjectId ?? null; // null = year plan
-  const couponCode = body?.couponCode;
 
   // Trust only the signed device cookie for granting access — a client-supplied
   // deviceId in the body can never override it, or an attacker could plant a

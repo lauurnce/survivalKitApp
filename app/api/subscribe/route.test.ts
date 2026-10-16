@@ -651,12 +651,46 @@ describe("POST /api/subscribe — distributed rate limiting", () => {
     expect(dynamicLinkCalls).toHaveLength(0);
   });
 
-  it("opts into fail-open so checkout proceeds when the limiter backend errors", async () => {
+  it("opts into fail-open so plain checkout proceeds when the limiter backend errors", async () => {
     limiterDown = true;
     const res = await POST(makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_sem" }));
     expect(res.status).toBe(200);
     expect(rateLimitCalls[0].onFailure).toBe("allow");
     expect(linkCalls.length + dynamicLinkCalls.length).toBe(1);
+  });
+
+  it("fails closed for a coupon-bearing request when the limiter backend errors", async () => {
+    limiterDown = true;
+    mockCouponValid = true;
+    const res = await POST(
+      makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_month", couponCode: "FEEDBACK-LIMITDWN" })
+    );
+    expect(res.status).toBe(429);
+    expect(rateLimitCalls[0].onFailure).toBe("reject");
+    // Nothing granted, linked, or reserved.
+    expect(recordedPayments).toHaveLength(0);
+    expect(linkCalls.length + dynamicLinkCalls.length).toBe(0);
+    expect(reserveCalls).toHaveLength(0);
+  });
+
+  it("still redeems a coupon when the limiter is healthy", async () => {
+    mockCouponValid = true;
+    const res = await POST(
+      makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_month", couponCode: "FEEDBACK-LIMITOK1" })
+    );
+    expect(res.status).toBe(200);
+    expect(rateLimitCalls[0].onFailure).toBe("reject");
+    expect((await res.json()).freeUnlock).toBe(true);
+  });
+
+  it("treats an empty coupon field as plain checkout (fail-open)", async () => {
+    limiterDown = true;
+    const res = await POST(
+      makeReq({ yearId: YEAR, subjectId: SUBJ, deviceId: DEV, plan: "subject_sem", couponCode: "" })
+    );
+    expect(res.status).toBe(200);
+    expect(rateLimitCalls[0].onFailure).toBe("allow");
+    expect(linkCalls).toHaveLength(1);
   });
 
   it("keeps normal operation unchanged when the limiter is healthy", async () => {
