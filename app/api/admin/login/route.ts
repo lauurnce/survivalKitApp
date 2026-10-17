@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   checkAdminPassword,
   createSessionToken,
+  legacySessionCookieClearHeader,
   SESSION_COOKIE,
 } from "@/lib/auth/adminSession";
 import { getClientIp } from "@/lib/rateLimit";
@@ -56,5 +57,8 @@ export async function POST(req: NextRequest) {
   const token = createSessionToken();
   const res = NextResponse.json({ ok: true });
   res.cookies.set(SESSION_COOKIE.name, token, SESSION_COOKIE.options);
+  // Drop any pre-path-change Path=/admin cookie so a single session cookie
+  // remains. Appended after cookies.set, which rewrites Set-Cookie headers.
+  res.headers.append("Set-Cookie", legacySessionCookieClearHeader());
   return res;
 }

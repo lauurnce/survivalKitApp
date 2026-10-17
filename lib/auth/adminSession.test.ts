@@ -15,6 +15,7 @@ const {
   verifySessionToken,
   checkAdminPassword,
   getAdminSession,
+  legacySessionCookieClearHeader,
   SESSION_COOKIE,
 } = await import("./adminSession");
 
@@ -221,12 +222,20 @@ describe("adminSession", () => {
   });
 
   describe("SESSION_COOKIE", () => {
-    it("is httpOnly, strictly same-site, and scoped to /admin", () => {
+    it("is httpOnly, strictly same-site, and scoped to / so /api/admin/* receives it", () => {
       expect(SESSION_COOKIE.options).toMatchObject({
         httpOnly: true,
         sameSite: "strict",
-        path: "/admin",
+        path: "/",
       });
+    });
+
+    it("builds an expiring Set-Cookie for the legacy /admin-path cookie", () => {
+      const header = legacySessionCookieClearHeader();
+      expect(header).toMatch(/^admin_session=;/);
+      expect(header).toContain("Path=/admin");
+      expect(header).toContain("Max-Age=0");
+      expect(header).toContain("HttpOnly");
     });
 
     it("expires in step with the token's own 8 hour TTL", () => {

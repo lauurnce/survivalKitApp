@@ -70,6 +70,11 @@ export async function getAdminSession(): Promise<boolean> {
   return verifySessionToken(token);
 }
 
+// The cookie is scoped to "/" rather than "/admin": the dashboard calls
+// /api/admin/* (reconcile, feedback) from the browser, and a browser never
+// sends a Path=/admin cookie to /api/admin/*, so every one of those calls
+// 401'd. Widening is safe — the cookie stays httpOnly, SameSite=strict and
+// HMAC-signed, and every reader verifies the signature and expiry.
 export const SESSION_COOKIE: {
   name: string;
   options: {
@@ -85,7 +90,26 @@ export const SESSION_COOKIE: {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    path: "/admin",
+    path: "/",
     maxAge: SESSION_TTL_MS / 1000,
   },
 };
+
+// Sessions issued before the path change live in a Path=/admin cookie. A
+// response can only overwrite or expire a cookie whose path matches exactly,
+// so clearing the "/" cookie alone would leave that one behind — still valid
+// for /admin pages after logout. This Set-Cookie value expires it.
+export const LEGACY_COOKIE_PATH = "/admin";
+
+export function legacySessionCookieClearHeader(): string {
+  const parts = [
+    `${COOKIE_NAME}=`,
+    `Path=${LEGACY_COOKIE_PATH}`,
+    "Max-Age=0",
+    "Expires=Thu, 01 Jan 1970 00:00:00 GMT",
+    "HttpOnly",
+    "SameSite=strict",
+  ];
+  if (SESSION_COOKIE.options.secure) parts.push("Secure");
+  return parts.join("; ");
+}
