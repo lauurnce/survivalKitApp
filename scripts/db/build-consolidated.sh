@@ -19,6 +19,7 @@ cd "$(dirname "$0")/../.."
 # migrations go back here in version order. An empty array is a healthy state
 # — the artifact degenerates to its header and the CI jobs remain meaningful.
 pending=(
+  supabase/migrations/20260904000001_lock_down_untracked_definer_rpcs.sql
 )
 
 if [ "${1:-}" = "--list" ]; then
