@@ -40,9 +40,14 @@ export function couponDiscountFor(plan: PlanKey): number {
 // client-side copy (this file pulls in node:crypto) — keep the numbers equal.
 export const MAX_SEATS = 55;
 
-// End of 1st Semester AY 2026-27: Dec 31, 2026 23:59 PH (UTC+8).
-// Bump once per semester when the selling window rolls over.
-export const SEMESTER_END = new Date("2026-12-31T15:59:59Z");
+// End of 1st Semester AY 2026-27 access: Jan 31, 2027 23:59 PH (UTC+8).
+// Deliberately past the calendar year: PUP's first-semester finals run
+// ~Jan 12-17, 2027 (docs/gtm/academic-calendars-ay2026-27.md), so a Dec 31
+// cut-off would lock payers out right before their exam.
+// Bump once per semester when the selling window rolls over, and update the
+// hand-typed "Jan 31" copy in SubscribeGate.tsx and account/SubscribeModals.tsx
+// in the same change.
+export const SEMESTER_END = new Date("2027-01-31T15:59:59Z");
 
 const PERIOD_31_DAYS_MS = 31 * 24 * 60 * 60 * 1000;
 

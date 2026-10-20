@@ -130,9 +130,9 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
                 ★ Most Popular
               </span>
             </div>
-            {/* "Dec 31" is hand-typed — keep in sync with SEMESTER_END in lib/paymongo.ts */}
+            {/* "Jan 31" is hand-typed — keep in sync with SEMESTER_END in lib/paymongo.ts */}
             <p className="font-sans text-sm text-ink-muted">
-              {subjectTitle ?? "This subject"} until Dec 31 — covers prelims,
+              {subjectTitle ?? "This subject"} until Jan 31 — covers prelims,
               midterms, and finals
             </p>
           </div>
@@ -160,9 +160,9 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
                 Best Value
               </span>
             </div>
-            {/* "Dec 31" is hand-typed — keep in sync with SEMESTER_END in lib/paymongo.ts */}
+            {/* "Jan 31" is hand-typed — keep in sync with SEMESTER_END in lib/paymongo.ts */}
             <p className="font-sans text-sm text-ink-muted">
-              All subjects in {yearLabel ?? "this year"} until Dec 31
+              All subjects in {yearLabel ?? "this year"} until Jan 31
             </p>
           </div>
           <div className="flex items-baseline gap-2 mt-auto">
