@@ -125,6 +125,29 @@ function signedRequest(remarks: string, amount: number) {
   } as unknown as import("next/server").NextRequest;
 }
 
+function livemodeRequest(livemode: boolean) {
+  const body = JSON.stringify({
+    data: {
+      id: "evt_test_livemode",
+      attributes: {
+        type: "checkout_session.payment.paid",
+        livemode,
+        data: { id: "cs_test_livemode", attributes: { remarks: `year:${YEAR} device:${DEV}` } },
+      },
+    },
+  });
+  const t = Math.floor(Date.now() / 1000);
+  const hmac = crypto.createHmac("sha256", SECRET).update(`${t}.${body}`).digest("hex");
+  const ip = `10.2.2.${ipCounter++ % 250}`;
+  return {
+    text: () => Promise.resolve(body),
+    headers: {
+      get: (h: string) =>
+        h === "paymongo-signature" ? `t=${t},te=${hmac},li=${hmac}` : ip,
+    },
+  } as unknown as import("next/server").NextRequest;
+}
+
 function checkoutSessionRequest(sessionId: string) {
   const body = JSON.stringify({
     data: {
@@ -175,7 +198,74 @@ describe("webhook configuration", () => {
       expect(res.status).toBe(503);
       expect(json).toEqual({ error: "Webhook unavailable" });
       expect(recorded).toHaveLength(0);
-      expect(consoleError).toHaveBeenCalled();
+      expect(consoleError).toHaveBeenCalledWith(expect.stringContaining("PAYMONGO_LIVEMODE"));
+      expect(consoleError).toHaveBeenCalledWith(expect.stringContaining("got nothing"));
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
+  it("fails closed and logs the bad value when PAYMONGO_LIVEMODE is invalid", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.stubEnv("PAYMONGO_LIVEMODE", "TRUE");
+
+    try {
+      const res = await POST(signedRequest(`year:${YEAR} device:${DEV}`, 4900));
+      expect(res.status).toBe(503);
+      expect(recorded).toHaveLength(0);
+      expect(consoleError).toHaveBeenCalledTimes(1);
+      expect(consoleError.mock.calls[0][0]).toContain('got "TRUE"');
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
+  it("acks a live event in test mode with 200 but logs the discard at error level", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const sessionSpy = vi.fn(async () => null);
+    checkoutSessionMock = sessionSpy;
+
+    try {
+      const res = await POST(livemodeRequest(true));
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual({ ok: true, ignored: "livemode" });
+      expect(recorded).toHaveLength(0);
+      expect(sessionSpy).not.toHaveBeenCalled();
+      expect(consoleError).toHaveBeenCalledTimes(1);
+      const line = consoleError.mock.calls[0][0] as string;
+      expect(line).toContain("id=evt_test_livemode");
+      expect(line).toContain("type=checkout_session.payment.paid");
+      expect(line).toContain("event.livemode=true");
+      expect(line).toContain("PAYMONGO_LIVEMODE=false");
+      // Signed payload contents (remarks carry device ids) never reach the log.
+      expect(line).not.toContain(DEV);
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
+  it("logs a test-mode event discarded by a live deployment", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.stubEnv("PAYMONGO_LIVEMODE", "true");
+
+    try {
+      const res = await POST(livemodeRequest(false));
+      expect(res.status).toBe(200);
+      expect(recorded).toHaveLength(0);
+      const line = consoleError.mock.calls[0][0] as string;
+      expect(line).toContain("event.livemode=false");
+      expect(line).toContain("PAYMONGO_LIVEMODE=true");
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
+  it("does not log on a matching livemode", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const res = await POST(signedRequest(`year:${YEAR} subject:${SUBJ} device:${DEV} plan:subject_sem`, 9900));
+      expect(res.status).toBe(200);
+      expect(consoleError).not.toHaveBeenCalledWith(expect.stringContaining("livemode mismatch"));
     } finally {
       consoleError.mockRestore();
     }

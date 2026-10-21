@@ -36,6 +36,8 @@ const limiter = createRateLimiter(60);
 
 interface PaymongoEvent {
   data: {
+    // The event's own id (evt_...). Logged for traceability only.
+    id?: string;
     attributes: {
       type: string;
       livemode: boolean;
@@ -63,7 +65,14 @@ export async function POST(req: NextRequest) {
 
   const expectedLivemode = getExpectedLivemode();
   if (expectedLivemode === null) {
-    console.error('PAYMONGO_LIVEMODE must be explicitly set to "true" or "false"');
+    // Every delivery 503s until this is fixed, and PayMongo eventually stops
+    // retrying — so this line is the only trace of payments that never landed.
+    const raw = process.env.PAYMONGO_LIVEMODE;
+    console.error(
+      `[paymongo-webhook] PAYMONGO_LIVEMODE must be explicitly set to "true" or "false"; ` +
+        `got ${raw === undefined || raw === "" ? "nothing" : JSON.stringify(raw.slice(0, 16))}. ` +
+        `Responding 503 — this delivery is NOT processed.`
+    );
     return NextResponse.json({ error: "Webhook unavailable" }, { status: 503 });
   }
 
@@ -87,7 +96,15 @@ export async function POST(req: NextRequest) {
   const { type: eventType, livemode } = event.data.attributes;
 
   // livemode mismatch: acknowledge (2xx) so PayMongo stops retrying, but don't act.
+  // Logged at error level: a live payment discarded here (PAYMONGO_LIVEMODE
+  // left at "false" in production) is a paid customer with no access, and
+  // the 200 means PayMongo will never redeliver it.
   if (livemode !== expectedLivemode) {
+    console.error(
+      `[paymongo-webhook] Discarded event on livemode mismatch: ` +
+        `id=${event.data.id ?? "unknown"} type=${eventType} ` +
+        `event.livemode=${String(livemode)} PAYMONGO_LIVEMODE=${String(expectedLivemode)}`
+    );
     return NextResponse.json({ ok: true, ignored: "livemode" });
   }
 
