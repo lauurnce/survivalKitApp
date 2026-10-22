@@ -8,6 +8,11 @@
  * Vercel deployment state, runtime errors, and log counts are deliberately
  * absent: those come from MCP tools, which a Node process cannot reach. PULSE
  * gathers them itself and merges them with this file.
+ *
+ * One database read: head:true counts of zero-amount coupon unlocks in the
+ * payments ledger (lib/reports/zeroAmountUnlocks.ts). Counts only — no rows.
+ * If .env.reports.local is missing or the count fails, those rows read
+ * `not read` and the rest of the run is unaffected.
  */
 
 import { execFileSync } from "node:child_process";
@@ -16,6 +21,14 @@ import { join } from "node:path";
 import { diffMetrics, renderMetricsTable, type Metric } from "../../lib/reports/metrics";
 import { archiveExistingRun } from "../../lib/reports/runArchive";
 import { readPreviousRun } from "../../lib/reports/previousRun";
+import {
+  COUPON_LINK_PREFIX,
+  ZERO_AMOUNT_WINDOW_DAYS,
+  zeroAmountMetrics,
+  zeroAmountSignal,
+  type ZeroAmountCounts,
+} from "../../lib/reports/zeroAmountUnlocks";
+import { countRows, loadReportsEnv, reportsClient } from "./supabaseClient";
 
 const PRODUCTION = "https://survival-kit-app.vercel.app";
 const ROUTES = ["/", "/login", "/year", "/for-blocks"];
@@ -118,7 +131,34 @@ function migrationInventory(): { count: number; latest: string | null } {
   }
 }
 
-function main(): void {
+/**
+ * Counts free coupon unlocks (amount 0, link id `coupon:%`) in the last
+ * window and all time. Degrades to nulls rather than failing the run: ops
+ * health must still be reported when the ledger cannot be reached.
+ */
+async function zeroAmountCounts(now: Date): Promise<{ counts: ZeroAmountCounts; error: string | null }> {
+  try {
+    loadReportsEnv();
+    const client = reportsClient();
+    const since = new Date(now.getTime() - ZERO_AMOUNT_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const freeUnlocks = (query: any) =>
+      query.eq("amount", 0).like("paymongo_link_id", `${COUPON_LINK_PREFIX}%`);
+    const [lastWindow, allTime] = await Promise.all([
+      countRows(client, "payments", (q) => freeUnlocks(q).gte("paid_at", since.toISOString())),
+      countRows(client, "payments", freeUnlocks),
+    ]);
+    const error = lastWindow === null || allTime === null ? "payments count unavailable" : null;
+    return { counts: { lastWindow, allTime }, error };
+  } catch (error) {
+    return {
+      counts: { lastWindow: null, allTime: null },
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+async function main(): Promise<void> {
   const started = Date.now();
 
   // No local build. `npm run build` needs Supabase credentials that .env.local
@@ -135,6 +175,8 @@ function main(): void {
   const cache = checkCache(CACHE_CANARY);
   const outdated = outdatedPackages();
   const migrations = migrationInventory();
+  const zeroAmount = await zeroAmountCounts(new Date());
+  const freeUnlocks = zeroAmountSignal(zeroAmount.counts);
 
   const metrics: Metric[] = [
     ...routes.map((route) => ({
@@ -149,6 +191,7 @@ function main(): void {
     { label: "Test suite time", value: Math.round(commands[0].ms / 1000), unit: "s" },
     { label: "Outdated packages", value: outdated.length },
     { label: "Migration files", value: migrations.count },
+    ...zeroAmountMetrics(freeUnlocks),
     // Read by eye at vercel.com/lauurnces-projects/~/usage. Never estimated.
     { label: "Active CPU / 4h", value: null },
   ];
@@ -177,7 +220,13 @@ function main(): void {
     metrics,
     previousDate: previous?.key ?? null,
     table,
-    raw: { routes, cache, outdated, migrations },
+    raw: {
+      routes,
+      cache,
+      outdated,
+      migrations,
+      freeUnlocks: { ...freeUnlocks, error: zeroAmount.error },
+    },
   };
 
   // A second run today would land on the same filename. Displace the earlier
@@ -193,4 +242,7 @@ function main(): void {
   }
 }
 
-main();
+main().catch((error: unknown) => {
+  console.error(error instanceof Error ? error.message : error);
+  process.exitCode = 1;
+});

@@ -1051,8 +1051,15 @@ describe("periodEndFor", () => {
     expect(periodEndFor("year_sem", from).getTime()).toBe(SEMESTER_END.getTime());
   });
 
+  it("ends 1st semester AY 2026-27 access on Jan 31, 2027 23:59 PH", () => {
+    // Past PUP's mid-January finals. The UI copy ("until Jan 31") in
+    // SubscribeGate.tsx and account/SubscribeModals.tsx is hand-typed against
+    // this value; change them together.
+    expect(SEMESTER_END.toISOString()).toBe("2027-01-31T15:59:59.000Z");
+  });
+
   it("floors semester plans at 31 days when SEMESTER_END is stale", () => {
-    const from = new Date("2026-12-25T00:00:00Z"); // < 31 days before SEMESTER_END
+    const from = new Date("2027-01-25T00:00:00Z"); // < 31 days before SEMESTER_END
     expect(periodEndFor("subject_sem", from).getTime()).toBe(from.getTime() + 31 * DAY_MS);
   });
 });
