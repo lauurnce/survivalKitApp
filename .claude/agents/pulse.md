@@ -283,6 +283,12 @@ the collector only counts local migration files — neither can see whether the 
 itself is paused. It surfaces only indirectly, once the live site starts erroring. A
 clean report is not proof the database is awake.
 
+**Free coupon unlocks is not P0.** The `Free unlocks >3/7d` row reads `FLAG` when
+more than 3 zero-amount `coupon:` payments landed in the last 7 days. That is free
+access granted at volume — a coupon leak or a validation regression — and it never
+shows in revenue. Open it as a P1 finding (`free-unlock-spike`) and name the count;
+`not read` means `.env.reports.local` was missing or the count failed, not zero.
+
 Everything else is planned work. Label it as such.
 
 ## Disclosure
