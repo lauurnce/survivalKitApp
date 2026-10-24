@@ -21,8 +21,6 @@ interface Result {
 }
 
 interface ReviewQuizProps {
-  moduleId?: string;
-  moduleTitle?: string;
   subjectId?: string;
   subjectTitle?: string;
 }
@@ -34,38 +32,23 @@ function correctAnswerText(q: QuizQuestion): string {
   return q.kind === "multi-choice" ? q.options[q.answerIndex] : q.answer;
 }
 
-function buildQuizUrl(moduleId: string | undefined, subjectId: string | undefined, seed?: number): string {
+function buildQuizUrl(subjectId: string | undefined, seed?: number): string {
   if (subjectId) {
     const base = `/api/quiz/subject/${subjectId}`;
-    return seed !== undefined ? `${base}?seed=${seed}` : base;
-  }
-  if (moduleId) {
-    const base = `/api/quiz/module/${moduleId}`;
     return seed !== undefined ? `${base}?seed=${seed}` : base;
   }
   return seed !== undefined ? `/api/quiz?seed=${seed}` : "/api/quiz";
 }
 
-function buildSubmitUrl(moduleId: string | undefined, subjectId: string | undefined): string {
-  if (subjectId) {
-    return `/api/quiz/subject/${subjectId}/submit`;
-  }
-  return moduleId ? `/api/quiz/module/${moduleId}/submit` : "/api/quiz/submit";
+function buildSubmitUrl(subjectId: string | undefined): string {
+  return subjectId ? `/api/quiz/subject/${subjectId}/submit` : "/api/quiz/submit";
 }
 
-function getBackLink(moduleId: string | undefined, subjectId: string | undefined): string {
-  if (subjectId) return "/resources";
-  if (moduleId) return "/resources";
-  return "/resources";
+function getBackLinkLabel(subjectId: string | undefined): string {
+  return subjectId ? "← Back to Quizzes" : "← Back to Resources";
 }
 
-function getBackLinkLabel(moduleId: string | undefined, subjectId: string | undefined): string {
-  if (subjectId) return "← Back to Quizzes";
-  if (moduleId) return "← Back to Quizzes";
-  return "← Back to Resources";
-}
-
-export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: ReviewQuizProps) {
+export function ReviewQuiz({ subjectId, subjectTitle }: ReviewQuizProps) {
   const [fetchState, setFetchState] = useState<FetchState>({ status: "loading" });
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<"answering" | "feedback">("answering");
@@ -78,9 +61,8 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
   const inputRef = useRef<HTMLInputElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
 
-  const isModuleMode = !!moduleId;
   const isSubjectMode = !!subjectId;
-  const isLegacyMode = !moduleId && !subjectId;
+  const isLegacyMode = !subjectId;
 
   const loadQuiz = useCallback(async (seed?: number) => {
     const id = ++requestIdRef.current;
@@ -92,7 +74,7 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
     setResults([]);
     if (seed !== undefined) setLastSeed(seed);
     try {
-      const url = buildQuizUrl(moduleId, subjectId, seed);
+      const url = buildQuizUrl(subjectId, seed);
       const res = await fetch(url);
       if (!res.ok) throw new Error(`quiz fetch failed: ${res.status}`);
       const data = (await res.json()) as QuizResponse;
@@ -105,7 +87,7 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
     } catch {
       if (id === requestIdRef.current) setFetchState({ status: "error" });
     }
-  }, [moduleId, subjectId]);
+  }, [subjectId]);
 
   const initialLoadRef = useRef(true);
 
@@ -136,7 +118,7 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
     }));
 
     try {
-      await fetch(buildSubmitUrl(moduleId, subjectId), {
+      await fetch(buildSubmitUrl(subjectId), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -180,16 +162,10 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
   }
 
   function frame(children: React.ReactNode, headerRight?: React.ReactNode) {
-    const kickerText = isSubjectMode
-      ? "Subject Quiz"
-      : isModuleMode
-      ? "Module Quiz"
-      : "Review Quiz";
+    const kickerText = isSubjectMode ? "Subject Quiz" : "Review Quiz";
 
     const subtitle = isSubjectMode && subjectTitle
       ? `Questions from ${subjectTitle} (all completed modules)`
-      : isModuleMode && moduleTitle && subjectTitle
-      ? `Questions from ${moduleTitle} · ${subjectTitle}`
       : "Questions drawn from lessons you&apos;ve completed.";
 
     return (
@@ -237,8 +213,6 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
         {fetchState.reason === "no-progress"
           ? isSubjectMode
             ? "No completed modules in this subject yet."
-            : isModuleMode
-            ? "This module isn't marked complete yet."
             : "Finish your first module and a review quiz will appear here."
           : "This module doesn't have enough quiz material yet."}
       </p>
@@ -325,13 +299,13 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
         </ul>
 
         <div className="flex flex-wrap gap-3">
-          {(isModuleMode || isSubjectMode) ? (
+          {isSubjectMode ? (
             <>
               <Link
-                href={getBackLink(moduleId, subjectId)}
+                href="/resources"
                 className="rounded-lg border border-taupe/60 px-4 py-2 text-sm text-ink hover:border-accent/60 hover:text-accent transition-colors"
               >
-                {getBackLinkLabel(moduleId, subjectId)}
+                {getBackLinkLabel(subjectId)}
               </Link>
               <button
                 type="button"
@@ -488,7 +462,7 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
             type="button"
             ref={nextRef}
             onClick={() => {
-              if (index + 1 === total && (isModuleMode || isSubjectMode)) {
+              if (index + 1 === total && isSubjectMode) {
                 void submitResults();
               }
               next(total);
