@@ -185,7 +185,6 @@ export const ROUTE_EXPECTATIONS: Record<string, Expectation> = {
   "/api/feedback/user": { auth: ["user"], rateLimit: false, validation: false },
   "/api/me": { auth: ["user"], rateLimit: false, validation: false },
   "/api/progress": { auth: ["device", "user"], rateLimit: true, validation: true },
-  "/api/quiz": { auth: ["user"], rateLimit: false, validation: true },
   "/api/quiz/subjects": { auth: ["user"], rateLimit: false, validation: true },
   "/api/quiz/subject/[subjectId]": { auth: ["user"], rateLimit: false, validation: true },
   "/api/quiz/subject/[subjectId]/submit": { auth: ["user"], rateLimit: false, validation: true },

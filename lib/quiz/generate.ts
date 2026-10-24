@@ -1,5 +1,5 @@
 // Deterministic quiz generation from lesson markdown. Pure functions, no I/O:
-// the API route (app/api/quiz/route.ts) fetches sections and calls buildQuiz.
+// the API route (app/api/quiz/subject/[subjectId]/route.ts) fetches sections and calls buildQuiz.
 
 import type {
   CodeBlankQuestion,

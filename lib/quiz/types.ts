@@ -1,5 +1,5 @@
 // Shared contract between the quiz generator (lib/quiz/generate.ts), the
-// API route (app/api/quiz/route.ts), and the UI (components/account/ReviewQuiz.tsx).
+// API route (app/api/quiz/subject/[subjectId]/route.ts), and the UI (components/account/ReviewQuiz.tsx).
 
 /** Where a question came from, so feedback can point back to the lesson. */
 export interface SourceRef {
@@ -40,7 +40,7 @@ export type QuizQuestion =
   | MultiChoiceQuestion
   | CodeBlankQuestion;
 
-/** Response shape of GET /api/quiz. */
+/** Response shape of GET /api/quiz/subject/[subjectId]. */
 export interface QuizResponse {
   questions: QuizQuestion[];
   /** Present when questions is empty. */
