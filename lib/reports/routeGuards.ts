@@ -166,13 +166,11 @@ export interface Expectation {
  */
 export const ROUTE_EXPECTATIONS: Record<string, Expectation> = {
   "/api/account/delete": { auth: ["user"], rateLimit: true, validation: false, note: "Identity comes only from the session; there is no client-suppliable id to validate." },
-  "/api/activity/[sectionId]": { auth: ["device", "user"], rateLimit: false, validation: true, note: "Serves paid activity bodies; entitlement is checked before the body is returned." },
   "/api/admin/feedback": { auth: ["admin"], rateLimit: false, validation: false },
   "/api/admin/grant-class": { auth: ["admin"], rateLimit: false, validation: true },
   "/api/admin/login": { auth: "none", rateLimit: true, validation: true, note: "Issues the session, so it cannot require one. The lockout RPC is the guard." },
   "/api/admin/logout": { auth: "none", rateLimit: false, validation: false, note: "Must work with an expired session so the cookie can always be cleared." },
   "/api/admin/reconcile": { auth: ["admin"], rateLimit: false, validation: true },
-  "/api/admin/unlock": { auth: ["admin"], rateLimit: false, validation: false },
   "/api/class/[code]/rep": { auth: ["device"], rateLimit: false, validation: true },
   "/api/class/[code]/rep/decide": { auth: ["device"], rateLimit: false, validation: true },
   "/api/class/[code]/request": { auth: ["device"], rateLimit: true, validation: true },

@@ -119,7 +119,7 @@ export const CONTROLS: readonly Control[] = [
     id: "BASE-04",
     group: "BASELINE",
     title: "UNLOCK_ALL cannot be enabled in production",
-    file: "lib/unlocks.ts",
+    file: "lib/subscriptions.ts",
     baselineTask: 2,
     signals: [
       { label: "flag read", pattern: /UNLOCK_ALL/ },
