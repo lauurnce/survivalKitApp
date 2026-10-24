@@ -210,21 +210,6 @@ export const CONTROLS: readonly Control[] = [
       "The admin surface would rely entirely on each page and route remembering to check for itself, with no layer beneath them.",
   },
   {
-    id: "BASE-11",
-    group: "BASELINE",
-    title: "Sandboxed programs run under resource limits",
-    file: "lib/ide/sandboxRunner.ts",
-    baselineTask: 3,
-    signals: [
-      { label: "cpu limit", pattern: /ulimit[^"`\n]*-t\s+\d+/ },
-      { label: "memory limit", pattern: /-v\s+\d+/ },
-      { label: "process limit", pattern: /-u\s+\d+/ },
-      { label: "file size limit", pattern: /-f\s+\d+/ },
-    ],
-    absentMeans:
-      "A submitted program could consume CPU, memory, process slots or disk without a ceiling.",
-  },
-  {
     id: "BASE-12",
     group: "BASELINE",
     title: "Execution route declares a duration ceiling and payload caps",
@@ -408,30 +393,6 @@ export const CONTROLS: readonly Control[] = [
     ],
     absentMeans:
       "A caller-supplied language identifier would reach the execution backend unfiltered.",
-  },
-  {
-    id: "EXEC-04",
-    group: "EXECUTION",
-    title: "Sandbox lifetime is bounded and teardown always runs",
-    file: "lib/ide/sandboxRunner.ts",
-    signals: [
-      { label: "creation timeout", pattern: /timeout:\s*\d+/ },
-      { label: "teardown in finally", pattern: /finally\s*\{[\s\S]*?\.stop\(\)/ },
-    ],
-    absentMeans:
-      "A sandbox could outlive the request that created it, and a failure mid-run would leak the microVM rather than reclaim it.",
-  },
-  {
-    id: "EXEC-05",
-    group: "EXECUTION",
-    title: "JVM heap and stack are capped inside the sandbox",
-    file: "lib/ide/sandboxRunner.ts",
-    signals: [
-      { label: "heap cap", pattern: /-Xmx\d+[a-zA-Z]/ },
-      { label: "stack cap", pattern: /-Xss\d+[a-zA-Z]/ },
-    ],
-    absentMeans:
-      "The JVM would size itself against the whole machine, so the process-level limits would be reached by way of a crash rather than a rejection.",
   },
   {
     id: "EXEC-06",
@@ -732,12 +693,6 @@ export const EXECUTOR_INVENTORY: readonly Executor[] = [
     language: "C and Java",
     runtime: "remote execution service via /api/run",
     boundBy: ["BASE-12", "EXEC-01", "EXEC-02", "EXEC-03"],
-  },
-  {
-    id: "vercel-sandbox",
-    language: "C and Java",
-    runtime: "Vercel Sandbox microVM",
-    boundBy: ["BASE-11", "EXEC-04", "EXEC-05"],
   },
 ];
 

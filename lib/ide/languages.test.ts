@@ -11,11 +11,9 @@ describe("language registry", () => {
     expect(LANGUAGES.sql.runtime).toBe("browser");
   });
 
-  it("marks java and c as server runtimes with piston config", () => {
+  it("marks java and c as server runtimes", () => {
     expect(LANGUAGES.java.runtime).toBe("server");
     expect(LANGUAGES.c.runtime).toBe("server");
-    expect(LANGUAGES.java.piston?.language).toBe("java");
-    expect(LANGUAGES.c.piston?.language).toBe("c");
   });
 
   it("getLanguage returns the language for a valid id", () => {

@@ -12,8 +12,6 @@ export interface Language {
   starter: string;          // default code shown in a fresh editor
   /** Lazy CodeMirror language extension (dynamic import → smaller bundles). */
   loadExtension: () => Promise<Extension>;
-  /** Piston language name + version (server runtimes only). */
-  piston?: { language: string; version: string; filename: string };
 }
 
 export interface RunRequest {
