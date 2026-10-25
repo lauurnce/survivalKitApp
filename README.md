@@ -42,7 +42,7 @@ See [STORY.md](STORY.md) for the fuller narrative (device/university breakdowns,
 - **Next.js** (App Router) + **React** + **Tailwind CSS**
 - **Supabase** — Postgres, auth, RLS
 - **PayMongo** — one-time payment links (GCash-friendly)
-- **Vitest** — unit tests · **Pyodide / CodeMirror / Vercel Sandbox** — in-app code labs
+- **Vitest** — unit tests · **Pyodide / CodeMirror** — in-app code labs
 
 ## Getting started
 
