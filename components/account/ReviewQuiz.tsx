@@ -21,9 +21,7 @@ interface Result {
 }
 
 interface ReviewQuizProps {
-  moduleId?: string;
-  moduleTitle?: string;
-  subjectId?: string;
+  subjectId: string;
   subjectTitle?: string;
 }
 
@@ -34,38 +32,12 @@ function correctAnswerText(q: QuizQuestion): string {
   return q.kind === "multi-choice" ? q.options[q.answerIndex] : q.answer;
 }
 
-function buildQuizUrl(moduleId: string | undefined, subjectId: string | undefined, seed?: number): string {
-  if (subjectId) {
-    const base = `/api/quiz/subject/${subjectId}`;
-    return seed !== undefined ? `${base}?seed=${seed}` : base;
-  }
-  if (moduleId) {
-    const base = `/api/quiz/module/${moduleId}`;
-    return seed !== undefined ? `${base}?seed=${seed}` : base;
-  }
-  return seed !== undefined ? `/api/quiz?seed=${seed}` : "/api/quiz";
+function buildQuizUrl(subjectId: string, seed?: number): string {
+  const base = `/api/quiz/subject/${subjectId}`;
+  return seed !== undefined ? `${base}?seed=${seed}` : base;
 }
 
-function buildSubmitUrl(moduleId: string | undefined, subjectId: string | undefined): string {
-  if (subjectId) {
-    return `/api/quiz/subject/${subjectId}/submit`;
-  }
-  return moduleId ? `/api/quiz/module/${moduleId}/submit` : "/api/quiz/submit";
-}
-
-function getBackLink(moduleId: string | undefined, subjectId: string | undefined): string {
-  if (subjectId) return "/resources";
-  if (moduleId) return "/resources";
-  return "/resources";
-}
-
-function getBackLinkLabel(moduleId: string | undefined, subjectId: string | undefined): string {
-  if (subjectId) return "← Back to Quizzes";
-  if (moduleId) return "← Back to Quizzes";
-  return "← Back to Resources";
-}
-
-export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: ReviewQuizProps) {
+export function ReviewQuiz({ subjectId, subjectTitle }: ReviewQuizProps) {
   const [fetchState, setFetchState] = useState<FetchState>({ status: "loading" });
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<"answering" | "feedback">("answering");
@@ -78,9 +50,6 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
   const inputRef = useRef<HTMLInputElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
 
-  const isModuleMode = !!moduleId;
-  const isSubjectMode = !!subjectId;
-  const isLegacyMode = !moduleId && !subjectId;
 
   const loadQuiz = useCallback(async (seed?: number) => {
     const id = ++requestIdRef.current;
@@ -92,7 +61,7 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
     setResults([]);
     if (seed !== undefined) setLastSeed(seed);
     try {
-      const url = buildQuizUrl(moduleId, subjectId, seed);
+      const url = buildQuizUrl(subjectId, seed);
       const res = await fetch(url);
       if (!res.ok) throw new Error(`quiz fetch failed: ${res.status}`);
       const data = (await res.json()) as QuizResponse;
@@ -105,7 +74,7 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
     } catch {
       if (id === requestIdRef.current) setFetchState({ status: "error" });
     }
-  }, [moduleId, subjectId]);
+  }, [subjectId]);
 
   const initialLoadRef = useRef(true);
 
@@ -126,7 +95,6 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
   }, [fetchState.status, phase, index]);
 
   async function submitResults() {
-    if (isLegacyMode) return;
     if (results.length === 0) return;
 
     const answers = results.map((r, i) => ({
@@ -136,7 +104,7 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
     }));
 
     try {
-      await fetch(buildSubmitUrl(moduleId, subjectId), {
+      await fetch(`/api/quiz/subject/${subjectId}/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -180,17 +148,11 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
   }
 
   function frame(children: React.ReactNode, headerRight?: React.ReactNode) {
-    const kickerText = isSubjectMode
-      ? "Subject Quiz"
-      : isModuleMode
-      ? "Module Quiz"
-      : "Review Quiz";
+    const kickerText = "Subject Quiz";
 
-    const subtitle = isSubjectMode && subjectTitle
+    const subtitle = subjectTitle
       ? `Questions from ${subjectTitle} (all completed modules)`
-      : isModuleMode && moduleTitle && subjectTitle
-      ? `Questions from ${moduleTitle} · ${subjectTitle}`
-      : "Questions drawn from lessons you&apos;ve completed.";
+      : "Questions drawn from this subject's completed modules.";
 
     return (
       <section className="rounded-xl border border-taupe/40 bg-paper p-6">
@@ -235,11 +197,7 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
     return frame(
       <p className="text-sm text-ink-muted">
         {fetchState.reason === "no-progress"
-          ? isSubjectMode
-            ? "No completed modules in this subject yet."
-            : isModuleMode
-            ? "This module isn't marked complete yet."
-            : "Finish your first module and a review quiz will appear here."
+          ? "No completed modules in this subject yet."
           : "This module doesn't have enough quiz material yet."}
       </p>
     );
@@ -325,31 +283,19 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
         </ul>
 
         <div className="flex flex-wrap gap-3">
-          {(isModuleMode || isSubjectMode) ? (
-            <>
-              <Link
-                href={getBackLink(moduleId, subjectId)}
-                className="rounded-lg border border-taupe/60 px-4 py-2 text-sm text-ink hover:border-accent/60 hover:text-accent transition-colors"
-              >
-                {getBackLinkLabel(moduleId, subjectId)}
-              </Link>
-              <button
-                type="button"
-                onClick={() => void loadQuiz(Math.floor(Math.random() * 1e9))}
-                className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-paper hover:bg-accent-dark transition-colors"
-              >
-                Retry Quiz
-              </button>
-            </>
-          ) : (
-            <button
-              type="button"
-              onClick={() => void loadQuiz(Math.floor(Math.random() * 1e9))}
-              className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-paper hover:bg-accent-dark transition-colors"
-            >
-              Try another quiz
-            </button>
-          )}
+          <Link
+            href="/resources"
+            className="rounded-lg border border-taupe/60 px-4 py-2 text-sm text-ink hover:border-accent/60 hover:text-accent transition-colors"
+          >
+            ← Back to Quizzes
+          </Link>
+          <button
+            type="button"
+            onClick={() => void loadQuiz(Math.floor(Math.random() * 1e9))}
+            className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-paper hover:bg-accent-dark transition-colors"
+          >
+            Retry Quiz
+          </button>
         </div>
       </div>
     );
@@ -488,7 +434,7 @@ export function ReviewQuiz({ moduleId, moduleTitle, subjectId, subjectTitle }: R
             type="button"
             ref={nextRef}
             onClick={() => {
-              if (index + 1 === total && (isModuleMode || isSubjectMode)) {
+              if (index + 1 === total) {
                 void submitResults();
               }
               next(total);

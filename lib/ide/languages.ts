@@ -29,7 +29,6 @@ export const LANGUAGES: Record<LanguageId, Language> = {
       "    }\n" +
       "}\n",
     loadExtension: async () => (await import("@codemirror/lang-java")).java(),
-    piston: { language: "java", version: "15.0.2", filename: "Main.java" },
   },
   c: {
     id: "c",
@@ -42,7 +41,6 @@ export const LANGUAGES: Record<LanguageId, Language> = {
       "    return 0;\n" +
       "}\n",
     loadExtension: async () => (await import("@codemirror/lang-cpp")).cpp(),
-    piston: { language: "c", version: "10.2.0", filename: "main.c" },
   },
 };
 

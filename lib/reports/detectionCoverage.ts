@@ -94,17 +94,17 @@ export const DETECTION_MATRIX: readonly DetectionEntry[] = [
     id: "E4",
     escalation: "Sandbox escape, or unbounded resource consumption in code execution",
     wouldShow:
-      "Resource exhaustion surfaces as timed-out runs returned to the caller and as function duration on the platform. Teardown failures are logged. Escape itself would show only as anomalous outbound behaviour, which nothing here watches.",
+      "Resource exhaustion surfaces as timed-out runs returned to the caller and as function duration on the platform. Execution-service failures are logged. Escape itself would show only as anomalous outbound behaviour, which nothing here watches.",
     probes: [
       {
         label: "timeout is reported rather than swallowed",
         pattern: /timedOut:/,
-        file: "lib/ide/sandboxRunner.ts",
+        file: "app/api/run/route.ts",
       },
       {
-        label: "teardown failure is logged",
-        pattern: /console\.error\(\s*["']sandbox\.stop\(\) failed/,
-        file: "lib/ide/sandboxRunner.ts",
+        label: "execution-service failure is logged",
+        pattern: /console\.error\(\s*["']Execution service/,
+        file: "app/api/run/route.ts",
       },
       {
         label: "rate limiting produces a distinguishable status",
