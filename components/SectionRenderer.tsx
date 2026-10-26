@@ -7,6 +7,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+// Only the module reader renders math, so KaTeX styles load here, not globally.
+import "katex/dist/katex.min.css";
 import { LockedReviewer } from "./LockedReviewer";
 import { ProBadge } from "./ProBadge";
 import { LockIcon } from "./ProIcons";
