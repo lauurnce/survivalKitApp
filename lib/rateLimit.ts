@@ -1,7 +1,6 @@
-// In-memory, per-IP sliding-window rate limiter. Mirrors the pattern already
-// used across the public POST routes (events, progress, waitlist, run), but as
-// a shared helper so new endpoints stay consistent. Each limiter instance owns
-// its own bounded map.
+// In-memory, per-key sliding-window rate limiter shared by the public POST
+// routes (e.g. waitlist, run) so they stay consistent. Each limiter instance
+// owns its own bounded map.
 const MAX_MAP_SIZE = 10_000;
 
 export interface RateLimiter {

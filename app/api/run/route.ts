@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { truncateOutput } from "@/lib/ide/format";
 import type { LanguageId } from "@/lib/ide/types";
 import { DEVICE_COOKIE, verifyDeviceCookie } from "@/lib/auth/deviceCookie";
-import { getClientIp } from "@/lib/rateLimit";
+import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -23,25 +23,9 @@ const JUDGE0_LANG: Partial<Record<LanguageId, number>> = {
 // Judge0 instance; device alone doesn't stop many devices behind one IP.
 // Requiring a valid device identity also denies fully anonymous/scripted
 // callers that never picked up the bsit_device_id cookie in the first place.
-const runRateMap = new Map<string, number[]>();
-const RUN_WINDOW_MS = 60_000;
-const RUN_MAX_PER_WINDOW = 10;
-const MAX_MAP_SIZE = 5_000;
-
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-  if (runRateMap.size >= MAX_MAP_SIZE) {
-    for (const [k, ts] of runRateMap) {
-      if (ts.every((t) => now - t >= RUN_WINDOW_MS)) runRateMap.delete(k);
-      if (runRateMap.size < MAX_MAP_SIZE * 0.8) break;
-    }
-  }
-  const ts = (runRateMap.get(key) ?? []).filter((t) => now - t < RUN_WINDOW_MS);
-  if (ts.length >= RUN_MAX_PER_WINDOW) return true;
-  ts.push(now);
-  runRateMap.set(key, ts);
-  return false;
-}
+// One limiter holds both the IP key and the `device:` key: 10 runs/minute each.
+const runLimiter = createRateLimiter(10);
+const isRateLimited = (key: string) => runLimiter.check(key);
 
 // Judge0 requires the public class to be named "Main"
 function prepareJavaCode(code: string): string {

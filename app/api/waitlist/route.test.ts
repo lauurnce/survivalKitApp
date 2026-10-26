@@ -84,3 +84,18 @@ describe("POST /api/waitlist — device_id trust", () => {
     expect(upserts[0].device_id).toBe(DEVICE);
   });
 });
+
+describe("POST /api/waitlist — rate limit", () => {
+  it("429s the 11th signup from one IP within a minute", async () => {
+    const req = () =>
+      ({
+        json: () =>
+          Promise.resolve({ email: "a@b.com", name: "A", device_id: DEVICE, source: "coming_soon" }),
+        headers: { get: (h: string) => (h === "x-real-ip" ? "10.9.9.9" : "test-agent") },
+      }) as unknown as import("next/server").NextRequest;
+    for (let i = 0; i < 10; i++) {
+      expect((await POST(req())).status).toBe(200);
+    }
+    expect((await POST(req())).status).toBe(429);
+  });
+});

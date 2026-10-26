@@ -138,3 +138,31 @@ describe("POST /api/run — upstream failures", () => {
     }
   });
 });
+
+describe("POST /api/run — rate limit", () => {
+  it("429s the 11th run from one IP within a minute", async () => {
+    mockCookieValue = signDeviceCookie(DEVICE.replace(/^a/, "b"));
+    const req = () =>
+      ({
+        json: () => Promise.resolve({ languageId: "c", code: "int main(){}" }),
+        headers: { get: (h: string) => (h === "x-real-ip" ? "10.9.9.9" : null) },
+      }) as unknown as import("next/server").NextRequest;
+    for (let i = 0; i < 10; i++) {
+      mockJudge0Response();
+      expect((await POST(req())).status).not.toBe(429);
+    }
+    const res = await POST(req());
+    expect(res.status).toBe(429);
+    expect(res.headers.get("Retry-After")).toBe("60");
+  });
+
+  it("429s the 11th run from one device even across rotating IPs", async () => {
+    mockCookieValue = signDeviceCookie(DEVICE.replace(/^a/, "c"));
+    for (let i = 0; i < 10; i++) {
+      mockJudge0Response();
+      expect((await POST(makeReq({ languageId: "c", code: "int main(){}" }))).status).not.toBe(429);
+    }
+    const res = await POST(makeReq({ languageId: "c", code: "int main(){}" }));
+    expect(res.status).toBe(429);
+  });
+});
