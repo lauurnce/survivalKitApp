@@ -19,11 +19,12 @@ const FAQS: { question: string; answer: React.ReactNode }[] = [
     ),
   },
   {
-    question: "What does the waitlist email get used for?",
+    question: "What is my email used for?",
     answer: (
       <p>
-        We collect emails only to notify you when content is ready. We don&apos;t
-        sell or share your data. See the{" "}
+        Your email is collected when you create an account, so you can sign in
+        and keep your progress synced. We don&apos;t sell or share your data.
+        See the{" "}
         <Link
           href="/privacy"
           className="text-ink hover:text-accent transition-colors underline underline-offset-2"
@@ -65,9 +66,8 @@ const FAQS: { question: string; answer: React.ReactNode }[] = [
     question: "Some sections say \"coming soon\" — when will they be ready?",
     answer: (
       <p>
-        Content is being written year by year. A section marked &quot;coming
-        soon&quot; isn&apos;t ready yet &mdash; leave your email on that page and
-        we&apos;ll notify you the moment it is.
+        Every year is open now. A section marked &quot;coming soon&quot; is
+        still being written and will appear here as soon as it&apos;s ready.
       </p>
     ),
   },

@@ -134,7 +134,7 @@ export default async function LandingPage() {
           </span>
         </div>
         <p className="font-mono text-label-sm text-ink-faint">
-          We collect emails only to notify you when content is ready. We don&apos;t sell or share your data.
+          We don&apos;t sell or share your data.
         </p>
       </div>
       </div>
