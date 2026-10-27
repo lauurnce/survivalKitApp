@@ -4,10 +4,9 @@ import { getCurrentUserId } from "@/lib/auth/currentUser";
 import { getAccountOverview } from "@/lib/account";
 import { signOutAction } from "../../(auth)/actions";
 import { NavRail } from "@/components/dashboard/NavRail";
-import { SubjectQuizList } from "@/components/resources/SubjectQuizList";
 import { ResourcesTour } from "@/components/tour/ResourcesTour";
 
-// Session-aware (the review quiz is gated on sign-in) but still public —
+// Session-aware (nav rail progress, log out, the tour) but still public —
 // anonymous visitors are never redirected away.
 export const dynamic = "force-dynamic";
 
@@ -65,7 +64,7 @@ export default async function ResourcesPage() {
           <header className="space-y-2">
             <p className="label-sm">Study tools</p>
             <h1 className="font-serif text-display-md text-ink">Resources</h1>
-            <p className="text-ink-muted">Run code and quiz yourself on the modules you&apos;ve finished.</p>
+            <p className="text-ink-muted">Run code and find any lesson in the kit.</p>
           </header>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -83,29 +82,6 @@ export default async function ResourcesPage() {
               </Link>
             ))}
           </div>
-
-          <section className="space-y-3" data-tour="resources-quiz">
-            <div>
-              <p className="label-sm">Review</p>
-              <h2 className="font-serif text-lg text-ink">Quiz yourself on finished subjects</h2>
-            </div>
-            {userId ? (
-              <SubjectQuizList />
-            ) : (
-              <div className="rounded-xl border border-taupe/30 p-6 space-y-3">
-                <p className="text-sm text-ink-muted">
-                  Sign in to quiz yourself on the subjects you&apos;ve completed modules in.
-                </p>
-                <Link
-                  href="/login?next=/resources"
-                  prefetch={true}
-                  className="inline-block text-sm text-accent underline underline-offset-2 hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-                >
-                  Sign in &rarr;
-                </Link>
-              </div>
-            )}
-          </section>
         </main>
       </div>
     </div>

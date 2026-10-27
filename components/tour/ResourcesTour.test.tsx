@@ -10,7 +10,6 @@ function Anchors() {
     <>
       <a href="/playground" data-tour="resources-playground">playground card</a>
       <a href="/search" data-tour="resources-search">search card</a>
-      <section data-tour="resources-quiz">quiz section</section>
     </>
   );
 }
@@ -36,7 +35,7 @@ describe("ResourcesTour", () => {
     await act(async () => {});
 
     expect(screen.getByRole("heading", { name: "Code playground" })).toBeInTheDocument();
-    expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
   });
 
   it("never runs for an anonymous visitor (userId null)", async () => {
@@ -65,7 +64,7 @@ describe("ResourcesTour", () => {
     expect(screen.queryByRole("heading", { name: "Code playground" })).not.toBeInTheDocument();
   });
 
-  it("walks all 3 steps in order: playground, search, quiz", async () => {
+  it("walks both steps in order: playground, search", async () => {
     render(
       <>
         <Anchors />
@@ -77,31 +76,9 @@ describe("ResourcesTour", () => {
     expect(screen.getByRole("heading", { name: "Code playground" })).toBeInTheDocument();
     await clickNext();
     expect(screen.getByRole("heading", { name: "Search the kit" })).toBeInTheDocument();
-    await clickNext();
-    expect(screen.getByRole("heading", { name: "Quiz yourself" })).toBeInTheDocument();
+    expect(screen.getByText("Step 2 of 2")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Done" })).toBeInTheDocument();
-  });
-
-  it("anchors the quiz step to the section wrapper regardless of signed-in/anon quiz content", async () => {
-    // Simulates the anon rendering of the quiz section (sign-in prompt
-    // instead of <SubjectQuizList />) — same data-tour target either way.
-    render(
-      <>
-        <a href="/playground" data-tour="resources-playground">playground card</a>
-        <a href="/search" data-tour="resources-search">search card</a>
-        <section data-tour="resources-quiz">
-          <p>Sign in to quiz yourself.</p>
-        </section>
-        <ResourcesTour userId={USER_ID} />
-      </>
-    );
-    await act(async () => {});
-
-    await clickNext(); // playground -> search
-    await clickNext(); // search -> quiz
-
-    expect(screen.getByRole("heading", { name: "Quiz yourself" })).toBeInTheDocument();
-    expect(screen.getByText("Step 3 of 3")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Quiz yourself" })).not.toBeInTheDocument();
   });
 
   it("marks the tour done and closes it when Skip is used, and only touches this tour's key", async () => {
