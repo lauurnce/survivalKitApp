@@ -55,6 +55,13 @@ describe("PaywallTeaser", () => {
     expect(container.textContent).not.toContain("₱");
   });
 
+  it("no longer advertises block pricing", () => {
+    const { container } = render(
+      <PaywallTeaser yearId={YEAR} subjectId={SUBJECT} subjectTitle="CP1" reviewerCount={12} />
+    );
+    expect(container.querySelector('a[href="/for-blocks"]')).toBeNull();
+  });
+
   it("defaults its CTA to /unlock, carrying the current module path as the return trip", () => {
     render(<PaywallTeaser yearId={YEAR} subjectId={SUBJECT} subjectTitle="CP1" />);
 

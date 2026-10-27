@@ -63,12 +63,6 @@ export function PaywallTeaser({ yearId, subjectId, subjectTitle, from, reviewerC
       >
         Unlock reviewers →
       </Link>
-      <p className="font-sans text-sm text-ink-faint mt-3">
-        Buying for your block?{" "}
-        <Link href="/for-blocks" className="text-ink hover:text-accent transition-colors underline underline-offset-2">
-          See block pricing →
-        </Link>
-      </p>
     </div>
   );
 }

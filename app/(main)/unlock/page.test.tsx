@@ -204,6 +204,11 @@ describe("UnlockPage — return path binding", () => {
     expect(container.textContent).not.toContain(FOREIGN_MODULE_TITLE);
   });
 
+  it("no longer links to block pricing", async () => {
+    const { container } = await renderPage({ year: YEAR, subject: SUBJECT });
+    expect(container.querySelector('a[href="/for-blocks"]')).toBeNull();
+  });
+
   it("scopes every module read to this subject", async () => {
     const crafted = `/year/${YEAR}/subjects/${SUBJECT}/modules/${OTHER_MODULE}`;
     await renderPage({ year: YEAR, subject: SUBJECT, from: crafted });

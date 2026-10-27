@@ -201,19 +201,6 @@ export default async function UnlockPage({ searchParams }: Props) {
               </p>
             </>
           )}
-
-          <div className="mt-10 border-t border-ink-faint/25 pt-6">
-            <p className="font-sans text-sm text-ink-faint">
-              Buying for your block?{" "}
-              <Link
-                href="/for-blocks"
-                prefetch={true}
-                className="text-ink hover:text-accent transition-colors underline underline-offset-2"
-              >
-                See block pricing →
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
     </main>
