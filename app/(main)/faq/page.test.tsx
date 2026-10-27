@@ -16,13 +16,13 @@ describe("FaqPage", () => {
     expect(screen.getByText(/free to read/i)).toBeInTheDocument();
   });
 
-  it("answers what the waitlist email is used for, grounded in the homepage footer copy", () => {
-    render(<FaqPage />);
-    expect(screen.getByText(/what does the waitlist email get used for/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/we collect emails only to notify you when content is ready/i)
-    ).toBeInTheDocument();
+  it("answers what your email is used for, without advertising the retired waitlist", () => {
+    const { container } = render(<FaqPage />);
+    expect(screen.getByText(/what is my email used for/i)).toBeInTheDocument();
+    expect(screen.getByText(/collected when you create an account/i)).toBeInTheDocument();
     expect(screen.getByText(/we don.t sell or share your data/i)).toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/waitlist/i);
+    expect(container.textContent).not.toMatch(/leave your email/i);
   });
 
   it("answers whether an account is needed to read modules", () => {

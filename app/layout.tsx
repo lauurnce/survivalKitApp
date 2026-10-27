@@ -4,7 +4,6 @@ import { headers } from "next/headers";
 import { viewportConfig } from "@/lib/viewport";
 import { Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
-import "katex/dist/katex.min.css";
 import "./globals.css";
 
 const fraunces = Fraunces({

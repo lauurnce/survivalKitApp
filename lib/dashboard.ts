@@ -250,11 +250,11 @@ export function deriveMilestoneState(
 // ─── Activity & Subscription Types (Roadmap v2) ────────────────────────────────
 
 export interface ActivityWeek {
-  weekStart: string;
-  activeDays: number;
+  weekStart: string;      // ISO date (Monday)
+  activeDays: number;     // 0-7
   totalEvents: number;
   days: Array<{
-    date: string;
+    date: string;         // ISO date
     isActive: boolean;
     eventCount: number;
   }>;
@@ -262,7 +262,7 @@ export interface ActivityWeek {
 
 export interface ActivityData {
   weeks: ActivityWeek[];
-  currentStreak: number;
+  currentStreak: number;    // consecutive active days ending today/yesterday
   longestStreak: number;
   totalActiveDays: number;
 }
@@ -275,7 +275,7 @@ export interface SubscriptionTimelineItem {
   startedAt: string;
   endsAt: string;
   daysRemaining: number;
-  progressPct: number;
+  progressPct: number;    // elapsed / total period
   isActive: boolean;
 }
 

@@ -20,7 +20,7 @@ const MoonIcon = () => (
   </svg>
 );
 
-function toggleTheme() {
+export function toggleTheme() {
   const next = !document.documentElement.classList.contains("dark");
   document.documentElement.classList.toggle("dark", next);
   try {
@@ -32,7 +32,7 @@ function toggleTheme() {
 
 // Both icons are always rendered and swapped purely via the `dark` class, so
 // the button never flashes the wrong icon while React hydrates.
-function ThemeIcon() {
+export function ThemeIcon() {
   return (
     <>
       <span className="dark:hidden" aria-hidden="true">

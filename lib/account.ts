@@ -1,6 +1,18 @@
 import { createServerClient } from "./supabase/server";
 import { isUuid } from "./validation";
-import type { RoadmapData, RoadmapMilestone, MilestoneSubject, ModuleProgress } from "./dashboard";
+import type {
+  ActivityData,
+  ActivityWeek,
+  DashboardData,
+  RoadmapData,
+  RoadmapMilestone,
+  MilestoneSubject,
+  ModuleProgress,
+  SubscriptionTimelineItem,
+} from "./dashboard";
+
+// Canonical definitions live in ./dashboard; re-exported for existing importers.
+export type { ActivityData, ActivityWeek, DashboardData, SubscriptionTimelineItem };
 
 export function completionPercentage(done: number, total: number): number {
   if (total <= 0) return 0;
@@ -439,24 +451,6 @@ function deriveMilestoneState(
 
 // ─── Activity Graph Data ──────────────────────────────────────────────────────
 
-export interface ActivityWeek {
-  weekStart: string;      // ISO date (Monday)
-  activeDays: number;     // 0-7
-  totalEvents: number;
-  days: Array<{
-    date: string;         // ISO date
-    isActive: boolean;
-    eventCount: number;
-  }>;
-}
-
-export interface ActivityData {
-  weeks: ActivityWeek[];
-  currentStreak: number;    // consecutive active days ending today/yesterday
-  longestStreak: number;
-  totalActiveDays: number;
-}
-
 interface EventRowFull {
   event_type: string;
   subject_id: string | null;
@@ -569,18 +563,6 @@ export async function getActivityData(deviceId: string | null): Promise<Activity
 
 // ─── Subscription Timeline Data ───────────────────────────────────────────────
 
-export interface SubscriptionTimelineItem {
-  yearId: string;
-  yearLabel: string;
-  subjectId: string | null;
-  subjectTitle: string | null;
-  startedAt: string;
-  endsAt: string;
-  daysRemaining: number;
-  progressPct: number;    // elapsed / total period
-  isActive: boolean;
-}
-
 /**
  * Fetches subscription timeline data for visualization.
  * Shows each active subscription as a progress bar with time remaining.
@@ -645,12 +627,6 @@ export async function getSubscriptionTimeline(userId: string): Promise<Subscript
 }
 
 // ─── Combined Dashboard Data ──────────────────────────────────────────────────
-
-export interface DashboardData {
-  roadmap: RoadmapData;
-  activity: ActivityData;
-  subscriptions: SubscriptionTimelineItem[];
-}
 
 /**
  * Single batched fetch for all dashboard data.

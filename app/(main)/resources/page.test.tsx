@@ -16,10 +16,6 @@ vi.mock("@/lib/account", () => ({
   getAccountOverview: () => Promise.resolve({ overallDone: 2, overallTotal: 10 }),
 }));
 
-vi.mock("@/components/resources/SubjectQuizList", () => ({
-  SubjectQuizList: () => <div data-testid="subject-quiz-list" />,
-}));
-
 import ResourcesPage from "./page";
 
 beforeEach(() => {
@@ -33,8 +29,8 @@ async function renderPage() {
 }
 
 describe("ResourcesPage — tour anchors", () => {
-  it("marks the playground and search cards, and the quiz section, for the tour to anchor to", async () => {
-    const { container } = await renderPage();
+  it("marks the playground and search cards for the tour to anchor to", async () => {
+    await renderPage();
 
     expect(screen.getByRole("link", { name: /code playground/i })).toHaveAttribute(
       "data-tour",
@@ -44,7 +40,6 @@ describe("ResourcesPage — tour anchors", () => {
       "data-tour",
       "resources-search"
     );
-    expect(container.querySelector('[data-tour="resources-quiz"]')).not.toBeNull();
   });
 
   it("mounts the tour for a signed-in visitor", async () => {
@@ -62,12 +57,15 @@ describe("ResourcesPage — tour anchors", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("keeps the resources-quiz anchor on the section even for the anon sign-in prompt", async () => {
-    currentUserId = null;
-    const { container } = await renderPage();
+  it("no longer lists subject quizzes, signed in or anonymous", async () => {
+    const signedIn = await renderPage();
+    expect(signedIn.container.querySelector('[data-tour="resources-quiz"]')).toBeNull();
+    expect(screen.queryByText(/quiz yourself/i)).not.toBeInTheDocument();
+    signedIn.unmount();
 
-    const quizSection = container.querySelector('[data-tour="resources-quiz"]');
-    expect(quizSection).not.toBeNull();
-    expect(screen.getByText(/sign in to quiz yourself/i)).toBeInTheDocument();
+    currentUserId = null;
+    const anon = await renderPage();
+    expect(anon.container.querySelector('[data-tour="resources-quiz"]')).toBeNull();
+    expect(screen.queryByText(/sign in to quiz yourself/i)).not.toBeInTheDocument();
   });
 });
