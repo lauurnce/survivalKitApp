@@ -4980,7 +4980,7 @@ git commit -m "feat(finance): add the finance collector with a weekly delta mode
 
 LEDGER gets no MCP tools. Its data comes entirely from the collector JSON, because an agent in this system never writes ad-hoc SQL against production and never reaches PayMongo directly.
 
-**Note the trap from `docs/HANDOFF-2026-08-05.md` §6:** editing an agent definition does not affect the agent in the session it was edited in. Definitions load at session start. **Restart the session before dispatching LEDGER for the first time**, or the dispatch runs against a definition that does not exist yet. This has already cost one whole verification run on PULSE.
+**Note the trap from `docs/archive/HANDOFF-2026-08-05.md` §6:** editing an agent definition does not affect the agent in the session it was edited in. Definitions load at session start. **Restart the session before dispatching LEDGER for the first time**, or the dispatch runs against a definition that does not exist yet. This has already cost one whole verification run on PULSE.
 
 **One formatting rule for this file specifically.** `.claude/skills/report/SKILL.md` was once mangled by a dollar-sign-followed-by-a-digit being treated as a positional argument (HANDOFF §5.3). Agent definitions take no positional arguments, so it should not apply here — but the real value is pasted from a script regardless, so the `CUMULATIVE` examples below simply never write that sequence. Do not "improve" them by adding one.
 

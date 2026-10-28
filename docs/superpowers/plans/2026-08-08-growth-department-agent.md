@@ -2468,7 +2468,7 @@ git commit -m "feat(growth): add the growth collector"
 
 VANTAGE gets no MCP tools. Its data comes entirely from the collector JSON, because an agent in this system never writes ad-hoc SQL against production.
 
-**Note the trap from `docs/HANDOFF-2026-08-05.md` §6:** editing an agent definition does not affect the agent in the session it was edited in. Definitions load at session start. **Restart the session before dispatching VANTAGE for the first time**, or the dispatch runs against a definition that does not exist yet.
+**Note the trap from `docs/archive/HANDOFF-2026-08-05.md` §6:** editing an agent definition does not affect the agent in the session it was edited in. Definitions load at session start. **Restart the session before dispatching VANTAGE for the first time**, or the dispatch runs against a definition that does not exist yet.
 
 - [ ] **Step 1: Create the agent**
 

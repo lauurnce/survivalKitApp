@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-20
 **Branch:** `feat/survey-timing-and-locked-paywall`
-**Mockup:** `docs/mockups/2026-08-20-survey-and-paywall.html`
+**Mockup:** `docs/archive/mockups/2026-08-20-survey-and-paywall.html`
 
 ## Problem
 
