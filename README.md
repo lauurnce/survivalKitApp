@@ -79,7 +79,7 @@ npm run dev
 | `components/` | React components |
 | `lib/` | Shared logic (payments, plans, quiz generation, share cards, …) |
 | `hooks/` | React hooks |
-| `modules md files/` | Markdown source content for course modules |
+| `content/modules/` | Markdown source content for course modules |
 | `supabase/` | Migrations, seeds, and database docs |
 | `scripts/` | Ingest and utility scripts |
 | `docs/` | Specs, plans, GTM research, and handoff notes |
