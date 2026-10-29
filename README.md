@@ -75,11 +75,11 @@ npm run dev
 | Path | Contents |
 |---|---|
 | `app/` | Routes, pages, and API routes (App Router) |
-| `assets/` | Source art and data — fonts, subject icons, landmarks, STORY.md charts |
+| `assets/` | Source art and data — fonts, landmarks, STORY.md charts |
 | `components/` | React components |
 | `lib/` | Shared logic (payments, plans, quiz generation, share cards, …) |
 | `hooks/` | React hooks |
-| `modules md files/` | Markdown source content for course modules |
+| `content/modules/` | Markdown source content for course modules |
 | `supabase/` | Migrations, seeds, and database docs |
 | `scripts/` | Ingest and utility scripts |
 | `docs/` | Specs, plans, GTM research, and handoff notes |

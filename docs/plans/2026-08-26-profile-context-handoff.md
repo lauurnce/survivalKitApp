@@ -104,7 +104,7 @@ Recommended approach (matches repo precedent):
 2. Admin UI lives under `app/admin/` (server components + route handlers under
    `app/api/admin/`). Render distributions with existing theme tokens — see
    `components/dashboard/StatusChip.tsx` and the roadmap-redesign pages
-   (`docs/plans/2026-08-26-roadmap-v2.md`) for the sibling visual language.
+   (`docs/archive/plans/2026-08-26-roadmap-v2.md`) for the sibling visual language.
 3. Free-text fields (`it_reason`, `career_goal`) are personal. If surfacing
    them individually rather than as counts, decide deliberately and note the
    privacy posture (RA 10173; students entered this text voluntarily inside a

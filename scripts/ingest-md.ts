@@ -15,7 +15,7 @@ import { createClient } from "@supabase/supabase-js";
 
 // ── Config ─────────────────────────────────────────────────────────────────────
 
-const BASE_DIR = path.join(process.cwd(), "modules md files", "2nd year");
+const BASE_DIR = path.join(process.cwd(), "content", "modules", "2nd year");
 const YEAR_LABEL = "2nd Year";
 
 // ── Subject definitions ────────────────────────────────────────────────────────

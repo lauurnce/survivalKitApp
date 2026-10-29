@@ -220,26 +220,23 @@ session's claims row still points at.
 Removed (fully merged, clean, nothing lost): `wt-pr20`
 (`fix/rate-limit-payment-safe`, merged as `e42fd54`), `wt-ci`
 (`chore/ci-postgres-harness`), `integrate` (`integrate/mike-fixes`), and
-`survivalKitApp-schema` (`chore/schema-safety`). Their branches were left in
-place and can be deleted with `git branch -d` once you're satisfied.
+`survivalKitApp-schema` (`chore/schema-safety`).
 
 Rescued: `feat/dual-secret-transition` (2 commits) and
 `chore/university-sector-audit` (5 commits) were sitting in auto-wiped `/tmp`
-paths with no remote copy. Both pushed to `origin`. **Their worktrees are still
-on volatile paths and still need migrating** to
-`~/projects/survivalKitApp-secrets` and `-sectors`.
+paths with no remote copy. Both were pushed to `origin`.
 
-Still outstanding:
+**Resolved since.** Every item this entry left outstanding is closed, and
+none of these worktrees exists any more:
 
-- `wt-ratelimit` (`fix/rate-limit-payment-exempt`) — its one commit is the
-  obsolete third rate-limit approach superseded by PR #23, but it holds two
-  unreviewed uncommitted edits to `lib/serverRateLimit.ts` and its test. Review
-  before removing.
-- `survivalKitApp-emails` — branch is merged, but `docs/HANDOFF-2026-08-23-emails.md`
-  is untracked and would be lost, and `supabase/.temp/` holds database
-  credentials that must be deleted, never committed.
-- `survivalKitApp-dash`, `-preview`, `-trunk` — 5 unmerged commits between
-  them. Live work; leave alone.
+- `wt-ratelimit` (`fix/rate-limit-payment-exempt`): removed as superseded by
+  PR #23.
+- `survivalKitApp-emails`: removed once its branch had merged.
+- `survivalKitApp-secrets` and `-sectors`: migrated off `/tmp`, merged, and
+  removed.
+- `survivalKitApp-dash`, `-preview` and `-trunk`: rebased and merged in the
+  2026-08-25 fan-out, then removed. The trunk tip is kept on
+  `origin/integration/all-tracks`.
 
 ## Troubleshooting
 
