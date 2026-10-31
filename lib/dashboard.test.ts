@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
+  deriveMilestoneState,
   subjectStatus,
   groupByTerm,
   deriveCurrentTerm,
@@ -438,5 +439,30 @@ describe("formatDurationRemaining", () => {
     const from = new Date("2026-01-10T00:00:00Z");
     const to = new Date("2026-01-01T00:00:00Z");
     expect(formatDurationRemaining(from, to)).toBe("0 days");
+  });
+});
+
+describe("deriveMilestoneState", () => {
+  const m = (total: number, done: number, locked: number) => ({
+    totalModules: total,
+    completedModules: done,
+    lockedModules: locked,
+  });
+
+  it("is locked when every module is locked", () => {
+    expect(deriveMilestoneState(m(4, 0, 4), true)).toBe("locked");
+  });
+
+  it("is completed when every module is marked done", () => {
+    expect(deriveMilestoneState(m(4, 4, 0), false)).toBe("completed");
+  });
+
+  it("is current or upcoming otherwise", () => {
+    expect(deriveMilestoneState(m(4, 1, 0), true)).toBe("current");
+    expect(deriveMilestoneState(m(4, 1, 0), false)).toBe("upcoming");
+  });
+
+  it("never calls an empty milestone locked or completed", () => {
+    expect(deriveMilestoneState(m(0, 0, 0), false)).toBe("upcoming");
   });
 });
