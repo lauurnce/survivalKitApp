@@ -1,5 +1,4 @@
-import { describe, it, expect } from "vitest";
-import { SEMESTER_END } from "../paymongo";
+import { describe, it, expect, vi } from "vitest";
 import {
   recognise,
   recogniseLedger,
@@ -175,51 +174,64 @@ describe("recogniseLedger", () => {
 });
 
 describe("semesterEndStatus", () => {
-  it("reads the constant rather than a copy of the date", () => {
+  // AY 2026-27 terms from lib/terms.ts.
+  const SEM1_END = new Date("2027-01-31T15:59:59.000Z");
+  const MIDYEAR_END = new Date("2027-07-31T15:59:59.000Z");
+
+  it("reads the term schedule rather than a copy of the date", () => {
     const status = semesterEndStatus(new Date("2026-08-08T05:00:00.000Z"));
-    expect(status.semesterEndIso).toBe(SEMESTER_END.toISOString());
+    expect(status.termId).toBe("ay2026-27-sem1");
+    expect(status.semesterEndIso).toBe(SEM1_END.toISOString());
   });
 
-  it("counts whole days remaining", () => {
-    const oneWeekBefore = new Date(SEMESTER_END.getTime() - 7 * DAY_MS);
-    expect(semesterEndStatus(oneWeekBefore).daysRemaining).toBe(7);
+  it("counts whole days remaining in the current term", () => {
+    const status = semesterEndStatus(new Date("2026-12-24T15:59:59.000Z"));
+    expect(status.daysRemaining).toBe(38);
+    expect(status.scheduleDaysRemaining).toBe(219);
   });
 
-  it("flags a constant that has gone stale", () => {
-    const after = new Date(SEMESTER_END.getTime() + DAY_MS);
-    expect(semesterEndStatus(after)).toMatchObject({ past: true });
+  it("moves to the next term after the cutoff", () => {
+    const status = semesterEndStatus(new Date("2027-01-10T00:00:00.000Z"));
+    expect(status.termId).toBe("ay2026-27-sem2");
+    expect(status.past).toBe(false);
   });
 
-  it("does not report a live constant as stale", () => {
-    const before = new Date(SEMESTER_END.getTime() - DAY_MS);
-    expect(semesterEndStatus(before).past).toBe(false);
+  it("flags a schedule that has run out", () => {
+    const after = new Date(MIDYEAR_END.getTime() + DAY_MS);
+    expect(semesterEndStatus(after)).toMatchObject({ past: true, termId: null });
   });
 });
 
 describe("semesterPlanParity", () => {
-  it("keeps the plans distinct well before the semester ends", () => {
-    const early = new Date(SEMESTER_END.getTime() - 120 * DAY_MS);
-    expect(semesterPlanParity(early).identical).toBe(false);
+  const MIDYEAR_END = new Date("2027-07-31T15:59:59.000Z");
+
+  it("keeps the plans distinct well before a term ends", () => {
+    expect(semesterPlanParity(new Date("2026-09-01T00:00:00.000Z")).identical).toBe(false);
   });
 
-  it("collapses the two plans 31 days out, while the semester plan still costs double", () => {
-    const inside = new Date(SEMESTER_END.getTime() - 10 * DAY_MS);
+  it("never collapses across the 1st-to-2nd semester cutoff", () => {
+    // The cutoff sits 31 days before the 1st-sem end, so a late-December
+    // buyer still gets a full term and a January buyer gets the 2nd sem.
+    expect(semesterPlanParity(new Date("2026-12-31T12:00:00.000Z")).identical).toBe(false);
+    expect(semesterPlanParity(new Date("2027-01-20T00:00:00.000Z")).identical).toBe(false);
+  });
+
+  it("collapses the two plans inside the last 31 days of the midyear term", () => {
+    const inside = new Date(MIDYEAR_END.getTime() - 10 * DAY_MS);
     expect(semesterPlanParity(inside).identical).toBe(true);
+    expect(semesterPlanParity(inside).daysUntilParity).toBe(0);
   });
 
-  it("stays collapsed once the constant is stale", () => {
-    const after = new Date(SEMESTER_END.getTime() + 30 * DAY_MS);
+  it("stays collapsed once the schedule has run out", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const after = new Date(MIDYEAR_END.getTime() + 30 * DAY_MS);
     expect(semesterPlanParity(after).identical).toBe(true);
+    vi.restoreAllMocks();
   });
 
   it("says how many days remain before the plans collapse", () => {
-    const early = new Date(SEMESTER_END.getTime() - 61 * DAY_MS);
-    expect(semesterPlanParity(early).daysUntilParity).toBe(30);
-  });
-
-  it("reports zero days once parity has already arrived", () => {
-    const inside = new Date(SEMESTER_END.getTime() - 10 * DAY_MS);
-    expect(semesterPlanParity(inside).daysUntilParity).toBe(0);
+    const early = new Date(MIDYEAR_END.getTime() - 50 * DAY_MS);
+    expect(semesterPlanParity(early).daysUntilParity).toBe(19);
   });
 });
 

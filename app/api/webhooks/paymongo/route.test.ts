@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import crypto from "crypto";
 
 // checkout_session.payment.paid carries no usable resource in the delivered
@@ -20,7 +20,6 @@ vi.mock("@/lib/paymongo", async (importOriginal) => {
   };
 });
 
-import { SEMESTER_END } from "@/lib/paymongo";
 
 // Lifecycle email. enqueueThrows lets a test prove the payment path survives a
 // broken outbox — the single most important behaviour in this file. drain is
@@ -103,6 +102,19 @@ const DEV = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
 const REP_DEVICE = "bbbbbbbb-cccc-dddd-eeee-ffffffffffff";
 
 let ipCounter = 0;
+// Access ends come from the term schedule (lib/terms.ts) keyed to when the
+// payment was made, which these signed payloads leave to the clock. Pin it
+// inside AY 2026-27 1st sem so the expected end is a fixed date.
+const SEM1_END_ISO = "2027-01-31T15:59:59.000Z";
+const SEM2_END_ISO = "2027-06-30T15:59:59.000Z";
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date("2026-11-15T03:00:00Z"));
+});
+afterEach(() => {
+  vi.useRealTimers();
+});
+
 function signedRequest(remarks: string, amount: number) {
   const body = JSON.stringify({
     data: {
@@ -285,6 +297,8 @@ describe("lifecycle email", () => {
     expect(enqueued[0].scopeKey).toBe("link_test_1");
     expect(enqueued[0].toEmail).toBe("payer@example.com");
     expect((enqueued[0].payload as Record<string, unknown>).amountCentavos).toBe(9900);
+    // The receipt quotes the same end the grant wrote.
+    expect((enqueued[0].payload as Record<string, unknown>).accessEndsAt).toBe(SEM1_END_ISO);
     // Email links point at the canonical custom domain, not the vercel.app host.
     expect((enqueued[0].payload as Record<string, unknown>).url).toBe("https://tryi2i.com/account");
   });
@@ -352,13 +366,13 @@ describe("lifecycle email", () => {
 });
 
 describe("webhook plan handling", () => {
-  it("grants a subject_sem payment until SEMESTER_END", async () => {
+  it("grants a subject_sem payment until the end of the term it was paid in", async () => {
     const res = await POST(
       signedRequest(`year:${YEAR} subject:${SUBJ} device:${DEV} plan:subject_sem`, 9900)
     );
     expect(res.status).toBe(200);
     expect(recorded).toHaveLength(1);
-    expect((recorded[0].periodEnd as Date).getTime()).toBe(SEMESTER_END.getTime());
+    expect((recorded[0].periodEnd as Date).toISOString()).toBe(SEM1_END_ISO);
   });
 
   it("rejects a subject_sem underpayment at the semester price", async () => {
@@ -373,14 +387,24 @@ describe("webhook plan handling", () => {
     const res = await POST(signedRequest(`year:${YEAR} subject:${SUBJ} device:${DEV}`, 4900));
     expect(res.status).toBe(200);
     expect(recorded).toHaveLength(1);
-    // subject_month: ~31 days, definitely not SEMESTER_END
-    expect((recorded[0].periodEnd as Date).getTime()).not.toBe(SEMESTER_END.getTime());
+    // subject_month: 31 days from payment, not the term end
+    expect((recorded[0].periodEnd as Date).toISOString()).not.toBe(SEM1_END_ISO);
+    expect((recorded[0].periodEnd as Date).getTime()).toBe(Date.now() + 31 * 24 * 60 * 60 * 1000);
   });
 
-  it("grants a year_sem payment at 29900 until SEMESTER_END", async () => {
+  it("grants a year_sem payment at 29900 until the end of the term it was paid in", async () => {
     const res = await POST(signedRequest(`year:${YEAR} device:${DEV} plan:year_sem`, 29900));
     expect(res.status).toBe(200);
-    expect((recorded[0].periodEnd as Date).getTime()).toBe(SEMESTER_END.getTime());
+    expect((recorded[0].periodEnd as Date).toISOString()).toBe(SEM1_END_ISO);
+  });
+
+  // The renewal case: the Jan 31 expiry warning goes out ~Jan 28, and a pass
+  // bought then must cover the 2nd semester, not a 31-day stub of the 1st.
+  it("rolls a semester payment made after the 1st-sem cutoff into the 2nd semester", async () => {
+    vi.setSystemTime(new Date("2027-01-28T02:00:00Z"));
+    const res = await POST(signedRequest(`year:${YEAR} device:${DEV} plan:year_sem`, 29900));
+    expect(res.status).toBe(200);
+    expect((recorded[0].periodEnd as Date).toISOString()).toBe(SEM2_END_ISO);
   });
 });
 
@@ -394,7 +418,7 @@ describe("webhook coupon-aware amount validation", () => {
     expect(res.status).toBe(200);
     expect(recorded).toHaveLength(1);
     expect(recorded[0]).toMatchObject({ deviceId: DEV, yearId: YEAR, subjectId: null, amount: 19900 });
-    expect((recorded[0].periodEnd as Date).getTime()).toBe(SEMESTER_END.getTime());
+    expect((recorded[0].periodEnd as Date).toISOString()).toBe(SEM1_END_ISO);
   });
 
   it("still rejects a coupon-discounted year_sem paid at 19899 (underpayment detection survives)", async () => {
@@ -462,7 +486,7 @@ describe("POST /api/webhooks/paymongo - class purchase branch", () => {
       rep_device_id: REP_DEVICE,
       seat_cap: 15,
       status: "active",
-      current_period_end: SEMESTER_END.toISOString(),
+      current_period_end: SEM1_END_ISO,
       paymongo_link_id: "link_test_1",
     });
     expect(classesInserts[0].paymongo_link_id).not.toMatch(/^block-/);
