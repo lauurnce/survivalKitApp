@@ -11,6 +11,12 @@ vi.mock("@/lib/supabase/server", () => ({
   createServerClient: () => ({}),
 }));
 
+let verifiedDevice: string | null = null;
+vi.mock("@/lib/auth/deviceCookie", () => ({
+  DEVICE_COOKIE: "bsit_device_id",
+  verifyDeviceCookie: (v: string | undefined) => (v === "signed" ? verifiedDevice : null),
+}));
+
 vi.mock("@/lib/deleteAccount", () => ({
   deleteAccount: (...args: unknown[]) => deleteAccountMock(...args),
 }));
@@ -28,10 +34,11 @@ vi.mock("@/lib/serverRateLimit", () => ({
 import { POST } from "./route";
 
 let ipCounter = 0;
-function makeReq() {
+function makeReq(cookie?: string) {
   const ip = `10.3.${Math.floor(ipCounter / 250)}.${ipCounter++ % 250}`;
   return {
     headers: { get: (h: string) => (h === "x-real-ip" ? ip : null) },
+    cookies: { get: (n: string) => (n === "bsit_device_id" && cookie ? { value: cookie } : undefined) },
   } as unknown as import("next/server").NextRequest;
 }
 
@@ -41,6 +48,7 @@ beforeEach(() => {
   deleteAccountMock.mockResolvedValue({ ok: true });
   rateLimited = false;
   rateLimitCalls.length = 0;
+  verifiedDevice = null;
 });
 
 describe("POST /api/account/delete", () => {
@@ -54,7 +62,23 @@ describe("POST /api/account/delete", () => {
     currentUserId = "user-42";
     const res = await POST(makeReq());
     expect(res.status).toBe(200);
-    expect(deleteAccountMock).toHaveBeenCalledWith(expect.anything(), "user-42");
+    expect(deleteAccountMock).toHaveBeenCalledWith(expect.anything(), "user-42", {
+      extraDeviceIds: [],
+    });
+  });
+
+  it("passes the browser's device to erasure only when its cookie signature verifies", async () => {
+    currentUserId = "user-42";
+    verifiedDevice = "dddddddd-dddd-4ddd-8ddd-dddddddddddd";
+    await POST(makeReq("signed"));
+    expect(deleteAccountMock).toHaveBeenLastCalledWith(expect.anything(), "user-42", {
+      extraDeviceIds: ["dddddddd-dddd-4ddd-8ddd-dddddddddddd"],
+    });
+
+    await POST(makeReq("forged"));
+    expect(deleteAccountMock).toHaveBeenLastCalledWith(expect.anything(), "user-42", {
+      extraDeviceIds: [],
+    });
   });
 
   it("500s and never throws when deleteAccount reports failure", async () => {
