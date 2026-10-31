@@ -15,4 +15,31 @@ describe("RoadmapTimeline", () => {
     expect(ol).toHaveClass("snap-x");
     expect(ol).toHaveClass("snap-mandatory");
   });
+
+  it("labels overall progress as marked done, not complete", () => {
+    const milestone = {
+      key: "y1-s1",
+      label: "Year 1 • 1st Semester",
+      yearId: "y1",
+      semester: 1,
+      yearPosition: 1,
+      state: "current" as const,
+      totalModules: 10,
+      completedModules: 4,
+      inProgressModules: 2,
+      notStartedModules: 4,
+      lockedModules: 0,
+      unlockedAt: null,
+      firstActivityAt: null,
+      lastActivityAt: null,
+      subjects: [],
+    };
+    const roadmapData = {
+      journeyStartedAt: "",
+      milestones: [milestone],
+      overall: { totalModules: 10, completedModules: 4, inProgressModules: 2, completionRate: 40 },
+    };
+    render(<RoadmapTimeline nodes={[]} roadmapData={roadmapData} />);
+    expect(screen.getByText("40% marked done overall")).toBeInTheDocument();
+  });
 });

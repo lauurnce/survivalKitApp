@@ -105,7 +105,7 @@ Fields you will use beyond the tables:
 | `raw.segments.by_year` | Conversion by year — a flat array, not capped. |
 | `raw.segments.by_subject.rows` | Conversion by subject — capped at 25, see "Capped distributions" below. **Carries `subject_plan_paid_devices`, not `paid_devices` — read the callout below before you touch this field.** |
 | `raw.cohorts` | Weekly cohorts and the 8-week active series. Both `weekly_active` and `cohorts` are flat arrays, not capped. |
-| `raw.content` | Module opens versus completions. **The entire value is `{rows, total_groups}`** — not a sub-key inside a larger object. |
+| `raw.content` | Module opens versus modules **marked done**. **The entire value is `{rows, total_groups}`** — not a sub-key inside a larger object. Its `completed_devices` field is named after the `module_progress.completed_at` column, but it counts devices that tapped the manual "Mark done" toggle in the window — see "Marked done is not completion" below. |
 | `raw.demand` | Waitlist — what people ask for that does not exist yet. `by_subject` is capped (`.rows` + `.total_groups`); `by_source`, `by_year`, `willing_to_pay`, `by_device_type` are flat arrays, not capped. |
 | `raw.feedback.recent.rows` | Verbatim user text. Read for themes, not counts. `raw.feedback.recent.total_groups` is the untruncated count of non-blank-text rows in the window — it is **not** the same number as `raw.feedback.rows_window`, which also counts blank-text rows `recent` excludes. |
 | `errors` | RPCs that failed. Each one is a finding. |
@@ -147,6 +147,15 @@ first finding, paste `enterDefinition.note`, and **do not open a finding, and ne
 P0, on any `enter`-based week-over-week move.** Escalation rule 2 does not apply to
 step 1 across the break. From the first week where both windows fall after
 2026-10-31, `comparable` turns `true` and the numbers diff normally again.
+
+### Marked done is not completion
+
+`module_progress` rows come from one manual "Mark done" tap
+(`components/ModuleDoneToggle.tsx`). Nothing checks that the module was read, and a
+reader who finishes without tapping leaves no row. Write **"marked done"**, never
+"completed", "finished" or "completion rate", whenever a number comes from
+`module_progress` — including `raw.content`'s `completed_devices`, whose name follows
+the database column, not what it measures.
 
 ### Capped distributions — report the truncation, never hide it
 
@@ -207,9 +216,10 @@ moved or what is wrong.
    `subject_plan_paid_devices`, and `sum(subject_plan_paid_devices)` will always fall
    short of `by_year.paid_devices` by exactly the year-plan population — that gap is
    expected, not a finding.** See the callout in Step 2.
-6. **Content–market fit.** `raw.content`. High opens with low completion is a content
-   problem wearing an engagement costume. The whole payload is capped at 20 — say "top
-   N of M" using `total_groups`.
+6. **Content–market fit.** `raw.content`. High opens with few marks-done can be a
+   content problem wearing an engagement costume — or readers who never tap the
+   toggle. Weigh it as a weak signal, not proof. The whole payload is capped at 20 —
+   say "top N of M" using `total_groups`.
 7. **Demand sensing.** `raw.demand`. **If `signups_all_time` is in the single digits,
    say plainly that demand-sensing has no real signal yet and stop there — do not
    break a population that small down by source, year, subject, willingness-to-pay, or
@@ -411,6 +421,7 @@ and never move a quote outside `docs/reports/`.
 | Asserting it is exam week from memory | The calendar ships empty on purpose. Say "not recorded". |
 | Reading the post-2026-10-31 drop in enters as lost reach | `enter` was redefined that day. Check `enterDefinition.comparable`; across the break the delta is the definition. |
 | Rebuilding a campaign from `by_utm_source` and `by_utm_campaign` | Use `by_utm`, which keeps source / medium / campaign together. |
+| Calling `module_progress` "completions" | It is a manual "Mark done" tap. Say "marked done". |
 | Treating `nonMonotonic` as a bug | Deep links into module URLs are real. Report it, do not clamp it. |
 | Reporting `unlock_click` / `unlock_submitted` movement | They are dead types. `raw.funnel.dead_events.dead_last_seen` is the evidence. |
 | Ignoring `errors[]` | A failed RPC means a section of this report is blank. That is a finding. |

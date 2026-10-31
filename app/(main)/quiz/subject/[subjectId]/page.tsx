@@ -110,7 +110,7 @@ export default async function SubjectQuizPage({ params }: { params: Promise<{ su
       <header className="space-y-2">
         <p className="label-sm text-accent">{subject.title}</p>
         <h1 className="font-serif text-display-md text-ink">Subject Quiz</h1>
-        <p className="text-ink-muted">Test your knowledge across all completed modules in this subject.</p>
+        <p className="text-ink-muted">Test your knowledge across every module you&apos;ve marked done in this subject.</p>
       </header>
       <ReviewQuiz
         subjectId={subject.id}
