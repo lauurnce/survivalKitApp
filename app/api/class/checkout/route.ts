@@ -5,6 +5,8 @@ import { createDynamicPaymongoLink, MAX_SEATS } from "@/lib/paymongo";
 import { createServerClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validation";
 import { resolveRequestOrigin } from "@/lib/appOrigin";
+import { getClientIp } from "@/lib/rateLimit";
+import { isServerRateLimited } from "@/lib/serverRateLimit";
 import crypto from "crypto";
 
 const BASE_SUBJECT_CENTAVOS = 79900; // ₱799
@@ -19,7 +21,17 @@ function computeAmount(scope: "subject" | "all", seats: number): number {
   return base + extra * PER_SEAT_CENTAVOS;
 }
 
+// Every accepted request creates a real PayMongo link, so cap how fast one
+// address can mint them. Fail OPEN: a link grants nothing until it is paid
+// (the webhook re-derives the price before creating the class), so a limiter
+// outage must not block a block rep from paying.
+const RATE_LIMIT_IP = { max: 5, windowSeconds: 60, onFailure: "allow" as const };
+
 export async function POST(req: NextRequest) {
+  if (await isServerRateLimited(`class-checkout:ip:${getClientIp(req)}`, RATE_LIMIT_IP)) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+
   const jar = await cookies();
   const repDeviceId = verifyDeviceCookie(jar.get(DEVICE_COOKIE)?.value);
   if (!repDeviceId) {
