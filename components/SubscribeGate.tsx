@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { getDeviceId } from "@/lib/device";
+import { semesterUntilLabel } from "@/lib/terms";
 import { logEvent } from "@/lib/analytics";
 
 interface Props {
@@ -32,6 +33,9 @@ type GatePlan = "subject_month" | "subject_sem" | "year_sem";
 export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, returnPath, signInHref }: Props) {
   const [loading, setLoading] = useState<GatePlan | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // From the term schedule (lib/terms.ts), so the date quoted is the one the
+  // webhook grants and rolls over to the next term on its own.
+  const semesterUntil = semesterUntilLabel();
 
   async function handleSubscribe(plan: GatePlan) {
     if (signInHref) {
@@ -130,9 +134,8 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
                 ★ Most Popular
               </span>
             </div>
-            {/* "Jan 31" is hand-typed — keep in sync with SEMESTER_END in lib/paymongo.ts */}
             <p className="font-sans text-sm text-ink-muted">
-              {subjectTitle ?? "This subject"} until Jan 31 — covers prelims,
+              {subjectTitle ?? "This subject"} until {semesterUntil} — covers prelims,
               midterms, and finals
             </p>
           </div>
@@ -160,9 +163,8 @@ export function SubscribeGate({ yearId, subjectId, yearLabel, subjectTitle, retu
                 Best Value
               </span>
             </div>
-            {/* "Jan 31" is hand-typed — keep in sync with SEMESTER_END in lib/paymongo.ts */}
             <p className="font-sans text-sm text-ink-muted">
-              All subjects in {yearLabel ?? "this year"} until Jan 31
+              All subjects in {yearLabel ?? "this year"} until {semesterUntil}
             </p>
           </div>
           <div className="flex items-baseline gap-2 mt-auto">
