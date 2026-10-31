@@ -50,22 +50,35 @@ export function welcomeEmail(i: { planLabel: string; returnUrl: string }): Rende
   };
 }
 
-export function expiryWarningEmail(i: { planLabel: string; accessEndsAt: Date; renewUrl: string }): RenderedEmail {
-  const ends = longDate(i.accessEndsAt);
+// "A semester pass bought now runs until June 30, 2027." Omitted when the
+// term schedule has run out, rather than quoting a date nobody will grant.
+function renewalLine(renewalEndsAt?: Date): { text: string; html: string } {
+  if (!renewalEndsAt) return { text: "", html: "" };
+  const until = longDate(renewalEndsAt);
   return {
-    subject: `Your access ends ${ends}`,
-    text: `Heads up — your ${i.planLabel} access ends on ${ends}.\n\nAfter that the answer keys lock again. Renew here:\n${i.renewUrl}\n\nBSIT Survival Kit`,
-    html: layout("Your access is ending", `<p>Your <strong>${esc(i.planLabel)}</strong> access ends on <strong>${esc(ends)}</strong>.</p>
-<p>After that the answer keys lock again.</p>`, "Renew access", i.renewUrl),
+    text: `A semester pass bought now runs until ${until}.\n\n`,
+    html: `<p>A semester pass bought now runs until <strong>${esc(until)}</strong>.</p>`,
   };
 }
 
-export function winbackEmail(i: { planLabel: string; renewUrl: string }): RenderedEmail {
+export function expiryWarningEmail(i: { planLabel: string; accessEndsAt: Date; renewUrl: string; renewalEndsAt?: Date }): RenderedEmail {
+  const ends = longDate(i.accessEndsAt);
+  const renewal = renewalLine(i.renewalEndsAt);
+  return {
+    subject: `Your access ends ${ends}`,
+    text: `Heads up — your ${i.planLabel} access ends on ${ends}.\n\nAfter that the answer keys lock again. ${renewal.text}Renew here:\n${i.renewUrl}\n\nBSIT Survival Kit`,
+    html: layout("Your access is ending", `<p>Your <strong>${esc(i.planLabel)}</strong> access ends on <strong>${esc(ends)}</strong>.</p>
+<p>After that the answer keys lock again.</p>${renewal.html}`, "Renew access", i.renewUrl),
+  };
+}
+
+export function winbackEmail(i: { planLabel: string; renewUrl: string; renewalEndsAt?: Date }): RenderedEmail {
+  const renewal = renewalLine(i.renewalEndsAt);
   return {
     subject: "Your reviewers are locked again",
-    text: `Your ${i.planLabel} access has expired, so the answer keys are locked.\n\nEverything you studied is exactly where you left it. Renew here:\n${i.renewUrl}\n\nBSIT Survival Kit`,
+    text: `Your ${i.planLabel} access has expired, so the answer keys are locked.\n\nEverything you studied is exactly where you left it. ${renewal.text}Renew here:\n${i.renewUrl}\n\nBSIT Survival Kit`,
     html: layout("Your access expired", `<p>Your <strong>${esc(i.planLabel)}</strong> access has expired, so the answer keys are locked.</p>
-<p>Everything you studied is exactly where you left it.</p>`, "Renew access", i.renewUrl),
+<p>Everything you studied is exactly where you left it.</p>${renewal.html}`, "Renew access", i.renewUrl),
   };
 }
 
