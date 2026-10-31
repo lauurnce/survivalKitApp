@@ -14,12 +14,14 @@ set -euo pipefail
 
 cd "$(dirname "$0")/../.."
 
-# Empty as of 2026-10-31: the definer-RPC lock-down, email_unsubscribes,
-# the reactivation outbox kind and the print_click event type were applied to
-# production through the Supabase connector and verified. New unapplied
-# migrations go back here in version order. An empty array is a healthy state
-# — the artifact degenerates to its header and the CI jobs remain meaningful.
-pending=()
+# Emptied 2026-10-31 (definer-RPC lock-down, email_unsubscribes, the
+# reactivation outbox kind and print_click were applied to production through
+# the Supabase connector and verified). New unapplied migrations go here in
+# version order. An empty array is a healthy state — the artifact degenerates
+# to its header and the CI jobs remain meaningful.
+pending=(
+  supabase/migrations/20261101000100_events_add_utm_content_term.sql
+)
 
 if [ "${1:-}" = "--list" ]; then
   printf '%s\n' ${pending[@]+"${pending[@]}"}

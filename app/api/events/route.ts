@@ -26,6 +26,20 @@ function sanitizeText(value: unknown, maxLength: number): string | null {
   return value.slice(0, maxLength);
 }
 
+// utm_content / utm_term (migration 20261101000100) are sent to the insert
+// only when the client supplied one. An untagged visit — nearly all of them —
+// then inserts exactly the columns it always did, so a deploy that lands
+// before the migration is applied loses only the rare fully-tagged `enter`,
+// not every row.
+function optionalAttribution(body: Record<string, unknown>) {
+  const extra: { utm_content?: string; utm_term?: string } = {};
+  const content = sanitizeText(body.utm_content, 120);
+  const term = sanitizeText(body.utm_term, 120);
+  if (content !== null) extra.utm_content = content;
+  if (term !== null) extra.utm_term = term;
+  return extra;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -100,6 +114,7 @@ export async function POST(req: NextRequest) {
       utm_source: sanitizeText(body.utm_source, 120),
       utm_medium: sanitizeText(body.utm_medium, 120),
       utm_campaign: sanitizeText(body.utm_campaign, 120),
+      ...optionalAttribution(body),
     });
     if (insertError) {
       // Analytics must never break the app, but a rejected insert must be

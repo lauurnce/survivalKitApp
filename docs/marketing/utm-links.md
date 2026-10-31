@@ -41,6 +41,8 @@ attribution yet, so those tags are carried but not counted until it does.
   two channels.
 - `utm_source` is the place (`tiktok`, `groupchat`), `utm_medium` the kind of
   channel (`social`, `email`, `referral`), `utm_campaign` the push.
-- Only those three. `utm_content` and `utm_term` are not stored, so adding
-  them changes nothing.
+- Those three are required. `utm_content` (which creative or button) and
+  `utm_term` (which keyword) are optional and stored too, since migration
+  `20261101000100`; use them only when one push has several links to tell
+  apart.
 - One campaign name per push. Reuse `finals-dec-2026` until the push ends.

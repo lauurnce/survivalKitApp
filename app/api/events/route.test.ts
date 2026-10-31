@@ -132,6 +132,38 @@ describe("POST /api/events — attribution capture", () => {
   });
 });
 
+describe("POST /api/events — utm_content / utm_term", () => {
+  it("stores sanitized utm_content and utm_term when supplied", async () => {
+    const res = await POST(
+      makeReq({
+        device_id: DEVICE,
+        event_type: "enter",
+        utm_source: "reactivation",
+        utm_content: "c".repeat(300),
+        utm_term: "bsit reviewer",
+      })
+    );
+
+    expect((await res.json()).ok).toBe(true);
+    expect((inserts[0].utm_content as string).length).toBe(120);
+    expect(inserts[0].utm_term).toBe("bsit reviewer");
+  });
+
+  it("leaves both keys out of the insert when absent or not strings", async () => {
+    // Absent keys keep an untagged insert identical to the pre-migration
+    // shape, so deploying before 20261101000100 is applied loses nothing.
+    await POST(makeReq({ device_id: DEVICE, event_type: "enter" }));
+    await POST(
+      makeReq({ device_id: DEVICE, event_type: "enter", utm_content: 7, utm_term: "" })
+    );
+
+    for (const payload of inserts) {
+      expect(payload).not.toHaveProperty("utm_content");
+      expect(payload).not.toHaveProperty("utm_term");
+    }
+  });
+});
+
 describe("POST /api/events — insert error visibility", () => {
   it("logs a console.error when the insert is rejected by the database", async () => {
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
