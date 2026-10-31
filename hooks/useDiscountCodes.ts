@@ -2,6 +2,13 @@
 
 import { useEffect, useState } from 'react';
 
+interface FeedbackRow {
+  coupon_code: string | null;
+  created_at: string;
+  coupon_expires_at: string;
+  is_quality_approved: boolean;
+}
+
 interface DiscountCode {
   coupon_code: string;
   created_at: string;
@@ -17,6 +24,8 @@ export function useDiscountCodes(token: string | null) {
 
   useEffect(() => {
     if (!token) {
+      // Signed-out: nothing to fetch, so settle immediately.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       return;
     }
@@ -33,10 +42,10 @@ export function useDiscountCodes(token: string | null) {
           throw new Error('Failed to fetch discount codes');
         }
 
-        const data = await response.json();
-        const processedCodes = data.feedback
-          .filter((f: any) => f.coupon_code)
-          .map((f: any) => ({
+        const data = (await response.json()) as { feedback: FeedbackRow[] };
+        const processedCodes: DiscountCode[] = data.feedback
+          .filter((f): f is FeedbackRow & { coupon_code: string } => Boolean(f.coupon_code))
+          .map((f) => ({
             coupon_code: f.coupon_code,
             created_at: f.created_at,
             coupon_expires_at: f.coupon_expires_at,

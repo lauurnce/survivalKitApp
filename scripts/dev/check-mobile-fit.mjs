@@ -50,24 +50,6 @@ async function wsConnect(url) {
   });
 }
 
-let nextId = 1;
-async function cdp(ws, method, params = {}) {
-  const id = nextId++;
-  return new Promise((resolve, reject) => {
-    const handler = (msg) => {
-      const data = JSON.parse(msg.data);
-      if (data.id === id) {
-        ws.removeEventListener("message", handler);
-        if (data.error) reject(new Error(data.error.message));
-        else resolve(data.result);
-      }
-    };
-    ws.addEventListener("message", handler);
-    ws.send(JSON.stringify({ id, method, params }));
-    setTimeout(() => { ws.removeEventListener("message", handler); reject(new Error(`CDP timeout on ${method}`)); }, 15000);
-  });
-}
-
 async function measureAtWidth(session, width) {
   await session.cdp("Emulation.setDeviceMetricsOverride", {
     width, height: HEIGHT, deviceScaleFactor: DPR, mobile: true, screenOrientation: { angle: 0, type: "portraitPrimary" }

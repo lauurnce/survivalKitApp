@@ -252,7 +252,6 @@ async function upsertSubject(
 
   const { data: created, error } = await supabase
     .from("subjects")
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .insert({
       year_id: yearId,
       title: subject.title,
@@ -260,6 +259,7 @@ async function upsertSubject(
       sort_order: subject.sortOrder,
       semester: subject.semester,
       kind: subject.kind,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped client; the row shape is checked by the DB
     } as any)
     .select("id")
     .single();
