@@ -16,8 +16,14 @@
  * Source: docs/gtm/academic-calendars-ay2026-27.md. A window whose dates are
  * not confirmed by a published calendar says "ESTIMATE" in its note, and the
  * VANTAGE write-up must carry that caveat rather than state the phase as fact.
- * Dates past the last window are `unknown`, never extrapolated: extend this
- * list when the 2nd-semester calendars publish.
+ * Dates past the last window are `unknown`, never extrapolated.
+ *
+ * 2nd semester AY 2026–27 and the Aug 2027 freshman wave are projected from
+ * the confirmed 1st-semester rhythm (Aug 10 start → midterms in week 9 →
+ * finals in week 18 → ~2 weeks of break), anchored on the confirmed 2nd-sem
+ * starts (USTP Jan 5, UP Jan 15). Every projected window says ESTIMATE.
+ * Replace them with published dates as UP and USTP release them; the
+ * rollover runbook (docs/runbooks/semester-rollover.md) lists this file.
  */
 
 /** Marker for a window inferred rather than read off a published calendar. */
@@ -76,6 +82,52 @@ export const TERM_CALENDAR: readonly TermWindow[] = [
     startPhDate: "2026-12-20",
     endPhDate: "2027-01-04",
     note: "Sem break; USTP 2nd sem Jan 5 (confirmed), UP Jan 15 — UP break runs longer",
+  },
+  // ── 2nd semester AY 2026–27 ───────────────────────────────────────────────
+  {
+    phase: "classes",
+    startPhDate: "2027-01-05",
+    endPhDate: "2027-02-28",
+    note:
+      "USTP 2nd sem starts Jan 5, UP Jan 15 (both confirmed); UP is still on " +
+      "break until Jan 14. End date ESTIMATE (week before projected midterms)",
+  },
+  {
+    phase: "midterms",
+    startPhDate: "2027-03-01",
+    endPhDate: "2027-03-06",
+    note: "ESTIMATE: week 9 from Jan 5, mirroring 1st-sem USTP midterms Oct 5–10",
+  },
+  {
+    phase: "classes",
+    startPhDate: "2027-03-07",
+    endPhDate: "2027-05-02",
+    note: "ESTIMATE: between projected midterms and finals",
+  },
+  {
+    phase: "finals",
+    startPhDate: "2027-05-03",
+    endPhDate: "2027-05-22",
+    note:
+      "ESTIMATE: week 18 from USTP's Jan 5 start through UP's Jan 15 start " +
+      "(1st-sem finals ran Dec 9–19). PUP's 2nd-sem finals are later, ~Jun 15–21",
+  },
+  {
+    phase: "break",
+    startPhDate: "2027-05-23",
+    endPhDate: "2027-08-08",
+    note:
+      "ESTIMATE: midyear break for the Aug-10 wave (summer classes only). PUP " +
+      "is still in session until ~Jun 21 — say so in prose for June windows",
+  },
+  // ── Aug 2027 freshman wave (AY 2027–28 1st sem) ───────────────────────────
+  {
+    phase: "classes",
+    startPhDate: "2027-08-09",
+    endPhDate: "2027-10-03",
+    note:
+      "ESTIMATE: Aug-10 wave classes from ~Aug 9, 2027 (AY 2026–27 started Mon " +
+      "Aug 10; freshman wave Aug 4–17, PUP ~Sep 1). Ends before projected midterms",
   },
 ];
 

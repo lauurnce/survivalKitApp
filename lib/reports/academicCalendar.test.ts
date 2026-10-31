@@ -48,12 +48,30 @@ describe("TERM_CALENDAR", () => {
     expect(isEstimate(finals)).toBe(true);
   });
 
-  it("covers the Aug-10 wave from first day of classes to the end of the sem break", () => {
+  it("covers the Aug-10 wave from first day of classes through the Aug 2027 freshman wave", () => {
     expect(phaseFor("2026-08-09")).toBe("unknown");
     expect(phaseFor("2026-08-10")).toBe("classes");
     expect(phaseFor("2026-10-07")).toBe("midterms");
     expect(phaseFor("2026-12-25")).toBe("break");
-    expect(phaseFor("2027-01-05")).toBe("unknown");
+    expect(phaseFor("2027-01-05")).toBe("classes");
+    expect(phaseFor("2027-03-03")).toBe("midterms");
+    expect(phaseFor("2027-05-14")).toBe("finals");
+    expect(phaseFor("2027-07-01")).toBe("break");
+    expect(phaseFor("2027-08-17")).toBe("classes");
+    expect(phaseFor("2027-10-04")).toBe("unknown");
+  });
+
+  it("marks every projected 2nd-sem and AY 2027–28 window as an estimate", () => {
+    for (const w of TERM_CALENDAR.filter((w) => w.startPhDate >= "2027-01-05")) {
+      // The Jan 5 classes window has a confirmed start but a projected end.
+      expect(isEstimate(w), `${w.startPhDate} ${w.phase}`).toBe(true);
+    }
+  });
+
+  it("covers a date 30 days out, so a weekly report always has a phase to read", () => {
+    // Real clock on purpose, like the term-schedule tripwire in lib/terms.test.ts.
+    const ph = new Date(Date.now() + 8 * 3600_000 + 30 * 86_400_000).toISOString().slice(0, 10);
+    expect(phaseFor(ph), `TERM_CALENDAR ends before ${ph}; extend it`).not.toBe("unknown");
   });
 
   it("reports a week straddling finals and the break as mixed", () => {
