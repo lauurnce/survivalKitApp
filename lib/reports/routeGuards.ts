@@ -187,6 +187,7 @@ export const ROUTE_EXPECTATIONS: Record<string, Expectation> = {
   "/api/events": { auth: ["device"], rateLimit: true, validation: true },
   "/api/feedback": { auth: ["device", "user"], rateLimit: true, validation: true },
   "/api/feedback/user": { auth: ["user"], rateLimit: false, validation: false },
+  "/api/health": { auth: "none", rateLimit: false, validation: false, note: "Public liveness probe for monitors: takes no input and returns only { ok, db }. Database load is bounded by a 10s per-instance cached reading rather than a limiter, which would itself cost a database call." },
   "/api/me": { auth: ["user"], rateLimit: false, validation: false },
   "/api/progress": { auth: ["device", "user"], rateLimit: true, validation: true },
   "/api/quiz/subjects": { auth: ["user"], rateLimit: false, validation: true },
