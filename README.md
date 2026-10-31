@@ -6,36 +6,35 @@ Study companion web app for BSIT (Bachelor of Science in Information Technology)
 
 **The story:** why this exists, the data behind it, and where it's going → [STORY.md](STORY.md)
 
-## Where things stand (as of 2026-08-29)
+## Where things stand (as of 2026-10-31)
 
-- **Per-subject quiz system** shipped — quizzes now generate from an entire subject's content, not just one module, with device + account (`user_id`) progress tracking.
-- **Per-module quiz system** shipped — dedicated quiz pages and cards per completed module, generated straight from that module's sections.
-- **Navigation overhaul** — dashboard shell with a persistent nav rail now wraps subjects, resources, and roadmap; prefetching, revalidation, and middleware-skip work cut route transition time.
-- **Roadmap redesign** — academic timeline with progress markers, an activity graph, and subscription timeline on its own page.
-- **Profile dashboard** — context-rich profile page (school, year, sector) with a monochrome palette matching the subjects design.
-- **In-app SQL labs** — self-hosted `sql.js` WASM with an executed-script + data-grid output view.
-- Ongoing security/finance/ops/growth department reports (`npm run report:*`) audit RLS posture, route guards, revenue reconciliation, and funnel metrics on a recurring cadence.
-- Public update drafts (`/x-updates` skill → HERALD) turn shipped progress
-  into X-ready post batches — 20 posts on the first run, 5 on every run
-  after — each checked against the 280-character free-tier limit.
+Shipped for the run-up to finals:
 
-### Data snapshot (live production, 2026-08-29)
+- **Fast public pages** — subject lists and module pages are prerendered and
+  served static; the session and reviewer unlocks resolve client-side, and the
+  CSP was split so public pages can prerender.
+- **Print view** — a print stylesheet for module pages and a *Print / Save as
+  PDF* button in the reader.
+- **CP1 path** — first-years land straight on CP1 Lesson 1, and every reviewer
+  in a subject's first lesson is free to try.
+- **Price on the teaser** — the paywall teaser quotes the starting price, with
+  a social-proof line on the teaser and `/unlock`.
+- **UTM tagging** — shared and emailed links carry `utm_*` tags, and a visit's
+  attribution is recorded on whichever page it lands.
+- **Finals reactivation** — a finals reminder email with signed one-click
+  unsubscribe, and the term calendar for the August wave so reports read the
+  exam season correctly.
 
-| Metric | Count |
+### Content (live production, 2026-10-31)
+
+| | Count |
 |---|---|
-| Subjects | 36 |
 | Years covered | 4 |
+| Subjects | 36 |
 | Modules | 274 |
 | Content sections | 1,602 |
-| Tracked events | 186,114 |
-| Registered accounts | 344 |
-| Completed module progress records | 924 |
-| Completed payments | 10 |
-| Active subscriptions | 15 |
-| Feedback submissions | 99 |
-| Waitlist signups | 3 |
 
-See [STORY.md](STORY.md) for the fuller narrative (device/university breakdowns, top subjects) as of its own last refresh.
+See [STORY.md](STORY.md) for the project's fuller narrative.
 
 ## Stack
 
