@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { drain, enqueue } from "@/lib/email/outbox";
 import { canonicalUrl } from "@/lib/appOrigin";
-import { SCAN_SLACK_MS } from "@/lib/email/expiryScan";
+import { SCAN_SLACK_MS, expiryScopeKey } from "@/lib/email/expiryScan";
 
 export const runtime = "nodejs";
 
@@ -81,8 +81,11 @@ async function scan(
         kind,
         userId: String(sub.user_id),
         toEmail,
-        // The subscription itself is the scope: one warning per subscription, ever.
-        scopeKey: String(sub.id),
+        // One mail per subscription per period end. A renewal on the same
+        // device updates the same subscription row (lib/payments.ts), so a
+        // scope of the bare id would block every warning after the first:
+        // a 1st-sem payer who renewed would never hear that the 2nd sem ends.
+        scopeKey: expiryScopeKey(sub),
         payload: {
           planLabel: sub.subject_id ? "Subject access" : "All subjects",
           accessEndsAt: sub.current_period_end,

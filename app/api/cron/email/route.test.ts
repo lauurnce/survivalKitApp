@@ -55,7 +55,7 @@ vi.mock("@/lib/supabase/server", () => ({
 }));
 
 import { GET } from "./route";
-import { SCAN_SLACK_MS } from "@/lib/email/expiryScan";
+import { SCAN_SLACK_MS, expiryScopeKey } from "@/lib/email/expiryScan";
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -118,7 +118,7 @@ describe("GET /api/cron/email work", () => {
     await GET(authed());
     const warning = enqueueMock.mock.calls.find((c) => c[1].kind === "expiry_warning");
     expect(warning).toBeDefined();
-    expect(warning![1].scopeKey).toBe("s1");
+    expect(warning![1].scopeKey).toBe(`s1:${end}`);
     expect(warning![1].toEmail).toBe("payer@example.com");
   });
 
@@ -128,7 +128,7 @@ describe("GET /api/cron/email work", () => {
     await GET(authed());
     const winback = enqueueMock.mock.calls.find((c) => c[1].kind === "winback");
     expect(winback).toBeDefined();
-    expect(winback![1].scopeKey).toBe("s2");
+    expect(winback![1].scopeKey).toBe(`s2:${end}`);
   });
 
   // A once-daily cron can fire hours off its nominal time, so each scan covers a
@@ -167,6 +167,19 @@ describe("GET /api/cron/email work", () => {
     const res = await GET(authed());
     expect(res.status).toBe(200);
     expect(enqueueMock).toHaveBeenCalledTimes(2);
+  });
+
+  // A same-device renewal updates the same subscription row, so the scope must
+  // change with the period end or the outbox's unique index would swallow
+  // every warning after the first one.
+  it("scopes each mail to the subscription and its period end", async () => {
+    const first = "2027-01-31T15:59:59+00:00";
+    const renewed = "2027-06-30T15:59:59+00:00";
+    expect(expiryScopeKey({ id: "s1", current_period_end: first })).toBe("s1:2027-01-31T15:59:59.000Z");
+    expect(expiryScopeKey({ id: "s1", current_period_end: "2027-01-31T15:59:59Z" }))
+      .toBe(expiryScopeKey({ id: "s1", current_period_end: first }));
+    expect(expiryScopeKey({ id: "s1", current_period_end: renewed }))
+      .not.toBe(expiryScopeKey({ id: "s1", current_period_end: first }));
   });
 
   it("skips a user who already renewed on another device", async () => {
